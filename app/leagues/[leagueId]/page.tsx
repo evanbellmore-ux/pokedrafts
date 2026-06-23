@@ -11,6 +11,7 @@ export default function LeaguePage() {
   const [league, setLeague] = useState<any>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [invite, setInvite] = useState<any>(null);
+  const [picksPerTeam, setPicksPerTeam] = useState(10);
 
   useEffect(() => {
     load();

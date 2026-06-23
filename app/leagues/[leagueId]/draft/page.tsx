@@ -138,6 +138,8 @@ export default function DraftPage() {
 
   const currentPickNumber = league?.current_pick_number ?? picks.length + 1;
   const pointBudget = league?.point_budget ?? 120;
+  const draftCompleted = Boolean(league?.draft_completed);
+  const picksPerTeam = league?.picks_per_team ?? 10;
 
   const orderedMembers = useMemo(() => {
     return [...members].sort((a, b) => {
@@ -145,12 +147,15 @@ export default function DraftPage() {
     });
   }, [members]);
 
+  const totalRequiredPicks = orderedMembers.length * picksPerTeam;
+
   const currentMember = useMemo(() => {
     if (orderedMembers.length === 0) return null;
+    if (draftCompleted) return null;
 
     const index = (currentPickNumber - 1) % orderedMembers.length;
     return orderedMembers[index];
-  }, [orderedMembers, currentPickNumber]);
+  }, [orderedMembers, currentPickNumber, draftCompleted]);
 
   const draftedNames = useMemo(() => {
     return new Set(picks.map((pick) => pick.pokemon_name));
@@ -179,8 +184,47 @@ export default function DraftPage() {
     userMember?.id && currentMember?.id === userMember.id
   );
 
+  async function saveFinalTeams(finalPicks: any[]) {
+    for (const member of orderedMembers) {
+      const memberPicks = finalPicks.filter(
+        (pick) => pick.member_id === member.id
+      );
+
+      const totalPoints = memberPicks.reduce(
+        (sum, pick) => sum + Number(pick.points ?? 0),
+        0
+      );
+
+      const pokemon = memberPicks.map((pick) => ({
+        name: pick.pokemon_name,
+        points: pick.points,
+        tier: pick.tier,
+        pick_number: pick.pick_number,
+      }));
+
+      const { error } = await supabase.from("drafted_teams").upsert(
+        {
+          league_id: leagueId,
+          member_id: member.id,
+          pokemon,
+          total_points: totalPoints,
+        },
+        {
+          onConflict: "league_id,member_id",
+        }
+      );
+
+      if (error) throw error;
+    }
+  }
+
   async function draftPokemon(pokemon: Pokemon) {
     setMessage("");
+
+    if (draftCompleted) {
+      setMessage("The draft is already complete.");
+      return;
+    }
 
     if (!userMember) {
       setMessage("You are not a member of this league.");
@@ -194,6 +238,22 @@ export default function DraftPage() {
 
     if (pokemon.points > userRemaining) {
       setMessage("You do not have enough points left for this Pokémon.");
+      return;
+    }
+
+    const userPickCount = picks.filter(
+      (pick) => pick.member_id === userMember.id
+    ).length;
+
+    const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
+    const remainingAfterPick = userRemaining - pokemon.points;
+
+    if (remainingAfterPick < picksLeftAfterThis) {
+      setMessage(
+        `You need to leave at least ${picksLeftAfterThis} point${
+          picksLeftAfterThis === 1 ? "" : "s"
+        } for your remaining picks.`
+      );
       return;
     }
 
@@ -214,17 +274,56 @@ export default function DraftPage() {
       return;
     }
 
-    const { error: updateError } = await supabase
-      .from("leagues")
-      .update({
-        current_pick_number: currentPickNumber + 1,
-      })
-      .eq("id", leagueId);
+    const nextPickNumber = currentPickNumber + 1;
+    const draftIsDone = nextPickNumber > totalRequiredPicks;
 
-    if (updateError) {
-      setMessage(updateError.message);
-      setPicking(false);
-      return;
+    if (draftIsDone) {
+      const { data: finalPicks, error: finalPicksError } = await supabase
+        .from("draft_picks")
+        .select("*")
+        .eq("league_id", leagueId)
+        .order("pick_number", { ascending: true });
+
+      if (finalPicksError) {
+        setMessage(finalPicksError.message);
+        setPicking(false);
+        return;
+      }
+
+      try {
+        await saveFinalTeams(finalPicks ?? []);
+      } catch (error: any) {
+        setMessage(error.message);
+        setPicking(false);
+        return;
+      }
+
+      const { error: completeError } = await supabase
+        .from("leagues")
+        .update({
+          draft_completed: true,
+          current_pick_number: currentPickNumber,
+        })
+        .eq("id", leagueId);
+
+      if (completeError) {
+        setMessage(completeError.message);
+        setPicking(false);
+        return;
+      }
+    } else {
+      const { error: updateError } = await supabase
+        .from("leagues")
+        .update({
+          current_pick_number: nextPickNumber,
+        })
+        .eq("id", leagueId);
+
+      if (updateError) {
+        setMessage(updateError.message);
+        setPicking(false);
+        return;
+      }
     }
 
     setPicking(false);
@@ -236,11 +335,22 @@ export default function DraftPage() {
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-4xl font-bold">Draft Room</h1>
+
           <p className="mt-2 text-zinc-400">
-            Pick #{currentPickNumber} • Current Team:{" "}
-            <span className="text-zinc-100">
-              {currentMember?.team_name ?? "No draft order"}
-            </span>
+            {draftCompleted ? (
+              <span className="text-emerald-300">Draft complete</span>
+            ) : (
+              <>
+                Pick #{currentPickNumber} • Current Team:{" "}
+                <span className="text-zinc-100">
+                  {currentMember?.team_name ?? "No draft order"}
+                </span>
+              </>
+            )}
+          </p>
+
+          <p className="mt-1 text-sm text-zinc-500">
+            {picks.length}/{totalRequiredPicks} total picks made
           </p>
         </div>
 
@@ -255,6 +365,12 @@ export default function DraftPage() {
       {message && (
         <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-300">
           {message}
+        </p>
+      )}
+
+      {draftCompleted && (
+        <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-300">
+          Draft complete. Teams have been saved.
         </p>
       )}
 
@@ -296,6 +412,7 @@ export default function DraftPage() {
                         onClick={() => draftPokemon(pokemon)}
                         disabled={
                           picking ||
+                          draftCompleted ||
                           !isMyTurn ||
                           pokemon.points > userRemaining
                         }
