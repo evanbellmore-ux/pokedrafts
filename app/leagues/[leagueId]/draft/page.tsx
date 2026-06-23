@@ -217,6 +217,28 @@ export default function DraftPage() {
       if (error) throw error;
     }
   }
+function canDraftPokemon(pokemon: Pokemon) {
+  if (!userMember) return false;
+  if (!isMyTurn) return false;
+  if (draftCompleted) return false;
+
+  if (pokemon.points > userRemaining) {
+    return false;
+  }
+
+  const userPickCount = picks.filter(
+    (pick) => pick.member_id === userMember.id
+  ).length;
+
+  const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
+  const remainingAfterPick = userRemaining - pokemon.points;
+
+  if (remainingAfterPick < picksLeftAfterThis) {
+    return false;
+  }
+
+  return true;
+}
 
   async function draftPokemon(pokemon: Pokemon) {
     setMessage("");
@@ -411,11 +433,9 @@ export default function DraftPage() {
                       <button
                         onClick={() => draftPokemon(pokemon)}
                         disabled={
-                          picking ||
-                          draftCompleted ||
-                          !isMyTurn ||
-                          pokemon.points > userRemaining
-                        }
+  picking ||
+  !canDraftPokemon(pokemon)
+}
                         className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         Draft
