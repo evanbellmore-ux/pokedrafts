@@ -10,6 +10,7 @@ export default function LeagueNav({ leagueId }: { leagueId: string }) {
     { href: `/leagues/${leagueId}`, label: "Overview" },
     { href: `/leagues/${leagueId}/pool`, label: "Pokemon Pool" },
     { href: `/leagues/${leagueId}/settings`, label: "Settings" },
+     { href: `/leagues/${leagueId}/team`, label: "Team" },
     { href: `/leagues/${leagueId}/draft`, label: "Draft" },
   ];
 
