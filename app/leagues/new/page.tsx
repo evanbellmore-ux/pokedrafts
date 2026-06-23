@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 
 function makeInviteCode() {
   return Math.random().toString(36).slice(2, 10).toUpperCase();
 }
+
+type DraftFormatOption = {
+  id: string;
+  name: string;
+};
 
 export default function NewLeaguePage() {
   const router = useRouter();
@@ -15,10 +20,35 @@ export default function NewLeaguePage() {
   const [name, setName] = useState("");
   const [teamName, setTeamName] = useState("");
   const [maxCoaches, setMaxCoaches] = useState(8);
+  const [draftFormatId, setDraftFormatId] = useState("");
+  const [formats, setFormats] = useState<DraftFormatOption[]>([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    loadFormats();
+  }, []);
+
+  async function loadFormats() {
+    const { data, error } = await supabase
+      .from("draft_formats")
+      .select("id, name")
+      .order("name", { ascending: true });
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    setFormats(data ?? []);
+  }
 
   async function createLeague() {
     setError("");
+
+    if (!name.trim()) {
+      setError("Enter a league name.");
+      return;
+    }
 
     if (!teamName.trim()) {
       setError("Enter a team name.");
@@ -35,9 +65,10 @@ export default function NewLeaguePage() {
     const { data: league, error: leagueError } = await supabase
       .from("leagues")
       .insert({
-        name,
+        name: name.trim(),
         max_coaches: maxCoaches,
         commissioner_id: auth.user.id,
+        draft_format_id: draftFormatId || null,
       })
       .select()
       .single();
@@ -47,19 +78,29 @@ export default function NewLeaguePage() {
       return;
     }
 
-    await supabase.from("league_members").insert({
+    const { error: memberError } = await supabase.from("league_members").insert({
       league_id: league.id,
       user_id: auth.user.id,
       role: "commissioner",
       team_name: teamName.trim(),
     });
 
-    await supabase.from("league_invites").insert({
+    if (memberError) {
+      setError(memberError.message);
+      return;
+    }
+
+    const { error: inviteError } = await supabase.from("league_invites").insert({
       league_id: league.id,
       invite_code: makeInviteCode(),
       max_uses: maxCoaches - 1,
       used_count: 0,
     });
+
+    if (inviteError) {
+      setError(inviteError.message);
+      return;
+    }
 
     router.push(`/leagues/${league.id}`);
   }
@@ -82,6 +123,20 @@ export default function NewLeaguePage() {
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
         />
+
+        <select
+          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          value={draftFormatId}
+          onChange={(e) => setDraftFormatId(e.target.value)}
+        >
+          <option value="">No draft format selected</option>
+
+          {formats.map((format) => (
+            <option key={format.id} value={format.id}>
+              {format.name}
+            </option>
+          ))}
+        </select>
 
         <input
           className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { DraftFormat } from "@/app/types/draft";
 import { pointsToTier } from "@/app/types/draft";
+import { createClient } from "@/app/lib/supabase/client";
 
 const emptyFormat: DraftFormat = {
   version: "1.0",
@@ -11,9 +12,13 @@ const emptyFormat: DraftFormat = {
 };
 
 export default function DraftBuilder() {
+  const supabase = createClient();
+
   const [format, setFormat] = useState<DraftFormat>(emptyFormat);
   const [search, setSearch] = useState("");
   const [newName, setNewName] = useState("");
+  const [formatName, setFormatName] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const duplicateNames = useMemo(() => {
     const counts = new Map<string, number>();
@@ -95,7 +100,10 @@ export default function DraftBuilder() {
           version: parsed.version ?? "1.0",
           leagueName: parsed.leagueName ?? "Untitled Draft League",
           pokemon: parsed.pokemon.map((pokemon: any) => {
-            const points = Math.min(20, Math.max(1, Number(pokemon.points) || 1));
+            const points = Math.min(
+              20,
+              Math.max(1, Number(pokemon.points) || 1)
+            );
 
             return {
               name: String(pokemon.name),
@@ -106,6 +114,7 @@ export default function DraftBuilder() {
         };
 
         setFormat(cleaned);
+        setFormatName(parsed.leagueName ?? "");
       } catch {
         alert("Could not read that JSON file.");
       }
@@ -131,14 +140,53 @@ export default function DraftBuilder() {
     URL.revokeObjectURL(url);
   }
 
+  async function saveFormat() {
+    if (!formatName.trim()) {
+      alert("Enter a format name.");
+      return;
+    }
+
+    if (format.pokemon.length === 0) {
+      alert("Upload or create a draft pool first.");
+      return;
+    }
+
+    setSaving(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("You must be logged in to save a format.");
+      setSaving(false);
+      return;
+    }
+
+    const { error } = await supabase.from("draft_formats").insert({
+      name: formatName.trim(),
+      json: format,
+      created_by: user.id,
+    });
+
+    setSaving(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Format saved.");
+  }
+
   return (
     <main className="min-h-screen bg-zinc-950 p-6 text-zinc-100">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-8 flex items-center justify-between">
+        <header className="mb-8 flex items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold">PokeDrafts Builder</h1>
             <p className="mt-2 text-zinc-400">
-              Upload, edit, and export Pokémon draft pools.
+              Upload, edit, save, and export Pokémon draft pools.
             </p>
           </div>
 
@@ -166,6 +214,29 @@ export default function DraftBuilder() {
           />
         </section>
 
+        <section className="mb-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+          <label className="block text-sm font-medium text-zinc-300">
+            Save this format to database
+          </label>
+
+          <div className="mt-3 flex flex-col gap-3 md:flex-row">
+            <input
+              value={formatName}
+              onChange={(e) => setFormatName(e.target.value)}
+              placeholder="Format name, ex: Reg M-B"
+              className="flex-1 rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+            />
+
+            <button
+              onClick={saveFormat}
+              disabled={saving}
+              className="rounded-xl bg-indigo-500 px-5 py-3 font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
+            >
+              {saving ? "Saving..." : "Save Format"}
+            </button>
+          </div>
+        </section>
+
         <section className="mb-6 grid gap-4 md:grid-cols-3">
           <input
             value={format.leagueName}
@@ -175,6 +246,7 @@ export default function DraftBuilder() {
                 leagueName: e.target.value,
               }))
             }
+            placeholder="League name"
             className="rounded-xl border border-zinc-700 bg-zinc-900 p-3"
           />
 
@@ -230,7 +302,10 @@ export default function DraftBuilder() {
                 );
 
                 return (
-                  <tr key={`${pokemon.name}-${index}`} className="border-t border-zinc-800">
+                  <tr
+                    key={`${pokemon.name}-${index}`}
+                    className="border-t border-zinc-800"
+                  >
                     <td className="p-3">
                       <input
                         value={pokemon.name}
