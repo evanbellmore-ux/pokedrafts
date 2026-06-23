@@ -174,15 +174,39 @@ export default function DraftPage() {
   const userSpent = userMember ? spentByMember.get(userMember.id) ?? 0 : 0;
   const userRemaining = pointBudget - userSpent;
 
-  const availablePokemon = pool
-    .filter((pokemon) => !draftedNames.has(pokemon.name))
-    .filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(search.toLowerCase())
-    );
-
   const isMyTurn = Boolean(
     userMember?.id && currentMember?.id === userMember.id
   );
+
+  function canDraftPokemon(pokemon: Pokemon) {
+    if (!userMember) return false;
+    if (!isMyTurn) return false;
+    if (draftCompleted) return false;
+
+    if (pokemon.points > userRemaining) {
+      return false;
+    }
+
+    const userPickCount = picks.filter(
+      (pick) => pick.member_id === userMember.id
+    ).length;
+
+    const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
+    const remainingAfterPick = userRemaining - pokemon.points;
+
+    if (remainingAfterPick < picksLeftAfterThis) {
+      return false;
+    }
+
+    return true;
+  }
+
+  const visiblePokemon = pool
+    .filter((pokemon) => !draftedNames.has(pokemon.name))
+    .filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((pokemon) => canDraftPokemon(pokemon));
 
   async function saveFinalTeams(finalPicks: any[]) {
     for (const member of orderedMembers) {
@@ -217,28 +241,6 @@ export default function DraftPage() {
       if (error) throw error;
     }
   }
-function canDraftPokemon(pokemon: Pokemon) {
-  if (!userMember) return false;
-  if (!isMyTurn) return false;
-  if (draftCompleted) return false;
-
-  if (pokemon.points > userRemaining) {
-    return false;
-  }
-
-  const userPickCount = picks.filter(
-    (pick) => pick.member_id === userMember.id
-  ).length;
-
-  const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
-  const remainingAfterPick = userRemaining - pokemon.points;
-
-  if (remainingAfterPick < picksLeftAfterThis) {
-    return false;
-  }
-
-  return true;
-}
 
   async function draftPokemon(pokemon: Pokemon) {
     setMessage("");
@@ -258,24 +260,8 @@ function canDraftPokemon(pokemon: Pokemon) {
       return;
     }
 
-    if (pokemon.points > userRemaining) {
-      setMessage("You do not have enough points left for this Pokémon.");
-      return;
-    }
-
-    const userPickCount = picks.filter(
-      (pick) => pick.member_id === userMember.id
-    ).length;
-
-    const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
-    const remainingAfterPick = userRemaining - pokemon.points;
-
-    if (remainingAfterPick < picksLeftAfterThis) {
-      setMessage(
-        `You need to leave at least ${picksLeftAfterThis} point${
-          picksLeftAfterThis === 1 ? "" : "s"
-        } for your remaining picks.`
-      );
+    if (!canDraftPokemon(pokemon)) {
+      setMessage("That Pokémon is not selectable with your current budget.");
       return;
     }
 
@@ -403,12 +389,18 @@ function canDraftPokemon(pokemon: Pokemon) {
         </p>
       )}
 
+      {!isMyTurn && !draftCompleted && orderedMembers.length > 0 && (
+        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+          Waiting for {currentMember?.team_name ?? "the current team"} to pick.
+        </p>
+      )}
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <section>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search available Pokémon..."
+            placeholder="Search selectable Pokémon..."
             className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
           />
 
@@ -424,7 +416,7 @@ function canDraftPokemon(pokemon: Pokemon) {
               </thead>
 
               <tbody>
-                {availablePokemon.map((pokemon) => (
+                {visiblePokemon.map((pokemon) => (
                   <tr key={pokemon.name} className="border-t border-zinc-800">
                     <td className="p-3 font-semibold">{pokemon.name}</td>
                     <td className="p-3">{pokemon.points}</td>
@@ -432,10 +424,7 @@ function canDraftPokemon(pokemon: Pokemon) {
                     <td className="p-3 text-right">
                       <button
                         onClick={() => draftPokemon(pokemon)}
-                        disabled={
-  picking ||
-  !canDraftPokemon(pokemon)
-}
+                        disabled={picking}
                         className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         Draft
@@ -444,10 +433,10 @@ function canDraftPokemon(pokemon: Pokemon) {
                   </tr>
                 ))}
 
-                {availablePokemon.length === 0 && (
+                {visiblePokemon.length === 0 && (
                   <tr>
                     <td colSpan={4} className="p-8 text-center text-zinc-500">
-                      No available Pokémon found.
+                      No selectable Pokémon available.
                     </td>
                   </tr>
                 )}
