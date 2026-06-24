@@ -143,6 +143,8 @@ export default function DraftPage() {
   const pointBudget = league?.point_budget ?? 120;
   const draftCompleted = Boolean(league?.draft_completed);
   const picksPerTeam = league?.picks_per_team ?? 10;
+  const draftStarted = Boolean(league?.draft_started);
+  const isCommissioner = userMember?.role === "commissioner";
 
   const orderedMembers = useMemo(() => {
     return [...members].sort((a, b) => {
@@ -244,7 +246,7 @@ const rosterSlots = Array.from({ length: picksPerTeam }, (_, index) => {
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
 
 useEffect(() => {
-  if (!pickStartedAt || draftCompleted) return;
+  if (!draftStarted || !pickStartedAt || draftCompleted) return;
 
   const interval = setInterval(() => {
     const elapsed = Math.floor(
@@ -322,6 +324,37 @@ async function autoDraftTopPick() {
   }
 
   await draftPokemon(topPick);
+}
+
+async function startDraft() {
+  setMessage("");
+
+  if (!isCommissioner) {
+    setMessage("Only the commissioner can start the draft.");
+    return;
+  }
+
+  if (orderedMembers.length === 0) {
+    setMessage("Set the draft order before starting the draft.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("leagues")
+    .update({
+      draft_started: true,
+      draft_completed: false,
+      current_pick_number: 1,
+      pick_started_at: new Date().toISOString(),
+    })
+    .eq("id", leagueId);
+
+  if (error) {
+    setMessage(error.message);
+    return;
+  }
+
+  await loadDraft();
 }
 
   async function draftPokemon(pokemon: Pokemon) {
@@ -425,35 +458,62 @@ async function autoDraftTopPick() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">Draft Room</h1>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+  <div>
+    <h1 className="text-4xl font-bold">Draft Room</h1>
 
-          <p className="mt-2 text-zinc-400">
-            {draftCompleted ? (
-              <span className="text-emerald-300">Draft complete</span>
-            ) : (
-              <>
-                Pick #{currentPickNumber} • Current Team:{" "}
-                <span className="text-zinc-100">
-                  {currentMember?.team_name ?? "No draft order"}
-                </span>
-              </>
-            )}
-          </p>
+    <p className="mt-2 text-zinc-400">
+      {draftCompleted ? (
+        <span className="text-emerald-300">Draft complete</span>
+      ) : (
+        <>
+          Pick #{currentPickNumber} • Current Team:{" "}
+          <span className="text-zinc-100">
+            {currentMember?.team_name ?? "No draft order"}
+          </span>
+        </>
+      )}
+    </p>
 
-          <p className="mt-1 text-sm text-zinc-500">
-            {picks.length}/{totalRequiredPicks} total picks made
-          </p>
-        </div>
+    <p className="mt-1 text-sm text-zinc-500">
+      {picks.length}/{totalRequiredPicks} total picks made
+    </p>
+  </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
-          <p className="text-sm text-zinc-400">Your Budget</p>
-          <p className="text-2xl font-bold">
-            {userRemaining}/{pointBudget}
-          </p>
-        </div>
-      </div>
+  <div className="flex gap-4">
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
+      {isCommissioner && !draftStarted && !draftCompleted && (
+  <button
+    onClick={startDraft}
+    className="rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400"
+  >
+    Start Draft
+  </button>
+)}
+      <p className="text-xs uppercase tracking-wide text-zinc-500">
+        Pick Timer
+      </p>
+
+      <p className="text-3xl font-bold">
+        {secondsLeft ?? pickTimerSeconds}s
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
+      <p className="text-xs uppercase tracking-wide text-zinc-500">
+        Budget
+      </p>
+
+      <p className="text-3xl font-bold">
+        {userRemaining}
+      </p>
+
+      <p className="text-xs text-zinc-500">
+        / {pointBudget}
+      </p>
+    </div>
+  </div>
+</div>
 
       {message && (
         <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-300">
@@ -523,12 +583,7 @@ async function autoDraftTopPick() {
       </div>
     ))}
   </div>
-  <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
-  <p className="text-sm text-zinc-400">Pick Timer</p>
-  <p className="text-3xl font-bold">
-    {secondsLeft ?? pickTimerSeconds}s
-  </p>
-</div>
+  
 </section>
           <input
             value={search}
