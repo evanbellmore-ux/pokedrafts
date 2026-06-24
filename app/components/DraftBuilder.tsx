@@ -24,6 +24,8 @@ function normalizeName(name: string) {
     .replace(/[.\s-]/g, "");
 }
 
+
+
 function toPokeApiSlug(name: string) {
   const clean = name.trim();
 
@@ -75,6 +77,9 @@ export default function DraftBuilder() {
   const [pokeApiSprites, setPokeApiSprites] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [newName, setNewName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  
 
   useEffect(() => {
     loadDex();
@@ -109,6 +114,24 @@ export default function DraftBuilder() {
 
     setDexEntries(combined);
   }
+
+async function saveFormat() {
+  setSaving(true);
+  setSaveMessage("");
+
+  const { error } = await supabase.from("draft_formats").insert({
+    name: format.leagueName,
+    json: format,
+  });
+
+  if (error) {
+    setSaveMessage(error.message);
+  } else {
+    setSaveMessage("Format saved.");
+  }
+
+  setSaving(false);
+}
 
   async function fetchPokeApiSprite(pokemonName: string) {
     const normalized = normalizeName(pokemonName);
@@ -304,7 +327,13 @@ export default function DraftBuilder() {
               Upload, edit, and export Pokémon draft pools.
             </p>
           </div>
-
+<button
+  onClick={saveFormat}
+  disabled={saving || format.pokemon.length === 0}
+  className="rounded-xl bg-blue-500 px-5 py-3 font-semibold text-white hover:bg-blue-400 disabled:opacity-50"
+>
+  {saving ? "Saving..." : "Save Format"}
+</button>
           <button
             onClick={exportJson}
             className="rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400"

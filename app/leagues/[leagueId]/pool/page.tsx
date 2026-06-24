@@ -5,20 +5,37 @@ import { useParams } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 import PokemonSprite from "@/app/components/PokemonSprite";
 
+
+type PoolPokemon = {
+  name: string;
+  points: number;
+  tier: number;
+};
+
+function pointsToTier(points: number) {
+  return 21 - points;
+}
+
 export default function PoolPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
   const [league, setLeague] = useState<any>(null);
-  const [pokemon, setPokemon] = useState<any[]>([]);
+  const [pokemon, setPokemon] = useState<PoolPokemon[]>([]);
   const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isCommissioner, setIsCommissioner] = useState(false);
 
   useEffect(() => {
     loadPool();
   }, []);
 
   async function loadPool() {
-    const { data } = await supabase
+    setMessage("");
+
+    const { data, error } = await supabase
       .from("leagues")
       .select(`
         *,
@@ -31,62 +48,199 @@ export default function PoolPage() {
       .eq("id", leagueId)
       .single();
 
-    setLeague(data);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
 
-    const pool = data?.draft_format?.json?.pokemon ?? [];
-    setPokemon(pool);
+    setLeague(data);
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (user) {
+  const { data: member } = await supabase
+    .from("league_members")
+    .select("role")
+    .eq("league_id", leagueId)
+    .eq("user_id", user.id)
+    .single();
+
+  setIsCommissioner(member?.role === "commissioner");
+}
+    const pool =
+      data?.custom_pool?.pokemon ??
+      data?.draft_format?.json?.pokemon ??
+      [];
+
+    setPokemon(Array.isArray(pool) ? pool : []);
   }
 
-  const filtered = pokemon.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  function updatePoints(index: number, value: number) {
+    const points = Math.min(20, Math.max(1, Number(value) || 1));
 
+    setPokemon((prev) =>
+      prev.map((mon, i) =>
+        i === index
+          ? {
+              ...mon,
+              points,
+              tier: pointsToTier(points),
+            }
+          : mon
+      )
+    );
+  }
+
+  async function saveLeaguePool() {
+    setSaving(true);
+    setMessage("");
+
+    const customPool = {
+      version: league?.draft_format?.json?.version ?? "1.0",
+      leagueName:
+        league?.draft_format?.json?.leagueName ??
+        league?.draft_format?.name ??
+        "Custom League Pool",
+      pokemon,
+    };
+
+    const { error } = await supabase
+      .from("leagues")
+      .update({ custom_pool: customPool })
+      .eq("id", leagueId);
+
+    if (error) {
+      setMessage(error.message);
+      setSaving(false);
+      return;
+    }
+
+    setEditing(false);
+    setSaving(false);
+    setMessage("League pool saved.");
+    await loadPool();
+  }
+
+  function cancelEditing() {
+    setEditing(false);
+    loadPool();
+  }
+
+ const filtered = pokemon
+  .map((mon, index) => ({ mon, index }))
+  .filter(({ mon }) =>
+    mon.name.toLowerCase().includes(search.toLowerCase())
+  )
+  .sort((a, b) => {
+    if (b.mon.points !== a.mon.points) {
+      return b.mon.points - a.mon.points;
+    }
+
+    return a.mon.name.localeCompare(b.mon.name);
+  });
   return (
-  <>
-    <h1 className="text-4xl font-bold">
-      {league?.draft_format?.name ?? "Pokemon Pool"}
-    </h1>
+    <>
+      <div className="flex gap-3">
+  {isCommissioner ? (
+    !editing ? (
+      <button
+        onClick={() => setEditing(true)}
+        className="rounded-xl bg-zinc-800 px-5 py-3 font-semibold hover:bg-zinc-700"
+      >
+        Edit Points
+      </button>
+    ) : (
+      <>
+        <button
+          onClick={cancelEditing}
+          disabled={saving}
+          className="rounded-xl bg-zinc-800 px-5 py-3 font-semibold hover:bg-zinc-700 disabled:opacity-50"
+        >
+          Cancel
+        </button>
 
-    <p className="mt-2 text-zinc-400">
-      {pokemon.length} Pokémon
+        <button
+          onClick={saveLeaguePool}
+          disabled={saving}
+          className="rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
+        >
+          {saving ? "Saving..." : "Save League Pool"}
+        </button>
+      </>
+    )
+  ) : (
+    <p className="flex items-center text-sm text-zinc-500">
+      Only the commissioner can edit points.
     </p>
+  )}
+</div>
+      
 
-    <input
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Search Pokémon..."
-      className="mt-6 w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
-    />
+      {message && (
+        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+          {message}
+        </p>
+      )}
 
-    <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-      <table className="w-full">
-        <thead className="bg-zinc-950">
-          <tr>
-            <th className="p-3 text-left">Pokemon</th>
-            <th className="p-3 text-left">Points</th>
-            <th className="p-3 text-left">Tier</th>
-          </tr>
-        </thead>
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search Pokémon..."
+        className="mt-6 w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
+      />
 
-        <tbody>
-          {filtered.map((pokemon) => (
-            <tr
-              key={pokemon.name}
-              className="border-t border-zinc-800"
-            >
-              <td className="p-3">
-  <div className="flex items-center gap-3">
-    <PokemonSprite name={pokemon.name} />
-    <span className="font-semibold">{pokemon.name}</span>
-  </div>
-</td>
-              <td className="p-3">{pokemon.points}</td>
-              <td className="p-3">{pokemon.tier}</td>
+      <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+        <table className="w-full">
+          <thead className="bg-zinc-950">
+            <tr>
+              <th className="p-3 text-left">Pokemon</th>
+              <th className="p-3 text-left">Points</th>
+              <th className="p-3 text-left">Tier</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </>
-);
+          </thead>
+
+          <tbody>
+            {filtered.map(({ mon, index }) => (
+              <tr key={mon.name} className="border-t border-zinc-800">
+                <td className="p-3">
+                  <div className="flex items-center gap-3">
+                    <PokemonSprite name={mon.name} />
+                    <span className="font-semibold">{mon.name}</span>
+                  </div>
+                </td>
+
+                <td className="p-3">
+                  {editing ? (
+                    <input
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={mon.points}
+                      onChange={(e) =>
+                        updatePoints(index, Number(e.target.value))
+                      }
+                      className="w-24 rounded-lg border border-zinc-700 bg-zinc-950 p-2"
+                    />
+                  ) : (
+                    mon.points
+                  )}
+                </td>
+
+                <td className="p-3">{mon.tier}</td>
+              </tr>
+            ))}
+
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={3} className="p-8 text-center text-zinc-500">
+                  No Pokémon found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }

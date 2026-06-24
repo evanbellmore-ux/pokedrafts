@@ -107,7 +107,10 @@ export default function DraftPage() {
     if (serverTime) {
       setServerOffsetMs(new Date(serverTime).getTime() - Date.now());
     }
-    const pokemonPool = leagueData?.draft_format?.json?.pokemon ?? [];
+    const pokemonPool =
+  leagueData?.custom_pool?.pokemon ??
+  leagueData?.draft_format?.json?.pokemon ??
+  [];
     setPool(Array.isArray(pokemonPool) ? pokemonPool : []);
 
     const { data: memberData, error: memberError } = await supabase
@@ -227,11 +230,18 @@ export default function DraftPage() {
   }
 
   const visiblePokemon = pool
-    .filter((pokemon) => !draftedNames.has(pokemon.name))
-    .filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((pokemon) => canAffordPokemon(pokemon));
+  .filter((pokemon) => !draftedNames.has(pokemon.name))
+  .filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(search.toLowerCase())
+  )
+  .filter((pokemon) => canAffordPokemon(pokemon))
+  .sort((a, b) => {
+    if (b.points !== a.points) {
+      return b.points - a.points;
+    }
+
+    return a.name.localeCompare(b.name);
+  });
 
   useEffect(() => {
     if (!draftStarted || !pickStartedAt || draftCompleted) return;
