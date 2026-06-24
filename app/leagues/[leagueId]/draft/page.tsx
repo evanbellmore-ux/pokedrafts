@@ -32,6 +32,7 @@ export default function DraftPage() {
   const [picking, setPicking] = useState(false);
   const [message, setMessage] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+  const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
   useEffect(() => {
     loadDraft();
@@ -101,7 +102,11 @@ export default function DraftPage() {
     }
 
     setLeague(leagueData);
+    const { data: serverTime } = await supabase.rpc("get_server_time");
 
+    if (serverTime) {
+      setServerOffsetMs(new Date(serverTime).getTime() - Date.now());
+    }
     const pokemonPool = leagueData?.draft_format?.json?.pokemon ?? [];
     setPool(Array.isArray(pokemonPool) ? pokemonPool : []);
 
@@ -232,19 +237,21 @@ export default function DraftPage() {
     if (!draftStarted || !pickStartedAt || draftCompleted) return;
 
     const tick = () => {
-      const elapsed = Math.floor((Date.now() - pickStartedAt) / 1000);
+      const serverNow = Date.now() + serverOffsetMs;
+      const elapsed = Math.floor((serverNow - pickStartedAt) / 1000);
       const remaining = Math.max(0, pickTimerSeconds - elapsed);
 
       setSecondsLeft(remaining);
 
       if (
-        remaining <= 0 &&
-        isMyTurn &&
-        !picking &&
-        !league?.auto_pick_in_progress
-      ) {
-        autoDraftTopPick();
-      }
+  remaining <= 0 &&
+  draftStarted &&
+  !draftCompleted &&
+  !picking &&
+  !league?.auto_pick_in_progress
+) {
+  autoDraftTopPick();
+}
     };
 
     tick();
@@ -260,6 +267,7 @@ export default function DraftPage() {
     isMyTurn,
     picking,
     league?.auto_pick_in_progress,
+    serverOffsetMs,
   ]);
 
   async function saveFinalTeams(finalPicks: any[]) {
@@ -391,10 +399,17 @@ export default function DraftPage() {
     });
 
     if (pickError) {
-      setMessage(pickError.message);
-      setPicking(false);
-      return;
-    }
+  if (pickError.code === "23505") {
+    setMessage("That Pokémon was just drafted by someone else. Refreshing draft...");
+    setPicking(false);
+    await loadDraft();
+    return;
+  }
+
+  setMessage(pickError.message);
+  setPicking(false);
+  return;
+}
 
     const nextPickNumber = currentPickNumber + 1;
     const draftIsDone = nextPickNumber > totalRequiredPicks;
