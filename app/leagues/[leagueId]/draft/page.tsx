@@ -249,35 +249,30 @@ const rosterSlots = Array.from({ length: picksPerTeam }, (_, index) => {
 useEffect(() => {
   if (!draftStarted || !pickStartedAt || draftCompleted) return;
 
-  const interval = setInterval(() => {
-    const elapsed = Math.floor(
-      (Date.now() - pickStartedAt) / 1000
-    );
-
-    const remaining = Math.max(
-      0,
-      pickTimerSeconds - elapsed
-    );
+  const tick = () => {
+    const elapsed = Math.floor((Date.now() - pickStartedAt) / 1000);
+    const remaining = Math.max(0, pickTimerSeconds - elapsed);
 
     setSecondsLeft(remaining);
 
-    if (
-      remaining <= 0 &&
-      isMyTurn &&
-      !picking
-    ) {
+    if (remaining <= 0 && isMyTurn && !picking && !league?.auto_pick_in_progress) {
       autoDraftTopPick();
     }
-  }, 1000);
+  };
+
+  tick();
+
+  const interval = setInterval(tick, 1000);
 
   return () => clearInterval(interval);
 }, [
+  draftStarted,
   pickStartedAt,
   pickTimerSeconds,
   draftCompleted,
   isMyTurn,
   picking,
-  visiblePokemon,
+  league?.auto_pick_in_progress,
 ]);
 
   async function saveFinalTeams(finalPicks: any[]) {
@@ -317,10 +312,27 @@ useEffect(() => {
 async function autoDraftTopPick() {
   if (!isMyTurn || picking || draftCompleted) return;
 
+  const { data: lockData, error: lockError } = await supabase
+    .from("leagues")
+    .update({ auto_pick_in_progress: true })
+    .eq("id", leagueId)
+    .eq("current_pick_number", currentPickNumber)
+    .eq("auto_pick_in_progress", false)
+    .select("id")
+    .maybeSingle();
+
+  if (lockError || !lockData) return;
+
   const topPick = visiblePokemon[0];
 
   if (!topPick) {
     setMessage("Timer expired, but no legal Pokémon were available.");
+
+    await supabase
+      .from("leagues")
+      .update({ auto_pick_in_progress: false })
+      .eq("id", leagueId);
+
     return;
   }
 
@@ -347,6 +359,7 @@ async function startDraft() {
       draft_completed: false,
       current_pick_number: 1,
       pick_started_at: new Date().toISOString(),
+      auto_pick_in_progress: false,
     })
     .eq("id", leagueId);
 
@@ -432,6 +445,7 @@ async function startDraft() {
           draft_completed: true,
           current_pick_number: currentPickNumber,
           pick_started_at: new Date().toISOString(),
+          auto_pick_in_progress: false,
         })
         .eq("id", leagueId);
 
@@ -446,6 +460,7 @@ async function startDraft() {
         .update({
           current_pick_number: nextPickNumber,
           pick_started_at: new Date().toISOString(),
+          auto_pick_in_progress: false,
         })
         .eq("id", leagueId);
 
