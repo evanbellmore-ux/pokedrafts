@@ -28,45 +28,45 @@ function normalizeName(name: string) {
 
 function toPokeApiSlug(name: string) {
   const clean = name.trim();
+  const lower = clean.toLowerCase().replace(/\s+/g, " ");
 
-  if (clean.startsWith("Mega ")) {
-    const base = clean.replace("Mega ", "").toLowerCase().replace(/\s+/g, "-");
+  if (lower === "paldean tauros") return "tauros-paldea-combat-breed";
+  if (lower === "paldean tauros blaze") return "tauros-paldea-blaze-breed";
+  if (lower === "paldean tauros aqua") return "tauros-paldea-aqua-breed";
+
+  const regions: Record<string, string> = {
+    alolan: "alola",
+    alola: "alola",
+    galarian: "galar",
+    galar: "galar",
+    hisuian: "hisui",
+    hisui: "hisui",
+    paldean: "paldea",
+    paldea: "paldea",
+  };
+
+  for (const [inputRegion, apiRegion] of Object.entries(regions)) {
+    if (lower.startsWith(`${inputRegion} `)) {
+      const base = lower.slice(inputRegion.length + 1).replace(/\s+/g, "-");
+      return `${base}-${apiRegion}`;
+    }
+
+    if (lower.endsWith(`-${inputRegion}`)) {
+      const base = lower.slice(0, -1 * (`-${inputRegion}`.length));
+      return `${base}-${apiRegion}`;
+    }
+  }
+
+  if (lower.startsWith("mega ")) {
+    const base = lower.replace("mega ", "").replace(/\s+/g, "-");
 
     if (base.endsWith("-x")) return base.replace(/-x$/, "-mega-x");
     if (base.endsWith("-y")) return base.replace(/-y$/, "-mega-y");
 
     return `${base}-mega`;
   }
-// stupid Tauros exception
-  if (clean === "Paldean Tauros") {
-    return "tauros-paldea-combat-breed";
-  }
 
-  if (clean === "Paldean Tauros Blaze") {
-    return "tauros-paldea-blaze-breed";
-  }
-
-  if (clean === "Paldean Tauros Aqua") {
-    return "tauros-paldea-aqua-breed";
-  }
-  
-  if (clean.startsWith("Alolan ")) {
-    return clean.replace("Alolan ", "").toLowerCase().replace(/\s+/g, "-") + "-alola";
-  }
-
-  if (clean.startsWith("Galarian ")) {
-    return clean.replace("Galarian ", "").toLowerCase().replace(/\s+/g, "-") + "-galar";
-  }
-
-  if (clean.startsWith("Hisuian ")) {
-    return clean.replace("Hisuian ", "").toLowerCase().replace(/\s+/g, "-") + "-hisui";
-  }
-
-  if (clean.startsWith("Paldean ")) {
-    return clean.replace("Paldean ", "").toLowerCase().replace(/\s+/g, "-") + "-paldea";
-  }
-
-  return clean.toLowerCase().replace(/\s+/g, "-");
+  return lower.replace(/\s+/g, "-");
 }
 
 export default function DraftBuilder() {
@@ -243,24 +243,35 @@ async function saveFormat() {
     }));
   }
 
-  function addPokemon() {
-    const name = newName.trim();
-    if (!name) return;
+ async function addPokemon() {
+  const rawName = newName.trim();
+  if (!rawName) return;
 
-    setFormat((prev) => ({
-      ...prev,
-      pokemon: [
-        ...prev.pokemon,
-        {
-          name,
-          points: 1,
-          tier: 20,
-        },
-      ],
-    }));
+  const finalName = toPokeApiSlug(rawName);
 
-    setNewName("");
+  const res = await fetch(
+    `https://pokeapi.co/api/v2/pokemon/${finalName}`
+  );
+
+  if (!res.ok) {
+    alert(`Could not find Pokémon: ${rawName}`);
+    return;
   }
+
+  setFormat((prev) => ({
+    ...prev,
+    pokemon: [
+      ...prev.pokemon,
+      {
+        name: finalName,
+        points: 1,
+        tier: 20,
+      },
+    ],
+  }));
+
+  setNewName("");
+}
 
   function handleUpload(file: File) {
     const reader = new FileReader();

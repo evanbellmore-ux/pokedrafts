@@ -11,13 +11,53 @@ export function normalizePokemonName(name: string) {
 
 export function toPokeApiSlug(name: string) {
   const clean = name.trim();
+  const lower = clean.toLowerCase();
 
-  if (clean === "Paldean Tauros") return "tauros-paldea-combat-breed";
-  if (clean === "Paldean Tauros Blaze") return "tauros-paldea-blaze-breed";
-  if (clean === "Paldean Tauros Aqua") return "tauros-paldea-aqua-breed";
+  // Paldean Tauros exceptions first
+  if (lower === "paldean tauros") return "tauros-paldea-combat-breed";
+  if (lower === "paldea tauros") return "tauros-paldea-combat-breed";
+  if (lower === "tauros-paldea") return "tauros-paldea-combat-breed";
+  if (lower === "tauros-paldea-combat") return "tauros-paldea-combat-breed";
+  if (lower === "tauros-paldea-combat-breed") return "tauros-paldea-combat-breed";
 
-  if (clean.startsWith("Mega ")) {
-    const base = clean.replace("Mega ", "").toLowerCase().replace(/\s+/g, "-");
+  if (lower === "paldean tauros blaze") return "tauros-paldea-blaze-breed";
+  if (lower === "paldea tauros blaze") return "tauros-paldea-blaze-breed";
+  if (lower === "tauros-paldea-blaze") return "tauros-paldea-blaze-breed";
+  if (lower === "tauros-paldea-blaze-breed") return "tauros-paldea-blaze-breed";
+
+  if (lower === "paldean tauros aqua") return "tauros-paldea-aqua-breed";
+  if (lower === "paldea tauros aqua") return "tauros-paldea-aqua-breed";
+  if (lower === "tauros-paldea-aqua") return "tauros-paldea-aqua-breed";
+  if (lower === "tauros-paldea-aqua-breed") return "tauros-paldea-aqua-breed";
+
+  const regionAliases: Record<string, string> = {
+    alolan: "alola",
+    alola: "alola",
+    galarian: "galar",
+    galar: "galar",
+    hisuian: "hisui",
+    hisui: "hisui",
+    paldean: "paldea",
+    paldea: "paldea",
+  };
+
+  for (const [inputRegion, apiRegion] of Object.entries(regionAliases)) {
+    const prefix = `${inputRegion} `;
+    const suffix = `-${inputRegion}`;
+
+    if (lower.startsWith(prefix)) {
+      const base = lower.slice(prefix.length).replace(/\s+/g, "-");
+      return `${base}-${apiRegion}`;
+    }
+
+    if (lower.endsWith(suffix)) {
+      const base = lower.slice(0, -suffix.length).replace(/\s+/g, "-");
+      return `${base}-${apiRegion}`;
+    }
+  }
+
+  if (lower.startsWith("mega ")) {
+    const base = lower.replace("mega ", "").replace(/\s+/g, "-");
 
     if (base.endsWith("-x")) return base.replace(/-x$/, "-mega-x");
     if (base.endsWith("-y")) return base.replace(/-y$/, "-mega-y");
@@ -25,35 +65,7 @@ export function toPokeApiSlug(name: string) {
     return `${base}-mega`;
   }
 
-  if (clean.startsWith("Alolan ")) {
-    return (
-      clean.replace("Alolan ", "").toLowerCase().replace(/\s+/g, "-") +
-      "-alola"
-    );
-  }
-
-  if (clean.startsWith("Galarian ")) {
-    return (
-      clean.replace("Galarian ", "").toLowerCase().replace(/\s+/g, "-") +
-      "-galar"
-    );
-  }
-
-  if (clean.startsWith("Hisuian ")) {
-    return (
-      clean.replace("Hisuian ", "").toLowerCase().replace(/\s+/g, "-") +
-      "-hisui"
-    );
-  }
-
-  if (clean.startsWith("Paldean ")) {
-    return (
-      clean.replace("Paldean ", "").toLowerCase().replace(/\s+/g, "-") +
-      "-paldea"
-    );
-  }
-
-  return clean.toLowerCase().replace(/\s+/g, "-");
+  return lower.replace(/\s+/g, "-");
 }
 
 export async function loadLocalSpriteMap() {
