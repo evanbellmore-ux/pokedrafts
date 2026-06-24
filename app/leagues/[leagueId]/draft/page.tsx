@@ -663,7 +663,9 @@ export default function DraftPage() {
           <h2 className="text-xl font-semibold">Draft Board</h2>
 
           <div className="mt-4 space-y-3">
-            {picks.map((pick) => {
+           {[...picks]
+  .sort((a, b) => b.pick_number - a.pick_number)
+  .map((pick) => {
               const member = members.find((m) => m.id === pick.member_id);
 
               return (
