@@ -201,6 +201,7 @@ const rosterSlots = Array.from({ length: picksPerTeam }, (_, index) => {
   );
 
   function canDraftPokemon(pokemon: Pokemon) {
+    if (!draftStarted) return false;
     if (!userMember) return false;
     if (!isMyTurn) return false;
     if (draftCompleted) return false;
@@ -359,7 +360,10 @@ async function startDraft() {
 
   async function draftPokemon(pokemon: Pokemon) {
     setMessage("");
-
+    if (!draftStarted) {
+       setMessage("The draft has not started yet.");
+       return;
+    }
     if (draftCompleted) {
       setMessage("The draft is already complete.");
       return;
