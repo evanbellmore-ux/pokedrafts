@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
+import PokemonSprite from "@/app/components/PokemonSprite";
 
 type DraftedPokemon = {
   name: string;
@@ -106,7 +107,12 @@ export default function TeamPage() {
               {pokemon.map((mon) => (
                 <tr key={mon.name} className="border-t border-zinc-800">
                   <td className="p-3">#{mon.pick_number}</td>
-                  <td className="p-3 font-semibold">{mon.name}</td>
+                  <td className="p-3">
+  <div className="flex items-center gap-3">
+    <PokemonSprite name={mon.name} />
+    <span className="font-semibold">{mon.name}</span>
+  </div>
+</td>
                   <td className="p-3">{mon.points}</td>
                   <td className="p-3">{mon.tier}</td>
                 </tr>
