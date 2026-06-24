@@ -7,6 +7,7 @@ export default function LeagueNav({ leagueId }: { leagueId: string }) {
   const pathname = usePathname();
 
   const links = [
+    { href: `/dashboard`, label: "Home" },
     { href: `/leagues/${leagueId}`, label: "Overview" },
     { href: `/leagues/${leagueId}/pool`, label: "Pokemon Pool" },
     { href: `/leagues/${leagueId}/settings`, label: "Settings" },
