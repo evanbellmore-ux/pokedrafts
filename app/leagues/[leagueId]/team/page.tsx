@@ -12,20 +12,73 @@ type DraftedPokemon = {
   pick_number: number;
 };
 
+type DraftedTeam = {
+  id: string;
+  member_id: string;
+  total_points: number;
+  pokemon: DraftedPokemon[];
+  league_members?: {
+    team_name: string | null;
+    user_id: string;
+  } | null;
+};
+
+function RosterTable({ pokemon }: { pokemon: DraftedPokemon[] }) {
+  return (
+    <div className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+      <table className="w-full">
+        <thead className="bg-zinc-900 text-sm text-zinc-400">
+          <tr>
+            <th className="p-3 text-left">Pick</th>
+            <th className="p-3 text-left">Pokémon</th>
+            <th className="p-3 text-left">Points</th>
+            <th className="p-3 text-left">Tier</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {pokemon.map((mon) => (
+            <tr key={`${mon.pick_number}-${mon.name}`} className="border-t border-zinc-800">
+              <td className="p-3">#{mon.pick_number}</td>
+              <td className="p-3">
+                <div className="flex items-center gap-3">
+                  <PokemonSprite name={mon.name} />
+                  <span className="font-semibold">{mon.name}</span>
+                </div>
+              </td>
+              <td className="p-3">{mon.points}</td>
+              <td className="p-3">{mon.tier}</td>
+            </tr>
+          ))}
+
+          {pokemon.length === 0 && (
+            <tr>
+              <td colSpan={4} className="p-8 text-center text-zinc-500">
+                No drafted team saved yet.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function TeamPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
+  const [myMemberId, setMyMemberId] = useState("");
   const [teamName, setTeamName] = useState("");
-  const [pokemon, setPokemon] = useState<DraftedPokemon[]>([]);
-  const [totalPoints, setTotalPoints] = useState(0);
+  const [myTeam, setMyTeam] = useState<DraftedTeam | null>(null);
+  const [allTeams, setAllTeams] = useState<DraftedTeam[]>([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    loadTeam();
+    loadTeams();
   }, []);
 
-  async function loadTeam() {
+  async function loadTeams() {
     setMessage("");
 
     const {
@@ -33,7 +86,7 @@ export default function TeamPage() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      setMessage("You must be logged in to view your team.");
+      setMessage("You must be logged in to view teams.");
       return;
     }
 
@@ -49,36 +102,60 @@ export default function TeamPage() {
       return;
     }
 
+    setMyMemberId(member.id);
     setTeamName(member.team_name ?? "Unnamed Team");
 
-    const { data: draftedTeam, error: teamError } = await supabase
+    const { data: teamData, error: teamError } = await supabase
       .from("drafted_teams")
-      .select("pokemon, total_points")
-      .eq("league_id", leagueId)
-      .eq("member_id", member.id)
-      .maybeSingle();
+      .select(`
+        id,
+        member_id,
+        pokemon,
+        total_points,
+        league_members (
+          team_name,
+          user_id
+        )
+      `)
+      .eq("league_id", leagueId);
 
     if (teamError) {
       setMessage(teamError.message);
       return;
     }
 
-    if (!draftedTeam) {
-      setMessage("Your finalized team will appear here after the draft is complete.");
-      return;
-    }
+    const cleanedTeams: DraftedTeam[] =
+      teamData?.map((team: any) => ({
+        id: team.id,
+        member_id: team.member_id,
+        total_points: team.total_points ?? 0,
+        pokemon: Array.isArray(team.pokemon) ? team.pokemon : [],
+        league_members: team.league_members ?? null,
+      })) ?? [];
 
-    setPokemon(Array.isArray(draftedTeam.pokemon) ? draftedTeam.pokemon : []);
-    setTotalPoints(draftedTeam.total_points ?? 0);
+    const mine = cleanedTeams.find((team) => team.member_id === member.id) ?? null;
+
+    setMyTeam(mine);
+    setAllTeams(
+      cleanedTeams.sort((a, b) => {
+        const aName = a.league_members?.team_name ?? "";
+        const bName = b.league_members?.team_name ?? "";
+        return aName.localeCompare(bName);
+      })
+    );
+
+    if (!mine) {
+      setMessage("Your finalized team will appear here after the draft is complete.");
+    }
   }
+
+  const otherTeams = allTeams.filter((team) => team.member_id !== myMemberId);
 
   return (
     <>
-      <h1 className="text-4xl font-bold">Team</h1>
+      <h1 className="text-4xl font-bold">Teams</h1>
 
-      <p className="mt-2 text-zinc-400">
-        {teamName || "Loading team..."}
-      </p>
+      <p className="mt-2 text-zinc-400">{teamName || "Loading team..."}</p>
 
       {message && (
         <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
@@ -86,47 +163,45 @@ export default function TeamPage() {
         </p>
       )}
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+      <section className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Drafted Roster</h2>
-          <p className="text-sm text-zinc-400">{totalPoints} points spent</p>
+          <h2 className="text-xl font-semibold">My Team</h2>
+          <p className="text-sm text-zinc-300">
+            {myTeam?.total_points ?? 0} points spent
+          </p>
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
-          <table className="w-full">
-            <thead className="bg-zinc-900 text-sm text-zinc-400">
-              <tr>
-                <th className="p-3 text-left">Pick</th>
-                <th className="p-3 text-left">Pokémon</th>
-                <th className="p-3 text-left">Points</th>
-                <th className="p-3 text-left">Tier</th>
-              </tr>
-            </thead>
+        <RosterTable pokemon={myTeam?.pokemon ?? []} />
+      </section>
 
-            <tbody>
-              {pokemon.map((mon) => (
-                <tr key={mon.name} className="border-t border-zinc-800">
-                  <td className="p-3">#{mon.pick_number}</td>
-                  <td className="p-3">
-  <div className="flex items-center gap-3">
-    <PokemonSprite name={mon.name} />
-    <span className="font-semibold">{mon.name}</span>
-  </div>
-</td>
-                  <td className="p-3">{mon.points}</td>
-                  <td className="p-3">{mon.tier}</td>
-                </tr>
-              ))}
+      <section className="mt-8">
+        <h2 className="text-2xl font-bold">All Teams</h2>
 
-              {pokemon.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="p-8 text-center text-zinc-500">
-                    No drafted team saved yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div className="mt-4 space-y-6">
+          {otherTeams.map((team) => (
+            <section
+              key={team.id}
+              className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-semibold">
+                  {team.league_members?.team_name ?? "Unnamed Team"}
+                </h3>
+
+                <p className="text-sm text-zinc-400">
+                  {team.total_points} points spent
+                </p>
+              </div>
+
+              <RosterTable pokemon={team.pokemon} />
+            </section>
+          ))}
+
+          {otherTeams.length === 0 && (
+            <p className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-zinc-500">
+              No other finalized teams yet.
+            </p>
+          )}
         </div>
       </section>
     </>
