@@ -12,6 +12,7 @@ type Props = {
   size?: "sm" | "md";
 };
 
+let cachedSpriteMapPromise: Promise<Record<string, string>> | null = null;
 let cachedSpriteMap: Record<string, string> | null = null;
 const apiSpriteCache: Record<string, string> = {};
 
@@ -24,19 +25,26 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
     async function loadSprite() {
       const normalized = normalizePokemonName(name);
 
-      if (!cachedSpriteMap) {
-        cachedSpriteMap = await loadLocalSpriteMap();
+      if (cachedSpriteMap?.[normalized]) {
+        setSpriteUrl(cachedSpriteMap[normalized]);
+        return;
       }
+
+      if (apiSpriteCache[normalized]) {
+        setSpriteUrl(apiSpriteCache[normalized]);
+        return;
+      }
+
+      if (!cachedSpriteMapPromise) {
+        cachedSpriteMapPromise = loadLocalSpriteMap();
+      }
+
+      cachedSpriteMap = await cachedSpriteMapPromise;
 
       const localSprite = cachedSpriteMap[normalized];
 
       if (localSprite) {
         if (active) setSpriteUrl(localSprite);
-        return;
-      }
-
-      if (apiSpriteCache[normalized]) {
-        if (active) setSpriteUrl(apiSpriteCache[normalized]);
         return;
       }
 
@@ -48,6 +56,7 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
       }
     }
 
+    setSpriteUrl(null);
     loadSprite();
 
     return () => {
@@ -60,10 +69,9 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
   if (!spriteUrl) {
     return (
       <div
-        className={`${sizeClass} flex items-center justify-center rounded-md bg-zinc-800 text-xs text-zinc-500`}
-      >
-        ?
-      </div>
+        className={`${sizeClass} animate-pulse rounded-md bg-zinc-800/60`}
+        aria-label={`Loading sprite for ${name}`}
+      />
     );
   }
 
@@ -72,6 +80,7 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
       src={spriteUrl}
       alt={name}
       className={`${sizeClass} rounded-md bg-zinc-800 object-contain p-1`}
+      loading="lazy"
     />
   );
 }

@@ -23,6 +23,8 @@ export default function LeagueSettingsPage() {
   const [leagueName, setLeagueName] = useState("");
   const [maxCoaches, setMaxCoaches] = useState(8);
   const [pointBudget, setPointBudget] = useState(120);
+  const [picksPerTeam, setPicksPerTeam] = useState(10);
+  const [pickTimerSeconds, setPickTimerSeconds] = useState(120);
   const [draftFormatId, setDraftFormatId] = useState("");
 
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
@@ -38,7 +40,9 @@ export default function LeagueSettingsPage() {
   async function loadSettings() {
     const { data: league } = await supabase
       .from("leagues")
-      .select("name, max_coaches, point_budget, draft_format_id")
+      .select(
+        "name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, draft_format_id"
+      )
       .eq("id", leagueId)
       .single();
 
@@ -48,20 +52,22 @@ export default function LeagueSettingsPage() {
       .order("name", { ascending: true });
 
     const { data: memberData, error: memberError } = await supabase
-  .from("league_members")
-  .select("id, team_name, role, draft_position")
-  .eq("league_id", leagueId)
-  .order("draft_position", { ascending: true, nullsFirst: false })
-  .order("team_name", { ascending: true });
+      .from("league_members")
+      .select("id, team_name, role, draft_position")
+      .eq("league_id", leagueId)
+      .order("draft_position", { ascending: true, nullsFirst: false })
+      .order("team_name", { ascending: true });
 
-if (memberError) {
-  setMessage(memberError.message);
-}
+    if (memberError) {
+      setMessage(memberError.message);
+    }
 
     if (league) {
       setLeagueName(league.name ?? "");
       setMaxCoaches(league.max_coaches ?? 8);
       setPointBudget(league.point_budget ?? 120);
+      setPicksPerTeam(league.picks_per_team ?? 10);
+      setPickTimerSeconds(league.pick_timer_seconds ?? 120);
       setDraftFormatId(league.draft_format_id ?? "");
     }
 
@@ -73,7 +79,7 @@ if (memberError) {
     setMembers((prev) =>
       prev.map((member) =>
         member.id === memberId
-          ? { ...member, draft_position: value }
+          ? { ...member, draft_position: value || null }
           : member
       )
     );
@@ -109,6 +115,8 @@ if (memberError) {
         name: leagueName.trim(),
         max_coaches: maxCoaches,
         point_budget: pointBudget,
+        picks_per_team: picksPerTeam,
+        pick_timer_seconds: pickTimerSeconds,
         draft_format_id: draftFormatId || null,
       })
       .eq("id", leagueId);
@@ -149,7 +157,6 @@ if (memberError) {
         <label className="mt-5 block text-sm font-medium text-zinc-300">
           League Name
         </label>
-
         <input
           value={leagueName}
           onChange={(e) => setLeagueName(e.target.value)}
@@ -159,7 +166,6 @@ if (memberError) {
         <label className="mt-5 block text-sm font-medium text-zinc-300">
           Max Coaches
         </label>
-
         <input
           type="number"
           min={2}
@@ -172,7 +178,6 @@ if (memberError) {
         <label className="mt-5 block text-sm font-medium text-zinc-300">
           Point Budget
         </label>
-
         <input
           type="number"
           min={1}
@@ -182,16 +187,36 @@ if (memberError) {
         />
 
         <label className="mt-5 block text-sm font-medium text-zinc-300">
+          Picks Per Team
+        </label>
+        <input
+          type="number"
+          min={1}
+          value={picksPerTeam}
+          onChange={(e) => setPicksPerTeam(Number(e.target.value))}
+          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+        />
+
+        <label className="mt-5 block text-sm font-medium text-zinc-300">
+          Pick Timer Seconds
+        </label>
+        <input
+          type="number"
+          min={10}
+          value={pickTimerSeconds}
+          onChange={(e) => setPickTimerSeconds(Number(e.target.value))}
+          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+        />
+
+        <label className="mt-5 block text-sm font-medium text-zinc-300">
           Draft Format
         </label>
-
         <select
           value={draftFormatId}
           onChange={(e) => setDraftFormatId(e.target.value)}
           className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
         >
           <option value="">No draft format selected</option>
-
           {formats.map((format) => (
             <option key={format.id} value={format.id}>
               {format.name}

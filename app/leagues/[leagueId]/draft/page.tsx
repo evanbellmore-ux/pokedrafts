@@ -74,6 +74,8 @@ export default function DraftPage() {
     };
   }, [leagueId]);
 
+  
+
   async function loadDraft() {
     setMessage("");
 
@@ -148,6 +150,11 @@ export default function DraftPage() {
     });
   }, [members]);
 
+
+  const pickTimerSeconds = league?.pick_timer_seconds ?? 120;
+const pickStartedAt = league?.pick_started_at
+  ? new Date(league.pick_started_at).getTime()
+  : null;
   const totalRequiredPicks = orderedMembers.length * picksPerTeam;
 
   const currentMember = useMemo(() => {
@@ -174,6 +181,18 @@ export default function DraftPage() {
 
   const userSpent = userMember ? spentByMember.get(userMember.id) ?? 0 : 0;
   const userRemaining = pointBudget - userSpent;
+  
+  const userPicks = useMemo(() => {
+  if (!userMember) return [];
+
+  return picks
+    .filter((pick) => pick.member_id === userMember.id)
+    .sort((a, b) => a.pick_number - b.pick_number);
+}, [picks, userMember]);
+
+const rosterSlots = Array.from({ length: picksPerTeam }, (_, index) => {
+  return userPicks[index] ?? null;
+});
 
   const isMyTurn = Boolean(
     userMember?.id && currentMember?.id === userMember.id
@@ -202,12 +221,61 @@ export default function DraftPage() {
     return true;
   }
 
-  const visiblePokemon = pool
-    .filter((pokemon) => !draftedNames.has(pokemon.name))
-    .filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .filter((pokemon) => canDraftPokemon(pokemon));
+ const visiblePokemon = pool
+  .filter((pokemon) => !draftedNames.has(pokemon.name))
+  .filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(search.toLowerCase())
+  )
+  .filter((pokemon) => {
+    if (!userMember) return false;
+
+    if (pokemon.points > userRemaining) return false;
+
+    const userPickCount = picks.filter(
+      (pick) => pick.member_id === userMember.id
+    ).length;
+
+    const picksLeftAfterThis = picksPerTeam - userPickCount - 1;
+    const remainingAfterPick = userRemaining - pokemon.points;
+
+    return remainingAfterPick >= picksLeftAfterThis;
+  });
+
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+
+useEffect(() => {
+  if (!pickStartedAt || draftCompleted) return;
+
+  const interval = setInterval(() => {
+    const elapsed = Math.floor(
+      (Date.now() - pickStartedAt) / 1000
+    );
+
+    const remaining = Math.max(
+      0,
+      pickTimerSeconds - elapsed
+    );
+
+    setSecondsLeft(remaining);
+
+    if (
+      remaining <= 0 &&
+      isMyTurn &&
+      !picking
+    ) {
+      autoDraftTopPick();
+    }
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [
+  pickStartedAt,
+  pickTimerSeconds,
+  draftCompleted,
+  isMyTurn,
+  picking,
+  visiblePokemon,
+]);
 
   async function saveFinalTeams(finalPicks: any[]) {
     for (const member of orderedMembers) {
@@ -242,6 +310,19 @@ export default function DraftPage() {
       if (error) throw error;
     }
   }
+
+async function autoDraftTopPick() {
+  if (!isMyTurn || picking || draftCompleted) return;
+
+  const topPick = visiblePokemon[0];
+
+  if (!topPick) {
+    setMessage("Timer expired, but no legal Pokémon were available.");
+    return;
+  }
+
+  await draftPokemon(topPick);
+}
 
   async function draftPokemon(pokemon: Pokemon) {
     setMessage("");
@@ -284,6 +365,7 @@ export default function DraftPage() {
     }
 
     const nextPickNumber = currentPickNumber + 1;
+    
     const draftIsDone = nextPickNumber > totalRequiredPicks;
 
     if (draftIsDone) {
@@ -312,6 +394,7 @@ export default function DraftPage() {
         .update({
           draft_completed: true,
           current_pick_number: currentPickNumber,
+          pick_started_at: new Date().toISOString(),
         })
         .eq("id", leagueId);
 
@@ -325,6 +408,7 @@ export default function DraftPage() {
         .from("leagues")
         .update({
           current_pick_number: nextPickNumber,
+          pick_started_at: new Date().toISOString(),
         })
         .eq("id", leagueId);
 
@@ -398,6 +482,54 @@ export default function DraftPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <section>
+            <section className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+  <div className="flex items-center justify-between">
+    <div>
+      <h2 className="text-lg font-semibold">Your Drafted Pokémon</h2>
+      <p className="text-sm text-zinc-500">
+        {userPicks.length}/{picksPerTeam} roster slots filled
+      </p>
+    </div>
+
+    <p className="text-sm text-zinc-400">
+      {userRemaining}/{pointBudget} points remaining
+    </p>
+  </div>
+
+  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5 lg:grid-cols-10">
+    {rosterSlots.map((pick, index) => (
+      <div
+        key={index}
+        className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-center"
+      >
+        {pick ? (
+          <>
+            <PokemonSprite name={pick.pokemon_name} />
+            <p className="mt-2 text-xs font-semibold leading-tight">
+              {pick.pokemon_name}
+            </p>
+            <p className="text-[11px] text-zinc-500">
+              {pick.points} pts
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-zinc-700 text-xs text-zinc-600">
+              {index + 1}
+            </div>
+            <p className="mt-2 text-xs text-zinc-600">Empty</p>
+          </>
+        )}
+      </div>
+    ))}
+  </div>
+  <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+  <p className="text-sm text-zinc-400">Pick Timer</p>
+  <p className="text-3xl font-bold">
+    {secondsLeft ?? pickTimerSeconds}s
+  </p>
+</div>
+</section>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -429,12 +561,12 @@ export default function DraftPage() {
                     <td className="p-3">{pokemon.tier}</td>
                     <td className="p-3 text-right">
                       <button
-                        onClick={() => draftPokemon(pokemon)}
-                        disabled={picking}
-                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        Draft
-                      </button>
+  onClick={() => draftPokemon(pokemon)}
+  disabled={picking || !canDraftPokemon(pokemon)}
+  className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
+>
+  {canDraftPokemon(pokemon) ? "Draft" : "Unavailable"}
+</button>
                     </td>
                   </tr>
                 ))}
