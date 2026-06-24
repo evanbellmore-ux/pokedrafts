@@ -64,7 +64,7 @@ export const config = {
   matcher: [
     "/",
     "/dashboard/:path*",
-    "/league/:path*",
+    "/leagues/:path*",
     "/pool/:path*",
     "/team/:path*",
   ],
