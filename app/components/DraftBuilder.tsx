@@ -1,9 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DraftFormat } from "@/app/types/draft";
 import { pointsToTier } from "@/app/types/draft";
 import { createClient } from "@/app/lib/supabase/client";
+
+type DexEntry = {
+  dex_number: number;
+  name: string;
+  sprite_url: string | null;
+};
 
 const emptyFormat: DraftFormat = {
   version: "1.0",
@@ -11,20 +17,150 @@ const emptyFormat: DraftFormat = {
   pokemon: [],
 };
 
+function normalizeName(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/[.\s-]/g, "");
+}
+
+function toPokeApiSlug(name: string) {
+  const clean = name.trim();
+
+  if (clean.startsWith("Mega ")) {
+    const base = clean.replace("Mega ", "").toLowerCase().replace(/\s+/g, "-");
+
+    if (base.endsWith("-x")) return base.replace(/-x$/, "-mega-x");
+    if (base.endsWith("-y")) return base.replace(/-y$/, "-mega-y");
+
+    return `${base}-mega`;
+  }
+// stupid Tauros exception
+  if (clean === "Paldean Tauros") {
+    return "tauros-paldea-combat-breed";
+  }
+
+  if (clean === "Paldean Tauros Blaze") {
+    return "tauros-paldea-blaze-breed";
+  }
+
+  if (clean === "Paldean Tauros Aqua") {
+    return "tauros-paldea-aqua-breed";
+  }
+  
+  if (clean.startsWith("Alolan ")) {
+    return clean.replace("Alolan ", "").toLowerCase().replace(/\s+/g, "-") + "-alola";
+  }
+
+  if (clean.startsWith("Galarian ")) {
+    return clean.replace("Galarian ", "").toLowerCase().replace(/\s+/g, "-") + "-galar";
+  }
+
+  if (clean.startsWith("Hisuian ")) {
+    return clean.replace("Hisuian ", "").toLowerCase().replace(/\s+/g, "-") + "-hisui";
+  }
+
+  if (clean.startsWith("Paldean ")) {
+    return clean.replace("Paldean ", "").toLowerCase().replace(/\s+/g, "-") + "-paldea";
+  }
+
+  return clean.toLowerCase().replace(/\s+/g, "-");
+}
+
 export default function DraftBuilder() {
   const supabase = createClient();
 
   const [format, setFormat] = useState<DraftFormat>(emptyFormat);
+  const [dexEntries, setDexEntries] = useState<DexEntry[]>([]);
+  const [pokeApiSprites, setPokeApiSprites] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [newName, setNewName] = useState("");
-  const [formatName, setFormatName] = useState("");
-  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    loadDex();
+  }, []);
+
+  async function loadDex() {
+    const first = await supabase
+      .from("pokemon_dex")
+      .select("dex_number, name, sprite_url")
+      .order("dex_number", { ascending: true })
+      .range(0, 999);
+
+    const second = await supabase
+      .from("pokemon_dex")
+      .select("dex_number, name, sprite_url")
+      .order("dex_number", { ascending: true })
+      .range(1000, 1024);
+
+    if (first.error) {
+      console.error("First dex query failed:", first.error.message);
+      return;
+    }
+
+    if (second.error) {
+      console.error("Second dex query failed:", second.error.message);
+      return;
+    }
+
+    const combined = [...(first.data ?? []), ...(second.data ?? [])];
+
+    console.log("dex entries loaded", combined.length);
+
+    setDexEntries(combined);
+  }
+
+  async function fetchPokeApiSprite(pokemonName: string) {
+    const normalized = normalizeName(pokemonName);
+
+    if (pokeApiSprites[normalized]) return;
+
+    const slug = toPokeApiSlug(pokemonName);
+
+    try {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
+
+      if (!res.ok) {
+        console.log("PokeAPI sprite not found:", pokemonName, slug);
+        return;
+      }
+
+      const data = await res.json();
+
+      const spriteUrl =
+        data.sprites?.front_default ??
+        data.sprites?.other?.["official-artwork"]?.front_default ??
+        null;
+
+      if (!spriteUrl) {
+        console.log("PokeAPI has no sprite:", pokemonName, slug);
+        return;
+      }
+
+      setPokeApiSprites((prev) => ({
+        ...prev,
+        [normalized]: spriteUrl,
+      }));
+    } catch (error) {
+      console.error("PokeAPI fetch failed:", pokemonName, error);
+    }
+  }
+
+  const dexByName = useMemo(() => {
+    const map = new Map<string, DexEntry>();
+
+    for (const entry of dexEntries) {
+      map.set(normalizeName(entry.name), entry);
+    }
+
+    return map;
+  }, [dexEntries]);
 
   const duplicateNames = useMemo(() => {
     const counts = new Map<string, number>();
 
     format.pokemon.forEach((pokemon) => {
-      const key = pokemon.name.trim().toLowerCase();
+      const key = normalizeName(pokemon.name);
       counts.set(key, (counts.get(key) ?? 0) + 1);
     });
 
@@ -40,6 +176,25 @@ export default function DraftBuilder() {
     .filter(({ pokemon }) =>
       pokemon.name.toLowerCase().includes(search.toLowerCase())
     );
+
+  useEffect(() => {
+    if (!dexEntries.length || !format.pokemon.length) return;
+
+    const missing = format.pokemon.filter((pokemon) => {
+      const normalizedName = normalizeName(pokemon.name);
+      return !dexByName.get(normalizedName);
+    });
+
+    const uniqueMissing = Array.from(
+      new Set(missing.map((pokemon) => pokemon.name))
+    );
+
+    console.log("Missing local sprites:", uniqueMissing);
+
+    uniqueMissing.forEach((name) => {
+      fetchPokeApiSprite(name);
+    });
+  }, [format.pokemon, dexEntries, dexByName]);
 
   function updatePokemon(index: number, name: string, points: number) {
     setFormat((prev) => {
@@ -114,7 +269,6 @@ export default function DraftBuilder() {
         };
 
         setFormat(cleaned);
-        setFormatName(parsed.leagueName ?? "");
       } catch {
         alert("Could not read that JSON file.");
       }
@@ -140,53 +294,14 @@ export default function DraftBuilder() {
     URL.revokeObjectURL(url);
   }
 
-  async function saveFormat() {
-    if (!formatName.trim()) {
-      alert("Enter a format name.");
-      return;
-    }
-
-    if (format.pokemon.length === 0) {
-      alert("Upload or create a draft pool first.");
-      return;
-    }
-
-    setSaving(true);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      alert("You must be logged in to save a format.");
-      setSaving(false);
-      return;
-    }
-
-    const { error } = await supabase.from("draft_formats").insert({
-      name: formatName.trim(),
-      json: format,
-      created_by: user.id,
-    });
-
-    setSaving(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    alert("Format saved.");
-  }
-
   return (
     <main className="min-h-screen bg-zinc-950 p-6 text-zinc-100">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-8 flex items-center justify-between gap-4">
+        <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold">PokeDrafts Builder</h1>
             <p className="mt-2 text-zinc-400">
-              Upload, edit, save, and export Pokémon draft pools.
+              Upload, edit, and export Pokémon draft pools.
             </p>
           </div>
 
@@ -214,29 +329,6 @@ export default function DraftBuilder() {
           />
         </section>
 
-        <section className="mb-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <label className="block text-sm font-medium text-zinc-300">
-            Save this format to database
-          </label>
-
-          <div className="mt-3 flex flex-col gap-3 md:flex-row">
-            <input
-              value={formatName}
-              onChange={(e) => setFormatName(e.target.value)}
-              placeholder="Format name, ex: Reg M-B"
-              className="flex-1 rounded-xl border border-zinc-700 bg-zinc-950 p-3"
-            />
-
-            <button
-              onClick={saveFormat}
-              disabled={saving}
-              className="rounded-xl bg-indigo-500 px-5 py-3 font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
-            >
-              {saving ? "Saving..." : "Save Format"}
-            </button>
-          </div>
-        </section>
-
         <section className="mb-6 grid gap-4 md:grid-cols-3">
           <input
             value={format.leagueName}
@@ -246,7 +338,6 @@ export default function DraftBuilder() {
                 leagueName: e.target.value,
               }))
             }
-            placeholder="League name"
             className="rounded-xl border border-zinc-700 bg-zinc-900 p-3"
           />
 
@@ -288,7 +379,7 @@ export default function DraftBuilder() {
           <table className="w-full border-collapse text-left">
             <thead className="bg-zinc-950 text-sm text-zinc-400">
               <tr>
-                <th className="p-3">Name</th>
+                <th className="p-3">Pokémon</th>
                 <th className="p-3">Points</th>
                 <th className="p-3">Tier</th>
                 <th className="p-3 text-right">Actions</th>
@@ -297,9 +388,12 @@ export default function DraftBuilder() {
 
             <tbody>
               {filteredPokemon.map(({ pokemon, index }) => {
-                const isDuplicate = duplicateNames.has(
-                  pokemon.name.trim().toLowerCase()
-                );
+                const normalizedName = normalizeName(pokemon.name);
+                const isDuplicate = duplicateNames.has(normalizedName);
+
+                const dexEntry = dexByName.get(normalizedName);
+                const spriteUrl =
+                  dexEntry?.sprite_url ?? pokeApiSprites[normalizedName] ?? null;
 
                 return (
                   <tr
@@ -307,17 +401,31 @@ export default function DraftBuilder() {
                     className="border-t border-zinc-800"
                   >
                     <td className="p-3">
-                      <input
-                        value={pokemon.name}
-                        onChange={(e) =>
-                          updatePokemon(index, e.target.value, pokemon.points)
-                        }
-                        className={`w-full rounded-lg border bg-zinc-950 p-2 ${
-                          isDuplicate
-                            ? "border-amber-500 text-amber-300"
-                            : "border-zinc-700"
-                        }`}
-                      />
+                      <div className="flex items-center gap-3">
+                        {spriteUrl ? (
+                          <img
+                            src={spriteUrl}
+                            alt={pokemon.name}
+                            className="h-10 w-10 rounded-md bg-zinc-800 object-contain p-1"
+                          />
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-zinc-800 text-xs text-zinc-500">
+                            ?
+                          </div>
+                        )}
+
+                        <input
+                          value={pokemon.name}
+                          onChange={(e) =>
+                            updatePokemon(index, e.target.value, pokemon.points)
+                          }
+                          className={`w-full rounded-lg border bg-zinc-950 p-2 ${
+                            isDuplicate
+                              ? "border-amber-500 text-amber-300"
+                              : "border-zinc-700"
+                          }`}
+                        />
+                      </div>
                     </td>
 
                     <td className="p-3">
