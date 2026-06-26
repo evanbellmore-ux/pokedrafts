@@ -91,6 +91,17 @@ Recommended unique constraint:
 
 - `(league_id, member_id)`
 
+### `draft_chat_messages`
+
+- `id` uuid
+- `league_id` uuid
+- `member_id` uuid
+- `user_id` uuid, references auth user id
+- `message` text
+- `created_at` timestamp
+
+Used by the draft room chat. The UI loads the latest 100 messages by `created_at` and subscribes to realtime inserts for the active league.
+
 ### `league_matches`
 
 - `id` uuid
@@ -148,6 +159,7 @@ The app now guards commissioner-only actions in the client before writes, but Su
 Recommended policy intent:
 
 - League members can read their own leagues, league members, pools, picks, finalized teams, and matches.
+- League members can read and insert chat messages for leagues they belong to.
 - Commissioners can update their leagues, custom pools, draft order, draft settings, match schedules, and draft start state.
 - Coaches can insert a draft pick only when they are the current drafting member and the draft is active.
 - Invites should not allow joins past `max_uses` or `max_coaches`.

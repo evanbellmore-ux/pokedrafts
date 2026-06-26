@@ -29,6 +29,15 @@ type DraftPick = {
   pick_number: number;
 };
 
+type DraftChatMessage = {
+  id: string;
+  league_id: string;
+  member_id: string;
+  user_id: string;
+  message: string;
+  created_at: string;
+};
+
 type DraftLeague = {
   id: string;
   point_budget: number | null;
@@ -72,11 +81,16 @@ export default function DraftPage() {
   const [userMember, setUserMember] = useState<LeagueMember | null>(null);
   const [picking, setPicking] = useState(false);
   const [message, setMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState<DraftChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatSending, setChatSending] = useState(false);
+  const [chatError, setChatError] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
   useEffect(() => {
     loadDraft();
+    loadChatMessages();
 
     const channel = supabase
       .channel(`draft-${leagueId}`)
@@ -109,6 +123,26 @@ export default function DraftPage() {
           filter: `league_id=eq.${leagueId}`,
         },
         () => loadDraft()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "draft_chat_messages",
+          filter: `league_id=eq.${leagueId}`,
+        },
+        (payload) => {
+          setChatMessages((prev) => {
+            const nextMessage = payload.new as DraftChatMessage;
+
+            if (prev.some((chatMessage) => chatMessage.id === nextMessage.id)) {
+              return prev;
+            }
+
+            return [...prev, nextMessage].slice(-100);
+          });
+        }
       )
       .subscribe();
 
@@ -186,6 +220,24 @@ export default function DraftPage() {
     }
 
     setPicks(pickData ?? []);
+  }
+
+  async function loadChatMessages() {
+    setChatError("");
+
+    const { data, error } = await supabase
+      .from("draft_chat_messages")
+      .select("id, league_id, member_id, user_id, message, created_at")
+      .eq("league_id", leagueId)
+      .order("created_at", { ascending: true })
+      .limit(100);
+
+    if (error) {
+      setChatError(error.message);
+      return;
+    }
+
+    setChatMessages(data ?? []);
   }
 
   const currentPickNumber = league?.current_pick_number ?? picks.length + 1;
@@ -525,6 +577,40 @@ export default function DraftPage() {
     await loadDraft();
   }
 
+  async function sendChatMessage() {
+    const cleanMessage = chatInput.trim();
+
+    if (!cleanMessage || chatSending) return;
+
+    if (!userMember) {
+      setChatError("You must be a league member to chat.");
+      return;
+    }
+
+    setChatSending(true);
+    setChatError("");
+
+    const { error } = await supabase.from("draft_chat_messages").insert({
+      league_id: leagueId,
+      member_id: userMember.id,
+      user_id: userMember.user_id,
+      message: cleanMessage.slice(0, 500),
+    });
+
+    if (error) {
+      setChatError(error.message);
+      setChatSending(false);
+      return;
+    }
+
+    setChatInput("");
+    setChatSending(false);
+  }
+
+  function getMemberName(memberId: string) {
+    return members.find((member) => member.id === memberId)?.team_name ?? "Team";
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -756,6 +842,69 @@ export default function DraftPage() {
               <p className="text-sm text-stone-500">No picks yet.</p>
             )}
           </div>
+
+          <section className="mt-6 border-t border-sky-900/40 pt-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Draft Chat</h2>
+              <p className="text-xs uppercase tracking-wide text-stone-500">
+                League
+              </p>
+            </div>
+
+            <div className="mt-4 flex h-80 flex-col gap-3 overflow-y-auto rounded-lg border border-sky-900/30 bg-stone-950 p-3">
+              {chatMessages.map((chatMessage) => (
+                <div key={chatMessage.id}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-sm font-semibold text-sky-200">
+                      {getMemberName(chatMessage.member_id)}
+                    </p>
+                    <time className="text-[11px] text-stone-600">
+                      {new Date(chatMessage.created_at).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                  </div>
+                  <p className="mt-1 break-words text-sm text-stone-300">
+                    {chatMessage.message}
+                  </p>
+                </div>
+              ))}
+
+              {chatMessages.length === 0 && (
+                <p className="text-sm text-stone-500">No chat messages yet.</p>
+              )}
+            </div>
+
+            {chatError && (
+              <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 p-2 text-sm text-red-300">
+                {chatError}
+              </p>
+            )}
+
+            <form
+              className="mt-3 flex gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void sendChatMessage();
+              }}
+            >
+              <input
+                value={chatInput}
+                onChange={(event) => setChatInput(event.target.value)}
+                maxLength={500}
+                placeholder="Message the draft room..."
+                className="min-w-0 flex-1 rounded-lg border border-stone-700 bg-stone-950 p-3 text-sm"
+              />
+              <button
+                type="submit"
+                disabled={chatSending || !chatInput.trim() || !userMember}
+                className="rounded-lg bg-emerald-500 px-4 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Send
+              </button>
+            </form>
+          </section>
         </aside>
       </div>
     </>
