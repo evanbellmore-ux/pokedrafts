@@ -60,6 +60,8 @@ type DraftLeague = {
   } | null;
 };
 
+type MobileDraftPanel = "roster" | "pool" | "board" | "chat";
+
 function getSnakeDraftIndex(pickNumber: number, teamCount: number) {
   const roundIndex = Math.floor((pickNumber - 1) / teamCount);
   const pickIndexInRound = (pickNumber - 1) % teamCount;
@@ -86,6 +88,8 @@ export default function DraftPage() {
   const [chatSending, setChatSending] = useState(false);
   const [chatError, setChatError] = useState("");
   const [chatUnavailable, setChatUnavailable] = useState(false);
+  const [activeMobilePanel, setActiveMobilePanel] =
+    useState<MobileDraftPanel>("pool");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
@@ -731,9 +735,35 @@ export default function DraftPage() {
         </p>
       )}
 
+      <nav className="mt-6 grid grid-cols-4 gap-2 rounded-lg border border-amber-900/40 bg-stone-900 p-2 lg:hidden">
+        {[
+          { id: "roster", label: "Roster" },
+          { id: "pool", label: "Pool" },
+          { id: "board", label: "Board" },
+          { id: "chat", label: "Chat" },
+        ].map((panel) => (
+          <button
+            key={panel.id}
+            type="button"
+            onClick={() => setActiveMobilePanel(panel.id as MobileDraftPanel)}
+            className={`rounded-md px-2 py-2 text-sm font-semibold ${
+              activeMobilePanel === panel.id
+                ? "bg-emerald-500 text-stone-950"
+                : "text-stone-300 hover:bg-stone-800"
+            }`}
+          >
+            {panel.label}
+          </button>
+        ))}
+      </nav>
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <section>
-          <section className="mb-4 rounded-lg border border-emerald-900/40 bg-stone-900 p-4">
+          <section
+            className={`mb-4 rounded-lg border border-emerald-900/40 bg-stone-900 p-4 ${
+              activeMobilePanel === "roster" ? "block" : "hidden"
+            } lg:block`}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Your Drafted Pokémon</h2>
@@ -776,6 +806,9 @@ export default function DraftPage() {
             </div>
           </section>
 
+          <section
+            className={`${activeMobilePanel === "pool" ? "block" : "hidden"} lg:block`}
+          >
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -829,9 +862,19 @@ export default function DraftPage() {
               </tbody>
             </table>
           </div>
+          </section>
         </section>
 
-        <aside className="rounded-lg border border-amber-900/40 bg-stone-900 p-5">
+        <aside
+          className={`rounded-lg border border-amber-900/40 bg-stone-900 p-5 ${
+            activeMobilePanel === "board" || activeMobilePanel === "chat"
+              ? "block"
+              : "hidden"
+          } lg:block`}
+        >
+          <section
+            className={`${activeMobilePanel === "board" ? "block" : "hidden"} lg:block`}
+          >
           <h2 className="text-xl font-semibold">Draft Board</h2>
 
           <div className="mt-4 space-y-3">
@@ -865,8 +908,13 @@ export default function DraftPage() {
               <p className="text-sm text-stone-500">No picks yet.</p>
             )}
           </div>
+          </section>
 
-          <section className="mt-6 border-t border-sky-900/40 pt-5">
+          <section
+            className={`${
+              activeMobilePanel === "chat" ? "block" : "hidden"
+            } border-sky-900/40 lg:mt-6 lg:block lg:border-t lg:pt-5`}
+          >
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Draft Chat</h2>
               <p className="text-xs uppercase tracking-wide text-stone-500">
