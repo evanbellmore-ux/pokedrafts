@@ -6,6 +6,13 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+type SpeciesName = {
+  language: {
+    name: string;
+  };
+  name: string;
+};
+
 function formatName(name: string) {
   return name
     .split("-")
@@ -21,7 +28,7 @@ async function seedPokemonDex() {
     const data = await res.json();
 
     const englishName =
-      data.names.find((entry: any) => entry.language.name === "en")?.name ??
+      (data.names as SpeciesName[]).find((entry) => entry.language.name === "en")?.name ??
       formatName(data.name);
 
     results.push({

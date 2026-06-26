@@ -80,11 +80,6 @@ export default function DraftBuilder() {
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   
-
-  useEffect(() => {
-    loadDex();
-  }, []);
-
   async function loadDex() {
     const first = await supabase
       .from("pokemon_dex")
@@ -114,6 +109,11 @@ export default function DraftBuilder() {
 
     setDexEntries(combined);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => loadDex());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 async function saveFormat() {
   setSaving(true);
@@ -217,6 +217,7 @@ async function saveFormat() {
     uniqueMissing.forEach((name) => {
       fetchPokeApiSprite(name);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [format.pokemon, dexEntries, dexByName]);
 
   function updatePokemon(index: number, name: string, points: number) {
@@ -288,7 +289,7 @@ async function saveFormat() {
         const cleaned: DraftFormat = {
           version: parsed.version ?? "1.0",
           leagueName: parsed.leagueName ?? "Untitled Draft League",
-          pokemon: parsed.pokemon.map((pokemon: any) => {
+          pokemon: parsed.pokemon.map((pokemon: { name?: unknown; points?: unknown }) => {
             const points = Math.min(
               20,
               Math.max(1, Number(pokemon.points) || 1)
@@ -352,6 +353,12 @@ async function saveFormat() {
             Export JSON
           </button>
         </header>
+
+        {saveMessage && (
+          <p className="mb-6 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-sm text-stone-300">
+            {saveMessage}
+          </p>
+        )}
 
         <section className="mb-6 rounded-lg border border-amber-900/40 bg-stone-900 p-5">
           <label className="block text-sm font-medium text-stone-300">
@@ -443,6 +450,7 @@ async function saveFormat() {
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         {spriteUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={spriteUrl}
                             alt={pokemon.name}

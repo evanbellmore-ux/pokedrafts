@@ -78,6 +78,7 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
   }
 
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={spriteUrl}
       alt={name}

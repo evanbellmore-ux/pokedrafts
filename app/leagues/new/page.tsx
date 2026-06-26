@@ -23,11 +23,6 @@ export default function NewLeaguePage() {
   const [draftFormatId, setDraftFormatId] = useState("");
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    loadFormats();
-  }, []);
-
   async function loadFormats() {
     const { data, error } = await supabase
       .from("draft_formats")
@@ -41,6 +36,11 @@ export default function NewLeaguePage() {
 
     setFormats(data ?? []);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => loadFormats());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function createLeague() {
     setError("");

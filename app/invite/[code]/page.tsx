@@ -4,20 +4,33 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 
+type Invite = {
+  id: string;
+  invite_code: string;
+  league_id: string;
+  max_uses: number;
+  used_count: number;
+};
+
+type League = {
+  id: string;
+  name: string;
+  max_coaches: number;
+};
+
+type InviteRow = Invite & {
+  leagues: League | League[] | null;
+};
+
 export default function InvitePage() {
   const { code } = useParams<{ code: string }>();
   const router = useRouter();
   const supabase = createClient();
 
-  const [invite, setInvite] = useState<any>(null);
-  const [league, setLeague] = useState<any>(null);
+  const [invite, setInvite] = useState<Invite | null>(null);
+  const [league, setLeague] = useState<League | null>(null);
   const [message, setMessage] = useState("");
   const [teamName, setTeamName] = useState("");
-
-  useEffect(() => {
-    load();
-  }, []);
-
   async function load() {
     const { data, error } = await supabase
       .from("league_invites")
@@ -30,9 +43,19 @@ export default function InvitePage() {
       return;
     }
 
-    setInvite(data);
-    setLeague(data?.leagues);
+    const inviteRow = data as InviteRow;
+    const rowLeague = Array.isArray(inviteRow.leagues)
+      ? inviteRow.leagues[0] ?? null
+      : inviteRow.leagues;
+
+    setInvite(inviteRow);
+    setLeague(rowLeague);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => load());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function joinLeague() {
     setMessage("");

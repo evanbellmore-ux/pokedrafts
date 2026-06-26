@@ -17,25 +17,29 @@ type League = {
   id: string;
   name: string;
   max_coaches: number;
+  draft_started: boolean | null;
+  draft_completed: boolean | null;
+  current_pick_number: number | null;
+  picks_per_team: number | null;
+  member_count: number;
   team_name: string | null;
   role: string | null;
+};
+
+type JoinedLeague = {
+  id: string;
+  name: string;
+  max_coaches: number;
+  draft_started: boolean | null;
+  draft_completed: boolean | null;
+  current_pick_number: number | null;
+  picks_per_team: number | null;
 };
 
 type LeagueMemberRow = {
   team_name: string | null;
   role: string | null;
-  leagues:
-    | {
-        id: string;
-        name: string;
-        max_coaches: number;
-      }
-    | {
-        id: string;
-        name: string;
-        max_coaches: number;
-      }[]
-    | null;
+  leagues: JoinedLeague | JoinedLeague[] | null;
 };
 
 export default function DashboardPage() {
@@ -60,7 +64,9 @@ export default function DashboardPage() {
 
     const { data } = await supabase
       .from("league_members")
-      .select("team_name, role, leagues(id, name, max_coaches)")
+      .select(
+        "team_name, role, leagues(id, name, max_coaches, draft_started, draft_completed, current_pick_number, picks_per_team)"
+      )
       .eq("user_id", auth.user.id)
       .order("team_name", { ascending: true });
 
@@ -77,6 +83,11 @@ export default function DashboardPage() {
         id: league.id,
         name: league.name,
         max_coaches: league.max_coaches,
+        draft_started: league.draft_started,
+        draft_completed: league.draft_completed,
+        current_pick_number: league.current_pick_number,
+        picks_per_team: league.picks_per_team,
+        member_count: 0,
         team_name: row.team_name,
         role: row.role,
       });
@@ -84,7 +95,31 @@ export default function DashboardPage() {
       return acc;
     }, []);
 
-    setLeagues(mapped);
+    const leagueIds = mapped.map((league) => league.id);
+
+    if (leagueIds.length > 0) {
+      const { data: memberRows } = await supabase
+        .from("league_members")
+        .select("league_id")
+        .in("league_id", leagueIds);
+
+      const memberCounts = new Map<string, number>();
+
+      memberRows?.forEach((row) => {
+        const leagueId = row.league_id as string;
+        memberCounts.set(leagueId, (memberCounts.get(leagueId) ?? 0) + 1);
+      });
+
+      setLeagues(
+        mapped.map((league) => ({
+          ...league,
+          member_count: memberCounts.get(league.id) ?? 0,
+        }))
+      );
+    } else {
+      setLeagues(mapped);
+    }
+
     setLoading(false);
   }, [router, supabase]);
 
@@ -100,7 +135,9 @@ export default function DashboardPage() {
   const commissionerCount = leagues.filter(
     (league) => league.role === "commissioner"
   ).length;
-  const coachCount = leagues.length - commissionerCount;
+  const liveDraftCount = leagues.filter(
+    (league) => league.draft_started && !league.draft_completed
+  ).length;
 
   return (
     <main className="min-h-screen bg-stone-950 px-4 py-6 text-stone-100 sm:px-6 lg:px-8">
@@ -153,10 +190,10 @@ export default function DashboardPage() {
 
           <div className="rounded-lg border border-rose-900/40 bg-stone-900 p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-stone-400">Coach seats</p>
+              <p className="text-sm text-stone-400">Live drafts</p>
               <Users className="h-5 w-5 text-rose-300" />
             </div>
-            <p className="mt-4 text-3xl font-bold">{coachCount}</p>
+            <p className="mt-4 text-3xl font-bold">{liveDraftCount}</p>
           </div>
         </section>
 
@@ -192,7 +229,11 @@ export default function DashboardPage() {
               {leagues.map((league) => (
                 <Link
                   key={league.id}
-                  href={`/leagues/${league.id}`}
+                  href={
+                    league.draft_started && !league.draft_completed
+                      ? `/leagues/${league.id}/draft`
+                      : `/leagues/${league.id}`
+                  }
                   className="group grid gap-4 rounded-lg border border-amber-900/35 bg-stone-900 p-5 hover:border-amber-700/70 hover:bg-stone-800/80 sm:grid-cols-[1fr_auto]"
                 >
                   <div>
@@ -201,11 +242,21 @@ export default function DashboardPage() {
                       <span className="rounded-md border border-emerald-800/60 bg-emerald-950/40 px-2 py-1 text-xs font-medium capitalize text-emerald-200">
                         {league.role ?? "coach"}
                       </span>
+                      <span className="rounded-md border border-amber-800/60 bg-amber-950/40 px-2 py-1 text-xs font-medium text-amber-200">
+                        {league.draft_completed
+                          ? "Draft complete"
+                          : league.draft_started
+                            ? `Live pick #${league.current_pick_number ?? 1}`
+                            : "Setup"}
+                      </span>
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-400">
                       <span>{league.team_name || "Unnamed Team"}</span>
-                      <span>{league.max_coaches} coach limit</span>
+                      <span>
+                        {league.member_count}/{league.max_coaches} coaches
+                      </span>
+                      <span>{league.picks_per_team ?? 10} picks per team</span>
                     </div>
                   </div>
 

@@ -23,6 +23,23 @@ type DraftedTeam = {
   } | null;
 };
 
+type DraftedTeamRow = {
+  id: string;
+  member_id: string;
+  total_points: number | null;
+  pokemon: unknown;
+  league_members:
+    | {
+        team_name: string | null;
+        user_id: string;
+      }
+    | {
+        team_name: string | null;
+        user_id: string;
+      }[]
+    | null;
+};
+
 function RosterTable({ pokemon }: { pokemon: DraftedPokemon[] }) {
   return (
     <div className="mt-5 overflow-hidden rounded-lg border border-amber-900/30 bg-stone-950">
@@ -73,11 +90,6 @@ export default function TeamPage() {
   const [myTeam, setMyTeam] = useState<DraftedTeam | null>(null);
   const [allTeams, setAllTeams] = useState<DraftedTeam[]>([]);
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    loadTeams();
-  }, []);
-
   async function loadTeams() {
     setMessage("");
 
@@ -125,13 +137,15 @@ export default function TeamPage() {
     }
 
     const cleanedTeams: DraftedTeam[] =
-      teamData?.map((team: any) => ({
+      ((teamData ?? []) as DraftedTeamRow[]).map((team) => ({
         id: team.id,
         member_id: team.member_id,
         total_points: team.total_points ?? 0,
-        pokemon: Array.isArray(team.pokemon) ? team.pokemon : [],
-        league_members: team.league_members ?? null,
-      })) ?? [];
+        pokemon: Array.isArray(team.pokemon) ? team.pokemon as DraftedPokemon[] : [],
+        league_members: Array.isArray(team.league_members)
+          ? team.league_members[0] ?? null
+          : team.league_members,
+      }));
 
     const mine = cleanedTeams.find((team) => team.member_id === member.id) ?? null;
 
@@ -148,6 +162,11 @@ export default function TeamPage() {
       setMessage("Your finalized team will appear here after the draft is complete.");
     }
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => loadTeams());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const otherTeams = allTeams.filter((team) => team.member_id !== myMemberId);
 

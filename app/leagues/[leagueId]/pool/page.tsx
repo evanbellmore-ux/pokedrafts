@@ -12,6 +12,21 @@ type PoolPokemon = {
   tier: number;
 };
 
+type LeaguePool = {
+  custom_pool?: {
+    pokemon?: PoolPokemon[];
+  } | null;
+  draft_format?: {
+    id: string;
+    name: string;
+    json?: {
+      version?: string;
+      leagueName?: string;
+      pokemon?: PoolPokemon[];
+    } | null;
+  } | null;
+};
+
 function pointsToTier(points: number) {
   return 21 - points;
 }
@@ -20,7 +35,7 @@ export default function PoolPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
-  const [league, setLeague] = useState<any>(null);
+  const [league, setLeague] = useState<LeaguePool | null>(null);
   const [pokemon, setPokemon] = useState<PoolPokemon[]>([]);
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(false);
@@ -29,7 +44,8 @@ export default function PoolPage() {
   const [isCommissioner, setIsCommissioner] = useState(false);
 
   useEffect(() => {
-    loadPool();
+    void Promise.resolve().then(loadPool);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadPool() {
@@ -95,6 +111,12 @@ if (user) {
   async function saveLeaguePool() {
     setSaving(true);
     setMessage("");
+
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can edit this league pool.");
+      setSaving(false);
+      return;
+    }
 
     const customPool = {
       version: league?.draft_format?.json?.version ?? "1.0",

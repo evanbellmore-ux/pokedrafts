@@ -105,6 +105,7 @@ export default function MatchesPage() {
 
   useEffect(() => {
     loadMatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadMatches() {
@@ -153,6 +154,12 @@ export default function MatchesPage() {
   async function generateSchedule() {
     setSaving(true);
     setMessage("");
+
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can generate matchups.");
+      setSaving(false);
+      return;
+    }
 
     const playableMembers = members.filter((member) => member.id !== "bye");
 

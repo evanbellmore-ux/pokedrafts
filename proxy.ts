@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
+export async function proxy(request: NextRequest) {
+  const response = NextResponse.next({
     request,
   });
 
@@ -43,8 +43,7 @@ export async function middleware(request: NextRequest) {
   const publicRoutes = ["/login", "/signup"];
 
   const isPublic = publicRoutes.some(
-    (route) =>
-      pathname === route || pathname.startsWith(route)
+    (route) => pathname === route || pathname.startsWith(route)
   );
 
   if (!user && !isPublic) {
@@ -52,9 +51,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && pathname === "/") {
-    return NextResponse.redirect(
-      new URL("/dashboard", request.url)
-    );
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;

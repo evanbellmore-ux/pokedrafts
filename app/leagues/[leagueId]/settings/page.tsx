@@ -29,20 +29,24 @@ export default function LeagueSettingsPage() {
 
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
   const [members, setMembers] = useState<LeagueMember[]>([]);
+  const [isCommissioner, setIsCommissioner] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     loadSettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadSettings() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     const { data: league } = await supabase
       .from("leagues")
-      .select(
-        "name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, draft_format_id"
-      )
+      .select("name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, draft_format_id, commissioner_id")
       .eq("id", leagueId)
       .single();
 
@@ -63,6 +67,7 @@ export default function LeagueSettingsPage() {
     }
 
     if (league) {
+      setIsCommissioner(Boolean(user && league.commissioner_id === user.id));
       setLeagueName(league.name ?? "");
       setMaxCoaches(league.max_coaches ?? 8);
       setPointBudget(league.point_budget ?? 120);
@@ -108,6 +113,12 @@ export default function LeagueSettingsPage() {
   async function saveSettings() {
     setSaving(true);
     setMessage("");
+
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can save league settings.");
+      setSaving(false);
+      return;
+    }
 
     const { error: leagueError } = await supabase
       .from("leagues")
@@ -286,11 +297,17 @@ export default function LeagueSettingsPage() {
 
       <button
         onClick={saveSettings}
-        disabled={saving}
+        disabled={saving || !isCommissioner}
         className="mt-6 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Settings"}
       </button>
+
+      {!isCommissioner && (
+        <p className="mt-4 text-sm text-stone-500">
+          Only the commissioner can change league settings.
+        </p>
+      )}
 
       {message && <p className="mt-4 text-sm text-stone-400">{message}</p>}
     </>

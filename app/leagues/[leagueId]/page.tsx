@@ -4,19 +4,42 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 
+type DraftFormatJson = {
+  pokemon?: unknown;
+};
+
+type League = {
+  id: string;
+  name: string;
+  max_coaches: number;
+  draft_started?: boolean | null;
+  draft_completed?: boolean | null;
+  current_pick_number?: number | null;
+  draft_format?: {
+    id: string;
+    name: string;
+    json: DraftFormatJson | null;
+  } | null;
+};
+
+type LeagueMember = {
+  id: string;
+  team_name: string | null;
+  role: string | null;
+};
+
+type LeagueInvite = {
+  id: string;
+  invite_code: string;
+};
+
 export default function LeaguePage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
-  const [league, setLeague] = useState<any>(null);
-  const [members, setMembers] = useState<any[]>([]);
-  const [invite, setInvite] = useState<any>(null);
-  const [picksPerTeam, setPicksPerTeam] = useState(10);
-
-  useEffect(() => {
-    load();
-  }, []);
-
+  const [league, setLeague] = useState<League | null>(null);
+  const [members, setMembers] = useState<LeagueMember[]>([]);
+  const [invite, setInvite] = useState<LeagueInvite | null>(null);
   async function load() {
     const { data: leagueData } = await supabase
       .from("leagues")
@@ -49,6 +72,11 @@ export default function LeaguePage() {
 
     setInvite(inviteData);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => load());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const inviteLink =
     invite && typeof window !== "undefined"

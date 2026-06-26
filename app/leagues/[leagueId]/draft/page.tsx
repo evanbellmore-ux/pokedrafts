@@ -19,13 +19,54 @@ type LeagueMember = {
   draft_position: number | null;
 };
 
+type DraftPick = {
+  id: string;
+  league_id: string;
+  member_id: string;
+  pokemon_name: string;
+  points: number;
+  tier: number;
+  pick_number: number;
+};
+
+type DraftLeague = {
+  id: string;
+  point_budget: number | null;
+  current_pick_number: number | null;
+  draft_completed: boolean | null;
+  draft_started: boolean | null;
+  picks_per_team: number | null;
+  pick_timer_seconds: number | null;
+  pick_started_at: string | null;
+  auto_pick_in_progress: boolean | null;
+  custom_pool?: {
+    pokemon?: Pokemon[];
+  } | null;
+  draft_format?: {
+    id: string;
+    name: string;
+    json?: {
+      pokemon?: Pokemon[];
+    } | null;
+  } | null;
+};
+
+function getSnakeDraftIndex(pickNumber: number, teamCount: number) {
+  const roundIndex = Math.floor((pickNumber - 1) / teamCount);
+  const pickIndexInRound = (pickNumber - 1) % teamCount;
+
+  return roundIndex % 2 === 0
+    ? pickIndexInRound
+    : teamCount - 1 - pickIndexInRound;
+}
+
 export default function DraftPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
-  const [league, setLeague] = useState<any>(null);
+  const [league, setLeague] = useState<DraftLeague | null>(null);
   const [members, setMembers] = useState<LeagueMember[]>([]);
-  const [picks, setPicks] = useState<any[]>([]);
+  const [picks, setPicks] = useState<DraftPick[]>([]);
   const [pool, setPool] = useState<Pokemon[]>([]);
   const [search, setSearch] = useState("");
   const [userMember, setUserMember] = useState<LeagueMember | null>(null);
@@ -74,6 +115,7 @@ export default function DraftPage() {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueId]);
 
   async function loadDraft() {
@@ -170,9 +212,13 @@ export default function DraftPage() {
     if (orderedMembers.length === 0) return null;
     if (draftCompleted) return null;
 
-    const index = (currentPickNumber - 1) % orderedMembers.length;
+    const index = getSnakeDraftIndex(currentPickNumber, orderedMembers.length);
     return orderedMembers[index];
   }, [orderedMembers, currentPickNumber, draftCompleted]);
+
+  const currentRound = orderedMembers.length
+    ? Math.floor((currentPickNumber - 1) / orderedMembers.length) + 1
+    : 0;
 
   const draftedNames = useMemo(() => {
     return new Set(picks.map((pick) => pick.pokemon_name));
@@ -269,6 +315,7 @@ export default function DraftPage() {
     const interval = setInterval(tick, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     draftStarted,
     pickStartedAt,
@@ -280,7 +327,7 @@ export default function DraftPage() {
     serverOffsetMs,
   ]);
 
-  async function saveFinalTeams(finalPicks: any[]) {
+  async function saveFinalTeams(finalPicks: DraftPick[]) {
     for (const member of orderedMembers) {
       const memberPicks = finalPicks.filter(
         (pick) => pick.member_id === member.id
@@ -439,8 +486,8 @@ export default function DraftPage() {
 
       try {
         await saveFinalTeams(finalPicks ?? []);
-      } catch (error: any) {
-        setMessage(error.message);
+      } catch (error: unknown) {
+        setMessage(error instanceof Error ? error.message : "Could not save final teams.");
         setPicking(false);
         return;
       }
@@ -491,7 +538,7 @@ export default function DraftPage() {
               <span className="text-emerald-300">Draft complete</span>
             ) : (
               <>
-                Pick #{currentPickNumber} • Current Team:{" "}
+                Round {currentRound} - Pick #{currentPickNumber} - Current Team:{" "}
                 <span className="text-stone-100">
                   {currentMember?.team_name ?? "No draft order"}
                 </span>
@@ -566,6 +613,12 @@ export default function DraftPage() {
       {!isMyTurn && draftStarted && !draftCompleted && orderedMembers.length > 0 && (
         <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           Waiting for {currentMember?.team_name ?? "the current team"} to pick.
+        </p>
+      )}
+
+      {isMyTurn && draftStarted && !draftCompleted && (
+        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-200">
+          You are on the clock. Choose a Pokemon that fits your remaining budget.
         </p>
       )}
 
