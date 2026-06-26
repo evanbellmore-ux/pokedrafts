@@ -151,19 +151,19 @@ export default function LeagueSettingsPage() {
     <>
       <h1 className="text-4xl font-bold">League Settings</h1>
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+      <section className="mt-6 rounded-lg border border-amber-900/40 bg-stone-900 p-5">
         <h2 className="text-xl font-semibold">League Info</h2>
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           League Name
         </label>
         <input
           value={leagueName}
           onChange={(e) => setLeagueName(e.target.value)}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           Max Coaches
         </label>
         <input
@@ -172,10 +172,10 @@ export default function LeagueSettingsPage() {
           max={24}
           value={maxCoaches}
           onChange={(e) => setMaxCoaches(Number(e.target.value))}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           Point Budget
         </label>
         <input
@@ -183,10 +183,10 @@ export default function LeagueSettingsPage() {
           min={1}
           value={pointBudget}
           onChange={(e) => setPointBudget(Number(e.target.value))}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           Picks Per Team
         </label>
         <input
@@ -194,10 +194,10 @@ export default function LeagueSettingsPage() {
           min={1}
           value={picksPerTeam}
           onChange={(e) => setPicksPerTeam(Number(e.target.value))}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           Pick Timer Seconds
         </label>
         <input
@@ -205,16 +205,16 @@ export default function LeagueSettingsPage() {
           min={10}
           value={pickTimerSeconds}
           onChange={(e) => setPickTimerSeconds(Number(e.target.value))}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
-        <label className="mt-5 block text-sm font-medium text-zinc-300">
+        <label className="mt-5 block text-sm font-medium text-stone-300">
           Draft Format
         </label>
         <select
           value={draftFormatId}
           onChange={(e) => setDraftFormatId(e.target.value)}
-          className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         >
           <option value="">No draft format selected</option>
           {formats.map((format) => (
@@ -225,11 +225,11 @@ export default function LeagueSettingsPage() {
         </select>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+      <section className="mt-6 rounded-lg border border-emerald-900/40 bg-stone-900 p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-xl font-semibold">Draft Order</h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-stone-400">
               Assign each team a draft position. Position 1 picks first.
             </p>
           </div>
@@ -237,14 +237,14 @@ export default function LeagueSettingsPage() {
           <div className="flex gap-2">
             <button
               onClick={randomizeDraftOrder}
-              className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold hover:bg-zinc-700"
+              className="rounded-lg border border-amber-800/50 bg-stone-900 px-4 py-2 text-sm font-semibold hover:bg-stone-800"
             >
               Randomize
             </button>
 
             <button
               onClick={clearDraftOrder}
-              className="rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold hover:bg-zinc-700"
+              className="rounded-lg border border-stone-700 bg-stone-900 px-4 py-2 text-sm font-semibold hover:bg-stone-800"
             >
               Clear
             </button>
@@ -255,13 +255,13 @@ export default function LeagueSettingsPage() {
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-950 p-3"
+              className="flex items-center justify-between gap-4 rounded-lg border border-amber-900/30 bg-stone-950 p-3"
             >
               <div>
                 <p className="font-semibold">
                   {member.team_name || "Unnamed Team"}
                 </p>
-                <p className="text-sm text-zinc-500">{member.role}</p>
+                <p className="text-sm text-stone-500">{member.role}</p>
               </div>
 
               <input
@@ -273,13 +273,13 @@ export default function LeagueSettingsPage() {
                   updateDraftPosition(member.id, Number(e.target.value))
                 }
                 placeholder="-"
-                className="w-24 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-center"
+                className="w-24 rounded-lg border border-stone-700 bg-stone-900 p-3 text-center"
               />
             </div>
           ))}
 
           {members.length === 0 && (
-            <p className="text-sm text-zinc-500">No members yet.</p>
+            <p className="text-sm text-stone-500">No members yet.</p>
           )}
         </div>
       </section>
@@ -287,12 +287,12 @@ export default function LeagueSettingsPage() {
       <button
         onClick={saveSettings}
         disabled={saving}
-        className="mt-6 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
+        className="mt-6 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Settings"}
       </button>
 
-      {message && <p className="mt-4 text-sm text-zinc-400">{message}</p>}
+      {message && <p className="mt-4 text-sm text-stone-400">{message}</p>}
     </>
   );
 }

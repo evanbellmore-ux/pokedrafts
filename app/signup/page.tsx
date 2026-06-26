@@ -25,19 +25,22 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 p-6 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-        <h1 className="text-3xl font-bold">Create account</h1>
+    <main className="flex min-h-screen items-center justify-center bg-stone-950 p-6 text-stone-100">
+      <div className="w-full max-w-md rounded-lg border border-amber-900/40 bg-stone-900 p-6">
+        <p className="text-sm font-medium uppercase tracking-wide text-amber-300">
+          PokeDrafts
+        </p>
+        <h1 className="mt-2 text-3xl font-bold">Create account</h1>
 
         <input
-          className="mt-6 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-6 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
-          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-3 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           placeholder="Password"
           type="password"
           value={password}
@@ -46,12 +49,12 @@ export default function SignupPage() {
 
         <button
           onClick={signUp}
-          className="mt-5 w-full rounded-xl bg-emerald-500 px-4 py-3 font-semibold text-zinc-950"
+          className="mt-5 w-full rounded-lg bg-emerald-500 px-4 py-3 font-semibold text-stone-950 hover:bg-emerald-400"
         >
           Sign up
         </button>
 
-        {message && <p className="mt-4 text-sm text-zinc-300">{message}</p>}
+        {message && <p className="mt-4 text-sm text-stone-300">{message}</p>}
       </div>
     </main>
   );

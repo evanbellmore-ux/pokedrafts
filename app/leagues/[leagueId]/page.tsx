@@ -65,26 +65,26 @@ export default function LeaguePage() {
   <>
     <h1 className="text-4xl font-bold">{league?.name ?? "League"}</h1>
 
-    <p className="mt-2 text-zinc-400">
+    <p className="mt-2 text-stone-400">
       Format: {league?.draft_format?.name ?? "No format selected"}
       {pokemonCount !== null ? ` • ${pokemonCount} Pokémon` : ""}
     </p>
 
-    <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+    <section className="mt-6 rounded-lg border border-amber-900/40 bg-stone-900 p-5">
       <h2 className="text-xl font-semibold">Invite Link</h2>
 
       {inviteLink ? (
         <input
           readOnly
           value={inviteLink}
-          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-3 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
       ) : (
-        <p className="mt-3 text-zinc-500">No invite found.</p>
+        <p className="mt-3 text-stone-500">No invite found.</p>
       )}
     </section>
 
-    <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+    <section className="mt-6 rounded-lg border border-emerald-900/40 bg-stone-900 p-5">
       <h2 className="text-xl font-semibold">
         Coaches {members.length}/{league?.max_coaches ?? "?"}
       </h2>
@@ -93,12 +93,12 @@ export default function LeaguePage() {
         {members.map((member) => (
           <div
             key={member.id}
-            className="rounded-xl border border-zinc-800 bg-zinc-950 p-3"
+            className="rounded-lg border border-amber-900/30 bg-stone-950 p-3"
           >
             <p className="font-semibold">
               {member.team_name || "Unnamed Team"}
             </p>
-            <p className="text-sm text-zinc-500">{member.role}</p>
+            <p className="text-sm text-stone-500">{member.role}</p>
           </div>
         ))}
       </div>

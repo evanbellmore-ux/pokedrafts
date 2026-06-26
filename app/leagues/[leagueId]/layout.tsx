@@ -10,7 +10,7 @@ export default async function LeagueLayout({
   const { leagueId } = await params;
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6 text-zinc-100">
+    <main className="min-h-screen bg-stone-950 p-6 text-stone-100">
       <div className="mx-auto max-w-6xl">
         <LeagueNav leagueId={leagueId} />
         {children}

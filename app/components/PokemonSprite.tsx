@@ -56,8 +56,10 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
       }
     }
 
-    setSpriteUrl(null);
-    loadSprite();
+    void Promise.resolve().then(() => {
+      if (active) setSpriteUrl(null);
+      return loadSprite();
+    });
 
     return () => {
       active = false;
@@ -69,7 +71,7 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
   if (!spriteUrl) {
     return (
       <div
-        className={`${sizeClass} animate-pulse rounded-md bg-zinc-800/60`}
+        className={`${sizeClass} animate-pulse rounded-md bg-stone-800/70`}
         aria-label={`Loading sprite for ${name}`}
       />
     );
@@ -79,7 +81,7 @@ export default function PokemonSprite({ name, size = "md" }: Props) {
     <img
       src={spriteUrl}
       alt={name}
-      className={`${sizeClass} rounded-md bg-zinc-800 object-contain p-1`}
+      className={`${sizeClass} rounded-md bg-stone-800 object-contain p-1`}
       loading="lazy"
     />
   );

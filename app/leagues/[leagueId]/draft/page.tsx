@@ -484,7 +484,7 @@ export default function DraftPage() {
         <div>
           <h1 className="text-4xl font-bold">Draft Room</h1>
 
-          <p className="mt-2 text-zinc-400">
+          <p className="mt-2 text-stone-400">
             {!draftStarted && !draftCompleted ? (
               <span className="text-amber-300">Draft has not started</span>
             ) : draftCompleted ? (
@@ -492,14 +492,14 @@ export default function DraftPage() {
             ) : (
               <>
                 Pick #{currentPickNumber} • Current Team:{" "}
-                <span className="text-zinc-100">
+                <span className="text-stone-100">
                   {currentMember?.team_name ?? "No draft order"}
                 </span>
               </>
             )}
           </p>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-stone-500">
             {picks.length}/{totalRequiredPicks} total picks made
           </p>
         </div>
@@ -508,14 +508,14 @@ export default function DraftPage() {
           {isCommissioner && !draftStarted && !draftCompleted && (
             <button
               onClick={startDraft}
-              className="rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400"
+              className="rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400"
             >
               Start Draft
             </button>
           )}
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">
+          <div className="rounded-lg border border-amber-900/40 bg-stone-900 px-5 py-3 text-center">
+            <p className="text-xs uppercase tracking-wide text-stone-500">
               Pick Timer
             </p>
 
@@ -526,14 +526,14 @@ export default function DraftPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">
+          <div className="rounded-lg border border-emerald-900/40 bg-stone-900 px-5 py-3 text-center">
+            <p className="text-xs uppercase tracking-wide text-stone-500">
               Budget
             </p>
 
             <p className="text-3xl font-bold">{userRemaining}</p>
 
-            <p className="text-xs text-zinc-500">/ {pointBudget}</p>
+            <p className="text-xs text-stone-500">/ {pointBudget}</p>
           </div>
         </div>
       </div>
@@ -545,42 +545,42 @@ export default function DraftPage() {
       )}
 
       {draftCompleted && (
-        <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-300">
+        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-300">
           Draft complete. Teams have been saved.
         </p>
       )}
 
       {orderedMembers.length === 0 && (
-        <p className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-amber-300">
+        <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-amber-300">
           No draft order has been set. Go to Settings, assign draft positions,
           and save.
         </p>
       )}
 
       {!draftStarted && !draftCompleted && orderedMembers.length > 0 && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           Waiting for the commissioner to start the draft.
         </p>
       )}
 
       {!isMyTurn && draftStarted && !draftCompleted && orderedMembers.length > 0 && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           Waiting for {currentMember?.team_name ?? "the current team"} to pick.
         </p>
       )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <section>
-          <section className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+          <section className="mb-4 rounded-lg border border-emerald-900/40 bg-stone-900 p-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Your Drafted Pokémon</h2>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-stone-500">
                   {userPicks.length}/{picksPerTeam} roster slots filled
                 </p>
               </div>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-stone-400">
                 {userRemaining}/{pointBudget} points remaining
               </p>
             </div>
@@ -589,7 +589,7 @@ export default function DraftPage() {
               {rosterSlots.map((pick, index) => (
                 <div
                   key={index}
-                  className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-center"
+                  className="flex min-h-24 flex-col items-center justify-center rounded-lg border border-amber-900/30 bg-stone-950 p-2 text-center"
                 >
                   {pick ? (
                     <>
@@ -597,16 +597,16 @@ export default function DraftPage() {
                       <p className="mt-2 text-xs font-semibold leading-tight">
                         {pick.pokemon_name}
                       </p>
-                      <p className="text-[11px] text-zinc-500">
+                      <p className="text-[11px] text-stone-500">
                         {pick.points} pts
                       </p>
                     </>
                   ) : (
                     <>
-                      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-zinc-700 text-xs text-zinc-600">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-stone-700 text-xs text-stone-600">
                         {index + 1}
                       </div>
-                      <p className="mt-2 text-xs text-zinc-600">Empty</p>
+                      <p className="mt-2 text-xs text-stone-600">Empty</p>
                     </>
                   )}
                 </div>
@@ -618,12 +618,12 @@ export default function DraftPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search selectable Pokémon..."
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
+            className="w-full rounded-lg border border-stone-700 bg-stone-900 p-3"
           />
 
-          <div className="mt-4 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+          <div className="mt-4 overflow-hidden rounded-lg border border-amber-900/40 bg-stone-900">
             <table className="w-full">
-              <thead className="bg-zinc-950 text-sm text-zinc-400">
+              <thead className="bg-stone-950 text-sm text-stone-400">
                 <tr>
                   <th className="p-3 text-left">Pokémon</th>
                   <th className="p-3 text-left">Points</th>
@@ -634,7 +634,7 @@ export default function DraftPage() {
 
               <tbody>
                 {visiblePokemon.map((pokemon) => (
-                  <tr key={pokemon.name} className="border-t border-zinc-800">
+                  <tr key={pokemon.name} className="border-t border-amber-900/25">
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <PokemonSprite name={pokemon.name} />
@@ -649,7 +649,7 @@ export default function DraftPage() {
                       <button
                         onClick={() => draftPokemon(pokemon)}
                         disabled={picking || !canDraftPokemon(pokemon)}
-                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         {canDraftPokemon(pokemon) ? "Draft" : "Unavailable"}
                       </button>
@@ -659,7 +659,7 @@ export default function DraftPage() {
 
                 {visiblePokemon.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-zinc-500">
+                    <td colSpan={4} className="p-8 text-center text-stone-500">
                       No selectable Pokémon available.
                     </td>
                   </tr>
@@ -669,7 +669,7 @@ export default function DraftPage() {
           </div>
         </section>
 
-        <aside className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+        <aside className="rounded-lg border border-amber-900/40 bg-stone-900 p-5">
           <h2 className="text-xl font-semibold">Draft Board</h2>
 
           <div className="mt-4 space-y-3">
@@ -681,9 +681,9 @@ export default function DraftPage() {
               return (
                 <div
                   key={pick.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950 p-3"
+                  className="rounded-lg border border-amber-900/30 bg-stone-950 p-3"
                 >
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-stone-500">
                     Pick #{pick.pick_number} • {member?.team_name ?? "Team"}
                   </p>
 
@@ -692,7 +692,7 @@ export default function DraftPage() {
                     <p className="font-semibold">{pick.pokemon_name}</p>
                   </div>
 
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-sm text-stone-400">
                     {pick.points} pts • Tier {pick.tier}
                   </p>
                 </div>
@@ -700,7 +700,7 @@ export default function DraftPage() {
             })}
 
             {picks.length === 0 && (
-              <p className="text-sm text-zinc-500">No picks yet.</p>
+              <p className="text-sm text-stone-500">No picks yet.</p>
             )}
           </div>
         </aside>
