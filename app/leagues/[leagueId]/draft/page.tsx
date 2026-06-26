@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
+import {
+  buildScheduleRows,
+  type ScheduleFormat,
+} from "@/app/lib/league/schedule";
 import PokemonSprite from "@/app/components/PokemonSprite";
 
 type Pokemon = {
@@ -48,6 +52,7 @@ type DraftLeague = {
   pick_timer_seconds: number | null;
   pick_started_at: string | null;
   auto_pick_in_progress: boolean | null;
+  schedule_format: ScheduleFormat | null;
   custom_pool?: {
     pokemon?: Pokemon[];
   } | null;
@@ -427,6 +432,29 @@ export default function DraftPage() {
     }
   }
 
+  async function generateMatchupsAfterDraft() {
+    if (orderedMembers.length < 2) return null;
+
+    const scheduleFormat =
+      league?.schedule_format === "double_round_robin"
+        ? "double_round_robin"
+        : "round_robin";
+    const rows = buildScheduleRows(leagueId, orderedMembers, scheduleFormat);
+
+    const { error: deleteError } = await supabase
+      .from("league_matches")
+      .delete()
+      .eq("league_id", leagueId);
+
+    if (deleteError) return deleteError.message;
+
+    const { error: insertError } = await supabase
+      .from("league_matches")
+      .insert(rows);
+
+    return insertError?.message ?? null;
+  }
+
   async function autoDraftTopPick() {
     if (!isMyTurn || picking || draftCompleted) return;
 
@@ -570,6 +598,12 @@ export default function DraftPage() {
         setMessage(completeError.message);
         setPicking(false);
         return;
+      }
+
+      const matchupError = await generateMatchupsAfterDraft();
+
+      if (matchupError) {
+        setMessage(`Draft complete, but matchups were not generated: ${matchupError}`);
       }
     } else {
       const { error: updateError } = await supabase.rpc(

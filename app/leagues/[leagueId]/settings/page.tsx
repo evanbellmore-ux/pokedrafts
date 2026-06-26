@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import type { ScheduleFormat } from "@/app/lib/league/schedule";
 import { createClient } from "@/app/lib/supabase/client";
 
 type DraftFormatOption = {
@@ -25,6 +26,8 @@ export default function LeagueSettingsPage() {
   const [pointBudget, setPointBudget] = useState(120);
   const [picksPerTeam, setPicksPerTeam] = useState(10);
   const [pickTimerSeconds, setPickTimerSeconds] = useState(120);
+  const [scheduleFormat, setScheduleFormat] =
+    useState<ScheduleFormat>("round_robin");
   const [draftFormatId, setDraftFormatId] = useState("");
 
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
@@ -46,7 +49,7 @@ export default function LeagueSettingsPage() {
 
     const { data: league } = await supabase
       .from("leagues")
-      .select("name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, draft_format_id, commissioner_id")
+      .select("name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, schedule_format, draft_format_id, commissioner_id")
       .eq("id", leagueId)
       .single();
 
@@ -73,6 +76,11 @@ export default function LeagueSettingsPage() {
       setPointBudget(league.point_budget ?? 120);
       setPicksPerTeam(league.picks_per_team ?? 10);
       setPickTimerSeconds(league.pick_timer_seconds ?? 120);
+      setScheduleFormat(
+        league.schedule_format === "double_round_robin"
+          ? "double_round_robin"
+          : "round_robin"
+      );
       setDraftFormatId(league.draft_format_id ?? "");
     }
 
@@ -128,6 +136,7 @@ export default function LeagueSettingsPage() {
         point_budget: pointBudget,
         picks_per_team: picksPerTeam,
         pick_timer_seconds: pickTimerSeconds,
+        schedule_format: scheduleFormat,
         draft_format_id: draftFormatId || null,
       })
       .eq("id", leagueId);
@@ -233,6 +242,18 @@ export default function LeagueSettingsPage() {
               {format.name}
             </option>
           ))}
+        </select>
+
+        <label className="mt-5 block text-sm font-medium text-stone-300">
+          Matchup Format
+        </label>
+        <select
+          value={scheduleFormat}
+          onChange={(e) => setScheduleFormat(e.target.value as ScheduleFormat)}
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
+        >
+          <option value="round_robin">Round Robin</option>
+          <option value="double_round_robin">Double Round Robin</option>
         </select>
       </section>
 

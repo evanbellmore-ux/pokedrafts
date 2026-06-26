@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import {
+  buildScheduleRows,
+  type ScheduleFormat,
+} from "@/app/lib/league/schedule";
 import { createClient } from "@/app/lib/supabase/client";
-
-type ScheduleFormat = "round_robin" | "double_round_robin";
 
 type LeagueMember = {
   id: string;
@@ -33,64 +35,6 @@ function shuffleMembers(members: LeagueMember[]) {
   return [...members].sort(() => Math.random() - 0.5);
 }
 
-function generateRoundRobin(members: LeagueMember[]) {
-  const teams = [...members];
-
-  if (teams.length % 2 === 1) {
-    teams.push({
-      id: "bye",
-      team_name: "Bye",
-      role: null,
-      draft_position: null,
-      user_id: "bye",
-    });
-  }
-
-  const rounds: { home_member_id: string; away_member_id: string }[][] = [];
-  const rotating = [...teams];
-
-  for (let round = 0; round < teams.length - 1; round++) {
-    const matches: { home_member_id: string; away_member_id: string }[] = [];
-
-    for (let i = 0; i < teams.length / 2; i++) {
-      const home = rotating[i];
-      const away = rotating[teams.length - 1 - i];
-
-      if (home.id !== "bye" && away.id !== "bye") {
-        matches.push({
-          home_member_id: round % 2 === 0 ? home.id : away.id,
-          away_member_id: round % 2 === 0 ? away.id : home.id,
-        });
-      }
-    }
-
-    rounds.push(matches);
-
-    const fixed = rotating[0];
-    const rest = rotating.slice(1);
-    rest.unshift(rest.pop()!);
-    rotating.splice(0, rotating.length, fixed, ...rest);
-  }
-
-  return rounds;
-}
-
-function flattenSchedule(
-  leagueId: string,
-  rounds: { home_member_id: string; away_member_id: string }[][]
-) {
-  return rounds.flatMap((round, roundIndex) =>
-    round.map((match, matchIndex) => ({
-      league_id: leagueId,
-      round_number: roundIndex + 1,
-      match_number: matchIndex + 1,
-      home_member_id: match.home_member_id,
-      away_member_id: match.away_member_id,
-      status: "upcoming",
-    }))
-  );
-}
-
 export default function MatchesPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
@@ -117,11 +61,16 @@ export default function MatchesPage() {
 
     const { data: league } = await supabase
       .from("leagues")
-      .select("commissioner_id")
+      .select("commissioner_id, schedule_format")
       .eq("id", leagueId)
       .single();
 
     setIsCommissioner(Boolean(user && league?.commissioner_id === user.id));
+    setFormat(
+      league?.schedule_format === "double_round_robin"
+        ? "double_round_robin"
+        : "round_robin"
+    );
 
     const { data: memberData, error: memberError } = await supabase
       .from("league_members")
@@ -173,22 +122,18 @@ export default function MatchesPage() {
       ? shuffleMembers(playableMembers)
       : playableMembers;
 
-    const firstRoundRobin = generateRoundRobin(orderedMembers);
+    const rows = buildScheduleRows(leagueId, orderedMembers, format);
 
-    const schedule =
-      format === "double_round_robin"
-        ? [
-            ...firstRoundRobin,
-            ...firstRoundRobin.map((round) =>
-              round.map((match) => ({
-                home_member_id: match.away_member_id,
-                away_member_id: match.home_member_id,
-              }))
-            ),
-          ]
-        : firstRoundRobin;
+    const { error: formatError } = await supabase
+      .from("leagues")
+      .update({ schedule_format: format })
+      .eq("id", leagueId);
 
-    const rows = flattenSchedule(leagueId, schedule);
+    if (formatError) {
+      setMessage(formatError.message);
+      setSaving(false);
+      return;
+    }
 
     const { error: deleteError } = await supabase
       .from("league_matches")
