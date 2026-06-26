@@ -2,6 +2,8 @@
 
 PokeDrafts expects Supabase Auth plus the tables, storage bucket, and RPCs below. This is a working contract for the app code; keep it in sync with migrations or dashboard changes.
 
+SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat.
+
 ## Tables
 
 ### `pokemon_dex`

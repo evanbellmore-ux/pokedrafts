@@ -85,6 +85,7 @@ export default function DraftPage() {
   const [chatInput, setChatInput] = useState("");
   const [chatSending, setChatSending] = useState(false);
   const [chatError, setChatError] = useState("");
+  const [chatUnavailable, setChatUnavailable] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
@@ -224,6 +225,7 @@ export default function DraftPage() {
 
   async function loadChatMessages() {
     setChatError("");
+    setChatUnavailable(false);
 
     const { data, error } = await supabase
       .from("draft_chat_messages")
@@ -233,7 +235,15 @@ export default function DraftPage() {
       .limit(100);
 
     if (error) {
-      setChatError(error.message);
+      if (
+        error.code === "PGRST205" ||
+        error.message.toLowerCase().includes("draft_chat_messages")
+      ) {
+        setChatUnavailable(true);
+        setChatError("Draft chat needs the draft_chat_messages table migration.");
+      } else {
+        setChatError(error.message);
+      }
       return;
     }
 
@@ -582,6 +592,11 @@ export default function DraftPage() {
 
     if (!cleanMessage || chatSending) return;
 
+    if (chatUnavailable) {
+      setChatError("Draft chat needs the draft_chat_messages table migration.");
+      return;
+    }
+
     if (!userMember) {
       setChatError("You must be a league member to chat.");
       return;
@@ -598,7 +613,15 @@ export default function DraftPage() {
     });
 
     if (error) {
-      setChatError(error.message);
+      if (
+        error.code === "PGRST205" ||
+        error.message.toLowerCase().includes("draft_chat_messages")
+      ) {
+        setChatUnavailable(true);
+        setChatError("Draft chat needs the draft_chat_messages table migration.");
+      } else {
+        setChatError(error.message);
+      }
       setChatSending(false);
       return;
     }
@@ -893,12 +916,21 @@ export default function DraftPage() {
                 value={chatInput}
                 onChange={(event) => setChatInput(event.target.value)}
                 maxLength={500}
-                placeholder="Message the draft room..."
+                placeholder={
+                  chatUnavailable
+                    ? "Chat is not configured yet"
+                    : "Message the draft room..."
+                }
                 className="min-w-0 flex-1 rounded-lg border border-stone-700 bg-stone-950 p-3 text-sm"
               />
               <button
                 type="submit"
-                disabled={chatSending || !chatInput.trim() || !userMember}
+                disabled={
+                  chatUnavailable ||
+                  chatSending ||
+                  !chatInput.trim() ||
+                  !userMember
+                }
                 className="rounded-lg bg-emerald-500 px-4 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Send
