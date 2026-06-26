@@ -19,23 +19,79 @@ type LeagueMember = {
   draft_position: number | null;
 };
 
+type DraftPick = {
+  id: string;
+  league_id: string;
+  member_id: string;
+  pokemon_name: string;
+  points: number;
+  tier: number;
+  pick_number: number;
+};
+
+type DraftChatMessage = {
+  id: string;
+  league_id: string;
+  member_id: string;
+  user_id: string;
+  message: string;
+  created_at: string;
+};
+
+type DraftLeague = {
+  id: string;
+  point_budget: number | null;
+  current_pick_number: number | null;
+  draft_completed: boolean | null;
+  draft_started: boolean | null;
+  picks_per_team: number | null;
+  pick_timer_seconds: number | null;
+  pick_started_at: string | null;
+  auto_pick_in_progress: boolean | null;
+  custom_pool?: {
+    pokemon?: Pokemon[];
+  } | null;
+  draft_format?: {
+    id: string;
+    name: string;
+    json?: {
+      pokemon?: Pokemon[];
+    } | null;
+  } | null;
+};
+
+function getSnakeDraftIndex(pickNumber: number, teamCount: number) {
+  const roundIndex = Math.floor((pickNumber - 1) / teamCount);
+  const pickIndexInRound = (pickNumber - 1) % teamCount;
+
+  return roundIndex % 2 === 0
+    ? pickIndexInRound
+    : teamCount - 1 - pickIndexInRound;
+}
+
 export default function DraftPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
-  const [league, setLeague] = useState<any>(null);
+  const [league, setLeague] = useState<DraftLeague | null>(null);
   const [members, setMembers] = useState<LeagueMember[]>([]);
-  const [picks, setPicks] = useState<any[]>([]);
+  const [picks, setPicks] = useState<DraftPick[]>([]);
   const [pool, setPool] = useState<Pokemon[]>([]);
   const [search, setSearch] = useState("");
   const [userMember, setUserMember] = useState<LeagueMember | null>(null);
   const [picking, setPicking] = useState(false);
   const [message, setMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState<DraftChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatSending, setChatSending] = useState(false);
+  const [chatError, setChatError] = useState("");
+  const [chatUnavailable, setChatUnavailable] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
 
   useEffect(() => {
     loadDraft();
+    loadChatMessages();
 
     const channel = supabase
       .channel(`draft-${leagueId}`)
@@ -69,11 +125,32 @@ export default function DraftPage() {
         },
         () => loadDraft()
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "draft_chat_messages",
+          filter: `league_id=eq.${leagueId}`,
+        },
+        (payload) => {
+          setChatMessages((prev) => {
+            const nextMessage = payload.new as DraftChatMessage;
+
+            if (prev.some((chatMessage) => chatMessage.id === nextMessage.id)) {
+              return prev;
+            }
+
+            return [...prev, nextMessage].slice(-100);
+          });
+        }
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueId]);
 
   async function loadDraft() {
@@ -146,6 +223,33 @@ export default function DraftPage() {
     setPicks(pickData ?? []);
   }
 
+  async function loadChatMessages() {
+    setChatError("");
+    setChatUnavailable(false);
+
+    const { data, error } = await supabase
+      .from("draft_chat_messages")
+      .select("id, league_id, member_id, user_id, message, created_at")
+      .eq("league_id", leagueId)
+      .order("created_at", { ascending: true })
+      .limit(100);
+
+    if (error) {
+      if (
+        error.code === "PGRST205" ||
+        error.message.toLowerCase().includes("draft_chat_messages")
+      ) {
+        setChatUnavailable(true);
+        setChatError("Draft chat needs the draft_chat_messages table migration.");
+      } else {
+        setChatError(error.message);
+      }
+      return;
+    }
+
+    setChatMessages(data ?? []);
+  }
+
   const currentPickNumber = league?.current_pick_number ?? picks.length + 1;
   const pointBudget = league?.point_budget ?? 120;
   const draftCompleted = Boolean(league?.draft_completed);
@@ -170,9 +274,13 @@ export default function DraftPage() {
     if (orderedMembers.length === 0) return null;
     if (draftCompleted) return null;
 
-    const index = (currentPickNumber - 1) % orderedMembers.length;
+    const index = getSnakeDraftIndex(currentPickNumber, orderedMembers.length);
     return orderedMembers[index];
   }, [orderedMembers, currentPickNumber, draftCompleted]);
+
+  const currentRound = orderedMembers.length
+    ? Math.floor((currentPickNumber - 1) / orderedMembers.length) + 1
+    : 0;
 
   const draftedNames = useMemo(() => {
     return new Set(picks.map((pick) => pick.pokemon_name));
@@ -269,6 +377,7 @@ export default function DraftPage() {
     const interval = setInterval(tick, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     draftStarted,
     pickStartedAt,
@@ -280,7 +389,7 @@ export default function DraftPage() {
     serverOffsetMs,
   ]);
 
-  async function saveFinalTeams(finalPicks: any[]) {
+  async function saveFinalTeams(finalPicks: DraftPick[]) {
     for (const member of orderedMembers) {
       const memberPicks = finalPicks.filter(
         (pick) => pick.member_id === member.id
@@ -439,8 +548,8 @@ export default function DraftPage() {
 
       try {
         await saveFinalTeams(finalPicks ?? []);
-      } catch (error: any) {
-        setMessage(error.message);
+      } catch (error: unknown) {
+        setMessage(error instanceof Error ? error.message : "Could not save final teams.");
         setPicking(false);
         return;
       }
@@ -478,28 +587,75 @@ export default function DraftPage() {
     await loadDraft();
   }
 
+  async function sendChatMessage() {
+    const cleanMessage = chatInput.trim();
+
+    if (!cleanMessage || chatSending) return;
+
+    if (chatUnavailable) {
+      setChatError("Draft chat needs the draft_chat_messages table migration.");
+      return;
+    }
+
+    if (!userMember) {
+      setChatError("You must be a league member to chat.");
+      return;
+    }
+
+    setChatSending(true);
+    setChatError("");
+
+    const { error } = await supabase.from("draft_chat_messages").insert({
+      league_id: leagueId,
+      member_id: userMember.id,
+      user_id: userMember.user_id,
+      message: cleanMessage.slice(0, 500),
+    });
+
+    if (error) {
+      if (
+        error.code === "PGRST205" ||
+        error.message.toLowerCase().includes("draft_chat_messages")
+      ) {
+        setChatUnavailable(true);
+        setChatError("Draft chat needs the draft_chat_messages table migration.");
+      } else {
+        setChatError(error.message);
+      }
+      setChatSending(false);
+      return;
+    }
+
+    setChatInput("");
+    setChatSending(false);
+  }
+
+  function getMemberName(memberId: string) {
+    return members.find((member) => member.id === memberId)?.team_name ?? "Team";
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-4xl font-bold">Draft Room</h1>
 
-          <p className="mt-2 text-zinc-400">
+          <p className="mt-2 text-stone-400">
             {!draftStarted && !draftCompleted ? (
               <span className="text-amber-300">Draft has not started</span>
             ) : draftCompleted ? (
               <span className="text-emerald-300">Draft complete</span>
             ) : (
               <>
-                Pick #{currentPickNumber} • Current Team:{" "}
-                <span className="text-zinc-100">
+                Round {currentRound} - Pick #{currentPickNumber} - Current Team:{" "}
+                <span className="text-stone-100">
                   {currentMember?.team_name ?? "No draft order"}
                 </span>
               </>
             )}
           </p>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-stone-500">
             {picks.length}/{totalRequiredPicks} total picks made
           </p>
         </div>
@@ -508,14 +664,14 @@ export default function DraftPage() {
           {isCommissioner && !draftStarted && !draftCompleted && (
             <button
               onClick={startDraft}
-              className="rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400"
+              className="rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400"
             >
               Start Draft
             </button>
           )}
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">
+          <div className="rounded-lg border border-amber-900/40 bg-stone-900 px-5 py-3 text-center">
+            <p className="text-xs uppercase tracking-wide text-stone-500">
               Pick Timer
             </p>
 
@@ -526,14 +682,14 @@ export default function DraftPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-center">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">
+          <div className="rounded-lg border border-emerald-900/40 bg-stone-900 px-5 py-3 text-center">
+            <p className="text-xs uppercase tracking-wide text-stone-500">
               Budget
             </p>
 
             <p className="text-3xl font-bold">{userRemaining}</p>
 
-            <p className="text-xs text-zinc-500">/ {pointBudget}</p>
+            <p className="text-xs text-stone-500">/ {pointBudget}</p>
           </div>
         </div>
       </div>
@@ -545,42 +701,48 @@ export default function DraftPage() {
       )}
 
       {draftCompleted && (
-        <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-300">
+        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-300">
           Draft complete. Teams have been saved.
         </p>
       )}
 
       {orderedMembers.length === 0 && (
-        <p className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-amber-300">
+        <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-amber-300">
           No draft order has been set. Go to Settings, assign draft positions,
           and save.
         </p>
       )}
 
       {!draftStarted && !draftCompleted && orderedMembers.length > 0 && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           Waiting for the commissioner to start the draft.
         </p>
       )}
 
       {!isMyTurn && draftStarted && !draftCompleted && orderedMembers.length > 0 && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           Waiting for {currentMember?.team_name ?? "the current team"} to pick.
+        </p>
+      )}
+
+      {isMyTurn && draftStarted && !draftCompleted && (
+        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-200">
+          You are on the clock. Choose a Pokemon that fits your remaining budget.
         </p>
       )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <section>
-          <section className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+          <section className="mb-4 rounded-lg border border-emerald-900/40 bg-stone-900 p-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Your Drafted Pokémon</h2>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-stone-500">
                   {userPicks.length}/{picksPerTeam} roster slots filled
                 </p>
               </div>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-stone-400">
                 {userRemaining}/{pointBudget} points remaining
               </p>
             </div>
@@ -589,7 +751,7 @@ export default function DraftPage() {
               {rosterSlots.map((pick, index) => (
                 <div
                   key={index}
-                  className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-center"
+                  className="flex min-h-24 flex-col items-center justify-center rounded-lg border border-amber-900/30 bg-stone-950 p-2 text-center"
                 >
                   {pick ? (
                     <>
@@ -597,16 +759,16 @@ export default function DraftPage() {
                       <p className="mt-2 text-xs font-semibold leading-tight">
                         {pick.pokemon_name}
                       </p>
-                      <p className="text-[11px] text-zinc-500">
+                      <p className="text-[11px] text-stone-500">
                         {pick.points} pts
                       </p>
                     </>
                   ) : (
                     <>
-                      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-zinc-700 text-xs text-zinc-600">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-stone-700 text-xs text-stone-600">
                         {index + 1}
                       </div>
-                      <p className="mt-2 text-xs text-zinc-600">Empty</p>
+                      <p className="mt-2 text-xs text-stone-600">Empty</p>
                     </>
                   )}
                 </div>
@@ -618,12 +780,12 @@ export default function DraftPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search selectable Pokémon..."
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
+            className="w-full rounded-lg border border-stone-700 bg-stone-900 p-3"
           />
 
-          <div className="mt-4 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+          <div className="mt-4 overflow-hidden rounded-lg border border-amber-900/40 bg-stone-900">
             <table className="w-full">
-              <thead className="bg-zinc-950 text-sm text-zinc-400">
+              <thead className="bg-stone-950 text-sm text-stone-400">
                 <tr>
                   <th className="p-3 text-left">Pokémon</th>
                   <th className="p-3 text-left">Points</th>
@@ -634,7 +796,7 @@ export default function DraftPage() {
 
               <tbody>
                 {visiblePokemon.map((pokemon) => (
-                  <tr key={pokemon.name} className="border-t border-zinc-800">
+                  <tr key={pokemon.name} className="border-t border-amber-900/25">
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <PokemonSprite name={pokemon.name} />
@@ -649,7 +811,7 @@ export default function DraftPage() {
                       <button
                         onClick={() => draftPokemon(pokemon)}
                         disabled={picking || !canDraftPokemon(pokemon)}
-                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         {canDraftPokemon(pokemon) ? "Draft" : "Unavailable"}
                       </button>
@@ -659,7 +821,7 @@ export default function DraftPage() {
 
                 {visiblePokemon.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-zinc-500">
+                    <td colSpan={4} className="p-8 text-center text-stone-500">
                       No selectable Pokémon available.
                     </td>
                   </tr>
@@ -669,7 +831,7 @@ export default function DraftPage() {
           </div>
         </section>
 
-        <aside className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+        <aside className="rounded-lg border border-amber-900/40 bg-stone-900 p-5">
           <h2 className="text-xl font-semibold">Draft Board</h2>
 
           <div className="mt-4 space-y-3">
@@ -681,9 +843,9 @@ export default function DraftPage() {
               return (
                 <div
                   key={pick.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950 p-3"
+                  className="rounded-lg border border-amber-900/30 bg-stone-950 p-3"
                 >
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-stone-500">
                     Pick #{pick.pick_number} • {member?.team_name ?? "Team"}
                   </p>
 
@@ -692,7 +854,7 @@ export default function DraftPage() {
                     <p className="font-semibold">{pick.pokemon_name}</p>
                   </div>
 
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-sm text-stone-400">
                     {pick.points} pts • Tier {pick.tier}
                   </p>
                 </div>
@@ -700,9 +862,81 @@ export default function DraftPage() {
             })}
 
             {picks.length === 0 && (
-              <p className="text-sm text-zinc-500">No picks yet.</p>
+              <p className="text-sm text-stone-500">No picks yet.</p>
             )}
           </div>
+
+          <section className="mt-6 border-t border-sky-900/40 pt-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Draft Chat</h2>
+              <p className="text-xs uppercase tracking-wide text-stone-500">
+                League
+              </p>
+            </div>
+
+            <div className="mt-4 flex h-80 flex-col gap-3 overflow-y-auto rounded-lg border border-sky-900/30 bg-stone-950 p-3">
+              {chatMessages.map((chatMessage) => (
+                <div key={chatMessage.id}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-sm font-semibold text-sky-200">
+                      {getMemberName(chatMessage.member_id)}
+                    </p>
+                    <time className="text-[11px] text-stone-600">
+                      {new Date(chatMessage.created_at).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                  </div>
+                  <p className="mt-1 break-words text-sm text-stone-300">
+                    {chatMessage.message}
+                  </p>
+                </div>
+              ))}
+
+              {chatMessages.length === 0 && (
+                <p className="text-sm text-stone-500">No chat messages yet.</p>
+              )}
+            </div>
+
+            {chatError && (
+              <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 p-2 text-sm text-red-300">
+                {chatError}
+              </p>
+            )}
+
+            <form
+              className="mt-3 flex gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void sendChatMessage();
+              }}
+            >
+              <input
+                value={chatInput}
+                onChange={(event) => setChatInput(event.target.value)}
+                maxLength={500}
+                placeholder={
+                  chatUnavailable
+                    ? "Chat is not configured yet"
+                    : "Message the draft room..."
+                }
+                className="min-w-0 flex-1 rounded-lg border border-stone-700 bg-stone-950 p-3 text-sm"
+              />
+              <button
+                type="submit"
+                disabled={
+                  chatUnavailable ||
+                  chatSending ||
+                  !chatInput.trim() ||
+                  !userMember
+                }
+                className="rounded-lg bg-emerald-500 px-4 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Send
+              </button>
+            </form>
+          </section>
         </aside>
       </div>
     </>

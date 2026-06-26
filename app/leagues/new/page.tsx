@@ -23,11 +23,6 @@ export default function NewLeaguePage() {
   const [draftFormatId, setDraftFormatId] = useState("");
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    loadFormats();
-  }, []);
-
   async function loadFormats() {
     const { data, error } = await supabase
       .from("draft_formats")
@@ -41,6 +36,11 @@ export default function NewLeaguePage() {
 
     setFormats(data ?? []);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => loadFormats());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function createLeague() {
     setError("");
@@ -106,26 +106,29 @@ export default function NewLeaguePage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 p-6 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-        <h1 className="text-3xl font-bold">Create League</h1>
+    <main className="flex min-h-screen items-center justify-center bg-stone-950 p-6 text-stone-100">
+      <div className="w-full max-w-md rounded-lg border border-amber-900/40 bg-stone-900 p-6">
+        <p className="text-sm font-medium uppercase tracking-wide text-amber-300">
+          League setup
+        </p>
+        <h1 className="mt-2 text-3xl font-bold">Create League</h1>
 
         <input
-          className="mt-6 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-6 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           placeholder="League name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <input
-          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-3 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           placeholder="Your team name"
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
         />
 
         <select
-          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-3 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           value={draftFormatId}
           onChange={(e) => setDraftFormatId(e.target.value)}
         >
@@ -139,7 +142,7 @@ export default function NewLeaguePage() {
         </select>
 
         <input
-          className="mt-3 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-3 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           type="number"
           min={2}
           max={24}
@@ -149,7 +152,7 @@ export default function NewLeaguePage() {
 
         <button
           onClick={createLeague}
-          className="mt-5 w-full rounded-xl bg-emerald-500 px-4 py-3 font-semibold text-zinc-950"
+          className="mt-5 w-full rounded-lg bg-emerald-500 px-4 py-3 font-semibold text-stone-950 hover:bg-emerald-400"
         >
           Create
         </button>

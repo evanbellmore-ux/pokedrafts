@@ -4,20 +4,33 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 
+type Invite = {
+  id: string;
+  invite_code: string;
+  league_id: string;
+  max_uses: number;
+  used_count: number;
+};
+
+type League = {
+  id: string;
+  name: string;
+  max_coaches: number;
+};
+
+type InviteRow = Invite & {
+  leagues: League | League[] | null;
+};
+
 export default function InvitePage() {
   const { code } = useParams<{ code: string }>();
   const router = useRouter();
   const supabase = createClient();
 
-  const [invite, setInvite] = useState<any>(null);
-  const [league, setLeague] = useState<any>(null);
+  const [invite, setInvite] = useState<Invite | null>(null);
+  const [league, setLeague] = useState<League | null>(null);
   const [message, setMessage] = useState("");
   const [teamName, setTeamName] = useState("");
-
-  useEffect(() => {
-    load();
-  }, []);
-
   async function load() {
     const { data, error } = await supabase
       .from("league_invites")
@@ -30,9 +43,19 @@ export default function InvitePage() {
       return;
     }
 
-    setInvite(data);
-    setLeague(data?.leagues);
+    const inviteRow = data as InviteRow;
+    const rowLeague = Array.isArray(inviteRow.leagues)
+      ? inviteRow.leagues[0] ?? null
+      : inviteRow.leagues;
+
+    setInvite(inviteRow);
+    setLeague(rowLeague);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => load());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function joinLeague() {
     setMessage("");
@@ -92,11 +115,14 @@ export default function InvitePage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 p-6 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-        <h1 className="text-3xl font-bold">League Invite</h1>
+    <main className="flex min-h-screen items-center justify-center bg-stone-950 p-6 text-stone-100">
+      <div className="w-full max-w-md rounded-lg border border-amber-900/40 bg-stone-900 p-6">
+        <p className="text-sm font-medium uppercase tracking-wide text-amber-300">
+          PokeDrafts
+        </p>
+        <h1 className="mt-2 text-3xl font-bold">League Invite</h1>
 
-        <p className="mt-4 text-zinc-300">
+        <p className="mt-4 text-stone-300">
           Join {league?.name ?? "this league"}?
         </p>
 
@@ -104,12 +130,12 @@ export default function InvitePage() {
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
           placeholder="Team name"
-          className="mt-4 w-full rounded-xl bg-zinc-950 border border-zinc-700 p-3"
+          className="mt-4 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 
         <button
           onClick={joinLeague}
-          className="mt-6 w-full rounded-xl bg-emerald-500 px-4 py-3 font-semibold text-zinc-950"
+          className="mt-6 w-full rounded-lg bg-emerald-500 px-4 py-3 font-semibold text-stone-950 hover:bg-emerald-400"
         >
           Join League
         </button>

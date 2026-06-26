@@ -17,7 +17,7 @@ export default function LeagueNav({ leagueId }: { leagueId: string }) {
   ];
 
   return (
-    <nav className="mb-6 flex flex-wrap gap-3 border-b border-zinc-800 pb-4">
+    <nav className="mb-6 flex flex-wrap gap-3 border-b border-amber-900/40 pb-4">
       {links.map((link) => {
         const active = pathname === link.href;
 
@@ -27,8 +27,8 @@ export default function LeagueNav({ leagueId }: { leagueId: string }) {
             href={link.href}
             className={`rounded-xl px-4 py-2 text-sm font-semibold ${
               active
-                ? "bg-emerald-500 text-zinc-950"
-                : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800"
+                ? "bg-emerald-500 text-stone-950"
+                : "border border-amber-900/40 bg-stone-900 text-stone-300 hover:border-amber-700/70 hover:bg-stone-800"
             }`}
           >
             {link.label}

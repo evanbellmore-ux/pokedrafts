@@ -105,6 +105,7 @@ export default function MatchesPage() {
 
   useEffect(() => {
     loadMatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadMatches() {
@@ -153,6 +154,12 @@ export default function MatchesPage() {
   async function generateSchedule() {
     setSaving(true);
     setMessage("");
+
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can generate matchups.");
+      setSaving(false);
+      return;
+    }
 
     const playableMembers = members.filter((member) => member.id !== "bye");
 
@@ -224,28 +231,28 @@ export default function MatchesPage() {
     <>
       <h1 className="text-4xl font-bold">Matches</h1>
 
-      <p className="mt-2 text-zinc-400">
+      <p className="mt-2 text-stone-400">
         Generate upcoming matchups for every team in this league.
       </p>
 
       {isCommissioner && (
-        <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+        <section className="mt-6 rounded-lg border border-amber-900/40 bg-stone-900 p-5">
           <h2 className="text-xl font-semibold">Generate Schedule</h2>
 
-          <label className="mt-5 block text-sm font-medium text-zinc-300">
+          <label className="mt-5 block text-sm font-medium text-stone-300">
             Format
           </label>
 
           <select
             value={format}
             onChange={(e) => setFormat(e.target.value as ScheduleFormat)}
-            className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 p-3"
+            className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
           >
             <option value="round_robin">Round Robin</option>
             <option value="double_round_robin">Double Round Robin</option>
           </select>
 
-          <label className="mt-5 flex items-center gap-3 text-sm text-zinc-300">
+          <label className="mt-5 flex items-center gap-3 text-sm text-stone-300">
             <input
               type="checkbox"
               checked={randomizeOrder}
@@ -257,7 +264,7 @@ export default function MatchesPage() {
           <button
             onClick={generateSchedule}
             disabled={saving}
-            className="mt-5 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
+            className="mt-5 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
           >
             {saving ? "Generating..." : "Generate Matchups"}
           </button>
@@ -271,7 +278,7 @@ export default function MatchesPage() {
       )}
 
       {message && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-sm text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-sm text-stone-300">
           {message}
         </p>
       )}
@@ -280,7 +287,7 @@ export default function MatchesPage() {
         {Object.entries(matchesByRound).map(([roundNumber, roundMatches]) => (
           <div
             key={roundNumber}
-            className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
+            className="rounded-lg border border-amber-900/40 bg-stone-900 p-5"
           >
             <h2 className="text-xl font-semibold">Round {roundNumber}</h2>
 
@@ -288,15 +295,15 @@ export default function MatchesPage() {
               {roundMatches.map((match) => (
                 <div
                   key={match.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"
+                  className="rounded-lg border border-amber-900/30 bg-stone-950 p-4"
                 >
                   <p className="font-semibold">
                     {getTeamName(members, match.home_member_id)}
-                    <span className="mx-3 text-zinc-500">vs</span>
+                    <span className="mx-3 text-stone-500">vs</span>
                     {getTeamName(members, match.away_member_id)}
                   </p>
 
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1 text-sm text-stone-500">
                     Match {match.match_number} • {match.status}
                   </p>
                 </div>
@@ -306,7 +313,7 @@ export default function MatchesPage() {
         ))}
 
         {matches.length === 0 && (
-          <p className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5 text-zinc-500">
+          <p className="rounded-lg border border-amber-900/40 bg-stone-900 p-5 text-stone-500">
             No matches generated yet.
           </p>
         )}

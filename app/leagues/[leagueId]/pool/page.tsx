@@ -12,6 +12,21 @@ type PoolPokemon = {
   tier: number;
 };
 
+type LeaguePool = {
+  custom_pool?: {
+    pokemon?: PoolPokemon[];
+  } | null;
+  draft_format?: {
+    id: string;
+    name: string;
+    json?: {
+      version?: string;
+      leagueName?: string;
+      pokemon?: PoolPokemon[];
+    } | null;
+  } | null;
+};
+
 function pointsToTier(points: number) {
   return 21 - points;
 }
@@ -20,7 +35,7 @@ export default function PoolPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
 
-  const [league, setLeague] = useState<any>(null);
+  const [league, setLeague] = useState<LeaguePool | null>(null);
   const [pokemon, setPokemon] = useState<PoolPokemon[]>([]);
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState(false);
@@ -29,7 +44,8 @@ export default function PoolPage() {
   const [isCommissioner, setIsCommissioner] = useState(false);
 
   useEffect(() => {
-    loadPool();
+    void Promise.resolve().then(loadPool);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadPool() {
@@ -96,6 +112,12 @@ if (user) {
     setSaving(true);
     setMessage("");
 
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can edit this league pool.");
+      setSaving(false);
+      return;
+    }
+
     const customPool = {
       version: league?.draft_format?.json?.version ?? "1.0",
       leagueName:
@@ -146,7 +168,7 @@ if (user) {
     !editing ? (
       <button
         onClick={() => setEditing(true)}
-        className="rounded-xl bg-zinc-800 px-5 py-3 font-semibold hover:bg-zinc-700"
+        className="rounded-lg border border-amber-800/50 bg-stone-900 px-5 py-3 font-semibold text-stone-200 hover:bg-stone-800"
       >
         Edit Points
       </button>
@@ -155,7 +177,7 @@ if (user) {
         <button
           onClick={cancelEditing}
           disabled={saving}
-          className="rounded-xl bg-zinc-800 px-5 py-3 font-semibold hover:bg-zinc-700 disabled:opacity-50"
+          className="rounded-lg border border-stone-700 bg-stone-900 px-5 py-3 font-semibold hover:bg-stone-800 disabled:opacity-50"
         >
           Cancel
         </button>
@@ -163,14 +185,14 @@ if (user) {
         <button
           onClick={saveLeaguePool}
           disabled={saving}
-          className="rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
+          className="rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save League Pool"}
         </button>
       </>
     )
   ) : (
-    <p className="flex items-center text-sm text-zinc-500">
+    <p className="flex items-center text-sm text-stone-500">
       Only the commissioner can edit points.
     </p>
   )}
@@ -178,7 +200,7 @@ if (user) {
       
 
       {message && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           {message}
         </p>
       )}
@@ -187,12 +209,12 @@ if (user) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search Pokémon..."
-        className="mt-6 w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
+        className="mt-6 w-full rounded-lg border border-stone-700 bg-stone-900 p-3"
       />
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+      <div className="mt-6 overflow-hidden rounded-lg border border-amber-900/40 bg-stone-900">
         <table className="w-full">
-          <thead className="bg-zinc-950">
+          <thead className="bg-stone-950">
             <tr>
               <th className="p-3 text-left">Pokemon</th>
               <th className="p-3 text-left">Points</th>
@@ -202,7 +224,7 @@ if (user) {
 
           <tbody>
             {filtered.map(({ mon, index }) => (
-              <tr key={mon.name} className="border-t border-zinc-800">
+              <tr key={mon.name} className="border-t border-amber-900/25">
                 <td className="p-3">
                   <div className="flex items-center gap-3">
                     <PokemonSprite name={mon.name} />
@@ -220,7 +242,7 @@ if (user) {
                       onChange={(e) =>
                         updatePoints(index, Number(e.target.value))
                       }
-                      className="w-24 rounded-lg border border-zinc-700 bg-zinc-950 p-2"
+                      className="w-24 rounded-lg border border-stone-700 bg-stone-950 p-2"
                     />
                   ) : (
                     mon.points
@@ -233,7 +255,7 @@ if (user) {
 
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={3} className="p-8 text-center text-zinc-500">
+                <td colSpan={3} className="p-8 text-center text-stone-500">
                   No Pokémon found.
                 </td>
               </tr>

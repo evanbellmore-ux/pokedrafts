@@ -23,11 +23,28 @@ type DraftedTeam = {
   } | null;
 };
 
+type DraftedTeamRow = {
+  id: string;
+  member_id: string;
+  total_points: number | null;
+  pokemon: unknown;
+  league_members:
+    | {
+        team_name: string | null;
+        user_id: string;
+      }
+    | {
+        team_name: string | null;
+        user_id: string;
+      }[]
+    | null;
+};
+
 function RosterTable({ pokemon }: { pokemon: DraftedPokemon[] }) {
   return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+    <div className="mt-5 overflow-hidden rounded-lg border border-amber-900/30 bg-stone-950">
       <table className="w-full">
-        <thead className="bg-zinc-900 text-sm text-zinc-400">
+        <thead className="bg-stone-900 text-sm text-stone-400">
           <tr>
             <th className="p-3 text-left">Pick</th>
             <th className="p-3 text-left">Pokémon</th>
@@ -38,7 +55,7 @@ function RosterTable({ pokemon }: { pokemon: DraftedPokemon[] }) {
 
         <tbody>
           {pokemon.map((mon) => (
-            <tr key={`${mon.pick_number}-${mon.name}`} className="border-t border-zinc-800">
+            <tr key={`${mon.pick_number}-${mon.name}`} className="border-t border-amber-900/25">
               <td className="p-3">#{mon.pick_number}</td>
               <td className="p-3">
                 <div className="flex items-center gap-3">
@@ -53,7 +70,7 @@ function RosterTable({ pokemon }: { pokemon: DraftedPokemon[] }) {
 
           {pokemon.length === 0 && (
             <tr>
-              <td colSpan={4} className="p-8 text-center text-zinc-500">
+              <td colSpan={4} className="p-8 text-center text-stone-500">
                 No drafted team saved yet.
               </td>
             </tr>
@@ -73,11 +90,6 @@ export default function TeamPage() {
   const [myTeam, setMyTeam] = useState<DraftedTeam | null>(null);
   const [allTeams, setAllTeams] = useState<DraftedTeam[]>([]);
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    loadTeams();
-  }, []);
-
   async function loadTeams() {
     setMessage("");
 
@@ -125,13 +137,15 @@ export default function TeamPage() {
     }
 
     const cleanedTeams: DraftedTeam[] =
-      teamData?.map((team: any) => ({
+      ((teamData ?? []) as DraftedTeamRow[]).map((team) => ({
         id: team.id,
         member_id: team.member_id,
         total_points: team.total_points ?? 0,
-        pokemon: Array.isArray(team.pokemon) ? team.pokemon : [],
-        league_members: team.league_members ?? null,
-      })) ?? [];
+        pokemon: Array.isArray(team.pokemon) ? team.pokemon as DraftedPokemon[] : [],
+        league_members: Array.isArray(team.league_members)
+          ? team.league_members[0] ?? null
+          : team.league_members,
+      }));
 
     const mine = cleanedTeams.find((team) => team.member_id === member.id) ?? null;
 
@@ -149,24 +163,29 @@ export default function TeamPage() {
     }
   }
 
+  useEffect(() => {
+    void Promise.resolve().then(() => loadTeams());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const otherTeams = allTeams.filter((team) => team.member_id !== myMemberId);
 
   return (
     <>
       <h1 className="text-4xl font-bold">Teams</h1>
 
-      <p className="mt-2 text-zinc-400">{teamName || "Loading team..."}</p>
+      <p className="mt-2 text-stone-400">{teamName || "Loading team..."}</p>
 
       {message && (
-        <p className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-zinc-300">
+        <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
           {message}
         </p>
       )}
 
-      <section className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5">
+      <section className="mt-6 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">My Team</h2>
-          <p className="text-sm text-zinc-300">
+          <p className="text-sm text-stone-300">
             {myTeam?.total_points ?? 0} points spent
           </p>
         </div>
@@ -181,14 +200,14 @@ export default function TeamPage() {
           {otherTeams.map((team) => (
             <section
               key={team.id}
-              className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
+              className="rounded-lg border border-amber-900/40 bg-stone-900 p-5"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold">
                   {team.league_members?.team_name ?? "Unnamed Team"}
                 </h3>
 
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-stone-400">
                   {team.total_points} points spent
                 </p>
               </div>
@@ -198,7 +217,7 @@ export default function TeamPage() {
           ))}
 
           {otherTeams.length === 0 && (
-            <p className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-zinc-500">
+            <p className="rounded-lg border border-amber-900/40 bg-stone-900 p-4 text-stone-500">
               No other finalized teams yet.
             </p>
           )}
