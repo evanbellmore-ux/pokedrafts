@@ -39,6 +39,9 @@ export default function LeagueSettingsPage() {
 
   const [formats, setFormats] = useState<DraftFormatOption[]>([]);
   const [members, setMembers] = useState<LeagueMember[]>([]);
+  const [savedDraftPositions, setSavedDraftPositions] = useState<
+    Record<string, number | null>
+  >({});
   const [isCommissioner, setIsCommissioner] = useState(false);
 
   const [saving, setSaving] = useState(false);
@@ -105,6 +108,14 @@ export default function LeagueSettingsPage() {
 
     setFormats(formatData ?? []);
     setMembers(memberData ?? []);
+    setSavedDraftPositions(
+      Object.fromEntries(
+        (memberData ?? []).map((member) => [
+          member.id,
+          member.draft_position,
+        ])
+      )
+    );
   }
 
   function updateDraftPosition(memberId: string, value: number) {
@@ -141,12 +152,6 @@ export default function LeagueSettingsPage() {
     setSaving(true);
     setMessage("");
 
-    if (!isCommissioner) {
-      setMessage("Only the commissioner can save league settings.");
-      setSaving(false);
-      return;
-    }
-
     const { error: leagueError } = await supabase
       .from("leagues")
       .update({
@@ -161,12 +166,16 @@ export default function LeagueSettingsPage() {
       .eq("id", leagueId);
 
     if (leagueError) {
-      setMessage(leagueError.message);
+      setMessage(`Could not save league settings: ${leagueError.message}`);
       setSaving(false);
       return;
     }
 
     for (const member of members) {
+      if (member.draft_position === savedDraftPositions[member.id]) {
+        continue;
+      }
+
       const { error } = await supabase
         .from("league_members")
         .update({
@@ -175,7 +184,7 @@ export default function LeagueSettingsPage() {
         .eq("id", member.id);
 
       if (error) {
-        setMessage(error.message);
+        setMessage(`Could not save draft order: ${error.message}`);
         setSaving(false);
         return;
       }
@@ -337,7 +346,7 @@ export default function LeagueSettingsPage() {
 
       <button
         onClick={saveSettings}
-        disabled={saving || !isCommissioner}
+        disabled={saving}
         className="mt-6 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Settings"}
@@ -345,7 +354,7 @@ export default function LeagueSettingsPage() {
 
       {!isCommissioner && (
         <p className="mt-4 text-sm text-stone-500">
-          Only the commissioner can change league settings.
+          Settings changes are checked when you save.
         </p>
       )}
 
