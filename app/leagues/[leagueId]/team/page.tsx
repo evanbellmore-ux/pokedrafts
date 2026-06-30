@@ -87,6 +87,9 @@ export default function TeamPage() {
 
   const [myMemberId, setMyMemberId] = useState("");
   const [teamName, setTeamName] = useState("");
+  const [teamNameInput, setTeamNameInput] = useState("");
+  const [editingTeamName, setEditingTeamName] = useState(false);
+  const [savingTeamName, setSavingTeamName] = useState(false);
   const [myTeam, setMyTeam] = useState<DraftedTeam | null>(null);
   const [allTeams, setAllTeams] = useState<DraftedTeam[]>([]);
   const [message, setMessage] = useState("");
@@ -116,6 +119,7 @@ export default function TeamPage() {
 
     setMyMemberId(member.id);
     setTeamName(member.team_name ?? "Unnamed Team");
+    setTeamNameInput(member.team_name ?? "");
 
     const { data: teamData, error: teamError } = await supabase
       .from("drafted_teams")
@@ -168,13 +172,87 @@ export default function TeamPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  async function saveTeamName() {
+    const cleanTeamName = teamNameInput.trim();
+
+    if (!cleanTeamName) {
+      setMessage("Enter a team name.");
+      return;
+    }
+
+    setSavingTeamName(true);
+    setMessage("");
+
+    const { error } = await supabase
+      .from("league_members")
+      .update({ team_name: cleanTeamName })
+      .eq("id", myMemberId)
+      .eq("league_id", leagueId);
+
+    if (error) {
+      setMessage(`Could not rename team: ${error.message}`);
+      setSavingTeamName(false);
+      return;
+    }
+
+    setTeamName(cleanTeamName);
+    setEditingTeamName(false);
+    setSavingTeamName(false);
+    setMessage("Team name saved.");
+    await loadTeams();
+  }
+
+  function cancelTeamNameEdit() {
+    setTeamNameInput(teamName === "Unnamed Team" ? "" : teamName);
+    setEditingTeamName(false);
+  }
+
   const otherTeams = allTeams.filter((team) => team.member_id !== myMemberId);
 
   return (
     <>
       <h1 className="text-4xl font-bold">Teams</h1>
 
-      <p className="mt-2 text-stone-400">{teamName || "Loading team..."}</p>
+      <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
+        {editingTeamName ? (
+          <>
+            <input
+              value={teamNameInput}
+              onChange={(e) => setTeamNameInput(e.target.value)}
+              className="w-full rounded-lg border border-stone-700 bg-stone-950 p-3 sm:max-w-sm"
+              placeholder="Team name"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={saveTeamName}
+                disabled={savingTeamName}
+                className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:opacity-50"
+              >
+                {savingTeamName ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={cancelTeamNameEdit}
+                disabled={savingTeamName}
+                className="rounded-lg border border-stone-700 bg-stone-900 px-4 py-2 text-sm font-semibold hover:bg-stone-800 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-stone-400">{teamName || "Loading team..."}</p>
+            {myMemberId && (
+              <button
+                onClick={() => setEditingTeamName(true)}
+                className="w-fit rounded-lg border border-amber-800/50 bg-stone-900 px-4 py-2 text-sm font-semibold hover:bg-stone-800"
+              >
+                Edit Team Name
+              </button>
+            )}
+          </>
+        )}
+      </div>
 
       {message && (
         <p className="mt-4 rounded-lg border border-amber-900/40 bg-stone-900 p-3 text-stone-300">
