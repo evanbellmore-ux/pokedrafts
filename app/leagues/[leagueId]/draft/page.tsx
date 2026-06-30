@@ -17,6 +17,11 @@ type Pokemon = {
   tier: number;
 };
 
+type PokemonTypes = {
+  type1: string | null;
+  type2: string | null;
+};
+
 type LeagueMember = {
   id: string;
   user_id: string;
@@ -24,10 +29,7 @@ type LeagueMember = {
   role: string | null;
   draft_position: number | null;
 };
-type PokemonTypes = {
-  type1: string | null;
-  type2: string | null;
-};
+
 type DraftPick = {
   id: string;
   league_id: string;
@@ -72,6 +74,81 @@ type DraftLeague = {
 
 type MobileDraftPanel = "roster" | "pool" | "board" | "chat";
 
+const regionalTypeOverrides: Record<string, PokemonTypes> = {
+  "alolan ninetales": { type1: "Ice", type2: "Fairy" },
+  "alola ninetales": { type1: "Ice", type2: "Fairy" },
+  "ninetales-alola": { type1: "Ice", type2: "Fairy" },
+
+  "galarian slowbro": { type1: "Poison", type2: "Psychic" },
+  "galar slowbro": { type1: "Poison", type2: "Psychic" },
+  "slowbro-galar": { type1: "Poison", type2: "Psychic" },
+
+  "galarian slowking": { type1: "Poison", type2: "Psychic" },
+  "galar slowking": { type1: "Poison", type2: "Psychic" },
+  "slowking-galar": { type1: "Poison", type2: "Psychic" },
+
+  "hisuian zoroark": { type1: "Normal", type2: "Ghost" },
+  "hisui zoroark": { type1: "Normal", type2: "Ghost" },
+  "zoroark-hisui": { type1: "Normal", type2: "Ghost" },
+
+  "hisuian arcanine": { type1: "Fire", type2: "Rock" },
+  "hisui arcanine": { type1: "Fire", type2: "Rock" },
+  "arcanine-hisui": { type1: "Fire", type2: "Rock" },
+
+  "hisuian typhlosion": { type1: "Fire", type2: "Ghost" },
+  "hisui typhlosion": { type1: "Fire", type2: "Ghost" },
+  "typhlosion-hisui": { type1: "Fire", type2: "Ghost" },
+
+  "hisuian goodra": { type1: "Steel", type2: "Dragon" },
+  "hisui goodra": { type1: "Steel", type2: "Dragon" },
+  "goodra-hisui": { type1: "Steel", type2: "Dragon" },
+
+  "hisuian decidueye": { type1: "Grass", type2: "Fighting" },
+  "hisui decidueye": { type1: "Grass", type2: "Fighting" },
+  "decidueye-hisui": { type1: "Grass", type2: "Fighting" },
+
+  "hisuian samurott": { type1: "Water", type2: "Dark" },
+  "hisui samurott": { type1: "Water", type2: "Dark" },
+  "samurott-hisui": { type1: "Water", type2: "Dark" },
+
+  "hisuian avalugg": { type1: "Ice", type2: "Rock" },
+  "hisui avalugg": { type1: "Ice", type2: "Rock" },
+  "avalugg-hisui": { type1: "Ice", type2: "Rock" },
+
+  "paldean tauros": { type1: "Fighting", type2: null },
+  "paldea tauros": { type1: "Fighting", type2: null },
+  "tauros-paldea": { type1: "Fighting", type2: null },
+  "tauros-paldea-combat": { type1: "Fighting", type2: null },
+  "tauros-paldea-combat-breed": { type1: "Fighting", type2: null },
+
+  "paldean tauros blaze": { type1: "Fighting", type2: "Fire" },
+  "paldea tauros blaze": { type1: "Fighting", type2: "Fire" },
+  "tauros-paldea-blaze": { type1: "Fighting", type2: "Fire" },
+  "tauros-paldea-blaze-breed": { type1: "Fighting", type2: "Fire" },
+
+  "paldean tauros aqua": { type1: "Fighting", type2: "Water" },
+  "paldea tauros aqua": { type1: "Fighting", type2: "Water" },
+  "tauros-paldea-aqua": { type1: "Fighting", type2: "Water" },
+  "tauros-paldea-aqua-breed": { type1: "Fighting", type2: "Water" },
+
+  "alolan raichu": { type1: "Electric", type2: "Psychic" },  
+
+  "galarian stunfisk": { type1: "Steel", type2: "Ground" },  
+
+  "rotom-wash": { type1: "Electric", type2: "Water" },
+  "rotom-mow": { type1: "Electric", type2: "Grass" },  
+  "rotom-heat": { type1: "Electric", type2: "Fire" },  
+  "rotom-fan": { type1: "Electric", type2: "Flying" },
+  "rotom-frost": { type1: "Electric", type2: "Ice" },
+
+  "lycanroc-dusk": { type1: "Rock", type2: null },
+"lycanroc dusk": { type1: "Rock", type2: null },
+"lycanroc-midnight": { type1: "Rock", type2: null },
+"lycanroc midnight": { type1: "Rock", type2: null },
+   
+
+};
+
 function getSnakeDraftIndex(pickNumber: number, teamCount: number) {
   const roundIndex = Math.floor((pickNumber - 1) / teamCount);
   const pickIndexInRound = (pickNumber - 1) % teamCount;
@@ -79,6 +156,13 @@ function getSnakeDraftIndex(pickNumber: number, teamCount: number) {
   return roundIndex % 2 === 0
     ? pickIndexInRound
     : teamCount - 1 - pickIndexInRound;
+}
+
+function getTypeLookupName(name: string) {
+  return name
+    .replace(/^Mega\s+/i, "")
+    .replace(/\s+[XY]$/i, "")
+    .trim();
 }
 
 export default function DraftPage() {
@@ -102,7 +186,9 @@ export default function DraftPage() {
     useState<MobileDraftPanel>("pool");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
-  const [pokemonTypes, setPokemonTypes] = useState<Record<string, PokemonTypes>>({});
+  const [pokemonTypes, setPokemonTypes] = useState<
+    Record<string, PokemonTypes>
+  >({});
 
   useEffect(() => {
     loadDraft();
@@ -169,57 +255,59 @@ export default function DraftPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueId]);
 
-async function loadPokemonTypes() {
-  const first = await supabase
-    .from("pokemon_dex")
-    .select("name, type1, type2")
-    .order("dex_number", { ascending: true })
-    .range(0, 999);
+  async function loadPokemonTypes() {
+    const first = await supabase
+      .from("pokemon_dex")
+      .select("name, type1, type2")
+      .order("dex_number", { ascending: true })
+      .range(0, 999);
 
-  const second = await supabase
-    .from("pokemon_dex")
-    .select("name, type1, type2")
-    .order("dex_number", { ascending: true })
-    .range(1000, 1999);
+    const second = await supabase
+      .from("pokemon_dex")
+      .select("name, type1, type2")
+      .order("dex_number", { ascending: true })
+      .range(1000, 1999);
 
-  const map: Record<string, PokemonTypes> = {};
+    const map: Record<string, PokemonTypes> = {};
 
-  [...(first.data ?? []), ...(second.data ?? [])].forEach((entry) => {
-    if (!entry.name || !entry.type1) return;
+    [...(first.data ?? []), ...(second.data ?? [])].forEach((entry) => {
+      if (!entry.name || !entry.type1) return;
 
-    map[normalizePokemonName(entry.name)] = {
-      type1: entry.type1,
-      type2: entry.type2,
-    };
-  });
+      map[normalizePokemonName(entry.name)] = {
+        type1: entry.type1,
+        type2: entry.type2,
+      };
+    });
 
-  setPokemonTypes(map);
-}
+    setPokemonTypes(map);
+  }
 
-function getTypeLookupName(name: string) {
-  return name
-    .replace(/^Mega\s+/i, "")
-    .replace(/\s+[XY]$/i, "");
-}
+  function getPokemonTypes(name: string) {
+    const lowerName = name.toLowerCase().trim();
 
-function getPokemonTypes(name: string) {
-  const baseName = getTypeLookupName(name);
-  return pokemonTypes[normalizePokemonName(baseName)] ?? null;
-}
+    const regionalOverride = regionalTypeOverrides[lowerName];
 
-function PokemonTypeBadges({ name }: { name: string }) {
-  const types = getPokemonTypes(name);
+    if (regionalOverride) {
+      return regionalOverride;
+    }
 
-  if (!types?.type1) return null;
+    const baseName = getTypeLookupName(name);
+    return pokemonTypes[normalizePokemonName(baseName)] ?? null;
+  }
 
-  return (
-    <div className="mt-1 flex flex-wrap gap-1">
-      <TypeBadge type={types.type1} />
-      {types.type2 && <TypeBadge type={types.type2} />}
-    </div>
-  );
-}
-  
+  function PokemonTypeBadges({ name }: { name: string }) {
+    const types = getPokemonTypes(name);
+
+    if (!types?.type1) return null;
+
+    return (
+      <div className="mt-1 flex flex-wrap gap-1">
+        <TypeBadge type={types.type1} />
+        {types.type2 && <TypeBadge type={types.type2} />}
+      </div>
+    );
+  }
+
   async function loadDraft() {
     setMessage("");
 
@@ -246,15 +334,18 @@ function PokemonTypeBadges({ name }: { name: string }) {
     }
 
     setLeague(leagueData);
+
     const { data: serverTime } = await supabase.rpc("get_server_time");
 
     if (serverTime) {
       setServerOffsetMs(new Date(serverTime).getTime() - Date.now());
     }
+
     const pokemonPool =
-  leagueData?.custom_pool?.pokemon ??
-  leagueData?.draft_format?.json?.pokemon ??
-  [];
+      leagueData?.custom_pool?.pokemon ??
+      leagueData?.draft_format?.json?.pokemon ??
+      [];
+
     setPool(Array.isArray(pokemonPool) ? pokemonPool : []);
 
     const { data: memberData, error: memberError } = await supabase
@@ -290,7 +381,6 @@ function PokemonTypeBadges({ name }: { name: string }) {
     setPicks(pickData ?? []);
   }
 
-  
   async function loadChatMessages() {
     setChatError("");
     setChatUnavailable(false);
@@ -406,18 +496,18 @@ function PokemonTypeBadges({ name }: { name: string }) {
   }
 
   const visiblePokemon = pool
-  .filter((pokemon) => !draftedNames.has(pokemon.name))
-  .filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(search.toLowerCase())
-  )
-  .filter((pokemon) => canAffordPokemon(pokemon))
-  .sort((a, b) => {
-    if (b.points !== a.points) {
-      return b.points - a.points;
-    }
+    .filter((pokemon) => !draftedNames.has(pokemon.name))
+    .filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((pokemon) => canAffordPokemon(pokemon))
+    .sort((a, b) => {
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
 
-    return a.name.localeCompare(b.name);
-  });
+      return a.name.localeCompare(b.name);
+    });
 
   useEffect(() => {
     if (!draftStarted || !pickStartedAt || draftCompleted) return;
@@ -430,14 +520,14 @@ function PokemonTypeBadges({ name }: { name: string }) {
       setSecondsLeft(remaining);
 
       if (
-  remaining <= 0 &&
-  draftStarted &&
-  !draftCompleted &&
-  !picking &&
-  !league?.auto_pick_in_progress
-) {
-  autoDraftTopPick();
-}
+        remaining <= 0 &&
+        draftStarted &&
+        !draftCompleted &&
+        !picking &&
+        !league?.auto_pick_in_progress
+      ) {
+        autoDraftTopPick();
+      }
     };
 
     tick();
@@ -498,6 +588,7 @@ function PokemonTypeBadges({ name }: { name: string }) {
       league?.schedule_format === "double_round_robin"
         ? "double_round_robin"
         : "round_robin";
+
     const rows = buildScheduleRows(leagueId, orderedMembers, scheduleFormat);
 
     const { error: deleteError } = await supabase
@@ -609,17 +700,17 @@ function PokemonTypeBadges({ name }: { name: string }) {
     });
 
     if (pickError) {
-  if (pickError.code === "23505") {
-    setMessage("That Pokémon was just drafted by someone else. Refreshing draft...");
-    setPicking(false);
-    await loadDraft();
-    return;
-  }
+      if (pickError.code === "23505") {
+        setMessage("That Pokémon was just drafted by someone else. Refreshing draft...");
+        setPicking(false);
+        await loadDraft();
+        return;
+      }
 
-  setMessage(pickError.message);
-  setPicking(false);
-  return;
-}
+      setMessage(pickError.message);
+      setPicking(false);
+      return;
+    }
 
     const nextPickNumber = currentPickNumber + 1;
     const draftIsDone = nextPickNumber > totalRequiredPicks;
@@ -903,62 +994,65 @@ function PokemonTypeBadges({ name }: { name: string }) {
           <section
             className={`${activeMobilePanel === "pool" ? "block" : "hidden"} lg:block`}
           >
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search selectable Pokémon..."
-            className="w-full rounded-lg border border-stone-700 bg-stone-900 p-3"
-          />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search selectable Pokémon..."
+              className="w-full rounded-lg border border-stone-700 bg-stone-900 p-3"
+            />
 
-          <div className="mt-4 overflow-hidden rounded-lg border border-amber-900/40 bg-stone-900">
-            <table className="w-full">
-              <thead className="bg-stone-950 text-sm text-stone-400">
-                <tr>
-                  <th className="p-3 text-left">Pokémon</th>
-                  <th className="p-3 text-left">Points</th>
-                  <th className="p-3 text-left">Tier</th>
-                  <th className="p-3 text-right">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {visiblePokemon.map((pokemon) => (
-                  <tr key={pokemon.name} className="border-t border-amber-900/25">
-                    <td className="p-3">
-                      <div className="flex items-center gap-3">
-                        <PokemonSprite name={pokemon.name} />
-                        <div>
-  <span className="font-semibold">{pokemon.name}</span>
-  <PokemonTypeBadges name={pokemon.name} />
-</div>
-                      </div>
-                    </td>
-
-                    <td className="p-3">{pokemon.points}</td>
-                    <td className="p-3">{pokemon.tier}</td>
-
-                    <td className="p-3 text-right">
-                      <button
-                        onClick={() => draftPokemon(pokemon)}
-                        disabled={picking || !canDraftPokemon(pokemon)}
-                        className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        {canDraftPokemon(pokemon) ? "Draft" : "Unavailable"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-
-                {visiblePokemon.length === 0 && (
+            <div className="mt-4 overflow-hidden rounded-lg border border-amber-900/40 bg-stone-900">
+              <table className="w-full">
+                <thead className="bg-stone-950 text-sm text-stone-400">
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-stone-500">
-                      No selectable Pokémon available.
-                    </td>
+                    <th className="p-3 text-left">Pokémon</th>
+                    <th className="p-3 text-left">Points</th>
+                    <th className="p-3 text-left">Tier</th>
+                    <th className="p-3 text-right">Action</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody>
+                  {visiblePokemon.map((pokemon) => (
+                    <tr
+                      key={pokemon.name}
+                      className="border-t border-amber-900/25"
+                    >
+                      <td className="p-3">
+                        <div className="flex items-center gap-3">
+                          <PokemonSprite name={pokemon.name} />
+                          <div>
+                            <span className="font-semibold">{pokemon.name}</span>
+                            <PokemonTypeBadges name={pokemon.name} />
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="p-3">{pokemon.points}</td>
+                      <td className="p-3">{pokemon.tier}</td>
+
+                      <td className="p-3 text-right">
+                        <button
+                          onClick={() => draftPokemon(pokemon)}
+                          disabled={picking || !canDraftPokemon(pokemon)}
+                          className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-stone-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          {canDraftPokemon(pokemon) ? "Draft" : "Unavailable"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {visiblePokemon.length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="p-8 text-center text-stone-500">
+                        No selectable Pokémon available.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </section>
         </section>
 
@@ -972,42 +1066,42 @@ function PokemonTypeBadges({ name }: { name: string }) {
           <section
             className={`${activeMobilePanel === "board" ? "block" : "hidden"} lg:block`}
           >
-          <h2 className="text-xl font-semibold">Draft Board</h2>
+            <h2 className="text-xl font-semibold">Draft Board</h2>
 
-          <div className="mt-4 space-y-3">
-           {[...picks]
-  .sort((a, b) => b.pick_number - a.pick_number)
-  .map((pick) => {
-              const member = members.find((m) => m.id === pick.member_id);
+            <div className="mt-4 space-y-3">
+              {[...picks]
+                .sort((a, b) => b.pick_number - a.pick_number)
+                .map((pick) => {
+                  const member = members.find((m) => m.id === pick.member_id);
 
-              return (
-                <div
-                  key={pick.id}
-                  className="rounded-lg border border-amber-900/30 bg-stone-950 p-3"
-                >
-                  <p className="text-sm text-stone-500">
-                    Pick #{pick.pick_number} • {member?.team_name ?? "Team"}
-                  </p>
+                  return (
+                    <div
+                      key={pick.id}
+                      className="rounded-lg border border-amber-900/30 bg-stone-950 p-3"
+                    >
+                      <p className="text-sm text-stone-500">
+                        Pick #{pick.pick_number} • {member?.team_name ?? "Team"}
+                      </p>
 
-                  <div className="mt-2 flex items-center gap-3">
-                    <PokemonSprite name={pick.pokemon_name} size="sm" />
-                    <div>
-  <p className="font-semibold">{pick.pokemon_name}</p>
-  <PokemonTypeBadges name={pick.pokemon_name} />
-</div>
-                  </div>
+                      <div className="mt-2 flex items-center gap-3">
+                        <PokemonSprite name={pick.pokemon_name} size="sm" />
+                        <div>
+                          <p className="font-semibold">{pick.pokemon_name}</p>
+                          <PokemonTypeBadges name={pick.pokemon_name} />
+                        </div>
+                      </div>
 
-                  <p className="text-sm text-stone-400">
-                    {pick.points} pts • Tier {pick.tier}
-                  </p>
-                </div>
-              );
-            })}
+                      <p className="text-sm text-stone-400">
+                        {pick.points} pts • Tier {pick.tier}
+                      </p>
+                    </div>
+                  );
+                })}
 
-            {picks.length === 0 && (
-              <p className="text-sm text-stone-500">No picks yet.</p>
-            )}
-          </div>
+              {picks.length === 0 && (
+                <p className="text-sm text-stone-500">No picks yet.</p>
+              )}
+            </div>
           </section>
 
           <section
