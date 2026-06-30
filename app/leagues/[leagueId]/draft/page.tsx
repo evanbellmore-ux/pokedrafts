@@ -8,6 +8,8 @@ import {
   type ScheduleFormat,
 } from "@/app/lib/league/schedule";
 import PokemonSprite from "@/app/components/PokemonSprite";
+import TypeBadge from "@/app/components/TypeBadge";
+import { normalizePokemonName } from "@/app/lib/pokemon/sprites";
 
 type Pokemon = {
   name: string;
@@ -22,7 +24,10 @@ type LeagueMember = {
   role: string | null;
   draft_position: number | null;
 };
-
+type PokemonTypes = {
+  type1: string | null;
+  type2: string | null;
+};
 type DraftPick = {
   id: string;
   league_id: string;
@@ -97,10 +102,12 @@ export default function DraftPage() {
     useState<MobileDraftPanel>("pool");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
+  const [pokemonTypes, setPokemonTypes] = useState<Record<string, PokemonTypes>>({});
 
   useEffect(() => {
     loadDraft();
     loadChatMessages();
+    loadPokemonTypes();
 
     const channel = supabase
       .channel(`draft-${leagueId}`)
@@ -162,6 +169,57 @@ export default function DraftPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueId]);
 
+async function loadPokemonTypes() {
+  const first = await supabase
+    .from("pokemon_dex")
+    .select("name, type1, type2")
+    .order("dex_number", { ascending: true })
+    .range(0, 999);
+
+  const second = await supabase
+    .from("pokemon_dex")
+    .select("name, type1, type2")
+    .order("dex_number", { ascending: true })
+    .range(1000, 1999);
+
+  const map: Record<string, PokemonTypes> = {};
+
+  [...(first.data ?? []), ...(second.data ?? [])].forEach((entry) => {
+    if (!entry.name || !entry.type1) return;
+
+    map[normalizePokemonName(entry.name)] = {
+      type1: entry.type1,
+      type2: entry.type2,
+    };
+  });
+
+  setPokemonTypes(map);
+}
+
+function getTypeLookupName(name: string) {
+  return name
+    .replace(/^Mega\s+/i, "")
+    .replace(/\s+[XY]$/i, "");
+}
+
+function getPokemonTypes(name: string) {
+  const baseName = getTypeLookupName(name);
+  return pokemonTypes[normalizePokemonName(baseName)] ?? null;
+}
+
+function PokemonTypeBadges({ name }: { name: string }) {
+  const types = getPokemonTypes(name);
+
+  if (!types?.type1) return null;
+
+  return (
+    <div className="mt-1 flex flex-wrap gap-1">
+      <TypeBadge type={types.type1} />
+      {types.type2 && <TypeBadge type={types.type2} />}
+    </div>
+  );
+}
+  
   async function loadDraft() {
     setMessage("");
 
@@ -232,6 +290,7 @@ export default function DraftPage() {
     setPicks(pickData ?? []);
   }
 
+  
   async function loadChatMessages() {
     setChatError("");
     setChatUnavailable(false);
@@ -823,6 +882,7 @@ export default function DraftPage() {
                       <p className="mt-2 text-xs font-semibold leading-tight">
                         {pick.pokemon_name}
                       </p>
+                      <PokemonTypeBadges name={pick.pokemon_name} />
                       <p className="text-[11px] text-stone-500">
                         {pick.points} pts
                       </p>
@@ -867,7 +927,10 @@ export default function DraftPage() {
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <PokemonSprite name={pokemon.name} />
-                        <span className="font-semibold">{pokemon.name}</span>
+                        <div>
+  <span className="font-semibold">{pokemon.name}</span>
+  <PokemonTypeBadges name={pokemon.name} />
+</div>
                       </div>
                     </td>
 
@@ -928,7 +991,10 @@ export default function DraftPage() {
 
                   <div className="mt-2 flex items-center gap-3">
                     <PokemonSprite name={pick.pokemon_name} size="sm" />
-                    <p className="font-semibold">{pick.pokemon_name}</p>
+                    <div>
+  <p className="font-semibold">{pick.pokemon_name}</p>
+  <PokemonTypeBadges name={pick.pokemon_name} />
+</div>
                   </div>
 
                   <p className="text-sm text-stone-400">
