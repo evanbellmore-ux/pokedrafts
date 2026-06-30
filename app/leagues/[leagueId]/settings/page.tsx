@@ -12,6 +12,7 @@ type DraftFormatOption = {
 
 type LeagueMember = {
   id: string;
+  user_id: string;
   team_name: string | null;
   role: string | null;
   draft_position: number | null;
@@ -60,7 +61,7 @@ export default function LeagueSettingsPage() {
 
     const { data: memberData, error: memberError } = await supabase
       .from("league_members")
-      .select("id, team_name, role, draft_position")
+      .select("id, user_id, team_name, role, draft_position")
       .eq("league_id", leagueId)
       .order("draft_position", { ascending: true, nullsFirst: false })
       .order("team_name", { ascending: true });
@@ -70,7 +71,11 @@ export default function LeagueSettingsPage() {
     }
 
     if (league) {
-      setIsCommissioner(Boolean(user && league.commissioner_id === user.id));
+      const userMember = memberData?.find((member) => member.user_id === user?.id);
+      setIsCommissioner(
+        userMember?.role === "commissioner" ||
+          Boolean(user && league.commissioner_id === user.id)
+      );
       setLeagueName(league.name ?? "");
       setMaxCoaches(league.max_coaches ?? 8);
       setPointBudget(league.point_budget ?? 120);
