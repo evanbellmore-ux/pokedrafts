@@ -18,6 +18,12 @@ type LeagueMember = {
   draft_position: number | null;
 };
 
+function hasCommissionerRole(role: string | null | undefined) {
+  const normalizedRole = role?.trim().toLowerCase();
+
+  return normalizedRole === "commissioner" || normalizedRole === "commisioner";
+}
+
 export default function LeagueSettingsPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const supabase = createClient();
@@ -70,10 +76,18 @@ export default function LeagueSettingsPage() {
       setMessage(memberError.message);
     }
 
+    const { data: currentMember } = user
+      ? await supabase
+          .from("league_members")
+          .select("role")
+          .eq("league_id", leagueId)
+          .eq("user_id", user.id)
+          .maybeSingle()
+      : { data: null };
+
     if (league) {
-      const userMember = memberData?.find((member) => member.user_id === user?.id);
       setIsCommissioner(
-        userMember?.role === "commissioner" ||
+        hasCommissionerRole(currentMember?.role) ||
           Boolean(user && league.commissioner_id === user.id)
       );
       setLeagueName(league.name ?? "");
