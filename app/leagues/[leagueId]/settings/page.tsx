@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import type { ScheduleFormat } from "@/app/lib/league/schedule";
 import { createClient } from "@/app/lib/supabase/client";
 
@@ -26,6 +26,7 @@ function hasCommissionerRole(role: string | null | undefined) {
 
 export default function LeagueSettingsPage() {
   const { leagueId } = useParams<{ leagueId: string }>();
+  const router = useRouter();
   const supabase = createClient();
 
   const [leagueName, setLeagueName] = useState("");
@@ -45,6 +46,8 @@ export default function LeagueSettingsPage() {
   const [isCommissioner, setIsCommissioner] = useState(false);
 
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -193,6 +196,32 @@ export default function LeagueSettingsPage() {
     setSaving(false);
     setMessage("Settings saved.");
     await loadSettings();
+  }
+
+  async function deleteLeague() {
+    setMessage("");
+
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can delete this league.");
+      return;
+    }
+
+    if (deleteConfirmation.trim() !== leagueName) {
+      setMessage("Type the league name exactly to confirm deletion.");
+      return;
+    }
+
+    setDeleting(true);
+
+    const { error } = await supabase.from("leagues").delete().eq("id", leagueId);
+
+    if (error) {
+      setMessage(`Could not delete league: ${error.message}`);
+      setDeleting(false);
+      return;
+    }
+
+    router.push("/dashboard");
   }
 
   return (
@@ -359,6 +388,33 @@ export default function LeagueSettingsPage() {
       )}
 
       {message && <p className="mt-4 text-sm text-stone-400">{message}</p>}
+
+      {isCommissioner && (
+        <section className="mt-8 rounded-lg border border-red-900/50 bg-stone-900 p-5">
+          <h2 className="text-xl font-semibold text-red-200">Delete League</h2>
+          <p className="mt-2 text-sm text-stone-400">
+            This permanently removes the league, invite, draft picks, teams,
+            chat, and matchup schedule.
+          </p>
+
+          <label className="mt-5 block text-sm font-medium text-stone-300">
+            Type {leagueName || "the league name"} to confirm
+          </label>
+          <input
+            value={deleteConfirmation}
+            onChange={(e) => setDeleteConfirmation(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-red-900/50 bg-stone-950 p-3"
+          />
+
+          <button
+            onClick={deleteLeague}
+            disabled={deleting || deleteConfirmation.trim() !== leagueName}
+            className="mt-4 rounded-lg bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {deleting ? "Deleting..." : "Delete League"}
+          </button>
+        </section>
+      )}
     </>
   );
 }

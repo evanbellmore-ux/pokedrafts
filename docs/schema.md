@@ -2,7 +2,7 @@
 
 PokeDrafts expects Supabase Auth plus the tables, storage bucket, and RPCs below. This is a working contract for the app code; keep it in sync with migrations or dashboard changes.
 
-SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat and `20260626170000_add_league_schedule_format.sql` before using matchup format automation.
+SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat, `20260626170000_add_league_schedule_format.sql` before using matchup format automation, and `20260703120000_allow_commissioner_delete_leagues.sql` before using commissioner league deletion.
 
 ## Tables
 
@@ -166,5 +166,6 @@ Recommended policy intent:
 - League members can read their own leagues, league members, pools, picks, finalized teams, and matches.
 - League members can read and insert chat messages for leagues they belong to.
 - Commissioners can update their leagues, custom pools, draft order, draft settings, match schedules, and draft start state.
+- Commissioners can delete their leagues; league-scoped child rows should cascade.
 - Coaches can insert a draft pick only when they are the current drafting member and the draft is active.
 - Invites should not allow joins past `max_uses` or `max_coaches`.
