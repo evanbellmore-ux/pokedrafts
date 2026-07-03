@@ -12,6 +12,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
+import ThemeToggle from "@/app/components/ThemeToggle";
 import { createClient } from "@/app/lib/supabase/client";
 
 type League = {
@@ -211,6 +212,8 @@ export default function DashboardPage() {
             >
               Pool Builder
             </Link>
+
+            <ThemeToggle />
 
             <button
               onClick={logout}
