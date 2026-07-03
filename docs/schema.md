@@ -2,7 +2,7 @@
 
 PokeDrafts expects Supabase Auth plus the tables, storage bucket, and RPCs below. This is a working contract for the app code; keep it in sync with migrations or dashboard changes.
 
-SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat, `20260626170000_add_league_schedule_format.sql` before using matchup format automation, `20260703120000_allow_commissioner_delete_leagues.sql` before using commissioner league deletion, `20260703123000_allow_post_draft_team_updates.sql` before using post-draft free agent moves, and `20260703124500_add_free_agent_swap_limits.sql` before enforcing season free agent swap limits.
+SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat, `20260626170000_add_league_schedule_format.sql` before using matchup format automation, `20260703120000_allow_commissioner_delete_leagues.sql` before using commissioner league deletion, `20260703123000_allow_post_draft_team_updates.sql` before using post-draft free agent moves, `20260703124500_add_free_agent_swap_limits.sql` before enforcing season free agent swap limits, `20260703130000_create_league_news.sql` before using league news, and `20260703131000_allow_commissioner_match_results.sql` before reporting match winners.
 
 ## Tables
 
@@ -121,6 +121,18 @@ Used by the draft room chat. The UI loads the latest 100 messages by `created_at
 
 Draft completion auto-generates `league_matches` from the league's `schedule_format`. Commissioners can still change the matchup format on the Matches page and regenerate the schedule.
 
+### `league_news`
+
+- `id` uuid
+- `league_id` uuid
+- `member_id` uuid, nullable
+- `news_type` text, expected values `free_agent` or `match_result`
+- `message` text
+- `metadata` jsonb
+- `created_at` timestamp
+
+Used by the league overview news feed. Free agent moves and reported match results insert rows here.
+
 ## RPCs
 
 ### `get_server_time()`
@@ -167,8 +179,10 @@ Recommended policy intent:
 
 - League members can read their own leagues, league members, pools, picks, finalized teams, and matches.
 - League members can read and insert chat messages for leagues they belong to.
-- Commissioners can update their leagues, custom pools, draft order, draft settings, match schedules, and draft start state.
+- League members can read league news for leagues they belong to.
+- Commissioners can update their leagues, custom pools, draft order, draft settings, match schedules, match results, and draft start state.
 - Commissioners can delete their leagues; league-scoped child rows should cascade.
 - League members can update their own finalized team after the draft is complete until their free agent swap limit is reached.
+- League members can insert free agent news for their own free agent moves. Commissioners can insert match result news.
 - Coaches can insert a draft pick only when they are the current drafting member and the draft is active.
 - Invites should not allow joins past `max_uses` or `max_coaches`.

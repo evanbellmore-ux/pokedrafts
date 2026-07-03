@@ -291,13 +291,30 @@ export default function FreeAgentsPage() {
       return;
     }
 
+    const newsMessage = selectedDrop
+      ? `${myMember?.team_name ?? "A team"} added ${freeAgent.name} and dropped ${selectedDrop.name}.`
+      : `${myMember?.team_name ?? "A team"} added ${freeAgent.name}.`;
+
+    const { error: newsError } = await supabase.from("league_news").insert({
+      league_id: leagueId,
+      member_id: myMember?.id ?? null,
+      news_type: "free_agent",
+      message: newsMessage,
+      metadata: {
+        added: freeAgent.name,
+        dropped: selectedDrop?.name ?? null,
+      },
+    });
+
+    if (newsError) {
+      setMessage(`Team updated, but league news failed: ${newsError.message}`);
+      setSaving("");
+      return;
+    }
+
     setSaving("");
     setPendingAdd(null);
-    setMessage(
-      selectedDrop
-        ? `Added ${freeAgent.name} and dropped ${selectedDrop.name}.`
-        : `Added ${freeAgent.name}.`
-    );
+    setMessage(newsMessage);
     await loadFreeAgents();
   }
 

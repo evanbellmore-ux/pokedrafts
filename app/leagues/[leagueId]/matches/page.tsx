@@ -47,11 +47,6 @@ export default function MatchesPage() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    loadMatches();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   async function loadMatches() {
     setMessage("");
 
@@ -99,6 +94,11 @@ export default function MatchesPage() {
     setMembers(memberData ?? []);
     setMatches(matchData ?? []);
   }
+
+  useEffect(() => {
+    void Promise.resolve().then(loadMatches);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function generateSchedule() {
     setSaving(true);
@@ -157,6 +157,61 @@ export default function MatchesPage() {
     }
 
     setMessage("Match schedule generated.");
+    setSaving(false);
+    await loadMatches();
+  }
+
+  async function reportWinner(match: LeagueMatch, winnerMemberId: string) {
+    if (!isCommissioner) {
+      setMessage("Only the commissioner can report match results.");
+      return;
+    }
+
+    const loserMemberId =
+      match.home_member_id === winnerMemberId
+        ? match.away_member_id
+        : match.home_member_id;
+    const winnerName = getTeamName(members, winnerMemberId);
+    const loserName = getTeamName(members, loserMemberId);
+
+    setSaving(true);
+    setMessage("");
+
+    const { error: matchError } = await supabase
+      .from("league_matches")
+      .update({
+        status: "completed",
+        winner_member_id: winnerMemberId,
+      })
+      .eq("id", match.id);
+
+    if (matchError) {
+      setMessage(matchError.message);
+      setSaving(false);
+      return;
+    }
+
+    const { error: newsError } = await supabase.from("league_news").insert({
+      league_id: leagueId,
+      member_id: winnerMemberId,
+      news_type: "match_result",
+      message: `${winnerName} defeated ${loserName} in Round ${match.round_number}.`,
+      metadata: {
+        match_id: match.id,
+        winner_member_id: winnerMemberId,
+        loser_member_id: loserMemberId,
+        round_number: match.round_number,
+        match_number: match.match_number,
+      },
+    });
+
+    if (newsError) {
+      setMessage(`Match saved, but league news failed: ${newsError.message}`);
+      setSaving(false);
+      return;
+    }
+
+    setMessage("Match result saved.");
     setSaving(false);
     await loadMatches();
   }
@@ -251,6 +306,31 @@ export default function MatchesPage() {
                   <p className="mt-1 text-sm text-stone-500">
                     Match {match.match_number} • {match.status}
                   </p>
+
+                  {match.winner_member_id && (
+                    <p className="mt-2 text-sm text-emerald-300">
+                      Winner: {getTeamName(members, match.winner_member_id)}
+                    </p>
+                  )}
+
+                  {isCommissioner && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => reportWinner(match, match.home_member_id)}
+                        disabled={saving}
+                        className="rounded-lg border border-emerald-800/60 bg-emerald-950/40 px-3 py-2 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/10 disabled:opacity-50"
+                      >
+                        {getTeamName(members, match.home_member_id)} won
+                      </button>
+                      <button
+                        onClick={() => reportWinner(match, match.away_member_id)}
+                        disabled={saving}
+                        className="rounded-lg border border-emerald-800/60 bg-emerald-950/40 px-3 py-2 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/10 disabled:opacity-50"
+                      >
+                        {getTeamName(members, match.away_member_id)} won
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
