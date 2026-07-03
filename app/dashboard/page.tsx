@@ -8,6 +8,7 @@ import {
   LogOut,
   Plus,
   ShieldCheck,
+  Trash2,
   Trophy,
   Users,
 } from "lucide-react";
@@ -42,6 +43,12 @@ type LeagueMemberRow = {
   leagues: JoinedLeague | JoinedLeague[] | null;
 };
 
+function hasCommissionerRole(role: string | null | undefined) {
+  const normalizedRole = role?.trim().toLowerCase();
+
+  return normalizedRole === "commissioner" || normalizedRole === "commisioner";
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -49,6 +56,10 @@ export default function DashboardPage() {
   const [email, setEmail] = useState("");
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loading, setLoading] = useState(true);
+  const [leagueToDelete, setLeagueToDelete] = useState<League | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -132,8 +143,48 @@ export default function DashboardPage() {
     router.push("/login");
   }
 
+  async function deleteLeague() {
+    if (!leagueToDelete) return;
+
+    setDeleteError("");
+
+    if (!hasCommissionerRole(leagueToDelete.role)) {
+      setDeleteError("Only the commissioner can delete this league.");
+      return;
+    }
+
+    if (deleteConfirmation.trim() !== leagueToDelete.name) {
+      setDeleteError("Type the league name exactly to confirm deletion.");
+      return;
+    }
+
+    setDeleting(true);
+
+    const { error } = await supabase
+      .from("leagues")
+      .delete()
+      .eq("id", leagueToDelete.id);
+
+    if (error) {
+      setDeleteError(error.message);
+      setDeleting(false);
+      return;
+    }
+
+    setLeagueToDelete(null);
+    setDeleteConfirmation("");
+    setDeleting(false);
+    await load();
+  }
+
+  function openDeleteDialog(league: League) {
+    setLeagueToDelete(league);
+    setDeleteConfirmation("");
+    setDeleteError("");
+  }
+
   const commissionerCount = leagues.filter(
-    (league) => league.role === "commissioner"
+    (league) => hasCommissionerRole(league.role)
   ).length;
   const liveDraftCount = leagues.filter(
     (league) => league.draft_started && !league.draft_completed
@@ -227,15 +278,20 @@ export default function DashboardPage() {
           ) : leagues.length > 0 ? (
             <div className="grid gap-3">
               {leagues.map((league) => (
-                <Link
+                <div
                   key={league.id}
-                  href={
-                    league.draft_started && !league.draft_completed
-                      ? `/leagues/${league.id}/draft`
-                      : `/leagues/${league.id}`
-                  }
-                  className="group grid gap-4 rounded-lg border border-amber-900/35 bg-stone-900 p-5 hover:border-amber-700/70 hover:bg-stone-800/80 sm:grid-cols-[1fr_auto]"
+                  className="group relative grid cursor-pointer gap-4 rounded-lg border border-amber-900/35 bg-stone-900 p-5 hover:border-amber-700/70 hover:bg-stone-800/80 sm:grid-cols-[1fr_auto]"
                 >
+                  <Link
+                    href={
+                      league.draft_started && !league.draft_completed
+                        ? `/leagues/${league.id}/draft`
+                        : `/leagues/${league.id}`
+                    }
+                    aria-label={`Open ${league.name}`}
+                    className="absolute inset-0 z-10 rounded-lg"
+                  />
+
                   <div>
                     <div className="flex flex-wrap items-center gap-3">
                       <h3 className="text-lg font-semibold">{league.name}</h3>
@@ -260,11 +316,26 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm font-semibold text-amber-300">
-                    Open
-                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                  <div className="flex flex-col gap-2 sm:items-end">
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-amber-800/60 px-4 py-2 text-sm font-semibold text-amber-300 group-hover:bg-amber-950/30"
+                    >
+                      Open
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+
+                    {hasCommissionerRole(league.role) && (
+                      <button
+                        onClick={() => openDeleteDialog(league)}
+                        className="relative z-20 inline-flex items-center justify-center gap-2 rounded-lg border border-red-900/70 px-4 py-2 text-sm font-semibold text-red-200 hover:bg-red-950/40"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </button>
+                    )}
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           ) : (
@@ -287,6 +358,60 @@ export default function DashboardPage() {
             </div>
           )}
         </section>
+
+        {leagueToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/80 p-4">
+            <div className="w-full max-w-md rounded-lg border border-red-900/60 bg-stone-900 p-5 shadow-xl">
+              <h2 className="text-xl font-semibold text-red-200">
+                Delete League
+              </h2>
+              <p className="mt-2 text-sm text-stone-400">
+                This permanently removes {leagueToDelete.name}, including its
+                invite, draft picks, teams, chat, and matchup schedule.
+              </p>
+
+              <label className="mt-5 block text-sm font-medium text-stone-300">
+                Type {leagueToDelete.name} to confirm
+              </label>
+              <input
+                value={deleteConfirmation}
+                onChange={(event) => setDeleteConfirmation(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-red-900/50 bg-stone-950 p-3"
+                autoFocus
+              />
+
+              {deleteError && (
+                <p className="mt-3 text-sm text-red-300">{deleteError}</p>
+              )}
+
+              <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button
+                  onClick={() => {
+                    setLeagueToDelete(null);
+                    setDeleteConfirmation("");
+                    setDeleteError("");
+                  }}
+                  disabled={deleting}
+                  className="rounded-lg border border-stone-700 px-4 py-2 text-sm font-semibold text-stone-300 hover:border-stone-500 hover:text-white disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={deleteLeague}
+                  disabled={
+                    deleting ||
+                    deleteConfirmation.trim() !== leagueToDelete.name
+                  }
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {deleting ? "Deleting..." : "Delete League"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <section className="mt-8 rounded-lg border border-sky-900/40 bg-stone-900 p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

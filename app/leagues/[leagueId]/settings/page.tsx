@@ -34,6 +34,7 @@ export default function LeagueSettingsPage() {
   const [pointBudget, setPointBudget] = useState(120);
   const [picksPerTeam, setPicksPerTeam] = useState(10);
   const [pickTimerSeconds, setPickTimerSeconds] = useState(120);
+  const [freeAgentSwapLimit, setFreeAgentSwapLimit] = useState(3);
   const [scheduleFormat, setScheduleFormat] =
     useState<ScheduleFormat>("round_robin");
   const [draftFormatId, setDraftFormatId] = useState("");
@@ -62,7 +63,7 @@ export default function LeagueSettingsPage() {
 
     const { data: league } = await supabase
       .from("leagues")
-      .select("name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, schedule_format, draft_format_id, commissioner_id")
+      .select("name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, free_agent_swap_limit, schedule_format, draft_format_id, commissioner_id")
       .eq("id", leagueId)
       .single();
 
@@ -101,6 +102,7 @@ export default function LeagueSettingsPage() {
       setPointBudget(league.point_budget ?? 120);
       setPicksPerTeam(league.picks_per_team ?? 10);
       setPickTimerSeconds(league.pick_timer_seconds ?? 120);
+      setFreeAgentSwapLimit(league.free_agent_swap_limit ?? 3);
       setScheduleFormat(
         league.schedule_format === "double_round_robin"
           ? "double_round_robin"
@@ -163,6 +165,7 @@ export default function LeagueSettingsPage() {
         point_budget: pointBudget,
         picks_per_team: picksPerTeam,
         pick_timer_seconds: pickTimerSeconds,
+        free_agent_swap_limit: freeAgentSwapLimit,
         schedule_format: scheduleFormat,
         draft_format_id: draftFormatId || null,
       })
@@ -282,6 +285,17 @@ export default function LeagueSettingsPage() {
           min={10}
           value={pickTimerSeconds}
           onChange={(e) => setPickTimerSeconds(Number(e.target.value))}
+          className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
+        />
+
+        <label className="mt-5 block text-sm font-medium text-stone-300">
+          Free Agent Swaps Per Team
+        </label>
+        <input
+          type="number"
+          min={0}
+          value={freeAgentSwapLimit}
+          onChange={(e) => setFreeAgentSwapLimit(Number(e.target.value))}
           className="mt-2 w-full rounded-lg border border-stone-700 bg-stone-950 p-3"
         />
 

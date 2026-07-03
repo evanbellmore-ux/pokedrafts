@@ -175,6 +175,7 @@ export default function DraftPage() {
   const [pool, setPool] = useState<Pokemon[]>([]);
   const [search, setSearch] = useState("");
   const [userMember, setUserMember] = useState<LeagueMember | null>(null);
+  const [selectedRosterMemberId, setSelectedRosterMemberId] = useState("");
   const [picking, setPicking] = useState(false);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<DraftChatMessage[]>([]);
@@ -457,16 +458,27 @@ export default function DraftPage() {
   const userSpent = userMember ? spentByMember.get(userMember.id) ?? 0 : 0;
   const userRemaining = pointBudget - userSpent;
 
-  const userPicks = useMemo(() => {
-    if (!userMember) return [];
+  const selectedRosterMember =
+    orderedMembers.find((member) => member.id === selectedRosterMemberId) ??
+    userMember ??
+    orderedMembers[0] ??
+    null;
+
+  const selectedRosterPicks = useMemo(() => {
+    if (!selectedRosterMember) return [];
 
     return picks
-      .filter((pick) => pick.member_id === userMember.id)
+      .filter((pick) => pick.member_id === selectedRosterMember.id)
       .sort((a, b) => a.pick_number - b.pick_number);
-  }, [picks, userMember]);
+  }, [picks, selectedRosterMember]);
+
+  const selectedRosterSpent = selectedRosterMember
+    ? spentByMember.get(selectedRosterMember.id) ?? 0
+    : 0;
+  const selectedRosterRemaining = pointBudget - selectedRosterSpent;
 
   const rosterSlots = Array.from({ length: picksPerTeam }, (_, index) => {
-    return userPicks[index] ?? null;
+    return selectedRosterPicks[index] ?? null;
   });
 
   const isMyTurn = Boolean(userMember?.id && currentMember?.id === userMember.id);
@@ -948,16 +960,33 @@ export default function DraftPage() {
               activeMobilePanel === "roster" ? "block" : "hidden"
             } lg:block`}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Your Drafted Pokémon</h2>
                 <p className="text-sm text-stone-500">
-                  {userPicks.length}/{picksPerTeam} roster slots filled
+                  {selectedRosterMember?.team_name || "Unnamed Team"} -{" "}
+                  {selectedRosterPicks.length}/{picksPerTeam} roster slots
+                  filled
                 </p>
               </div>
 
+              <select
+                value={selectedRosterMember?.id ?? ""}
+                onChange={(event) =>
+                  setSelectedRosterMemberId(event.target.value)
+                }
+                className="rounded-lg border border-stone-700 bg-stone-950 px-3 py-2 text-sm"
+              >
+                {orderedMembers.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.team_name || "Unnamed Team"}
+                    {member.id === userMember?.id ? " (You)" : ""}
+                  </option>
+                ))}
+              </select>
+
               <p className="text-sm text-stone-400">
-                {userRemaining}/{pointBudget} points remaining
+                {selectedRosterRemaining}/{pointBudget} points remaining
               </p>
             </div>
 
@@ -1059,12 +1088,12 @@ export default function DraftPage() {
         <aside
           className={`rounded-lg border border-amber-900/40 bg-stone-900 p-5 ${
             activeMobilePanel === "board" || activeMobilePanel === "chat"
-              ? "block"
+              ? "flex flex-col"
               : "hidden"
-          } lg:block`}
+          } lg:flex lg:flex-col`}
         >
           <section
-            className={`${activeMobilePanel === "board" ? "block" : "hidden"} lg:block`}
+            className={`${activeMobilePanel === "board" ? "block" : "hidden"} order-2 border-amber-900/40 lg:mt-6 lg:block lg:border-t lg:pt-5`}
           >
             <h2 className="text-xl font-semibold">Draft Board</h2>
 
@@ -1107,7 +1136,7 @@ export default function DraftPage() {
           <section
             className={`${
               activeMobilePanel === "chat" ? "block" : "hidden"
-            } border-sky-900/40 lg:mt-6 lg:block lg:border-t lg:pt-5`}
+            } order-1 lg:block`}
           >
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Draft Chat</h2>
