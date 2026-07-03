@@ -330,8 +330,7 @@ async function saveFormat() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-950 p-6 text-stone-100">
-      <div className="mx-auto max-w-6xl">
+    <>
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold">PokeDrafts Builder</h1>
@@ -518,7 +517,6 @@ async function saveFormat() {
             </tbody>
           </table>
         </section>
-      </div>
-    </main>
+    </>
   );
 }

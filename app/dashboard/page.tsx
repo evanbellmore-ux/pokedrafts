@@ -5,14 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  LogOut,
   Plus,
   ShieldCheck,
   Trash2,
   Trophy,
   Users,
 } from "lucide-react";
-import ThemeToggle from "@/app/components/ThemeToggle";
+import AppNav from "@/app/components/AppNav";
 import { createClient } from "@/app/lib/supabase/client";
 
 type League = {
@@ -139,11 +138,6 @@ export default function DashboardPage() {
     void Promise.resolve().then(load);
   }, [load]);
 
-  async function logout() {
-    await supabase.auth.signOut();
-    router.push("/login");
-  }
-
   async function deleteLeague() {
     if (!leagueToDelete) return;
 
@@ -194,35 +188,13 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-stone-950 px-4 py-6 text-stone-100 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <header className="flex flex-col gap-5 border-b border-amber-900/40 pb-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-wide text-amber-300">
-              PokeDrafts
-            </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-              Dashboard
-            </h1>
-            <p className="mt-2 text-sm text-stone-400">{email}</p>
-          </div>
+        <AppNav />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/builder"
-              className="inline-flex items-center justify-center rounded-lg border border-amber-800/50 bg-stone-900 px-4 py-2.5 text-sm font-semibold text-stone-200 hover:border-amber-600/70 hover:bg-stone-800"
-            >
-              Pool Builder
-            </Link>
-
-            <ThemeToggle />
-
-            <button
-              onClick={logout}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-stone-700 px-4 py-2.5 text-sm font-semibold text-stone-300 hover:border-stone-500 hover:text-white"
-            >
-              <LogOut className="h-4 w-4" />
-              Log out
-            </button>
-          </div>
+        <header>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Dashboard
+          </h1>
+          <p className="mt-2 text-sm text-stone-400">{email}</p>
         </header>
 
         <section className="mt-8 grid gap-4 md:grid-cols-3">
