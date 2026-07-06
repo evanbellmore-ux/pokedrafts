@@ -13,6 +13,7 @@ export default function LeagueNav({ leagueId }: { leagueId: string }) {
     { href: `/leagues/${leagueId}/settings`, label: "Settings" },
     { href: `/leagues/${leagueId}/team`, label: "Teams" },
     { href: `/leagues/${leagueId}/free-agents`, label: "Free Agents" },
+    { href: `/leagues/${leagueId}/standings`, label: "Standings" },
     { href: `/leagues/${leagueId}/matches`, label: "Matches" },
     { href: `/leagues/${leagueId}/draft`, label: "Draft" },
   ];

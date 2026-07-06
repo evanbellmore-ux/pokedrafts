@@ -119,7 +119,7 @@ Used by the draft room chat. The UI loads the latest 100 messages by `created_at
 - `winner_member_id` uuid, nullable
 - `scheduled_at` timestamp, nullable
 
-Draft completion auto-generates `league_matches` from the league's `schedule_format`. Commissioners can still change the matchup format on the Matches page and regenerate the schedule.
+Draft completion auto-generates `league_matches` from the league's `schedule_format`. Commissioners can still change the matchup format on the Matches page and regenerate the schedule. The Standings page derives records from matches with `status = 'completed'` and a `winner_member_id`.
 
 ### `league_news`
 
