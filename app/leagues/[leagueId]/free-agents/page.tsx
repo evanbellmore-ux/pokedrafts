@@ -303,6 +303,11 @@ export default function FreeAgentsPage() {
       metadata: {
         added: freeAgent.name,
         dropped: selectedDrop?.name ?? null,
+        team_id: myTeamId,
+        before_pokemon: myPokemon,
+        after_pokemon: nextPokemon,
+        previous_free_agent_swaps_used: freeAgentSwapsUsed,
+        next_free_agent_swaps_used: freeAgentSwapsUsed + 1,
       },
     });
 

@@ -2,7 +2,7 @@
 
 PokeDrafts expects Supabase Auth plus the tables, storage bucket, and RPCs below. This is a working contract for the app code; keep it in sync with migrations or dashboard changes.
 
-SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat, `20260626170000_add_league_schedule_format.sql` before using matchup format automation, `20260703120000_allow_commissioner_delete_leagues.sql` before using commissioner league deletion, `20260703123000_allow_post_draft_team_updates.sql` before using post-draft free agent moves, `20260703124500_add_free_agent_swap_limits.sql` before enforcing season free agent swap limits, `20260703130000_create_league_news.sql` before using league news, and `20260703131000_allow_commissioner_match_results.sql` before reporting match winners.
+SQL setup files live in `supabase/migrations/`. Apply `20260626163000_create_draft_chat_messages.sql` before using draft-room chat, `20260626170000_add_league_schedule_format.sql` before using matchup format automation, `20260703120000_allow_commissioner_delete_leagues.sql` before using commissioner league deletion, `20260703123000_allow_post_draft_team_updates.sql` before using post-draft free agent moves, `20260703124500_add_free_agent_swap_limits.sql` before enforcing season free agent swap limits, `20260703130000_create_league_news.sql` before using league news, `20260703131000_allow_commissioner_match_results.sql` before reporting match winners, and `20260718120000_allow_commissioner_undo_free_agents.sql` before allowing commissioners to undo free agent moves.
 
 ## Tables
 
@@ -131,7 +131,7 @@ Draft completion auto-generates `league_matches` from the league's `schedule_for
 - `metadata` jsonb
 - `created_at` timestamp
 
-Used by the league overview news feed. Free agent moves and reported match results insert rows here.
+Used by the league overview news feed. Free agent moves and reported match results insert rows here. Free agent news metadata includes `added`, `dropped`, `team_id`, `before_pokemon`, `after_pokemon`, `previous_free_agent_swaps_used`, and `next_free_agent_swaps_used` so commissioners can undo the latest move for a team.
 
 ## RPCs
 
@@ -182,6 +182,7 @@ Recommended policy intent:
 - League members can read league news for leagues they belong to.
 - Commissioners can update their leagues, custom pools, draft order, draft settings, match schedules, match results, and draft start state.
 - Commissioners can delete their leagues; league-scoped child rows should cascade.
+- Commissioners can restore finalized teams, adjust free agent swap counts, and delete free agent news when undoing free agent moves.
 - League members can update their own finalized team after the draft is complete until their free agent swap limit is reached.
 - League members can insert free agent news for their own free agent moves. Commissioners can insert match result news.
 - Coaches can insert a draft pick only when they are the current drafting member and the draft is active.
