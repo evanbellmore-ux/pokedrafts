@@ -112,8 +112,8 @@ footer a { color: var(--dim); }
 
 <div class="diffBar">
   <span class="diffLabel">Difficulty</span>
-  <button class="diffBtn active" data-diff="all">All</button>
-  <button class="diffBtn" data-diff="5">Mythic</button>
+  <button class="diffBtn" data-diff="all">All</button>
+  <button class="diffBtn active" data-diff="5">Mythic</button>
   <button class="diffBtn" data-diff="4">Heroic</button>
   <button class="diffBtn" data-diff="3">Normal</button>
   <button class="diffBtn" data-diff="1">LFR</button>
@@ -134343,7 +134343,7 @@ function setParseCell(td, value) {
     : '—';
 }
 
-let currentDiff = 'all';
+let currentDiff = '5';
 let endOnly = false;
 document.querySelectorAll('.diffBtn[data-diff]').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -134621,9 +134621,9 @@ document.querySelectorAll('#bestTable thead th').forEach((th) => {
     sortBestRows();
   });
 });
-buildBestTier();
-updateDeaths();
-buildEndBossDeaths();
+// Apply the default difficulty to every page on load.
+applyView();
+applyFilter();
 
 const search = document.getElementById('playerSearch');
 const minKills = document.getElementById('minKills');
