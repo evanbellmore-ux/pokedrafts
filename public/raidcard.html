@@ -134621,10 +134621,6 @@ document.querySelectorAll('#bestTable thead th').forEach((th) => {
     sortBestRows();
   });
 });
-// Apply the default difficulty to every page on load.
-applyView();
-applyFilter();
-
 const search = document.getElementById('playerSearch');
 const minKills = document.getElementById('minKills');
 function applyFilter() {
@@ -134655,6 +134651,11 @@ document.querySelectorAll('#playerTable thead th').forEach((th) => {
     pairs.forEach(([row, detail]) => { tbody.appendChild(row); tbody.appendChild(detail); });
   });
 });
+
+// Apply the default difficulty to every page on load. Must stay the last
+// statement: it runs applyFilter, which needs every const above initialized.
+applyView();
+applyFilter();
 </script>
 </body>
 </html>
