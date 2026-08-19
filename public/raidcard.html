@@ -73278,6 +73278,9 @@ footer a { color: var(--dim); }
 
 <main id="deaths" class="tab">
   <p class="hint">Deaths during progression only — every pull up to and including each first kill, counting just the <strong>first 2 deaths of each pull</strong> (the ones that caused the wipe, not the raid dying to it). Deaths/pull uses the pulls each player was actually in; pulls with no death data (archived logs) don't count against anyone. Legion raids are excluded entirely. Click a row for the per-boss breakdown.</p>
+  <div class="controls">
+    <label class="minkills">min pulls <input type="number" id="minPulls" value="1" min="0" step="25" style="width:5.5em"></label>
+  </div>
   <table class="playerTable" id="deathTable">
     <thead>
       <tr>
@@ -134152,11 +134155,13 @@ function updateDeaths() {
       ? esc(worst.name) + ' <span class="of">(' + worst.deaths + ')</span>'
       : '—';
 
-    const show = pulls > 0 || deaths > 0;
+    const minPulls = Number(document.getElementById('minPulls').value) || 0;
+    const show = pulls >= minPulls && (pulls > 0 || deaths > 0);
     row.style.display = show ? '' : 'none';
     if (!show) detail.classList.remove('open');
   });
 }
+document.getElementById('minPulls').addEventListener('input', updateDeaths);
 
 let deathSortKey = 'deaths';
 let deathSortDir = -1;
@@ -134251,6 +134256,7 @@ document.querySelectorAll('#bestTable thead th').forEach((th) => {
   });
 });
 buildBestTier();
+updateDeaths();
 
 const search = document.getElementById('playerSearch');
 const minKills = document.getElementById('minKills');
