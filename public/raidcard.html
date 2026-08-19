@@ -134475,7 +134475,9 @@ function buildEndBossDeaths() {
       a.x += r.x;
       agg.set(key, a);
     }
-    const rows = [...agg.values()].filter((a) => a.p >= min && a.p > 0).sort((a, b) => b.x - a.x || b.p - a.p);
+    const rows = [...agg.values()]
+      .filter((a) => a.p >= min && a.p > 0)
+      .sort((a, b) => b.x / b.p - a.x / a.p || b.x - a.x || b.p - a.p);
     if (!rows.length) return '';
     return '<section class="ebCard"><h2>' + esc(boss.boss) + '</h2><p class="ebRaid">' + esc(boss.zone) + '</p>'
       + '<table class="killTable"><thead><tr><th>Player</th><th class="num">Pulls</th><th class="num">Deaths</th><th class="num">D / Pull</th></tr></thead><tbody>'
