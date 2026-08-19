@@ -134085,7 +134085,7 @@ function applyView() {
     const detail = document.getElementById(row.dataset.detail);
     let attended = 0;
     const parses = [];
-    detail.querySelectorAll('tbody tr').forEach((tr) => {
+    detail.querySelectorAll('tbody > tr').forEach((tr) => {
       const match = (currentDiff === 'all' || tr.dataset.diff === currentDiff)
         && (!endOnly || tr.dataset.end === '1')
         && (currentZone === 'all' || tr.dataset.zone === currentZone)
@@ -134129,7 +134129,7 @@ function updateDeaths() {
     let deaths = 0;
     let pulls = 0;
     let worst = null;
-    detail.querySelectorAll('tbody tr').forEach((tr) => {
+    detail.querySelectorAll('tbody > tr').forEach((tr) => {
       const match = (currentDiff === 'all' || tr.dataset.diff === currentDiff)
         && (!endOnly || tr.dataset.end === '1')
         && (currentZone === 'all' || tr.dataset.zone === currentZone);
@@ -134185,7 +134185,7 @@ function buildBestTier() {
   document.querySelectorAll('.playerRow').forEach((row) => {
     const detail = document.getElementById(row.dataset.detail);
     const byZone = new Map();
-    detail.querySelectorAll('tbody tr').forEach((tr) => {
+    detail.querySelectorAll('tbody > tr').forEach((tr) => {
       const match = (currentDiff === 'all' || tr.dataset.diff === currentDiff)
         && (!endOnly || tr.dataset.end === '1')
         && (currentZone === 'all' || tr.dataset.zone === currentZone)
