@@ -51,6 +51,17 @@ main.tab.active { display: block; }
   padding: 7px 12px; border-radius: 8px; font-size: 14px; }
 .minkills { color: var(--dim); font-size: 13px; }
 .hint { color: var(--dim); font-size: 13px; margin: 0 0 14px; max-width: 720px; }
+.ebGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.ebCard { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.ebCard h2 { margin: 0; font-size: 19px; }
+.ebRaid { margin: 2px 0 10px; color: var(--dim); font-size: 13px; }
+.ebRow { border-top: 1px solid var(--border); padding: 9px 0 8px; }
+.ebRowHead { display: flex; justify-content: space-between; align-items: baseline; }
+.ebRowHead .date { text-decoration: none; }
+.ebRowHead .date:hover { color: var(--accent); }
+.ebDiff { font-weight: 600; font-size: 13.5px; }
+.ebD5 { color: var(--legendary); } .ebD4 { color: var(--epic); }
+.ebD3 { color: var(--rare); } .ebD1 { color: var(--uncommon); }
 table { border-collapse: collapse; width: 100%; }
 .playerTable th { text-align: left; color: var(--dim); font-size: 12.5px; text-transform: uppercase;
   letter-spacing: .6px; padding: 8px 10px; cursor: pointer; user-select: none; white-space: nowrap; }
@@ -95,6 +106,7 @@ footer a { color: var(--dim); }
   <a href="#players" data-tab="players">Player History</a>
   <a href="#besttier" data-tab="besttier">Best Tier</a>
   <a href="#deaths" data-tab="deaths">Deaths</a>
+  <a href="#endbosses" data-tab="endbosses">End Bosses</a>
 </nav>
 
 <div class="diffBar">
@@ -133971,6 +133983,308 @@ footer a { color: var(--dim); }
   </table>
 </main>
 
+<main id="endbosses" class="tab">
+  <p class="hint">Every tier's end boss side by side, newest first — each card shows the first kill on every difficulty. The difficulty chips and raid dropdown filter the cards.</p>
+  <div class="ebGrid">
+<section class="ebCard" data-zone="46">
+  <h2>Midnight Falls</h2>
+  <p class="ebRaid">VS / DR / MQD</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/RXDxHpyhPAKFqwgV#fight=26" target="_blank" rel="noopener">2026-07-15</a>
+  </div>
+  <div class="killMeta">482 pulls · 15 nights · kill in 8:27 · best wipe 4.9%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Vengeance DemonHunter">Bstay 98</span><span class="chip p-legendary" title="Retribution Paladin">Darthbaul 97</span><span class="chip p-epic" title="Windwalker Monk">Mechabun 89</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/fw2y3rGWD7L1AnHY#fight=16" target="_blank" rel="noopener">2026-04-24</a>
+  </div>
+  <div class="killMeta">35 pulls · 4 nights · kill in 6:01 · best wipe 10.0%</div>
+  <div class="topParses"><span class="chip p-epic" title="Restoration Shaman">Oghden 91</span><span class="chip p-epic" title="Retribution Paladin">Darthbaul 86</span><span class="chip p-epic" title="Feral Druid">Cattaracts 85</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/aKTpBWb7hMxG6rm3#fight=7" target="_blank" rel="noopener">2026-04-02</a>
+  </div>
+  <div class="killMeta">1 pull · 1 night · kill in 4:05</div>
+  <div class="topParses"><span class="chip p-legendary" title="Marksmanship Hunter">Bownerjamms 96</span><span class="chip p-legendary" title="Retribution Paladin">Ulq 96</span><span class="chip p-legendary" title="Protection Warrior">Rct 95</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="44">
+  <h2>Dimensius, the All-Devouring</h2>
+  <p class="ebRaid">Manaforge Omega</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/XJz4FYPmBjyV36DZ#fight=12" target="_blank" rel="noopener">2025-12-18</a>
+  </div>
+  <div class="killMeta">533 pulls · 16 nights · kill in 7:28 · best wipe 0.0%</div>
+  <div class="topParses"><span class="chip p-epic" title="Restoration Shaman">Puppasham 93</span><span class="chip p-epic" title="Blood DeathKnight">Rahkir 88</span><span class="chip p-epic" title="Retribution Paladin">Darthbaul 88</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/a8YbCNRTpVFmXd29#fight=28" target="_blank" rel="noopener">2025-08-25</a>
+  </div>
+  <div class="killMeta">36 pulls · 2 nights · kill in 8:23 · best wipe 1.1%</div>
+  <div class="topParses"><span class="chip p-epic" title="Blood DeathKnight">Rctdk 77</span><span class="chip p-epic" title="Havoc DemonHunter">Bstay 75</span><span class="chip p-rare" title="Restoration Shaman">Hylfrid 72</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/vfx2K1nm6bY3kjZT#fight=22" target="_blank" rel="noopener">2025-08-18</a>
+  </div>
+  <div class="killMeta">15 pulls · 2 nights · kill in 8:11 · best wipe 32.5%</div>
+  <div class="topParses"><span class="chip p-epic" title="Havoc DemonHunter">Bstay 79</span><span class="chip p-rare" title="Devastation Evoker">Idragondeez 70</span><span class="chip p-rare" title="Holy Priest">Blizfincuck 64</span></div>
+</div>
+<div class="ebRow" data-diff="1">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD1">LFR</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/rZY3421zPxVRtLWn#fight=69" target="_blank" rel="noopener">2025-10-27</a>
+  </div>
+  <div class="killMeta">2 pulls · 1 night · kill in 7:24 · best wipe 93.9%</div>
+  <div class="topParses"><span class="chip p-epic" title="Holy Paladin">Shockgnomer 78</span><span class="chip p-epic" title="Blood DeathKnight">Rahkir 77</span><span class="chip p-epic" title="Feral Druid">Windoze 76</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="42">
+  <h2>Chrome King Gallywix</h2>
+  <p class="ebRaid">Liberation of Undermine</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/KVvbHdhNqmnj41Lg#fight=28" target="_blank" rel="noopener">2025-06-18</a>
+  </div>
+  <div class="killMeta">103 pulls · 5 nights · kill in 7:18 · best wipe 6.8%</div>
+  <div class="topParses"><span class="chip p-epic" title="Protection Warrior">Rct 87</span><span class="chip p-epic" title="Retribution Paladin">Darthbaul 76</span><span class="chip p-rare" title="Retribution Paladin">Ulq 73</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/JgVk1ht4NrByGMjH#fight=30" target="_blank" rel="noopener">2025-03-18</a>
+  </div>
+  <div class="killMeta">28 pulls · 1 night · kill in 8:07 · best wipe 8.1%</div>
+  <div class="topParses"><span class="chip p-epic" title="Protection Warrior">Rct 83</span><span class="chip p-epic" title="Retribution Paladin">Bristaytwo 81</span><span class="chip p-epic" title="Unholy DeathKnight">Pbrine 78</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/FAyC1RMtWGaxc3kY#fight=17" target="_blank" rel="noopener">2025-03-19</a>
+  </div>
+  <div class="killMeta">1 pull · 1 night · kill in 3:16</div>
+  <div class="topParses"><span class="chip p-astounding" title="Mistweaver Monk">Puppabrew 99</span><span class="chip p-legendary" title="Protection Warrior">Rct 97</span><span class="chip p-legendary" title="BeastMastery Hunter">Bownerjamms 97</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="38">
+  <h2>Queen Ansurek</h2>
+  <p class="ebRaid">Nerub-ar Palace</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/KX4jFMp6APfgJBRb#fight=7" target="_blank" rel="noopener">2025-01-29</a>
+  </div>
+  <div class="killMeta">339 pulls · 13 nights · kill in 7:30 · best wipe 1.2%</div>
+  <div class="topParses"><span class="chip p-artifact" title="Assassination Rogue">Dabxd 100</span><span class="chip p-artifact" title="Havoc DemonHunter">Bstay 100</span><span class="chip p-astounding" title="Retribution Paladin">Darthbaul 99</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/aCYA1L4X7mPrH2yj#fight=87" target="_blank" rel="noopener">2024-09-25</a>
+  </div>
+  <div class="killMeta">95 pulls · 4 nights · kill in 7:51 · best wipe 4.6%</div>
+  <div class="topParses"><span class="chip p-epic" title="Havoc DemonHunter">Bstay 94</span><span class="chip p-epic" title="Windwalker Monk">Mechabun 83</span><span class="chip p-epic" title="BeastMastery Hunter">Bownerjamms 80</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/2RXDfM847hWJTkvt#fight=60" target="_blank" rel="noopener">2024-09-11</a>
+  </div>
+  <div class="killMeta">8 pulls · 1 night · kill in 6:03 · best wipe 29.9%</div>
+  <div class="topParses"><span class="chip p-epic" title="Windwalker Monk">Mechabun 78</span><span class="chip p-rare" title="Preservation Evoker">Stõrmblessed 74</span><span class="chip p-rare" title="BeastMastery Hunter">Bownerjamms 73</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="35">
+  <h2>Fyrakk the Blazing</h2>
+  <p class="ebRaid">Amirdrassil, the Dream's Hope</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/tpvfNKTn9YkZDC8L#fight=23" target="_blank" rel="noopener">2024-04-12</a>
+  </div>
+  <div class="killMeta">463 pulls · 12 nights · kill in 9:21 · best wipe 10.1%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Mistweaver Monk">Dairo 95</span><span class="chip p-epic" title="Havoc DemonHunter">Avai 93</span><span class="chip p-epic" title="Unholy DeathKnight">Frankzdk 77</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/t7JDPbrc4qNTh8zf#fight=14" target="_blank" rel="noopener">2023-11-28</a>
+  </div>
+  <div class="killMeta">7 pulls · 1 night · kill in 7:06 · best wipe 3.9%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Havoc DemonHunter">Avai 95</span><span class="chip p-epic" title="BeastMastery Hunter">Bownerjamms 90</span><span class="chip p-epic" title="Protection Paladin">Phaestos 85</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/dphN8tVM2kJL1Caq#fight=45" target="_blank" rel="noopener">2023-11-15</a>
+  </div>
+  <div class="killMeta">2 pulls · 1 night · kill in 8:12 · best wipe 18.3%</div>
+  <div class="topParses"><span class="chip p-epic" title="Protection Paladin">Olur 77</span><span class="chip p-rare" title="Fire Mage">Matato 56</span><span class="chip p-rare" title="Blood DeathKnight">Tsralthar 55</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="33">
+  <h2>Scalecommander Sarkareth</h2>
+  <p class="ebRaid">Aberrus, the Shadowed Crucible</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/dJmMxyYXCzWajbfR#fight=22" target="_blank" rel="noopener">2023-08-24</a>
+  </div>
+  <div class="killMeta">402 pulls · 14 nights · kill in 7:03 · best wipe 0.9%</div>
+  <div class="topParses"><span class="chip p-epic" title="Shadow Priest">Worstx 77</span><span class="chip p-epic" title="Havoc DemonHunter">Avai 77</span><span class="chip p-epic" title="Holy Paladin">Olur 75</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/zBng4dxrwLf9DhvA#fight=53" target="_blank" rel="noopener">2023-05-16</a>
+  </div>
+  <div class="killMeta">17 pulls · 1 night · kill in 7:27 · best wipe 32.5%</div>
+  <div class="topParses"><span class="chip p-epic" title="Feral Druid">Morkez 87</span><span class="chip p-epic" title="Havoc DemonHunter">Avai 82</span><span class="chip p-epic" title="Balance Druid">Eldiondris 81</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/WfpD8MktGHByvrg2#fight=83" target="_blank" rel="noopener">2023-05-17</a>
+  </div>
+  <div class="killMeta">2 pulls · 1 night · kill in 5:05 · best wipe 19.4%</div>
+  <div class="topParses"><span class="chip p-epic" title="Shadow Priest">Worstx 92</span><span class="chip p-epic" title="Balance Druid">Eldiondris 90</span><span class="chip p-epic" title="Devastation Evoker">Slorpglorpin 90</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="31">
+  <h2>Raszageth the Storm-Eater</h2>
+  <p class="ebRaid">Vault of the Incarnates</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/TB3z4HmVMWL2AcGg#fight=7" target="_blank" rel="noopener">2023-04-05</a>
+  </div>
+  <div class="killMeta">297 pulls · 15 nights · kill in 11:46 · best wipe 13.6%</div>
+  <div class="topParses"><span class="chip p-epic" title="Balance Druid">Eldiondris 89</span><span class="chip p-epic" title="Shadow Priest">Worstx 89</span><span class="chip p-epic" title="Havoc DemonHunter">Avai 85</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/QPVbrB6g9NATd8ay#fight=10" target="_blank" rel="noopener">2023-01-03</a>
+  </div>
+  <div class="killMeta">43 pulls · 3 nights · kill in 11:18 · best wipe 29.9%</div>
+  <div class="topParses"><span class="chip p-epic" title="Protection Warrior">Rahkir 91</span><span class="chip p-epic" title="Holy Paladin">Palomena 82</span><span class="chip p-rare" title="Preservation Evoker">Tessaryon 71</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/J3xfwbnHGCZzjkV1#fight=37" target="_blank" rel="noopener">2022-12-21</a>
+  </div>
+  <div class="killMeta">2 pulls · 1 night · kill in 8:31 · best wipe 99.7%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Protection Warrior">Rahkir 95</span><span class="chip p-epic" title="Windwalker Monk">Mechabun 89</span><span class="chip p-epic" title="Balance Druid">Eldiondris 79</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="26">
+  <h2>Sire Denathrius</h2>
+  <p class="ebRaid">Castle Nathria</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/aDh8AJgwxfQ7YN9H#fight=13" target="_blank" rel="noopener">2021-05-20</a>
+  </div>
+  <div class="killMeta">322 pulls · 14 nights · kill in 9:55 · best wipe 0.0%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Marksmanship Hunter">Rexxagon 95</span><span class="chip p-epic" title="Unholy DeathKnight">Jespar 92</span><span class="chip p-epic" title="Shadow Priest">Worstx 88</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/dDmVfW9b1GHxvLtY#fight=5" target="_blank" rel="noopener">2021-01-13</a>
+  </div>
+  <div class="killMeta">2 pulls · 1 night · kill in 7:59 · best wipe 72.4%</div>
+  <div class="topParses"><span class="chip p-epic" title="Havoc DemonHunter">Avai 93</span><span class="chip p-epic" title="Elemental Shaman">Kihnshar 92</span><span class="chip p-epic" title="Affliction Warlock">Bigfuzzed 88</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/Zz3hGyM42PqCD1fL#fight=1" target="_blank" rel="noopener">2020-12-22</a>
+  </div>
+  <div class="killMeta">1 pull · 1 night · kill in 8:42</div>
+  <div class="topParses"><span class="chip p-legendary" title="Marksmanship Hunter">Rexxagon 97</span><span class="chip p-legendary" title="Havoc DemonHunter">Avai 96</span><span class="chip p-epic" title="Balance Druid">Tillmo 93</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="29">
+  <h2>The Jailer</h2>
+  <p class="ebRaid">Sepulcher of the First Ones</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/b26PTGmd94VYhvCj#fight=47" target="_blank" rel="noopener">2022-07-22</a>
+  </div>
+  <div class="killMeta">168 pulls · 6 nights · kill in 8:20 · best wipe 4.8%</div>
+  <div class="topParses"><span class="chip p-epic" title="Havoc DemonHunter">Avai 91</span><span class="chip p-epic" title="Fury Warrior">Rahkir 83</span><span class="chip p-epic" title="BeastMastery Hunter">Kzc 75</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/XPh4JNbZfdrY8K9V#fight=3" target="_blank" rel="noopener">2022-04-13</a>
+  </div>
+  <div class="killMeta">41 pulls · 3 nights · kill in 7:30 · best wipe 7.5%</div>
+  <div class="topParses"><span class="chip p-epic" title="Shadow Priest">Worstx 94</span><span class="chip p-epic" title="Subtlety Rogue">Hotguysixpac 87</span><span class="chip p-epic" title="Havoc DemonHunter">Avai 82</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/M37jtgh4pQJ2YCZb#fight=21" target="_blank" rel="noopener">2022-03-21</a>
+  </div>
+  <div class="killMeta">8 pulls · 1 night · kill in 6:50 · best wipe 8.4%</div>
+  <div class="topParses"><span class="chip p-epic" title="Enhancement Shaman">Vispo 90</span><span class="chip p-epic" title="Subtlety Rogue">Hotguysixpac 84</span><span class="chip p-epic" title="Windwalker Monk">Vekktus 80</span></div>
+</div>
+<div class="ebRow" data-diff="1">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD1">LFR</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/9dv841WR6HCghAyr#fight=57" target="_blank" rel="noopener">2022-08-23</a>
+  </div>
+  <div class="killMeta">1 pull · 1 night · kill in 10:36</div>
+  <div class="topParses"><span class="chip p-epic" title="Holy Priest">Shü 79</span><span class="chip p-rare" title="Shadow Priest">Aslaan 69</span><span class="chip p-rare" title="Protection Warrior">Octävia 67</span></div>
+</div>
+</section>
+<section class="ebCard" data-zone="28">
+  <h2>Sylvanas Windrunner</h2>
+  <p class="ebRaid">Sanctum of Domination</p>
+<div class="ebRow" data-diff="5">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD5">Mythic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/QLqGbwmFtDn7ZCcK#fight=7" target="_blank" rel="noopener">2021-10-08</a>
+  </div>
+  <div class="killMeta">217 pulls · 13 nights · kill in 14:13 · best wipe 45.9%</div>
+  <div class="topParses"><span class="chip p-epic" title="Marksmanship Hunter">Rexxagon 83</span><span class="chip p-epic" title="Elemental Shaman">Kihnshar 79</span><span class="chip p-rare" title="BeastMastery Hunter">Dabusele 69</span></div>
+</div>
+<div class="ebRow" data-diff="4">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD4">Heroic</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/PcfQzGA3dVbBXWmF#fight=19" target="_blank" rel="noopener">2021-07-27</a>
+  </div>
+  <div class="killMeta">23 pulls · 3 nights · kill in 13:12 · best wipe 51.4%</div>
+  <div class="topParses"><span class="chip p-epic" title="Havoc DemonHunter">Avai 90</span><span class="chip p-epic" title="Marksmanship Hunter">Rexxagon 83</span><span class="chip p-epic" title="Unholy DeathKnight">Jespar 77</span></div>
+</div>
+<div class="ebRow" data-diff="3">
+  <div class="ebRowHead">
+    <span class="ebDiff ebD3">Normal</span>
+    <a class="date" href="https://www.warcraftlogs.com/reports/2rj9qwghDntGfPKC#fight=13" target="_blank" rel="noopener">2021-07-13</a>
+  </div>
+  <div class="killMeta">4 pulls · 1 night · kill in 13:28 · best wipe 60.9%</div>
+  <div class="topParses"><span class="chip p-legendary" title="Holy Paladin">Goodatgame 96</span><span class="chip p-epic" title="Mistweaver Monk">Allrianne 90</span><span class="chip p-epic" title="Elemental Shaman">Kihnshar 89</span></div>
+</div>
+</section>
+  </div>
+</main>
+
 <footer>Data from <a href="https://www.warcraftlogs.com" target="_blank" rel="noopener">Warcraft Logs</a>. Parses are percentile ranks at time of fetch (rankPercent) — damage for tanks/DPS, healing for healers.</footer>
 
 <script>
@@ -134078,6 +134392,17 @@ function applyView() {
     const zoneOk = currentZone === 'all' || zone.dataset.zone === currentZone;
     const anyVisible = zoneOk && [...zone.querySelectorAll('.diffSection')].some((s) => s.style.display !== 'none');
     zone.style.display = anyVisible ? '' : 'none';
+  });
+
+  document.querySelectorAll('.ebCard').forEach((card) => {
+    const zoneOk = currentZone === 'all' || card.dataset.zone === currentZone;
+    let visible = 0;
+    card.querySelectorAll('.ebRow').forEach((row) => {
+      const show = zoneOk && (currentDiff === 'all' || row.dataset.diff === currentDiff);
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    card.style.display = zoneOk && visible ? '' : 'none';
   });
 
   const pool = KILLS.filter((k) =>
