@@ -134319,7 +134319,9 @@ document.querySelectorAll('nav a').forEach((link) => {
     history.replaceState(null, '', '#' + link.dataset.tab);
   });
 });
-if (location.hash === '#players') document.querySelector('[data-tab="players"]').click();
+// Deep links: #players, #besttier, #deaths, #endbosses, #ebdeaths, ...
+const initialTab = document.querySelector('nav a[data-tab="' + location.hash.slice(1).replace(/[^a-z]/g, '') + '"]');
+if (initialTab) initialTab.click();
 
 document.querySelectorAll('.playerRow, .deathRow').forEach((row) => {
   row.addEventListener('click', () => {
