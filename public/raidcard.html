@@ -145684,6 +145684,9 @@ footer a { color: var(--dim); }
 
 <main id="pinfusion" class="tab">
   <p class="hint">Who received <strong>Power Infusion</strong> on progression first kills — total applications and how many kills they were blessed on. Priests are excluded (self and mirrored PIs aren't favoritism). Click a row for the per-boss breakdown; difficulty chips and the raid dropdown filter.</p>
+  <div class="controls">
+    <label class="minkills">min kills attended <input type="number" class="minKillsUsage" id="minKillsPI" value="5" min="0" step="5" style="width:4.5em"></label>
+  </div>
   <table class="playerTable" id="piTable">
     <thead>
       <tr>
@@ -149659,6 +149662,9 @@ footer a { color: var(--dim); }
 
 <main id="healthstones" class="tab">
   <p class="hint">Healthstones used on progression first kills — total pops and how many kills each player used at least one on. The panic button hall of fame. Click a row for the per-boss breakdown; difficulty chips and the raid dropdown filter.</p>
+  <div class="controls">
+    <label class="minkills">min kills attended <input type="number" class="minKillsUsage" id="minKillsHS" value="5" min="0" step="5" style="width:4.5em"></label>
+  </div>
   <table class="playerTable" id="hsTable">
     <thead>
       <tr>
@@ -167853,6 +167859,9 @@ footer a { color: var(--dim); }
 
 <main id="healthpots" class="tab">
   <p class="hint">Healing potions used on progression first kills — every seasonal variant counted (Spiritual, Refreshing, Dreamwalker's, Algari, Cavedweller's Delight, Invigorating, Silvermoon, Potent). Click a row for the per-boss breakdown; difficulty chips and the raid dropdown filter.</p>
+  <div class="controls">
+    <label class="minkills">min kills attended <input type="number" class="minKillsUsage" id="minKillsHP" value="5" min="0" step="5" style="width:4.5em"></label>
+  </div>
   <table class="playerTable" id="hpTable">
     <thead>
       <tr>
@@ -183200,11 +183209,14 @@ function updatePI() {
     row.querySelector('.c-kills').textContent = kills;
     row.querySelector('.c-pct').textContent = pct != null ? pct + '%' : '—';
     row.querySelector('.c-top').innerHTML = top ? esc(top.name) + ' <span class="of">(' + top.uses + ')</span>' : '—';
-    const show = total > 0;
+    const minInput = row.closest('main').querySelector('.minKillsUsage');
+    const minAttended = minInput ? Number(minInput.value) || 0 : 0;
+    const show = total > 0 && attended >= minAttended;
     row.style.display = show ? '' : 'none';
     if (!show) detail.classList.remove('open');
   });
 }
+document.querySelectorAll('.minKillsUsage').forEach((input) => input.addEventListener('input', updatePI));
 
 function wireUsageSort(tableSel, rowSel) {
   let sortKeyU = 'total';
