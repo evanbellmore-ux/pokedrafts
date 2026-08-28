@@ -229703,7 +229703,7 @@ function buildRatings() {
     '<tr>'
     + '<td class="num"><span class="parse ' + GRADE_CLASS[row.grade] + '" style="font-size:16px">' + row.grade + '</span></td>'
     + '<td><span class="dot" style="background:' + esc(row.p.col) + '"></span>' + esc(row.p.n)
-    + (row.p.s ? '<span class="server">-' + esc(row.p.s) + '</span>' : '') + '<span class="specs">' + row.p.pulls + ' pulls</span></td>'
+    + (row.p.s ? '<span class="server">-' + esc(row.p.s) + '</span>' : '') + '<span class="specs">' + row.pulls + ' pulls</span></td>'
     + '<td class="num"><b>' + row.score.toFixed(1) + '</b></td>'
     + '<td class="num">' + cell(row.parts.surv) + '</td>'
     + '<td class="num">' + cell(row.parts.out) + '</td>'
