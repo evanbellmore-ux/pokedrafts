@@ -229005,7 +229005,7 @@ footer a { color: var(--dim); }
 </main>
 
 <main id="rating" class="tab">
-  <p class="hint">The RaidCard Rating: <strong>35% survival</strong> (deaths/pull percentile) · <strong>45% output</strong> (median parse) · <strong>10% uptime</strong> (ceiling-normalized active time) · <strong>10% preparedness</strong> (defensives/pull percentile within class). Healers skip uptime; their weights renormalize. Graded on the curve: <span class="parse p-artifact">S</span> top 10%, <span class="parse p-legendary">A</span> next 15%, <span class="parse p-epic">B</span> 25%, <span class="parse p-rare">C</span> 25%, <span class="parse p-uncommon">D</span> 15%, <span class="parse p-common">F</span> bottom 10%. Rated over the full progression history — the difficulty/raid filters don't apply here.</p>
+  <p class="hint">The RaidCard Rating: <strong>35% survival</strong> (deaths/pull percentile) · <strong>45% output</strong> (median parse) · <strong>10% uptime</strong> (ceiling-normalized active time) · <strong>10% preparedness</strong> (defensives/pull percentile within class). Healers skip uptime; their weights renormalize. Graded on the curve: <span class="parse p-artifact">S</span> top 10%, <span class="parse p-legendary">A</span> next 20%, <span class="parse p-epic">B</span> 20%, <span class="parse p-rare">C</span> 20%, <span class="parse p-uncommon">D</span> 20%, <span class="parse p-common">F</span> bottom 10%. Rated over the full progression history — the difficulty/raid filters don't apply here.</p>
   <div class="controls">
     <label class="minkills">min pulls <input type="number" id="minPullsRate" value="75" min="0" step="25" style="width:5.5em"></label>
   </div>
@@ -229663,11 +229663,11 @@ function buildRatings() {
   }
 
   rows.sort((a, b) => b.score - a.score);
-  // Curve: S 10% / A 15% / B 25% / C 25% / D 15% / F 10%.
+  // Curve: S 10% / A 20% / B 20% / C 20% / D 20% / F 10%.
   const n = rows.length;
   rows.forEach((row, i) => {
     const q = n > 1 ? i / n : 0;
-    row.grade = q < 0.10 ? 'S' : q < 0.25 ? 'A' : q < 0.50 ? 'B' : q < 0.75 ? 'C' : q < 0.90 ? 'D' : 'F';
+    row.grade = q < 0.10 ? 'S' : q < 0.30 ? 'A' : q < 0.50 ? 'B' : q < 0.70 ? 'C' : q < 0.90 ? 'D' : 'F';
   });
 
   const cell = (v) => v != null ? Math.round(v) : '—';
