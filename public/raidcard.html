@@ -183704,7 +183704,7 @@ function buildDefensives() {
       + '<table class="killTable"><thead><tr><th>Player</th><th class="num">Pulls</th><th class="num">Defs</th><th class="num">Per Pull</th></tr></thead><tbody>'
       + rows.map((r) => {
           const breakdown = Object.entries(r.abilities).sort((a, b) => b[1] - a[1])
-            .map(([name, count]) => '<span class="chip">' + esc(name) + ' ×' + count + '</span>').join('');
+            .map(([name, count]) => '<span class="chip">' + esc(name) + ' ' + (count / r.pulls).toFixed(2) + '/pull</span>').join('');
           return '<tr class="defPlayer"><td><span class="dot" style="background:' + esc(card.color) + '"></span>' + esc(r.n) + '</td>'
             + '<td class="num">' + r.pulls + '</td><td class="num">' + r.uses + '</td>'
             + '<td class="num">' + r.rate.toFixed(2) + '</td></tr>'
