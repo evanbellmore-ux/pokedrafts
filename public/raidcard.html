@@ -229008,7 +229008,7 @@ footer a { color: var(--dim); }
 <main id="rating" class="tab">
   <p class="hint">The RaidCard Rating: <strong>60% output</strong> (median parse) · <strong>25% survival</strong> (deaths/pull percentile) · <strong>7.5% uptime</strong> (ceiling-normalized active time) · <strong>7.5% preparedness</strong> (defensives/pull percentile within class). Healers skip uptime; their weights renormalize. Graded on the curve: <span class="parse p-artifact">S</span> top 10%, <span class="parse p-legendary">A</span> next 20%, <span class="parse p-epic">B</span> 20%, <span class="parse p-rare">C</span> 20%, <span class="parse p-uncommon">D</span> 20%, <span class="parse p-common">F</span> bottom 10%. The difficulty, raid, and end-boss filters recompute the whole rating, percentiles included.</p>
   <div class="controls">
-    <label class="minkills">min pulls <input type="number" id="minPullsRate" value="75" min="0" step="25" style="width:5.5em"></label>
+    <label class="minkills">min pulls <input type="number" id="minPullsRate" value="250" min="0" step="25" style="width:5.5em"></label>
   </div>
   <table class="playerTable" id="rateTable">
     <thead>
@@ -229029,7 +229029,7 @@ footer a { color: var(--dim); }
 <main id="prograting" class="tab">
   <p class="hint">The Prog Rating — same scale, but <strong>output is a real parse for every progression pull</strong>, wipes included: each pull's actual DPS (or healing) is scored on Warcraft Logs' own percentile curves for that boss + difficulty + spec, rebuilt from ranked kills. Per boss the pulls collapse to a duration-weighted median parse, then bosses combine weighted by time spent. Healers blend 75% healing / 25% damage, same as kill parses. Weights: 60% output · 25% survival · 7.5% uptime · 7.5% preparedness, curved S–F.</p>
   <div class="controls">
-    <label class="minkills">min pulls <input type="number" id="minPullsRate2" value="75" min="0" step="25" style="width:5.5em"></label>
+    <label class="minkills">min pulls <input type="number" id="minPullsRate2" value="250" min="0" step="25" style="width:5.5em"></label>
   </div>
   <table class="playerTable" id="rate2Table">
     <thead>
