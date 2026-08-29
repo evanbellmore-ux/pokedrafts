@@ -229712,10 +229712,19 @@ function buildRatingTable(tableId) {
     for (const l of p.act) if (lineOk(l)) { act += l.a; en += l.en; dmg += l.dm; dn += l.dn; }
     const up = en > 0 ? Math.min(100, (act / en) * 100) : null;
 
-    // Output: kill-parse median, or pull damage vs the class ceiling.
+    // Output: kill-parse median, or pull damage vs the spec ceiling —
+    // scored per boss, then averaged weighted by ACTIVE TIME so every hour
+    // of prog counts equally regardless of that era's damage scale.
     let mp = null;
     if (tab.pullOutput) {
-      mp = dn > 0 ? Math.min(100, (dmg / dn) * 100) : null;
+      let wsum = 0;
+      let rsum = 0;
+      for (const l of p.act) {
+        if (!lineOk(l) || !(l.dn > 0) || !(l.a > 0)) continue;
+        rsum += Math.min(1, l.dm / l.dn) * l.a;
+        wsum += l.a;
+      }
+      mp = wsum > 0 ? (rsum / wsum) * 100 : null;
     } else {
       const parses = roleKills.map((k) => k.p).sort((a, b) => a - b);
       mp = parses.length ? medianOf(parses) : null;
