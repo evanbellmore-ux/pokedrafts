@@ -1,88 +1,14 @@
 // Cast Mirror compare API — serverless port of the standalone mirror's
 // /api/compare (github.com/evanbellmore-ux/cast-mirror).
 //
-// Finds a character's best ranked kill of an encounter, fetches the
-// world-#1 same-spec parse on that fight, and returns both cast streams,
-// per-spell output, and resource economy. The page lives at /castmirror.
-//
-// Auth is OAuth2 client_credentials against the Warcraft Logs v2 API —
-// set WCL_CLIENT_ID / WCL_CLIENT_SECRET in the Vercel project env. The
-// response cache and per-IP limiter are module-scope, so they live as
-// long as a warm serverless instance (good enough: their job is to stop
-// repeat traffic from draining the API points budget).
+// Mirrors one of a character's kills (their best ranked one, or a specific
+// fight pinned via code+fightID) against the best mirrorable world parse of
+// the same spec on that encounter: cast streams, per-spell output, resource
+// economy. The page lives at /castmirror.
+
+import { wcl, slugify, rateOk, clientIp, getClasses, specFromFight } from '../lib';
 
 export const maxDuration = 60;
-
-const TOKEN_URL = 'https://www.warcraftlogs.com/oauth/token';
-const API_URL = 'https://www.warcraftlogs.com/api/v2/client';
-
-let apiToken: string | null = null;
-let tokenExpiresAt = 0;
-
-function slugify(value: string): string {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[\s_]+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
-}
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-async function authenticate(force = false): Promise<string> {
-  if (!force && apiToken && Date.now() < tokenExpiresAt - 60_000) return apiToken;
-  const id = process.env.WCL_CLIENT_ID;
-  const secret = process.env.WCL_CLIENT_SECRET;
-  if (!id || !secret) throw new Error('log-service credentials are not configured on the server');
-  const res = await fetch(TOKEN_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString('base64')}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
-  });
-  if (!res.ok) throw new Error(`OAuth token request failed (${res.status})`);
-  const json = await res.json();
-  apiToken = json.access_token as string;
-  tokenExpiresAt = Date.now() + json.expires_in * 1000;
-  return apiToken;
-}
-
-/** GraphQL query with a small retry budget (serverless has a time budget —
- * no long rate-limit sleeps; those fail fast with a clear message). */
-async function wcl(query: string, variables: Record<string, unknown> = {}): Promise<any> {
-  let lastError: Error | null = null;
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const token = await authenticate(attempt > 1);
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables }),
-    });
-    const text = await res.text();
-    if (res.status === 401) {
-      apiToken = null;
-      lastError = new Error('Unauthorized');
-      continue;
-    }
-    if (res.status === 429 || res.status >= 500) {
-      lastError = new Error(`log service returned ${res.status}`);
-      if (attempt < 3) await sleep(500 * 2 ** (attempt - 1));
-      continue;
-    }
-    if (!res.ok) throw new Error(`log-service request failed (${res.status})`);
-    const json = JSON.parse(text);
-    if (json.errors?.length) {
-      const message = json.errors.map((e: { message: string }) => e.message).join('; ');
-      if (/rate limit/i.test(message)) throw new Error('the log-service API is rate limited right now — try again in a few minutes');
-      throw new Error(`log-service error: ${message}`);
-    }
-    if (!json.data) throw new Error('log-service response contained no data');
-    return json.data;
-  }
-  throw lastError ?? new Error('query failed after retries');
-}
 
 interface FightSide {
   name: string;
@@ -222,30 +148,18 @@ interface CompareParams {
   encounter: number;
   difficulty: number;
   metric: 'dps' | 'hps';
+  code: string | null;
+  fightID: number | null;
 }
 
-let classesCache: Map<number, string> | null = null;
 const compareCache = new Map<string, unknown>();
-const buckets = new Map<string, { count: number; resetAt: number }>();
-
-function rateOk(ip: string): boolean {
-  const now = Date.now();
-  const b = buckets.get(ip) ?? { count: 0, resetAt: now + 3600_000 };
-  if (now > b.resetAt) { b.count = 0; b.resetAt = now + 3600_000; }
-  b.count++;
-  buckets.set(ip, b);
-  return b.count <= 12; // fresh compares per IP per hour (per warm instance)
-}
 
 async function apiCompare(params: CompareParams) {
-  const { name, server, region, encounter, difficulty, metric } = params;
+  const { name, server, region, encounter, difficulty, metric, code, fightID } = params;
+  const pin = code && fightID ? { code, fightID } : null;
   const slug = slugify(server);
   const reg = region.toLowerCase();
-
-  if (!classesCache) {
-    const g = await wcl(`query { gameData { classes { id name } } }`);
-    classesCache = new Map(g.gameData.classes.map((x: any) => [x.id, x.name.replace(/\s+/g, '')]));
-  }
+  const classes = await getClasses();
 
   const cd = await wcl(
     `query($name: String!, $slug: String!, $region: String!, $enc: Int!, $diff: Int!, $metric: CharacterRankingMetricType!) {
@@ -259,7 +173,18 @@ async function apiCompare(params: CompareParams) {
   const ranks = ch.encounterRankings?.ranks ?? [];
   let best: { report: { code: string; fightID: number }; amount: number; rankPercent: number | null };
   let spec: string | undefined;
-  if (ranks.length) {
+  if (pin) {
+    // mirror one specific kill, not the best one
+    const match = ranks.find((r: any) => r.report?.code === pin.code && r.report?.fightID === pin.fightID);
+    if (match) {
+      best = { report: match.report, amount: match.amount, rankPercent: match.rankPercent };
+      spec = match.spec;
+    } else {
+      spec = await specFromFight(pin.code, pin.fightID, name);
+      if (!spec) throw new Error(`could not determine ${name}'s spec on ${pin.code}#${pin.fightID}`);
+      best = { report: pin, amount: 0, rankPercent: null };
+    }
+  } else if (ranks.length) {
     const top = ranks.slice().sort((a: any, b: any) => b.amount - a.amount)[0];
     best = { report: top.report, amount: top.amount, rankPercent: top.rankPercent };
     spec = top.spec;
@@ -270,17 +195,11 @@ async function apiCompare(params: CompareParams) {
         ? `${name}'s rankings are hidden on the log service, and no recent public kill of this encounter was found`
         : `${name} has no ranked kill of this encounter at this difficulty`);
     }
-    const sum = await wcl(
-      `query($code: String!, $fid: [Int]!) {
-         reportData { report(code: $code) { table(dataType: Summary, fightIDs: $fid) } }
-       }`, { code: local.code, fid: [local.fightID] });
-    const me = (sum.reportData.report?.table?.data?.composition ?? [])
-      .find((p: any) => p.name?.toLowerCase() === name.trim().toLowerCase());
-    spec = me?.specs?.[0]?.spec;
+    spec = await specFromFight(local.code, local.fightID, name);
     if (!spec) throw new Error(`could not determine ${name}'s spec from the found kill`);
     best = { report: { code: local.code, fightID: local.fightID }, amount: 0, rankPercent: null };
   }
-  const className = classesCache.get(ch.classID) ?? 'Unknown';
+  const className = classes.get(ch.classID) ?? 'Unknown';
 
   const wr = await wcl(
     `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!) {
@@ -291,9 +210,12 @@ async function apiCompare(params: CompareParams) {
      }`, { enc: encounter, cls: className, spec, diff: difficulty, metric });
   const encData = wr.worldData.encounter;
   const rankings = encData?.characterRankings?.rankings ?? [];
-  if (!rankings.length) throw new Error(`no world rankings for ${spec} ${className} on this encounter/difficulty`);
-  let top = rankings[0];
-  if (top.name?.toLowerCase() === name.trim().toLowerCase() && top.report?.code === best.report?.code && rankings[1]) top = rankings[1];
+  // anonymous uploads can't be actor-matched — take the best mirrorable parse
+  const usable = rankings.filter((r: any) =>
+    r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:'));
+  if (!usable.length) throw new Error(`no mirrorable world rankings for ${spec} ${className} on this encounter/difficulty`);
+  let top = usable[0];
+  if (top.name?.toLowerCase() === name.trim().toLowerCase() && top.report?.code === best.report?.code && usable[1]) top = usable[1];
 
   const [mine, theirs] = await Promise.all([
     fetchFightSide(best.report.code, best.report.fightID, name, metric),
@@ -317,6 +239,8 @@ export async function GET(request: Request) {
     encounter: Number(q.get('encounter')),
     difficulty: Number(q.get('difficulty') || 4),
     metric: q.get('metric') === 'hps' ? 'hps' : 'dps',
+    code: q.get('code')?.trim() || null,
+    fightID: Number(q.get('fightID')) || null,
   };
   if (!params.name || !params.server || !Number.isFinite(params.encounter) || !params.encounter) {
     return Response.json({ error: 'name, server, and encounter are required' }, { status: 400 });
@@ -329,8 +253,7 @@ export async function GET(request: Request) {
   const cached = compareCache.get(key);
   if (cached) return Response.json(cached);
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
-  if (!rateOk(ip)) {
+  if (!rateOk(clientIp(request), 'compare')) {
     return Response.json({ error: 'rate limit: too many fresh compares from this address — try again later' }, { status: 429 });
   }
 

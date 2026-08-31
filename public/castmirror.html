@@ -85,6 +85,15 @@
   .resnums .waste b { color: var(--red); }
   canvas.spark { width: 100%; height: 44px; display: block; margin-top: 8px; background: var(--panel2); border-radius: 5px; }
   #out { display: none; }
+
+  #kills { display: none; margin: 4px 0 30px; }
+  .boss { display: flex; align-items: baseline; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .boss .bn { min-width: 220px; font-size: 14.5px; cursor: pointer; }
+  .boss .bn:hover { color: var(--you); }
+  .kchips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .kchip { font: 600 13px/1 "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; padding: 7px 10px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; }
+  .kchip:hover { border-color: currentColor; }
+  .nokills { color: var(--faint); font-size: 12.5px; }
 </style>
 </head>
 <body>
@@ -92,30 +101,27 @@
 <header>
   <div class="eyebrow">Cast Mirror</div>
   <h1>Cast Mirror</h1>
-  <p class="sub">Enter any character. The mirror finds their best ranked kill of the chosen boss,
-  fetches the <b>world-#1 parse of the same spec on the same fight</b>, and lays both cast
-  sequences on one clock — every button, every cooldown window, side by side.</p>
+  <p class="sub">Enter any character. The mirror lists every ranked kill in the raid — every boss,
+  every parse, best first. Pick one and it's laid against the <b>world-#1 parse of the same spec
+  on the same fight</b>, on one clock — every button, every cooldown window, side by side.</p>
 </header>
 
 <form id="form">
   <label>Character <input id="name" placeholder="Nate" required></label>
   <label>Realm <input id="server" placeholder="Black Dragonflight" required></label>
   <label>Region <select id="region"><option>us</option><option>eu</option><option>kr</option><option>tw</option><option>cn</option></select></label>
-  <label>Boss <select id="encounter">
-    <option value="3420">Sszorak</option>
-    <option value="3421" selected>The Twin Fangs</option>
-    <option value="3429">The Coiled Altar</option>
-    <option value="3445">Entombed Sentinels</option>
-    <option value="3455">Vashnik the Malignant</option>
-    <option value="3470">Nek'zali the Soulcoiler</option>
-    <option value="3492">Ula'tek</option>
-    <option value="3497">The Lost Explorers</option>
-  </select></label>
+  <label>Raid <select id="zone"><option value="0">current raid</option></select></label>
   <label>Difficulty <select id="difficulty"><option value="3">Normal</option><option value="4" selected>Heroic</option><option value="5">Mythic</option></select></label>
   <label>Metric <select id="metric"><option value="dps">DPS</option><option value="hps">HPS</option></select></label>
-  <button id="go">Mirror</button>
+  <button id="go">Find kills</button>
 </form>
 <div id="status"></div>
+
+<div id="kills">
+  <h3 id="khead"></h3>
+  <p class="hint" id="khint">click a parse to mirror that exact kill against the world #1 · click a boss name to mirror your best kill</p>
+  <div id="bossRows"></div>
+</div>
 
 <div id="out">
   <div class="board" id="board"></div>
@@ -142,6 +148,7 @@
 </div>
 <div id="tip"></div>
 
+<script>window.MIRROR_API_BASE = '/api/castmirror';</script>
 <script>
 const $ = (id) => document.getElementById(id);
 const HUES = ['#7C8CF8', '#B478F0', '#F078C8', '#58C8E8', '#F0B84A', '#7CE0A0', '#F09A5A', '#E8D06A'];
@@ -149,29 +156,102 @@ const S = 5;
 const fmtT = (t) => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
 const fmtM = (n) => n >= 1e9 ? (n / 1e9).toFixed(2) + 'b' : n >= 1e6 ? (n / 1e6).toFixed(1) + 'm' : Math.round(n / 1e3) + 'k';
 
+const API = (window.MIRROR_API_BASE || '/api') + '/';
+const parseColor = (p) => p >= 100 ? '#e5cc80' : p >= 99 ? '#e268a8' : p >= 95 ? '#ff8000' : p >= 75 ? '#a335ee' : p >= 50 ? '#0070dd' : p >= 25 ? '#1eff00' : '#9d9d9d';
+const DIFF = { 3: 'Normal', 4: 'Heroic', 5: 'Mythic' };
+const say = (msg, err) => { $('status').className = err ? 'err' : ''; $('status').textContent = msg; };
+
+(async () => {
+  try {
+    const res = await fetch(API + 'zones');
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    $('zone').innerHTML = data.zones.map((z) => '<option value="' + z.id + '">' + z.name + '</option>').join('');
+  } catch (err) {
+    say('raid list failed to load: ' + err.message, true);
+  }
+})();
+
 $('form').onsubmit = async (e) => {
   e.preventDefault();
   const go = $('go');
   go.disabled = true;
-  $('status').className = '';
-  $('status').textContent = 'finding the ranked kill, the world #1, and both cast streams… (10–30s)';
+  say('looking up every ranked kill…');
+  $('out').style.display = 'none';
+  $('kills').style.display = 'none';
+  try {
+    const q = new URLSearchParams({
+      name: $('name').value, server: $('server').value, region: $('region').value,
+      zone: $('zone').value, difficulty: $('difficulty').value, metric: $('metric').value,
+    });
+    const res = await fetch(API + 'character?' + q);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    renderKills(data);
+    say('');
+  } catch (err) {
+    say(err.message, true);
+  }
+  go.disabled = false;
+};
+
+function renderKills(K) {
+  $('kills').style.display = 'block';
+  const diffName = DIFF[+$('difficulty').value] ?? '';
+  $('khead').textContent = K.name + (K.className ? ' · ' + K.className : '') + ' — ' + K.zone.name + ' ' + diffName;
+  $('khint').textContent = K.hidden
+    ? 'this character’s rankings are hidden on the log service — click a boss name to mirror their newest public kill instead'
+    : 'click a parse to mirror that exact kill against the world #1 · click a boss name to mirror your best kill';
+  const rows = $('bossRows');
+  rows.innerHTML = '';
+  for (const b of K.bosses) {
+    const row = document.createElement('div');
+    row.className = 'boss';
+    const bn = document.createElement('span');
+    bn.className = 'bn';
+    bn.textContent = b.name;
+    bn.title = 'mirror best kill of ' + b.name;
+    bn.onclick = () => runMirror(b.id, b.name);
+    row.append(bn);
+    const chips = document.createElement('span');
+    chips.className = 'kchips';
+    if (b.kills.length) {
+      for (const k of b.kills) {
+        const chip = document.createElement('span');
+        chip.className = 'kchip';
+        chip.style.color = parseColor(k.parse);
+        chip.textContent = k.parse;
+        chip.title = new Date(k.when).toLocaleDateString() + ' · ' + fmtM(k.amount) + ' · ' + fmtT(k.durSec) + (k.spec ? ' · ' + k.spec : '');
+        chip.onclick = () => runMirror(b.id, b.name, k.code, k.fightID);
+        chips.append(chip);
+      }
+    } else {
+      chips.innerHTML = '<span class="nokills">no ranked kills</span>';
+    }
+    row.append(chips);
+    rows.append(row);
+  }
+}
+
+async function runMirror(encounterId, bossName, code, fightID) {
+  say('mirroring ' + bossName + ' — finding the world #1 and both cast streams… (10–30s)');
   $('out').style.display = 'none';
   try {
     const q = new URLSearchParams({
       name: $('name').value, server: $('server').value, region: $('region').value,
-      encounter: $('encounter').value, difficulty: $('difficulty').value, metric: $('metric').value,
+      encounter: encounterId, difficulty: $('difficulty').value, metric: $('metric').value,
     });
-    const res = await fetch('/api/castmirror/compare?' + q);
+    if (code) { q.set('code', code); q.set('fightID', fightID); }
+    const res = await fetch(API + 'compare?' + q);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     render(data);
-    $('status').textContent = '';
+    say('');
+    $('out').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
-    $('status').className = 'err';
-    $('status').textContent = err.message;
+    say(err.message, true);
   }
-  go.disabled = false;
-};
+}
 
 function render(D) {
   $('out').style.display = 'block';
