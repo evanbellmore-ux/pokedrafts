@@ -51,6 +51,9 @@
   .lg i { width: 12px; height: 12px; border-radius: 3px; }
   .lg .c { font-family: "IBM Plex Mono", monospace; font-size: 11px; }
   .hint { font-size: 12px; color: var(--faint); margin-bottom: 12px; }
+  .windows { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 10px; }
+  .wgroup { font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-left: 8px; }
+  .wgroup:first-child { margin-left: 0; }
 
   .lanehead { position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: 1fr 84px 1fr; background: linear-gradient(var(--bg) 75%, transparent); padding: 8px 0 12px; }
   .lanehead div { text-align: center; font-family: "Unica One", sans-serif; font-size: 18px; letter-spacing: .06em; }
@@ -62,7 +65,6 @@
   .cast { position: absolute; left: 8%; width: 84%; border-radius: 2px; opacity: .95; }
   .cast.u { left: 58%; width: 34%; opacity: .5; }
   .band { position: absolute; left: 0; width: 100%; pointer-events: none; border-left: 3px solid var(--gold); background: color-mix(in srgb, var(--gold) 11%, transparent); border-radius: 3px; }
-  .band.b2 { border-left-color: var(--red); background: none; border-top: 1px dashed color-mix(in srgb, var(--red) 50%, transparent); border-bottom: 1px dashed color-mix(in srgb, var(--red) 50%, transparent); }
   .endcap { position: absolute; left: 0; width: 100%; text-align: center; font: 500 11px "IBM Plex Mono", monospace; color: var(--faint); padding-top: 8px; border-top: 1px dashed var(--line); }
   body[data-focus] .cast { opacity: .07; }
   body[data-focus] .cast.focus { opacity: 1; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 30%, transparent); }
@@ -141,7 +143,8 @@
   <section class="bars">
     <h3>Cast timeline</h3>
     <div class="legend" id="legend"></div>
-    <div class="hint" id="rollHint"></div>
+    <div class="windows" id="windows"></div>
+    <div class="hint">click a spell to spotlight it in both lanes · hover any block for the exact cast · toggle a cooldown above to shade its windows in both lanes · shorter lane = shorter kill</div>
     <div class="lanehead"><div class="n1" id="hn1"></div><div></div><div class="n2" id="hn2"></div></div>
     <div class="roll">
       <div class="lane" id="laneA"></div>
@@ -312,11 +315,22 @@ function render(D) {
   const color = {};
   bySpell.forEach(([spell], i) => { color[spell] = i < HUES.length ? HUES[i] : 'var(--faint)'; });
 
-  // major-window detection: 2-8 casts, median gap >= 55s, not a consumable
-  const majors = [];
+  // cooldown-window candidates: cast a handful of times with long gaps between presses
+  const CD_DEF = /barrier|shield wall|last stand|ice block|divine shield|blessing of protection|turtle|cocoon|pain suppression|guardian spirit|dampen harm|diffuse magic|fortifying|rallying cry|ironbark|barkskin|survival instincts|frenzied regen|obsidian scales|renewal|zen meditation|dispersion|vampiric blood|icebound|tombstone|anti-magic|lichborne|rune tap|astral shift|healthstone|blur|darkness|netherwalk|alter time|greater invisibility|mirror image|temporal shield|exhilaration|feign death|survival of the fittest|die by the sword|enraged regen|cloak of shadows|evasion|feint|crimson vial|desperate prayer|fade|vampiric embrace|ardent defender|guardian of ancient kings|shield of vengeance|eye of the storm|stoneform|gift of the naaru|will to survive|aura mastery|spirit link|bear form/i;
+  const CD_UTIL = /sprint|stampeding roar|wild charge|windrush|gateway|demonic circle|teleport|death grip|taunt|dark command|growl|provoke|torment|challenging shout|hand of reckoning|blessing of freedom|speed of light|divine steed|tiger's lust|innervate|time spiral|gust of wind|door of shadows|soulshape|darkflight|heroic leap|intervene|rescue|leap of faith|shadowstep|grappling|disengage|slow fall|levitate|purify|cleanse|dispel|death's advance|wraith walk/i;
+  const classifyCd = (spell) => {
+    const s = spell.toLowerCase();
+    if (/light'?s potential|tempered potion|elemental potion|potion of unwavering/.test(s)) return 'offensive';
+    if (/healing potion|rejuvenating|cavedweller|healthstone/.test(s)) return 'defensive';
+    if (/potion/.test(s)) return 'offensive'; // combat potions are throughput cooldowns
+    if (CD_DEF.test(s)) return 'defensive';
+    if (CD_UTIL.test(s)) return 'utility';
+    return 'offensive';
+  };
+  const windows = [];
   for (const [spell, c] of bySpell) {
     const total = c.A + c.B;
-    if (total < 2 || total > 16 || /potion|healthstone|flask|stone|food/i.test(spell)) continue;
+    if (total < 2 || total > 16 || /flask|food|augment/i.test(spell)) continue;
     const gaps = [];
     for (const s of [A, B]) {
       const ts = s.casts.filter((x) => x[1] === spell).map((x) => x[0]);
@@ -324,13 +338,50 @@ function render(D) {
     }
     gaps.sort((a, b) => a - b);
     const med = gaps.length ? gaps[Math.floor(gaps.length / 2)] : 999;
-    if (med >= 55) majors.push(spell);
-    if (majors.length === 2) break;
+    if (med >= 55) windows.push({ spell, c, cat: classifyCd(spell) });
   }
-  const bandLabels = majors.map((m, i) =>
-    '<span style="color:var(--' + (i ? 'red' : 'gold') + ')">■ ' + (i ? 'red' : 'gold') + ' window = ' + m + '</span>');
-  $('rollHint').innerHTML = ['click a spell to spotlight it in both lanes', 'hover any block for the exact cast']
-    .concat(bandLabels, 'shorter lane = shorter kill').join(' · ');
+  const CAT_ORDER = ['offensive', 'utility', 'defensive'];
+  const BAND_HUES = ['#F0B84A', '#F0685A', '#58C8E8', '#7CE0A0', '#F078C8', '#B478F0', '#E8D06A', '#9F8CFF'];
+  windows.sort((x, y) => CAT_ORDER.indexOf(x.cat) - CAT_ORDER.indexOf(y.cat) || (y.c.A + y.c.B) - (x.c.A + x.c.B));
+  windows.forEach((w, i) => { w.color = BAND_HUES[i % BAND_HUES.length]; });
+  const activeWindows = new Set();
+  const drawBands = () => {
+    for (const [s, laneId] of [[A, 'laneA'], [B, 'laneB']]) {
+      const lane = $(laneId);
+      lane.querySelectorAll('.band').forEach((b) => b.remove());
+      for (const w of windows) {
+        if (!activeWindows.has(w.spell)) continue;
+        for (const cst of s.casts) {
+          if (cst[1] !== w.spell) continue;
+          const div = document.createElement('div');
+          div.className = 'band';
+          div.style.cssText = 'top:' + (cst[0] * S) + 'px;height:' + (15 * S) + 'px;border-left-color:' + w.color + ';background:color-mix(in srgb, ' + w.color + ' 12%, transparent)';
+          lane.prepend(div); // under the cast blocks
+        }
+      }
+    }
+  };
+  const wEl = $('windows');
+  wEl.innerHTML = '';
+  wEl.style.display = windows.length ? '' : 'none';
+  let lastCat = null;
+  for (const w of windows) {
+    if (w.cat !== lastCat) {
+      lastCat = w.cat;
+      wEl.insertAdjacentHTML('beforeend', '<span class="wgroup">' + w.cat + '</span>');
+    }
+    const el = document.createElement('span');
+    el.className = 'lg';
+    el.innerHTML = '<i style="background:' + w.color + '"></i>' + w.spell + ' <span class="c">' + w.c.A + '·' + w.c.B + '</span>';
+    el.onclick = () => {
+      const on = activeWindows.has(w.spell);
+      if (on) activeWindows.delete(w.spell); else activeWindows.add(w.spell);
+      el.classList.toggle('on', !on);
+      el.style.borderColor = on ? '' : w.color;
+      drawBands();
+    };
+    wEl.append(el);
+  }
 
   // per-minute deltas
   const deltas = bySpell.map(([spell, c]) => {
@@ -369,12 +420,6 @@ function render(D) {
     const lane = $(laneId);
     lane.innerHTML = '';
     lane.style.height = (maxDur * S + 30) + 'px';
-    for (const [mi, mspell] of majors.entries()) {
-      for (const c of s.casts) {
-        if (c[1] !== mspell) continue;
-        lane.insertAdjacentHTML('beforeend', '<div class="band ' + (mi ? 'b2' : '') + '" style="top:' + (c[0] * S) + 'px;height:' + (15 * S) + 'px"></div>');
-      }
-    }
     s.casts.forEach((c, i) => {
       const [t, spell] = c;
       const next = s.casts[i + 1];
