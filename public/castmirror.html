@@ -310,7 +310,7 @@ function render(D) {
     const s = cls === 'you' ? A : B;
     const tag = cls === 'you'
       ? s.server + (hero.a ? ' · ' + hero.a.toUpperCase() : '') + (pi.a ? ' · POWER INFUSION' : '')
-      : (hero.b && hero.alt ? 'TOP ' + hero.b.toUpperCase() : 'WORLD #1') + (pi.matched ? ' · NO PI' : '') +
+      : (hero.b && hero.alt ? 'TOP ' + hero.b.toUpperCase() : 'WORLD #1') + (pi.excluded ? ' · NO EXTERNALS' : '') +
         ' · ' + s.server + (hero.b && !hero.alt ? ' · ' + hero.b.toUpperCase() : '') + (pi.b ? ' · POWER INFUSION' : '');
     return '<div class="card ' + cls + '"><h2>' + s.name + ' <span class="tag">' + tag + '</span></h2>' +
       '<div class="stats">' +

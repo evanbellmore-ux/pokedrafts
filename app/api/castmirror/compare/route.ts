@@ -339,23 +339,37 @@ async function apiCompare(params: CompareParams) {
   }
   const className = classes.get(ch.classID) ?? 'Unknown';
 
+  // fairness: one check on the player's own kill decides the ranking pool.
+  // No Power Infusion -> the log service filters to no-external-buff parses
+  // server-side (externalBuffs: Exclude); with PI, anything goes.
+  const aHasPI = await fightHasPI(best.report.code, best.report.fightID, name);
+  let excluded = !aHasPI;
+
   // pages 1-3: the top logs decide the reference; the deeper pages give the
   // hero-tree clustering a chance to see the off-meta tree at all
   let encName: string | null = null;
-  const rankings: any[] = [];
-  for (let page = 1; page <= 3; page++) {
-    const wr = await wcl(
-      `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!) {
-         worldData { encounter(id: $enc) {
-           name
-           characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true)
-         } }
-       }`, { enc: encounter, cls: className, spec, diff: difficulty, metric, page });
-    const encData = wr.worldData.encounter;
-    encName = encData?.name ?? encName;
-    const got = encData?.characterRankings?.rankings ?? [];
-    rankings.push(...got);
-    if (got.length < 100 || !encData?.characterRankings?.hasMorePages) break;
+  const fetchRankings = async (xb: string): Promise<any[]> => {
+    const out: any[] = [];
+    for (let page = 1; page <= 3; page++) {
+      const wr = await wcl(
+        `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter) {
+           worldData { encounter(id: $enc) {
+             name
+             characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb)
+           } }
+         }`, { enc: encounter, cls: className, spec, diff: difficulty, metric, page, xb });
+      const encData = wr.worldData.encounter;
+      encName = encData?.name ?? encName;
+      const got = encData?.characterRankings?.rankings ?? [];
+      out.push(...got);
+      if (got.length < 100 || !encData?.characterRankings?.hasMorePages) break;
+    }
+    return out;
+  };
+  let rankings = await fetchRankings(excluded ? 'Exclude' : 'Any');
+  if (!rankings.length && excluded) {
+    excluded = false; // no externals-free parses ranked at all — fall back
+    rankings = await fetchRankings('Any');
   }
   // anonymous uploads can't be actor-matched — take the best mirrorable parse
   const usable = rankings.filter((r: any) =>
@@ -363,8 +377,7 @@ async function apiCompare(params: CompareParams) {
     !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code));
   if (!usable.length) throw new Error(`no mirrorable world rankings for ${spec} ${className} on this encounter/difficulty`);
 
-  // the player's side first — hero-tree matching reads their ability names
-  const aHasPI = await fightHasPI(best.report.code, best.report.fightID, name);
+  // the player's side — hero-tree matching reads their ability names
   const mine = await fetchFightSide(best.report.code, best.report.fightID, name, metric);
   if (!best.amount) best.amount = Math.round(Object.values(mine.dmg).reduce((a, b) => a + b, 0) / Math.max(1, mine.durSec));
 
@@ -378,23 +391,9 @@ async function apiCompare(params: CompareParams) {
   const wantedBlock = wanted ? blocks.find((bl) => bl.tree === wanted) : null;
   const pool = wantedBlock ? wantedBlock.entries : usable;
 
-  // fair reference: if this kill went without Power Infusion, mirror the
-  // best (tree-matched) parse that also went without it
-  let top: any = null;
-  let piMatched = false;
-  let bHasPI: boolean | null = null;
-  if (!aHasPI) {
-    for (const cand of pool.slice(0, 10)) {
-      if (!(await fightHasPI(cand.report.code, cand.report.fightID, cand.name))) {
-        piMatched = cand !== pool[0]; // only a "match" if PI'd logs were skipped
-        top = cand;
-        bHasPI = false;
-        break;
-      }
-    }
-  }
-  if (!top) top = pool[0];
-  if (bHasPI === null) bHasPI = await fightHasPI(top.report.code, top.report.fightID, top.name);
+  // the ranking pool is already externals-fair — take its top
+  const top: any = pool[0];
+  const bHasPI = excluded ? false : await fightHasPI(top.report.code, top.report.fightID, top.name);
 
   const theirs = await fetchFightSide(top.report.code, top.report.fightID, top.name, metric);
   const bHero = blockOf(top)?.tree
@@ -403,7 +402,7 @@ async function apiCompare(params: CompareParams) {
 
   return {
     encounter: { id: encounter, name: encName ?? `#${encounter}` }, difficulty, metric, spec, className,
-    pi: { a: aHasPI, b: bHasPI, matched: piMatched, allTopHavePI: !aHasPI && !piMatched && bHasPI },
+    pi: { a: aHasPI, b: bHasPI, excluded },
     hero: { a: aHero, b: bHero, alt: altTree, requested: params.hero || null },
     a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine },
     b: { server: top.server?.name ?? '?', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs },
