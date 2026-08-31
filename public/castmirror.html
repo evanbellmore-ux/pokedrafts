@@ -362,7 +362,7 @@ function render(D) {
   const windows = [];
   for (const [spell, c] of bySpell) {
     const total = c.A + c.B;
-    if (total < 2 || total > 16 || /flask|food|augment/i.test(spell)) continue;
+    if (total < 2 || total > 16 || /flask|food|augment|bloodlust|heroism|time warp|fury of the aspects|primal rage|harrier|hysteria|netherwinds|drums of/i.test(spell)) continue;
     const gaps = [];
     for (const s of [A, B]) {
       const ts = s.casts.filter((x) => x[1] === spell).map((x) => x[0]);
@@ -375,6 +375,10 @@ function render(D) {
   const CAT_ORDER = ['offensive', 'utility', 'defensive'];
   const BAND_HUES = ['#F0B84A', '#F0685A', '#58C8E8', '#7CE0A0', '#F078C8', '#B478F0', '#E8D06A', '#9F8CFF'];
   windows.sort((x, y) => CAT_ORDER.indexOf(x.cat) - CAT_ORDER.indexOf(y.cat) || (y.c.A + y.c.B) - (x.c.A + x.c.B));
+  // bloodlust (any variant) comes from the received-buff windows, not casts
+  if ((A.lust?.length ?? 0) + (B.lust?.length ?? 0) > 0) {
+    windows.unshift({ spell: 'Bloodlust', cat: 'offensive', lust: true, c: { A: A.lust?.length ?? 0, B: B.lust?.length ?? 0 } });
+  }
   windows.forEach((w, i) => { w.color = BAND_HUES[i % BAND_HUES.length]; });
   const activeWindows = new Set();
   const maxDur = Math.max(A.durSec, B.durSec);
@@ -389,14 +393,17 @@ function render(D) {
       lane.querySelectorAll('.band').forEach((b) => b.remove());
       for (const w of windows) {
         if (!activeWindows.has(w.spell)) continue;
-        for (const cst of s.casts) {
-          if (cst[1] !== w.spell || cst[0] < t0 - 15 || cst[0] > t1) continue;
+        const spans = w.lust
+          ? (s.lust ?? []).map(([ls, le]) => [ls, le - ls])
+          : s.casts.filter((cst) => cst[1] === w.spell).map((cst) => [cst[0], 15]);
+        for (const [start, len] of spans) {
+          if (start + len < t0 - 1 || start > t1) continue;
           const div = document.createElement('div');
           div.className = 'band';
-          div.style.cssText = 'top:' + ((cst[0] - t0) * scale) + 'px;height:' + (15 * scale) + 'px;border-left-color:' + w.color + ';background:color-mix(in srgb, ' + w.color + ' 12%, transparent)';
+          div.style.cssText = 'top:' + ((start - t0) * scale) + 'px;height:' + (len * scale) + 'px;border-left-color:' + w.color + ';background:color-mix(in srgb, ' + w.color + ' 12%, transparent)';
           if (!view) {
-            div.innerHTML = '<span class="bz" title="zoom into this window">⊕ ' + fmtT(cst[0]) + '</span>';
-            div.querySelector('.bz').onclick = (ev) => { ev.stopPropagation(); zoomTo(cst[0]); };
+            div.innerHTML = '<span class="bz" title="zoom into this window">⊕ ' + fmtT(start) + '</span>';
+            div.querySelector('.bz').onclick = (ev) => { ev.stopPropagation(); zoomTo(start, w.lust ? len : 16); };
           }
           lane.prepend(div); // under the cast blocks
         }
@@ -489,8 +496,8 @@ function render(D) {
     }
     drawBands();
   };
-  const zoomTo = (t) => {
-    view = { t0: Math.max(0, Math.floor(t - 3)), t1: Math.min(maxDur, Math.ceil(t + 19)) };
+  const zoomTo = (t, dur = 16) => {
+    view = { t0: Math.max(0, Math.floor(t - 3)), t1: Math.min(maxDur, Math.ceil(t + dur + 3)) };
     drawTimeline();
     $('zoombar').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };

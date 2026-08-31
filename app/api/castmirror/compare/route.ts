@@ -17,6 +17,7 @@ interface FightSide {
   casts: [number, string][];
   dmg: Record<string, number>;
   resources: Record<string, { max: number; spentSnap: number; gained: number; waste: number; series: [number, number][] }>;
+  lust: [number, number][];
 }
 
 async function fetchFightSide(code: string, fightID: number, playerName: string, metric: string): Promise<FightSide> {
@@ -110,7 +111,32 @@ async function fetchFightSide(code: string, fightID: number, playerName: string,
   const dmg: Record<string, number> = {};
   for (const e of tbl.reportData.report?.table?.data?.entries ?? []) if (e.total) dmg[e.name] = e.total;
 
-  return { name: actor.name, durSec: Math.round((fight.endTime - fight.startTime) / 1000), kill: !!fight.kill, casts, dmg, resources };
+  // Bloodlust-family windows this player RECEIVED (any variant, any caster)
+  const LUST_RE = /bloodlust|heroism|time warp|fury of the aspects|primal rage|harrier|ancient hysteria|netherwinds|drums of|feral hysteria/i;
+  const bt = await wcl(
+    `query($code: String!, $fid: [Int]!, $src: Int!) {
+       reportData { report(code: $code) { table(dataType: Buffs, fightIDs: $fid, sourceID: $src) } }
+     }`, { code, fid: [fightID], src: actor.id });
+  const auras = bt.reportData.report?.table?.data?.auras ?? bt.reportData.report?.table?.data?.entries ?? [];
+  const durSec = Math.round((fight.endTime - fight.startTime) / 1000);
+  const rawLust: [number, number][] = [];
+  for (const a of auras) {
+    if (!LUST_RE.test(a.name ?? '')) continue;
+    for (const b of a.bands ?? []) {
+      const s = Math.max(0, Math.round((b.startTime - fight.startTime) / 100) / 10);
+      const e2 = Math.min(durSec, Math.round((b.endTime - fight.startTime) / 100) / 10);
+      if (e2 > s) rawLust.push([s, e2]);
+    }
+  }
+  rawLust.sort((x, y) => x[0] - y[0]);
+  const lust: [number, number][] = [];
+  for (const w of rawLust) {
+    const last = lust[lust.length - 1];
+    if (last && w[0] <= last[1] + 1) last[1] = Math.max(last[1], w[1]);
+    else lust.push([w[0], w[1]]);
+  }
+
+  return { name: actor.name, durSec, kill: !!fight.kill, casts, dmg, resources, lust };
 }
 
 const PI_SPELL = 10060; // Power Infusion
