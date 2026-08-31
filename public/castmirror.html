@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unica+One&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root {
+    color-scheme: dark;
     --bg: #14121C; --panel: #1C1926; --panel2: #221E30; --line: #2E2940;
     --text: #E8E4F2; --dim: #8B86A0; --faint: #5C5770;
     --you: #9F8CFF; --top: #6EC8B8; --gold: #F0B84A; --red: #F0685A;
@@ -108,7 +109,8 @@
 
 <form id="form">
   <label>Character <input id="name" placeholder="Nate" required></label>
-  <label>Realm <input id="server" placeholder="Black Dragonflight" required></label>
+  <label>Realm <input id="server" placeholder="Black Dragonflight" required list="realmList" autocomplete="off"></label>
+  <datalist id="realmList"></datalist>
   <label>Region <select id="region"><option>us</option><option>eu</option><option>kr</option><option>tw</option><option>cn</option></select></label>
   <label>Raid <select id="zone"><option value="0">current raid</option></select></label>
   <label>Difficulty <select id="difficulty"><option value="3">Normal</option><option value="4" selected>Heroic</option><option value="5">Mythic</option></select></label>
@@ -171,6 +173,17 @@ const say = (msg, err) => { $('status').className = err ? 'err' : ''; $('status'
     say('raid list failed to load: ' + err.message, true);
   }
 })();
+
+let REALMS = {};
+function fillRealms() {
+  const names = REALMS[$('region').value] ?? [];
+  $('realmList').innerHTML = names.map((n) => '<option value="' + n.replace(/"/g, '&quot;') + '">').join('');
+}
+// realm picker: type to filter, click to pick; a plain typed name still works
+fetch(API + 'realms').then((r) => r.json()).then((d) => {
+  if (!d.error) { REALMS = d.realms || {}; fillRealms(); }
+}).catch(() => {});
+$('region').onchange = fillRealms;
 
 $('form').onsubmit = async (e) => {
   e.preventDefault();
