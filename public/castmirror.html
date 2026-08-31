@@ -65,6 +65,11 @@
   .cast { position: absolute; left: 8%; width: 84%; border-radius: 2px; opacity: .95; }
   .cast.u { left: 58%; width: 34%; opacity: .5; }
   .band { position: absolute; left: 0; width: 100%; pointer-events: none; border-left: 3px solid var(--gold); background: color-mix(in srgb, var(--gold) 11%, transparent); border-radius: 3px; }
+  .bz { position: absolute; right: 5px; top: 3px; z-index: 3; pointer-events: auto; cursor: zoom-in; font: 600 10px/1 "IBM Plex Mono", monospace; color: var(--text); background: rgba(20, 18, 28, .78); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; }
+  .bz:hover { border-color: var(--text); }
+  .clabel { font: 500 10px/1.1 "IBM Plex Mono", monospace; color: #14121C; padding: 2px 5px; display: block; white-space: nowrap; overflow: hidden; }
+  #zoombar { margin-bottom: 10px; }
+  #zoombar .lg { cursor: zoom-out; }
   .endcap { position: absolute; left: 0; width: 100%; text-align: center; font: 500 11px "IBM Plex Mono", monospace; color: var(--faint); padding-top: 8px; border-top: 1px dashed var(--line); }
   body[data-focus] .cast { opacity: .07; }
   body[data-focus] .cast.focus { opacity: 1; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 30%, transparent); }
@@ -144,7 +149,8 @@
     <h3>Cast timeline</h3>
     <div class="legend" id="legend"></div>
     <div class="windows" id="windows"></div>
-    <div class="hint">click a spell to spotlight it in both lanes · hover any block for the exact cast · toggle a cooldown above to shade its windows in both lanes · shorter lane = shorter kill</div>
+    <div class="hint">click a spell to spotlight it in both lanes · hover any block for the exact cast · toggle a cooldown above to shade its windows, then hit a window's ⊕ to zoom in · shorter lane = shorter kill</div>
+    <div id="zoombar" style="display:none"><span class="lg on" id="zoomlabel"></span></div>
     <div class="lanehead"><div class="n1" id="hn1"></div><div></div><div class="n2" id="hn2"></div></div>
     <div class="roll">
       <div class="lane" id="laneA"></div>
@@ -349,17 +355,27 @@ function render(D) {
   windows.sort((x, y) => CAT_ORDER.indexOf(x.cat) - CAT_ORDER.indexOf(y.cat) || (y.c.A + y.c.B) - (x.c.A + x.c.B));
   windows.forEach((w, i) => { w.color = BAND_HUES[i % BAND_HUES.length]; });
   const activeWindows = new Set();
+  const maxDur = Math.max(A.durSec, B.durSec);
+  let view = null; // {t0, t1} zoomed window, or null = the full fight
+  const geom = () => view
+    ? { t0: view.t0, t1: view.t1, scale: Math.max(18, Math.min(46, 620 / (view.t1 - view.t0))) }
+    : { t0: 0, t1: maxDur, scale: S };
   const drawBands = () => {
+    const { t0, t1, scale } = geom();
     for (const [s, laneId] of [[A, 'laneA'], [B, 'laneB']]) {
       const lane = $(laneId);
       lane.querySelectorAll('.band').forEach((b) => b.remove());
       for (const w of windows) {
         if (!activeWindows.has(w.spell)) continue;
         for (const cst of s.casts) {
-          if (cst[1] !== w.spell) continue;
+          if (cst[1] !== w.spell || cst[0] < t0 - 15 || cst[0] > t1) continue;
           const div = document.createElement('div');
           div.className = 'band';
-          div.style.cssText = 'top:' + (cst[0] * S) + 'px;height:' + (15 * S) + 'px;border-left-color:' + w.color + ';background:color-mix(in srgb, ' + w.color + ' 12%, transparent)';
+          div.style.cssText = 'top:' + ((cst[0] - t0) * scale) + 'px;height:' + (15 * scale) + 'px;border-left-color:' + w.color + ';background:color-mix(in srgb, ' + w.color + ' 12%, transparent)';
+          if (!view) {
+            div.innerHTML = '<span class="bz" title="zoom into this window">⊕ ' + fmtT(cst[0]) + '</span>';
+            div.querySelector('.bz').onclick = (ev) => { ev.stopPropagation(); zoomTo(cst[0]); };
+          }
           lane.prepend(div); // under the cast blocks
         }
       }
@@ -412,35 +428,54 @@ function render(D) {
     $('legend').append(el);
   }
 
-  // spine + lanes
-  const maxDur = Math.max(A.durSec, B.durSec);
-  $('spine').innerHTML = '';
-  $('spine').style.height = (maxDur * S + 30) + 'px';
-  for (let t = 0; t <= maxDur; t += 30) {
-    $('spine').insertAdjacentHTML('beforeend', '<div class="tick" style="top:' + (t * S) + 'px">' + fmtT(t) + '</div>');
-  }
+  // spine + lanes — zoomable: a window's ⊕ narrows both lanes to that slice
   const tip = $('tip');
-  for (const [s, laneId] of [[A, 'laneA'], [B, 'laneB']]) {
-    const lane = $(laneId);
-    lane.innerHTML = '';
-    lane.style.height = (maxDur * S + 30) + 'px';
-    s.casts.forEach((c, i) => {
-      const [t, spell] = c;
-      const next = s.casts[i + 1];
-      const h = Math.max(3, Math.min(next ? (next[0] - t) * S - 1.5 : 8, 12));
-      const rank = bySpell.findIndex(([sp]) => sp === spell);
-      const el = document.createElement('div');
-      el.className = 'cast' + (rank >= HUES.length ? ' u' : '');
-      el.dataset.s = spell;
-      el.style.cssText = 'top:' + (t * S) + 'px;height:' + h + 'px;background:' + (color[spell] || 'var(--faint)');
-      el.onmouseenter = () => { tip.style.display = 'block'; tip.textContent = fmtT(t) + ' · ' + spell + ' · ' + s.name; };
-      el.onmousemove = (e) => { tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 10) + 'px'; };
-      el.onmouseleave = () => { tip.style.display = 'none'; };
-      lane.append(el);
-    });
-    lane.insertAdjacentHTML('beforeend', '<div class="endcap" style="top:' + (s.durSec * S) + 'px">boss dies · ' + fmtT(s.durSec) + '</div>');
-  }
-  if (focusSpell) document.body.removeAttribute('data-focus');
+  const drawTimeline = () => {
+    const { t0, t1, scale } = geom();
+    const step = view ? 5 : 30;
+    const H = (t1 - t0) * scale + 30;
+    $('zoombar').style.display = view ? '' : 'none';
+    if (view) $('zoomlabel').textContent = '⊖ zoomed ' + fmtT(t0) + ' – ' + fmtT(t1) + ' · click here (or Esc) for the full fight';
+    $('spine').innerHTML = '';
+    $('spine').style.height = H + 'px';
+    for (let t = Math.ceil(t0 / step) * step; t <= t1; t += step) {
+      $('spine').insertAdjacentHTML('beforeend', '<div class="tick" style="top:' + ((t - t0) * scale) + 'px">' + fmtT(t) + '</div>');
+    }
+    for (const [s, laneId] of [[A, 'laneA'], [B, 'laneB']]) {
+      const lane = $(laneId);
+      lane.innerHTML = '';
+      lane.style.height = H + 'px';
+      s.casts.forEach((c, i) => {
+        const [t, spell] = c;
+        if (t < t0 - 2 || t > t1) return;
+        const next = s.casts[i + 1];
+        const h = Math.max(3, Math.min(next ? (next[0] - t) * scale - 1.5 : 8, view ? 30 : 12));
+        const rank = bySpell.findIndex(([sp]) => sp === spell);
+        const el = document.createElement('div');
+        el.className = 'cast' + (rank >= HUES.length ? ' u' : '') + (spell === focusSpell ? ' focus' : '');
+        el.dataset.s = spell;
+        el.style.cssText = 'top:' + ((t - t0) * scale) + 'px;height:' + h + 'px;background:' + (color[spell] || 'var(--faint)');
+        if (view && h >= 13) el.innerHTML = '<span class="clabel">' + fmtT(t) + ' ' + spell + '</span>';
+        el.onmouseenter = () => { tip.style.display = 'block'; tip.textContent = fmtT(t) + ' · ' + spell + ' · ' + s.name; };
+        el.onmousemove = (e) => { tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 10) + 'px'; };
+        el.onmouseleave = () => { tip.style.display = 'none'; };
+        lane.append(el);
+      });
+      if (s.durSec >= t0 && s.durSec <= t1 + 2) {
+        lane.insertAdjacentHTML('beforeend', '<div class="endcap" style="top:' + ((s.durSec - t0) * scale) + 'px">boss dies · ' + fmtT(s.durSec) + '</div>');
+      }
+    }
+    drawBands();
+  };
+  const zoomTo = (t) => {
+    view = { t0: Math.max(0, Math.floor(t - 3)), t1: Math.min(maxDur, Math.ceil(t + 19)) };
+    drawTimeline();
+    $('zoombar').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+  const closeZoom = () => { view = null; drawTimeline(); };
+  $('zoomlabel').onclick = closeZoom;
+  document.onkeydown = (e) => { if (e.key === 'Escape' && view) closeZoom(); };
+  drawTimeline();
 
   // resource economy
   const POWER = { 0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy', 4: 'Combo Points', 5: 'Runes', 6: 'Runic Power', 7: 'Soul Shards', 8: 'Lunar Power', 9: 'Holy Power', 11: 'Maelstrom', 12: 'Chi', 13: 'Insanity', 16: 'Arcane Charges', 17: 'Fury', 18: 'Pain', 19: 'Essence' };
