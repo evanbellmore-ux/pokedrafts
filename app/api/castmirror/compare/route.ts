@@ -113,6 +113,25 @@ async function fetchFightSide(code: string, fightID: number, playerName: string,
   return { name: actor.name, durSec: Math.round((fight.endTime - fight.startTime) / 1000), kill: !!fight.kill, casts, dmg, resources };
 }
 
+const PI_SPELL = 10060; // Power Infusion
+
+/** Did this player receive Power Infusion on this fight? */
+async function fightHasPI(code: string, fightID: number, playerName: string): Promise<boolean> {
+  const res = await wcl(
+    `query($code: String!, $fid: [Int]!, $aid: Float!) {
+       reportData { report(code: $code) {
+         masterData { actors(type: "Player") { id name } }
+         events(fightIDs: $fid, startTime: 0, endTime: 999999999999, dataType: Buffs, abilityID: $aid, limit: 2000) { data }
+       } }
+     }`, { code, fid: [fightID], aid: PI_SPELL });
+  const rep = res.reportData.report;
+  const wanted = playerName.trim().toLowerCase();
+  const actor = rep?.masterData.actors.find((a: any) => a.name?.toLowerCase() === wanted);
+  if (!actor) return false;
+  return (rep.events?.data ?? []).some((e: any) =>
+    (e.type === 'applybuff' || e.type === 'refreshbuff') && e.targetID === actor.id);
+}
+
 /** Hidden-rankings fallback: scan the character's recent reports for their
  * newest kill of the encounter at this difficulty. */
 async function recentKillFor(name: string, slug: string, region: string, encounter: number, wclDiff: number) {
@@ -212,10 +231,27 @@ async function apiCompare(params: CompareParams) {
   const rankings = encData?.characterRankings?.rankings ?? [];
   // anonymous uploads can't be actor-matched — take the best mirrorable parse
   const usable = rankings.filter((r: any) =>
-    r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:'));
+    r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:') &&
+    !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code));
   if (!usable.length) throw new Error(`no mirrorable world rankings for ${spec} ${className} on this encounter/difficulty`);
+
+  // fair reference: if this kill went without Power Infusion, mirror the
+  // best parse that also went without it
+  const aHasPI = await fightHasPI(best.report.code, best.report.fightID, name);
   let top = usable[0];
-  if (top.name?.toLowerCase() === name.trim().toLowerCase() && top.report?.code === best.report?.code && usable[1]) top = usable[1];
+  let piMatched = false;
+  let bHasPI: boolean | null = null;
+  if (!aHasPI) {
+    for (const cand of usable.slice(0, 10)) {
+      if (!(await fightHasPI(cand.report.code, cand.report.fightID, cand.name))) {
+        piMatched = cand !== usable[0]; // only a "match" if PI'd logs were skipped
+        top = cand;
+        bHasPI = false;
+        break;
+      }
+    }
+  }
+  if (bHasPI === null) bHasPI = await fightHasPI(top.report.code, top.report.fightID, top.name);
 
   const [mine, theirs] = await Promise.all([
     fetchFightSide(best.report.code, best.report.fightID, name, metric),
@@ -225,6 +261,7 @@ async function apiCompare(params: CompareParams) {
 
   return {
     encounter: { id: encounter, name: encData.name }, difficulty, metric, spec, className,
+    pi: { a: aHasPI, b: bHasPI, matched: piMatched, allTopHavePI: !aHasPI && !piMatched && bHasPI },
     a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine },
     b: { server: top.server?.name ?? '?', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs },
   };

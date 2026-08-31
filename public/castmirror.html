@@ -294,9 +294,13 @@ function render(D) {
 
   // scoreboard
   const cpm = (s) => (s.casts.length / (s.durSec / 60)).toFixed(1);
+  const pi = D.pi || {};
   $('board').innerHTML = ['you', 'top'].map((cls) => {
     const s = cls === 'you' ? A : B;
-    return '<div class="card ' + cls + '"><h2>' + s.name + ' <span class="tag">' + (cls === 'you' ? s.server : 'WORLD #1 · ' + s.server) + '</span></h2>' +
+    const tag = cls === 'you'
+      ? s.server + (pi.a ? ' · POWER INFUSION' : '')
+      : (pi.matched ? 'TOP PARSE WITHOUT PI · ' : 'WORLD #1 · ') + s.server + (pi.b ? ' · POWER INFUSION' : '');
+    return '<div class="card ' + cls + '"><h2>' + s.name + ' <span class="tag">' + tag + '</span></h2>' +
       '<div class="stats">' +
       '<div class="stat"><b>' + fmtM(s.amount) + '</b><span>' + D.metric.toUpperCase() + ' (ranked)</span></div>' +
       '<div class="stat"><b>' + fmtT(s.durSec) + '</b><span>kill length</span></div>' +
