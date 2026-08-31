@@ -132,6 +132,124 @@ async function fightHasPI(code: string, fightID: number, playerName: string): Pr
     (e.type === 'applybuff' || e.type === 'refreshbuff') && e.targetID === actor.id);
 }
 
+/** Hero-tree signature abilities: exact names that appear in a player's
+ * casts or damage/healing table only when that hero tree is taken. */
+const HERO_SIG: Record<string, string> = {
+  'Vampiric Strike': "San'layn", 'Infliction of Sorrow': "San'layn", 'The Blood is Life': "San'layn", 'Blood Mist': "San'layn",
+  "Reaper's Mark": 'Deathbringer', 'Wave of Souls': 'Deathbringer', 'Soul Rupture': 'Deathbringer', 'Exterminate': 'Deathbringer',
+  "Mograine's Death and Decay": 'Rider of the Apocalypse', "Whitemane's Death Coil": 'Rider of the Apocalypse', "Trollbane's Icy Fury": 'Rider of the Apocalypse', "Nazgrim's Conquest": 'Rider of the Apocalypse',
+  'Arcane Phoenix': 'Sunfury', 'Glorious Incandescence': 'Sunfury', 'Excess Fire': 'Sunfury', 'Burden of Power': 'Sunfury',
+  'Arcane Splinter': 'Spellslinger', 'Frost Splinter': 'Spellslinger', 'Splinterstorm': 'Spellslinger',
+  'Frostfire Bolt': 'Frostfire', 'Frostfire Burst': 'Frostfire', 'Excess Frost': 'Frostfire',
+  'Demolish': 'Colossus', 'Colossal Might': 'Colossus',
+  "Slayer's Strike": 'Slayer', 'Overwhelming Blades': 'Slayer',
+  'Thunder Blast': 'Mountain Thane', 'Avatar of the Storm': 'Mountain Thane',
+  'Dawnlight': 'Herald of the Sun', "Sun's Avatar": 'Herald of the Sun',
+  'Hammer of Light': 'Templar', "Light's Guidance": 'Templar',
+  'Holy Bulwark': 'Lightsmith', 'Sacred Weapon': 'Lightsmith',
+  'Black Arrow': 'Dark Ranger', 'Bleak Arrows': 'Dark Ranger', 'Phantom Pain': 'Dark Ranger',
+  'Lunar Storm': 'Sentinel', 'Sentinel Watch': 'Sentinel',
+  'Vicious Hunt': 'Pack Leader', 'Pack Coordination': 'Pack Leader', 'Boar Charge': 'Pack Leader',
+  'Unseen Blade': 'Trickster', 'Coup de Grace': 'Trickster', 'Fazed': 'Trickster',
+  'Hunt Them Down': 'Deathstalker', "Deathstalker's Mark": 'Deathstalker', 'Corrupt the Blood': 'Deathstalker',
+  'Fatebound Coin (Tails)': 'Fatebound', 'Fatebound Coin (Heads)': 'Fatebound', 'Fate Intertwined': 'Fatebound',
+  'Void Blast': 'Voidweaver', 'Entropic Rift': 'Voidweaver', 'Collapsing Void': 'Voidweaver',
+  'Premonition of Insight': 'Oracle', 'Premonition of Piety': 'Oracle', 'Premonition of Solace': 'Oracle', 'Premonition of Clairvoyance': 'Oracle',
+  'Power Surge': 'Archon', 'Manifested Power': 'Archon',
+  'Ruination': 'Diabolist', 'Infernal Bolt': 'Diabolist', 'Chaos Salvo': 'Diabolist',
+  'Wither': 'Hellcaller', 'Malevolence': 'Hellcaller', 'Blackened Soul': 'Hellcaller',
+  'Soul Anathema': 'Soul Harvester', 'Demonic Soul': 'Soul Harvester',
+  'Flurry Strikes': 'Shado-Pan', 'Wisdom of the Wall': 'Shado-Pan',
+  'Celestial Conduit': 'Conduit of the Celestials', 'Strength of the Black Ox': 'Conduit of the Celestials', 'Courage of the White Tiger': 'Conduit of the Celestials', 'Flight of the Red Crane': 'Conduit of the Celestials',
+  'Aspect of Harmony': 'Master of Harmony', 'Purified Spirit': 'Master of Harmony',
+  'Ravage': 'Druid of the Claw', 'Dreadful Wound': 'Druid of the Claw',
+  'Bloodseeker Vines': 'Wildstalker', 'Symbiotic Blooms': 'Wildstalker',
+  'Dream Surge': 'Keeper of the Grove', 'Treants of the Moon': 'Keeper of the Grove',
+  'Boundless Moonlight': "Elune's Chosen", 'Lunar Insight': "Elune's Chosen",
+  'Tempest': 'Stormbringer', 'Awakening Storms': 'Stormbringer',
+  'Surging Totem': 'Totemic', 'Lively Totems': 'Totemic',
+  'Call of the Ancestors': 'Farseer', 'Ancestral Swiftness': 'Farseer',
+  'Engulf': 'Flameshaper', 'Consume Flame': 'Flameshaper',
+  'Chrono Flame': 'Chronowarden', 'Temporal Burst': 'Chronowarden',
+  'Mass Disintegrate': 'Scalecommander', 'Mass Eruption': 'Scalecommander', 'Bombardments': 'Scalecommander',
+  "Reaver's Glaive": 'Aldrachi Reaver', 'Art of the Glaive': 'Aldrachi Reaver', 'Wounded Quarry': 'Aldrachi Reaver',
+  'Demonsurge': 'Fel-Scarred', 'Soul Sunder': 'Fel-Scarred',
+};
+
+/** Hero tree of a set of ability names, or null when nothing matches. */
+function heroOf(names: Set<string>): string | null {
+  const votes = new Map<string, number>();
+  for (const n of names) {
+    const tree = HERO_SIG[n];
+    if (tree) votes.set(tree, (votes.get(tree) ?? 0) + 1);
+  }
+  const sorted = [...votes.entries()].sort((a, b) => b[1] - a[1]);
+  return sorted.length && (sorted.length === 1 || sorted[0][1] > sorted[1][1]) ? sorted[0][0] : null;
+}
+
+const heroCandCache = new Map<string, string | null>();
+
+/** Hero tree of one ranked player, from their damage/healing table names. */
+async function heroOfCandidate(cand: any, metric: string): Promise<string | null> {
+  const key = cand.report.code + '#' + cand.report.fightID + '#' + cand.name;
+  if (heroCandCache.has(key)) return heroCandCache.get(key)!;
+  const head = await wcl(
+    `query($code: String!) { reportData { report(code: $code) { masterData { actors(type: "Player") { id name } } } } }`,
+    { code: cand.report.code });
+  const actor = head.reportData.report?.masterData.actors.find((a: any) => a.name?.toLowerCase() === cand.name.toLowerCase());
+  let tree: string | null = null;
+  if (actor) {
+    const tbl = await wcl(
+      `query($code: String!, $fid: [Int]!, $src: Int!) {
+         reportData { report(code: $code) { table(dataType: ${metric === 'hps' ? 'Healing' : 'DamageDone'}, fightIDs: $fid, sourceID: $src) } }
+       }`, { code: cand.report.code, fid: [cand.report.fightID], src: actor.id });
+    tree = heroOf(new Set((tbl.reportData.report?.table?.data?.entries ?? []).map((e: any) => e.name)));
+  }
+  heroCandCache.set(key, tree);
+  return tree;
+}
+
+interface HeroBlock {
+  ids: Set<number>;
+  entries: any[];
+  tree?: string | null;
+}
+
+/** Split ranked entries (with combatantInfo talents) into the hero-tree
+ * groups: hero nodes are 5+ talent IDs that always travel together and
+ * split the field. Returns 0, 1, or 2 blocks. */
+function heroBlocks(entries: any[]): HeroBlock[] {
+  const withTalents = entries.filter((e) => Array.isArray(e.talents) && e.talents.length);
+  if (withTalents.length < 4) return [];
+  const masks = new Map<number, string>();
+  for (const [i, e] of withTalents.entries()) {
+    for (const t of e.talents) {
+      masks.set(t.talentID, (masks.get(t.talentID) ?? '').padEnd(i, '0') + '1');
+    }
+  }
+  const n = withTalents.length;
+  const groups = new Map<string, number[]>();
+  for (const [id, m0] of masks) {
+    const m = m0.padEnd(n, '0');
+    const ones = [...m].filter((x) => x === '1').length;
+    if (ones < 2 || ones / n >= 0.95) continue; // a rare tree still counts; a universal talent never does
+    groups.set(m, (groups.get(m) ?? []).concat(id));
+  }
+  const blocks = [...groups.entries()]
+    .filter(([, ids]) => ids.length >= 5)
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 2)
+    .map(([mask, ids]) => ({
+      ids: new Set(ids),
+      entries: withTalents.filter((_, i) => mask[i] === '1'),
+    }));
+  if (blocks.length === 2) {
+    const set1 = new Set(blocks[0].entries);
+    if (blocks[1].entries.some((e) => set1.has(e))) return [blocks[0]];
+  }
+  return blocks;
+}
+
 /** Hidden-rankings fallback: scan the character's recent reports for their
  * newest kill of the encounter at this difficulty. */
 async function recentKillFor(name: string, slug: string, region: string, encounter: number, wclDiff: number) {
@@ -169,6 +287,7 @@ interface CompareParams {
   metric: 'dps' | 'hps';
   code: string | null;
   fightID: number | null;
+  hero: string | null;
 }
 
 const compareCache = new Map<string, unknown>();
@@ -220,48 +339,72 @@ async function apiCompare(params: CompareParams) {
   }
   const className = classes.get(ch.classID) ?? 'Unknown';
 
-  const wr = await wcl(
-    `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!) {
-       worldData { encounter(id: $enc) {
-         name
-         characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: 1)
-       } }
-     }`, { enc: encounter, cls: className, spec, diff: difficulty, metric });
-  const encData = wr.worldData.encounter;
-  const rankings = encData?.characterRankings?.rankings ?? [];
+  // pages 1-3: the top logs decide the reference; the deeper pages give the
+  // hero-tree clustering a chance to see the off-meta tree at all
+  let encName: string | null = null;
+  const rankings: any[] = [];
+  for (let page = 1; page <= 3; page++) {
+    const wr = await wcl(
+      `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!) {
+         worldData { encounter(id: $enc) {
+           name
+           characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true)
+         } }
+       }`, { enc: encounter, cls: className, spec, diff: difficulty, metric, page });
+    const encData = wr.worldData.encounter;
+    encName = encData?.name ?? encName;
+    const got = encData?.characterRankings?.rankings ?? [];
+    rankings.push(...got);
+    if (got.length < 100 || !encData?.characterRankings?.hasMorePages) break;
+  }
   // anonymous uploads can't be actor-matched — take the best mirrorable parse
   const usable = rankings.filter((r: any) =>
     r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:') &&
     !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code));
   if (!usable.length) throw new Error(`no mirrorable world rankings for ${spec} ${className} on this encounter/difficulty`);
 
-  // fair reference: if this kill went without Power Infusion, mirror the
-  // best parse that also went without it
+  // the player's side first — hero-tree matching reads their ability names
   const aHasPI = await fightHasPI(best.report.code, best.report.fightID, name);
-  let top = usable[0];
+  const mine = await fetchFightSide(best.report.code, best.report.fightID, name, metric);
+  if (!best.amount) best.amount = Math.round(Object.values(mine.dmg).reduce((a, b) => a + b, 0) / Math.max(1, mine.durSec));
+
+  // hero trees: cluster the rankings by their hero-talent blocks, name each
+  // block by its top log's signature abilities, classify this kill likewise
+  const aHero = heroOf(new Set([...mine.casts.map((x) => x[1]), ...Object.keys(mine.dmg)]));
+  const blocks = heroBlocks(usable);
+  for (const bl of blocks) bl.tree = await heroOfCandidate(bl.entries[0], metric);
+  const blockOf = (entry: any) => blocks.find((bl) => bl.entries.includes(entry));
+  const wanted = params.hero || aHero;
+  const wantedBlock = wanted ? blocks.find((bl) => bl.tree === wanted) : null;
+  const pool = wantedBlock ? wantedBlock.entries : usable;
+
+  // fair reference: if this kill went without Power Infusion, mirror the
+  // best (tree-matched) parse that also went without it
+  let top: any = null;
   let piMatched = false;
   let bHasPI: boolean | null = null;
   if (!aHasPI) {
-    for (const cand of usable.slice(0, 10)) {
+    for (const cand of pool.slice(0, 10)) {
       if (!(await fightHasPI(cand.report.code, cand.report.fightID, cand.name))) {
-        piMatched = cand !== usable[0]; // only a "match" if PI'd logs were skipped
+        piMatched = cand !== pool[0]; // only a "match" if PI'd logs were skipped
         top = cand;
         bHasPI = false;
         break;
       }
     }
   }
+  if (!top) top = pool[0];
   if (bHasPI === null) bHasPI = await fightHasPI(top.report.code, top.report.fightID, top.name);
 
-  const [mine, theirs] = await Promise.all([
-    fetchFightSide(best.report.code, best.report.fightID, name, metric),
-    fetchFightSide(top.report.code, top.report.fightID, top.name, metric),
-  ]);
-  if (!best.amount) best.amount = Math.round(Object.values(mine.dmg).reduce((a, b) => a + b, 0) / Math.max(1, mine.durSec));
+  const theirs = await fetchFightSide(top.report.code, top.report.fightID, top.name, metric);
+  const bHero = blockOf(top)?.tree
+    ?? heroOf(new Set([...theirs.casts.map((x) => x[1]), ...Object.keys(theirs.dmg)]));
+  const altTree = blocks.find((bl) => bl.tree && bl.tree !== (bHero ?? wanted))?.tree ?? null;
 
   return {
-    encounter: { id: encounter, name: encData.name }, difficulty, metric, spec, className,
+    encounter: { id: encounter, name: encName ?? `#${encounter}` }, difficulty, metric, spec, className,
     pi: { a: aHasPI, b: bHasPI, matched: piMatched, allTopHavePI: !aHasPI && !piMatched && bHasPI },
+    hero: { a: aHero, b: bHero, alt: altTree, requested: params.hero || null },
     a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine },
     b: { server: top.server?.name ?? '?', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs },
   };
@@ -278,6 +421,7 @@ export async function GET(request: Request) {
     metric: q.get('metric') === 'hps' ? 'hps' : 'dps',
     code: q.get('code')?.trim() || null,
     fightID: Number(q.get('fightID')) || null,
+    hero: q.get('hero')?.trim() || null,
   };
   if (!params.name || !params.server || !Number.isFinite(params.encounter) || !params.encounter) {
     return Response.json({ error: 'name, server, and encounter are required' }, { status: 400 });

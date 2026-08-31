@@ -134,6 +134,7 @@
 
 <div id="out">
   <div class="board" id="board"></div>
+  <div class="windows" id="heroRow" style="display:none; margin-top:10px"></div>
   <div class="deltas" id="deltas"></div>
   <section class="bars" id="resSection">
     <h3>Resource economy</h3>
@@ -272,15 +273,18 @@ function renderKills(K) {
   }
 }
 
-async function runMirror(encounterId, bossName, code, fightID) {
-  say('mirroring ' + bossName + ' — finding the world #1 and both cast streams… (10–30s)');
+let lastCtx = null;
+async function runMirror(encounterId, bossName, code, fightID, hero) {
+  say('mirroring ' + bossName + ' — finding the reference log and both cast streams… (10–30s)');
   $('out').style.display = 'none';
+  lastCtx = { encounterId, bossName, code, fightID };
   try {
     const q = new URLSearchParams({
       name: $('name').value, server: $('server').value, region: $('region').value,
       encounter: encounterId, difficulty: $('difficulty').value, metric: $('metric').value,
     });
     if (code) { q.set('code', code); q.set('fightID', fightID); }
+    if (hero) q.set('hero', hero);
     const res = await fetch(API + 'compare?' + q);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -301,11 +305,13 @@ function render(D) {
   // scoreboard
   const cpm = (s) => (s.casts.length / (s.durSec / 60)).toFixed(1);
   const pi = D.pi || {};
+  const hero = D.hero || {};
   $('board').innerHTML = ['you', 'top'].map((cls) => {
     const s = cls === 'you' ? A : B;
     const tag = cls === 'you'
-      ? s.server + (pi.a ? ' · POWER INFUSION' : '')
-      : (pi.matched ? 'TOP PARSE WITHOUT PI · ' : 'WORLD #1 · ') + s.server + (pi.b ? ' · POWER INFUSION' : '');
+      ? s.server + (hero.a ? ' · ' + hero.a.toUpperCase() : '') + (pi.a ? ' · POWER INFUSION' : '')
+      : (hero.b && hero.alt ? 'TOP ' + hero.b.toUpperCase() : 'WORLD #1') + (pi.matched ? ' · NO PI' : '') +
+        ' · ' + s.server + (hero.b && !hero.alt ? ' · ' + hero.b.toUpperCase() : '') + (pi.b ? ' · POWER INFUSION' : '');
     return '<div class="card ' + cls + '"><h2>' + s.name + ' <span class="tag">' + tag + '</span></h2>' +
       '<div class="stats">' +
       '<div class="stat"><b>' + fmtM(s.amount) + '</b><span>' + D.metric.toUpperCase() + ' (ranked)</span></div>' +
@@ -315,6 +321,22 @@ function render(D) {
   }).join('');
   $('hn1').textContent = A.name;
   $('hn2').textContent = B.name;
+
+  // hero-tree toggle: mirror against the other tree's top log instead
+  const heroRow = $('heroRow');
+  heroRow.innerHTML = '';
+  heroRow.style.display = 'none';
+  if (hero.b && hero.alt && lastCtx) {
+    heroRow.style.display = '';
+    heroRow.insertAdjacentHTML('beforeend', '<span class="wgroup">mirror against</span>');
+    for (const t of [hero.b, hero.alt]) {
+      const el = document.createElement('span');
+      el.className = 'lg' + (t === hero.b ? ' on' : '');
+      el.textContent = t + (hero.a && t === hero.a ? ' — your build' : '');
+      if (t !== hero.b) el.onclick = () => runMirror(lastCtx.encounterId, lastCtx.bossName, lastCtx.code, lastCtx.fightID, t);
+      heroRow.append(el);
+    }
+  }
 
   // palette by combined frequency
   const counts = {};
