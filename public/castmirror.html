@@ -141,7 +141,7 @@
   <section class="bars">
     <h3>Cast timeline</h3>
     <div class="legend" id="legend"></div>
-    <div class="hint">click a spell to spotlight it in both lanes · hover any block for the exact cast · gold bands = detected major windows · shorter lane = shorter kill</div>
+    <div class="hint" id="rollHint"></div>
     <div class="lanehead"><div class="n1" id="hn1"></div><div></div><div class="n2" id="hn2"></div></div>
     <div class="roll">
       <div class="lane" id="laneA"></div>
@@ -327,6 +327,10 @@ function render(D) {
     if (med >= 55) majors.push(spell);
     if (majors.length === 2) break;
   }
+  const bandLabels = majors.map((m, i) =>
+    '<span style="color:var(--' + (i ? 'red' : 'gold') + ')">■ ' + (i ? 'red' : 'gold') + ' window = ' + m + '</span>');
+  $('rollHint').innerHTML = ['click a spell to spotlight it in both lanes', 'hover any block for the exact cast']
+    .concat(bandLabels, 'shorter lane = shorter kill').join(' · ');
 
   // per-minute deltas
   const deltas = bySpell.map(([spell, c]) => {
