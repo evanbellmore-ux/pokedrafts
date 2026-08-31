@@ -166,11 +166,24 @@ const parseColor = (p) => p >= 100 ? '#e5cc80' : p >= 99 ? '#e268a8' : p >= 95 ?
 const DIFF = { 3: 'Normal', 4: 'Heroic', 5: 'Mythic' };
 const say = (msg, err) => { $('status').className = err ? 'err' : ''; $('status').textContent = msg; };
 
+// a cold server can miss the first hit — retry with backoff
+async function fetchJsonRetry(url, tries = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      return data;
+    } catch (err) {
+      if (i >= tries) throw err;
+      await new Promise((r) => setTimeout(r, i * 2500));
+    }
+  }
+}
+
 (async () => {
   try {
-    const res = await fetch(API + 'zones');
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
+    const data = await fetchJsonRetry(API + 'zones');
     $('zone').innerHTML = data.zones.map((z) => '<option value="' + z.id + '">' + z.name + '</option>').join('');
   } catch (err) {
     say('raid list failed to load: ' + err.message, true);
@@ -183,8 +196,9 @@ function fillRealms() {
   $('realmList').innerHTML = names.map((n) => '<option value="' + n.replace(/"/g, '&quot;') + '">').join('');
 }
 // realm picker: type to filter, click to pick; a plain typed name still works
-fetch(API + 'realms').then((r) => r.json()).then((d) => {
-  if (!d.error) { REALMS = d.realms || {}; fillRealms(); }
+fetchJsonRetry(API + 'realms').then((d) => {
+  REALMS = d.realms || {};
+  fillRealms();
 }).catch(() => {});
 $('region').onchange = fillRealms;
 
