@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cast Mirror</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unica+One&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #14121C; --panel: #1C1926; --panel2: #221E30; --line: #2E2940;
+    --text: #E8E4F2; --dim: #8B86A0; --faint: #5C5770;
+    --you: #9F8CFF; --top: #6EC8B8; --gold: #F0B84A; --red: #F0685A;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.5 "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; padding: 0 0 80px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  header { padding: 40px 0 22px; }
+  .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  h1 { font-family: "Unica One", sans-serif; font-weight: 400; font-size: clamp(34px, 5vw, 52px); letter-spacing: .02em; margin: 8px 0; }
+  .sub { color: var(--dim); max-width: 64ch; }
+  a { color: var(--dim); }
+
+  form { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 20px 0; }
+  label { display: grid; gap: 5px; font-size: 11.5px; color: var(--dim); letter-spacing: .05em; text-transform: uppercase; }
+  input, select { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font: 14px "IBM Plex Sans", sans-serif; min-width: 120px; }
+  input:focus, select:focus { outline: 2px solid var(--you); outline-offset: -1px; }
+  button { background: var(--you); color: #14121C; border: 0; border-radius: 6px; padding: 10px 20px; font: 600 14px "IBM Plex Sans", sans-serif; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: wait; }
+  #status { color: var(--dim); font-size: 13px; margin: -8px 0 16px; min-height: 20px; }
+  #status.err { color: var(--red); }
+
+  .board { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 15px 17px; }
+  .card h2 { font-family: "Unica One", sans-serif; font-weight: 400; font-size: 19px; letter-spacing: .04em; display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+  .card.you h2 { color: var(--you); } .card.top h2 { color: var(--top); }
+  .tag { font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--dim); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px 12px; margin-top: 11px; }
+  .stat b { display: block; font: 500 19px/1.2 "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 11px; color: var(--dim); }
+
+  .deltas { margin: 18px 0 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .delta { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; font-size: 12.5px; color: var(--dim); }
+  .delta b { color: var(--text); }
+  .delta .more { color: #7CE0A0; } .delta .less { color: #F08A8A; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+  .lg { display: flex; align-items: center; gap: 7px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 7px; cursor: pointer; font-size: 12.5px; color: var(--dim); }
+  .lg:hover { border-color: var(--faint); }
+  .lg.on { color: var(--text); border-color: currentColor; }
+  .lg i { width: 12px; height: 12px; border-radius: 3px; }
+  .lg .c { font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+  .hint { font-size: 12px; color: var(--faint); margin-bottom: 12px; }
+
+  .lanehead { position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: 1fr 84px 1fr; background: linear-gradient(var(--bg) 75%, transparent); padding: 8px 0 12px; }
+  .lanehead div { text-align: center; font-family: "Unica One", sans-serif; font-size: 18px; letter-spacing: .06em; }
+  .lanehead .n1 { color: var(--you); } .lanehead .n2 { color: var(--top); }
+  .roll { display: grid; grid-template-columns: 1fr 84px 1fr; }
+  .lane { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .spine { position: relative; }
+  .tick { position: absolute; left: 0; right: 0; text-align: center; font: 400 11px/1 "IBM Plex Mono", monospace; color: var(--faint); transform: translateY(-50%); }
+  .cast { position: absolute; left: 8%; width: 84%; border-radius: 2px; opacity: .95; }
+  .cast.u { left: 58%; width: 34%; opacity: .5; }
+  .band { position: absolute; left: 0; width: 100%; pointer-events: none; border-left: 3px solid var(--gold); background: color-mix(in srgb, var(--gold) 11%, transparent); border-radius: 3px; }
+  .band.b2 { border-left-color: var(--red); background: none; border-top: 1px dashed color-mix(in srgb, var(--red) 50%, transparent); border-bottom: 1px dashed color-mix(in srgb, var(--red) 50%, transparent); }
+  .endcap { position: absolute; left: 0; width: 100%; text-align: center; font: 500 11px "IBM Plex Mono", monospace; color: var(--faint); padding-top: 8px; border-top: 1px dashed var(--line); }
+  body[data-focus] .cast { opacity: .07; }
+  body[data-focus] .cast.focus { opacity: 1; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 30%, transparent); }
+  #tip { position: fixed; z-index: 20; pointer-events: none; background: var(--panel2); border: 1px solid var(--faint); border-radius: 6px; padding: 5px 9px; font: 500 12px/1.4 "IBM Plex Mono", monospace; display: none; }
+
+  section.bars { margin-top: 40px; }
+  h3 { font-family: "Unica One", sans-serif; font-weight: 400; font-size: 21px; letter-spacing: .05em; margin-bottom: 12px; }
+  .brow { display: grid; grid-template-columns: 170px 1fr 100px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .brow .nm { font-size: 13px; }
+  .btrack { display: grid; gap: 4px; }
+  .bfill { height: 11px; border-radius: 3px; min-width: 2px; }
+  .bfill.b1 { background: var(--you); } .bfill.b2 { background: var(--top); }
+  .bval { font: 500 12px/1.5 "IBM Plex Mono", monospace; color: var(--dim); text-align: right; white-space: nowrap; }
+  .res { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .res h4 { font-family: "Unica One", sans-serif; font-weight: 400; font-size: 17px; letter-spacing: .05em; margin-bottom: 8px; }
+  .resgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .reshalf .who { font: 500 12px "IBM Plex Mono", monospace; margin-bottom: 4px; }
+  .reshalf.h1 .who { color: var(--you); } .reshalf.h2 .who { color: var(--top); }
+  .resnums { display: flex; gap: 16px; font: 500 13px/1.4 "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+  .resnums span { color: var(--dim); font-size: 11px; display: block; }
+  .resnums .waste b { color: var(--red); }
+  canvas.spark { width: 100%; height: 44px; display: block; margin-top: 8px; background: var(--panel2); border-radius: 5px; }
+  #out { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Cast Mirror</div>
+  <h1>Cast Mirror</h1>
+  <p class="sub">Enter any character. The mirror finds their best ranked kill of the chosen boss,
+  fetches the <b>world-#1 parse of the same spec on the same fight</b>, and lays both cast
+  sequences on one clock — every button, every cooldown window, side by side.</p>
+</header>
+
+<form id="form">
+  <label>Character <input id="name" placeholder="Nate" required></label>
+  <label>Realm <input id="server" placeholder="Black Dragonflight" required></label>
+  <label>Region <select id="region"><option>us</option><option>eu</option><option>kr</option><option>tw</option><option>cn</option></select></label>
+  <label>Boss <select id="encounter">
+    <option value="3420">Sszorak</option>
+    <option value="3421" selected>The Twin Fangs</option>
+    <option value="3429">The Coiled Altar</option>
+    <option value="3445">Entombed Sentinels</option>
+    <option value="3455">Vashnik the Malignant</option>
+    <option value="3470">Nek'zali the Soulcoiler</option>
+    <option value="3492">Ula'tek</option>
+    <option value="3497">The Lost Explorers</option>
+  </select></label>
+  <label>Difficulty <select id="difficulty"><option value="3">Normal</option><option value="4" selected>Heroic</option><option value="5">Mythic</option></select></label>
+  <label>Metric <select id="metric"><option value="dps">DPS</option><option value="hps">HPS</option></select></label>
+  <button id="go">Mirror</button>
+</form>
+<div id="status"></div>
+
+<div id="out">
+  <div class="board" id="board"></div>
+  <div class="deltas" id="deltas"></div>
+  <div class="legend" id="legend"></div>
+  <div class="hint">click a spell to spotlight it in both lanes · hover any block for the exact cast · gold bands = detected major windows · shorter lane = shorter kill</div>
+  <div class="lanehead"><div class="n1" id="hn1"></div><div></div><div class="n2" id="hn2"></div></div>
+  <div class="roll">
+    <div class="lane" id="laneA"></div>
+    <div class="spine" id="spine"></div>
+    <div class="lane" id="laneB"></div>
+  </div>
+  <section class="bars" id="resSection">
+    <h3>Resource economy</h3>
+    <p class="hint" style="margin-bottom:14px">Generated and overcapped come from the log's gain events (waste = points lost to sitting at cap).
+    Spent is reconstructed from per-cast snapshots, so passive drains between casts aren't counted.</p>
+    <div id="resources"></div>
+  </section>
+  <section class="bars">
+    <h3 id="barTitle">Where the output came from</h3>
+    <div id="bars"></div>
+  </section>
+</div>
+</div>
+<div id="tip"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const HUES = ['#7C8CF8', '#B478F0', '#F078C8', '#58C8E8', '#F0B84A', '#7CE0A0', '#F09A5A', '#E8D06A'];
+const S = 5;
+const fmtT = (t) => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+const fmtM = (n) => n >= 1e9 ? (n / 1e9).toFixed(2) + 'b' : n >= 1e6 ? (n / 1e6).toFixed(1) + 'm' : Math.round(n / 1e3) + 'k';
+
+$('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const go = $('go');
+  go.disabled = true;
+  $('status').className = '';
+  $('status').textContent = 'finding the ranked kill, the world #1, and both cast streams… (10–30s)';
+  $('out').style.display = 'none';
+  try {
+    const q = new URLSearchParams({
+      name: $('name').value, server: $('server').value, region: $('region').value,
+      encounter: $('encounter').value, difficulty: $('difficulty').value, metric: $('metric').value,
+    });
+    const res = await fetch('/api/castmirror/compare?' + q);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    render(data);
+    $('status').textContent = '';
+  } catch (err) {
+    $('status').className = 'err';
+    $('status').textContent = err.message;
+  }
+  go.disabled = false;
+};
+
+function render(D) {
+  $('out').style.display = 'block';
+  document.body.removeAttribute('data-focus');
+  const A = D.a, B = D.b;
+  const diffName = { 3: 'Normal', 4: 'Heroic', 5: 'Mythic' }[D.difficulty] ?? D.difficulty;
+
+  // scoreboard
+  const cpm = (s) => (s.casts.length / (s.durSec / 60)).toFixed(1);
+  $('board').innerHTML = ['you', 'top'].map((cls) => {
+    const s = cls === 'you' ? A : B;
+    return '<div class="card ' + cls + '"><h2>' + s.name + ' <span class="tag">' + (cls === 'you' ? s.server : 'WORLD #1 · ' + s.server) + '</span></h2>' +
+      '<div class="stats">' +
+      '<div class="stat"><b>' + fmtM(s.amount) + '</b><span>' + D.metric.toUpperCase() + ' (ranked)</span></div>' +
+      '<div class="stat"><b>' + fmtT(s.durSec) + '</b><span>kill length</span></div>' +
+      '<div class="stat"><b>' + cpm(s) + '</b><span>casts / min</span></div>' +
+      '</div></div>';
+  }).join('');
+  $('hn1').textContent = A.name;
+  $('hn2').textContent = B.name;
+
+  // palette by combined frequency
+  const counts = {};
+  for (const [who, s] of [['A', A], ['B', B]]) {
+    for (const c of s.casts) { counts[c[1]] = counts[c[1]] || { A: 0, B: 0 }; counts[c[1]][who]++; }
+  }
+  const bySpell = Object.entries(counts).sort((a, b) => (b[1].A + b[1].B) - (a[1].A + a[1].B));
+  const color = {};
+  bySpell.forEach(([spell], i) => { color[spell] = i < HUES.length ? HUES[i] : 'var(--faint)'; });
+
+  // major-window detection: 2-8 casts, median gap >= 55s, not a consumable
+  const majors = [];
+  for (const [spell, c] of bySpell) {
+    const total = c.A + c.B;
+    if (total < 2 || total > 16 || /potion|healthstone|flask|stone|food/i.test(spell)) continue;
+    const gaps = [];
+    for (const s of [A, B]) {
+      const ts = s.casts.filter((x) => x[1] === spell).map((x) => x[0]);
+      for (let i = 1; i < ts.length; i++) gaps.push(ts[i] - ts[i - 1]);
+    }
+    gaps.sort((a, b) => a - b);
+    const med = gaps.length ? gaps[Math.floor(gaps.length / 2)] : 999;
+    if (med >= 55) majors.push(spell);
+    if (majors.length === 2) break;
+  }
+
+  // per-minute deltas
+  const deltas = bySpell.map(([spell, c]) => {
+    const a = c.A / (A.durSec / 60), b = c.B / (B.durSec / 60);
+    return { spell, a, b, d: a - b };
+  }).filter((x) => Math.abs(x.d) > 0.5).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 4);
+  $('deltas').innerHTML = deltas.map((x) =>
+    '<span class="delta"><b>' + x.spell + '</b> · ' + A.name + ' ' + x.a.toFixed(1) + '/min vs ' + x.b.toFixed(1) +
+    ' <span class="' + (x.d > 0 ? 'more' : 'less') + '">(' + (x.d > 0 ? '+' : '') + x.d.toFixed(1) + ')</span></span>').join('');
+
+  // legend
+  let focusSpell = null;
+  $('legend').innerHTML = '';
+  for (const [spell, c] of bySpell.slice(0, 14)) {
+    const el = document.createElement('span');
+    el.className = 'lg';
+    el.innerHTML = '<i style="background:' + color[spell] + '"></i>' + spell + ' <span class="c">' + c.A + '·' + c.B + '</span>';
+    el.onclick = () => {
+      focusSpell = focusSpell === spell ? null : spell;
+      document.body.toggleAttribute('data-focus', !!focusSpell);
+      document.querySelectorAll('.lg').forEach((x) => x.classList.toggle('on', x === el && !!focusSpell));
+      document.querySelectorAll('.cast').forEach((x) => x.classList.toggle('focus', x.dataset.s === focusSpell));
+    };
+    $('legend').append(el);
+  }
+
+  // spine + lanes
+  const maxDur = Math.max(A.durSec, B.durSec);
+  $('spine').innerHTML = '';
+  $('spine').style.height = (maxDur * S + 30) + 'px';
+  for (let t = 0; t <= maxDur; t += 30) {
+    $('spine').insertAdjacentHTML('beforeend', '<div class="tick" style="top:' + (t * S) + 'px">' + fmtT(t) + '</div>');
+  }
+  const tip = $('tip');
+  for (const [s, laneId] of [[A, 'laneA'], [B, 'laneB']]) {
+    const lane = $(laneId);
+    lane.innerHTML = '';
+    lane.style.height = (maxDur * S + 30) + 'px';
+    for (const [mi, mspell] of majors.entries()) {
+      for (const c of s.casts) {
+        if (c[1] !== mspell) continue;
+        lane.insertAdjacentHTML('beforeend', '<div class="band ' + (mi ? 'b2' : '') + '" style="top:' + (c[0] * S) + 'px;height:' + (15 * S) + 'px"></div>');
+      }
+    }
+    s.casts.forEach((c, i) => {
+      const [t, spell] = c;
+      const next = s.casts[i + 1];
+      const h = Math.max(3, Math.min(next ? (next[0] - t) * S - 1.5 : 8, 12));
+      const rank = bySpell.findIndex(([sp]) => sp === spell);
+      const el = document.createElement('div');
+      el.className = 'cast' + (rank >= HUES.length ? ' u' : '');
+      el.dataset.s = spell;
+      el.style.cssText = 'top:' + (t * S) + 'px;height:' + h + 'px;background:' + (color[spell] || 'var(--faint)');
+      el.onmouseenter = () => { tip.style.display = 'block'; tip.textContent = fmtT(t) + ' · ' + spell + ' · ' + s.name; };
+      el.onmousemove = (e) => { tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 10) + 'px'; };
+      el.onmouseleave = () => { tip.style.display = 'none'; };
+      lane.append(el);
+    });
+    lane.insertAdjacentHTML('beforeend', '<div class="endcap" style="top:' + (s.durSec * S) + 'px">boss dies · ' + fmtT(s.durSec) + '</div>');
+  }
+  if (focusSpell) document.body.removeAttribute('data-focus');
+
+  // resource economy
+  const POWER = { 0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy', 4: 'Combo Points', 5: 'Runes', 6: 'Runic Power', 7: 'Soul Shards', 8: 'Lunar Power', 9: 'Holy Power', 11: 'Maelstrom', 12: 'Chi', 13: 'Insanity', 16: 'Arcane Charges', 17: 'Fury', 18: 'Pain', 19: 'Essence' };
+  const resTypes = [...new Set([...Object.keys(A.resources || {}), ...Object.keys(B.resources || {})])]
+    .map(Number)
+    .filter((t) => {
+      // only the class's real bars: types the cast snapshots actually carry
+      // (drops externally-granted proc noise like mana events on a DK)
+      const a = A.resources?.[t], b = B.resources?.[t];
+      const snapBacked = (a?.series?.length ?? 0) > 1 || (b?.series?.length ?? 0) > 1;
+      return snapBacked && (a?.gained || a?.spentSnap || b?.gained || b?.spentSnap);
+    })
+    .sort((x, y) => ((B.resources?.[y]?.gained ?? 0) + (A.resources?.[y]?.gained ?? 0)) - ((B.resources?.[x]?.gained ?? 0) + (A.resources?.[x]?.gained ?? 0)));
+  const resEl = $('resources');
+  resEl.innerHTML = '';
+  $('resSection').style.display = resTypes.length ? '' : 'none';
+  for (const t of resTypes) {
+    const card = document.createElement('div');
+    card.className = 'res';
+    card.innerHTML = '<h4>' + (POWER[t] ?? 'Power ' + t) + '</h4><div class="resgrid"></div>';
+    const grid = card.querySelector('.resgrid');
+    for (const [cls, s] of [['h1', A], ['h2', B]]) {
+      const raw = s.resources?.[t] ?? { gained: 0, waste: 0, spentSnap: 0, series: [], max: 0 };
+      // the log stores some powers in fixed-point: Runic Power ×10, Insanity ×100
+      const scale = t === 6 ? 10 : t === 13 ? 100 : 1;
+      const r = { ...raw, gained: raw.gained / scale, waste: Math.round(raw.waste / scale), spentSnap: raw.spentSnap / scale };
+      const perMin = (n) => (n / (s.durSec / 60)).toFixed(t === 5 || t === 9 || t === 4 || t === 12 ? 1 : 0);
+      const half = document.createElement('div');
+      half.className = 'reshalf ' + cls;
+      const hasGains = r.gained > 0 || r.waste > 0;
+      half.innerHTML = '<div class="who">' + s.name + '</div>' +
+        '<div class="resnums">' +
+        (hasGains ? '<div><b>' + perMin(r.gained) + '</b><span>gained /min</span></div>' +
+          '<div class="waste"><b>' + r.waste.toLocaleString() + '</b><span>overcapped</span></div>' : '') +
+        '<div><b>' + perMin(r.spentSnap) + '</b><span>spent /min ≈</span></div>' +
+        '</div><canvas class="spark" width="440" height="44"></canvas>';
+      grid.append(half);
+      const cv = half.querySelector('canvas');
+      const ctx = cv.getContext('2d');
+      const series = r.series ?? [];
+      if (series.length > 1) {
+        const maxV = Math.max(r.max, ...series.map((p) => p[1]), 1);
+        const maxT = s.durSec;
+        ctx.strokeStyle = cls === 'h1' ? '#9F8CFF' : '#6EC8B8';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        series.forEach(([tt, v], i) => {
+          const x = (tt / maxT) * 436 + 2;
+          const y = 42 - (v / maxV) * 38;
+          i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        });
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(240,138,138,.5)';
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.moveTo(2, 42 - 38); ctx.lineTo(438, 42 - 38); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+    resEl.append(card);
+  }
+
+  // output bars
+  $('barTitle').textContent = 'Where the ' + (D.metric === 'hps' ? 'healing' : 'damage') + ' came from — ' + D.spec + ' ' + D.className + ' · ' + D.encounter.name + ' ' + diffName;
+  const spells = [...new Set([...Object.keys(A.dmg), ...Object.keys(B.dmg)])]
+    .map((sp) => [sp, (A.dmg[sp] || 0) / A.durSec + (B.dmg[sp] || 0) / B.durSec])
+    .sort((x, y) => y[1] - x[1]).slice(0, 8);
+  const maxV = Math.max(...spells.map(([sp]) => Math.max((A.dmg[sp] || 0) / A.durSec, (B.dmg[sp] || 0) / B.durSec)));
+  $('bars').innerHTML = spells.map(([sp]) => {
+    const a = (A.dmg[sp] || 0) / A.durSec, b = (B.dmg[sp] || 0) / B.durSec;
+    return '<div class="brow"><div class="nm">' + sp + '</div><div class="btrack">' +
+      '<div class="bfill b1" style="width:' + (a / maxV * 100) + '%"></div>' +
+      '<div class="bfill b2" style="width:' + (b / maxV * 100) + '%"></div>' +
+      '</div><div class="bval">' + fmtM(a) + ' · ' + fmtM(b) + ' /s</div></div>';
+  }).join('');
+}
+</script>
+</body>
+</html>
