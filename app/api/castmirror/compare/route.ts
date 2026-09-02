@@ -111,12 +111,13 @@ async function fetchFightSide(code: string, fightID: number, playerName: string,
   const dmg: Record<string, number> = {};
   for (const e of tbl.reportData.report?.table?.data?.entries ?? []) if (e.total) dmg[e.name] = e.total;
 
-  // Bloodlust-family windows this player RECEIVED (any variant, any caster)
+  // Bloodlust-family windows in this FIGHT — raid-wide, any variant, any
+  // caster, regardless of who received it or whether this player was alive
   const LUST_RE = /bloodlust|heroism|time warp|fury of the aspects|primal rage|harrier|ancient hysteria|netherwinds|drums of|feral hysteria/i;
   const bt = await wcl(
-    `query($code: String!, $fid: [Int]!, $src: Int!) {
-       reportData { report(code: $code) { table(dataType: Buffs, fightIDs: $fid, sourceID: $src) } }
-     }`, { code, fid: [fightID], src: actor.id });
+    `query($code: String!, $fid: [Int]!) {
+       reportData { report(code: $code) { table(dataType: Buffs, fightIDs: $fid) } }
+     }`, { code, fid: [fightID] });
   const auras = bt.reportData.report?.table?.data?.auras ?? bt.reportData.report?.table?.data?.entries ?? [];
   const durSec = Math.round((fight.endTime - fight.startTime) / 1000);
   const rawLust: [number, number][] = [];
