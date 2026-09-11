@@ -32,10 +32,18 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
 
+# supabase cli (written by `supabase link` / `supabase start`; config.toml from `supabase init` may be committed)
+supabase/.temp/
+supabase/.branches/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch suite written and removed by tests/db/exit-code.test.ts
+tests/db/exit-code-probe/

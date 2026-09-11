@@ -1,158 +1,85 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env.scripts" });
-console.log("cwd:", process.cwd());
-console.log("SUPABASE_URL:", process.env.SUPABASE_URL);
-console.log(
-  "SERVICE_ROLE exists:",
-  !!process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Fills pokemon_dex.type1 / type2 (lowercase PokeAPI type names) for rows that
+// do not have a type yet. Species are resolved by dex number through
+// /pokemon-species/{dex} and its default variety, so names with special
+// characters (Nidoran♀, Type: Null, Flabébé) and species whose default form has
+// a suffix (deoxys-normal, giratina-altered, ...) all resolve.
+// Run with: npm run seed:types   (needs .env.scripts, see .env.example)
+import { createAdminClient, fetchAllRows } from "./lib/supabase-admin.mjs";
+import { NotFoundError, fetchDefaultVariety, fetchPokemon, mapWithConcurrency, sleep, typesOf } from "./lib/pokeapi.mjs";
 
-import { createClient } from "@supabase/supabase-js";
+const CONCURRENCY = 3;
+const DELAY_MS = 100;
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !serviceRoleKey) {
-  console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-function toPokeApiSlug(name) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/^mega\s+/, "")
-    .replace(/\s+[xy]$/, "")
-    .replace(/^alolan\s+/, "")
-    .replace(/^galarian\s+/, "")
-    .replace(/^hisuian\s+/, "")
-    .replace(/^paldean\s+/, "")
-    .replace(/\s+/g, "-")
-    .replace(/[’']/g, "")
-    .replace(/\./g, "");
-}
-
-function normalizeFormSlug(name) {
-  const cleaned = name.toLowerCase().trim();
-
-  const regionalMatch = cleaned.match(
-    /^(alolan|alola|galarian|galar|hisuian|hisui|paldean|paldea)\s+(.+)$/
-  );
-
-  if (regionalMatch) {
-    const regionMap = {
-      alolan: "alola",
-      alola: "alola",
-      galarian: "galar",
-      galar: "galar",
-      hisuian: "hisui",
-      hisui: "hisui",
-      paldean: "paldea",
-      paldea: "paldea",
-    };
-
-    return `${toPokeApiSlug(regionalMatch[2])}-${regionMap[regionalMatch[1]]}`;
+/**
+ * @param {number} dexNumber
+ */
+async function resolveTypes(dexNumber) {
+  try {
+    return typesOf(await fetchDefaultVariety(dexNumber));
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      // Fall back to the pokemon endpoint, whose ids match species ids for default forms.
+      return typesOf(await fetchPokemon(dexNumber));
+    }
+    throw error;
   }
-
-  if (cleaned.includes("rotom-wash")) return "rotom-wash";
-  if (cleaned.includes("rotom-heat")) return "rotom-heat";
-  if (cleaned.includes("rotom-mow")) return "rotom-mow";
-  if (cleaned.includes("rotom-frost")) return "rotom-frost";
-  if (cleaned.includes("rotom-fan")) return "rotom-fan";
-
-  if (cleaned.includes("meowstic-male")) return "meowstic-male";
-  if (cleaned.includes("meowstic-female")) return "meowstic-female";
-
-  if (cleaned.includes("lycanroc-dusk")) return "lycanroc-dusk";
-  if (cleaned.includes("lycanroc-midnight")) return "lycanroc-midnight";
-
-  if (cleaned.includes("paldean tauros aqua")) {
-    return "tauros-paldea-aqua-breed";
-  }
-
-  if (cleaned.includes("paldean tauros blaze")) {
-    return "tauros-paldea-blaze-breed";
-  }
-
-  if (cleaned === "paldean tauros") {
-    return "tauros-paldea-combat-breed";
-  }
-
-  if (cleaned === "mr. rime") return "mr-rime";
-
-  return toPokeApiSlug(name);
-}
-
-async function fetchPokemonTypes(name) {
-  const slug = normalizeFormSlug(name);
-  const url = `https://pokeapi.co/api/v2/pokemon/${slug}`;
-
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    throw new Error(`PokéAPI lookup failed for ${name} using slug ${slug}`);
-  }
-
-  const json = await res.json();
-
-  const types = json.types
-    .sort((a, b) => a.slot - b.slot)
-    .map((entry) => entry.type.name);
-
-  return {
-    slug,
-    type1: types[0] ?? null,
-    type2: types[1] ?? null,
-  };
 }
 
 async function main() {
-  const { data: rows, error } = await supabase
-    .from("pokemon_dex")
-    .select("id, name, type1, type2")
-    .order("name");
+  const supabase = createAdminClient();
 
-  if (error) {
-    throw error;
-  }
-  console.log("Rows found:", rows?.length ?? 0);
-console.log("First row:", rows?.[0]);
-
-  for (const row of rows) {
-    if (row.type1) {
-      console.log(`Skipping ${row.name}: already has type`);
-      continue;
-    }
-
-    try {
-      const { slug, type1, type2 } = await fetchPokemonTypes(row.name);
-
-      const { error: updateError } = await supabase
-        .from("pokemon_dex")
-        .update({
-          type1,
-          type2,
-        })
-        .eq("id", row.id);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      console.log(`Updated ${row.name} (${slug}): ${type1}${type2 ? ` / ${type2}` : ""}`);
-    } catch (err) {
-      console.error(`Failed ${row.name}:`, err.message);
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 150));
+  /** @type {Array<{ id: number, dex_number: number, name: string }>} */
+  const rows = await fetchAllRows((from, to) =>
+    supabase
+      .from("pokemon_dex")
+      .select("id, dex_number, name")
+      .is("type1", null)
+      .order("dex_number")
+      .range(from, to),
+  );
+  console.log(`${rows.length} pokemon_dex rows without a type.`);
+  if (rows.length === 0) {
+    console.log("Nothing to do.");
+    return;
   }
 
-  console.log("Done.");
+  let done = 0;
+  const results = await mapWithConcurrency(rows, CONCURRENCY, async (row) => {
+    const [type1, type2] = await resolveTypes(row.dex_number);
+    if (!type1) {
+      throw new Error(`PokeAPI returned no types for #${row.dex_number} ${row.name}`);
+    }
+    const { error } = await supabase.from("pokemon_dex").update({ type1, type2 }).eq("id", row.id);
+    if (error) {
+      throw new Error(`update failed: ${error.message}`);
+    }
+    done += 1;
+    if (done % 100 === 0) {
+      console.log(`  ${done}/${rows.length}`);
+    }
+    await sleep(DELAY_MS);
+    return { name: row.name, type1, type2 };
+  });
+
+  const failures = [];
+  results.forEach((result, index) => {
+    if (result.status === "error") {
+      const message = result.error instanceof Error ? result.error.message : String(result.error);
+      failures.push({ row: rows[index], message });
+    }
+  });
+
+  console.log(`Updated ${results.length - failures.length} rows.`);
+  if (failures.length > 0) {
+    console.error(`${failures.length} rows failed:`);
+    for (const failure of failures) {
+      console.error(`  #${failure.row.dex_number} ${failure.row.name}: ${failure.message}`);
+    }
+    process.exitCode = 1;
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
   process.exit(1);
 });
