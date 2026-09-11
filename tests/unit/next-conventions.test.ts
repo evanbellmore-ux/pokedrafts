@@ -39,7 +39,10 @@ function toUrl(file: string) {
 describe("route map (docs section 3)", () => {
   it("keeps every URL the architecture lists, with route groups invisible", () => {
     const pages = appFiles.filter((file) => /[\\/]page\.tsx$/.test(file));
-    const routes = appFiles.filter((file) => /[\\/]route\.ts$/.test(file));
+    // app/api/castmirror belongs to another project that shares this repo.
+    const routes = appFiles.filter(
+      (file) => /[\\/]route\.ts$/.test(file) && !/[\\/]api[\\/]castmirror[\\/]/.test(file)
+    );
     const urls = [...pages, ...routes].map(toUrl).sort();
 
     expect(urls).toEqual(

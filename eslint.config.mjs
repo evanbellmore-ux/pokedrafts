@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Placeholder app for another project that shares this repo; not held to
+    // the PokeDrafts lint rules.
+    "app/api/castmirror/**",
   ]),
 ]);
 
