@@ -1,29 +1,18 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  DEFAULT_THEME,
+  THEME_COOKIE,
+  THEME_COOKIE_MAX_AGE,
+  isPokemonTheme,
+  pokemonThemes,
+  themeBackgrounds,
+  type PokemonTheme,
+} from "@/app/lib/theme";
 
-export const pokemonThemes = [
-  "normal",
-  "fire",
-  "water",
-  "electric",
-  "grass",
-  "ice",
-  "fighting",
-  "poison",
-  "ground",
-  "flying",
-  "psychic",
-  "bug",
-  "rock",
-  "ghost",
-  "dragon",
-  "dark",
-  "steel",
-  "fairy",
-] as const;
-
-export type PokemonTheme = (typeof pokemonThemes)[number];
+export { pokemonThemes, isPokemonTheme };
+export type { PokemonTheme };
 
 type ThemeContextValue = {
   theme: PokemonTheme;
@@ -32,33 +21,45 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function isPokemonTheme(value: string | null): value is PokemonTheme {
-  return pokemonThemes.includes(value as PokemonTheme);
+function writeThemeCookie(theme: PokemonTheme) {
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${THEME_COOKIE}=${theme}; Path=/; Max-Age=${THEME_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<PokemonTheme>(() => {
-    if (typeof window === "undefined") return "normal";
+/**
+ * Seeded from the `pokedrafts-theme` cookie by the root layout so the first
+ * client render matches the server HTML (no hydration mismatch, no flash).
+ * Changing the theme updates the <html> attribute, the theme-color meta and
+ * the cookie directly.
+ */
+export function ThemeProvider({
+  initialTheme = DEFAULT_THEME,
+  children,
+}: {
+  initialTheme?: PokemonTheme;
+  children: React.ReactNode;
+}) {
+  const [theme, setThemeState] = useState<PokemonTheme>(initialTheme);
 
-    const savedTheme = window.localStorage.getItem("pokedrafts-theme");
-    if (isPokemonTheme(savedTheme)) {
-      return savedTheme;
+  const setTheme = useCallback((next: PokemonTheme) => {
+    if (!isPokemonTheme(next)) return;
+    setThemeState(next);
+    document.documentElement.dataset.pokemonTheme = next;
+    // The root layout's generateViewport wrote this meta for the cookie theme;
+    // keep the browser chrome in step without waiting for a navigation.
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", themeBackgrounds[next]);
+    try {
+      writeThemeCookie(next);
+    } catch {
+      // Cookies disabled: the theme still applies for this page view.
     }
-
-    return "normal";
-  });
-
-  useEffect(() => {
-    document.documentElement.dataset.pokemonTheme = theme;
-    window.localStorage.setItem("pokedrafts-theme", theme);
-  }, [theme]);
+  }, []);
 
   const value = useMemo<ThemeContextValue>(
-    () => ({
-      theme,
-      setTheme,
-    }),
-    [theme]
+    () => ({ theme, setTheme }),
+    [theme, setTheme]
   );
 
   return (
