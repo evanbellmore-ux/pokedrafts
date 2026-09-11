@@ -2,88 +2,151 @@
 
 import { useEffect, useState } from "react";
 import {
-  getPokeApiSprite,
-  loadLocalSpriteMap,
+  fetchPokeApiSprite,
+  getSpriteUrl,
+  loadDex,
   normalizePokemonName,
-} from "@/app/lib/pokemon/sprites";
+} from "@/app/lib/pokemon";
 
-type Props = {
-  name: string;
-  size?: "sm" | "md";
+export type SpriteSize = "sm" | "md" | "lg";
+
+const SIZE_PX: Record<SpriteSize, number> = { sm: 32, md: 40, lg: 64 };
+const SIZE_CLASS: Record<SpriteSize, string> = {
+  sm: "h-8 w-8",
+  md: "h-10 w-10",
+  lg: "h-16 w-16",
 };
 
-let cachedSpriteMapPromise: Promise<Record<string, string>> | null = null;
-let cachedSpriteMap: Record<string, string> | null = null;
-const apiSpriteCache: Record<string, string> = {};
+/** normalized name -> url, or null when every source failed (negative cache). */
+const spriteCache = new Map<string, string | null>();
+/** normalized name -> pending lookup, so concurrent mounts share one request. */
+const inFlight = new Map<string, Promise<string | null>>();
 
-export default function PokemonSprite({ name, size = "md" }: Props) {
-  const [spriteUrl, setSpriteUrl] = useState<string | null>(null);
+async function resolveSprite(name: string): Promise<string | null> {
+  const key = normalizePokemonName(name);
+  const cached = spriteCache.get(key);
+  if (cached !== undefined) return cached;
 
-  useEffect(() => {
-    let active = true;
+  const pending = inFlight.get(key);
+  if (pending) return pending;
 
-    async function loadSprite() {
-      const normalized = normalizePokemonName(name);
+  const promise = (async () => {
+    let url: string | null = null;
 
-      if (cachedSpriteMap?.[normalized]) {
-        setSpriteUrl(cachedSpriteMap[normalized]);
-        return;
-      }
+    try {
+      url = getSpriteUrl(name, await loadDex());
+    } catch {
+      url = null;
+    }
 
-      if (apiSpriteCache[normalized]) {
-        setSpriteUrl(apiSpriteCache[normalized]);
-        return;
-      }
-
-      if (!cachedSpriteMapPromise) {
-        cachedSpriteMapPromise = loadLocalSpriteMap();
-      }
-
-      cachedSpriteMap = await cachedSpriteMapPromise;
-
-      const localSprite = cachedSpriteMap[normalized];
-
-      if (localSprite) {
-        if (active) setSpriteUrl(localSprite);
-        return;
-      }
-
-      const apiSprite = await getPokeApiSprite(name);
-
-      if (apiSprite) {
-        apiSpriteCache[normalized] = apiSprite;
-        if (active) setSpriteUrl(apiSprite);
+    if (!url) {
+      try {
+        url = await fetchPokeApiSprite(name);
+      } catch {
+        url = null;
       }
     }
 
-    void Promise.resolve().then(() => {
-      if (active) setSpriteUrl(null);
-      return loadSprite();
+    spriteCache.set(key, url);
+    return url;
+  })().finally(() => {
+    inFlight.delete(key);
+  });
+
+  inFlight.set(key, promise);
+  return promise;
+}
+
+type SpriteState =
+  | { key: string; status: "loading" }
+  | { key: string; status: "ready"; url: string }
+  | { key: string; status: "failed" };
+
+function initialState(name: string): SpriteState {
+  const key = normalizePokemonName(name);
+  const cached = spriteCache.get(key);
+  if (cached === undefined) return { key, status: "loading" };
+  return cached ? { key, status: "ready", url: cached } : { key, status: "failed" };
+}
+
+export type PokemonSpriteProps = {
+  name: string;
+  size?: SpriteSize;
+  className?: string;
+};
+
+/**
+ * Sprite with three states: loading (pulsing tile), ready (<img> with fixed
+ * width/height) and failed (placeholder tile showing the first letter).
+ * Broken image URLs flip to failed via onError and are remembered.
+ */
+export default function PokemonSprite({
+  name,
+  size = "md",
+  className = "",
+}: PokemonSpriteProps) {
+  const key = normalizePokemonName(name);
+  const [state, setState] = useState<SpriteState>(() => initialState(name));
+
+  // Reset when the name changes (derived state during render, not an effect).
+  if (state.key !== key) {
+    setState(initialState(name));
+  }
+
+  useEffect(() => {
+    if (state.status !== "loading") return;
+    let active = true;
+
+    void resolveSprite(name).then((url) => {
+      if (!active) return;
+      setState(url ? { key, status: "ready", url } : { key, status: "failed" });
     });
 
     return () => {
       active = false;
     };
-  }, [name]);
+  }, [key, name, state.status]);
 
-  const sizeClass = size === "sm" ? "h-8 w-8" : "h-10 w-10";
+  const px = SIZE_PX[size];
+  const box = `${SIZE_CLASS[size]} shrink-0 rounded-md ${className}`.trim();
 
-  if (!spriteUrl) {
+  if (state.status === "loading") {
     return (
       <div
-        className={`${sizeClass} animate-pulse rounded-md bg-stone-800/70`}
-        aria-label={`Loading sprite for ${name}`}
+        aria-hidden="true"
+        className={`${box} animate-pulse bg-panel-hover`}
       />
     );
   }
 
+  if (state.status === "failed") {
+    return (
+      <div
+        role="img"
+        aria-label={`${name} (no sprite available)`}
+        title={name}
+        className={`${box} flex items-center justify-center bg-panel-hover text-sm font-bold uppercase text-muted`}
+      >
+        {name.trim().charAt(0) || "?"}
+      </div>
+    );
+  }
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
+    // eslint-disable-next-line @next/next/no-img-element -- sprites come from Supabase storage / PokeAPI and are tiny; the image optimizer adds nothing.
     <img
-      src={spriteUrl}
+      src={state.url}
       alt={name}
-      className={`${sizeClass} rounded-md bg-stone-800 object-contain p-1`}
+      title={name}
+      width={px}
+      height={px}
       loading="lazy"
+      decoding="async"
+      onError={() => {
+        spriteCache.set(key, null);
+        setState({ key, status: "failed" });
+      }}
+      className={`${box} bg-panel-hover object-contain p-1`}
     />
   );
 }

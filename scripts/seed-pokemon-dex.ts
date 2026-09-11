@@ -1,52 +1,74 @@
-import "dotenv/config";
-import { createClient } from "@supabase/supabase-js";
+// Seeds public.pokemon_dex with dex_number + English species name from PokeAPI.
+// Run with: npm run seed:dex   (needs .env.scripts, see .env.example)
+//
+// Optional: POKEDEX_MAX=151 npm run seed:dex   to seed a smaller range.
+import { chunk, createAdminClient } from "./lib/supabase-admin.mjs";
+import { englishName, fetchSpecies, mapWithConcurrency } from "./lib/pokeapi.mjs";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const DEFAULT_MAX_DEX = 1025;
+const CONCURRENCY = 4;
+const UPSERT_BATCH = 200;
 
-const supabase = createClient(supabaseUrl, serviceRoleKey);
+type DexRow = { dex_number: number; name: string };
 
-type SpeciesName = {
-  language: {
-    name: string;
-  };
-  name: string;
-};
-
-function formatName(name: string) {
-  return name
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+function resolveMaxDex(): number {
+  const raw = process.env.POKEDEX_MAX;
+  if (!raw) {
+    return DEFAULT_MAX_DEX;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`POKEDEX_MAX must be a positive integer, got "${raw}".`);
+  }
+  return parsed;
 }
 
-async function seedPokemonDex() {
-  const results = [];
+async function main(): Promise<void> {
+  const supabase = createAdminClient();
+  const maxDex = resolveMaxDex();
+  const numbers = Array.from({ length: maxDex }, (_, i) => i + 1);
 
-  for (let dex = 1; dex <= 1025; dex++) {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${dex}`);
-    const data = await res.json();
-
-    const englishName =
-      (data.names as SpeciesName[]).find((entry) => entry.language.name === "en")?.name ??
-      formatName(data.name);
-
-    results.push({
-      dex_number: dex,
-      name: englishName,
-    });
-  }
-
-  const { error } = await supabase.from("pokemon_dex").upsert(results, {
-    onConflict: "dex_number",
+  console.log(`Fetching ${numbers.length} species from PokeAPI...`);
+  let done = 0;
+  const results = await mapWithConcurrency(numbers, CONCURRENCY, async (dex): Promise<DexRow> => {
+    const species = await fetchSpecies(dex);
+    done += 1;
+    if (done % 100 === 0) {
+      console.log(`  ${done}/${numbers.length}`);
+    }
+    return { dex_number: dex, name: englishName(species) };
   });
 
-  if (error) {
-    console.error(error);
-    process.exit(1);
+  const rows: DexRow[] = [];
+  const failures: Array<{ dex: number; message: string }> = [];
+  results.forEach((result, index) => {
+    if (result.status === "ok") {
+      rows.push(result.value);
+    } else {
+      const message = result.error instanceof Error ? result.error.message : String(result.error);
+      failures.push({ dex: numbers[index], message });
+    }
+  });
+
+  console.log(`Upserting ${rows.length} rows into pokemon_dex...`);
+  for (const batch of chunk(rows, UPSERT_BATCH)) {
+    const { error } = await supabase.from("pokemon_dex").upsert(batch, { onConflict: "dex_number" });
+    if (error) {
+      throw new Error(`pokemon_dex upsert failed: ${error.message}`);
+    }
   }
 
-  console.log(`Seeded ${results.length} Pokémon.`);
+  console.log(`Seeded ${rows.length} Pokémon.`);
+  if (failures.length > 0) {
+    console.error(`${failures.length} species could not be fetched:`);
+    for (const failure of failures) {
+      console.error(`  #${failure.dex}: ${failure.message}`);
+    }
+    process.exitCode = 1;
+  }
 }
 
-seedPokemonDex();
+main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+});
