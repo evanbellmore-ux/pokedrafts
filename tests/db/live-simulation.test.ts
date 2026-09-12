@@ -10,10 +10,19 @@
 import { afterAll, beforeAll, describe, expect, inject, it } from "vitest";
 import pg from "pg";
 import { connect, type Client } from "./harness";
-import { HARDENING_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
 
 const SIM_DB = "pokedrafts_live_sim";
 const OWNER_DB = "pokedrafts_owner_sim";
+
+function migrationNamed(name: string) {
+  const migration = readMigrations().find((m) => m.name === name);
+  if (!migration) throw new Error(`${name} not found`);
+  return migration;
+}
+
+const hardeningMigration = () => migrationNamed(HARDENING_MIGRATION);
+const playoffsMigration = () => migrationNamed(PLAYOFFS_MIGRATION);
 
 type Notice = { message?: string; severity?: string };
 
@@ -197,7 +206,7 @@ describe("hardening migration on a live-like database", () => {
     await sim.query(LIVE_LIKE_SQL);
     seed = await seedDirtyData(sim);
     notices.length = 0;
-    await applyMigration(sim, migrations[migrations.length - 1]);
+    await applyMigration(sim, hardeningMigration());
   });
 
   afterAll(async () => {
@@ -428,8 +437,7 @@ describe("hardening migration on a live-like database", () => {
 
   it("applies a second time on the same database without error, copies nothing again, and copies a skipped league's format once the format is fixed", async () => {
     notices.length = 0;
-    const migrations = readMigrations();
-    await applyMigration(sim, migrations[migrations.length - 1]);
+    await applyMigration(sim, hardeningMigration());
     const policies = await sim.query("select count(*)::int as n from pg_policies where schemaname = 'public' and tablename <> 'unrelated_audit'");
     expect(policies.rows[0].n).toBe(16);
     const poolSizes = async () =>
@@ -456,7 +464,7 @@ describe("hardening migration on a live-like database", () => {
       seed.riggedFormatId,
     ]);
     notices.length = 0;
-    await applyMigration(sim, migrations[migrations.length - 1]);
+    await applyMigration(sim, hardeningMigration());
     expect(notices.some((n) => (n.message ?? "").includes("copied the draft format onto 2 league(s)"))).toBe(true);
     expect(notices.some((n) => (n.message ?? "").includes("kept no pool"))).toBe(false);
     expect(await poolSizes()).toEqual([
@@ -478,6 +486,33 @@ describe("hardening migration on a live-like database", () => {
     });
     const report = await sim.query<{ item: string }>("select item from public._migration_report() order by item");
     expect(report.rows.map((r) => r.item).sort()).toEqual([`league ${seed.orphanLeagueId} (Orphan)`, "unique (league_id, pokemon_name) on public.draft_picks"].sort());
+  });
+
+  it("the playoffs feature migration applies on top of the live-like database, degrades the same way, and its report repeats the open items", async () => {
+    notices.length = 0;
+    await applyMigration(sim, playoffsMigration());
+    // The legacy match got the new columns with their defaults, playoff slots
+    // may be empty, and the news check now allows 'season'.
+    const match = await sim.query<{ stage: string; winner_remaining: number | null }>("select stage, winner_remaining from public.league_matches where id = $1", [seed.oddMatchId]);
+    expect(match.rows[0]).toEqual({ stage: "regular", winner_remaining: null });
+    const nullable = await sim.query<{ column_name: string; is_nullable: string }>(
+      "select column_name, is_nullable from information_schema.columns where table_schema = 'public' and table_name = 'league_matches' and column_name in ('home_member_id', 'away_member_id')",
+    );
+    expect(nullable.rows).toHaveLength(2);
+    expect(nullable.rows.every((r) => r.is_nullable === "YES")).toBe(true);
+    const newsCheck = await sim.query<{ def: string }>("select pg_get_constraintdef(oid) as def from pg_constraint where conname = 'league_news_news_type_check'");
+    expect(newsCheck.rows[0].def).toContain("'season'");
+    // Nothing the playoffs file adds was left NOT VALID.
+    const notValid = await sim.query<{ conname: string }>("select conname from pg_constraint where connamespace = 'public'::regnamespace and not convalidated");
+    expect(notValid.rows).toEqual([]);
+    // The closing summary lists the same open items the hardening report left.
+    const warnings = notices.filter((n) => n.severity === "WARNING").map((n) => n.message ?? "");
+    expect(warnings.some((w) => w.includes("2 item(s) need attention") && w.includes("_migration_report"))).toBe(true);
+    // Exactly one create_league and one report_match_result remain.
+    const fns = await sim.query<{ proname: string; n: number }>(
+      "select proname, count(*)::int as n from pg_proc where pronamespace = 'public'::regnamespace and proname in ('create_league', 'report_match_result') group by 1 order by 1",
+    );
+    expect(fns.rows).toEqual([{ proname: "create_league", n: 1 }, { proname: "report_match_result", n: 1 }]);
   });
 });
 

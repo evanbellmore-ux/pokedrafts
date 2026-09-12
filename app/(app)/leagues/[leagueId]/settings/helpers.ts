@@ -1,3 +1,4 @@
+import { playoffSize, toPlayoffFormat, toTiebreaker } from "@/app/lib/league/bracket";
 import { pluralize, teamNameLabel } from "@/app/lib/league/labels";
 import {
   CREATE_LEAGUE_DEFAULTS,
@@ -9,7 +10,9 @@ import {
   type League,
   type LeagueMember,
   type LeagueSettingsInput,
+  type PlayoffFormat,
   type ScheduleFormat,
+  type Tiebreaker,
 } from "@/app/types/league";
 
 /** Columns the settings page reads from `league_members`. */
@@ -53,6 +56,8 @@ export type SettingsValues = {
   freeAgentSwapLimit: number | null;
   scheduleFormat: ScheduleFormat;
   draftFormatId: string;
+  playoffFormat: PlayoffFormat;
+  tiebreaker: Tiebreaker;
 };
 
 export type NumericSettingKey =
@@ -72,6 +77,8 @@ export function settingsValuesFromLeague(league: League): SettingsValues {
     freeAgentSwapLimit: league.free_agent_swap_limit,
     scheduleFormat: toScheduleFormat(league.schedule_format),
     draftFormatId: league.draft_format_id ?? NO_FORMAT,
+    playoffFormat: toPlayoffFormat(league.playoff_format),
+    tiebreaker: toTiebreaker(league.tiebreaker),
   };
 }
 
@@ -157,7 +164,58 @@ export function buildSettingsPatch(
     patch.draft_format_id = form.draftFormatId || null;
   }
 
+  if (form.playoffFormat !== saved.playoffFormat) {
+    patch.playoff_format = form.playoffFormat;
+  }
+
+  if (form.tiebreaker !== saved.tiebreaker) {
+    patch.tiebreaker = form.tiebreaker;
+  }
+
   return { patch, errors };
+}
+
+/**
+ * A playoff format option the form may offer. Once the draft has started,
+ * an option that needs more coaches than play is disabled with the reason
+ * in its label (section 12.6; `update_league_settings` raises
+ * `not_enough_coaches` then, and accepts any format before the draft since
+ * the coaches are not known yet, so `playingCount` is null until then).
+ * The league's saved format always stays selectable so the form can echo
+ * it back.
+ */
+export type PlayoffFormatOption = {
+  value: PlayoffFormat;
+  /** Coaches the format needs; 0 for `none`. */
+  needs: number;
+  disabled: boolean;
+};
+
+export function playoffFormatOptions(
+  formats: readonly PlayoffFormat[],
+  playingCount: number | null,
+  saved: PlayoffFormat
+): PlayoffFormatOption[] {
+  return formats.map((value) => {
+    const needs = playoffSize(value);
+    return {
+      value,
+      needs,
+      disabled: playingCount !== null && value !== saved && needs > playingCount,
+    };
+  });
+}
+
+/**
+ * Coaches who play in the season, the count `top_N` is checked against
+ * once the draft has started: the draft order (the schedule is built from
+ * it), or everyone when no order was set.
+ */
+export function playingCoachCount(
+  members: Pick<SettingsMember, "draft_position">[]
+): number {
+  const positioned = members.filter((member) => member.draft_position != null).length;
+  return positioned > 0 ? positioned : members.length;
 }
 
 /** Unbiased Fisher-Yates shuffle (returns a new array). */

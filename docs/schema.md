@@ -8,6 +8,7 @@ this document describes what they produce. Apply them in filename order:
 | `00000000000000_base_schema.sql` | Every table, `create table if not exists`. Matches the live project; a no-op there. |
 | `20260626163000` .. `20260718120000` | The eight incremental migrations from earlier releases (chat, schedule format, cascades, swap limits, news, legacy policies). |
 | `20260909120000_release_hardening.sql` | Columns, data fixes, constraints, indexes, realtime, storage, the RPC catalog, and the complete RLS policy set. Idempotent. |
+| `20260912120000_playoffs.sql` | Standings tiebreakers and single-elimination playoffs (docs/release-architecture.md section 12): league and match columns, the `season` news type, `league_standings`, `generate_playoffs`, `clear_playoffs`, new signatures for `create_league` and `report_match_result`, and a champion for finished leagues without playoffs. Idempotent. |
 
 The hardening migration drops **every** policy on the application tables and
 recreates the set in [Row level security](#row-level-security), and drops the
@@ -16,15 +17,22 @@ functions. The browser never writes directly to `leagues`, `league_members`,
 `league_invites`, `draft_picks`, `drafted_teams`, `league_matches` or
 `league_news`; all mutations go through the functions below.
 
-`20260909120000_release_hardening.sql` must always be
-**the last migration file to run**. The eight older files recreate the
-pre-release write policies (among them an unrestricted `league_members` update
-for coaches and a `leagues` delete that trusts `league_members.role`), and only
-the hardening file removes them again; with the older policies back, a coach in
-a finished league can make themselves commissioner and delete the league. If
-any older file is ever run after the hardening file, for any reason, re-run the
-hardening file afterwards. The README explains how to record hand-applied files
-with `supabase migration repair` without letting `db push` do that.
+Two ordering rules. First, the legacy files and the hardening file:
+never run one of the eight legacy files after the hardening file. The eight
+older files recreate the pre-release write policies (among them an
+unrestricted `league_members` update for coaches and a `leagues` delete that
+trusts `league_members.role`), and only
+`20260909120000_release_hardening.sql` removes them again; with the older
+policies back, a coach in a finished league can make themselves commissioner
+and delete the league. If any older file is ever run after the hardening file,
+for any reason, re-run the hardening file afterwards. Second, feature
+migrations after the hardening file (`20260912120000_playoffs.sql` and later)
+are applied in filename order after it: they build on its functions and drop
+the signatures they replace, and re-running the hardening file alone brings
+those old signatures back next to the new ones (an ambiguous `create_league`
+for PostgREST), so re-run every later feature file after any re-run of the
+hardening file. The README explains how to record hand-applied files with
+`supabase migration repair` without letting `db push` do that.
 
 ## Tables
 
@@ -79,8 +87,19 @@ hardening migration copies the format onto every existing format-based league
 | `free_agent_swap_limit` | integer | not null, default 3, check >= 0 |
 | `draft_paused_at` | timestamptz | null while the draft is running |
 | `draft_paused_total_seconds` | integer | not null, default 0 |
+| `tiebreaker` | text | not null, default `head_to_head`, check in (`head_to_head`, `differential`): the tiebreaker applied first after win percentage and wins (see [Standings and playoffs](#standings-and-playoffs)) |
+| `playoff_format` | text | not null, default `none`, check in (`none`, `top_2`, `top_4`, `top_6`, `top_8`); `create_league` defaults it to `top_4` |
+| `champion_member_id` | uuid | fk `league_members(id)` on delete set null; the winner of the final, or the top seed once the regular season is complete in a league without playoffs; null until then |
 
-Index on `(draft_format_id)`, used by the `draft_formats` select policy.
+Index on `(draft_format_id)`, used by the `draft_formats` select policy, and a
+partial index on `(champion_member_id)` for the foreign key.
+
+Since this column is a second foreign key between `leagues` and
+`league_members` (the first is `league_members.league_id`), a PostgREST embed
+between the two tables in either direction must name the column, e.g.
+`leagues!league_id(...)` from `league_members`; a bare `leagues(...)` gets
+HTTP 300 ("more than one relationship was found").
+`tests/unit/postgrest-embeds.test.ts` checks the client for this.
 
 ### `league_members`
 
@@ -151,14 +170,21 @@ free-agent pickups have `pick_number: null` and `acquired: "free_agent"`.
 | `league_id` | uuid | not null, fk `leagues(id)` on delete cascade |
 | `round_number` | integer | not null |
 | `match_number` | integer | not null, restarts at 1 per round |
-| `home_member_id` | uuid | not null, fk `league_members(id)` on delete cascade |
-| `away_member_id` | uuid | not null, fk `league_members(id)` on delete cascade |
+| `home_member_id` | uuid | fk `league_members(id)` on delete cascade; always set on a regular match, null on a playoff match until the round feeding it is decided |
+| `away_member_id` | uuid | fk `league_members(id)` on delete cascade; nullable like `home_member_id` |
 | `status` | text | not null, default `upcoming`, check in (`upcoming`, `completed`) |
 | `winner_member_id` | uuid | fk `league_members(id)` on delete set null |
 | `scheduled_at` | timestamptz | unused |
 | `created_at` | timestamptz | not null, `now()` |
+| `stage` | text | not null, default `regular`, check in (`regular`, `playoff`) |
+| `winner_remaining` | integer | null or check 1..12: Pokémon the winner had left standing (null when not recorded, counts as 0 in the differential) |
+| `home_seed`, `away_seed` | integer | the playoff seeds of the two coaches, for display; null on regular matches and on empty playoff slots |
+| `feeds_match_id` | uuid | fk `league_matches(id)` on delete set null: the playoff match the winner advances to; null for the final and for regular matches |
+| `feeds_slot` | text | null or check in (`home`, `away`): the side of that match the winner fills |
 
-Unique `(league_id, round_number, match_number)`; index on `(league_id)`.
+Unique `(league_id, round_number, match_number)` (playoff rounds continue
+after the last regular round); index on `(league_id)` and a partial index on
+`(feeds_match_id)` for the self-referencing foreign key.
 
 ### `league_news`
 
@@ -167,7 +193,7 @@ Unique `(league_id, round_number, match_number)`; index on `(league_id)`.
 | `id` | uuid | pk |
 | `league_id` | uuid | not null, fk `leagues(id)` on delete cascade |
 | `member_id` | uuid | fk `league_members(id)` on delete set null |
-| `news_type` | text | not null, check in (`free_agent`, `match_result`) |
+| `news_type` | text | not null, check in (`free_agent`, `match_result`, `season`) |
 | `message` | text | not null, check length 1..500 |
 | `metadata` | jsonb | not null, default `{}` |
 | `created_at` | timestamptz | not null, `now()` |
@@ -175,7 +201,9 @@ Unique `(league_id, round_number, match_number)`; index on `(league_id)`.
 Index on `(league_id, created_at desc)`. Metadata shapes:
 
 - `free_agent`: `{ added, dropped, team_id, before_pokemon, after_pokemon, previous_free_agent_swaps_used, next_free_agent_swaps_used }`
-- `match_result`: `{ match_id, winner_member_id, loser_member_id, round_number, match_number }` (one row per match; re-reporting replaces it)
+- `match_result`: `{ match_id, winner_member_id, loser_member_id, round_number, match_number, stage, winner_remaining }` (one row per match; re-reporting replaces it). The message reads "X defeated Y in Round 3." for a regular match and "X defeated Y in the Semifinals." (the round name, see below) for a playoff match.
+- `season` with `kind: "bracket"`: `{ kind, playoff_format, seeds: [{ seed, member_id }] }`, message "The playoff bracket is set.", `member_id` null; written whenever the bracket is (re)built.
+- `season` with `kind: "champion"`: `{ kind, member_id, match_id }`, message "X won the championship.", `member_id` = the champion; written when the final is reported (a league without playoffs gets a champion but no news row).
 
 ### `draft_chat_messages`
 
@@ -244,6 +272,20 @@ with no policies, so it is unreachable through the API.
   constraints are skipped, check constraints are added `not valid`. See the
   next section.
 
+## Data fix applied by the playoffs migration
+
+- Leagues with `playoff_format = 'none'` (every league that existed before the
+  file ran), `draft_completed`, at least one regular match, every regular
+  match completed, no bracket and no champion yet get
+  `champion_member_id = seed 1` from the standings; a `notice` says how many.
+  Leagues that already carry a champion are left alone, so re-running the
+  file changes nothing.
+- Values outside the new checks (only possible when one of the new columns was
+  added by hand first) fall back to the defaults (`head_to_head`, `none`,
+  `regular`) so the checks validate; the guarded helpers add a violated check
+  or foreign key `not valid` with a warning, exactly as the hardening file
+  does, and `_migration_report` lists it.
+
 ## Verifying the migration
 
 The hardening migration ends with `select * from public._migration_report();`,
@@ -294,7 +336,7 @@ Codes shared by many functions: `not_authenticated` (no user),
 | Function | Who | Behaviour | Returns / errors |
 | --- | --- | --- | --- |
 | `get_server_time()` | anon, authenticated | `now()` for the draft timer. | `timestamptz` |
-| `create_league(p_name text, p_team_name text, p_max_coaches int, p_draft_format_id uuid = null, p_point_budget int = 100, p_picks_per_team int = 10, p_pick_timer_seconds int = 120)` | authenticated | Validates ranges (name 1..60, team 1..40, coaches 2..24, budget 1..10000, picks 1..30, timer 10..3600) and that the format is visible to the caller. Inserts the league (`commissioner_id = auth.uid()`), the commissioner member and one invite with a server-generated code. A chosen format is copied onto `custom_pool` at once (see `leagues.custom_pool`) after `_validate_pool` checks it like an `update_league_pool` pool; a format that breaks the rules is refused with the pool error codes and nothing is created. | `uuid`. `invalid_name`, `invalid_team_name`, `invalid_max_coaches`, `invalid_point_budget`, `invalid_picks_per_team`, `invalid_pick_timer`, `format_not_found`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
+| `create_league(p_name text, p_team_name text, p_max_coaches int, p_draft_format_id uuid = null, p_point_budget int = 100, p_picks_per_team int = 10, p_pick_timer_seconds int = 120, p_playoff_format text = 'top_4', p_tiebreaker text = 'head_to_head')` | authenticated | Validates ranges (name 1..60, team 1..40, coaches 2..24, budget 1..10000, picks 1..30, timer 10..3600), the two playoff settings (a null value means the default) and that the format is visible to the caller. Inserts the league (`commissioner_id = auth.uid()`), the commissioner member and one invite with a server-generated code. A chosen format is copied onto `custom_pool` at once (see `leagues.custom_pool`) after `_validate_pool` checks it like an `update_league_pool` pool; a format that breaks the rules is refused with the pool error codes and nothing is created. The playoffs migration drops the 7-parameter signature so exactly one exists. | `uuid`. `invalid_name`, `invalid_team_name`, `invalid_max_coaches`, `invalid_point_budget`, `invalid_picks_per_team`, `invalid_pick_timer`, `invalid_playoff_format`, `invalid_tiebreaker`, `format_not_found`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `get_invite_preview(p_code text)` | anon, authenticated | Case-insensitive lookup. Never raises; unknown codes return `invite_valid: false` with null fields. `invite_valid` is false when the code is unknown or expired. | `jsonb { league_id, league_name, coach_count, max_coaches, draft_started, draft_completed, already_member, invite_valid }` |
 | `join_league(p_code text, p_team_name text)` | authenticated | Locks the league and the invite. Existing members get the league id back without a new row. Otherwise validates the team name and inserts a coach; increments `used_count`. | `uuid`. `invite_invalid`, `draft_already_started`, `league_full`, `invalid_team_name` |
 | `regenerate_invite(p_league_id uuid)` | commissioner | New code, `used_count = 0`, `expires_at = null`, `max_uses = max_coaches - 1`; extra invite rows are removed (`_rotate_invite`, which `remove_member` also runs). | `text` (the code). `invite_generation_failed` |
@@ -302,7 +344,7 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `leave_league(p_league_id uuid)` | coach | Only before the draft starts; the commissioner cannot leave. | void. `commissioner_cannot_leave`, `draft_already_started` |
 | `remove_member(p_league_id uuid, p_member_id uuid)` | commissioner | Only before the draft starts; never self. Deletes the member row, then rotates the league's invite code in the same transaction (`_rotate_invite`, exactly what `regenerate_invite` does), so the link the removed coach was invited with is dead the moment they are gone: `join_league` with it raises `invite_invalid` and `get_invite_preview` returns `invite_valid: false` with a null `league_id`, for the removed coach and for anyone they passed it to. The commissioner must copy and reshare the new link to whoever should still join (the removed coach included, if that is the intent); a refused call (`not_commissioner`, `member_not_found`, ...) leaves the invite as it was. | void. `draft_already_started`, `member_not_found`, `cannot_remove_self`, `invite_generation_failed` |
 | `transfer_commissioner(p_league_id uuid, p_member_id uuid)` | commissioner | Sets `commissioner_id` to that member's user and re-syncs `role` on every row. | void. `member_not_found`, `already_commissioner` |
-| `update_league_settings(p_league_id uuid, p_settings jsonb)` | commissioner | Keys: `name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, free_agent_swap_limit, schedule_format, draft_format_id`. Validates ranges; `max_coaches` may not drop below the member count. Once `draft_started`, changing `max_coaches`, `point_budget`, `picks_per_team` or `draft_format_id` raises `locked_during_draft` (sending the unchanged value is fine). `draft_format_id` only has to be visible to the caller when it changes: the league's current value is always accepted, so a settings form that echoes it back keeps working after `transfer_commissioner` even when the format is private to the previous commissioner (the new one reads it through league membership). Changing `draft_format_id` replaces `custom_pool` with a copy of the new format (`source: "format"`, checked by `_validate_pool`; a format that breaks the pool rules is refused and no setting changes), or clears it when the format is removed; an unchanged value leaves the pool alone. Keeps `league_invites.max_uses` in step. | the updated league row as `jsonb`. `invalid_settings`, `unknown_setting`, `invalid_name`, `invalid_max_coaches`, `max_coaches_below_members`, `invalid_point_budget`, `invalid_picks_per_team`, `invalid_pick_timer`, `invalid_swap_limit`, `invalid_schedule_format`, `format_not_found`, `locked_during_draft`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
+| `update_league_settings(p_league_id uuid, p_settings jsonb)` | commissioner | Keys: `name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, free_agent_swap_limit, schedule_format, draft_format_id, playoff_format, tiebreaker`. Validates ranges; `max_coaches` may not drop below the member count. Once `draft_started`, changing `max_coaches`, `point_budget`, `picks_per_team` or `draft_format_id` raises `locked_during_draft` (sending the unchanged value is fine). `draft_format_id` only has to be visible to the caller when it changes: the league's current value is always accepted, so a settings form that echoes it back keeps working after `transfer_commissioner` even when the format is private to the previous commissioner (the new one reads it through league membership). Changing `draft_format_id` replaces `custom_pool` with a copy of the new format (`source: "format"`, checked by `_validate_pool`; a format that breaks the pool rules is refused and no setting changes), or clears it when the format is removed; an unchanged value leaves the pool alone. Keeps `league_invites.max_uses` in step. Playoff settings: echoing the current values is always fine; a change to `playoff_format` or `tiebreaker` raises `playoffs_started` once any playoff match is completed; once the draft has started a changed `top_N` needs at least N playing coaches (`not_enough_coaches`; before the draft any format is accepted since the coaches are not known yet); once the regular season is complete a change rebuilds the bracket (`_generate_playoffs`), or, with `playoff_format = 'none'`, deletes it and makes seed 1 the champion. A `tiebreaker` change on its own is held to nothing more than the last regular result was: in a league that cannot fill its unchanged format it is saved and the league stays without a bracket (a smaller format chosen here builds one), while a changed `top_N` still needs N playing coaches. The returned row reflects those changes. | the updated league row as `jsonb`. `invalid_settings`, `unknown_setting`, `invalid_name`, `invalid_max_coaches`, `max_coaches_below_members`, `invalid_point_budget`, `invalid_picks_per_team`, `invalid_pick_timer`, `invalid_swap_limit`, `invalid_schedule_format`, `invalid_playoff_format`, `invalid_tiebreaker`, `format_not_found`, `locked_during_draft`, `playoffs_started`, `not_enough_coaches`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `update_league_pool(p_league_id uuid, p_pool jsonb)` | commissioner | Only before the draft. `{ version?, leagueName?, pokemon: [{ name, points, tier? }] }`: 1..2000 entries, unique non-empty trimmed names (case-insensitive, max 80 chars), integer points 1..20 (a number or a string of digits), `tier` must equal `21 - points` when given (filled in otherwise). These rules live in `_validate_pool`, which the format copies use too. Stored normalized in `custom_pool` as `{ version: "1.0", leagueName, pokemon }` in the order given: the client's `version` is ignored and `leagueName` is trimmed and capped at 60 characters (blank -> the league name), so the row every coach downloads stays small. | void. `draft_already_started`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `reset_league_pool(p_league_id uuid)` | commissioner | Only before the draft. Copies the league's draft format onto `custom_pool` again, as the format is right now (the way to pick up edits made in the pool builder), checked by `_validate_pool`: an edit that breaks the pool rules is refused and the current pool stays. Without a format the pool becomes null. | void. `draft_already_started`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `set_draft_order(p_league_id uuid, p_member_ids uuid[])` | commissioner | Only before the draft. At least 2 ids, no duplicates, all in the league. Listed members get positions 1..n; unlisted members become spectators (`null`). One statement under the deferred unique constraint. | void. `draft_already_started`, `not_enough_coaches`, `duplicate_member`, `member_not_found` |
@@ -313,12 +355,15 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `undo_last_pick(p_league_id uuid)` | commissioner | Deletes the highest pick, sets `current_pick_number` to its number and restarts the clock. | `jsonb { pick_number, pokemon_name }`. `draft_not_started`, `draft_completed`, `no_picks` |
 | `force_pick(p_league_id uuid, p_pokemon_name text)` | commissioner | Picks for the coach on the clock (same validation as `make_pick` without the turn check). `null` name = best available; if nothing is legal the turn is skipped. | `jsonb { pick_number, pokemon_name, draft_completed, skipped }`. As `make_pick` minus `not_your_turn` |
 | `finalize_draft(p_league_id uuid)` | commissioner | Recovery entry point: requires every positioned member to have `picks_per_team` picks or the draft to have reached the last pick number. Refuses when the draft is already complete and teams exist. | void. `draft_not_started`, `draft_completed`, `not_enough_coaches`, `draft_incomplete` |
-| `reset_draft(p_league_id uuid)` | commissioner | Deletes picks, teams, matches and news; resets swap counts and every draft flag. `custom_pool` is kept as it is, whether it was copied from a format or set with `update_league_pool` (`reset_league_pool` pulls a format's current list). | void |
+| `reset_draft(p_league_id uuid)` | commissioner | Deletes picks, teams, matches (the bracket included) and news; resets swap counts, every draft flag and `champion_member_id`. `custom_pool` is kept as it is, whether it was copied from a format or set with `update_league_pool` (`reset_league_pool` pulls a format's current list). | void |
 | `swap_free_agent(p_league_id uuid, p_drop_name text, p_add_name text)` | member | Membership is checked before the draft state (as in `make_pick`), so a non-member only ever sees `not_a_member`. Requires `draft_completed`; locks the league and every team row. `p_drop_name = null` adds to an open slot. Writes the roster, increments `free_agent_swaps_used` and inserts the `free_agent` news row. | the news row as `jsonb`. `draft_not_completed`, `no_team`, `no_swaps_left`, `pokemon_not_in_pool`, `pokemon_owned`, `not_on_roster`, `roster_full`, `over_budget` |
 | `undo_free_agent_move(p_news_id uuid)` | commissioner | The row must be the newest `free_agent` news for that team, the roster must still equal `metadata.after_pokemon`, and nothing in `before_pokemon` may be owned by another team. Restores roster and total, sets `free_agent_swaps_used` to `previous_free_agent_swaps_used`, deletes the news row. | void. `news_not_found`, `member_not_found`, `not_latest_move`, `no_team`, `invalid_news`, `roster_changed`, `pokemon_owned` |
-| `generate_schedule(p_league_id uuid, p_format text, p_randomize bool, p_discard_results bool = false)` | commissioner | Requires `draft_completed` and >= 2 positioned members. With reported results, raises `results_exist` unless discarding, which also deletes `match_result` news. Updates `schedule_format`, regenerates matches (Fisher-Yates shuffle when randomizing). | `integer` (matches created). `draft_not_completed`, `invalid_schedule_format`, `not_enough_coaches`, `results_exist` |
-| `report_match_result(p_match_id uuid, p_winner_member_id uuid)` | commissioner | Winner must be home or away. Re-reads the match under the league lock, so a schedule regenerated while the call waited for the lock raises `match_not_found` instead of writing a news row for a match that no longer exists. Marks the match `completed` and replaces the match's `match_result` news row. | void. `match_not_found`, `invalid_winner` |
-| `clear_match_result(p_match_id uuid)` | commissioner | Back to `upcoming`, winner cleared, the match's news deleted. Same re-read under the league lock as `report_match_result`. | void. `match_not_found` |
+| `generate_schedule(p_league_id uuid, p_format text, p_randomize bool, p_discard_results bool = false)` | commissioner | Requires `draft_completed` and >= 2 positioned members. With reported results (playoff results included), raises `results_exist` unless discarding, which also deletes `match_result` news. Updates `schedule_format`, regenerates the regular matches (Fisher-Yates shuffle when randomizing); the bracket, every `season` news row and `champion_member_id` go with the old schedule. | `integer` (matches created). `draft_not_completed`, `invalid_schedule_format`, `not_enough_coaches`, `results_exist` |
+| `report_match_result(p_match_id uuid, p_winner_member_id uuid, p_winner_remaining int = null)` | commissioner | Winner must be home or away; `p_winner_remaining` is null or 1..12 (`invalid_score`). Re-reads the match under the league lock, so a schedule regenerated while the call waited for the lock raises `match_not_found` instead of writing a news row for a match that no longer exists. A playoff match with an empty slot raises `match_not_ready`; a regular match while any playoff match is completed raises `playoffs_started` (edit the playoff results first, or clear the bracket); a playoff match whose next match is already completed raises `later_round_decided`. Marks the match `completed`, stores the count, and replaces the match's `match_result` news row (the round name for playoff matches). After a regular result, when every regular match is now completed: builds (or rebuilds, reseeded) the bracket for a `top_N` format the league can fill, leaves the league without a bracket when it has fewer than N playing coaches (the result is still recorded; `generate_playoffs` then explains, and a smaller format chosen in Settings builds it), or, for `none`, makes seed 1 the champion. After a playoff result: fills the next match's `feeds_slot` with the winner and its seed, or, for the final, sets `champion_member_id` and inserts the `season` news "X won the championship." (re-reporting the final replaces both). The playoffs migration drops the 2-parameter signature. | void. `match_not_found`, `invalid_score`, `match_not_ready`, `playoffs_started`, `invalid_winner`, `later_round_decided` |
+| `clear_match_result(p_match_id uuid)` | commissioner | Back to `upcoming`, winner and count cleared, the match's news deleted. Same re-read under the league lock as `report_match_result`. A regular match while any playoff match is completed raises `playoffs_started`; otherwise clearing a regular result deletes the bracket (the season is no longer complete), the `season` news and the champion. A playoff match whose next match is completed raises `later_round_decided`; otherwise its slot in the next match is emptied, and clearing the final clears `champion_member_id` and the championship news. | void. `match_not_found`, `playoffs_started`, `later_round_decided` |
+| `league_standings(p_league_id uuid)` | member | The standings of [Standings and playoffs](#standings-and-playoffs) for a league the caller belongs to; fast enough for 24 coaches in a double round robin (one SQL statement). | `setof (member_id uuid, seed int, rank int, tied bool, wins int, losses int, played int, remaining int, win_pct numeric(3 decimals), differential int, strength_of_schedule numeric(3 decimals), head_to_head_applied bool)` ordered by `seed`. `league_not_found`, `not_a_member` |
+| `generate_playoffs(p_league_id uuid)` | commissioner | Builds the bracket by hand, for a league that finished its regular season before the playoffs release (normally the last regular result builds it) or one that could not fill its format. Requires `draft_completed` (`draft_not_completed`), a format other than `none` (`no_playoffs`), every regular match completed (`regular_season_incomplete`), no completed playoff match (`playoffs_started`) and at least N playing coaches for `top_N` (`not_enough_coaches`). Replaces any existing bracket. | `integer` (playoff matches created). `draft_not_completed`, `no_playoffs`, `regular_season_incomplete`, `playoffs_started`, `not_enough_coaches` |
+| `clear_playoffs(p_league_id uuid)` | commissioner | Deletes every playoff match, the `match_result` news of playoff matches, every `season` news row, and clears `champion_member_id`. Allowed with playoff results (the UI confirms first); the regular season is untouched. A league without playoffs has no bracket to remove and its champion is the top seed by rule, so with a complete regular season the call leaves seed 1 crowned (the same champion the data fix restores). | void |
 | `is_league_member(p_league_id uuid)` | policies | `true` when the caller has a member row. Security definer so the `league_members` policy does not recurse. | `boolean` |
 
 ### Internal helpers
@@ -358,6 +403,86 @@ only rewrites `new.id` and `new.created_at`). `_migration_report` is the
 operator-facing health check from
 [Verifying the migration](#verifying-the-migration); like the other helpers it
 has no API grants.
+
+The playoffs migration adds `_playoff_size(format)` (coaches a format needs),
+`_round_name(rounds_from_final)` (Final, Semifinals, Quarterfinals, else
+"Round of N"), `_bracket_rows(format)` (the shapes of section 12.4 as rows:
+`round_offset, match_number, home_seed, away_seed, feeds_round_offset,
+feeds_match_number, feeds_slot`), `_league_standings(league_id)` (the
+algorithm without the membership check, used by `league_standings`,
+`_generate_playoffs`, `_crown_top_seed` and the data fix),
+`_regular_season_complete`, `_playoffs_started`, `_last_regular_round`,
+`_delete_playoffs` (playoff matches, their `match_result` news, every `season`
+row and the champion), `_crown_top_seed` (seed 1 becomes the champion) and
+`_generate_playoffs(league_id, strict)` (replaces the bracket, seeded from the
+standings; with `strict` false a format the league cannot fill leaves it
+without a bracket instead of raising `not_enough_coaches`).
+
+### Standings and playoffs
+
+`league_standings` (SQL) and `computeStandings` in `app/lib/league/standings.ts`
+implement the same definition; `tests/db/playoffs.test.ts` runs both on
+randomised fixtures and requires identical output. Only regular matches
+(`stage = 'regular'`) that are `completed` with a winner count; a member with
+no draft position who appears in no match is excluded.
+
+1. Order by win percentage (wins / played, 0 when nothing played) descending,
+   then wins descending.
+2. Coaches still tied are ordered by the tiebreakers in this order: the
+   league's `tiebreaker` first, then the other one, then strength of schedule,
+   then the coin flip. Each tiebreaker is applied to the coaches that are
+   still tied when it is reached (ties inside ties):
+   - head-to-head: win percentage in the completed regular matches between
+     the coaches of that tied group (0 for a coach who played none of them);
+     higher first. Sub-groups still tied continue with the next tiebreaker.
+   - differential: sum over completed regular matches of `+winner_remaining`
+     for wins and `-winner_remaining` for losses (null counts 0); higher first.
+   - strength of schedule: mean win percentage of the opponents faced in
+     completed regular matches, one term per match (0 when none); higher first.
+   - coin flip: `league_members.id` ascending, so seeding never changes
+     between calls.
+   Percentages (win, head-to-head, strength of schedule) are compared rounded
+   to 3 decimals, half up, the precision the function returns and the table
+   shows, so two coaches never differ only in a digit nobody sees: 10-17
+   (.370) and 17-29 (.370) tie on percentage and wins decide, and two
+   strength-of-schedule means that both print as .708 leave the coin flip to
+   decide. `computeStandings` compares at the same 3 decimals
+   (`roundPercentage`); `tests/db/playoffs.test.ts` holds both to those
+   fixtures and to a mean that sits exactly on a boundary (0.3125 rounds up
+   to .313 on both sides).
+3. Output per coach: `seed` (1..n, always distinct), `rank` (shared by coaches
+   separated only by the coin flip), `tied` (true for those coaches), `wins`,
+   `losses`, `played`, `remaining` (regular matches without a decided result),
+   `win_pct` and `strength_of_schedule` rounded to 3 decimals, `differential`,
+   and `head_to_head_applied` (true for every coach of a head-to-head group
+   whose records were not all equal, i.e. whose position depended on that
+   comparison).
+
+Brackets are single elimination, seeded from `league_standings`, higher seed
+at home, no reseeding between rounds, built all at once with undecided slots
+null. Playoff rounds are numbered after the last regular round, match numbers
+restart at 1 per round, and round names come from the distance to the final
+(the last playoff round is the Final, the one before it the Semifinals, the one
+before that the Quarterfinals; the first round of a `top_6` bracket is the
+Quarterfinals although it holds two matches, seeds 1 and 2 having a bye):
+
+| Format | First round | Then |
+| --- | --- | --- |
+| `top_2` | Final: 1 v 2 | |
+| `top_4` | Semifinals: M1 = 1 v 4, M2 = 2 v 3 | Final: winner M1 (home) v winner M2 |
+| `top_6` | Quarterfinals: M1 = 4 v 5, M2 = 3 v 6 | Semifinals: M1 = 1 v winner QF1, M2 = 2 v winner QF2; Final: winner SF1 v winner SF2 |
+| `top_8` | Quarterfinals: M1 = 1 v 8, M2 = 4 v 5, M3 = 3 v 6, M4 = 2 v 7 | Semifinals: M1 = winner QF1 v winner QF2, M2 = winner QF3 v winner QF4; Final |
+
+`feeds_match_id` / `feeds_slot` point each match at the slot its winner fills
+(the final has neither); `home_seed` / `away_seed` are filled for predetermined
+slots at generation and for fed slots when the earlier match is reported. The
+bracket is (re)built by the last regular result and by a change to
+`playoff_format` or `tiebreaker` after the regular season, removed when a
+regular result is cleared, by `clear_playoffs`, by `generate_schedule` and by
+`reset_draft`. A league without playoffs (`none`) gets `champion_member_id =
+seed 1` with the last regular result, keeps it through `clear_playoffs`
+(there is no bracket to remove, and the champion comes from the rules) and
+loses it when a result is cleared.
 
 ### Snake order and schedule
 
@@ -459,13 +584,26 @@ policies, format-based leagues without a pool copy including one whose format
 breaks the pool rules, a non-superuser owner) that checks the
 `_migration_report` output and that re-running the file copies a fixed format,
 the re-run hazard (`review-applyability.test.ts`: an older file re-run after
-the hardening brings the legacy policies back until the hardening runs again),
+the hardening brings the legacy policies back until the hardening runs again,
+and the hardening re-run alone leaves an ambiguous `create_league` until the
+playoffs file follows it), the playoffs feature (`playoffs.test.ts`: the
+bracket shape of every format, automatic generation on the last regular
+result, advancement and `later_round_decided`, `match_not_ready`, the champion
+for every format including `none`, the playoff settings (a tiebreaker change
+in a league that cannot fill its format included), `clear_playoffs`,
+`generate_schedule` / `reset_draft` clearing the champion, `winner_remaining`
+validation, permissions, the migration's data fix, the standings algorithm on
+hand-made ties inside ties, its speed on a 24-coach double round robin, the
+3-decimal comparison precision it shares with `computeStandings` (two
+collisions and an exact rounding boundary), and the SQL/TypeScript parity of
+the two on 200 random fixtures per tiebreaker setting),
 and the client contract (`client-contract.test.ts`: the RPC names the release
 gate `scripts/check-client-contract.mjs` accepts are exactly the functions
 granted to the API roles, its scanner catches the call shapes the
 pre-hardening client used, every wrapper in `app/lib/rpc.ts` names a catalog
 function, and the gate passes on the working tree, so `npm run test:db` fails
-while the client still uses a dropped RPC or a direct write). `exit-code.test.ts`
+while the client still uses a dropped RPC or a direct write; the catalog is the
+union of every migration's `Grants` section). `exit-code.test.ts`
 runs a failing one-file suite through the same global setup in a child process
 and checks that vitest exits 1: `embedded-postgres` registers an exit hook on
 import that used to end the process with status 0 after a failed run, and the

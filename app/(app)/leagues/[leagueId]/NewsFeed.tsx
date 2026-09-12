@@ -39,6 +39,7 @@ export type NewsFeedProps = {
 const KIND_TONE: Record<NewsKind, StatusTone> = {
   free_agent: "accent",
   match_result: "success",
+  season: "warning",
   other: "neutral",
 };
 
@@ -134,7 +135,7 @@ function NewsItem({
         </div>
       )}
 
-      <p className="mt-3 text-sm text-text">{item.message}</p>
+      <p className="mt-3 wrap-anywhere text-sm text-text">{item.message}</p>
 
       {canUndo && kind === "free_agent" && (
         <div className="mt-3 flex justify-end">
@@ -230,7 +231,7 @@ export default function NewsFeed({
           className="mt-4"
           icon={<Newspaper className="h-5 w-5" />}
           title="No league news yet"
-          description="Match results and free agent moves show up here as they happen."
+          description="Match results, free agent moves and playoff news show up here as they happen."
         />
       ) : (
         <>

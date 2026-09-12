@@ -11,16 +11,32 @@ import {
   SkeletonLines,
 } from "@/app/components/ui";
 import { friendlyError } from "@/app/lib/errors";
+import {
+  playoffResultsExist,
+  regularSeasonComplete,
+} from "@/app/lib/league/bracket";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { createClient } from "@/app/lib/supabase/client";
-import type { LeagueInvite, LeagueSettingsInput } from "@/app/types/league";
+import type {
+  LeagueInvite,
+  LeagueMatch,
+  LeagueSettingsInput,
+} from "@/app/types/league";
 import CoachesCard from "./CoachesCard";
 import DangerZone from "./DangerZone";
 import DraftOrderCard from "./DraftOrderCard";
-import type { FormatOption, Notice, SettingsMember } from "./helpers";
+import {
+  playingCoachCount,
+  type FormatOption,
+  type Notice,
+  type SettingsMember,
+} from "./helpers";
 import InviteCard from "./InviteCard";
 import SettingsForm from "./SettingsForm";
 import SettingsSummary from "./SettingsSummary";
+
+/** The match columns the settings page needs: stage and status only. */
+type SettingsMatch = Pick<LeagueMatch, "id" | "stage" | "status">;
 
 type LoadState =
   | { status: "loading" }
@@ -29,6 +45,7 @@ type LoadState =
       status: "ready";
       members: SettingsMember[];
       formats: FormatOption[];
+      matches: SettingsMatch[];
       invite: LeagueInvite | null;
     };
 
@@ -73,6 +90,8 @@ function SettingsSkeleton() {
  * danger zone. Every write goes through `rpc.*` (the league delete is the
  * one direct write the policy set allows), and anything that changes the
  * league or member row is followed by `refresh()` from the league context.
+ * The matches are read only for their stage and status: they decide whether
+ * the playoff settings are locked and what a change to them does.
  */
 export default function SettingsClient() {
   const router = useRouter();
@@ -86,7 +105,7 @@ export default function SettingsClient() {
 
   const load = useCallback(async (): Promise<LoadState> => {
     try {
-      const [membersResult, formatsResult] = await Promise.all([
+      const [membersResult, formatsResult, matchesResult] = await Promise.all([
         supabase
           .from("league_members")
           .select("id, user_id, team_name, role, draft_position, joined_at")
@@ -97,12 +116,19 @@ export default function SettingsClient() {
           .from("draft_formats")
           .select("id, name, created_by")
           .order("name", { ascending: true }),
+        supabase
+          .from("league_matches")
+          .select("id, stage, status")
+          .eq("league_id", leagueId),
       ]);
       if (membersResult.error) {
         return { status: "error", message: friendlyError(membersResult.error) };
       }
       if (formatsResult.error) {
         return { status: "error", message: friendlyError(formatsResult.error) };
+      }
+      if (matchesResult.error) {
+        return { status: "error", message: friendlyError(matchesResult.error) };
       }
 
       // Only the commissioner can read the invite row (RLS); coaches never ask.
@@ -125,6 +151,7 @@ export default function SettingsClient() {
         status: "ready",
         members: (membersResult.data ?? []) as SettingsMember[],
         formats: (formatsResult.data ?? []) as FormatOption[],
+        matches: (matchesResult.data ?? []) as SettingsMatch[],
         invite,
       };
     } catch (caught) {
@@ -184,7 +211,18 @@ export default function SettingsClient() {
           ? " The draft pool was replaced with a copy of the chosen format."
           : " The draft pool was cleared."
         : "";
-    await settle(`Settings saved.${poolNote}`, { refreshLeague: true });
+    // A playoff setting only changes anything once the regular season is
+    // over: the function reseeds the bracket, or removes it for "none" and
+    // names the top seed champion (section 12.5).
+    const seasonOver =
+      state.status === "ready" && regularSeasonComplete(state.matches);
+    const playoffNote =
+      seasonOver && ("playoff_format" in patch || "tiebreaker" in patch)
+        ? patch.playoff_format === "none"
+          ? " The playoff bracket was removed; the top seed is the champion."
+          : " The playoff bracket was reseeded."
+        : "";
+    await settle(`Settings saved.${poolNote}${playoffNote}`, { refreshLeague: true });
     // The league layout renders the name in the eyebrow and the tab title;
     // re-render it so a rename shows up without leaving the page.
     router.refresh();
@@ -275,6 +313,8 @@ export default function SettingsClient() {
             <SettingsForm
               league={league}
               memberCount={ready.members.length}
+              playingCount={playingCoachCount(ready.members)}
+              playoffResultsExist={playoffResultsExist(ready.matches)}
               formats={ready.formats}
               currentUserId={user.id}
               onSaved={handleSettingsSaved}

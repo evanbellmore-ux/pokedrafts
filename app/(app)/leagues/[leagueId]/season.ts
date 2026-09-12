@@ -1,21 +1,29 @@
 import type { StatusTone } from "@/app/components/ui";
+import { isPlayoffMatch } from "@/app/lib/league/bracket";
 import type { League, LeagueMatch, LeagueMember } from "@/app/types/league";
 
 /**
  * Where a league is in its life cycle, derived from the league row and its
- * matches. Shared by the overview status card and the standings page.
+ * matches (docs/release-architecture.md section 12.6). Shared by the
+ * overview status card, the overview header and the standings page.
+ *
+ * - `complete` once `champion_member_id` is set: the final was decided, or
+ *   the last regular result was recorded in a league without playoffs (the
+ *   function sets the top seed as champion then).
+ * - `playoffs` while a bracket exists and no champion yet.
+ * - `season` otherwise after the draft, including a finished regular season
+ *   that is still waiting for its bracket.
  */
-export type LeaguePhase = "setup" | "drafting" | "season" | "complete";
+export type LeaguePhase = "setup" | "drafting" | "season" | "playoffs" | "complete";
 
 export function leaguePhase(
-  league: Pick<League, "draft_started" | "draft_completed">,
-  matches: Pick<LeagueMatch, "status">[]
+  league: Pick<League, "draft_started" | "draft_completed" | "champion_member_id">,
+  matches: Pick<LeagueMatch, "status" | "stage">[]
 ): LeaguePhase {
   if (!league.draft_started) return "setup";
   if (!league.draft_completed) return "drafting";
-  if (matches.length > 0 && matches.every((m) => m.status === "completed")) {
-    return "complete";
-  }
+  if (league.champion_member_id) return "complete";
+  if (matches.some(isPlayoffMatch)) return "playoffs";
   return "season";
 }
 
@@ -24,6 +32,7 @@ export const PHASE_PILL: Record<LeaguePhase, { tone: StatusTone; label: string }
     setup: { tone: "neutral", label: "Setting up" },
     drafting: { tone: "warning", label: "Draft in progress" },
     season: { tone: "accent", label: "Season underway" },
+    playoffs: { tone: "accent", label: "Playoffs underway" },
     complete: { tone: "success", label: "Season complete" },
   };
 
@@ -49,8 +58,8 @@ export function playingMembers<
 ): M[] {
   const inMatches = new Set<string>();
   for (const match of matches) {
-    inMatches.add(match.home_member_id);
-    inMatches.add(match.away_member_id);
+    if (match.home_member_id) inMatches.add(match.home_member_id);
+    if (match.away_member_id) inMatches.add(match.away_member_id);
   }
   const playing = members.filter(
     (m) => m.draft_position != null || inMatches.has(m.id)

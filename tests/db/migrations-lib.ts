@@ -10,6 +10,8 @@ export const DB_NAME = "pokedrafts_test";
 
 export const MIGRATIONS_DIR = resolve(process.cwd(), "supabase", "migrations");
 export const HARDENING_MIGRATION = "20260909120000_release_hardening.sql";
+// Feature migrations sort after the hardening file and are applied in filename order.
+export const PLAYOFFS_MIGRATION = "20260912120000_playoffs.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };

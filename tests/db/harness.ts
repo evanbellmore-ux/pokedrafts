@@ -174,6 +174,10 @@ export type LeagueOptions = {
   pool?: PoolEntry[] | null;
   setOrder?: boolean;
   name?: string;
+  // create_league defaults to top_4; the fixture defaults to none so a fully
+  // reported regular season does not grow a bracket unless a test asks for one.
+  playoffFormat?: "none" | "top_2" | "top_4" | "top_6" | "top_8";
+  tiebreaker?: "head_to_head" | "differential";
 };
 
 export async function inviteCodeFor(client: Client, leagueId: string): Promise<string> {
@@ -211,6 +215,8 @@ export async function buildLeague(client: Client, options: LeagueOptions = {}): 
     p_point_budget: options.pointBudget ?? 100,
     p_picks_per_team: options.picksPerTeam ?? 2,
     p_pick_timer_seconds: options.pickTimerSeconds ?? 60,
+    p_playoff_format: options.playoffFormat ?? "none",
+    p_tiebreaker: options.tiebreaker ?? "head_to_head",
   });
   const inviteCode = await inviteCodeFor(client, leagueId);
 

@@ -3,6 +3,8 @@ import {
   CREATE_LEAGUE_DEFAULTS,
   buildCreateLeagueInput,
   clampToRange,
+  isPlayoffFormat,
+  isTiebreaker,
   parseClampedInt,
 } from "@/app/lib/league/limits";
 import { LEAGUE_LIMITS } from "@/app/types/league";
@@ -63,7 +65,7 @@ describe("buildCreateLeagueInput", () => {
     draftFormatId: "",
   };
 
-  it("trims text, nulls an empty format and applies numeric defaults", () => {
+  it("trims text, nulls an empty format and applies the defaults", () => {
     const result = buildCreateLeagueInput(valid);
     expect(result.error).toBeNull();
     expect(result.input).toEqual({
@@ -74,7 +76,33 @@ describe("buildCreateLeagueInput", () => {
       pointBudget: CREATE_LEAGUE_DEFAULTS.pointBudget,
       picksPerTeam: CREATE_LEAGUE_DEFAULTS.picksPerTeam,
       pickTimerSeconds: CREATE_LEAGUE_DEFAULTS.pickTimerSeconds,
+      playoffFormat: "top_4",
+      tiebreaker: "head_to_head",
     });
+  });
+
+  it("keeps a chosen playoff format and refuses an unknown one (section 12.6)", () => {
+    expect(buildCreateLeagueInput({ ...valid, playoffFormat: "top_8" }).input).toMatchObject({
+      playoffFormat: "top_8",
+      tiebreaker: CREATE_LEAGUE_DEFAULTS.tiebreaker,
+    });
+    expect(buildCreateLeagueInput({ ...valid, playoffFormat: " none " }).input).toMatchObject({
+      playoffFormat: "none",
+    });
+    expect(buildCreateLeagueInput({ ...valid, playoffFormat: "" }).input).toMatchObject({
+      playoffFormat: CREATE_LEAGUE_DEFAULTS.playoffFormat,
+    });
+    expect(buildCreateLeagueInput({ ...valid, playoffFormat: null }).input).toMatchObject({
+      playoffFormat: CREATE_LEAGUE_DEFAULTS.playoffFormat,
+    });
+    expect(buildCreateLeagueInput({ ...valid, playoffFormat: "top_3" })).toEqual({
+      input: null,
+      error: "Choose a playoff format.",
+    });
+    expect(isPlayoffFormat("top_6")).toBe(true);
+    expect(isPlayoffFormat("TOP_6")).toBe(false);
+    expect(isTiebreaker("differential")).toBe(true);
+    expect(isTiebreaker("coin_flip")).toBe(false);
   });
 
   it("keeps a chosen draft format id", () => {

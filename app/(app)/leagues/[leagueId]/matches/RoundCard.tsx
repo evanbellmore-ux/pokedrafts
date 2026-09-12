@@ -8,9 +8,11 @@ import {
   isCompleted,
   matchTone,
   memberTeamName,
+  participants,
   type MatchMember,
   type Round,
 } from "./helpers";
+import TeamName from "./TeamName";
 
 type RoundCardProps = {
   round: Round;
@@ -20,40 +22,30 @@ type RoundCardProps = {
   isCommissioner: boolean;
   /** Disables the result buttons while a result action is running. */
   busy: boolean;
+  /**
+   * Disables the result buttons because a playoff result exists
+   * (`report_match_result` and `clear_match_result` refuse regular matches
+   * with `playoffs_started` then); the page shows the note once.
+   */
+  locked: boolean;
   onReport: (match: LeagueMatch, winnerMemberId: string) => void;
   onEdit: (match: LeagueMatch) => void;
 };
 
-/**
- * A team name that can never widen the page: the name is a flex item, so it
- * needs `min-w-0` to shrink below its longest word, and `wrap-anywhere`
- * (overflow-wrap: anywhere) so a spaceless 40-character name breaks instead
- * of setting the item's min-content width. Plain `break-words` is not enough
- * for either.
- */
-function TeamName({ name, isYou }: { name: string; isYou: boolean }) {
-  return (
-    <span className="inline-flex max-w-full items-center gap-1.5">
-      <span className="min-w-0 wrap-anywhere font-semibold text-text">
-        {name}
-      </span>
-      {isYou && <StatusPill tone="accent">You</StatusPill>}
-    </span>
-  );
-}
-
-/** One round of the schedule: its matches and, in odd-sized leagues, the bye. */
+/** One round of the regular season: its matches and, in odd-sized leagues, the bye. */
 export default function RoundCard({
   round,
   members,
   currentMemberId,
   isCommissioner,
   busy,
+  locked,
   onReport,
   onEdit,
 }: RoundCardProps) {
   const headingId = `round-${round.roundNumber}-heading`;
   const finals = round.matches.filter(isCompleted).length;
+  const disabled = busy || locked;
 
   return (
     <section
@@ -61,9 +53,9 @@ export default function RoundCard({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id={headingId} className="text-lg font-semibold text-text">
+        <h3 id={headingId} className="text-lg font-semibold text-text">
           Round {round.roundNumber}
-        </h2>
+        </h3>
         <p className="text-sm text-muted">
           {finals} of {round.matches.length} final
         </p>
@@ -71,6 +63,7 @@ export default function RoundCard({
 
       <ul className="mt-4 flex flex-col gap-3">
         {round.matches.map((match) => {
+          const sides = participants(match);
           const homeName = memberTeamName(members, match.home_member_id);
           const awayName = memberTeamName(members, match.away_member_id);
           const completed = isCompleted(match);
@@ -108,19 +101,25 @@ export default function RoundCard({
                       <span className="min-w-0 wrap-anywhere">
                         Winner:{" "}
                         <span className="font-semibold">{winnerName}</span>
+                        {match.winner_remaining !== null && (
+                          <span className="text-muted">
+                            {" "}
+                            ({match.winner_remaining} left standing)
+                          </span>
+                        )}
                       </span>
                     </span>
                   )}
                 </div>
               </div>
 
-              {isCommissioner && (
+              {isCommissioner && sides && (
                 <div className="flex max-w-full flex-wrap gap-2 md:shrink-0 md:justify-end">
                   {completed ? (
                     <Button
                       size="sm"
                       variant="secondary"
-                      disabled={busy}
+                      disabled={disabled}
                       onClick={() => onEdit(match)}
                       aria-label={`Edit result: ${homeName} vs ${awayName}`}
                     >
@@ -138,8 +137,9 @@ export default function RoundCard({
                         size="sm"
                         variant="secondary"
                         className="max-w-full md:max-w-56"
-                        disabled={busy}
-                        onClick={() => onReport(match, match.home_member_id)}
+                        disabled={disabled}
+                        onClick={() => onReport(match, sides.home)}
+                        aria-label={`${homeName} won`}
                       >
                         <span className="min-w-0 truncate">{homeName}</span>
                         <span className="shrink-0">won</span>
@@ -148,8 +148,9 @@ export default function RoundCard({
                         size="sm"
                         variant="secondary"
                         className="max-w-full md:max-w-56"
-                        disabled={busy}
-                        onClick={() => onReport(match, match.away_member_id)}
+                        disabled={disabled}
+                        onClick={() => onReport(match, sides.away)}
+                        aria-label={`${awayName} won`}
                       >
                         <span className="min-w-0 truncate">{awayName}</span>
                         <span className="shrink-0">won</span>

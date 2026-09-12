@@ -11,9 +11,17 @@ import {
 } from "lucide-react";
 import { useLeague } from "@/app/components/league/LeagueProvider";
 import { ButtonLink, StatusPill } from "@/app/components/ui";
+import {
+  eliminationRoundName,
+  isInBracket,
+  nextPlayoffMatchFor,
+  playoffMatchLabel,
+  regularSeasonComplete,
+  slotInfo,
+} from "@/app/lib/league/bracket";
 import { totalDraftPicks } from "@/app/lib/league/draft";
 import { pluralize, teamNameLabel } from "@/app/lib/league/labels";
-import { computeStandings } from "@/app/lib/league/standings";
+import type { LeagueStanding } from "@/app/types/league";
 import {
   nextMatchFor,
   onClockMember,
@@ -25,13 +33,14 @@ import {
   draftingMembers,
   leaguePhase,
   PHASE_PILL,
-  playingMembers,
   rankPhrase,
 } from "./season";
 
 export type OverviewStatusCardProps = {
   members: OverviewMember[];
   matches: OverviewMatch[];
+  /** Rows from `league_standings`; empty before the draft is complete. */
+  standings: LeagueStanding[];
 };
 
 type Step = {
@@ -81,7 +90,7 @@ function SetupSteps({ steps }: { steps: Step[] }) {
 
 function Stat({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-bg p-3">
+    <div className="min-w-0 rounded-lg border border-line bg-bg p-3">
       <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
         {label}
       </dt>
@@ -93,11 +102,13 @@ function Stat({ label, children }: { label: string; children: ReactNode }) {
 /**
  * Phase-aware status card with the next action: setup checklist, the pick
  * on the clock during the draft, the coach's record and next match during
- * the season, and the final standing once every match is complete.
+ * the season, their playoff match (or the round they went out in) during
+ * the playoffs, and the champion once the season is complete.
  */
 export default function OverviewStatusCard({
   members,
   matches,
+  standings,
 }: OverviewStatusCardProps) {
   const { league, member, isCommissioner } = useLeague();
   const base = `/leagues/${league.id}`;
@@ -184,29 +195,107 @@ export default function OverviewStatusCard({
       </div>
     );
   } else {
-    const playing = playingMembers(members, matches);
-    const standings = computeStandings(playing, matches);
-    const mine = standings.find((row) => row.member.id === member.id) ?? null;
-    const next = nextMatchFor(matches, member.id);
-    const opponent = next
-      ? (members.find((row) => row.id === opponentId(next, member.id)) ?? null)
-      : null;
+    const mine = standings.find((row) => row.member_id === member.id) ?? null;
     const complete = phase === "complete";
-    heading = complete ? "Season complete" : "Season underway";
+    const playoffs = phase === "playoffs";
+    const seeded = regularSeasonComplete(matches);
+    const teamName = (memberId: string | null) =>
+      teamNameLabel(members.find((row) => row.id === memberId)?.team_name ?? null);
+    const championName = league.champion_member_id
+      ? teamName(league.champion_member_id)
+      : null;
+    const youWon = league.champion_member_id === member.id;
+    heading = complete
+      ? "Season complete"
+      : playoffs
+        ? "Playoffs underway"
+        : "Season underway";
+
+    let situation: ReactNode;
+    if (complete) {
+      situation = (
+        <>
+          <span className="wrap-anywhere text-lg font-semibold">Champion: {championName}</span>
+          <span className="mt-1 block text-sm text-muted">
+            {youWon ? "You won the championship!" : "Congratulations to the champion."}
+          </span>
+        </>
+      );
+    } else if (playoffs) {
+      const next = nextPlayoffMatchFor(matches, member.id);
+      const eliminated = eliminationRoundName(matches, member.id);
+      if (next) {
+        const side = next.home_member_id === member.id ? "away" : "home";
+        const slot = slotInfo(next, side, matches);
+        situation = (
+          <>
+            <span className="wrap-anywhere text-lg font-semibold">
+              {slot.kind === "member"
+                ? `vs ${teamName(slot.memberId)}`
+                : slot.kind === "winner_of"
+                  ? `vs Winner of ${playoffMatchLabel(slot.feeder, matches)}`
+                  : "Bye"}
+            </span>
+            <span className="ml-2 text-sm text-muted">
+              {playoffMatchLabel(next, matches)}
+            </span>
+          </>
+        );
+      } else if (eliminated) {
+        situation = (
+          <span className="text-lg font-semibold">Eliminated in the {eliminated}</span>
+        );
+      } else if (!isInBracket(matches, member.id)) {
+        situation = (
+          <span className="text-sm text-muted">
+            You did not make the playoffs this season.
+          </span>
+        );
+      } else {
+        situation = (
+          <span className="text-sm text-muted">Every playoff match is played.</span>
+        );
+      }
+    } else {
+      const next = nextMatchFor(matches, member.id);
+      const opponent = next ? teamName(opponentId(next, member.id)) : null;
+      situation =
+        next && opponent ? (
+          <>
+            <span className="wrap-anywhere text-lg font-semibold">vs {opponent}</span>
+            <span className="ml-2 text-sm text-muted">
+              Round {next.round_number},{" "}
+              {next.home_member_id === member.id ? "home" : "away"}
+            </span>
+          </>
+        ) : (
+          <span className="text-sm text-muted">
+            {matches.length === 0
+              ? isCommissioner
+                ? "No schedule yet. Generate one on the Matches page."
+                : "The commissioner has not generated the schedule yet."
+              : seeded
+                ? "Every regular-season match has been played."
+                : "No upcoming matches for you."}
+          </span>
+        );
+    }
 
     body = (
       <>
         <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Stat label={complete ? "Final record" : "Your record"}>
+          <Stat label={seeded ? "Final record" : "Your record"}>
             {mine ? (
               <>
                 <span className="text-2xl font-bold">
                   {mine.wins}-{mine.losses}
                 </span>
                 <span className="ml-2 text-sm text-muted">
-                  {mine.played > 0 || complete
-                    ? `${complete ? "Finished" : "Currently"} ${rankPhrase(mine.rank, mine.tied)} of ${standings.length}`
-                    : "No results yet"}
+                  {seeded
+                    ? `Seed ${mine.seed} of ${standings.length}`
+                    : mine.played > 0
+                      ? `Currently ${rankPhrase(mine.rank, mine.tied)} of ${standings.length}`
+                      : "No results yet"}
                 </span>
               </>
             ) : (
@@ -215,36 +304,29 @@ export default function OverviewStatusCard({
               </span>
             )}
           </Stat>
-          <Stat label="Next match">
-            {next && opponent ? (
-              <>
-                <span className="text-lg font-semibold">
-                  vs {teamNameLabel(opponent.team_name)}
-                </span>
-                <span className="ml-2 text-sm text-muted">
-                  Round {next.round_number},{" "}
-                  {next.home_member_id === member.id ? "home" : "away"}
-                </span>
-              </>
-            ) : (
-              <span className="text-sm text-muted">
-                {matches.length === 0
-                  ? isCommissioner
-                    ? "No schedule yet. Generate one on the Matches page."
-                    : "The commissioner has not generated the schedule yet."
-                  : complete
-                    ? "Every match has been played."
-                    : "No upcoming matches for you."}
-              </span>
-            )}
+          <Stat label={complete ? "Champion" : playoffs ? "Playoffs" : "Next match"}>
+            {situation}
           </Stat>
         </dl>
         <div className="mt-4 flex flex-wrap gap-2">
-          <ButtonLink href={`${base}/matches`} variant={complete ? "secondary" : "primary"}>
-            Matches
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </ButtonLink>
-          <ButtonLink href={`${base}/standings`} variant={complete ? "primary" : "secondary"}>
+          {playoffs || complete ? (
+            <ButtonLink
+              href={`${base}/matches#playoffs`}
+              variant={complete ? "secondary" : "primary"}
+            >
+              View bracket
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </ButtonLink>
+          ) : (
+            <ButtonLink href={`${base}/matches`}>
+              Matches
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </ButtonLink>
+          )}
+          <ButtonLink
+            href={`${base}/standings`}
+            variant={complete ? "primary" : "secondary"}
+          >
             <Trophy className="h-4 w-4" aria-hidden="true" />
             Standings
           </ButtonLink>

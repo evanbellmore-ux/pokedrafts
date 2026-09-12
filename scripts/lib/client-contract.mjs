@@ -3,16 +3,20 @@
 //
 // After supabase/migrations/20260909120000_release_hardening.sql the browser
 // can only mutate the league tables through the RPC catalog granted in its
-// section 10, and the three legacy timer functions no longer exist. A client
-// that still calls them gets PGRST202 (function not found); a direct insert
-// gets 42501, and a direct update or delete that a policy filters out
-// "succeeds" with zero rows. This module finds both kinds of call site in the
-// client source so the migration is never applied ahead of the client.
+// section 10, and the three legacy timer functions no longer exist. Later
+// feature migrations (20260912120000_playoffs.sql and on) add to that catalog
+// in a "Grants" section of their own, so the catalog is the union of every
+// migration's grants section. A client that calls a function outside it gets
+// PGRST202 (function not found); a direct insert gets 42501, and a direct
+// update or delete that a policy filters out "succeeds" with zero rows. This
+// module finds both kinds of call site in the client source so a migration is
+// never applied ahead of the client.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
 /** Relative to the project root. */
-export const HARDENING_MIGRATION = join("supabase", "migrations", "20260909120000_release_hardening.sql");
+export const MIGRATIONS_DIR = join("supabase", "migrations");
+export const HARDENING_MIGRATION = join(MIGRATIONS_DIR, "20260909120000_release_hardening.sql");
 
 /** Tables the browser never writes to (docs/release-architecture.md, section 1). */
 export const FUNCTION_ONLY_TABLES = [
@@ -43,27 +47,92 @@ const WRITE_METHODS = new Set(["insert", "update", "upsert", "delete"]);
 const SOURCE_FILE = /\.(?:ts|tsx|js|jsx|mjs)$/;
 
 /**
+ * A migration's grants section starts at a comment heading that reads
+ * "-- Grants" or "-- <n>. Grants" (the hardening file boxes its headings
+ * between two rules of dashes) and ends at the next boxed heading or at the
+ * end of the file.
+ */
+const GRANTS_HEADING = /^--\s*(?:\d+\.\s*)?Grants\s*$/m;
+const HEADING_RULE = /^\s*\n-{10,}[ \t]*\n/;
+const NEXT_BOXED_HEADING = /^-{10,}[ \t]*\n--/m;
+
+/**
  * @typedef {"legacy_rpc" | "unknown_rpc" | "direct_write"} FindingKind
  * @typedef {{ file: string, line: number, kind: FindingKind, detail: string }} Finding
  */
 
 /**
- * The API functions the hardening migration grants to the API roles: every
- * `'public.<name>(` entry in its section 10 whose name is not an internal
- * `_` helper. Sorted and unique.
+ * The text of a migration's grants section, or null when the file has none
+ * (the base schema and the eight legacy files grant nothing).
+ * @param {string} migrationSql
+ * @returns {string | null}
+ */
+export function grantsSection(migrationSql) {
+  const heading = GRANTS_HEADING.exec(migrationSql);
+  if (!heading) {
+    return null;
+  }
+  const rest = migrationSql.slice(heading.index + heading[0].length);
+  const rule = HEADING_RULE.exec(rest);
+  const body = rule ? rest.slice(rule[0].length) : rest;
+  const end = body.search(NEXT_BOXED_HEADING);
+  return end < 0 ? body : body.slice(0, end);
+}
+
+/**
+ * The API functions a migration grants to the API roles: every
+ * `'public.<name>(` entry in its grants section whose name is not an
+ * internal `_` helper. Sorted and unique. Throws when the file has no grants
+ * section, so a renamed heading is noticed instead of emptying the catalog.
  * @param {string} migrationSql
  * @returns {string[]}
  */
 export function parseRpcCatalog(migrationSql) {
-  const start = migrationSql.indexOf("-- 10. Grants");
-  if (start < 0) {
-    throw new Error("hardening migration: section '10. Grants' not found");
+  const section = grantsSection(migrationSql);
+  if (section === null) {
+    throw new Error("migration: no 'Grants' section heading found");
   }
-  const end = migrationSql.indexOf("-- 11. Post-apply report", start);
-  const section = migrationSql.slice(start, end < 0 ? undefined : end);
   const names = new Set();
   for (const match of section.matchAll(/'public\.([a-z][a-z0-9_]*)\(/g)) {
     names.add(match[1]);
+  }
+  return [...names].sort();
+}
+
+/**
+ * The migration files under `root`, in the order they are applied.
+ * @param {string} root project root (absolute)
+ * @returns {{ name: string, sql: string }[]}
+ */
+export function readMigrationFiles(root) {
+  const dir = join(root, MIGRATIONS_DIR);
+  return readdirSync(dir)
+    .filter((name) => name.endsWith(".sql"))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .map((name) => ({ name, sql: readFileSync(join(dir, name), "utf8") }));
+}
+
+/**
+ * The union of the grants sections of every migration under `root`. Files
+ * without a grants section contribute nothing; at least one file must have
+ * one (the hardening migration).
+ * @param {string} root project root (absolute)
+ * @returns {string[]} sorted and unique
+ */
+export function readRpcCatalog(root) {
+  const names = new Set();
+  let sections = 0;
+  for (const migration of readMigrationFiles(root)) {
+    if (grantsSection(migration.sql) === null) {
+      continue;
+    }
+    sections += 1;
+    for (const name of parseRpcCatalog(migration.sql)) {
+      names.add(name);
+    }
+  }
+  if (sections === 0) {
+    throw new Error(`no migration under ${MIGRATIONS_DIR} has a 'Grants' section`);
   }
   return [...names].sort();
 }
@@ -74,7 +143,7 @@ export function parseRpcCatalog(migrationSql) {
  * function-only tables (the chain may span lines). Reads are never reported.
  * @param {string} source
  * @param {string} file label used in the findings
- * @param {string[]} catalog from parseRpcCatalog
+ * @param {string[]} catalog from parseRpcCatalog / readRpcCatalog
  * @returns {Finding[]} ordered by line
  */
 export function scanSource(source, file, catalog) {
@@ -129,10 +198,10 @@ function collectSourceFiles(dir, out) {
 /**
  * Scans app/ and proxy.ts under `root`.
  * @param {string} root project root (absolute)
- * @param {string[]} [catalog] defaults to the catalog parsed from the hardening migration under root
+ * @param {string[]} [catalog] defaults to the union of every migration's grants under root
  * @returns {{ files: number, findings: Finding[] }}
  */
-export function scanProject(root, catalog = parseRpcCatalog(readFileSync(join(root, HARDENING_MIGRATION), "utf8"))) {
+export function scanProject(root, catalog = readRpcCatalog(root)) {
   /** @type {string[]} */
   const files = [];
   for (const dir of SCAN_DIRS) {

@@ -127,6 +127,8 @@ describe("schedule and result RPCs", () => {
         loser_member_id: match.away_member_id,
         round_number: match.round_number,
         match_number: match.match_number,
+        stage: "regular",
+        winner_remaining: null,
       });
 
       // Re-reporting flips the winner and replaces the news instead of adding to it.

@@ -1,16 +1,18 @@
-// The client contract behind the hardening migration. The release gate
-// (scripts/check-client-contract.mjs) refuses to let the migration ship ahead
-// of a client that still calls the dropped timer RPCs or writes directly to
-// the function-only tables. These tests keep that gate honest against the
-// real database: the catalog it accepts is exactly what the migration grants,
-// its scanner recognises every call shape the pre-hardening client used, and
-// app/lib/rpc.ts only names functions that exist.
+// The client contract behind the hardening migration and the feature
+// migrations after it. The release gate (scripts/check-client-contract.mjs)
+// refuses to let a migration ship ahead of a client that still calls the
+// dropped timer RPCs, calls a function no migration grants, or writes directly
+// to the function-only tables. These tests keep that gate honest against the
+// real database: the catalog it accepts (the union of every migration's grants
+// section) is exactly what the migrations grant, its scanner recognises every
+// call shape the pre-hardening client used, and app/lib/rpc.ts only names
+// functions that exist.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { FUNCTION_ONLY_TABLES, LEGACY_RPCS, parseRpcCatalog, scanProject, scanSource } from "../../scripts/lib/client-contract.mjs";
+import { FUNCTION_ONLY_TABLES, LEGACY_RPCS, grantsSection, parseRpcCatalog, readRpcCatalog, scanProject, scanSource } from "../../scripts/lib/client-contract.mjs";
 import { connect, type Client } from "./harness";
-import { HARDENING_MIGRATION, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, readMigrations } from "./migrations-lib";
 
 describe("client contract", () => {
   let db: Client;
@@ -18,11 +20,7 @@ describe("client contract", () => {
 
   beforeAll(async () => {
     db = await connect();
-    const hardening = readMigrations().find((m) => m.name === HARDENING_MIGRATION);
-    if (!hardening) {
-      throw new Error(`${HARDENING_MIGRATION} not found`);
-    }
-    catalog = parseRpcCatalog(hardening.sql);
+    catalog = readRpcCatalog(process.cwd());
   });
 
   afterAll(async () => {
@@ -40,10 +38,35 @@ describe("client contract", () => {
       order by 1
     `);
     expect(catalog).toEqual(rows.map((r) => r.fn));
-    expect(catalog).toHaveLength(28);
+    expect(catalog).toHaveLength(31);
     for (const legacy of LEGACY_RPCS) {
       expect(catalog).not.toContain(legacy);
     }
+    // Per file: the hardening file grants the 28 first-release functions, the
+    // playoffs file the three new ones plus the six it re-creates, and the
+    // base schema and the eight legacy files have no grants section at all.
+    const migrations = readMigrations();
+    const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
+    const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
+    if (!hardening || !playoffs) throw new Error("hardening or playoffs migration missing");
+    expect(parseRpcCatalog(hardening.sql)).toHaveLength(28);
+    expect(parseRpcCatalog(playoffs.sql)).toEqual([
+      "clear_match_result",
+      "clear_playoffs",
+      "create_league",
+      "generate_playoffs",
+      "generate_schedule",
+      "league_standings",
+      "report_match_result",
+      "reset_draft",
+      "update_league_settings",
+    ]);
+    for (const migration of migrations) {
+      if (migration.name !== HARDENING_MIGRATION && migration.name !== PLAYOFFS_MIGRATION) {
+        expect(grantsSection(migration.sql), `${migration.name} should have no grants section`).toBeNull();
+      }
+    }
+    expect(() => parseRpcCatalog("-- nothing here")).toThrow(/Grants/);
     // No stray catalog entry: every name resolves to a function the API can call.
     for (const fn of catalog) {
       const exists = await db.query("select 1 from pg_proc where pronamespace = 'public'::regnamespace and proname = $1", [fn]);

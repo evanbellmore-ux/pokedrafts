@@ -19,13 +19,19 @@ import Select from "@/app/components/ui/Select";
 import Skeleton from "@/app/components/ui/Skeleton";
 import { getCurrentUser } from "@/app/lib/auth/current-user";
 import { friendlyError } from "@/app/lib/errors";
+import { toPlayoffFormat } from "@/app/lib/league/bracket";
+import { playoffFormatLabel } from "@/app/lib/league/labels";
 import {
   buildCreateLeagueInput,
   CREATE_LEAGUE_DEFAULTS,
 } from "@/app/lib/league/limits";
 import { rpc } from "@/app/lib/rpc";
 import { createClient } from "@/app/lib/supabase/client";
-import { LEAGUE_LIMITS } from "@/app/types/league";
+import {
+  LEAGUE_LIMITS,
+  PLAYOFF_FORMATS,
+  type PlayoffFormat,
+} from "@/app/types/league";
 
 type FormatOption = {
   id: string;
@@ -122,6 +128,9 @@ export default function NewLeagueClient() {
   const [name, setName] = useState("");
   const [teamName, setTeamName] = useState("");
   const [draftFormatId, setDraftFormatId] = useState(NO_FORMAT);
+  const [playoffFormat, setPlayoffFormat] = useState<PlayoffFormat>(
+    CREATE_LEAGUE_DEFAULTS.playoffFormat
+  );
   const [numbers, setNumbers] = useState<NumberValues>({
     maxCoaches: CREATE_LEAGUE_DEFAULTS.maxCoaches,
     pointBudget: CREATE_LEAGUE_DEFAULTS.pointBudget,
@@ -217,6 +226,7 @@ export default function NewLeagueClient() {
       pointBudget: numbers.pointBudget,
       picksPerTeam: numbers.picksPerTeam,
       pickTimerSeconds: numbers.pickTimerSeconds,
+      playoffFormat,
     });
     if (built.error !== null) {
       setError(built.error);
@@ -404,6 +414,29 @@ export default function NewLeagueClient() {
               <Skeleton className="h-4 w-56 max-w-full" />
             </div>
           )}
+        </section>
+
+        <section aria-labelledby="season-heading" className="flex flex-col gap-4">
+          <h2 id="season-heading" className="text-lg font-semibold text-text">
+            Season
+          </h2>
+
+          <Field
+            label="Playoff format"
+            help="The top seeds after the regular season play a single-elimination bracket. This, the matchup format and the tiebreaker can be changed later in Settings."
+          >
+            <Select
+              value={playoffFormat}
+              onChange={(event) => setPlayoffFormat(toPlayoffFormat(event.target.value))}
+              disabled={pending}
+            >
+              {PLAYOFF_FORMATS.map((format) => (
+                <option key={format} value={format}>
+                  {playoffFormatLabel(format)}
+                </option>
+              ))}
+            </Select>
+          </Field>
         </section>
 
         {error && <Alert variant="error">{error}</Alert>}

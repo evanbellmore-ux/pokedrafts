@@ -13,7 +13,9 @@ import {
 } from "@/app/components/ui";
 import { friendlyError } from "@/app/lib/errors";
 import { pluralize } from "@/app/lib/league/labels";
+import { rpc } from "@/app/lib/rpc";
 import { createClient } from "@/app/lib/supabase/client";
+import type { LeagueStanding } from "@/app/types/league";
 import CoachesList from "./CoachesList";
 import InviteCard from "./InviteCard";
 import { readLeaguePool } from "./leaguePool";
@@ -40,6 +42,8 @@ type OverviewData = {
   members: OverviewMember[];
   invite: OverviewInvite | null;
   matches: OverviewMatch[];
+  /** `league_standings` rows once the draft is complete; empty before. */
+  standings: LeagueStanding[];
   news: OverviewNews[];
   hasMoreNews: boolean;
 };
@@ -75,6 +79,9 @@ export default function LeagueOverviewClient() {
   const supabase = useMemo(() => createClient(), []);
   const leagueId = league.id;
   const canManageInvite = isCommissioner && !league.draft_started;
+  // The status card reads the coach's record and seed from
+  // `league_standings` (section 12.3); before the draft there is nothing to rank.
+  const hasSeason = Boolean(league.draft_completed);
 
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [reloadError, setReloadError] = useState<string | null>(null);
@@ -97,6 +104,8 @@ export default function LeagueOverviewClient() {
               .maybeSingle()
           : null;
 
+        const standingsPromise = hasSeason ? rpc.leagueStandings(leagueId) : null;
+
         const [membersResult, matchesResult, newsResult] = await Promise.all([
           supabase
             .from("league_members")
@@ -117,6 +126,7 @@ export default function LeagueOverviewClient() {
             .limit(newsLimit),
         ]);
         const inviteResult = invitePromise ? await invitePromise : null;
+        const standingsResult = standingsPromise ? await standingsPromise : null;
 
         if (membersResult.error) {
           return { status: "error", message: friendlyError(membersResult.error) };
@@ -130,6 +140,9 @@ export default function LeagueOverviewClient() {
         if (inviteResult?.error) {
           return { status: "error", message: friendlyError(inviteResult.error) };
         }
+        if (standingsResult && standingsResult.error !== null) {
+          return { status: "error", message: standingsResult.error };
+        }
 
         const news = (newsResult.data ?? []) as OverviewNews[];
         return {
@@ -138,6 +151,7 @@ export default function LeagueOverviewClient() {
             members: sortCoaches((membersResult.data ?? []) as OverviewMember[]),
             invite: (inviteResult?.data ?? null) as OverviewInvite | null,
             matches: (matchesResult.data ?? []) as OverviewMatch[],
+            standings: standingsResult?.data ?? [],
             news,
             hasMoreNews: news.length >= newsLimit,
           },
@@ -146,7 +160,7 @@ export default function LeagueOverviewClient() {
         return { status: "error", message: friendlyError(caught) };
       }
     },
-    [supabase, leagueId, canManageInvite]
+    [supabase, leagueId, canManageInvite, hasSeason]
   );
 
   useEffect(() => {
@@ -334,6 +348,7 @@ export default function LeagueOverviewClient() {
                 <OverviewStatusCard
                   members={ready.members}
                   matches={ready.matches}
+                  standings={ready.standings}
                 />
                 {canManageInvite && (
                   <InviteCard

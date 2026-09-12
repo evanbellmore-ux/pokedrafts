@@ -10,10 +10,18 @@ import {
   NumberInput,
   Select,
 } from "@/app/components/ui";
-import { scheduleFormatLabel } from "@/app/lib/league/labels";
+import { toPlayoffFormat, toTiebreaker } from "@/app/lib/league/bracket";
+import {
+  playoffFormatLabel,
+  pluralize,
+  scheduleFormatLabel,
+  tiebreakerLabel,
+} from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
 import {
   LEAGUE_LIMITS,
+  PLAYOFF_FORMATS,
+  TIEBREAKERS,
   type League,
   type LeagueSettingsInput,
 } from "@/app/types/league";
@@ -21,6 +29,7 @@ import {
   buildSettingsPatch,
   groupFormatOptions,
   NO_FORMAT,
+  playoffFormatOptions,
   SCHEDULE_FORMATS,
   sameSettingsValues,
   settingsValuesFromLeague,
@@ -34,6 +43,14 @@ type SettingsFormProps = {
   league: League;
   /** Current coach count; `max_coaches` may not drop below it. */
   memberCount: number;
+  /**
+   * Coaches who play in the season; once the draft has started, playoff
+   * formats needing more are disabled (the function accepts any format
+   * before the draft).
+   */
+  playingCount: number;
+  /** A playoff result exists, so the playoff settings are locked (section 12.5). */
+  playoffResultsExist: boolean;
   formats: FormatOption[];
   currentUserId: string;
   /** Called after a successful save; the parent refreshes the league and reports. */
@@ -41,15 +58,21 @@ type SettingsFormProps = {
 };
 
 const LOCKED_NOTE = "Locked during the draft.";
+const PLAYOFFS_LOCKED_NOTE = "Locked while playoff results exist.";
+const RESEED_NOTE =
+  "Changing this after the regular season reseeds the playoff bracket.";
 
 /**
  * League settings form for the commissioner. Only changed keys are sent to
  * `update_league_settings`; the draft-shaping fields are disabled once the
- * draft has started, matching the function's `locked_during_draft` rule.
+ * draft has started, matching the function's `locked_during_draft` rule,
+ * and the playoff settings once a playoff result exists (`playoffs_started`).
  */
 export default function SettingsForm({
   league,
   memberCount,
+  playingCount,
+  playoffResultsExist,
   formats,
   currentUserId,
   onSaved,
@@ -77,6 +100,11 @@ export default function SettingsForm({
     formats,
     currentUserId,
     league.draft_format_id
+  );
+  const playoffOptions = playoffFormatOptions(
+    PLAYOFF_FORMATS,
+    locked ? playingCount : null,
+    saved.playoffFormat
   );
 
   function update<K extends keyof SettingsValues>(key: K, value: SettingsValues[K]) {
@@ -136,8 +164,16 @@ export default function SettingsForm({
       {locked && (
         <Alert variant="info" className="mt-4">
           The draft has started. The point budget, picks per team, max coaches
-          and draft format are locked; the name, pick timer, swap limit and
-          matchup format can still change.
+          and draft format are locked; the name, pick timer, swap limit,
+          matchup format, tiebreaker and playoff format can still change.
+        </Alert>
+      )}
+
+      {playoffResultsExist && (
+        <Alert variant="info" className="mt-4">
+          Playoff results have been recorded, so the tiebreaker and playoff
+          format are locked. Clear the playoff results or the bracket on the
+          Matches page to change them.
         </Alert>
       )}
 
@@ -243,6 +279,55 @@ export default function SettingsForm({
               {SCHEDULE_FORMATS.map((option) => (
                 <option key={option} value={option}>
                   {scheduleFormatLabel(option)}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <Field
+            label="Tiebreaker"
+            help={
+              playoffResultsExist
+                ? PLAYOFFS_LOCKED_NOTE
+                : `Applied after win percentage and wins, then the other tiebreaker, strength of schedule and a coin flip. ${RESEED_NOTE}`
+            }
+          >
+            <Select
+              value={form.tiebreaker}
+              onChange={(event) => update("tiebreaker", toTiebreaker(event.target.value))}
+              disabled={pending || playoffResultsExist}
+            >
+              {TIEBREAKERS.map((option) => (
+                <option key={option} value={option}>
+                  {tiebreakerLabel(option)}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <Field
+            label="Playoff format"
+            help={
+              playoffResultsExist
+                ? PLAYOFFS_LOCKED_NOTE
+                : `The top seeds after the regular season play a single-elimination bracket. ${
+                    locked
+                      ? `${pluralize(playingCount, "coach plays", "coaches play")}.`
+                      : "Formats that need more coaches than play are disabled once the draft starts."
+                  } ${RESEED_NOTE}`
+            }
+          >
+            <Select
+              value={form.playoffFormat}
+              onChange={(event) =>
+                update("playoffFormat", toPlayoffFormat(event.target.value))
+              }
+              disabled={pending || playoffResultsExist}
+            >
+              {playoffOptions.map((option) => (
+                <option key={option.value} value={option.value} disabled={option.disabled}>
+                  {playoffFormatLabel(option.value)}
+                  {option.disabled ? ` (needs ${option.needs} coaches)` : ""}
                 </option>
               ))}
             </Select>

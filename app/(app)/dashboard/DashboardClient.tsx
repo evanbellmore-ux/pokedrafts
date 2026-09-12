@@ -30,6 +30,7 @@ import Skeleton from "@/app/components/ui/Skeleton";
 import StatusPill, { type StatusTone } from "@/app/components/ui/StatusPill";
 import { getCurrentUser } from "@/app/lib/auth/current-user";
 import { friendlyError } from "@/app/lib/errors";
+import { playoffSize } from "@/app/lib/league/bracket";
 import { roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import { isLeagueCommissioner } from "@/app/lib/league/permissions";
 import { createClient } from "@/app/lib/supabase/client";
@@ -45,6 +46,15 @@ type LeagueSummary = {
   draft_completed: boolean | null;
   current_pick_number: number | null;
   picks_per_team: number | null;
+  playoff_format: string | null;
+  champion_member_id: string | null;
+};
+
+/** Member columns read across the caller's leagues: seat counts and the champion's name. */
+type LeagueMemberRow = {
+  id: string;
+  league_id: string;
+  team_name: string | null;
 };
 
 type MembershipRow = {
@@ -62,6 +72,8 @@ type DashboardLeague = {
   role: string | null;
   coachCount: number;
   phase: Phase;
+  /** The champion's team name once `champion_member_id` is set. */
+  championTeamName: string | null;
 };
 
 type LoadState =
@@ -89,17 +101,39 @@ function compareLeagues(a: DashboardLeague, b: DashboardLeague) {
   );
 }
 
-function phasePill(item: DashboardLeague): { tone: StatusTone; label: string } {
+type Pill = { tone: StatusTone; label: string };
+
+/**
+ * The card's phase pills. After the draft, a decided champion replaces the
+ * "Draft complete" pill, and a league with a playoff format shows "Playoffs"
+ * until then (docs/release-architecture.md section 12.6).
+ */
+function phasePills(item: DashboardLeague): Pill[] {
   switch (item.phase) {
     case "live":
-      return {
-        tone: "warning",
-        label: `Drafting: pick #${item.league.current_pick_number ?? 1}`,
-      };
+      return [
+        {
+          tone: "warning",
+          label: `Drafting: pick #${item.league.current_pick_number ?? 1}`,
+        },
+      ];
     case "complete":
-      return { tone: "success", label: "Draft complete" };
+      if (item.league.champion_member_id) {
+        return [
+          {
+            tone: "success",
+            label: `Champion: ${item.championTeamName ?? "Unknown team"}`,
+          },
+        ];
+      }
+      return playoffSize(item.league.playoff_format) > 0
+        ? [
+            { tone: "success", label: "Draft complete" },
+            { tone: "accent", label: "Playoffs" },
+          ]
+        : [{ tone: "success", label: "Draft complete" }];
     default:
-      return { tone: "accent", label: "Setup" };
+      return [{ tone: "accent", label: "Setup" }];
   }
 }
 
@@ -154,7 +188,7 @@ function LeagueCard({
   onDelete: (item: DashboardLeague) => void;
 }) {
   const { league } = item;
-  const pill = phasePill(item);
+  const pills = phasePills(item);
 
   return (
     <li className="relative rounded-xl border border-line bg-panel p-5 transition-colors hover:border-line-strong hover:bg-panel-hover">
@@ -171,7 +205,11 @@ function LeagueCard({
               </Link>
             </h3>
             <StatusPill>{roleLabel(item.role)}</StatusPill>
-            <StatusPill tone={pill.tone}>{pill.label}</StatusPill>
+            {pills.map((pill) => (
+              <StatusPill key={pill.label} tone={pill.tone} className="wrap-anywhere">
+                {pill.label}
+              </StatusPill>
+            ))}
           </div>
           <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted">
             <div className="min-w-0">
@@ -249,7 +287,7 @@ export default function DashboardClient() {
       const { data, error } = await supabase
         .from("league_members")
         .select(
-          "league_id, team_name, role, leagues(id, name, commissioner_id, max_coaches, draft_started, draft_completed, current_pick_number, picks_per_team)"
+          "league_id, team_name, role, leagues!league_id(id, name, commissioner_id, max_coaches, draft_started, draft_completed, current_pick_number, picks_per_team, playoff_format, champion_member_id)"
         )
         .eq("user_id", user.id);
       if (error) return { status: "error", message: friendlyError(error) };
@@ -260,17 +298,19 @@ export default function DashboardClient() {
       });
 
       const counts = new Map<string, number>();
+      const teamNames = new Map<string, string | null>();
       const leagueIds = memberships.map(({ league }) => league.id);
       if (leagueIds.length > 0) {
         const { data: memberRows, error: countError } = await supabase
           .from("league_members")
-          .select("league_id")
+          .select("id, league_id, team_name")
           .in("league_id", leagueIds);
         if (countError) {
           return { status: "error", message: friendlyError(countError) };
         }
-        for (const member of (memberRows ?? []) as Array<{ league_id: string }>) {
+        for (const member of (memberRows ?? []) as LeagueMemberRow[]) {
           counts.set(member.league_id, (counts.get(member.league_id) ?? 0) + 1);
+          teamNames.set(member.id, member.team_name);
         }
       }
 
@@ -282,6 +322,9 @@ export default function DashboardClient() {
             role: row.role,
             coachCount: counts.get(league.id) ?? 0,
             phase: phaseOf(league),
+            championTeamName: league.champion_member_id
+              ? teamNameLabel(teamNames.get(league.champion_member_id) ?? null)
+              : null,
           })
         )
         .sort(compareLeagues);

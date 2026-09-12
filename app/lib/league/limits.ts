@@ -1,4 +1,11 @@
-import { LEAGUE_LIMITS, type CreateLeagueInput } from "@/app/types/league";
+import {
+  LEAGUE_LIMITS,
+  PLAYOFF_FORMATS,
+  TIEBREAKERS,
+  type CreateLeagueInput,
+  type PlayoffFormat,
+  type Tiebreaker,
+} from "@/app/types/league";
 
 /**
  * Client-side normalisation for league settings forms
@@ -9,12 +16,15 @@ import { LEAGUE_LIMITS, type CreateLeagueInput } from "@/app/types/league";
 
 export type IntRange = { readonly min: number; readonly max: number };
 
-/** Defaults for a new league; match the column defaults in section 4. */
+/** Defaults for a new league; match the column defaults in sections 4 and 12. */
 export const CREATE_LEAGUE_DEFAULTS = {
   maxCoaches: 8,
   pointBudget: 100,
   picksPerTeam: 10,
   pickTimerSeconds: 120,
+  /** `create_league` defaults to Top 4 (section 12.5); Settings can change it. */
+  playoffFormat: "top_4" as PlayoffFormat,
+  tiebreaker: "head_to_head" as Tiebreaker,
 } as const;
 
 /** Clamps an integer into `range`; non-finite input becomes `fallback`. */
@@ -47,6 +57,19 @@ export function parseClampedInt(
   return clampToRange(Number.isNaN(parsed) ? fallback : parsed, range, fallback);
 }
 
+export function isPlayoffFormat(value: unknown): value is PlayoffFormat {
+  return (
+    typeof value === "string" &&
+    (PLAYOFF_FORMATS as readonly string[]).includes(value)
+  );
+}
+
+export function isTiebreaker(value: unknown): value is Tiebreaker {
+  return (
+    typeof value === "string" && (TIEBREAKERS as readonly string[]).includes(value)
+  );
+}
+
 /** Raw state of the create-league form before normalisation. */
 export type CreateLeagueForm = {
   name: string;
@@ -57,6 +80,8 @@ export type CreateLeagueForm = {
   pointBudget?: number | string | null;
   picksPerTeam?: number | string | null;
   pickTimerSeconds?: number | string | null;
+  /** Omitted or null means the default (Top 4); anything else must be a format. */
+  playoffFormat?: string | null;
 };
 
 export type CreateLeagueBuildResult =
@@ -67,6 +92,8 @@ export type CreateLeagueBuildResult =
  * Turns the form state into a `CreateLeagueInput` for `rpc.createLeague`.
  * Text is trimmed and length-checked against LEAGUE_LIMITS (a user-facing
  * error is returned instead of silently truncating); numbers are clamped.
+ * The tiebreaker is not on the form (it lives in Settings) and stays at its
+ * default.
  */
 export function buildCreateLeagueInput(
   form: CreateLeagueForm
@@ -95,6 +122,17 @@ export function buildCreateLeagueInput(
 
   const draftFormatId = form.draftFormatId?.trim() || null;
 
+  const rawFormat = form.playoffFormat == null ? null : form.playoffFormat.trim();
+  const playoffFormat: PlayoffFormat | null =
+    rawFormat === null || rawFormat === ""
+      ? CREATE_LEAGUE_DEFAULTS.playoffFormat
+      : isPlayoffFormat(rawFormat)
+        ? rawFormat
+        : null;
+  if (playoffFormat === null) {
+    return { input: null, error: "Choose a playoff format." };
+  }
+
   return {
     input: {
       name,
@@ -120,6 +158,8 @@ export function buildCreateLeagueInput(
         LEAGUE_LIMITS.pickTimerSeconds,
         CREATE_LEAGUE_DEFAULTS.pickTimerSeconds
       ),
+      playoffFormat,
+      tiebreaker: CREATE_LEAGUE_DEFAULTS.tiebreaker,
     },
     error: null,
   };

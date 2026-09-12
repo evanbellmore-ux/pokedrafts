@@ -108,6 +108,54 @@ describe("createRpc", () => {
     expect(consoleError).toHaveBeenCalledTimes(1);
   });
 
+  it("passes the playoff settings to create_league and the winner's Pokémon left to report_match_result (section 12.5)", async () => {
+    const { client, rpc } = fakeClient(async () => ({ data: null, error: null }));
+    const wrappers = createRpc(client);
+
+    await wrappers.createLeague({
+      name: "Kanto Cup",
+      teamName: "Rocket",
+      maxCoaches: 8,
+      draftFormatId: null,
+      pointBudget: 100,
+      picksPerTeam: 10,
+      pickTimerSeconds: 120,
+      playoffFormat: "top_6",
+      tiebreaker: "differential",
+    });
+    expect(rpc).toHaveBeenLastCalledWith("create_league", {
+      p_name: "Kanto Cup",
+      p_team_name: "Rocket",
+      p_max_coaches: 8,
+      p_draft_format_id: null,
+      p_point_budget: 100,
+      p_picks_per_team: 10,
+      p_pick_timer_seconds: 120,
+      p_playoff_format: "top_6",
+      p_tiebreaker: "differential",
+    });
+
+    await wrappers.reportMatchResult("match-1", "member-1");
+    expect(rpc).toHaveBeenLastCalledWith("report_match_result", {
+      p_match_id: "match-1",
+      p_winner_member_id: "member-1",
+      p_winner_remaining: null,
+    });
+    await wrappers.reportMatchResult("match-1", "member-1", 4);
+    expect(rpc).toHaveBeenLastCalledWith("report_match_result", {
+      p_match_id: "match-1",
+      p_winner_member_id: "member-1",
+      p_winner_remaining: 4,
+    });
+
+    await wrappers.leagueStandings("league-1");
+    expect(rpc).toHaveBeenLastCalledWith("league_standings", { p_league_id: "league-1" });
+    await wrappers.generatePlayoffs("league-1");
+    expect(rpc).toHaveBeenLastCalledWith("generate_playoffs", { p_league_id: "league-1" });
+    await wrappers.clearPlayoffs("league-1");
+    expect(rpc).toHaveBeenLastCalledWith("clear_playoffs", { p_league_id: "league-1" });
+  });
+
   it("has no code for a thrown network failure", async () => {
     const { client } = fakeClient(async () => {
       throw new TypeError("Failed to fetch");

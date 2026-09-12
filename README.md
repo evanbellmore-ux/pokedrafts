@@ -52,17 +52,36 @@ The files in `supabase/migrations/` must be applied **in filename order**:
    recreating them, and **drops the legacy** `start_draft_timer`,
    `advance_draft_timer` and `complete_draft_timer` functions. It is idempotent
    and safe to re-run.
+4. `20260912120000_playoffs.sql` - standings tiebreakers and single-elimination
+   playoffs: the `tiebreaker`, `playoff_format` and `champion_member_id` league
+   columns, the playoff columns on `league_matches` (`stage`,
+   `winner_remaining`, seeds and bracket links; a playoff slot may be empty),
+   the `season` news type, `league_standings`, `generate_playoffs`,
+   `clear_playoffs`, and new signatures for `create_league` and
+   `report_match_result` (the old ones are dropped). Idempotent and safe to
+   re-run.
 
-**The hardening file must always be the last migration file to run.** The
+**Never run one of the eight legacy files after the hardening file.** The
 eight older files recreate the pre-release write policies (a coach could set
 their own `league_members.role` to `commissioner` and then delete the league),
-and only the hardening file, which sorts last, removes them again. Whatever
-runs an older file after it, for any reason, reopens that hole until the
-hardening file runs once more, so never run an older file after the hardening
-file without re-running the hardening file afterwards. `npm run test:db`
-demonstrates both halves: the whole set re-applies cleanly in filename order,
-and an older file re-applied after the hardening brings the legacy policies
-back.
+and only the hardening file removes them again. Whatever runs an older file
+after it, for any reason, reopens that hole until the hardening file runs once
+more, so never run an older file after the hardening file without re-running
+the hardening file afterwards.
+
+**Feature migrations after the hardening file are applied in filename order,
+after it.** `20260912120000_playoffs.sql` (and any later feature file) builds
+on the hardening file's functions and drops the signatures it replaces (the
+7-parameter `create_league`, the 2-parameter `report_match_result`).
+Re-running the hardening file on its own recreates those old signatures next
+to the new ones, and PostgREST can then not choose between them ("could not
+choose the best candidate function") until the later file runs again. So
+whenever you re-run `20260909120000_release_hardening.sql`, also
+re-run `20260912120000_playoffs.sql` (and every later feature file) after it,
+in filename order. `npm run test:db` demonstrates all of this: the whole set
+re-applies cleanly in filename order, an older file re-applied after the
+hardening brings the legacy policies back, and the hardening re-applied on
+its own makes `create_league` ambiguous until the playoffs file follows it.
 
 Either way works:
 
@@ -71,7 +90,8 @@ Either way works:
   failing) if existing rows block a constraint or if it could not create the
   bucket or the realtime entries, and the result grid it leaves behind is the
   report described next. If you ever paste one of the older files again (to
-  re-check it, say), paste and run the hardening file again right after it.
+  re-check it, say), paste and run the hardening file again right after it,
+  followed by the feature files that sort after it.
 - **Supabase CLI**: the repository does not ship `supabase/config.toml`, so
   `supabase init` has to run once before `link` and `db push` work:
 
@@ -103,8 +123,9 @@ Either way works:
   no version older than `20260909120000` under `Local` only once the hardening
   is recorded as applied; if it does, repair those versions too, or let the
   push run and then re-run `20260909120000_release_hardening.sql` in the SQL
-  editor. Re-running files is otherwise harmless: `npm run test:db` applies the
-  whole set twice in filename order.
+  editor followed by `20260912120000_playoffs.sql`. Re-running files is
+  otherwise harmless: `npm run test:db` applies the whole set twice in
+  filename order.
 
 ### The deployed client must be on the RPC catalog first
 
@@ -127,12 +148,21 @@ maintenance window.
 
 `node scripts/check-client-contract.mjs` is the gate for that. It scans `app/`
 and `proxy.ts` for calls to dropped or unknown RPCs and for direct writes to
-the tables above, prints each `file:line`, and exits 1 when it finds any. Run
-it on the branch you are about to deploy and apply the hardening migration
+the tables above, prints each `file:line`, and exits 1 when it finds any. The
+RPC names it accepts are the union of the `Grants` sections of every file
+under `supabase/migrations/` (the hardening file and the feature files after
+it). Run it on the branch you are about to deploy and apply the migrations
 only when it exits 0. `npm run test:db` runs the same scan against the working
-tree and fails while the gate is red, and checks the gate itself (the RPC names
-it accepts are exactly the functions the migration grants, and every wrapper in
+tree and fails while the gate is red, and checks the gate itself (the names it
+accepts are exactly the functions the migrations grant, and every wrapper in
 `app/lib/rpc.ts` names one of them).
+
+The same rule applies to `20260912120000_playoffs.sql`: a client deployed
+ahead of it gets `PGRST202` for `league_standings`, `generate_playoffs` and
+`clear_playoffs` (the standings page and the bracket show "This feature is not
+available yet"), while the previous client keeps working after it, because the
+parameters the file adds to `create_league` and `report_match_result` have
+defaults. Apply it and deploy the client that uses it in the same window.
 
 The direct writes that remain (`draft_formats`, draft chat inserts, deleting a
 league) should end with `.select().single()` so a row filtered out by a policy
@@ -146,7 +176,7 @@ that duplicates would violate is **skipped**, a check constraint that rows
 violate is added **`NOT VALID`** (enforced for new writes only), and pieces it
 lacks privileges for (the bucket, the realtime entries) are left for the
 dashboard. Each case prints a `WARNING`, but the SQL editor does not show
-notices reliably, so the file ends with
+notices reliably, so the file (and the playoffs file after it) ends with
 
 ```sql
 select * from public._migration_report();
