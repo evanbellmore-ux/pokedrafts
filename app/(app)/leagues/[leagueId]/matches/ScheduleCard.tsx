@@ -14,8 +14,10 @@ type ScheduleCardProps = {
   defaultFormat: ScheduleFormat;
   draftCompleted: boolean;
   matchCount: number;
-  /** Matches with a reported result; regenerating asks before discarding them. */
+  /** Regular matches with a reported result; regenerating asks before discarding them. */
   resultCount: number;
+  /** Playoff matches on file; regenerating deletes the bracket with the schedule. */
+  playoffMatchCount: number;
   /** Called after a successful generation; the parent reloads and reports. */
   onGenerated: (matchCount: number, format: ScheduleFormat) => Promise<void>;
 };
@@ -32,6 +34,7 @@ export default function ScheduleCard({
   draftCompleted,
   matchCount,
   resultCount,
+  playoffMatchCount,
   onGenerated,
 }: ScheduleCardProps) {
   const [seed, setSeed] = useState(defaultFormat);
@@ -120,8 +123,9 @@ export default function ScheduleCard({
           <p className="text-sm text-muted">
             Every coach in the draft order plays in the schedule. Generating
             again replaces the current schedule
+            {playoffMatchCount > 0 ? " and removes the playoff bracket" : ""}
             {resultCount > 0
-              ? ` and asks before discarding the ${pluralize(resultCount, "reported result")}.`
+              ? `, and asks before discarding the ${pluralize(resultCount, "reported result")}.`
               : "."}
           </p>
 
@@ -174,7 +178,7 @@ export default function ScheduleCard({
         open={discardOpen}
         onClose={closeDiscard}
         title="Discard reported results and regenerate?"
-        description={`${pluralize(resultCount, "result has", "results have")} been reported. Regenerating removes ${resultCount === 1 ? "it" : "them"} and the matching news items; standings start over from 0-0.`}
+        description={`${pluralize(resultCount, "result has", "results have")} been reported. Regenerating removes ${resultCount === 1 ? "it" : "them"}${playoffMatchCount > 0 ? ", the playoff bracket" : ""} and the matching news items; standings start over from 0-0.`}
         danger
         confirmLabel="Discard and regenerate"
         onConfirm={confirmDiscard}

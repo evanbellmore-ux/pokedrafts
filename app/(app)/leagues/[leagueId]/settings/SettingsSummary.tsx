@@ -1,5 +1,11 @@
 import { StatusPill } from "@/app/components/ui";
-import { pluralize, scheduleFormatLabel, teamNameLabel } from "@/app/lib/league/labels";
+import {
+  playoffFormatLabel,
+  pluralize,
+  scheduleFormatLabel,
+  teamNameLabel,
+  tiebreakerLabel,
+} from "@/app/lib/league/labels";
 import { CREATE_LEAGUE_DEFAULTS } from "@/app/lib/league/limits";
 import type { League } from "@/app/types/league";
 import {
@@ -75,6 +81,8 @@ export default function SettingsSummary({
             }
           />
           <Item label="Matchup format" value={scheduleFormatLabel(league.schedule_format)} />
+          <Item label="Tiebreaker" value={tiebreakerLabel(league.tiebreaker)} />
+          <Item label="Playoff format" value={playoffFormatLabel(league.playoff_format)} />
           <Item
             label="Draft format"
             value={

@@ -3,6 +3,7 @@ import { connect, type Client } from "./harness";
 import {
   BASE_MIGRATION,
   HARDENING_MIGRATION,
+  PLAYOFFS_MIGRATION,
   applyMigration,
   createScaffolding,
   readMigrations,
@@ -39,6 +40,9 @@ const API_FUNCTIONS = [
   "report_match_result",
   "clear_match_result",
   "is_league_member",
+  "league_standings",
+  "generate_playoffs",
+  "clear_playoffs",
 ];
 
 const APP_TABLES = [
@@ -78,6 +82,33 @@ async function assertHardenedState(client: Client): Promise<void> {
   const columnNames = columns.rows.map((r) => r.column_name);
   expect(columnNames).toContain("draft_paused_at");
   expect(columnNames).toContain("draft_paused_total_seconds");
+  expect(columnNames).toContain("tiebreaker");
+  expect(columnNames).toContain("playoff_format");
+  expect(columnNames).toContain("champion_member_id");
+
+  const matchColumns = await client.query<{ column_name: string; is_nullable: string }>(
+    "select column_name, is_nullable from information_schema.columns where table_schema = 'public' and table_name = 'league_matches'",
+  );
+  const nullable = new Map(matchColumns.rows.map((r) => [r.column_name, r.is_nullable === "YES"]));
+  for (const column of ["stage", "winner_remaining", "home_seed", "away_seed", "feeds_match_id", "feeds_slot"]) {
+    expect(nullable.has(column), `league_matches.${column} should exist`).toBe(true);
+  }
+  // Playoff slots are empty until the earlier round is decided.
+  expect(nullable.get("home_member_id")).toBe(true);
+  expect(nullable.get("away_member_id")).toBe(true);
+  expect(nullable.get("stage")).toBe(false);
+
+  // Exactly one signature each for the functions the playoffs file re-creates
+  // with more parameters (a second one would make the name ambiguous).
+  const signatures = await client.query<{ proname: string; args: string }>(
+    `select p.proname, pg_get_function_identity_arguments(p.oid) as args
+     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('create_league', 'report_match_result')
+     order by 1`,
+  );
+  expect(signatures.rows).toEqual([
+    { proname: "create_league", args: "p_name text, p_team_name text, p_max_coaches integer, p_draft_format_id uuid, p_point_budget integer, p_picks_per_team integer, p_pick_timer_seconds integer, p_playoff_format text, p_tiebreaker text" },
+    { proname: "report_match_result", args: "p_match_id uuid, p_winner_member_id uuid, p_winner_remaining integer" },
+  ]);
 
   const constraints = await client.query<{ conname: string }>(
     "select conname from pg_constraint where connamespace = 'public'::regnamespace",
@@ -103,9 +134,24 @@ async function assertHardenedState(client: Client): Promise<void> {
     "draft_formats_name_check",
     "draft_formats_json_check",
     "pokemon_dex_dex_number_key",
+    "leagues_tiebreaker_check",
+    "leagues_playoff_format_check",
+    "leagues_champion_member_id_fkey",
+    "league_matches_stage_check",
+    "league_matches_winner_remaining_check",
+    "league_matches_feeds_slot_check",
+    "league_matches_feeds_match_id_fkey",
+    "league_news_news_type_check",
   ]) {
     expect(constraintNames, `constraint ${name} should exist`).toContain(name);
   }
+
+  const newsCheck = await client.query<{ def: string }>(
+    "select pg_get_constraintdef(oid) as def from pg_constraint where conname = 'league_news_news_type_check'",
+  );
+  expect(newsCheck.rows[0].def).toContain("'season'");
+  const validated = await client.query("select conname from pg_constraint where connamespace = 'public'::regnamespace and not convalidated");
+  expect(validated.rows).toEqual([]);
 
   const deferrable = await client.query<{ condeferrable: boolean; condeferred: boolean }>(
     "select condeferrable, condeferred from pg_constraint where conname = 'league_members_league_id_draft_position_key'",
@@ -182,18 +228,19 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship a base schema first and the hardening migration last", () => {
+  it("ship a base schema first, the hardening migration after the eight legacy files, and the playoffs feature migration last", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
-    expect(migrations[migrations.length - 1].name).toBe(HARDENING_MIGRATION);
-    expect(migrations).toHaveLength(10);
+    expect(migrations[9].name).toBe(HARDENING_MIGRATION);
+    expect(migrations[migrations.length - 1].name).toBe(PLAYOFFS_MIGRATION);
+    expect(migrations).toHaveLength(11);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
     await assertHardenedState(admin);
   });
 
-  it("apply on an empty database, and the hardening migration is idempotent", async () => {
+  it("apply on an empty database, and the hardening and playoffs migrations are idempotent", async () => {
     await admin.query(`drop database if exists ${FRESH_DB}`);
     await admin.query(`create database ${FRESH_DB}`);
     const fresh = await connect(FRESH_DB);
@@ -207,8 +254,17 @@ describe("migrations", () => {
 
       // Base schema is a no-op on a migrated database.
       await applyMigration(fresh, migrations[0]);
-      // Hardening applied a second time succeeds and leaves the same state.
-      await applyMigration(fresh, migrations[migrations.length - 1]);
+      // The hardening and the playoffs file applied a second time, in filename
+      // order, succeed and leave the same state (the hardening re-creates the
+      // 7-parameter create_league, which the playoffs file drops again).
+      const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
+      const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
+      if (!hardening || !playoffs) throw new Error("hardening or playoffs migration missing");
+      await applyMigration(fresh, hardening);
+      await applyMigration(fresh, playoffs);
+      await assertHardenedState(fresh);
+      // The playoffs file alone is idempotent as well.
+      await applyMigration(fresh, playoffs);
       await assertHardenedState(fresh);
 
       const policyCount = await fresh.query("select count(*)::int as n from pg_policies where schemaname = 'public'");

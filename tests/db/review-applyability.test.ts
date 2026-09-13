@@ -1,7 +1,7 @@
 // Review test (applyability lens): what the README's CLI guidance implies
 // about re-running migration files.
 //
-// 1. The whole ten-file set is re-runnable in filename order (README.md,
+// 1. The whole eleven-file set is re-runnable in filename order (README.md,
 //    "Applying migrations"), so an operator who lets `supabase db push
 //    --include-all` re-run files that were applied by hand through the SQL
 //    editor ends up in the hardened state.
@@ -13,11 +13,15 @@
 //    `db push --include-all`, or a single old file pasted into the SQL editor),
 //    a post-draft coach can set their own role to commissioner and delete the
 //    league until the hardening file is applied again.
+// 3. Feature migrations after the hardening file follow it in filename order:
+//    re-running the hardening file alone recreates the 7-parameter
+//    create_league next to the 9-parameter one from the playoffs file, which
+//    makes the name ambiguous, so the playoffs file has to run again after it.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { asUser, connect, createUser, inviteCodeFor, rpcAs, type Client } from "./harness";
-import { HARDENING_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
 
 const RERUN_DB = "pokedrafts_rerun_review";
 
@@ -49,8 +53,10 @@ describe("review: re-running migration files", () => {
     await admin.end();
   });
 
-  it("all ten files apply a second time in filename order and leave the hardened policy set", async () => {
-    for (const migration of readMigrations()) {
+  it("all eleven files apply a second time in filename order and leave the hardened policy set", async () => {
+    const migrations = readMigrations();
+    expect(migrations).toHaveLength(11);
+    for (const migration of migrations) {
       await applyMigration(db, migration);
     }
     const policies = await policyRows(db);
@@ -113,19 +119,43 @@ describe("review: re-running migration files", () => {
       "draft_formats.UPDATE",
       "leagues.DELETE",
     ]);
+
+    // ... but the hardening file alone brings back the 7-parameter
+    // create_league and the 2-parameter report_match_result next to the
+    // playoffs signatures, so a call that omits the new parameters is
+    // ambiguous (42725) until the playoffs file runs again after it.
+    const signatureCount = async () =>
+      (await db.query<{ n: number }>("select count(*)::int as n from pg_proc where pronamespace = 'public'::regnamespace and proname in ('create_league', 'report_match_result')")).rows[0].n;
+    expect(await signatureCount()).toBe(4);
+    const ambiguous = await asUser(db, commissioner, (c) =>
+      c.query("select public.create_league(p_name => 'Ambiguous', p_team_name => 'T', p_max_coaches => 4)").then(
+        () => null,
+        (error: Error & { code?: string }) => error.code,
+      ),
+    );
+    expect(ambiguous).toBe("42725");
+    const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
+    if (!playoffs) throw new Error("playoffs migration missing");
+    await applyMigration(db, playoffs);
+    expect(await signatureCount()).toBe(2);
+    const created = await rpcAs<string>(db, commissioner, "create_league", { p_name: "After re-run", p_team_name: "T", p_max_coaches: 4 });
+    expect(typeof created).toBe("string");
   });
 });
 
 describe("review: the ordering rule is documented", () => {
-  it("README.md and docs/schema.md say the hardening file must always be the last migration file to run, and the README covers migration repair", () => {
+  it("README.md and docs/schema.md say the hardening file runs after the eight legacy files, that feature migrations follow it in filename order, and the README covers migration repair", () => {
     for (const file of ["README.md", "docs/schema.md"]) {
       const text = readFileSync(resolve(process.cwd(), file), "utf8");
-      expect(text, file).toContain("the last migration file to run");
+      expect(text.toLowerCase(), file).toContain("never run one of the eight legacy files after the hardening file");
       expect(text, file).toContain("20260909120000_release_hardening.sql");
+      expect(text, file).toContain("20260912120000_playoffs.sql");
+      expect(text, file).toContain("filename order");
     }
     const readme = readFileSync(resolve(process.cwd(), "README.md"), "utf8");
     expect(readme).toContain("supabase migration repair");
     expect(readme).toContain("supabase migration list");
     expect(readme).toContain("re-run `20260909120000_release_hardening.sql`");
+    expect(readme).toContain("re-run `20260912120000_playoffs.sql`");
   });
 });

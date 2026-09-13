@@ -18,7 +18,7 @@ export const NEWS_PAGE_SIZE = 20;
 
 export const MEMBER_SELECT = "id, role, team_name, draft_position";
 export const MATCH_SELECT =
-  "id, round_number, match_number, home_member_id, away_member_id, status, winner_member_id";
+  "id, round_number, match_number, home_member_id, away_member_id, status, winner_member_id, stage, winner_remaining, home_seed, away_seed, feeds_match_id, feeds_slot";
 export const NEWS_SELECT =
   "id, member_id, news_type, message, metadata, created_at";
 export const INVITE_SELECT =
@@ -38,6 +38,12 @@ export type OverviewMatch = Pick<
   | "away_member_id"
   | "status"
   | "winner_member_id"
+  | "stage"
+  | "winner_remaining"
+  | "home_seed"
+  | "away_seed"
+  | "feeds_match_id"
+  | "feeds_slot"
 >;
 
 export type OverviewNews = Pick<
@@ -77,11 +83,15 @@ export function onClockMember<M>(
   return drafting[getSnakeDraftIndex(pick, drafting.length)] ?? null;
 }
 
-/** The earliest upcoming match this coach plays in, or null. */
-export function nextMatchFor(
-  matches: OverviewMatch[],
+/**
+ * The earliest upcoming match this coach plays in, or null. Regular and
+ * playoff matches are ordered by round, so a waiting playoff slot the coach
+ * already holds is returned too.
+ */
+export function nextMatchFor<M extends OverviewMatch>(
+  matches: M[],
   memberId: string
-): OverviewMatch | null {
+): M | null {
   const upcoming = matches.filter(
     (match) =>
       match.status !== "completed" &&
@@ -94,28 +104,31 @@ export function nextMatchFor(
   return upcoming[0] ?? null;
 }
 
+/** The other side of a match; null while a playoff slot is undecided. */
 export function opponentId(
   match: Pick<OverviewMatch, "home_member_id" | "away_member_id">,
   memberId: string
-): string {
+): string | null {
   return match.home_member_id === memberId
     ? match.away_member_id
     : match.home_member_id;
 }
 
-export type NewsKind = "free_agent" | "match_result" | "other";
+export type NewsKind = "free_agent" | "match_result" | "season" | "other";
 
 /** `league_news.news_type` is never rendered raw (section 2). */
 export function newsKind(type: string | null | undefined): NewsKind {
   const normalized = (type ?? "").trim().toLowerCase();
   if (normalized === "free_agent") return "free_agent";
   if (normalized === "match_result") return "match_result";
+  if (normalized === "season") return "season";
   return "other";
 }
 
 export const NEWS_LABEL: Record<NewsKind, string> = {
   free_agent: "Free agent",
   match_result: "Match result",
+  season: "Season",
   other: "Update",
 };
 

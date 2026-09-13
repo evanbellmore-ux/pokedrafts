@@ -9,6 +9,7 @@ import type {
   League,
   LeagueNews,
   LeagueSettingsInput,
+  LeagueStanding,
   PickResult,
   ScheduleFormat,
   UndoPickResult,
@@ -16,8 +17,8 @@ import type {
 
 /**
  * Typed wrappers around the Postgres functions in
- * docs/release-architecture.md section 5. Every wrapper resolves to
- * `{ data, error, code }`: `error` has already been passed through
+ * docs/release-architecture.md sections 5 and 12.5. Every wrapper resolves
+ * to `{ data, error, code }`: `error` has already been passed through
  * `friendlyError`, so pages can render it directly, and `code` lets a page
  * branch on *why* a call failed without matching the sentence. It is the
  * `snake_case` detail code of a function's own raise (docs/schema.md, e.g.
@@ -66,6 +67,8 @@ export function createRpc(client: SupabaseClient = createClient()) {
         p_point_budget: input.pointBudget,
         p_picks_per_team: input.picksPerTeam,
         p_pick_timer_seconds: input.pickTimerSeconds,
+        p_playoff_format: input.playoffFormat,
+        p_tiebreaker: input.tiebreaker,
       }),
 
     getInvitePreview: (code: string) =>
@@ -186,14 +189,36 @@ export function createRpc(client: SupabaseClient = createClient()) {
         p_discard_results: discardResults,
       }),
 
-    reportMatchResult: (matchId: string, winnerMemberId: string) =>
+    /**
+     * `winnerRemaining` is the winner's Pokémon left standing (1..12, null
+     * when not recorded); it feeds the differential tiebreaker (section 12).
+     */
+    reportMatchResult: (
+      matchId: string,
+      winnerMemberId: string,
+      winnerRemaining: number | null = null
+    ) =>
       call<null>(client, "report_match_result", {
         p_match_id: matchId,
         p_winner_member_id: winnerMemberId,
+        p_winner_remaining: winnerRemaining,
       }),
 
     clearMatchResult: (matchId: string) =>
       call<null>(client, "clear_match_result", { p_match_id: matchId }),
+
+    /** Section 12.3: one row per playing coach, ordered by seed. */
+    leagueStandings: (leagueId: string) =>
+      call<LeagueStanding[]>(client, "league_standings", {
+        p_league_id: leagueId,
+      }),
+
+    /** Resolves to the number of playoff matches created. */
+    generatePlayoffs: (leagueId: string) =>
+      call<number>(client, "generate_playoffs", { p_league_id: leagueId }),
+
+    clearPlayoffs: (leagueId: string) =>
+      call<null>(client, "clear_playoffs", { p_league_id: leagueId }),
   };
 }
 

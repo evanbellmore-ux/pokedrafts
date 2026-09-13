@@ -7,14 +7,23 @@ import {
   groupRounds,
   isCompleted,
   isResultsExistError,
+  isStaleBracketError,
+  LATER_ROUND_DECIDED_CODE,
+  MATCH_NOT_READY_CODE,
+  matchLabel,
   memberTeamName,
+  participants,
+  PLAYOFFS_STARTED_CODE,
   RESULTS_EXIST_CODE,
+  resultErrorHint,
   toScheduleFormat,
 } from "@/app/(app)/leagues/[leagueId]/matches/helpers";
 import {
   buildSettingsPatch,
   groupFormatOptions,
   membersKey,
+  playingCoachCount,
+  playoffFormatOptions,
   positionedMembers,
   settingsValuesFromLeague,
   shuffle,
@@ -23,7 +32,12 @@ import {
   type SettingsMember,
 } from "@/app/(app)/leagues/[leagueId]/settings/helpers";
 import { createRpc } from "@/app/lib/rpc";
-import { LEAGUE_LIMITS, type League, type LeagueMatch } from "@/app/types/league";
+import {
+  LEAGUE_LIMITS,
+  PLAYOFF_FORMATS,
+  type League,
+  type LeagueMatch,
+} from "@/app/types/league";
 
 /**
  * Pure helpers behind the Matches and Settings pages. The pages themselves
@@ -46,6 +60,12 @@ function match(overrides: Partial<LeagueMatch>): LeagueMatch {
     winner_member_id: null,
     scheduled_at: null,
     created_at: "",
+    stage: "regular",
+    winner_remaining: null,
+    home_seed: null,
+    away_seed: null,
+    feeds_match_id: null,
+    feeds_slot: null,
     ...overrides,
   };
 }
@@ -69,6 +89,9 @@ function league(overrides: Partial<League> = {}): League {
     custom_pool: null,
     schedule_format: "round_robin",
     free_agent_swap_limit: 3,
+    tiebreaker: "head_to_head",
+    playoff_format: "top_4",
+    champion_member_id: null,
     ...overrides,
   };
 }
@@ -112,6 +135,45 @@ describe("matches helpers", () => {
 
   it("returns no rounds for an empty schedule", () => {
     expect(groupRounds([])).toEqual([]);
+  });
+
+  it("leaves playoff matches to the bracket and never counts an empty slot as a bye", () => {
+    const rounds = groupRounds([
+      match({ id: "r1m1", round_number: 1, home_member_id: "a", away_member_id: "b" }),
+      match({ id: "sf", round_number: 2, stage: "playoff", home_member_id: "a", away_member_id: null }),
+    ]);
+    expect(rounds.map((round) => round.roundNumber)).toEqual([1]);
+    expect(rounds[0].byeMemberIds).toEqual([]);
+  });
+
+  it("labels regular matches by round and playoff matches by name", () => {
+    const all = [
+      match({ id: "r3", round_number: 3 }),
+      match({ id: "sf1", round_number: 4, match_number: 1, stage: "playoff" }),
+      match({ id: "sf2", round_number: 4, match_number: 2, stage: "playoff" }),
+      match({ id: "f", round_number: 5, match_number: 1, stage: "playoff" }),
+    ];
+    expect(matchLabel(all[0], all)).toBe("Round 3");
+    expect(matchLabel(all[2], all)).toBe("Semifinal 2");
+    expect(matchLabel(all[3], all)).toBe("Final");
+  });
+
+  it("only offers result actions on a match with both sides decided", () => {
+    expect(participants(match({ id: "x" }))).toEqual({ home: "a", away: "b" });
+    expect(participants(match({ id: "y", away_member_id: null }))).toBeNull();
+  });
+
+  it("adds a next step for the playoff refusal codes and reloads on them", () => {
+    expect(resultErrorHint(PLAYOFFS_STARTED_CODE)).toMatch(/clear the bracket/);
+    expect(resultErrorHint(LATER_ROUND_DECIDED_CODE)).toMatch(/next round/);
+    expect(resultErrorHint(MATCH_NOT_READY_CODE)).toMatch(/both coaches/i);
+    expect(resultErrorHint("invalid_winner")).toBeNull();
+    expect(resultErrorHint(null)).toBeNull();
+    expect(isStaleBracketError(PLAYOFFS_STARTED_CODE)).toBe(true);
+    expect(isStaleBracketError(LATER_ROUND_DECIDED_CODE)).toBe(true);
+    expect(isStaleBracketError(MATCH_NOT_READY_CODE)).toBe(true);
+    expect(isStaleBracketError("invalid_score")).toBe(false);
+    expect(isStaleBracketError(null)).toBe(false);
   });
 
   it("treats only `completed` (any casing) as a final", () => {
@@ -179,7 +241,14 @@ describe("settings payload (update_league_settings sends only changed keys)", ()
       freeAgentSwapLimit: 3,
       scheduleFormat: "round_robin",
       draftFormatId: "",
+      playoffFormat: "top_4",
+      tiebreaker: "head_to_head",
     });
+    expect(
+      settingsValuesFromLeague(
+        league({ playoff_format: "bogus" as League["playoff_format"], tiebreaker: "differential" })
+      )
+    ).toMatchObject({ playoffFormat: "none", tiebreaker: "differential" });
   });
 
   it("produces an empty patch when nothing changed", () => {
@@ -251,6 +320,53 @@ describe("settings payload (update_league_settings sends only changed keys)", ()
       schedule_format: "double_round_robin",
       draft_format_id: "f2",
     });
+  });
+
+  it("sends a changed playoff format and tiebreaker (section 12.5 keys)", () => {
+    const { patch } = buildSettingsPatch(
+      saved,
+      { ...saved, playoffFormat: "none", tiebreaker: "differential" },
+      4
+    );
+    expect(patch).toEqual({ playoff_format: "none", tiebreaker: "differential" });
+    expect(buildSettingsPatch(saved, { ...saved, playoffFormat: "top_4" }, 4).patch).toEqual({});
+  });
+});
+
+describe("playoff format choices (section 12.6)", () => {
+  it("disables formats that need more coaches than play, naming the count", () => {
+    const options = playoffFormatOptions(PLAYOFF_FORMATS, 5, "none");
+    expect(options.map((option) => [option.value, option.disabled, option.needs])).toEqual([
+      ["none", false, 0],
+      ["top_2", false, 2],
+      ["top_4", false, 4],
+      ["top_6", true, 6],
+      ["top_8", true, 8],
+    ]);
+  });
+
+  it("always keeps the league's saved format selectable", () => {
+    const options = playoffFormatOptions(PLAYOFF_FORMATS, 3, "top_8");
+    expect(options.find((option) => option.value === "top_8")?.disabled).toBe(false);
+    expect(options.find((option) => option.value === "top_4")?.disabled).toBe(true);
+  });
+
+  it("offers every format before the draft, when the function accepts any", () => {
+    const options = playoffFormatOptions(PLAYOFF_FORMATS, null, "none");
+    expect(options.every((option) => !option.disabled)).toBe(true);
+    expect(options.map((option) => option.needs)).toEqual([0, 2, 4, 6, 8]);
+  });
+
+  it("counts the draft order as the coaches who play, or everyone before it is set", () => {
+    expect(
+      playingCoachCount([
+        { draft_position: 1 },
+        { draft_position: 2 },
+        { draft_position: null },
+      ])
+    ).toBe(2);
+    expect(playingCoachCount([{ draft_position: null }, { draft_position: null }])).toBe(2);
+    expect(playingCoachCount([])).toBe(0);
   });
 });
 

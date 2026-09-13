@@ -353,6 +353,84 @@ describe("dashboard delete and draft-order focus", () => {
   });
 });
 
+describe("standings tiebreakers and playoffs (docs section 12.6)", () => {
+  it("watches the league row on the standings and matches pages (bracket and champion live there)", () => {
+    for (const file of [
+      `${leagueDir}/standings/StandingsClient.tsx`,
+      `${leagueDir}/matches/MatchesClient.tsx`,
+    ]) {
+      const tables = read(file).match(/tables:\s*\[([^\]]*)\]/);
+      expect(tables, file).not.toBeNull();
+      expect(tables![1], file).toMatch(/"league_matches"/);
+      expect(tables![1], file).toMatch(/"leagues"/);
+    }
+  });
+
+  it("reads the standings page rows from league_standings, not a client-side sort", () => {
+    const source = read(`${leagueDir}/standings/StandingsClient.tsx`);
+    expect(source).toMatch(/rpc\.leagueStandings\(leagueId\)/);
+    expect(source).not.toMatch(/computeStandings/);
+    expect(source).toMatch(/tiebreakerLegend\(/);
+    expect(source).toMatch(/Playoff line/);
+    expect(source).toMatch(/<abbr title="Differential">Diff<\/abbr>/);
+  });
+
+  it("offers the optional winner's Pokémon left field with the differential help", () => {
+    const source = read(`${leagueDir}/matches/ResultDialog.tsx`);
+    expect(source).toMatch(/label="Winner's Pokémon left standing"/);
+    expect(source).toMatch(/Used for the differential tiebreaker/);
+    expect(source).toMatch(/LEAGUE_LIMITS\.winnerRemaining\.max/);
+    // Branches on the detail codes, never on the message wording.
+    expect(source).toMatch(/resultErrorHint\(result\.code\)/);
+    expect(source).toMatch(/isStaleBracketError\(result\.code\)/);
+  });
+
+  it("renders the bracket as one column per round on md and up, stacked below", () => {
+    const source = read(`${leagueDir}/matches/PlayoffBracket.tsx`);
+    expect(source).toMatch(/md:grid-flow-col/);
+    expect(source).toMatch(/Winner of \$\{playoffMatchLabel\(info\.feeder, matches\)\}/);
+    expect(source).toMatch(/"Bye"/);
+  });
+
+  it("shows the no-playoffs line, the champion alert and the bracket dialogs on the matches page", () => {
+    const source = read(`${leagueDir}/matches/MatchesClient.tsx`);
+    expect(source).toMatch(
+      /This league has no playoffs; the top seed at the end of the regular season is the champion\./
+    );
+    expect(source).toMatch(/title=\{`Champion: \$\{championName\}`\}/);
+    expect(source).toMatch(/You won the championship!/);
+    expect(dialogWith(source, "Clear the playoff bracket?")).toMatch(/\bdanger\b/);
+    expect(dialogWith(source, "Generate the playoff bracket?")).not.toMatch(/\bdanger\b/);
+    expect(source).toMatch(/Regular-season results are locked while playoff results exist/);
+  });
+
+  it("labels the two new settings and locks them once a playoff result exists", () => {
+    const form = read(`${leagueDir}/settings/SettingsForm.tsx`);
+    expect(form).toMatch(/label="Tiebreaker"/);
+    expect(form).toMatch(/label="Playoff format"/);
+    expect(form).toMatch(/disabled=\{pending \|\| playoffResultsExist\}/);
+    expect(form).toMatch(/\(needs \$\{option\.needs\} coaches\)/);
+    expect(form).toMatch(/reseeds the playoff bracket/);
+    const summary = read(`${leagueDir}/settings/SettingsSummary.tsx`);
+    expect(summary).toMatch(/label="Tiebreaker"/);
+    expect(summary).toMatch(/label="Playoff format"/);
+    const create = read("app/(app)/leagues/new/NewLeagueClient.tsx");
+    expect(create).toMatch(/label="Playoff format"/);
+    expect(create).toMatch(/CREATE_LEAGUE_DEFAULTS\.playoffFormat/);
+  });
+
+  it("gives season news its own pill and the dashboard its champion pill", () => {
+    expect(read(`${leagueDir}/NewsFeed.tsx`)).toMatch(/season: "warning"/);
+    expect(read(`${leagueDir}/overview.ts`)).toMatch(/season: "Season"/);
+    const dashboard = read("app/(app)/dashboard/DashboardClient.tsx");
+    expect(dashboard).toMatch(
+      /label: `Champion: \$\{item\.championTeamName \?\? "Unknown team"\}`/
+    );
+    expect(dashboard).toMatch(/label: "Playoffs"/);
+    expect(dashboard).toMatch(/playoff_format, champion_member_id\)/);
+  });
+});
+
 describe("long names cannot widen a 375px viewport", () => {
   it("lets truncated names shrink inside flex-wrap rows and breaks embedded league names", () => {
     expect(read(`${leagueDir}/CoachesList.tsx`)).toMatch(/min-w-0 truncate font-semibold/);
