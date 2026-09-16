@@ -48,10 +48,11 @@ app/
     update-password/page.tsx      reached from the recovery email
   invite/[code]/page.tsx          server wrapper + InviteClient. Viewable logged out (preview via get_invite_preview); Join requires auth and carries ?next.
   (app)/
-    layout.tsx                    server: AppNav shell (brand link, Dashboard, Pool Builder, theme, sign out), max-w-6xl container
+    layout.tsx                    server: AppNav shell (brand link, Dashboard, Pool Builder, Calculator, theme, sign out), max-w-6xl container
     loading.tsx
     dashboard/page.tsx            + DashboardClient.tsx
     builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
+    calculator/page.tsx           Champions-only: CalculatorClient.tsx, PokemonPanel.tsx, BattleConditions.tsx, MoveResults.tsx; local engine/catalog, no database dependency (docs/champions-calculator.md)
     leagues/new/page.tsx          + NewLeagueClient.tsx
     leagues/not-found.tsx         catches notFound() thrown by the league layout (a segment's own not-found.tsx only wraps its page, so the parent segment renders this)
     leagues/[leagueId]/
@@ -253,7 +254,7 @@ useEffect(() => {
 
 - Wide tables sit in `TableWrap`; below `md` the draft pool, free agents, pool, builder, team and standings pages render card rows instead of tables (any table with more than three columns). The draft room's pool, the pool, free-agent, team and standings pages and the builder mount only one of table/cards at a time through a `matchMedia` hook (`useMinWidthMd` / `useMediaQuery`, `useSyncExternalStore` with a mobile server snapshot) so a 2000-row pool is never rendered twice and per-row ids (the `aria-describedby` reasons on the free-agent Add buttons) stay unique. Nothing may overflow a 375px viewport: user-entered names are wrapped with `wrap-anywhere` (plus `min-w-0` on flex items) wherever they can appear without spaces (`RoundCard`, `PageHeader`, `Dialog`, `Alert`, the overview status card's champion and opponent names, and the news feed's message, which carries team names from the functions); on the league pages the truncating team names inside `flex-wrap` rows (`CoachesList`, `CoachesCard`, `TeamCard`, `DraftOrderCard`, the free-agents header) carry `min-w-0`, and the dashboard league card wraps the league and team names the same way (`PageHeader` covers the overview and My Team headers).
 - Long lists are bounded: the overview news feed loads 20 rows per "Load more" on a `created_at` cursor; the pool page shows 100 rows at a time with "Show more" (search applies to the whole list); the draft-room pool renders at most 300 matching rows and asks for a narrower search beyond that (the legal list, affordability, auto-pick and Force pick are still computed over the whole undrafted pool); the free-agent list pages 60 rows; the builder pages 100 rows; the draft chat loads the newest 100 messages.
-- AppNav collapses to brand + icon buttons below `sm`; LeagueNav is a horizontal scroll strip; the draft room mobile panel bar is sticky under the header (`top-16`, the AppNav height) with `aria-pressed` panel buttons and an unread badge on Chat that counts messages received while the chat panel was hidden.
+- AppNav puts its icon controls on a separate row below `sm` and lets both rows wrap; LeagueNav is a horizontal scroll strip. AppNav measures its full height with `ResizeObserver` and publishes `--app-nav-height`, so the draft room mobile panel bar stays sticky below it even when navigation wraps or a sign-out error expands the header. The panel bar has `aria-pressed` panel buttons and an unread badge on Chat that counts messages received while the chat panel was hidden.
 
 ### 8.6 Theme tokens
 

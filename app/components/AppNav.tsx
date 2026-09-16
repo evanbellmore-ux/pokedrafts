@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { Hammer, LayoutDashboard, LoaderCircle, LogOut } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Calculator, Hammer, LayoutDashboard, LoaderCircle, LogOut } from "lucide-react";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import Alert from "@/app/components/ui/Alert";
 import Button from "@/app/components/ui/Button";
@@ -20,6 +20,7 @@ type NavItem = {
 const items: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/builder", label: "Pool Builder", icon: Hammer },
+  { href: "/calculator", label: "Calculator", icon: Calculator },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -34,6 +35,24 @@ export default function AppNav() {
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const style = document.documentElement.style;
+    const updateHeight = () => {
+      style.setProperty("--app-nav-height", `${header.getBoundingClientRect().height}px`);
+    };
+    // Sticky draft controls must follow wrapped navigation and error banners.
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    return () => {
+      observer.disconnect();
+      style.removeProperty("--app-nav-height");
+    };
+  }, []);
 
   /**
    * Navigates only after the session is really gone. When auth-js reports
@@ -62,19 +81,15 @@ export default function AppNav() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
+    <header ref={headerRef} className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-on-accent"
       >
         Skip to content
       </a>
-      {/*
-        Width budget below `sm` (docs section 8.5): brand ~92px + 8px gap +
-        four 40-42px icon controls with 6px gaps (~182px) = ~282px, inside
-        the 288px available at a 320px viewport, so nothing overflows.
-      */}
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6 lg:px-8">
+      {/* Give the five controls their own row on phones; both rows can wrap. */}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6 lg:px-8">
         <Link
           href="/dashboard"
           className="shrink-0 text-sm font-bold uppercase tracking-wide text-accent-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
@@ -82,7 +97,7 @@ export default function AppNav() {
           PokeDrafts
         </Link>
 
-        <nav aria-label="Primary" className="flex items-center gap-1.5 sm:gap-2">
+        <nav aria-label="Primary" className="flex w-full max-w-full flex-wrap items-center gap-1.5 sm:w-auto sm:gap-2">
           {items.map((item) => {
             const active = isActive(pathname, item.href);
             const Icon = item.icon;
