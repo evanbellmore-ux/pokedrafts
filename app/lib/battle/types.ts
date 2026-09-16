@@ -103,6 +103,11 @@ export type BattleConditions = {
   terrain: "" | "Electric" | "Grassy" | "Misty" | "Psychic";
   critical: boolean;
   multipleTargets: boolean;
+  gravity: boolean;
+  trickRoom: boolean;
+  wonderRoom: boolean;
+  magicRoom: boolean;
+  fairyAura: boolean;
   attackerSide: SideConditions;
   defenderSide: SideConditions;
 };

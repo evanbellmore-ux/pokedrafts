@@ -54,6 +54,8 @@ const CONTEXT_ABILITIES: Record<string, string> = {
   supremeoverlord: "Supreme Overlord needs the number of fainted allies when it activated.",
 };
 const EXPLOSIVE_MOVES = new Set(["explosion", "selfdestruct", "mistyexplosion", "mindblown"]);
+// Damaging moves with the pinned Showdown source's gravity flag; not a new learnset.
+const GRAVITY_BLOCKED_MOVES = new Set(["bounce", "floatyfall", "fly", "flyingpress", "highjumpkick", "jumpkick", "skydrop"]);
 
 const ZERO_POWER_IMPLEMENTED = new Set([
   "seismictoss", "nightshade", "dragonrage", "sonicboom", "finalgambit",
@@ -116,6 +118,11 @@ function makeField(field: BattleConditions) {
     gameType: field.gameType,
     weather: field.weather || undefined,
     terrain: field.terrain || undefined,
+    isGravity: field.gravity,
+    isWonderRoom: field.wonderRoom,
+    isMagicRoom: field.magicRoom,
+    isFairyAura: field.fairyAura,
+    // Trick Room is app-owned: the engine has no turn-order field for it.
     attackerSide: makeSide(field.attackerSide),
     defenderSide: makeSide(field.defenderSide),
   });
@@ -170,6 +177,9 @@ function calculateMove(
 ): MoveDamageResult {
   if (metadata.unsupported.length) return emptyRow(metadata, "unsupported", metadata.unsupported.join(" "));
   if (metadata.category === "Status") return emptyRow(metadata, "status", "No direct damage calculated; status and called-move effects are not simulated.");
+  if (conditions.gravity && GRAVITY_BLOCKED_MOVES.has(metadata.id)) {
+    return zeroDamage(metadata, `Gravity prevents ${metadata.name} from being used.`);
+  }
   if (CONTEXT_ABILITIES[attackerBuild.abilityId]) return emptyRow(metadata, "needs-context", CONTEXT_ABILITIES[attackerBuild.abilityId]);
   if (metadata.ohko) return emptyRow(metadata, "unsupported", "One-hit KO moves use their own accuracy/eligibility rules, not a normal damage range.");
   if (HISTORY_MOVES[metadata.id]) return emptyRow(metadata, "needs-context", HISTORY_MOVES[metadata.id]);
@@ -185,11 +195,25 @@ function calculateMove(
   }
   if (metadata.id === "dreameater" && defenderBuild.status !== "slp") return zeroDamage(metadata, "Dream Eater fails because the defender is not asleep.");
   if (metadata.id === "snore" && attackerBuild.status !== "slp") return zeroDamage(metadata, "Snore fails because the attacker is not asleep.");
+  if (conditions.trickRoom && attackerBuild.abilityId === "analytic" && !attackerBuild.abilityActive) {
+    return emptyRow(metadata, "needs-context", "Analytic under Trick Room needs the actual turn order, including priority and speed ties. Only enable the target-switching condition if the target switches before this attack.");
+  }
+  if (conditions.wonderRoom && metadata.id === "bodypress") {
+    return emptyRow(metadata, "unsupported", "Body Press under Wonder Room is withheld: the pinned Champions engine does not apply its attacking Defense stages correctly.");
+  }
+  if (conditions.magicRoom && metadata.id === "acrobatics" && attackerBuild.itemId) {
+    return emptyRow(metadata, "unsupported", "Held-item Acrobatics under Magic Room is withheld: the item is suppressed, not absent, but the pinned Champions engine treats it as absent for move power.");
+  }
 
   const hitCount = resolveHits(metadata, attackerBuild, context);
   if (hitCount.hits === null) return emptyRow(metadata, "needs-context", hitCount.reason!);
 
   const assumptions = ["One use, conditional on connecting; damage is before the defender's remaining-HP cap."];
+  if (conditions.gravity) assumptions.push("Gravity grounds airborne Pokémon. Displayed accuracy remains the catalog value; accuracy changes are not simulated.");
+  if (conditions.trickRoom) assumptions.push("Trick Room changes turn order, not Speed stats. Turn order is not simulated; Electro Ball and Gyro Ball still use actual effective Speed.");
+  if (conditions.wonderRoom) assumptions.push("Wonder Room swaps unboosted Defense and Sp. Def; stages stay with their original stat.");
+  if (conditions.magicRoom) assumptions.push("Magic Room suppresses held-item effects without removing the held items or changing selected forms.");
+  if (conditions.fairyAura) assumptions.push("Additional Fairy Aura is active for Fairy-type attacks on either side; aura sources do not stack.");
   if (SUCCESS_ASSUMPTIONS[metadata.id]) assumptions.push(SUCCESS_ASSUMPTIONS[metadata.id]);
   let attackingSpecies = attackerBuild.speciesId;
   if (attackingSpecies === "aegislash" && attackerBuild.abilityId === "stancechange") {
@@ -229,7 +253,7 @@ function calculateMove(
     if (hitCount.hits > 1 || (Array.isArray(result.damage) && Array.isArray(result.damage[0]))) {
       assumptions.push(`Assumes all ${hitCount.hits > 1 ? hitCount.hits : 2} hits finish. Mid-move healing, retaliation and attacker fainting are not simulated; no multi-hit KO probability is claimed.`);
     }
-    if (attackerBuild.itemId === "metronome") assumptions.push("Metronome is treated as the first use, without a consecutive-use bonus.");
+    if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome is treated as the first use, without a consecutive-use bonus.");
     for (const [label, build] of [["Attacker", attackerBuild], ["Defender", defenderBuild]] as const) {
       const activation = ABILITY_ACTIVATION_LABELS[build.abilityId];
       if (activation) assumptions.push(`${label}: ${activation.toLowerCase()} — ${build.abilityActive ? "yes" : "no"}.`);

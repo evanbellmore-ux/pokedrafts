@@ -17,13 +17,23 @@ type EngineState =
   | { status: "ready"; calculate: CalculateMatchup }
   | { status: "error"; message: string };
 
-function createMatchup(revision = 0) {
+export function createMatchup(revision = 0) {
   return {
     revision,
     attacker: { key: revision * 2, build: createBuild("charizard") },
     defender: { key: revision * 2 + 1, build: createBuild("blastoise") },
     field: createConditions(),
     contexts: {} as Record<string, MoveContext>,
+  };
+}
+
+export function swapMatchup(current: ReturnType<typeof createMatchup>) {
+  return {
+    ...current,
+    attacker: current.defender,
+    defender: current.attacker,
+    field: { ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide },
+    contexts: {},
   };
 }
 
@@ -82,13 +92,7 @@ export default function CalculatorClient() {
   }
 
   function swap() {
-    setMatchup((current) => ({
-      ...current,
-      attacker: current.defender,
-      defender: current.attacker,
-      field: { ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide },
-      contexts: {},
-    }));
+    setMatchup(swapMatchup);
     setNotice("Attacker and defender swapped with their side conditions. Shared field settings are unchanged; move hit counts cleared.");
   }
 
