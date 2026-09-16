@@ -24,6 +24,14 @@ row level security with the anon key.
 | `docs/schema.md` | Generated description of the schema, functions and policies |
 | `docs/release-architecture.md` | The contract this release implements |
 
+## Champions damage calculator
+
+The signed-in **Calculator** page (`/calculator`) ranks an attacker's Champions
+learnset against a configured defender. It uses level-50 Stat Points, supported
+forms/items/abilities, explicit field conditions and damage/KO assumptions.
+Calculations run locally; no calculator migration or seed is required.
+See [calculator usage, limitations and data maintenance](docs/champions-calculator.md).
+
 ## Local setup
 
 1. Install Node 20+ and run `npm install`.

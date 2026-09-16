@@ -50,6 +50,7 @@ describe("route map (docs section 3)", () => {
         "/",
         "/auth/callback",
         "/builder",
+        "/calculator",
         "/dashboard",
         "/forgot-password",
         "/invite/[code]",

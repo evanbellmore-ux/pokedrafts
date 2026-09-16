@@ -11,7 +11,7 @@ export type MobilePanelBarProps = {
 
 /**
  * Roster / Pool / Board / Chat switcher for small screens. Sticky under the
- * app header (docs section 8.5; the header is 64px tall, hence `top-16`) and
+ * app header (docs section 8.5; AppNav publishes its measured height) and
  * hidden from `lg` up, where every panel is visible at once. The buttons are
  * toggles, so they expose `aria-pressed`.
  */
@@ -23,7 +23,7 @@ export default function MobilePanelBar({
   return (
     <nav
       aria-label="Draft room panels"
-      className="sticky top-16 z-30 bg-bg py-2 lg:hidden"
+      className="sticky top-[var(--app-nav-height,4rem)] z-30 bg-bg py-2 lg:hidden"
     >
       <div className="grid grid-cols-4 gap-1 rounded-xl border border-line bg-panel p-1">
         {MOBILE_PANELS.map((panel) => {

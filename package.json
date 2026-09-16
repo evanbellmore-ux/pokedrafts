@@ -13,9 +13,12 @@
     "check": "npm run lint && npm run typecheck && npm run test",
     "seed:dex": "tsx scripts/seed-pokemon-dex.ts",
     "seed:sprites": "tsx scripts/link-sprites.ts",
-    "seed:types": "node scripts/backfill-pokemon-types.mjs"
+    "seed:types": "node scripts/backfill-pokemon-types.mjs",
+    "prepare:champions-engine": "node scripts/prepare-champions-engine.mjs",
+    "data:champions": "tsx scripts/build-champions-data.ts"
   },
   "dependencies": {
+    "@smogon/calc": "file:vendor/smogon-calc-0.11.0-champions.e7fd7e59.1.tgz",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "lucide-react": "^1.21.0",
