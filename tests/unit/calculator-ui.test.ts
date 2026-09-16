@@ -1,10 +1,11 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import CalculatorClient from "@/app/(app)/calculator/CalculatorClient";
+import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
+import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel, { parseBuildInput } from "@/app/(app)/calculator/PokemonPanel";
 import MoveResults, { filterMoveResults } from "@/app/(app)/calculator/MoveResults";
-import { createBuild, validateBuild } from "@/app/lib/battle/model";
+import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 
 function row(moveId: string, kind: MoveDamageResult["kind"]): MoveDamageResult {
@@ -42,9 +43,102 @@ describe("Champions calculator UI", () => {
     expect(ids.length).toBeGreaterThan(30);
     expect(new Set(ids).size).toBe(ids.length);
     for (const label of labels) expect(ids).toContain(label);
+    for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
+      for (const reference of references.split(" ")) expect(ids).toContain(reference);
+    }
     expect(html).not.toMatch(/<main\b/);
     expect(html).toContain("Loading the Champions engine");
     expect(html).toContain("Damage Calculator");
+  });
+
+  it("opens field controls initially and exposes all requested effects without duplicates", () => {
+    const html = renderToStaticMarkup(createElement(BattleConditions, { value: createConditions(), issues: [], onChange: () => undefined }));
+    expect(html).toMatch(/^<details\b[^>]*open=""/);
+    expect(html).toContain("1 toggles on");
+    for (const { key, label } of SHARED_FIELD_EFFECTS) {
+      const inputs = [...html.matchAll(new RegExp(`<input\\b[^>]*id="[^"]*-${key}"[^>]*>`, "g"))];
+      expect(inputs).toHaveLength(1);
+      expect(inputs[0][0]).not.toContain('checked=""');
+      expect(html).toContain(label);
+    }
+    for (const weather of ["Sun", "Rain", "Sand", "Snow"]) {
+      expect(html).toContain(`<option value="${weather}">${weather}</option>`);
+    }
+    for (const side of ["attackerSide", "defenderSide"]) {
+      for (const effect of ["reflect", "lightScreen", "auroraVeil", "helpingHand"]) {
+        expect(html).toMatch(new RegExp(`id="[^"]*-${side}-${effect}"`));
+      }
+    }
+    expect([...html.matchAll(/type="checkbox"/g)]).toHaveLength(15);
+  });
+
+  it("counts shared and side toggles and retains Aurora Veil without Snow", () => {
+    const field = createConditions();
+    for (const { key } of SHARED_FIELD_EFFECTS) field[key] = true;
+    field.critical = true;
+    field.attackerSide.helpingHand = true;
+    field.defenderSide.auroraVeil = true;
+    const render = () => renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: [], onChange: () => undefined }));
+    const html = render();
+    expect(html).toContain("9 toggles on");
+    expect(html).toContain("No weather");
+    const veil = html.match(/<input\b[^>]*id="[^"]*-defenderSide-auroraVeil"[^>]*>/)?.[0];
+    expect(veil).toContain('checked=""');
+    expect(veil).not.toContain("disabled");
+    field.gameType = "Singles";
+    expect(render()).toContain("8 toggles on");
+  });
+
+  it("associates shared-effect help and validation errors with their checkbox", () => {
+    const field = { ...createConditions(), gravity: "on" as unknown as boolean };
+    const html = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
+    const input = html.match(/<input\b[^>]*id="[^"]*-gravity"[^>]*>/)?.[0];
+    expect(input).toBeDefined();
+    expect(input).toContain('aria-invalid="true"');
+    expect(input).not.toContain('checked=""');
+    const describedBy = input!.match(/aria-describedby="([^"]+)"/)?.[1].split(" ");
+    expect(describedBy).toHaveLength(2);
+    for (const id of describedBy!) expect(html).toContain(`id="${id}"`);
+    expect(html).toContain("Gravity must be on or off.");
+    expect(html).toContain("Accuracy changes are not simulated");
+  });
+
+  it("swaps builds and side conditions while retaining shared effects and clearing hit counts", () => {
+    const current = createMatchup(4);
+    current.attacker.build.points.spa = 32;
+    current.contexts = { bulletseed: { hits: 3 } };
+    current.field.weather = "Snow";
+    current.field.terrain = "Electric";
+    current.field.attackerSide.helpingHand = true;
+    current.field.defenderSide.reflect = true;
+    for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
+    const before = structuredClone(current);
+    const swapped = swapMatchup(current);
+    expect(swapped.attacker).toBe(current.defender);
+    expect(swapped.defender).toBe(current.attacker);
+    expect(swapped.field).toEqual({ ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide });
+    expect(swapped.contexts).toEqual({});
+    expect(swapped.revision).toBe(current.revision);
+    expect(current).toEqual(before);
+    const restored = swapMatchup(swapped);
+    expect(restored.attacker).toBe(current.attacker);
+    expect(restored.defender).toBe(current.defender);
+    expect(restored.field).toEqual(current.field);
+  });
+
+  it("resets all effects, builds and hit counts with new raw-input keys", () => {
+    const current = createMatchup(4);
+    current.attacker.build.points.spa = 32;
+    current.contexts = { bulletseed: { hits: 3 } };
+    for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
+    current.field.attackerSide.helpingHand = true;
+    const reset = createMatchup(current.revision + 1);
+    expect(reset.field).toEqual(createConditions());
+    expect(reset.attacker.build).toEqual(createBuild("charizard"));
+    expect(reset.defender.build).toEqual(createBuild("blastoise"));
+    expect(reset.contexts).toEqual({});
+    expect(reset.attacker.key).not.toBe(current.attacker.key);
+    expect(reset.defender.key).not.toBe(current.defender.key);
   });
 
   it("locks the required Mega Stone and shows unsupported species reasons", () => {

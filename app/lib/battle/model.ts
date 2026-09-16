@@ -96,9 +96,18 @@ export function createSide(): SideConditions {
   return { reflect: false, lightScreen: false, auroraVeil: false, helpingHand: false };
 }
 
+export const SHARED_FIELD_EFFECTS = [
+  { key: "gravity", label: "Gravity", description: "Grounds airborne Pokémon and blocks moves such as Fly and High Jump Kick. Accuracy changes are not simulated." },
+  { key: "trickRoom", label: "Trick Room", description: "Reverses turn order within a priority bracket, not Speed stats. Turn order is not simulated; unresolved Analytic damage needs context." },
+  { key: "wonderRoom", label: "Wonder Room", description: "Swaps unboosted Defense and Sp. Def; stages stay with their original stat. Body Press with this room is not verified." },
+  { key: "magicRoom", label: "Magic Room", description: "Suppresses held-item effects without removing items or Mega forms. Held-item Acrobatics with this room is not verified." },
+  { key: "fairyAura", label: "Additional Fairy Aura on the field", description: "Boosts Fairy-type attacks on either side. Does not stack with an existing Fairy Aura ability; leaving this off does not disable that ability." },
+] as const;
+
 export function createConditions(): BattleConditions {
   return {
     gameType: "Doubles", weather: "", terrain: "", critical: false, multipleTargets: true,
+    gravity: false, trickRoom: false, wonderRoom: false, magicRoom: false, fairyAura: false,
     attackerSide: createSide(), defenderSide: createSide(),
   };
 }
@@ -175,6 +184,11 @@ export function validateConditions(field: BattleConditions): BuildIssue[] {
   if (!["Singles", "Doubles"].includes(field.gameType)) issues.push({ field: "gameType", message: "Select Singles or Doubles." });
   if (!["", "Sun", "Rain", "Sand", "Snow"].includes(field.weather)) issues.push({ field: "weather", message: "Select a supported weather condition." });
   if (!["", "Electric", "Grassy", "Misty", "Psychic"].includes(field.terrain)) issues.push({ field: "terrain", message: "Select a supported terrain." });
+  for (const effect of SHARED_FIELD_EFFECTS) {
+    if (typeof field[effect.key] !== "boolean") {
+      issues.push({ field: effect.key, message: `${effect.label} must be on or off.` });
+    }
+  }
   return issues;
 }
 

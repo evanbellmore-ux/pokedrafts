@@ -3,7 +3,7 @@ import { Pokemon } from "@smogon/calc";
 import { abilitiesById, speciesById } from "@/app/lib/battle/catalog";
 import {
   createBuild, createConditions, getBuildStats, NATURES, parseIntegerInput,
-  rankResults, validateBuild, validateConditions,
+  rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions,
 } from "@/app/lib/battle/model";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 
@@ -113,6 +113,32 @@ describe("Champions build model", () => {
     expect(validateConditions(field)).toEqual([]);
     field.weather = "Hail" as typeof field.weather;
     expect(validateConditions(field)).toContainEqual(expect.objectContaining({ field: "weather" }));
+  });
+
+  it("starts every shared effect off and creates independent field state", () => {
+    const field = createConditions();
+    for (const { key } of SHARED_FIELD_EFFECTS) {
+      expect(field[key], key).toBe(false);
+      field[key] = true;
+    }
+    field.attackerSide.helpingHand = true;
+    expect(validateConditions(field)).toEqual([]);
+    const fresh = createConditions();
+    for (const { key } of SHARED_FIELD_EFFECTS) expect(fresh[key], key).toBe(false);
+    expect(fresh.attackerSide.helpingHand).toBe(false);
+    expect(field.defenderSide.helpingHand).toBe(false);
+  });
+
+  it.each(SHARED_FIELD_EFFECTS)("requires a strict boolean for $label", ({ key, label }) => {
+    const field = createConditions();
+    for (const invalid of [undefined, null, 0, 1, "false", "true", Number.NaN, {}, []]) {
+      field[key] = invalid as unknown as boolean;
+      expect(validateConditions(field)).toContainEqual({ field: key, message: `${label} must be on or off.` });
+    }
+    for (const valid of [false, true]) {
+      field[key] = valid;
+      expect(validateConditions(field)).toEqual([]);
+    }
   });
 
   it("sorts calculated results deterministically and leaves unknown damage unranked", () => {

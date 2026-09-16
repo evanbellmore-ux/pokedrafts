@@ -88,6 +88,50 @@ describe("pinned Champions engine", () => {
     expect(calculate(gen, attacker, defender, move(), new Field({ gameType: "Singles", defenderSide: { isReflect: true } })).range()).toEqual([28, 34]);
   });
 
+  it("applies one screen modifier and one Helping Hand power modifier", () => {
+    const { attacker, defender } = neutralPair();
+    // Doubles screen = 2732/4096, Singles screen = 1/2, both rounded half down.
+    for (const [gameType, expected] of [["Singles", [28, 34]], ["Doubles", [38, 45]]] as const) {
+      for (const attack of [move(), move("Flamethrower")]) {
+        const field = new Field({ gameType, defenderSide: { isReflect: true, isLightScreen: true, isAuroraVeil: true } });
+        expect(calculate(gen, attacker, defender, attack, field).range()).toEqual(expected);
+      }
+    }
+    // Helping Hand raises power to 150: base damage = 101, not 68 * 1.5.
+    expect(calculate(gen, attacker, defender, move(), new Field({ attackerSide: { isHelpingHand: true } })).range()).toEqual([85, 101]);
+  });
+
+  it("swaps Wonder Room's raw defenses before applying their own stages", () => {
+    const { attacker } = neutralPair();
+    const defender = new Pokemon(gen, "Blastoise", {
+      ability: "", boosts: { def: 2, spd: -1 },
+      overrides: { types: ["Normal"], baseStats: { hp: 80, atk: 80, def: 80, spa: 80, spd: 180, spe: 100 } },
+    });
+    // Raw Def/SpD 100/200 become 200/100; +2 Def / -1 SpD then give 400/66.
+    // 100 power, 150 offense: base damage 18 (physical) and 102 (special).
+    const field = new Field({ isWonderRoom: true });
+    expect(calculate(gen, attacker, defender, move(), field).range()).toEqual([15, 18]);
+    expect(calculate(gen, attacker, defender, move("Flamethrower"), field).range()).toEqual([86, 102]);
+    expect(defender.rawStats.def).toBe(100);
+    expect(defender.rawStats.spd).toBe(200);
+    expect(defender.boosts).toMatchObject({ def: 2, spd: -1 });
+  });
+
+  it("uses one Fairy Aura power modifier regardless of the number of sources", () => {
+    const { attacker, defender } = neutralPair();
+    expect(calculate(gen, attacker, defender, move("Moonblast")).range()).toEqual([57, 68]);
+    // 100 * 5448/4096 rounds to power 133; base damage = 89, rolls 75–89.
+    const aura = gen.abilities.get(toID("Fairy Aura"));
+    expect(aura).toBeDefined();
+    for (const [attackerAura, defenderAura, fieldAura] of [
+      [false, false, true], [true, false, false], [false, true, false], [true, true, true],
+    ]) {
+      attacker.ability = attackerAura ? aura!.name : undefined;
+      defender.ability = defenderAura ? aura!.name : undefined;
+      expect(calculate(gen, attacker, defender, move("Moonblast"), new Field({ isFairyAura: fieldAura })).range()).toEqual([75, 89]);
+    }
+  });
+
   it("does not leak boosts or weather changes between calls", () => {
     const { attacker, defender } = neutralPair();
     const before = { stats: { ...attacker.rawStats }, boosts: { ...attacker.boosts } };
