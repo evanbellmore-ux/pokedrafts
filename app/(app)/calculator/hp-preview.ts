@@ -2,8 +2,9 @@ import { getBuildStats, validateBuild } from "@/app/lib/battle/model";
 import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
 
 export type BuildHealth = { current: number; maximum: number };
+export type DamageRollMode = "low" | "average" | "high";
 export type HPPreview =
-  | { status: "ready"; min: number; max: number; current: number; maximum: number }
+  | { status: "ready"; min: number; max: number; current: number; maximum: number; damage: number; remaining: number }
   | { status: "unavailable"; reason: string };
 
 export function getBuildHealth(build: BattleBuild): BuildHealth | null {
@@ -19,7 +20,7 @@ function isDamage(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
-function hasUsableRolls(rolls: MoveDamageResult["rolls"], min: number, max: number): boolean {
+function hasUsableRolls(rolls: MoveDamageResult["rolls"], min: number, max: number): rolls is number | number[] {
   if (typeof rolls === "number") return isDamage(rolls) && rolls === min && rolls === max;
   if (!Array.isArray(rolls) || rolls.length !== 16) return false;
   let lowest = Number.POSITIVE_INFINITY;
@@ -33,7 +34,7 @@ function hasUsableRolls(rolls: MoveDamageResult["rolls"], min: number, max: numb
 }
 
 /** Preview one current result without changing the build or simulating survival effects. */
-export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult | undefined): HPPreview {
+export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult | undefined, mode: DamageRollMode = "average"): HPPreview {
   const health = getBuildHealth(defender);
   if (!health) return { status: "unavailable", reason: "Enter a valid defender build and current HP to preview remaining HP." };
   if (!row) return { status: "unavailable", reason: "A current damage result is required to preview remaining HP." };
@@ -43,15 +44,15 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
         : "This move's damage is unsupported; remaining HP is unavailable.";
     return { status: "unavailable", reason };
   }
-  const { min, max } = row;
+  const { min, max, rolls } = row;
   if (!isDamage(min) || !isDamage(max) || max < min) {
     return { status: "unavailable", reason: "The damage range is unavailable or invalid." };
   }
-  if (!hasUsableRolls(row.rolls, min, max)) {
+  if (!hasUsableRolls(rolls, min, max)) {
     return { status: "unavailable", reason: "A complete flat damage distribution is required for an HP preview." };
   }
   // Proven zero cannot trigger survival effects, even on a multi-hit move.
-  if (max === 0) return { status: "ready", ...health, min: health.current, max: health.current };
+  if (max === 0) return { status: "ready", ...health, min: health.current, max: health.current, damage: 0, remaining: health.current };
   const survival = defender.itemId === "focussash" ? "Focus Sash"
     : defender.itemId === "focusband" ? "Focus Band"
       : defender.abilityId === "sturdy" ? "Sturdy" : null;
@@ -64,9 +65,16 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
   if (row.ohkoChance === null || !Number.isFinite(row.ohkoChance) || row.ohkoChance < 0 || row.ohkoChance > 1) {
     return { status: "unavailable", reason: "Remaining HP is unavailable when single-hit KO rules are unresolved." };
   }
+  // Each entry has equal weight, including duplicates. Round damage once, before subtraction.
+  const damage = mode === "low" ? min : mode === "high" ? max
+    : typeof rolls === "number" ? rolls : Math.round(rolls.reduce((sum, roll) => sum + roll / rolls.length, 0));
+  if (!isDamage(damage) || damage < min || damage > max) {
+    return { status: "unavailable", reason: "The selected damage roll is unavailable or invalid." };
+  }
   return {
     status: "ready", ...health,
     min: Math.max(0, health.current - max),
     max: Math.max(0, health.current - min),
+    damage, remaining: Math.max(0, health.current - damage),
   };
 }

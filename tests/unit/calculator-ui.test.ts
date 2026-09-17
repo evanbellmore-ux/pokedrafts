@@ -6,6 +6,7 @@ import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel, { parseBuildInput } from "@/app/(app)/calculator/PokemonPanel";
 import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calculator/MoveResults";
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
+import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { selectMatchupMove, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
 import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import { speciesById } from "@/app/lib/battle/catalog";
@@ -15,13 +16,19 @@ const viewport = vi.hoisted(() => ({ wide: false }));
 vi.mock("@/app/(app)/leagues/[leagueId]/useMinWidthMd", () => ({ useMinWidthMd: () => viewport.wide }));
 afterEach(() => { viewport.wide = false; });
 
-function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string) {
+function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string, rollMode: DamageRollMode = "average") {
   return renderToStaticMarkup(createElement(MatchupSummary, {
     attacker: matchup.attacker, defender: matchup.defender,
-    selectedMoveId: matchup.selectedMoveId, selectedRow, blockedReason,
+    selectedMoveId: matchup.selectedMoveId, selectedRow, blockedReason, rollMode,
     controls: { attacker: "attacker-editor", defender: "defender-editor", moves: "moves" },
-    onEdit: () => undefined, onShowMove: () => undefined,
+    onEdit: () => undefined, onShowMove: () => undefined, onRollModeChange: () => undefined,
   }));
+}
+
+function meterHTML(html: string, side: "attacker" | "defender") {
+  const meter = html.match(new RegExp(`<div role="meter" aria-label="[^"]* ${side} [^"]*"[^>]*>[\\s\\S]*?</div>`))?.[0];
+  expect(meter).toBeDefined();
+  return meter!;
 }
 
 function row(moveId: string, kind: MoveDamageResult["kind"]): MoveDamageResult {
@@ -333,7 +340,7 @@ describe("Champions calculator UI", () => {
 });
 
 describe("active matchup and selected-move summary", () => {
-  it("starts with current HP, accessible bars, editor shortcuts and no selected outcome", () => {
+  it("starts with current HP, accessible bars, editor shortcuts and Average selected", () => {
     const matchup = createMatchup();
     const html = summaryHTML(matchup);
     expect(html).toContain("Charizard");
@@ -345,37 +352,82 @@ describe("active matchup and selected-move summary", () => {
     expect(html).not.toContain("Defender HP remaining:");
     expect(html).toContain('aria-controls="attacker-editor"');
     expect(html).toContain('aria-controls="defender-editor"');
-    expect(html).not.toMatch(/<input\b/);
+    expect([...html.matchAll(/<fieldset\b/g)]).toHaveLength(1);
+    expect(html).toContain('>Damage roll</legend>');
+    const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map(([input]) => input);
+    expect(inputs).toHaveLength(3);
+    for (const input of inputs) expect(input).toContain('type="radio"');
+    const names = inputs.map((input) => input.match(/name="([^"]+)"/)?.[1]);
+    expect(new Set(names).size).toBe(1);
+    expect(names[0]).toContain("damage-roll");
+    expect(inputs.filter((input) => input.includes('checked=""'))).toEqual([expect.stringContaining('value="average"')]);
+    expect(meterHTML(html, "defender")).toContain('aria-label="Blastoise defender current HP"');
   });
 
-  it("shows latest damage-only remaining bounds without altering current HP or inferring KO", () => {
+  it.each([
+    ["low", 20, 80, "bg-success"], ["average", 28, 72, "bg-warning"], ["high", 35, 65, "bg-warning"],
+  ] as const)("reflects %s damage in the defender number, bar and accessible values without applying it", (mode, damage, remaining, color) => {
     let matchup = selectMatchupMove(createMatchup(), "flamethrower");
     matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 100 });
     const result = { ...row("flamethrower", "calculated"), min: 20, max: 35, rolls: Array.from({ length: 16 }, (_, i) => 20 + i), ohkoChance: 0.375 };
-    const before = structuredClone(matchup);
-    const html = summaryHTML(matchup, result);
-    expect(html).toContain('aria-valuenow="100"');
-    expect(html).toContain("20–35 damage");
-    expect(html).toContain("65–80 / 154");
-    expect(html).toContain("One-use KO: 37.5%");
+    const before = structuredClone({ matchup, result });
+    const html = summaryHTML(matchup, result, undefined, mode);
+    const defenderMeter = meterHTML(html, "defender");
+    expect(defenderMeter).toContain('aria-label="Blastoise defender projected HP"');
+    expect(defenderMeter).toContain(`aria-valuenow="${remaining}"`);
+    expect(defenderMeter).toContain('aria-valuemax="154"');
+    expect(defenderMeter).toContain(`${remaining} of 154 HP after Flamethrower`);
+    expect(defenderMeter).toContain(`width:${remaining / 154 * 100}%`);
+    expect(defenderMeter).toContain(color);
+    expect(meterHTML(html, "attacker")).toContain('aria-valuenow="153"');
+    expect(meterHTML(html, "attacker")).toContain('attacker current HP');
+    expect(html).toContain(`>${remaining}</span>`);
+    expect(html).toContain(`${damage} damage</strong>`);
+    expect(html).toContain("20–35 damage range");
+    expect(html).toContain(`<strong class="whitespace-nowrap text-lg tabular-nums">${remaining} / 154</strong>`);
+    expect(html).toContain("Current HP: 100 / 154");
+    expect(html).toContain("After Flamethrower");
+    expect(html).toContain("One-use KO: 37.5% (all rolls)");
     expect(html).toContain("Current HP is unchanged");
     expect(html).toContain("if it connects");
     expect(html).toContain('aria-live="polite" aria-atomic="true"');
+    const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map(([input]) => input);
+    expect(inputs.filter((input) => input.includes('checked=""'))).toEqual([expect.stringContaining(`value="${mode}"`)]);
+    if (mode === "average") expect(html).toContain("Average damage is the mean of all rolls, rounded to whole HP.");
     const edited = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 40 });
-    expect(summaryHTML(edited, result)).toContain("5–20 / 154");
-    expect(summaryHTML(edited, { ...result, min: 50, max: 50, rolls: 50 })).toContain("0 / 154");
-    expect(matchup).toEqual(before);
+    expect(summaryHTML(edited, result, undefined, mode)).toContain(`${40 - damage} / 154</strong>`);
+    const overkill = summaryHTML(edited, { ...result, min: 50, max: 50, rolls: 50 }, undefined, mode);
+    expect(overkill).toContain("0 / 154</strong>");
+    expect(meterHTML(overkill, "defender")).toContain('aria-valuenow="0"');
+    expect(meterHTML(overkill, "defender")).toContain('width:0%');
+    expect(meterHTML(overkill, "defender")).toContain('bg-danger');
+    expect({ matchup, result }).toEqual(before);
+  });
+
+  it("does not project an unselected, mismatched or missing damage result", () => {
+    const matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    const result = { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 };
+    for (const html of [summaryHTML(createMatchup(), result), summaryHTML(matchup, { ...result, moveId: "surf" }), summaryHTML(matchup)]) {
+      expect(html).not.toContain("Defender HP remaining:");
+      expect(html).not.toContain("50 damage");
+      expect(meterHTML(html, "defender")).toContain("defender current HP");
+      expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
+    }
   });
 
   it.each(["Loading the calculator.", "Retry the calculator.", "Fix invalid settings."])("withholds stale damage and projected HP while blocked: %s", (reason) => {
     const matchup = selectMatchupMove(createMatchup(), "flamethrower");
-    const html = summaryHTML(matchup, row("flamethrower", "calculated"), reason);
-    expect(html).toContain("Flamethrower");
-    expect(html).toContain(reason);
-    expect(html).not.toContain("Defender HP remaining:");
-    expect(html).not.toContain("0 damage");
-    expect(html).not.toContain("One-use KO:");
-    expect(html).not.toContain(">Show move</button>");
+    for (const mode of ["low", "average", "high"] as const) {
+      const html = summaryHTML(matchup, { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 }, reason, mode);
+      expect(html).toContain("Flamethrower");
+      expect(html).toContain(reason);
+      expect(html).not.toContain("Defender HP remaining:");
+      expect(html).not.toContain("50 damage");
+      expect(html).not.toContain("One-use KO:");
+      expect(html).not.toContain(">Show move</button>");
+      expect(meterHTML(html, "defender")).toContain("defender current HP");
+      expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
+    }
   });
 
   it.each([0, Number.NaN, 1.5, 155])("does not turn invalid defender HP %s into a full-health bar", (currentHP) => {
