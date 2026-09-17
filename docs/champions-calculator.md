@@ -5,11 +5,12 @@ The signed-in `/calculator` route compares one attacking build against one defen
 ## Using the calculator
 
 - Open **Calculator** in the app navigation. Default matchup: Charizard versus Blastoise, Doubles, no training investment, full HP.
-- Expand **Change attacker/defender Pokémon** to search species and forms. Selecting another Pokémon resets its build. Mega forms select and lock their required stone.
+- Select one of your **Leagues**, then choose an **Opponent**. Your roster starts on the left and theirs on the right; click a roster Pokémon to make it active. Loading a league or opponent never overwrites the current builds.
+- Expand **Change attacker/defender Pokémon** for manual species/form selection. Selecting another Pokémon manually resets its build. Mega forms select and lock their required stone.
 - Set nature, available ability/item, status, Stat Points, stages and current HP. Blank current HP means full HP; invalid input pauses results instead of retaining stale damage.
 - **Field conditions** starts expanded: choose Singles/Doubles, weather/terrain, shared effects, screens, Helping Hand and critical hits. Weather/terrain are explicit state, not automatically set by entry abilities. Do not apply Intimidate manually and through its entry checkbox simultaneously.
 - Moves are sorted by descending minimum damage, then maximum damage, then name. Search, filter, inspect details or choose a hit count. All learnset entries remain accounted for, including statuses and unsupported moves.
-- **Swap** exchanges builds and their side conditions, preserves shared field conditions and clears move hit counts. **Reset** restores the initial matchup.
+- **Swap** exchanges builds, roster shortcuts and side conditions, preserves shared field conditions and clears move hit counts. **Reset** restores the initial matchup and clears session prep, while retaining your league/opponent choices.
 
 Champions uses level **50** and **Stat Points**, not conventional EV/IV inputs: 0–32 per stat, at most 66 total. Training stats are:
 
@@ -20,6 +21,22 @@ Nature = 1.1, 0.9 or 1
 ```
 
 The table displays training stats before in-battle stages, abilities and items. Only the adapter maps Stat Points into the engine parameter named `evs`; there is no EV conversion.
+
+## League matchup preparation
+
+The **League** selector reads only memberships belonging to the verified signed-in account, using the existing authenticated Supabase client and row-level security. The first accessible league is selected by name/ID order. The **Opponent** selector contains other members of that league, including those without a finalized roster; no opponent is automatically chosen.
+
+Team lists use current `drafted_teams`, not historical draft picks. This includes free-agent changes after draft completion. Incomplete drafts, missing/empty rosters, no opponents, no memberships and read errors have separate explanations. **Refresh teams** rechecks membership and current rosters; this is not a live-draft or realtime subscription. Loading/errors do not disable manual calculations. Sign-out/account replacement clears the previous account's roster selections and prep.
+
+- **Click-only activation:** Charizard/Blastoise and manually edited builds stay active until you click a roster Pokémon. Changing league/opponent detaches incompatible roster provenance and labels the retained build **Manual** rather than falsely assigning it to the new team.
+- **Species-only defaults:** roster data has no saved nature, ability, item, training allocation, HP or status. A first click uses Serious nature, a default available ability, zero Stat Points/stages, full HP, healthy status and any required Mega Stone. These are editable assumptions, not a discovered opponent set. Roster pricing/tier never populates combat stats.
+- **Session prep:** edits are remembered when you click away and return to an entry. Cache identity includes league, member, roster/acquisition identity and exact Champions species, so similarly named Pokémon do not share builds accidentally. The cache is memory-only and disappears on leaving/reloading the page, changing accounts or Reset. Invalid numeric values remain invalid; the exact spelling of invalid text is not saved when leaving an entry.
+- **Direction and field effects:** Swap moves both roster shortcuts and ownership labels with the builds, so your team can be the defender on the right when checking incoming damage. Field/side conditions are not cached per roster Pokémon. A different roster selection clears hit counts but retains field settings and result filters; re-clicking the active entry is a no-op.
+- **Refresh and Reset:** unchanged entries retain prep after Refresh; removed/replaced or ambiguously duplicated entries lose their cached association. Reset keeps dropdown choices, restores your shortcuts to the left, clears all cached builds/provenance, and restores Charizard versus Blastoise with the default field.
+
+Roster names are league pool text, not guaranteed canonical Pokémon IDs. Resolution accepts only complete pinned-catalog identities or explicit equivalent aliases (for example, Mega Charizard X), preserving gender and form distinctions. It never fuzzy-matches, strips form qualifiers, substitutes a base species, or consults the general Pokédex/Pool Builder pipeline. Unknown or ambiguous entries remain visible with a manual-selection explanation. Exact catalog forms with known coverage gaps remain selectable for inspection, but existing validation pauses unsupported damage. Some leagues contain Pokémon outside this Champions snapshot; roster membership does not make them supported or establish team/regulation legality.
+
+League navigation and Refresh perform authenticated reads. Selecting/editing builds and calculating damage remain local; no roster, team or battle build is written to the database or browser storage.
 
 ## Field effects
 
@@ -68,7 +85,7 @@ The current catalog has **382 species/forms/states, 515 moves, 216 assigned abil
 
 ## Maintenance and checks
 
-Ordinary install, unit tests and production builds use the checked-in tarball/catalog and need no upstream download. Calculations and edits make no network/database calls. Existing app authentication still applies; no calculator migration or seed is required.
+Ordinary install, unit tests and production builds use the checked-in tarball/catalog and need no upstream download. Calculations and build edits make no network/database calls; optional league shortcuts use the existing authenticated membership/current-roster reads. Existing app authentication still applies; no calculator migration or seed is required.
 
 ```sh
 npm run check

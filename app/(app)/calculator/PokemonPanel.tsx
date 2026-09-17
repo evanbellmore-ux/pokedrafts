@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button, Field, Input, Select, TableWrap } from "@/app/components/ui";
 import type { InputProps } from "@/app/components/ui/Input";
@@ -74,9 +74,12 @@ type Props = {
   build: BattleBuild;
   issues: BuildIssue[];
   onChange: (build: BattleBuild) => void;
+  roster?: ReactNode;
+  provenance?: string;
+  editorRevision?: number;
 };
 
-export default function PokemonPanel({ side, build, issues, onChange }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, roster, provenance, editorRevision = 0 }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const label = side === "attacker" ? "Attacker" : "Defender";
@@ -109,8 +112,10 @@ export default function PokemonPanel({ side, build, issues, onChange }: Props) {
         <h3 className="wrap-anywhere text-xl font-bold text-text">{species?.name ?? "Select a Pokémon"}</h3>
         {species?.types.map((type) => <TypeBadge key={type} type={type} />)}
       </div>
+      <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
       <p role="status" className="sr-only">{notice}</p>
+      {roster}
 
       <details className="mt-3 rounded-lg border border-line">
         <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
@@ -224,7 +229,7 @@ export default function PokemonPanel({ side, build, issues, onChange }: Props) {
                   <td className="w-20 px-2 py-2">
                     <Field id={`${prefix}-points-${stat}`} label={`${label} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
                       <IntegerInput
-                        key={build.speciesId}
+                        key={`${build.speciesId}-${editorRevision}`}
                         value={build.points[stat]}
                         aria-invalid={!!errorFor(`points.${stat}`) || undefined}
                         aria-describedby={`${prefix}-points-help${pointIssues.length ? ` ${prefix}-points-errors` : ""}`}
@@ -264,7 +269,7 @@ export default function PokemonPanel({ side, build, issues, onChange }: Props) {
       </div>
 
       <Field id={`${prefix}-hp`} label="Current HP" error={errorFor("currentHP")} help={`Blank means full HP${stats ? ` (${stats.hp})` : ""}. Damage percentages use maximum HP; KO chances use current HP.`} className="mt-4">
-        <IntegerInput key={build.speciesId} value={build.currentHP} fullHP placeholder={stats ? `Full HP (${stats.hp})` : "Full HP"} onValueChange={(value) => onChange({ ...build, currentHP: value })} />
+        <IntegerInput key={`${build.speciesId}-${editorRevision}`} value={build.currentHP} fullHP placeholder={stats ? `Full HP (${stats.hp})` : "Full HP"} onValueChange={(value) => onChange({ ...build, currentHP: value })} />
       </Field>
     </section>
   );
