@@ -13,7 +13,7 @@ import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
 import LeagueMatchupPicker, { RosterPicker } from "./LeagueMatchupPicker";
 import useCalculatorRosters from "./useCalculatorRosters";
-import { getBuildHealth } from "./hp-preview";
+import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
 import { createMatchup, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, type BattleSide, type RosterChoice } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -36,6 +36,7 @@ export default function CalculatorClient() {
   const summaryRef = useRef<HTMLDivElement>(null);
   const movesRef = useRef<MoveResultsHandle>(null);
   const [matchup, setMatchup] = useState(() => createMatchup());
+  const [rollMode, setRollMode] = useState<DamageRollMode>("average");
   const [engine, setEngine] = useState<EngineState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const receiveRosters = useCallback((state: CalculatorRosterState) => {
@@ -176,7 +177,7 @@ export default function CalculatorClient() {
         actions={
           <>
             <Button variant="secondary" onClick={() => setMatchup(swapMatchup)}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
-            <Button variant="secondary" onClick={() => setMatchup(resetMatchup)}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
+            <Button variant="secondary" onClick={() => { setMatchup(resetMatchup); setRollMode("average"); }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
           </>
         }
       />
@@ -187,6 +188,8 @@ export default function CalculatorClient() {
           defender={matchup.defender}
           selectedMoveId={matchup.selectedMoveId}
           selectedRow={selectedRow}
+          rollMode={rollMode}
+          onRollModeChange={setRollMode}
           blockedReason={blockedReason}
           controls={controls}
           onEdit={edit}
@@ -267,7 +270,7 @@ export default function CalculatorClient() {
             <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition; do not manually apply the same entry-stage change twice.</li>
             <li>One move use only. Variable multihit moves need an explicit hit count unless Skill Link fixes it; fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
             <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
-            <li>The top HP preview subtracts eligible damage rolls from current HP without changing either build. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
+            <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
           </ul>
           <div className="space-y-2 text-xs">
             <p>Engine revision: <a href={champions.sources.engine.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{champions.sources.engine.revision}</a></p>
