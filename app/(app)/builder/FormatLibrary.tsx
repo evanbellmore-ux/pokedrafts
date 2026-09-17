@@ -10,9 +10,11 @@ import Field from "@/app/components/ui/Field";
 import Input from "@/app/components/ui/Input";
 import Skeleton from "@/app/components/ui/Skeleton";
 import StatusPill from "@/app/components/ui/StatusPill";
+import { describeRules, PRESETS } from "@/app/lib/pokemon/rules";
 import {
   cleanName,
   countFormatPokemon,
+  formatRules,
   MAX_FORMAT_NAME_LENGTH,
 } from "./poolFormat";
 
@@ -204,6 +206,9 @@ export default function FormatLibrary({
             const loaded = format.id === loadedId;
             const count = countFormatPokemon(format.json);
             const saved = formatDate(format.created_at);
+            // Rule-built formats show their recipe under the name (docs 13.7).
+            const rules = formatRules(format.json);
+            const recipe = rules ? describeRules(rules, PRESETS) : null;
 
             return (
               <li
@@ -223,6 +228,9 @@ export default function FormatLibrary({
                     </StatusPill>
                   )}
                 </div>
+                {recipe && (
+                  <p className="mt-1 wrap-anywhere text-xs text-accent-text">{recipe}</p>
+                )}
                 <p className="mt-1 text-xs text-muted">
                   {count} Pokémon
                   {saved ? ` · Saved ${saved}` : ""}

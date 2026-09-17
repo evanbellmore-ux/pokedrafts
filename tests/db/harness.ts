@@ -48,6 +48,18 @@ export function asAnon<T>(client: Client, fn: (c: Client) => Promise<T>): Promis
   return asUser(client, null, fn);
 }
 
+// Runs `fn` as the database owner inside a transaction that is always rolled
+// back, so a test can load bulk data or drop a constraint to see how a
+// function reacts without leaving a trace in the shared database.
+export async function rolledBack<T>(client: Client, fn: (c: Client) => Promise<T>): Promise<T> {
+  await client.query("begin");
+  try {
+    return await fn(client);
+  } finally {
+    await client.query("rollback").catch(() => undefined);
+  }
+}
+
 // The authenticated role with no JWT subject: what a function sees when
 // auth.uid() is null but the caller may execute it.
 export async function asAuthenticatedNoSub<T>(client: Client, fn: (c: Client) => Promise<T>): Promise<T> {

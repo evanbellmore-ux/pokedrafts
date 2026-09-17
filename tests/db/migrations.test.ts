@@ -4,7 +4,9 @@ import {
   BASE_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
+  POOL_BUILDER_MIGRATION,
   applyMigration,
+  createDatabaseSql,
   createScaffolding,
   readMigrations,
 } from "./migrations-lib";
@@ -58,6 +60,8 @@ const APP_TABLES = [
   "pokemon_dex",
   "pokemon_forms",
   "draft_order",
+  // Pool Builder v2 dataset (20260916120000_pool_builder.sql).
+  "pokemon",
 ];
 
 async function functionNames(client: Client): Promise<string[]> {
@@ -185,6 +189,7 @@ async function assertHardenedState(client: Client): Promise<void> {
   expect(byTable.get("draft_chat_messages")).toHaveLength(2);
   expect(byTable.get("pokemon_dex")).toHaveLength(1);
   expect(byTable.get("pokemon_forms")).toHaveLength(1);
+  expect(byTable.get("pokemon")).toHaveLength(1);
   expect(byTable.has("draft_order")).toBe(false);
 
   const publication = await client.query<{ tablename: string }>(
@@ -228,21 +233,22 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship a base schema first, the hardening migration after the eight legacy files, and the playoffs feature migration last", () => {
+  it("ship a base schema first, the hardening migration after the eight legacy files, then the playoffs and pool builder feature migrations", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
-    expect(migrations[migrations.length - 1].name).toBe(PLAYOFFS_MIGRATION);
-    expect(migrations).toHaveLength(11);
+    expect(migrations[10].name).toBe(PLAYOFFS_MIGRATION);
+    expect(migrations[migrations.length - 1].name).toBe(POOL_BUILDER_MIGRATION);
+    expect(migrations).toHaveLength(12);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
     await assertHardenedState(admin);
   });
 
-  it("apply on an empty database, and the hardening and playoffs migrations are idempotent", async () => {
+  it("apply on an empty database, and the hardening, playoffs and pool builder migrations are idempotent", async () => {
     await admin.query(`drop database if exists ${FRESH_DB}`);
-    await admin.query(`create database ${FRESH_DB}`);
+    await admin.query(createDatabaseSql(FRESH_DB));
     const fresh = await connect(FRESH_DB);
     try {
       await createScaffolding(fresh);
@@ -254,21 +260,28 @@ describe("migrations", () => {
 
       // Base schema is a no-op on a migrated database.
       await applyMigration(fresh, migrations[0]);
-      // The hardening and the playoffs file applied a second time, in filename
-      // order, succeed and leave the same state (the hardening re-creates the
-      // 7-parameter create_league, which the playoffs file drops again).
+      // The hardening, playoffs and pool builder files applied a second time,
+      // in filename order, succeed and leave the same state (the hardening
+      // re-creates the 7-parameter create_league, which the playoffs file
+      // drops again, and the hardening's own _migration_report, which the
+      // pool builder file extends again).
       const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
       const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
-      if (!hardening || !playoffs) throw new Error("hardening or playoffs migration missing");
+      const poolBuilder = migrations.find((m) => m.name === POOL_BUILDER_MIGRATION);
+      if (!hardening || !playoffs || !poolBuilder) throw new Error("hardening, playoffs or pool builder migration missing");
       await applyMigration(fresh, hardening);
       await applyMigration(fresh, playoffs);
+      await applyMigration(fresh, poolBuilder);
       await assertHardenedState(fresh);
-      // The playoffs file alone is idempotent as well.
+      // The playoffs file alone is idempotent as well, and so is the pool
+      // builder file.
       await applyMigration(fresh, playoffs);
+      await assertHardenedState(fresh);
+      await applyMigration(fresh, poolBuilder);
       await assertHardenedState(fresh);
 
       const policyCount = await fresh.query("select count(*)::int as n from pg_policies where schemaname = 'public'");
-      expect(policyCount.rows[0].n).toBe(16);
+      expect(policyCount.rows[0].n).toBe(17);
     } finally {
       await fresh.end();
       await admin.query(`drop database if exists ${FRESH_DB}`);

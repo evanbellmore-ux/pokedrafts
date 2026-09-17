@@ -31,13 +31,33 @@ import {
   timerLabel,
   type SettingsMember,
 } from "@/app/(app)/leagues/[leagueId]/settings/helpers";
+import {
+  DEFAULT_POINTS,
+  formatRules,
+  makeEntry,
+  MAX_POOL_SIZE,
+  missingEntries,
+  needsPriceChoice,
+  parsePoolJson,
+  poolRowFor,
+  rulesToSave,
+  toDraftFormat,
+} from "@/app/(app)/builder/poolFormat";
+import {
+  applyProblems,
+  matchCountLabel,
+  pointsFor,
+} from "@/app/(app)/builder/RuleBuilder";
+import { applyRules, defaultRules, parseFormatRules } from "@/app/lib/pokemon/rules";
 import { createRpc } from "@/app/lib/rpc";
+import { isDraftFormat, isDraftPokemon } from "@/app/types/draft";
 import {
   LEAGUE_LIMITS,
   PLAYOFF_FORMATS,
   type League,
   type LeagueMatch,
 } from "@/app/types/league";
+import type { PokemonEntry, Preset } from "@/app/types/pokemon";
 
 /**
  * Pure helpers behind the Matches and Settings pages. The pages themselves
@@ -469,5 +489,322 @@ describe("timer label", () => {
     expect(timerLabel(45)).toBe("45 s");
     expect(timerLabel(120)).toBe("2 min");
     expect(timerLabel(90)).toBe("1 min 30 s");
+  });
+});
+
+/**
+ * Pool Builder v2 (docs/release-architecture.md 13.5 and 13.7): the rule
+ * card's labels, its live count, the confirm dialog's two choices and how
+ * rules travel through the saved format. The card sources are read from
+ * disk like the other review suites; the pure helpers are imported.
+ */
+describe("Pool Builder rule card (docs section 13.7)", () => {
+  const builderDir = join(root, "app/(app)/builder");
+  const card = readFileSync(join(builderDir, "RuleBuilder.tsx"), "utf8");
+  const client = readFileSync(join(builderDir, "BuilderClient.tsx"), "utf8");
+  const library = readFileSync(join(builderDir, "FormatLibrary.tsx"), "utf8");
+
+  it("labels the six parts and every control with Field, a legend or a label", () => {
+    for (const label of [
+      "Start from",
+      "Games",
+      "Regulation",
+      "Filters",
+      "Stat total minimum",
+      "Stat total maximum",
+      "Generation minimum",
+      "Generation maximum",
+      "Types",
+      "Categories",
+      "Forms",
+      "Result",
+      "Price by stat total",
+      "Minimum stat total for ${points} points",
+      "Reset bands",
+      "Apply to pool",
+      "Rebuild from rules",
+      "Build from rules",
+    ]) {
+      expect(card, label).toContain(label);
+    }
+    for (const control of ["<Field", "<NumberInput", "<Select", "<Checkbox", "<Fieldset"]) {
+      expect(card, control).toMatch(new RegExp(control));
+    }
+    // The local checkbox/radio pairs its input with a label through the id.
+    expect(card).toMatch(/<input[\s\S]*?id=\{id\}/);
+    expect(card).toMatch(/<label htmlFor=\{id\}/);
+    // Every Field-wrapped NumberInput has a visible or hidden label.
+    expect(card).toMatch(/<Field label=\{`Minimum stat total for \$\{points\} points`\} hideLabel>/);
+    // Every checkbox group is a fieldset with a legend.
+    expect(card).toMatch(/<fieldset[\s\S]*?<legend/);
+  });
+
+  it("announces the live count in a status region", () => {
+    expect(card).toMatch(/<p role="status"[^>]*>\s*\{matchCountLabel\(result\.length\)\}/);
+    expect(matchCountLabel(312)).toBe("312 Pokémon match");
+    expect(matchCountLabel(1)).toBe("1 Pokémon matches");
+    expect(matchCountLabel(0)).toBe("0 Pokémon match");
+    expect(matchCountLabel(1230)).toBe("1,230 Pokémon match");
+  });
+
+  it("confirms Apply with Replace pool and Add missing only, and Rebuild separately", () => {
+    expect(card).toContain('title="Apply rules to the pool?"');
+    expect(card).toContain('confirmLabel="Replace pool"');
+    expect(card).toMatch(/onClick=\{\(\) => finishApply\("add-missing"\)\}[\s\S]*?Add missing only/);
+    expect(card).toMatch(/Add missing only keeps the current rows and their prices/);
+    expect(card).toContain('title="Rebuild from rules?"');
+    expect(card).toContain('confirmLabel="Rebuild pool"');
+    // An empty pool applies without asking.
+    expect(card).toMatch(/if \(poolSize === 0\) onApply\(result, rules, "replace"\)/);
+  });
+
+  it("shows the empty state, the hand-built pill and the mobile disclosure", () => {
+    expect(card).toContain('title="The Pokémon dataset has not been loaded yet"');
+    expect(card).toContain("This format was built by hand");
+    expect(card).toMatch(/aria-expanded=\{expanded\}/);
+    // The body is unmounted while collapsed, so the reference goes with it
+    // (the MoveResults convention).
+    expect(card).toMatch(/aria-controls=\{expanded \? bodyId : undefined\}/);
+    expect(card).not.toMatch(/aria-controls=\{bodyId\}/);
+    expect(card).toMatch(/useMediaQuery\("\(min-width: 768px\)"\)/);
+    // One preview layout at a time, paged at 100 rows like the pool table.
+    expect(card).toMatch(/wide \? \(\s*<PreviewTable/);
+    expect(card).toMatch(/const PAGE_SIZE = 100;/);
+    expect(card).toMatch(/Roster not loaded yet|has not been loaded into this build yet/);
+  });
+
+  it("sits above the pool table, saves rules with the format and lists them in the library", () => {
+    expect(client.indexOf("<RuleBuilder")).toBeGreaterThan(-1);
+    expect(client.indexOf("<RuleBuilder")).toBeLessThan(
+      client.indexOf('aria-labelledby="pool-list-heading"')
+    );
+    expect(client).toMatch(/writeFormat\(savedRules\)/);
+    expect(client).toMatch(/toDraftFormat\(trimmedName, entries, rulesToWrite\)/);
+    expect(client).toMatch(/rulesToSave\(poolRules, handPriced, priceChoice\)/);
+    expect(library).toMatch(/describeRules\(rules, PRESETS\)/);
+  });
+
+  it("asks whether to keep manual prices or the bands before Save and Export write (13.5)", () => {
+    // Both writers stop at the gate; the dialog's answer resumes them.
+    const saveGate = client.indexOf('setPendingWrite("save")');
+    const exportGate = client.indexOf('setPendingWrite("export")');
+    expect(saveGate).toBeGreaterThan(-1);
+    expect(exportGate).toBeGreaterThan(-1);
+    expect(client.slice(saveGate - 200, saveGate)).toMatch(
+      /if \(needsPriceChoice\(poolRules, handPriced, priceChoice\)\) \{\s*$/
+    );
+    expect(client.slice(exportGate - 200, exportGate)).toMatch(
+      /if \(needsPriceChoice\(poolRules, handPriced, priceChoice\)\) \{\s*$/
+    );
+    expect(client).toContain('title="Keep the prices you edited?"');
+    expect(client).toContain('confirmLabel="Keep manual prices"');
+    expect(client).toMatch(/onConfirm=\{\(\) => choosePricing\("manual"\)\}/);
+    expect(client).toMatch(/onClick=\{\(\) => choosePricing\("bands"\)\}[\s\S]*?Keep the bands/);
+    expect(client).toMatch(/if \(action === "save"\) void writeFormat\(rulesToWrite\);\s*else writeExport\(rulesToWrite\);/);
+    // The answer is forgotten whenever the pool is priced afresh.
+    expect(client.match(/setPriceChoice\(null\)/g)).toHaveLength(3);
+    expect(client).toMatch(/if \(mode === "replace"\) \{\s*setHandPriced\(false\);\s*setPriceChoice\(null\);/);
+  });
+
+  /** A dataset row (600 total, generation 1, Champions) with overrides. */
+  function datasetEntry(
+    id: number,
+    slug: string,
+    display_name: string,
+    overrides: Partial<PokemonEntry> = {}
+  ): PokemonEntry {
+    return {
+      id,
+      species_id: id,
+      slug,
+      display_name,
+      species_name: display_name,
+      form_kind: "default",
+      form_label: null,
+      type1: "Normal",
+      type2: null,
+      hp: 100,
+      attack: 100,
+      defense: 100,
+      special_attack: 100,
+      special_defense: 100,
+      speed: 100,
+      bst: 600,
+      generation: 1,
+      tags: [],
+      games: ["champions"],
+      dex_numbers: {},
+      sprite_url: null,
+      updated_at: null,
+      ...overrides,
+    };
+  }
+
+  it("prices applied rows by bands, or at the default when pricing is manual", () => {
+    const entry = datasetEntry(1, "x", "X", { games: [] });
+    expect(pointsFor(entry, defaultRules())).toBe(16);
+    expect(pointsFor(entry, { ...defaultRules(), pricing: { mode: "manual" } })).toBe(DEFAULT_POINTS);
+  });
+
+  it("Add missing only skips rows the pool stores under an older spelling", () => {
+    // Every name here resolves to a dataset row the way findDatasetEntry
+    // does (display name, slug, or the slug SPECIAL_SLUGS derives), yet
+    // none of them shares an entryKey with the dataset's display name, so a
+    // key-only check would append the same Pokémon a second time.
+    const pool = [
+      "Paldean Tauros",
+      "Paldean Tauros Blaze",
+      "Indeedee-F",
+      "Ogerpon Wellspring",
+      "Bloodmoon Ursaluna",
+      "rotom-wash",
+      "Garchomp",
+      "",
+    ].map((name) => makeEntry(name, 10));
+    const result = [
+      datasetEntry(10250, "tauros-paldea-combat-breed", "Paldean Tauros (Combat Breed)"),
+      datasetEntry(10251, "tauros-paldea-blaze-breed", "Paldean Tauros (Blaze Breed)"),
+      datasetEntry(10252, "tauros-paldea-aqua-breed", "Paldean Tauros (Aqua Breed)"),
+      datasetEntry(876, "indeedee-male", "Indeedee"),
+      datasetEntry(10186, "indeedee-female", "Indeedee (Female)"),
+      datasetEntry(10273, "ogerpon-wellspring-mask", "Ogerpon (Wellspring Mask)"),
+      datasetEntry(10272, "ursaluna-bloodmoon", "Ursaluna (Bloodmoon)"),
+      datasetEntry(10008, "rotom-wash", "Rotom (Wash)"),
+      datasetEntry(445, "garchomp", "Garchomp"),
+      datasetEntry(128, "tauros", "Tauros"),
+    ];
+    expect(missingEntries(pool, result).map((entry) => entry.slug)).toEqual([
+      "tauros-paldea-aqua-breed",
+      "indeedee-male",
+      "tauros",
+    ]);
+    expect(missingEntries([], result)).toEqual(result);
+    expect(missingEntries(pool, [])).toEqual([]);
+    // The same match tells Add by name which row already stands for a Pokémon.
+    expect(poolRowFor(pool, result[1])?.name).toBe("Paldean Tauros Blaze");
+    expect(poolRowFor(pool, result[4])?.name).toBe("Indeedee-F");
+    expect(poolRowFor(pool, result[3])).toBeNull();
+    expect(poolRowFor(pool, result[9])).toBeNull();
+    expect(client).toMatch(/const missing = missingEntries\(entries, result\)/);
+    expect(client).toMatch(/\? poolRowFor\(entries, row\)/);
+  });
+
+  it("refuses to rebuild from rules that select nothing instead of blanking the pool", () => {
+    const entries = [datasetEntry(1, "x", "X"), datasetEntry(2, "y", "Y", { games: ["scarlet_violet"] })];
+    const rules = defaultRules({ kind: "all" });
+    expect(applyProblems(rules, entries)).toEqual([]);
+    expect(applyProblems(rules, [])).toEqual(["No Pokémon match these rules in the current dataset."]);
+
+    // A saved source whose game keys are all unknown parses to no games.
+    const noGames = parseFormatRules({ ...rules, source: { kind: "games", games: ["pokemon_go"] } })!;
+    expect(noGames.source).toEqual({ kind: "games", games: [] });
+    expect(applyProblems(noGames, applyRules(entries, [], noGames))).toEqual([
+      "Choose at least one game, or start from All Pokémon.",
+    ]);
+
+    // An impossible filter is reported as the rules' problem, not as an empty result.
+    const inverted = { ...rules, filters: { ...rules.filters, bst: { min: 600, max: 500 } } };
+    expect(applyRules(entries, [], inverted)).toEqual([]);
+    expect(applyProblems(inverted, [])).toEqual(["Stat total minimum cannot be above the maximum."]);
+
+    // A roster preset that has not been filled yet (13.9) selects nothing.
+    const emptyRoster: Preset = {
+      key: "champions-m-z",
+      game: "champions",
+      name: "Regulation Set M-Z",
+      starts: "2026-12-02",
+      ends: null,
+      source: "https://example.test/m-z",
+      rule: { kind: "roster", slugs: [] },
+    };
+    const withPreset = { ...defaultRules(), preset: emptyRoster.key };
+    expect(applyRules(entries, [emptyRoster], withPreset)).toEqual([]);
+    expect(applyProblems(withPreset, [])).toHaveLength(1);
+
+    const huge = Array.from({ length: MAX_POOL_SIZE + 1 }, (_, i) => datasetEntry(i + 1, `p${i}`, `P ${i}`));
+    expect(applyProblems(rules, huge)).toEqual([
+      `A draft pool can hold at most ${MAX_POOL_SIZE.toLocaleString("en-US")} Pokémon; these rules select ${(MAX_POOL_SIZE + 1).toLocaleString("en-US")}.`,
+    ]);
+
+    // Apply and Rebuild share the gate; a blocked rebuild's dialog has no
+    // confirm button, and the confirm path checks once more.
+    expect(card).toMatch(/const canApply =\s*!disabled && entries !== null && applyProblems\(rules, result\)\.length === 0;/);
+    expect(card).toMatch(/problems: applyProblems\(savedRules, rebuilt\)/);
+    expect(card).toMatch(/onConfirm=\{rebuildBlocked \? undefined : finishRebuild\}/);
+    expect(card).toMatch(/if \(!savedRules \|\| !rebuild \|\| rebuild\.problems\.length > 0\) return;/);
+    expect(card).toMatch(/onApply\(rebuild\.result, savedRules, "replace"\)/);
+    expect(card).toMatch(/\{rebuild\.problems\.map\(\(problem\) => \(/);
+  });
+});
+
+describe("draft format JSON with rules (docs section 13.5)", () => {
+  const entries = [makeEntry("Garchomp", 16), makeEntry("Rotom (Wash)", 9)];
+
+  it("writes rules only when the pool was built from them", () => {
+    const byHand = toDraftFormat("Hand", entries);
+    expect("rules" in byHand).toBe(false);
+    expect(byHand).toEqual({
+      version: "1.0",
+      leagueName: "Hand",
+      pokemon: [
+        { name: "Garchomp", points: 16, tier: 5 },
+        { name: "Rotom (Wash)", points: 9, tier: 12 },
+      ],
+    });
+
+    const rules = defaultRules({ kind: "games", games: ["scarlet_violet"] });
+    const built = toDraftFormat("Built", entries, rules);
+    expect(built.rules).toEqual(rules);
+    expect(isDraftFormat(built)).toBe(true);
+    expect(isDraftFormat(byHand)).toBe(true);
+  });
+
+  it("reads rules back from a saved format and reports none for a hand-built one", () => {
+    const rules = { ...defaultRules(), preset: "sv-reg-h", pricing: { mode: "manual" as const } };
+    const parsed = parsePoolJson({ version: "1.0", leagueName: "Built", pokemon: [{ name: "Garchomp", points: 16 }], rules });
+    expect(parsed.rules).toEqual(rules);
+    expect(parsed.entries).toHaveLength(1);
+
+    expect(parsePoolJson({ pokemon: [{ name: "Garchomp", points: 16 }] }).rules).toBeNull();
+    expect(parsePoolJson({ pokemon: [], rules: { preset: "sv-reg-h" } }).rules).toBeNull();
+    expect(formatRules({ rules })).toEqual(rules);
+    expect(formatRules(null)).toBeNull();
+  });
+
+  it("switches to manual pricing only when a price was edited and the coach chose to keep it", () => {
+    const bands = defaultRules();
+    const manual = { ...defaultRules(), pricing: { mode: "manual" as const } };
+
+    expect(rulesToSave(null, true, "manual")).toBeNull();
+    expect(rulesToSave(bands, false, null)).toBe(bands);
+    // An edited price alone changes nothing until the coach answers.
+    expect(rulesToSave(bands, true, null)).toBe(bands);
+    expect(rulesToSave(bands, true, "bands")).toBe(bands);
+    expect(rulesToSave(bands, true, "manual")).toEqual({ ...bands, pricing: { mode: "manual" } });
+    expect(bands.pricing.mode).toBe("bands");
+    expect(rulesToSave(manual, true, "bands")).toBe(manual);
+    expect(rulesToSave(manual, true, null)).toBe(manual);
+
+    expect(needsPriceChoice(bands, true, null)).toBe(true);
+    expect(needsPriceChoice(bands, false, null)).toBe(false);
+    expect(needsPriceChoice(bands, true, "bands")).toBe(false);
+    expect(needsPriceChoice(bands, true, "manual")).toBe(false);
+    expect(needsPriceChoice(manual, true, null)).toBe(false);
+    expect(needsPriceChoice(null, true, null)).toBe(false);
+  });
+
+  it("keeps the type guards strict about entries and blind to unknown keys", () => {
+    expect(isDraftPokemon({ name: "Garchomp", points: 16, tier: 5, extra: 1 })).toBe(true);
+    expect(isDraftPokemon({ name: " ", points: 16, tier: 5 })).toBe(false);
+    expect(isDraftPokemon({ name: "Garchomp", points: "16", tier: 5 })).toBe(false);
+    expect(isDraftPokemon({ name: "Garchomp", points: 16 })).toBe(false);
+    expect(isDraftPokemon(null)).toBe(false);
+
+    expect(
+      isDraftFormat({ version: "1.0", leagueName: "x", pokemon: [], rules: "whatever", other: true })
+    ).toBe(true);
+    expect(isDraftFormat({ version: "1.0", leagueName: "x", pokemon: [{ name: "" }] })).toBe(false);
+    expect(isDraftFormat({ version: "1.0", pokemon: [] })).toBe(false);
+    expect(isDraftFormat([])).toBe(false);
   });
 });

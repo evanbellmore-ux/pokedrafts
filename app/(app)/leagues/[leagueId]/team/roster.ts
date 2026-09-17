@@ -1,7 +1,10 @@
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { CREATE_LEAGUE_DEFAULTS } from "@/app/lib/league/limits";
-import type { DraftPokemon } from "@/app/types/draft";
+import { isDraftPokemon } from "@/app/types/draft";
 import type { League, RosterPokemon } from "@/app/types/league";
+
+// The entry guard lives with the type; re-exported so existing imports keep working.
+export { isDraftPokemon };
 
 /**
  * Pure helpers for reading `drafted_teams` rows on the My Team and Free
@@ -32,19 +35,6 @@ export type TeamRoster = {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
-}
-
-/** A pool or roster entry with the three fields every entry carries. */
-export function isDraftPokemon(value: unknown): value is DraftPokemon {
-  return (
-    isRecord(value) &&
-    typeof value.name === "string" &&
-    value.name.trim().length > 0 &&
-    typeof value.points === "number" &&
-    Number.isFinite(value.points) &&
-    typeof value.tier === "number" &&
-    Number.isFinite(value.tier)
-  );
 }
 
 /** Validates a `drafted_teams.pokemon` array, keeping the stored order. */

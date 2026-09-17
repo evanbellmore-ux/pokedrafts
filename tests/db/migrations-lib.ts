@@ -12,9 +12,21 @@ export const MIGRATIONS_DIR = resolve(process.cwd(), "supabase", "migrations");
 export const HARDENING_MIGRATION = "20260909120000_release_hardening.sql";
 // Feature migrations sort after the hardening file and are applied in filename order.
 export const PLAYOFFS_MIGRATION = "20260912120000_playoffs.sql";
+export const POOL_BUILDER_MIGRATION = "20260916120000_pool_builder.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };
+
+// Supabase databases are UTF8. An embedded cluster initialised on Windows
+// inherits the OS code page (WIN1252) instead, and a database created from
+// template1 inherits that, which cannot store every character in the Pokémon
+// dataset (Nidoran♀). template0 lets a test database choose the project's
+// encoding whatever the cluster default is; the locale stays the cluster's
+// (UTF8 is allowed with any locale on Windows, and with the C or a UTF-8
+// locale elsewhere).
+export function createDatabaseSql(name: string): string {
+  return `create database ${name} encoding 'UTF8' template template0`;
+}
 
 export function readMigrations(): MigrationFile[] {
   return readdirSync(MIGRATIONS_DIR)

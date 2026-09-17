@@ -51,7 +51,7 @@ app/
     layout.tsx                    server: AppNav shell (brand link, Dashboard, Pool Builder, Calculator, theme, sign out), max-w-6xl container
     loading.tsx
     dashboard/page.tsx            + DashboardClient.tsx
-    builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
+    builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), RuleBuilder.tsx (the "Build from rules" card, section 13.7), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
     calculator/page.tsx           Champions-only: CalculatorClient.tsx, PokemonPanel.tsx, BattleConditions.tsx, MoveResults.tsx; local engine/catalog, no database dependency (docs/champions-calculator.md)
     leagues/new/page.tsx          + NewLeagueClient.tsx
     leagues/not-found.tsx         catches notFound() thrown by the league layout (a segment's own not-found.tsx only wraps its page, so the parent segment renders this)
@@ -274,9 +274,9 @@ Pages use `bg-bg`, `bg-panel`, `border-line`, `bg-accent text-on-accent`, `text-
 
 ## 9. Testing
 
-- `vitest` unit tests under `tests/unit/`: schedule generator (rounds, pairings, byes, double mirror), snake index, budget rule, standings sort and tie labels, name normalizer and slug table, invite `next` validation, friendlyError mapping, proxy auth gate (mocked client and the real `@supabase/ssr` client against a fake GoTrue with HS256 and ES256 tokens), `getCurrentUser` classification and call sites, sign-out contract, league limits, Next.js 16 conventions (`next-conventions.test.ts`: no react-hooks `eslint-disable`, `proxy.ts`, Promise `params`, metadata only from server components), theme contrast and a11y token checks (`theme-contrast*.test.ts`, `ui-a11y*.test.ts`, which read the ui components and the builder files), the admin pages' helpers (`admin-pages.test.ts`), the league pages' review findings (`league-pages-review.test.ts`: the news-feed undo set, per-row accessible names, single-layout lists, dialog and label copy), and `legacy-overrides.test.ts` (no legacy palette utility or hex className anywhere under `app/`, no override block in `globals.css`).
+- `vitest` unit tests under `tests/unit/`: schedule generator (rounds, pairings, byes, double mirror), snake index, budget rule, standings sort and tie labels, name normalizer and slug table, invite `next` validation, friendlyError mapping, proxy auth gate (mocked client and the real `@supabase/ssr` client against a fake GoTrue with HS256 and ES256 tokens), `getCurrentUser` classification and call sites, sign-out contract, league limits, Next.js 16 conventions (`next-conventions.test.ts`: no react-hooks `eslint-disable`, `proxy.ts`, Promise `params`, metadata only from server components), theme contrast and a11y token checks (`theme-contrast*.test.ts`, `ui-a11y*.test.ts`, which read the ui components and the builder files), the admin pages' helpers (`admin-pages.test.ts`), the league pages' review findings (`league-pages-review.test.ts`: the news-feed undo set, per-row accessible names, single-layout lists, dialog and label copy), `legacy-overrides.test.ts` (no legacy palette utility or hex className anywhere under `app/`, no override block in `globals.css`), and Pool Builder v2 (section 13.8: `pokemon-rules.test.ts`, `pokemon-data-build.test.ts` on the fixture under `tests/fixtures/pokeapi/`, `pokemon-dataset-integrity.test.ts` on the committed `data/pokemon/*.json`, the dex-map cases in `pokemon.test.ts`, the rule card cases in `admin-pages.test.ts`).
 - `node scripts/check-client-contract.mjs` must exit 0 (it also runs inside `npm run test:db`).
-- `tests/db/` runs the migrations against an embedded Postgres (`embedded-postgres` package) with a stub `auth` schema (`auth.uid()` reading `request.jwt.claim.sub`) and exercises every function in section 5 as different users, including the concurrency cases (two joins, two swaps for the same Pokémon, auto-pick from two clients, undo after a newer move) and the RLS matrix (non-member cannot read a league; coach cannot update role). Script: `npm run test:db`.
+- `tests/db/` runs the migrations against an embedded Postgres (`embedded-postgres` package, initialised `UTF8` like Supabase) with a stub `auth` schema (`auth.uid()` reading `request.jwt.claim.sub`) and exercises every function in section 5 as different users, including the concurrency cases (two joins, two swaps for the same Pokémon, auto-pick from two clients, undo after a newer move), the RLS matrix (non-member cannot read a league; coach cannot update role) and the Pool Builder dataset table (`pool-builder.test.ts`, section 13.8). Script: `npm run test:db`.
 - `npm run check` = lint + `tsc --noEmit` + unit tests; `npm run build` must pass.
 - Browser smoke test (Chrome pane) after migrations are applied to the live project: sign up, confirm, create league, invite, join, set order, run a 2-coach draft with one coach absent, report a result, standings, free-agent swap, undo.
 
@@ -287,7 +287,7 @@ Pages use `bg-bg`, `bg-panel`, `border-line`, `bg-accent text-on-accent`, `text-
    Change the "Confirm signup" and "Reset password" email templates to token-hash links so they work when opened in a different browser or device than the one that started the flow (PKCE `{{ .ConfirmationURL }}` links need the verifier cookie and otherwise land on `/login?error=auth-device`):
    `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup&next={{ .RedirectTo }}` for signup and `...&type=recovery&next={{ .RedirectTo }}` for recovery. `{{ .RedirectTo }}` is the `emailRedirectTo` / `redirectTo` value (`<origin>/auth/callback?next=<path>`), which the route unwraps to `<path>`.
 3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` on the host. The service-role key is only needed by `scripts/` (`.env.scripts`).
-4. Seed `pokemon_dex` with `npm run seed:dex`, upload sprites to the `sprites` bucket, then `npm run seed:sprites` and `npm run seed:types`.
+4. Seed `pokemon_dex` with `npm run seed:dex`, upload sprites to the `sprites` bucket, then `npm run seed:sprites` and `npm run seed:types`. Once `20260916120000_pool_builder.sql` is applied, `npm run seed:pokemon` loads the Pool Builder dataset (section 13.9); the app reads `pokemon_dex` only until then.
 5. Run `node scripts/check-client-contract.mjs` on the branch being deployed (exit 0) and ship the client and the hardening migration in the same window (README, "The deployed client must be on the RPC catalog first").
 
 ## 11. Out of scope for this release
@@ -395,3 +395,187 @@ All follow section 5 conventions (security definer, `set search_path = public, e
 - `tests/db/client-contract.test.ts` expects the 31 catalog functions the migrations grant, every one with a wrapper in `app/lib/rpc.ts`; a future migration must keep a `-- N. Grants` (or `-- Grants`) heading with the same `'public.<fn>(...)'` arrays for the gate to read.
 - `tests/unit`: `standings.test.ts` extended for both tiebreaker orders, differential, strength of schedule, coin flip and `tied`; `standings-lens.test.ts` and `standings-review.test.ts` for the contract corners (partial head-to-head, the "0 when none" rule, one strength-of-schedule term per match, the 3-decimal comparison); `bracket.test.ts` for round grouping, names and slot labels; `season.test.ts` for the new phases; `playoffs-ux-review.test.ts` for the `#playoffs` anchor and scroll, the wrapped names and the pluralised coach count; `admin-pages`, `league-limits`, `rpc` and `league-pages-review` updated for the new fields and controls.
 - `docs/schema.md`: the new columns, functions, error codes and news type; README: the migration list and the note that feature migrations follow the hardening file.
+
+## 13. Pool Builder v2: the Pokémon dataset, games, regulation presets and rule-built pools
+
+Added 2026-09-16. Everything in this section is binding for the feature; earlier sections stay as they are unless a line here says otherwise. The league-side pool contract does not change: a pool entry that reaches a league is still exactly `{ name, points, tier }` (section 8.1, `_validate_pool`). What changes is where the builder gets its Pokémon from and how it decides which ones go in.
+
+### 13.1 Goals and decisions
+
+- A pool can be built from a **source** (one or more games, or every Pokémon), an optional **regulation preset**, and **filters** (base stats, generation, types, categories, form kinds), then **priced** by stat total with editable bands, then tweaked by hand exactly as today.
+- Games at launch: **Pokémon Champions**, **Pokémon Scarlet and Violet**, and **All Pokémon** (every distinct Pokémon that exists, for leagues played on Pokémon Showdown). The dataset carries every game PokéAPI knows so adding a checkbox later is a one-line change.
+- Forms: **regional forms** (Alolan, Galarian, Hisuian, Paldean) and **gender forms that are different Pokémon** (Meowstic, Indeedee, Basculegion, Oinkologne) are separate entries and included by default; **Mega Evolutions** are separate entries behind a toggle that defaults on; **other battle-relevant forms** (Rotom appliances, Toxtricity Low Key, Urshifu styles, Ogerpon masks, Origin, Therian, Crowned, riders, and so on) are separate entries and included by default. Cosmetic variants (Vivillon patterns, Pikachu caps, Alcremie flavours, totems) and in-battle-only transformations (Gigantamax, Zen Mode, Blade, School, Ash-Greninja, Terastal forms) are never entries.
+- Presets at launch: Champions **Regulation Set M-A, M-B, M-C** (rosters) and Scarlet/Violet **Regulation Set A through I** (rules). Presets are data, not code, so a new regulation is a data change plus a rebuild.
+- Rules are saved with the format, so a format can be rebuilt from its rules after the dataset is refreshed.
+
+### 13.2 Glossary additions
+
+| Term | Meaning | UI label |
+| --- | --- | --- |
+| Dataset | The `pokemon` table: one row per distinct, usable Pokémon with stats, types, tags and game availability | "Pokémon" |
+| Entry / form kind | `default`, `mega`, `regional`, `gender`, `other`; the row's relation to its species | "Form" |
+| Game | A game key the dataset knows availability for (`champions`, `scarlet_violet`, and the others in 13.4) | the game's name |
+| Source | What the builder starts from: a set of games or All Pokémon | "Start from" |
+| Preset | A regulation set: a roster or a filter rule with a name, dates and a source link | "Regulation" |
+| Tag | A category on a row: `legendary`, `sub_legendary`, `restricted`, `mythical`, `paradox`, `ultra_beast` | "Categories" |
+| Stat total | Sum of the six base stats (`bst`) | "Stat total" |
+| Rules | The saved recipe of a format: source, preset, filters, form toggles, pricing bands | "Rules" |
+| Bands | The stat-total thresholds that map to points 1..20 | "Price by stat total" |
+
+### 13.3 Data sources and the build script
+
+The dataset is generated, never typed. `scripts/build-pokemon-data.mjs` (Node, no dependencies beyond the repo's) produces the committed files under `data/pokemon/` from:
+
+- **PokéAPI** (`https://pokeapi.co/api/v2`): `pokemon-species/1..1025`, every `pokemon` variety those species list, every `pokemon-form` those varieties list, every `pokedex`, `version-group` and `generation`. Raw responses are cached under `POKEAPI_CACHE_DIR` (default `scripts/.cache/pokeapi/`, git-ignored); a rerun only fetches what is missing. Requests carry a descriptive `User-Agent` (PokéAPI returns 403 without one), run at most 6 in parallel, and retry with backoff. A full cold crawl is about 4,000 requests and takes under two minutes.
+- **Serebii regulation pages** for Champions rosters: `https://www.serebii.net/pokemonchampions/rankedbattle/regulationm-{a,b,c}.shtml`. Each roster row is an anchor `<a href="/pokedex-champions/<slug>/">Name<br />Japanese</a>` preceded by an icon `/pokedex-champions/icon/<dex>[-<suffix>].png`; the suffix names the form (`a` Alolan, `g` Galarian, `h` Hisuian, `p` Paldean, `m` Mega, `mx`/`my` Mega X/Y, other suffixes such as `b`/`e` are breed or form markers resolved by the parser's suffix table, and an unknown suffix fails the build). M-A's page carries the launch roster; M-B and M-C carry the additions, so a regulation's roster is cumulative: M-B = M-A plus M-B's list, M-C = M-B plus M-C's list. A row without an icon suffix names the species, and Serebii only draws a form icon for forms with a Champions Pokédex page of their own, so the roster also takes every `other` and `gender` row of that species that carries `champions` (Rotom appliances, Lycanroc Dusk and Midnight, Gourgeist sizes, Meowstic (Female), Basculegion (Female)); when the same species' default Mega is also named (the `m` icon), the Megas of those forms that carry `champions` join too (Mega Meowstic (Female)). Regional forms and any other Mega only join when Serebii's icon names them. Plain Floette is the one `champions` row on no roster, because Serebii lists only Eternal Flower Floette and Mega Floette; the integrity test pins that. The parsed rows are committed as `data/pokemon/sources/serebii-m-a.json` (and `-b`, `-c`) with `{ dex, slug, name, suffix }`; the script reads the saved pages under `scripts/.cache/serebii/` when present, else the committed sources, and re-fetches them only with `--refresh-serebii`, so the build does not depend on Serebii being up.
+- **Curated overrides** in `data/pokemon/overrides.json` (hand-maintained, reviewed in pull requests): tag lists PokéAPI does not carry (`paradox`, `ultra_beast`, `restricted`), a `keep` list of varieties exempted from rule 2's battle-only skip with the reason (Crowned Zacian and Zamazenta, which PokéAPI flags battle-only but 13.1 lists as included forms), display-name fixes, extra game availability (for example the Reg M-C additions PokéAPI lists in its `champions` Pokédex but has no Champions learnsets for yet, and their new Megas), and whole rows for Pokémon PokéAPI lacks. An override names a row by `slug` and may set any dataset column (`games` and `tags` are added to the built values, any other column replaces it); a row whose slug PokéAPI does not know must give every column.
+
+The script writes:
+
+- `data/pokemon/pokemon.json`: the dataset rows (13.4), sorted by `species_id` then `id`.
+- `data/pokemon/regulations.json`: the presets (13.6), rosters resolved to dataset `slug`s.
+- `data/pokemon/report.json`: counts per game, per form kind, per tag, per preset, and the list of roster names it could not map. **An unmapped roster name or an unknown icon suffix fails the script** (exit 1); a preset whose count moved by more than 20% from the committed report prints a warning.
+
+Rules the script applies, in this order, to decide which PokéAPI `pokemon` varieties become rows:
+
+1. Every species' default variety is a row (`form_kind = 'default'`).
+2. A variety whose `pokemon-form` has `is_battle_only` is skipped, unless it is a Mega Evolution or Primal Reversion (PokéAPI flags every one of those battle-only, and without the exemption no `mega` row would reach rule 3) or the overrides' `keep` list names it (Crowned Zacian and Zamazenta); so is any variety whose slug ends in `-gmax`, `-eternamax` (Eternatus's Dynamax form, which PokéAPI does not flag battle-only), `-totem`, or names a cosmetic Pikachu (`-cosplay`, `-rock-star`, `-belle`, `-pop-star`, `-phd`, `-libre`, `-original-cap`, `-hoenn-cap`, `-sinnoh-cap`, `-unova-cap`, `-kalos-cap`, `-alola-cap`, `-partner-cap`, `-world-cap`, `-starter`), or `eevee-starter`.
+3. A variety whose `pokemon-form` has `is_mega`, or whose slug ends in `-primal`, is a `mega` row (Primal Groudon and Primal Kyogre are `mega` rows with `form_label` "Primal", as 13.4's naming assumes).
+4. A variety whose slug carries `-alola`, `-galar`, `-hisui` or `-paldea` (including the Paldean Tauros breeds) is a `regional` row.
+5. A variety whose slug ends in `-female` or `-male` is a `gender` row.
+6. Any other variety whose stats, types **or abilities** differ from its species' default variety is an `other` row (this keeps Meowstic-F, whose stats match but abilities differ, and drops cosmetic varieties such as Vivillon patterns, Flabébé colours, Alcremie flavours, Furfrou trims, Unown letters, Sinistea Antique, Magearna Original, Zarude Dada, Xerneas Active).
+7. Anything else is skipped. A variety that passes rule 3 or 6 but whose stats, types and abilities equal a variety of its species that is already a row is a cosmetic duplicate and is skipped too, with the report naming the row it duplicates (`sameAs`): the six other Minior colour cores duplicate Minior (Core), Squawkabilly White Plumage duplicates Yellow Plumage, and the Megas of cosmetic varieties duplicate the kept variety's Mega (Droopy and Stretchy Mega Tatsugiri, Mega Magearna Original). A Mega whose own base variety is a row is kept even when its data matches another Mega, so Mega Meowstic (Female) stays. (Rule 6 alone cannot deliver its Minior example: every Minior core differs from the default Meteor form, which is why the duplicate clause exists.) The report lists every skipped variety with the reason so a wrong skip is visible in review.
+
+Expected sizes from the 2026-09-16 crawl (`EXPECTED_KIND_COUNTS` in `scripts/lib/pokemon-data/rows.mjs`; the build and the integrity test assert within 5%): 1025 default, 96 mega (PokéAPI's 97 `is_mega` forms plus the two Primal Reversions, minus the three duplicate Megas of rule 7), 57 regional (the crawl's 59 count `pikachu-alola-cap` and `darmanitan-galar-zen`, which rule 2 drops first), 4 gender, 55 other (63 by rules 1 to 6, minus the seven duplicates of rule 7 and Eternamax); 1,237 rows in total.
+
+### 13.4 The dataset table
+
+Migration `supabase/migrations/20260916120000_pool_builder.sql`, after the playoffs file, idempotent like the others:
+
+```sql
+create table if not exists public.pokemon (
+  id integer primary key,                      -- PokéAPI pokemon id, stable
+  species_id integer not null,                 -- national dex number
+  slug text not null unique,                   -- PokéAPI pokemon name, e.g. 'charizard-mega-x'
+  display_name text not null unique,           -- app convention, e.g. 'Mega Charizard X'
+  species_name text not null,                  -- 'Charizard'
+  form_kind text not null check (form_kind in ('default','mega','regional','gender','other')),
+  form_label text,                             -- 'Mega X', 'Alolan', 'Wash', 'Female'; null for default
+  type1 text not null,
+  type2 text,
+  hp smallint not null, attack smallint not null, defense smallint not null,
+  special_attack smallint not null, special_defense smallint not null, speed smallint not null,
+  bst smallint generated always as (hp + attack + defense + special_attack + special_defense + speed) stored,
+  generation smallint not null check (generation between 1 and 9),
+  tags text[] not null default '{}',
+  games text[] not null default '{}',
+  dex_numbers jsonb not null default '{}',     -- { "paldea": 12, "champions": 6, ... }
+  sprite_url text,
+  updated_at timestamptz not null default now()
+);
+```
+
+- Types are the capitalised app spelling used by `pokemon_dex` and `TYPE_OVERRIDES` ("Fire", "Flying").
+- `tags`: `legendary` (PokéAPI `is_legendary`, which includes sub-legendaries), `mythical` (`is_mythical`), `restricted` (curated: the Regulation I restricted list, 31 entries with forms, applied to every form of those species), `sub_legendary` (`legendary` and not `restricted`), `paradox` (curated, 20 species), `ultra_beast` (curated, 11 species). Forms inherit their species' tags.
+- `games`: a row is available in a game when it has a learnset for one of the game's version groups, or its species is in one of the game's Pokédexes and the row is the default form, or an override says so. Game keys and their PokéAPI sources: `champions` (version group `champions`, Pokédex `champions`), `scarlet_violet` (`scarlet-violet`, `the-teal-mask`, `the-indigo-disk`; Pokédexes `paldea`, `kitakami`, `blueberry`), `legends_za` (`legends-za`, `mega-dimension`; `lumiose-city`, `hyperspace`), `sword_shield` (`sword-shield`, `the-isle-of-armor`, `the-crown-tundra`; `galar`, `isle-of-armor`, `crown-tundra`), `legends_arceus` (`hisui`), `bdsp` (`original-sinnoh`, the 151-entry dex PokéAPI files `brilliant-diamond-shining-pearl` under; `extended-sinnoh` is Platinum's), `lets_go` (`letsgo-kanto`), `ultra_sun_ultra_moon` (`updated-alola`), `sun_moon` (`original-alola`), `oras` (`updated-hoenn`), `x_y` (the three Kalos dexes), plus one key per older generation's main pair (`black_2_white_2`, `black_white`, `heartgold_soulsilver`, `platinum`, `diamond_pearl`, `emerald`, `firered_leafgreen`, `ruby_sapphire`, `crystal`, `gold_silver`, `yellow`, `red_blue`; `GameKey` in `app/types/pokemon.ts` and `GAMES` in `scripts/lib/pokemon-data/games.mjs` spell them identically). Only `champions`, `scarlet_violet` and All Pokémon get a control in the builder at launch.
+- `dex_numbers`: entry numbers per Pokédex for the species, used by the Scarlet/Violet Reg A to C rules.
+- `display_name` follows the app's existing prose convention so every current lookup keeps working: regional forms `Alolan Raichu`, `Galarian Mr. Mime`, `Hisuian Zoroark`, `Paldean Wooper`, and the three Paldean Tauros breeds spelled alike, `Paldean Tauros (Combat Breed)`, `Paldean Tauros (Blaze Breed)`, `Paldean Tauros (Aqua Breed)` (the legacy spelling `Paldean Tauros` that leagues may store resolves to the Combat Breed row through `toPokeApiSlug`); megas `Mega Venusaur`, `Mega Charizard X`, Legends Z-A's `Mega Absol Z`, and `Mega Meowstic` / `Mega Meowstic (Female)` for the megas of a gendered species; primal `Primal Groudon`; gender `Indeedee (Female)`; every other form `Species (Form)` with the form's English name, `Rotom (Wash)`, `Toxtricity (Low Key)`, `Urshifu (Rapid Strike)`, `Ogerpon (Wellspring Mask)`, `Calyrex (Shadow Rider)`, `Giratina (Origin)`, `Zacian (Crowned Sword)`, `Floette (Eternal Flower)`, `Minior (Core)`. `normalizePokemonName("Rotom (Wash)")` equals `normalizePokemonName("rotom-wash")`, which is why the parenthesised prose is the convention; every regional and mega display name also round-trips through `toPokeApiSlug` (`SPECIAL_SLUGS` knows the Z megas, the breeds and `meowstic-male-mega` / `tatsugiri-curly-mega`). Where `TYPE_OVERRIDES` or an existing format already uses a different spelling for a form, the override file fixes the display name so the dataset agrees with what leagues already store.
+- `sprite_url`: PokéAPI's official artwork (`sprites.other["official-artwork"].front_default`), falling back to `front_default`, then to the species row's sprite. The app renders sprites with a plain `img`, so no image host configuration changes.
+- RLS: `select` for `authenticated` only (same as `pokemon_dex`); no client writes; no policies for anon. Indexes: `(species_id)`, `(bst)`, GIN on `tags` and on `games`. Grants section lists the table for the contract script. `pokemon_dex` and `pokemon_forms` stay untouched in this release; the dataset replaces their reads (13.7) and a later cleanup drops them.
+
+Seeding: `scripts/seed-pokemon.ts` (`npm run seed:pokemon`) validates every row of `data/pokemon/pokemon.json` against the table's constraints, parks the rows whose `slug` or `display_name` the file moved to another `id` (both are unique and checked row by row, so a swap or a move would otherwise fail with `23505`), upserts every row on `id` into `public.pokemon` with the service-role key from `.env.scripts` (the only file the scripts read, section 10 step 3) in batches of 500, then deletes rows whose `id` is not in the file, and prints the counts. It is the only writer. The DB suite inserts the same file into embedded Postgres to prove the file satisfies the constraints (the test cluster is initialised `UTF8` like Supabase, so Nidoran♀ and ♂ insert).
+
+### 13.5 The rules of a format
+
+`draft_formats.json` gains an optional `rules` object next to `version`, `leagueName` and `pokemon` (the check constraint only validates `pokemon`, so no migration is needed for it, and `_format_pool` still copies only the list into a league):
+
+```jsonc
+{
+  "version": "2.0",
+  "source": { "kind": "games", "games": ["champions"] } | { "kind": "all" },
+  "preset": "champions-m-c" | null,
+  "filters": {
+    "bst": { "min": null, "max": 600 },
+    "stats": { "hp": null, "attack": null, "defense": null, "special_attack": null, "special_defense": null, "speed": 100 },  // per-stat maximums
+    "generation": { "min": null, "max": null },
+    "types": [],                                   // empty = any; otherwise the row's type1 or type2 must be listed
+    "excludeTags": ["mythical"],                   // any of the six tags
+    "forms": { "mega": true, "regional": true, "gender": true, "other": true }
+  },
+  "pricing": { "mode": "bands", "bands": [700, 680, 650, 620, 600, 580, 560, 540, 520, 500, 480, 460, 440, 420, 400, 380, 350, 320, 280, 0] } | { "mode": "manual" }
+}
+```
+
+- The block above is the `rules` object itself: `rules.version` is `"2.0"` (`RULES_VERSION`), while the format's own `version` stays `"1.0"` (`POOL_VERSION`), so a league or an older client that reads `version` sees nothing new.
+- `bands` has exactly 20 descending integers: entry `i` is the minimum stat total for `20 - i` points, and the last entry is 0 so every Pokémon gets at least 1 point. The default bands above are the starting values; the builder shows them as an editable table.
+- Applying rules (`app/lib/pokemon/rules.ts`, pure and unit-tested): start from the dataset rows in the source; a preset with a roster intersects with the roster, a preset with a filter rule applies that rule first (13.6); then the format's own filters; the result is sorted by stat total descending then display name. Pricing in bands mode maps each row's `bst` to points; `tier = 21 - points` as everywhere else.
+- A format saved from the builder always carries `rules` (with `pricing.mode = "manual"` once the user edits a price by hand and chooses to keep manual prices). Formats without `rules` (every existing one) load and behave exactly as today.
+
+### 13.6 Presets
+
+`data/pokemon/regulations.json` is an array of:
+
+```jsonc
+{ "key": "champions-m-c", "game": "champions", "name": "Regulation Set M-C", "starts": "2026-09-09", "ends": "2026-12-02",
+  "source": "https://www.serebii.net/pokemonchampions/rankedbattle/regulationm-c.shtml",
+  "rule": { "kind": "roster", "slugs": ["venusaur", "venusaur-mega", ...] },
+  "notes": "Megas allowed. Species and item clauses." }
+```
+
+or a filter rule:
+
+```jsonc
+{ "key": "sv-reg-h", "game": "scarlet_violet", "name": "Regulation Set H", "starts": "2024-09-01", "ends": "2025-01-05",
+  "source": "https://www.serebii.net/scarletviolet/rankedbattle/regulationh.shtml",
+  "rule": { "kind": "filter", "dexes": null, "dexRanges": null, "excludeTags": ["legendary", "mythical", "paradox"], "restrictedPerTeam": 0 } }
+```
+
+Filter-rule fields: `dexes` limits the species to those Pokédexes (null = every row available in the game, which for Scarlet/Violet means HOME transfers too); `dexRanges` limits Paldea entry numbers (`{ "paldea": [[1, 375], [388, 392]] }`); `excludeTags` removes rows carrying any listed tag; `restrictedPerTeam` is informational (a draft league drafts the Pokémon; the number is shown in the preset description). The Scarlet/Violet presets:
+
+| Key | Eligible | Rule |
+| --- | --- | --- |
+| `sv-reg-a` | Paldea dex 1-375 and 388-392 | `dexes: ["paldea"]`, `dexRanges`, `excludeTags: ["paradox", "legendary", "mythical"]` |
+| `sv-reg-b` | Paldea dex, Paradox allowed | `dexes: ["paldea"]`, `excludeTags: ["legendary", "mythical"]` |
+| `sv-reg-c` | Paldea dex, Treasures of Ruin allowed | `dexes: ["paldea"]`, `excludeTags: ["restricted", "mythical"]` |
+| `sv-reg-d` | Everything transferable, sub-legendaries allowed | `dexes: null`, `excludeTags: ["restricted", "mythical"]` |
+| `sv-reg-e` | Paldea and Kitakami dexes | `dexes: ["paldea", "kitakami"]`, `excludeTags: ["restricted", "mythical"]` |
+| `sv-reg-f` | Paldea, Kitakami and Blueberry dexes | `dexes: ["paldea", "kitakami", "blueberry"]`, `excludeTags: ["restricted", "mythical"]` |
+| `sv-reg-g` | Everything transferable, one restricted per team | `dexes: null`, `excludeTags: ["mythical"]`, `restrictedPerTeam: 1` |
+| `sv-reg-h` | Everything transferable, no legendaries, mythicals or Paradox | `dexes: null`, `excludeTags: ["legendary", "mythical", "paradox"]` |
+| `sv-reg-i` | Everything transferable, two restricted per team | `dexes: null`, `excludeTags: ["mythical"]`, `restrictedPerTeam: 2` |
+
+The build script derives Reg A, B and C twice, by ranges and by tags, and fails if the two disagree, which catches a wrong tag list. Dates and sources for the SV sets come from Victory Road's rules page and Serebii; the Champions dates are M-A 2026-04-08 to 06-17, M-B 06-17 to 09-09, M-C 09-09 to 12-02.
+
+### 13.7 Client
+
+- **Dex loading** (`app/lib/pokemon/index.ts`): `loadDex()` reads `public.pokemon` (`display_name, slug, sprite_url, type1, type2`) instead of `pokemon_dex`, keyed by the normalized `display_name` **and** the normalized `slug`, and falls back to `pokemon_dex` only when the table is empty (a project that has not run the seed yet). `DexEntry` is unchanged, so the draft room, team, free-agent, pool and matches pages keep resolving types and sprites by name, now for every form. `TYPE_OVERRIDES` stays as the last fallback. `useDex` is unchanged.
+- **Dataset loading** (`app/lib/pokemon/dataset.ts`): `loadDataset()` reads every `pokemon` row once per session (paginated like the dex) into `PokemonEntry[]` (`app/types/pokemon.ts`: the columns of 13.4, `tags` and `games` as string arrays). A table that does not exist yet (PGRST205 / 42P01, the migration not applied) is returned as an empty dataset, the same as an unseeded table, so the builder shows its empty state rather than an error during the window between deploying the client and applying the migration; any other error is thrown. Only the builder calls it.
+- **Rule engine** (`app/lib/pokemon/rules.ts`): `applyRules(entries, presets, rules)`, `priceByBands(bst, bands)`, `defaultRules(source)`, `describePreset(preset)`, `GAME_LABELS`, `TAG_LABELS`, `FORM_KIND_LABELS`, `DEFAULT_BANDS`. Pure, no React.
+- **Builder page** (`app/(app)/builder/`): a new `RuleBuilder.tsx` card above the existing pool table, with:
+  1. **Start from**: a radio between "Games" (checkboxes: Pokémon Champions, Scarlet and Violet) and "All Pokémon"; at least one game when "Games" is chosen.
+  2. **Regulation**: a select of the presets for the chosen games plus "None"; the description under it shows the dates, the rule in words ("Paldea and Kitakami Pokédexes, no restricted or mythical Pokémon") and the source link. Choosing a preset sets its game and leaves the filters as they are.
+  3. **Filters**: stat total min and max, six per-stat maximum inputs, generation min and max, a type multi-select, category checkboxes (Legendary, Sub-legendary, Restricted, Mythical, Paradox, Ultra Beast; checked = included), and the four form toggles (Megas, Regional forms, Gender forms, Other forms).
+  4. **Result**: a live count ("312 Pokémon match") that updates as controls change, and a preview table (display name, form, types, six stats, total, tags) paged at 100 rows with the same table-or-cards rule as the pool table.
+  5. **Price by stat total**: a toggle plus the 20-row bands table (points, minimum total), with "Reset bands".
+  6. **Apply to pool**: replaces the pool with the result priced by bands (or at `DEFAULT_POINTS` when pricing is manual); when the pool is not empty a `Dialog` confirms ("Replace pool"), with a second choice "Add missing only" that keeps existing rows and prices and appends the rest. After applying, the existing table is the place for manual tweaks. **Rebuild from rules** on a loaded format that carries `rules` re-applies them, confirming first ("Rebuild from rules?").
+  7. **Keep the prices you edited?**: when a price was edited by hand on a bands-priced pool, Save and Export first ask "Keep manual prices" (the format is saved with `pricing.mode = "manual"`, so a rebuild adds every Pokémon at `DEFAULT_POINTS`) or "Keep the bands" (the bands are saved; the edited prices stay in this pool and a rebuild prices by the bands again). The answer is remembered until the pool changes again.
+  - The card's controls are `Field`-labelled, the count is a `role="status"` region, and the whole card collapses on mobile behind a "Build from rules" / "Hide rules" disclosure so a coach who only wants to add one Pokémon is not scrolled past it. The bands table's points cell is a `<td>` (the a11y review test requires every builder `<th>` to be `scope="col"`).
+- **Format library**: rows that carry `rules` show a small line under the name ("Champions · Regulation Set M-C · max total 600"), from `describeRules`.
+- **Add by name** keeps working and now resolves against the dataset first (any display name or slug), then the existing PokéAPI fallback.
+- **Existing formats**: loading one without `rules` shows the rule card in its default state with "This format was built by hand"; saving keeps it without `rules` unless the user applies rules.
+- Sprites for form rows come from the dataset's `sprite_url`; the `PokemonSprite` component gets the URL from the dex map as before.
+
+### 13.8 Tests and gates
+
+- Unit: `tests/unit/pokemon-rules.test.ts` (rule engine on a fixture of 40 dataset rows covering every form kind and tag: source, preset roster and filter rules, each filter, bands, `parseFormatRules`, `describeRules`, the committed presets), `tests/unit/pokemon-data-build.test.ts` (the build script's pure functions on the stripped fixture cache under `tests/fixtures/pokeapi/`, 22 species and 95 varieties written by `--write-fixture`: row selection rules 1-7 including the duplicate drop, display names, tags, games, Serebii parsing, suffix table and the suffix-less expansion, Reg A range-versus-tag agreement, the report's 5% window, the fetch helpers), `tests/unit/pokemon-dataset-integrity.test.ts` (reads the committed `pokemon.json`, `regulations.json`, `report.json` and `overrides.json`: unique ids, slugs, display names and normalized lookup keys; every row has the table's columns, six stats and a type; the naming conventions and the `toPokeApiSlug` round trip for every regional and mega row; every preset roster slug exists and is in `champions`; counts per game and per preset within 5% of `report.json` and per form kind within 5% of `EXPECTED_KIND_COUNTS`; Reg A to C derive to the same sets by ranges and by tags; the 23 Reg M-C species additions), `tests/unit/pokemon.test.ts` (the dex map keyed by display name and slug, the `pokemon_dex` fallback, `findDatasetEntry`), and `tests/unit/admin-pages.test.ts` ("Pool Builder rule card" and "draft format JSON with rules": the card's labels, the status region, the confirm and price dialogs, `rulesToSave`).
+- DB: `tests/db/pool-builder.test.ts` (the file sorts last and applies after hardening and playoffs, twice, and again after those two are re-run; the seed file inserts cleanly with `bst` generated; anon cannot read `pokemon`, authenticated can, neither can write and the service role can; the park-upsert-delete order of a refresh; `_migration_report()` lists a missing unique; `draft_formats.json` accepts a `rules` key and `_format_pool` / `update_league_pool` still copy only the list); `migrations.test.ts`, `review-applyability.test.ts` and `security.test.ts` updated for twelve files, 17 policies and the read-only table; the contract test gains `pokemon` as a read-only table parsed from the Grants section on LF and CRLF checkouts. `tests/db/global-setup.ts` initialises the embedded cluster with `--encoding=UTF8` and every suite creates its databases with `createDatabaseSql` (UTF8 from `template0`), because a Windows cluster is WIN1252 by default and cannot store the dataset.
+- `scripts/check-client-contract.mjs`: the Grants section's bare `'public.pokemon'` entry marks the table read-only; a client write to it is reported like a direct write to a function-only table.
+- `.gitattributes` keeps `data/pokemon/**` and `tests/fixtures/pokeapi/**` LF on every checkout so the committed bytes stay the script's output.
+- Gate: `npm run check`, `npm run test:db`, `node scripts/check-client-contract.mjs`, `node scripts/build-pokemon-data.mjs` twice (the second run changes no byte), `npm run build`, then a live check with the seeded project: build a Champions M-C pool, apply, save, create a league from it and open the draft room to see form sprites and types.
+
+### 13.9 Migration and release order
+
+1. Apply `20260916120000_pool_builder.sql` in the SQL editor (after the hardening and playoffs files; it ends with `select * from public._migration_report();` like them).
+2. Run `npm run seed:pokemon` with the service-role key in `.env.scripts` (the file every script reads, section 10 step 3; the key stays out of `.env.local`): 1,237 upserts in the 2026-09-16 build, then it deletes rows that left the file and prints the counts.
+3. Deploy the client. Until step 2 runs, the builder shows an empty-state ("The Pokémon dataset has not been loaded yet") and the rest of the app keeps using `pokemon_dex`; the previous client keeps working after step 1 because the file adds no function and changes no policy on the other tables.
+4. To refresh data later: `npm run data:pokemon` (`node scripts/build-pokemon-data.mjs`, add `-- --refresh-serebii` to re-fetch the Champions regulation pages), review the diff of `data/pokemon/*.json` and `report.json`, commit, run the seed again.

@@ -18,7 +18,8 @@ row level security with the anon key.
 | `app/` | Next.js routes, components and client helpers |
 | `proxy.ts` | Auth gate (Next 16 `proxy.ts`, the former middleware) |
 | `supabase/migrations/` | The whole backend: tables, constraints, RLS, functions |
-| `scripts/` | Seeding tools for the Pokémon dex, sprites and types |
+| `scripts/` | Seeding tools for the Pokémon dex, sprites and types, and the Pool Builder dataset build + seed |
+| `data/pokemon/` | The generated Pokémon dataset, regulation presets and build report that `npm run seed:pokemon` loads |
 | `tests/unit/` | Vitest unit tests (`npm run test`) |
 | `tests/db/` | Migration + RPC + RLS tests on an embedded Postgres (`npm run test:db`) |
 | `docs/schema.md` | Generated description of the schema, functions and policies |
@@ -43,7 +44,8 @@ See [calculator usage, limitations and data maintenance](docs/champions-calculat
    - `.env.scripts` with `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (read only
      by `scripts/`). Keep the service-role key out of `.env.local` and out of
      every deploy target; it bypasses row level security.
-4. Apply the migrations (next section) and seed the dex (below).
+4. Apply the migrations (next section) and seed the dex and the Pool Builder
+   dataset (below).
 5. `npm run dev` and open http://localhost:3000.
 
 ## Applying migrations to a Supabase project
@@ -68,6 +70,14 @@ The files in `supabase/migrations/` must be applied **in filename order**:
    `clear_playoffs`, and new signatures for `create_league` and
    `report_match_result` (the old ones are dropped). Idempotent and safe to
    re-run.
+5. `20260916120000_pool_builder.sql` - the Pool Builder v2 dataset table
+   `public.pokemon` (one row per distinct, usable Pokémon with stats, types,
+   tags, game availability and Pokédex numbers; `bst` is generated), its
+   indexes, a select policy for signed-in users and read-only grants (no
+   client writes, no anon access), and `_migration_report()` extended with the
+   table's unique constraints. It loads no data: `npm run seed:pokemon` does
+   (see "Seeding Pokémon data"). Idempotent and safe to re-run; it adds no
+   function, so the client contract does not change.
 
 **Never run one of the eight legacy files after the hardening file.** The
 eight older files recreate the pre-release write policies (a coach could set
@@ -131,9 +141,9 @@ Either way works:
   no version older than `20260909120000` under `Local` only once the hardening
   is recorded as applied; if it does, repair those versions too, or let the
   push run and then re-run `20260909120000_release_hardening.sql` in the SQL
-  editor followed by `20260912120000_playoffs.sql`. Re-running files is
-  otherwise harmless: `npm run test:db` applies the whole set twice in
-  filename order.
+  editor followed by `20260912120000_playoffs.sql` and
+  `20260916120000_pool_builder.sql`. Re-running files is otherwise harmless:
+  `npm run test:db` applies the whole set twice in filename order.
 
 ### The deployed client must be on the RPC catalog first
 
@@ -155,15 +165,18 @@ hardening migration and deploy the client that goes with it in the same
 maintenance window.
 
 `node scripts/check-client-contract.mjs` is the gate for that. It scans `app/`
-and `proxy.ts` for calls to dropped or unknown RPCs and for direct writes to
-the tables above, prints each `file:line`, and exits 1 when it finds any. The
-RPC names it accepts are the union of the `Grants` sections of every file
+and `proxy.ts` for calls to dropped or unknown RPCs, for direct writes to
+the tables above, and for writes to the read-only tables (`pokemon`, the Pool
+Builder dataset, which only `npm run seed:pokemon` writes), prints each
+`file:line`, and exits 1 when it finds any. The RPC names it accepts and the
+read-only tables it knows are the union of the `Grants` sections of every file
 under `supabase/migrations/` (the hardening file and the feature files after
 it). Run it on the branch you are about to deploy and apply the migrations
 only when it exits 0. `npm run test:db` runs the same scan against the working
 tree and fails while the gate is red, and checks the gate itself (the names it
-accepts are exactly the functions the migrations grant, and every wrapper in
-`app/lib/rpc.ts` names one of them).
+accepts are exactly the functions the migrations grant, the read-only tables
+are exactly the tables `authenticated` may select but never write, and every
+wrapper in `app/lib/rpc.ts` names one of the functions).
 
 The same rule applies to `20260912120000_playoffs.sql`: a client deployed
 ahead of it gets `PGRST202` for `league_standings`, `generate_playoffs` and
@@ -184,7 +197,8 @@ that duplicates would violate is **skipped**, a check constraint that rows
 violate is added **`NOT VALID`** (enforced for new writes only), and pieces it
 lacks privileges for (the bucket, the realtime entries) are left for the
 dashboard. Each case prints a `WARNING`, but the SQL editor does not show
-notices reliably, so the file (and the playoffs file after it) ends with
+notices reliably, so the file (and the playoffs and pool builder files after
+it) ends with
 
 ```sql
 select * from public._migration_report();
@@ -272,11 +286,38 @@ npm run seed:dex       # pokemon_dex: dex_number + English name for 1..1025 (POK
 # upload <dex_number>.png files to the public "sprites" bucket (created by the hardening migration)
 npm run seed:sprites   # pokemon_dex.sprite_url, only for files that exist in the bucket
 npm run seed:types     # pokemon_dex.type1/type2 for rows that have no type yet
+npm run seed:pokemon   # pokemon: the Pool Builder dataset from data/pokemon/pokemon.json (after 20260916120000_pool_builder.sql)
 ```
 
 The scripts stop with a clear message when the env variables are missing, retry
 PokeAPI requests with backoff, page through the table until exhausted, and
 resolve species by dex number so special names and default forms resolve.
+
+The Pool Builder dataset (`public.pokemon`, docs/release-architecture.md
+section 13) is generated, never typed, and the generated files are committed:
+
+```bash
+npm run data:pokemon                      # scripts/build-pokemon-data.mjs: rebuilds data/pokemon/{pokemon,regulations,report}.json
+npm run data:pokemon -- --refresh-serebii # also re-fetches the Champions regulation pages
+npm run seed:pokemon                      # scripts/seed-pokemon.ts: loads data/pokemon/pokemon.json into public.pokemon
+```
+
+`data:pokemon` crawls PokéAPI (cached under `scripts/.cache/pokeapi/`, git
+ignored, so a rerun only fetches what is missing) and parses the saved
+Serebii regulation pages into `data/pokemon/sources/`; it exits 1 on a roster
+name it cannot map and writes `data/pokemon/report.json` with the counts to
+review. `seed:pokemon` validates every row of `pokemon.json` against the
+table's constraints, parks the rows whose slug or display name the file has
+moved to another `id` (a display-name fix, a swap, a row that gained a real
+PokéAPI id: `slug` and `display_name` are unique, so the upsert would
+otherwise fail with `23505`), upserts every row on `id` in batches of 500,
+deletes the rows whose `id` is no longer in the file, prints the counts and
+exits 1 on any error; it is the table's only writer (the browser only reads
+it). It reads the
+service-role key from `.env.scripts` like the other scripts, and only from
+there. To refresh the data later: `npm run data:pokemon`, review the diff of
+`data/pokemon/*.json` and `report.json`, commit, and run
+`npm run seed:pokemon` again.
 
 ## Running the tests
 
@@ -311,3 +352,21 @@ checks the status of a failing run.
 4. Do a smoke test: sign up, confirm the email, create a league, join with a
    second account through the invite link, set the draft order, run a short
    draft, report a result, check the standings, make and undo a free-agent move.
+
+Pool Builder v2 (the Pokémon dataset, `20260916120000_pool_builder.sql`) ships
+in this order:
+
+1. Apply `20260916120000_pool_builder.sql` in the SQL editor (after the
+   hardening and playoffs files). It creates the empty `public.pokemon` table
+   and ends with the usual `select * from public._migration_report();`.
+2. Run `npm run seed:pokemon` with the service-role key in `.env.scripts`
+   (1,237 upserts in the 2026-09-16 build, then it deletes rows that left the file and prints
+   the counts; it exits 1 on any error and never touches another table).
+3. Deploy the client. Until step 2 runs, the builder shows "The Pokémon dataset
+   has not been loaded yet" and the rest of the app keeps using `pokemon_dex`;
+   the previous client keeps working after step 1, because the file adds no
+   function and changes no policy on the other tables.
+4. To refresh the data later: `npm run data:pokemon` (add
+   `-- --refresh-serebii` for the Champions regulation pages), review the diff
+   of `data/pokemon/*.json` and `report.json`, commit, and run
+   `npm run seed:pokemon` again.

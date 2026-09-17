@@ -1,6 +1,9 @@
 import { normalizePokemonName } from "@/app/lib/pokemon";
+import { indexDataset } from "@/app/lib/pokemon/dataset";
+import { parseFormatRules } from "@/app/lib/pokemon/rules";
 import { pointsToTier, type DraftFormat, type DraftPokemon } from "@/app/types/draft";
 import { LEAGUE_LIMITS } from "@/app/types/league";
+import type { FormatRules, PokemonEntry } from "@/app/types/pokemon";
 
 /**
  * Pure helpers for the Pool Builder: parsing uploaded files and saved
@@ -62,7 +65,15 @@ export type ParsedPool = {
   skipped: number;
   /** Entries whose points were missing or outside 1..20 and were coerced. */
   adjusted: number;
+  /** The saved rules (docs 13.5), or null for a format built by hand. */
+  rules: FormatRules | null;
 };
+
+/** The `rules` object of a saved format's JSON, or null when it has none. */
+export function formatRules(json: unknown): FormatRules | null {
+  if (typeof json !== "object" || json === null) return null;
+  return parseFormatRules((json as { rules?: unknown }).rules);
+}
 
 /**
  * Accepts the shape this page exports and any `{ pokemon: [{ name, points }] }`
@@ -110,6 +121,7 @@ export function parsePoolJson(value: unknown): ParsedPool {
     entries,
     skipped,
     adjusted,
+    rules: formatRules(value),
   };
 }
 
@@ -144,6 +156,41 @@ export function findDuplicateKeys(entries: readonly PoolEntry[]): Set<string> {
   return duplicates;
 }
 
+/**
+ * The pool row that already stands for a dataset entry, or null. A row
+ * matches when its name resolves to the entry the way `findDatasetEntry`
+ * resolves a typed name: the display name or slug in any spelling, or the
+ * PokéAPI slug the app derives from it. That is what lets a pool that stores
+ * an older spelling ("Paldean Tauros Blaze", "Indeedee-F") be recognised as
+ * holding the dataset's "Paldean Tauros (Blaze Breed)" or "Indeedee
+ * (Female)", which `entryKey` alone cannot tell apart.
+ */
+export function poolRowFor(
+  pool: readonly PoolEntry[],
+  entry: PokemonEntry
+): PoolEntry | null {
+  const index = indexDataset([entry]);
+  return pool.find((row) => index.find(cleanName(row.name)) !== null) ?? null;
+}
+
+/**
+ * The rows of a rule result that are not in the pool yet, in result order
+ * (docs 13.7 "Add missing only"). One index over the result answers every
+ * pool row, so a 2,000-row pool against a full dataset stays instant.
+ */
+export function missingEntries(
+  pool: readonly PoolEntry[],
+  result: readonly PokemonEntry[]
+): PokemonEntry[] {
+  const index = indexDataset(result);
+  const present = new Set<number>();
+  for (const row of pool) {
+    const match = index.find(cleanName(row.name));
+    if (match) present.add(match.id);
+  }
+  return result.filter((entry) => !present.has(entry.id));
+}
+
 export function countBlankNames(entries: readonly PoolEntry[]): number {
   return entries.filter((entry) => !cleanName(entry.name)).length;
 }
@@ -170,12 +217,17 @@ export function rowProblem(entries: readonly PoolEntry[]): string | null {
   return `Fix ${problems.join(" and ")} before saving or exporting.`;
 }
 
-/** The JSON stored in `draft_formats.json` and written by Export. */
+/**
+ * The JSON stored in `draft_formats.json` and written by Export. `rules`
+ * (docs 13.5) is written only when the pool was built from rules; a format
+ * built by hand stays without the key.
+ */
 export function toDraftFormat(
   name: string,
-  entries: readonly PoolEntry[]
+  entries: readonly PoolEntry[],
+  rules: FormatRules | null = null
 ): DraftFormat {
-  return {
+  const format: DraftFormat = {
     version: POOL_VERSION,
     leagueName: cleanName(name).slice(0, MAX_FORMAT_NAME_LENGTH),
     pokemon: entries.map((entry) => {
@@ -187,6 +239,51 @@ export function toDraftFormat(
       };
     }),
   };
+  if (rules) format.rules = rules;
+  return format;
+}
+
+/**
+ * What a coach chose after editing a price by hand on a pool the bands
+ * priced (docs 13.5): keep the manual prices (the format is written with
+ * `pricing.mode = "manual"`) or keep the bands (the rules are written as
+ * they were and the edited prices stay in the pool).
+ */
+export type PriceChoice = "manual" | "bands";
+
+/**
+ * True when Save and Export must ask first: a price was edited by hand on a
+ * pool the bands priced, and the coach has not chosen yet.
+ */
+export function needsPriceChoice(
+  poolRules: FormatRules | null,
+  handPriced: boolean,
+  choice: PriceChoice | null
+): boolean {
+  return (
+    handPriced &&
+    poolRules !== null &&
+    poolRules.pricing.mode === "bands" &&
+    choice === null
+  );
+}
+
+/**
+ * The `rules` Save and Export write: the recipe that produced the pool,
+ * switched to manual pricing only when a price was edited by hand and the
+ * coach chose to keep manual prices (docs 13.5). Null keeps a hand-built
+ * format without the key.
+ */
+export function rulesToSave(
+  poolRules: FormatRules | null,
+  handPriced: boolean,
+  choice: PriceChoice | null
+): FormatRules | null {
+  if (!poolRules) return null;
+  if (handPriced && poolRules.pricing.mode === "bands" && choice === "manual") {
+    return { ...poolRules, pricing: { mode: "manual" } };
+  }
+  return poolRules;
 }
 
 /** `<name>-pool.json`, lowercase with hyphens. */

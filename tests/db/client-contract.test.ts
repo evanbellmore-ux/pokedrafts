@@ -1,26 +1,42 @@
 // The client contract behind the hardening migration and the feature
 // migrations after it. The release gate (scripts/check-client-contract.mjs)
 // refuses to let a migration ship ahead of a client that still calls the
-// dropped timer RPCs, calls a function no migration grants, or writes directly
-// to the function-only tables. These tests keep that gate honest against the
-// real database: the catalog it accepts (the union of every migration's grants
-// section) is exactly what the migrations grant, its scanner recognises every
-// call shape the pre-hardening client used, and app/lib/rpc.ts only names
-// functions that exist.
+// dropped timer RPCs, calls a function no migration grants, writes directly
+// to the function-only tables, or writes a read-only table. These tests keep
+// that gate honest against the real database: the catalog it accepts (the
+// union of every migration's grants section) is exactly what the migrations
+// grant, the read-only tables it knows (the same sections) are exactly the
+// tables the API roles may select but never write, its scanner recognises
+// every call shape the pre-hardening client used, and app/lib/rpc.ts only
+// names functions that exist.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { FUNCTION_ONLY_TABLES, LEGACY_RPCS, grantsSection, parseRpcCatalog, readRpcCatalog, scanProject, scanSource } from "../../scripts/lib/client-contract.mjs";
+import {
+  FUNCTION_ONLY_TABLES,
+  LEGACY_RPCS,
+  grantsSection,
+  parseReadOnlyTables,
+  parseRpcCatalog,
+  readReadOnlyTables,
+  readRpcCatalog,
+  scanProject,
+  scanSource,
+} from "../../scripts/lib/client-contract.mjs";
 import { connect, type Client } from "./harness";
-import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, readMigrations } from "./migrations-lib";
+
+const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION];
 
 describe("client contract", () => {
   let db: Client;
   let catalog: string[];
+  let readOnlyTables: string[];
 
   beforeAll(async () => {
     db = await connect();
     catalog = readRpcCatalog(process.cwd());
+    readOnlyTables = readReadOnlyTables(process.cwd());
   });
 
   afterAll(async () => {
@@ -43,12 +59,15 @@ describe("client contract", () => {
       expect(catalog).not.toContain(legacy);
     }
     // Per file: the hardening file grants the 28 first-release functions, the
-    // playoffs file the three new ones plus the six it re-creates, and the
-    // base schema and the eight legacy files have no grants section at all.
+    // playoffs file the three new ones plus the six it re-creates, the pool
+    // builder file no function at all (its grants section only names the
+    // read-only pokemon table), and the base schema and the eight legacy
+    // files have no grants section.
     const migrations = readMigrations();
     const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
     const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
-    if (!hardening || !playoffs) throw new Error("hardening or playoffs migration missing");
+    const poolBuilder = migrations.find((m) => m.name === POOL_BUILDER_MIGRATION);
+    if (!hardening || !playoffs || !poolBuilder) throw new Error("hardening, playoffs or pool builder migration missing");
     expect(parseRpcCatalog(hardening.sql)).toHaveLength(28);
     expect(parseRpcCatalog(playoffs.sql)).toEqual([
       "clear_match_result",
@@ -61,12 +80,32 @@ describe("client contract", () => {
       "reset_draft",
       "update_league_settings",
     ]);
+    expect(parseRpcCatalog(poolBuilder.sql)).toEqual([]);
+    expect(parseReadOnlyTables(hardening.sql)).toEqual([]);
+    expect(parseReadOnlyTables(playoffs.sql)).toEqual([]);
+    expect(parseReadOnlyTables(poolBuilder.sql)).toEqual(["pokemon"]);
+    // The parser must see the same section whatever line endings the checkout
+    // has: git's core.autocrlf (the Windows default) hands it CRLF files, and
+    // a section boundary that only matched LF ran the pool builder's section
+    // into the _migration_report() body, whose VALUES rows name six more
+    // tables, so the gate's read-only list depended on the platform.
+    const asCrlf = (sql: string) => sql.replace(/\r?\n/g, "\r\n");
+    const asLf = (sql: string) => sql.replace(/\r\n?/g, "\n");
+    for (const migration of [hardening, playoffs, poolBuilder]) {
+      expect(grantsSection(asCrlf(migration.sql)), `${migration.name} grants section on CRLF`).toBe(grantsSection(asLf(migration.sql)));
+    }
+    expect(parseReadOnlyTables(asCrlf(poolBuilder.sql))).toEqual(["pokemon"]);
+    expect(parseReadOnlyTables(asLf(poolBuilder.sql))).toEqual(["pokemon"]);
+    expect(parseRpcCatalog(asCrlf(hardening.sql))).toHaveLength(28);
+    expect(parseRpcCatalog(asLf(hardening.sql))).toHaveLength(28);
+    expect(parseRpcCatalog(asCrlf(playoffs.sql))).toEqual(parseRpcCatalog(asLf(playoffs.sql)));
     for (const migration of migrations) {
-      if (migration.name !== HARDENING_MIGRATION && migration.name !== PLAYOFFS_MIGRATION) {
+      if (!GRANTING_MIGRATIONS.includes(migration.name)) {
         expect(grantsSection(migration.sql), `${migration.name} should have no grants section`).toBeNull();
       }
     }
     expect(() => parseRpcCatalog("-- nothing here")).toThrow(/Grants/);
+    expect(() => parseReadOnlyTables("-- nothing here")).toThrow(/Grants/);
     // No stray catalog entry: every name resolves to a function the API can call.
     for (const fn of catalog) {
       const exists = await db.query("select 1 from pg_proc where pronamespace = 'public'::regnamespace and proname = $1", [fn]);
@@ -80,6 +119,34 @@ describe("client contract", () => {
       [FUNCTION_ONLY_TABLES],
     );
     expect(rows).toEqual([{ tablename: "leagues", cmd: "DELETE" }]);
+  });
+
+  it("the read-only tables the gate knows are exactly the tables the API roles may select but never write", async () => {
+    expect(readOnlyTables).toEqual(["pokemon"]);
+    // Derived from the privileges themselves: a table authenticated can read
+    // but not insert, update or delete (the function-only tables keep their
+    // write privileges and rely on RLS, so they do not qualify).
+    const { rows } = await db.query<{ tablename: string }>(`
+      select c.relname as tablename
+      from pg_class c
+      where c.relnamespace = 'public'::regnamespace
+        and c.relkind = 'r'
+        and has_table_privilege('authenticated', c.oid, 'select')
+        and not has_table_privilege('authenticated', c.oid, 'insert')
+        and not has_table_privilege('authenticated', c.oid, 'update')
+        and not has_table_privilege('authenticated', c.oid, 'delete')
+      order by 1
+    `);
+    expect(rows.map((r) => r.tablename)).toEqual(readOnlyTables);
+    for (const table of readOnlyTables) {
+      const anon = await db.query<{ ok: boolean }>("select has_table_privilege('anon', $1, 'select') as ok", [`public.${table}`]);
+      expect(anon.rows[0].ok, `anon should not read ${table}`).toBe(false);
+      const policies = await db.query<{ cmd: string; roles: string }>(
+        "select cmd, roles::text as roles from pg_policies where schemaname = 'public' and tablename = $1 order by 1",
+        [table],
+      );
+      expect(policies.rows, `${table} should have one select policy for authenticated`).toEqual([{ cmd: "SELECT", roles: "{authenticated}" }]);
+    }
   });
 
   it("the scanner flags the call shapes the pre-hardening client used and accepts the documented ones", () => {
@@ -102,8 +169,11 @@ describe("client contract", () => {
       /* 16 */ "await supabase.from('league_news').insert({ news_type: 'free_agent' });",
       /* 17 */ 'await supabase.rpc("complete_draft_timer", { target_league_id: leagueId, final_pick: 12 });',
       /* 18 */ 'const { data } = await supabase.rpc("get_invite_preview", { p_code: code });',
+      /* 19 */ 'const { data: dataset } = await supabase.from("pokemon").select("display_name, slug, sprite_url, type1, type2").range(0, 999);',
+      /* 20 */ 'await supabase.from("pokemon").upsert(rows, { onConflict: "id" });',
+      /* 21 */ "await supabase.from('pokemon').delete().not('id', 'in', ids);",
     ].join("\n");
-    const findings = scanSource(source, "fixture.tsx", catalog);
+    const findings = scanSource(source, "fixture.tsx", catalog, readOnlyTables);
     expect(findings.map((f) => [f.line, f.kind])).toEqual([
       [1, "legacy_rpc"],
       [2, "legacy_rpc"],
@@ -114,12 +184,18 @@ describe("client contract", () => {
       [11, "direct_write"],
       [16, "direct_write"],
       [17, "legacy_rpc"],
+      [20, "direct_write"],
+      [21, "direct_write"],
     ]);
     for (const finding of findings) {
       expect(finding.file).toBe("fixture.tsx");
       expect(finding.detail.length).toBeGreaterThan(0);
     }
-    expect(scanSource("", "empty.ts", catalog)).toEqual([]);
+    expect(findings.filter((f) => f.line >= 20).every((f) => f.detail.includes("read-only"))).toBe(true);
+    // Without the read-only list (the default) the dataset writes pass the
+    // scanner, so the gate has to be handed both lists, as scanProject does.
+    expect(scanSource(source, "fixture.tsx", catalog).map((f) => f.line)).not.toContain(20);
+    expect(scanSource("", "empty.ts", catalog, readOnlyTables)).toEqual([]);
   });
 
   it("every wrapper in app/lib/rpc.ts names a catalog function, and every catalog function has a wrapper", () => {
@@ -134,11 +210,11 @@ describe("client contract", () => {
     expect(missing, "catalog functions without a wrapper in app/lib/rpc.ts").toEqual([]);
   });
 
-  it("the release gate passes on this working tree: app/ and proxy.ts call no dropped or unknown RPC and write to no function-only table", () => {
+  it("the release gate passes on this working tree: app/ and proxy.ts call no dropped or unknown RPC and write to no function-only or read-only table", () => {
     // The same scan as `node scripts/check-client-contract.mjs`, so a client
     // that is not yet on the RPC catalog fails `npm run test:db` instead of
     // only the gate the README asks the deployer to run by hand.
-    const { files, findings } = scanProject(process.cwd(), catalog);
+    const { files, findings } = scanProject(process.cwd(), catalog, readOnlyTables);
     expect(files).toBeGreaterThan(0);
     expect(
       findings.map((f) => `${f.file}:${f.line} [${f.kind}] ${f.detail}`),
