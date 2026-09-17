@@ -1,41 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowLeftRight, RotateCcw } from "lucide-react";
 import { Alert, Button, EmptyState, PageHeader } from "@/app/components/ui";
 import { champions, speciesById } from "@/app/lib/battle/catalog";
-import { createBuild, createConditions, getBuildStats, validateBuild, validateConditions } from "@/app/lib/battle/model";
-import type { BattleBuild, MoveContext } from "@/app/lib/battle/types";
+import { getBuildStats, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import type { BattleBuild } from "@/app/lib/battle/types";
 import { linkClassName } from "@/app/lib/theme";
 import BattleConditions from "./BattleConditions";
 import MoveResults from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
+import LeagueMatchupPicker, { RosterPicker } from "./LeagueMatchupPicker";
+import useCalculatorRosters from "./useCalculatorRosters";
+import type { CalculatorRosterState } from "./roster-data";
+import { createMatchup, reconcileRosters, resetMatchup, selectRosterPokemon, swapMatchup, updateMatchupBuild, type BattleSide, type RosterChoice } from "./roster-prep";
+
+export { createMatchup, swapMatchup };
 
 type CalculateMatchup = typeof import("@/app/lib/battle/calculate").calculateMatchup;
 type EngineState =
   | { status: "loading" }
   | { status: "ready"; calculate: CalculateMatchup }
   | { status: "error"; message: string };
-
-export function createMatchup(revision = 0) {
-  return {
-    revision,
-    attacker: { key: revision * 2, build: createBuild("charizard") },
-    defender: { key: revision * 2 + 1, build: createBuild("blastoise") },
-    field: createConditions(),
-    contexts: {} as Record<string, MoveContext>,
-  };
-}
-
-export function swapMatchup(current: ReturnType<typeof createMatchup>) {
-  return {
-    ...current,
-    attacker: current.defender,
-    defender: current.attacker,
-    field: { ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide },
-    contexts: {},
-  };
-}
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "An unexpected calculator error occurred.";
@@ -45,7 +31,10 @@ export default function CalculatorClient() {
   const [matchup, setMatchup] = useState(() => createMatchup());
   const [engine, setEngine] = useState<EngineState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
-  const [notice, setNotice] = useState("");
+  const receiveRosters = useCallback((state: CalculatorRosterState) => {
+    setMatchup((current) => reconcileRosters(current, state));
+  }, []);
+  const rosters = useCalculatorRosters(receiveRosters);
   const attacker = matchup.attacker.build;
   const defender = matchup.defender.build;
 
@@ -83,17 +72,16 @@ export default function CalculatorClient() {
     setAttempt((value) => value + 1);
   }
 
-  function updateBuild(side: "attacker" | "defender", build: BattleBuild) {
-    setMatchup((current) => ({
-      ...current,
-      [side]: { ...current[side], build },
-      contexts: current[side].build.speciesId === build.speciesId ? current.contexts : {},
-    }));
+  function updateBuild(side: BattleSide, build: BattleBuild) {
+    setMatchup((current) => updateMatchupBuild(current, side, build));
+  }
+
+  function chooseRosterPokemon(side: BattleSide, choice: RosterChoice) {
+    setMatchup((current) => selectRosterPokemon(current, side, choice));
   }
 
   function swap() {
     setMatchup(swapMatchup);
-    setNotice("Attacker and defender swapped with their side conditions. Shared field settings are unchanged; move hit counts cleared.");
   }
 
   let feedback: ReactNode;
@@ -124,15 +112,30 @@ export default function CalculatorClient() {
         actions={
           <>
             <Button variant="secondary" onClick={swap}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
-            <Button variant="secondary" onClick={() => { setMatchup((current) => createMatchup(current.revision + 1)); setNotice("Reset to Charizard versus Blastoise, full HP, zero Stat Points and stages, and the default Doubles field."); }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
+            <Button variant="secondary" onClick={() => setMatchup(resetMatchup)}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
           </>
         }
       />
-      <p role="status" className="sr-only">{notice}</p>
+      <p role="status" className="sr-only">{matchup.notice}</p>
+      <LeagueMatchupPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} />
       <div className="grid items-start gap-4 lg:grid-cols-2">
         {/* Keys travel with builds so raw numeric edits also survive a Swap. */}
-        <PokemonPanel key={matchup.attacker.key} side="attacker" build={attacker} issues={issues.attacker} onChange={(build) => updateBuild("attacker", build)} />
-        <PokemonPanel key={matchup.defender.key} side="defender" build={defender} issues={issues.defender} onChange={(build) => updateBuild("defender", build)} />
+        {(["attacker", "defender"] as const).map((side) => {
+          const slot = matchup[side];
+          const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
+          return (
+            <PokemonPanel
+              key={slot.key}
+              side={side}
+              build={slot.build}
+              issues={issues[side]}
+              editorRevision={slot.editorRevision}
+              provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
+              onChange={(build) => updateBuild(side, build)}
+              roster={<RosterPicker state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(side, choice)} />}
+            />
+          );
+        })}
       </div>
       <BattleConditions value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => ({ ...current, field }))} />
       <MoveResults

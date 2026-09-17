@@ -49,6 +49,11 @@ describe("Champions calculator UI", () => {
     expect(html).not.toMatch(/<main\b/);
     expect(html).toContain("Loading the Champions engine");
     expect(html).toContain("Damage Calculator");
+    expect(html).toContain("Prepare a league matchup");
+    expect(html).toContain("Loading your leagues");
+    expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
+    expect(html).toContain("Change attacker Pokémon");
+    expect(html).toContain("Change defender Pokémon");
   });
 
   it("opens field controls initially and exposes all requested effects without duplicates", () => {
