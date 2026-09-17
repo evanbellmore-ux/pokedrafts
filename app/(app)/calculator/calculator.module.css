@@ -1,0 +1,23 @@
+.root {
+  --calculator-sticky-height: 0px;
+}
+
+.root :is(input, select, button, summary, [tabindex]) {
+  scroll-margin-top: calc(var(--app-nav-height, 0px) + var(--calculator-sticky-height) + 1rem);
+}
+
+.summary {
+  position: relative;
+  z-index: 30;
+}
+
+@media (min-height: 800px) {
+  .root {
+    --calculator-sticky-height: var(--calculator-summary-height, 0px);
+  }
+
+  .summary {
+    position: sticky;
+    top: calc(var(--app-nav-height, 0px) + 0.5rem);
+  }
+}

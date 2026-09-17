@@ -18,22 +18,28 @@ type Props = {
   value: Conditions;
   issues: BuildIssue[];
   onChange: (value: Conditions) => void;
+  id?: string;
 };
 
-export default function BattleConditions({ value, issues, onChange }: Props) {
-  const prefix = useId();
-  const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
+export function describeConditions(value: Conditions) {
   const activeConditions = Number(value.critical) + Number(value.gameType === "Doubles" && value.multipleTargets)
     + SHARED_FIELD_EFFECTS.filter(({ key }) => value[key] === true).length
     + Object.values(value.attackerSide).filter(Boolean).length + Object.values(value.defenderSide).filter(Boolean).length;
+  return `${value.gameType} · ${value.weather || "No weather"} · ${value.terrain ? `${value.terrain} terrain` : "No terrain"} · ${activeConditions} toggles on`;
+}
+
+export default function BattleConditions({ value, issues, onChange, id }: Props) {
+  const prefix = useId();
+  const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
 
   return (
-    <details open className="rounded-xl border border-line bg-panel">
+    <details id={id} className="rounded-xl border border-line bg-panel">
       <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
         Field conditions
         <span className="ml-2 font-normal text-muted">
-          {value.gameType} · {value.weather || "No weather"} · {value.terrain ? `${value.terrain} terrain` : "No terrain"} · {activeConditions} toggles on
+          {describeConditions(value)}
         </span>
+        {issues.length > 0 && <span className="ml-2 text-danger">{issues.length} settings to check</span>}
       </summary>
       <div className="space-y-4 px-4 pb-4 sm:px-5 sm:pb-5">
         <p className="text-xs text-muted">Set effects that are already active; move use and duration are not simulated. Weather and terrain are not automatically set by entry abilities. Shared conditions stay in place on Swap; each side’s conditions follow its Pokémon.</p>

@@ -77,9 +77,10 @@ type Props = {
   roster?: ReactNode;
   provenance?: string;
   editorRevision?: number;
+  panelId?: string;
 };
 
-export default function PokemonPanel({ side, build, issues, onChange, roster, provenance, editorRevision = 0 }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, roster, provenance, editorRevision = 0, panelId }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const label = side === "attacker" ? "Attacker" : "Defender";
@@ -96,6 +97,7 @@ export default function PokemonPanel({ side, build, issues, onChange, roster, pr
   const visible = matches.slice(page * SEARCH_PAGE_SIZE, (page + 1) * SEARCH_PAGE_SIZE);
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
   const pointIssues = issues.filter((issue) => issue.field === "points" || issue.field.startsWith("points.") || issue.field.startsWith("boosts."));
+  const advancedIssueCount = issues.filter((issue) => issue.field !== "speciesId" && issue.field !== "currentHP").length;
   const pointsComplete = STATS.every((stat) => build.points[stat] !== null && Number.isFinite(build.points[stat]));
   const total = STATS.reduce((sum, stat) => sum + (build.points[stat] ?? 0), 0);
 
@@ -106,7 +108,7 @@ export default function PokemonPanel({ side, build, issues, onChange, roster, pr
   }
 
   return (
-    <section aria-labelledby={`${prefix}-heading`} className="min-w-0 rounded-xl border border-line bg-panel p-4 sm:p-5">
+    <section id={panelId} aria-labelledby={`${prefix}-heading`} className="min-w-0 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <h2 id={`${prefix}-heading`} className="text-xs font-semibold uppercase tracking-wide text-accent-text">{label}</h2>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <h3 className="wrap-anywhere text-xl font-bold text-text">{species?.name ?? "Select a Pokémon"}</h3>
@@ -115,162 +117,172 @@ export default function PokemonPanel({ side, build, issues, onChange, roster, pr
       <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
       <p role="status" className="sr-only">{notice}</p>
-      {roster}
+      <Field id={`${prefix}-hp`} label="Current HP" error={errorFor("currentHP")} help={`Blank means full HP${stats ? ` (${stats.hp})` : ""}. Damage percentages use maximum HP; KO chances use current HP.`} className="mt-4">
+        <IntegerInput key={`${build.speciesId}-${editorRevision}`} value={build.currentHP} fullHP data-calculator-hp placeholder={stats ? `Full HP (${stats.hp})` : "Full HP"} onValueChange={(value) => onChange({ ...build, currentHP: value })} />
+      </Field>
+      <div data-calculator-pokemon className="mt-4">
+        {roster}
+        <details className="mt-3 rounded-lg border border-line">
+          <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+            Change {label.toLowerCase()} Pokémon
+          </summary>
+          <div className="space-y-3 px-3 pb-3">
+            <Field id={`${prefix}-search`} label={`Find ${label.toLowerCase()} Pokémon`} help="Search any name or form. Changing Pokémon resets nature, ability, item, Stat Points, stages, HP and status.">
+              <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
+            </Field>
+            <p role="status" className="text-xs text-muted">
+              {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
+              {matches.length > SEARCH_PAGE_SIZE && " · Refine the name or browse pages."}
+            </p>
+            <ul aria-label={`${label} Pokémon choices`} className="space-y-1">
+              {visible.map((entry) => (
+                <li key={entry.id}>
+                  <button
+                    type="button"
+                    aria-pressed={entry.id === build.speciesId}
+                    onClick={() => selectSpecies(entry.id)}
+                    className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-2 rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${entry.id === build.speciesId ? "border-accent-border bg-accent-soft text-accent-text" : "border-line text-text hover:bg-panel-hover"}`}
+                  >
+                    <span className="wrap-anywhere font-medium">{entry.name}</span>
+                    <span className="text-xs">{entry.unsupported.length > 0 ? "Unsupported in v1" : entry.id === build.speciesId ? "Selected" : ""}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {matches.length > SEARCH_PAGE_SIZE && (
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${label.toLowerCase()} Pokémon page`}>Previous</Button>
+                <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${label.toLowerCase()} Pokémon page`}>Next</Button>
+              </div>
+            )}
+          </div>
+        </details>
+      </div>
 
-      <details className="mt-3 rounded-lg border border-line">
+      <details className="mt-4 rounded-lg border border-line">
         <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
-          Change {label.toLowerCase()} Pokémon
+          Build settings
+          <span className="ml-2 font-normal text-muted">{build.nature} · {abilitiesById.get(build.abilityId)?.name ?? "Choose ability"}</span>
+          {advancedIssueCount > 0 && <span className="ml-2 text-danger">{advancedIssueCount} settings to check</span>}
         </summary>
-        <div className="space-y-3 px-3 pb-3">
-          <Field id={`${prefix}-search`} label={`Find ${label.toLowerCase()} Pokémon`} help="Search any name or form. Changing Pokémon resets nature, ability, item, Stat Points, stages, HP and status.">
-            <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
-          </Field>
-          <p role="status" className="text-xs text-muted">
-            {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
-            {matches.length > SEARCH_PAGE_SIZE && " · Refine the name or browse pages."}
-          </p>
-          <ul aria-label={`${label} Pokémon choices`} className="space-y-1">
-            {visible.map((entry) => (
-              <li key={entry.id}>
-                <button
-                  type="button"
-                  aria-pressed={entry.id === build.speciesId}
-                  onClick={() => selectSpecies(entry.id)}
-                  className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-2 rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${entry.id === build.speciesId ? "border-accent-border bg-accent-soft text-accent-text" : "border-line text-text hover:bg-panel-hover"}`}
-                >
-                  <span className="wrap-anywhere font-medium">{entry.name}</span>
-                  <span className="text-xs">{entry.unsupported.length > 0 ? "Unsupported in v1" : entry.id === build.speciesId ? "Selected" : ""}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          {matches.length > SEARCH_PAGE_SIZE && (
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${label.toLowerCase()} Pokémon page`}>Previous</Button>
-              <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${label.toLowerCase()} Pokémon page`}>Next</Button>
+        <div className="px-3 pb-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field id={`${prefix}-nature`} label="Nature" error={errorFor("nature")}>
+              <Select value={build.nature} onChange={(event) => onChange({ ...build, nature: event.target.value })}>
+                {NATURES.map((nature) => (
+                  <option key={nature.name} value={nature.name}>
+                    {nature.name} ({nature.plus && nature.minus ? `+${STAT_LABELS[nature.plus]}, −${STAT_LABELS[nature.minus]}` : "neutral"})
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field id={`${prefix}-ability`} label="Ability" error={errorFor("abilityId")}>
+              <Select value={build.abilityId} onChange={(event) => onChange({ ...build, abilityId: event.target.value, abilityActive: defaultAbilityActive(event.target.value) })}>
+                {species?.abilities.map((abilityId) => {
+                  const ability = abilitiesById.get(abilityId);
+                  return <option key={abilityId} value={abilityId}>{ability?.name ?? abilityId}{ability?.unsupported.length ? " — unsupported" : ""}</option>;
+                })}
+              </Select>
+            </Field>
+            <Field id={`${prefix}-item`} label="Held item" error={errorFor("itemId")} help={species?.requiredItem ? `${itemsById.get(species.requiredItem)?.name ?? species.requiredItem} is required and locked for this form.` : undefined}>
+              <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value })}>
+                <option value="">None</option>
+                {itemOptions.map((item) => <option key={item.id} value={item.id}>{item.name}{item.unsupported.length ? " — unsupported" : ""}</option>)}
+              </Select>
+            </Field>
+            <Field id={`${prefix}-status`} label="Status" error={errorFor("status")}>
+              <Select value={build.status} onChange={(event) => onChange({ ...build, status: event.target.value as BattleStatus })}>
+                {STATUSES.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}
+              </Select>
+            </Field>
+          </div>
+
+          {activationLabel && (
+            <div className="mt-3">
+              <label htmlFor={`${prefix}-ability-active`} className="flex min-h-11 items-center gap-2 text-sm text-text">
+                <input
+                  id={`${prefix}-ability-active`}
+                  type="checkbox"
+                  checked={build.abilityActive}
+                  aria-invalid={!!errorFor("abilityActive") || undefined}
+                  aria-describedby={`${prefix}-ability-help${errorFor("abilityActive") ? ` ${prefix}-ability-error` : ""}`}
+                  onChange={(event) => onChange({ ...build, abilityActive: event.target.checked })}
+                  className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                />
+                {activationLabel}
+              </label>
+              <p id={`${prefix}-ability-help`} className="text-xs text-muted">
+                This sets the ability’s condition, not whether the ability exists. Do not manually apply the same entry-stage change twice.
+              </p>
+              {errorFor("abilityActive") && <p id={`${prefix}-ability-error`} className="mt-1 text-xs text-danger">{errorFor("abilityActive")}</p>}
             </div>
           )}
+
+          <div className="mt-5">
+            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="text-sm font-semibold text-text">Stats at level 50</h3>
+              <p className={`text-xs tabular-nums ${pointsComplete && total > 66 ? "text-danger" : "text-muted"}`}>
+                {pointsComplete ? `${total} / 66 Stat Points` : "Stat Point allocation incomplete"}
+              </p>
+            </div>
+            <p id={`${prefix}-points-help`} className="mb-3 text-xs text-muted">Use 0–32 Stat Points per stat, at most 66 total. Stat values are before stages, abilities and items.</p>
+            <TableWrap>
+              <table className="w-full min-w-[17rem] text-left text-sm" aria-label={`${label} stats and Stat Points`}>
+                <thead className="bg-panel-hover text-xs text-muted">
+                  <tr>
+                    <th scope="col" className="px-2 py-2">Stat</th>
+                    <th scope="col" className="px-2 py-2">Points</th>
+                    <th scope="col" className="px-2 py-2 text-right">Value</th>
+                    <th scope="col" className="px-2 py-2">Stage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STATS.map((stat) => (
+                    <tr key={stat} className="border-t border-line">
+                      <th scope="row" className="px-2 py-2 text-xs font-medium text-text">{STAT_LABELS[stat]}</th>
+                      <td className="w-20 px-2 py-2">
+                        <Field id={`${prefix}-points-${stat}`} label={`${label} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
+                          <IntegerInput
+                            key={`${build.speciesId}-${editorRevision}`}
+                            value={build.points[stat]}
+                            aria-invalid={!!errorFor(`points.${stat}`) || !!errorFor("points") || undefined}
+                            aria-describedby={`${prefix}-points-help${pointIssues.length ? ` ${prefix}-points-errors` : ""}`}
+                            onValueChange={(value) => onChange({ ...build, points: { ...build.points, [stat]: value } })}
+                            className="tabular-nums"
+                          />
+                        </Field>
+                      </td>
+                      <td className="px-2 py-2 text-right tabular-nums text-text">{stats?.[stat] ?? "—"}</td>
+                      <td className="w-20 px-2 py-2">
+                        {stat === "hp" ? <span className="text-muted">—</span> : (
+                          <>
+                            <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{label} {STAT_LABELS[stat]} stage</label>
+                            <select
+                              id={`${prefix}-stage-${stat}`}
+                              value={build.boosts[stat] ?? ""}
+                              aria-invalid={!!errorFor(`boosts.${stat}`) || undefined}
+                              aria-describedby={pointIssues.length ? `${prefix}-points-errors` : undefined}
+                              onChange={(event) => onChange({ ...build, boosts: { ...build.boosts, [stat]: parseIntegerInput(event.target.value) } })}
+                              className="w-full rounded-lg border border-control-border bg-bg px-1 py-2.5 text-sm text-text focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                            >
+                              {stages.map((stage) => <option key={stage} value={stage}>{stage > 0 ? `+${stage}` : stage}</option>)}
+                            </select>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableWrap>
+            {pointIssues.length > 0 && (
+              <ul id={`${prefix}-points-errors`} className="mt-2 space-y-1 text-xs text-danger">
+                {pointIssues.map((issue, index) => <li key={`${issue.field}-${index}`}>{issue.message}</li>)}
+              </ul>
+            )}
+          </div>
         </div>
       </details>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <Field id={`${prefix}-nature`} label="Nature" error={errorFor("nature")}>
-          <Select value={build.nature} onChange={(event) => onChange({ ...build, nature: event.target.value })}>
-            {NATURES.map((nature) => (
-              <option key={nature.name} value={nature.name}>
-                {nature.name} ({nature.plus && nature.minus ? `+${STAT_LABELS[nature.plus]}, −${STAT_LABELS[nature.minus]}` : "neutral"})
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field id={`${prefix}-ability`} label="Ability" error={errorFor("abilityId")}>
-          <Select value={build.abilityId} onChange={(event) => onChange({ ...build, abilityId: event.target.value, abilityActive: defaultAbilityActive(event.target.value) })}>
-            {species?.abilities.map((abilityId) => {
-              const ability = abilitiesById.get(abilityId);
-              return <option key={abilityId} value={abilityId}>{ability?.name ?? abilityId}{ability?.unsupported.length ? " — unsupported" : ""}</option>;
-            })}
-          </Select>
-        </Field>
-        <Field id={`${prefix}-item`} label="Held item" error={errorFor("itemId")} help={species?.requiredItem ? `${itemsById.get(species.requiredItem)?.name ?? species.requiredItem} is required and locked for this form.` : undefined}>
-          <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value })}>
-            <option value="">None</option>
-            {itemOptions.map((item) => <option key={item.id} value={item.id}>{item.name}{item.unsupported.length ? " — unsupported" : ""}</option>)}
-          </Select>
-        </Field>
-        <Field id={`${prefix}-status`} label="Status" error={errorFor("status")}>
-          <Select value={build.status} onChange={(event) => onChange({ ...build, status: event.target.value as BattleStatus })}>
-            {STATUSES.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}
-          </Select>
-        </Field>
-      </div>
-
-      {activationLabel && (
-        <div className="mt-3">
-          <label htmlFor={`${prefix}-ability-active`} className="flex min-h-11 items-center gap-2 text-sm text-text">
-            <input
-              id={`${prefix}-ability-active`}
-              type="checkbox"
-              checked={build.abilityActive}
-              aria-describedby={`${prefix}-ability-help`}
-              onChange={(event) => onChange({ ...build, abilityActive: event.target.checked })}
-              className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-            />
-            {activationLabel}
-          </label>
-          <p id={`${prefix}-ability-help`} className="text-xs text-muted">
-            This sets the ability’s condition, not whether the ability exists. Do not manually apply the same entry-stage change twice.
-          </p>
-          {errorFor("abilityActive") && <p className="mt-1 text-xs text-danger">{errorFor("abilityActive")}</p>}
-        </div>
-      )}
-
-      <div className="mt-5">
-        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-sm font-semibold text-text">Stats at level 50</h3>
-          <p className={`text-xs tabular-nums ${pointsComplete && total > 66 ? "text-danger" : "text-muted"}`}>
-            {pointsComplete ? `${total} / 66 Stat Points` : "Stat Point allocation incomplete"}
-          </p>
-        </div>
-        <p id={`${prefix}-points-help`} className="mb-3 text-xs text-muted">Use 0–32 Stat Points per stat, at most 66 total. Stat values are before stages, abilities and items.</p>
-        <TableWrap>
-          <table className="w-full min-w-[17rem] text-left text-sm" aria-label={`${label} stats and Stat Points`}>
-            <thead className="bg-panel-hover text-xs text-muted">
-              <tr>
-                <th scope="col" className="px-2 py-2">Stat</th>
-                <th scope="col" className="px-2 py-2">Points</th>
-                <th scope="col" className="px-2 py-2 text-right">Value</th>
-                <th scope="col" className="px-2 py-2">Stage</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STATS.map((stat) => (
-                <tr key={stat} className="border-t border-line">
-                  <th scope="row" className="px-2 py-2 text-xs font-medium text-text">{STAT_LABELS[stat]}</th>
-                  <td className="w-20 px-2 py-2">
-                    <Field id={`${prefix}-points-${stat}`} label={`${label} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
-                      <IntegerInput
-                        key={`${build.speciesId}-${editorRevision}`}
-                        value={build.points[stat]}
-                        aria-invalid={!!errorFor(`points.${stat}`) || undefined}
-                        aria-describedby={`${prefix}-points-help${pointIssues.length ? ` ${prefix}-points-errors` : ""}`}
-                        onValueChange={(value) => onChange({ ...build, points: { ...build.points, [stat]: value } })}
-                        className="tabular-nums"
-                      />
-                    </Field>
-                  </td>
-                  <td className="px-2 py-2 text-right tabular-nums text-text">{stats?.[stat] ?? "—"}</td>
-                  <td className="w-20 px-2 py-2">
-                    {stat === "hp" ? <span className="text-muted">—</span> : (
-                      <>
-                        <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{label} {STAT_LABELS[stat]} stage</label>
-                        <select
-                          id={`${prefix}-stage-${stat}`}
-                          value={build.boosts[stat] ?? ""}
-                          aria-invalid={!!errorFor(`boosts.${stat}`) || undefined}
-                          aria-describedby={pointIssues.length ? `${prefix}-points-errors` : undefined}
-                          onChange={(event) => onChange({ ...build, boosts: { ...build.boosts, [stat]: parseIntegerInput(event.target.value) } })}
-                          className="w-full rounded-lg border border-control-border bg-bg px-1 py-2.5 text-sm text-text focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                          {stages.map((stage) => <option key={stage} value={stage}>{stage > 0 ? `+${stage}` : stage}</option>)}
-                        </select>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableWrap>
-        {pointIssues.length > 0 && (
-          <ul id={`${prefix}-points-errors`} className="mt-2 space-y-1 text-xs text-danger">
-            {pointIssues.map((issue, index) => <li key={`${issue.field}-${index}`}>{issue.message}</li>)}
-          </ul>
-        )}
-      </div>
-
-      <Field id={`${prefix}-hp`} label="Current HP" error={errorFor("currentHP")} help={`Blank means full HP${stats ? ` (${stats.hp})` : ""}. Damage percentages use maximum HP; KO chances use current HP.`} className="mt-4">
-        <IntegerInput key={`${build.speciesId}-${editorRevision}`} value={build.currentHP} fullHP placeholder={stats ? `Full HP (${stats.hp})` : "Full HP"} onValueChange={(value) => onChange({ ...build, currentHP: value })} />
-      </Field>
     </section>
   );
 }

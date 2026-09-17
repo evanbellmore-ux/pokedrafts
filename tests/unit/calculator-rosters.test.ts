@@ -4,10 +4,11 @@ import { describe, expect, it } from "vitest";
 import LeagueMatchupPicker, { RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import {
   createMatchup, createSpeciesResolver, getRosterPanel, reconcileRosters, resetMatchup,
-  resolveRosterSpecies, rosterChoices, selectRosterPokemon, swapMatchup, updateMatchupBuild,
+  resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild,
 } from "@/app/(app)/calculator/roster-prep";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
+import { movesById, speciesById } from "@/app/lib/battle/catalog";
 import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild } from "@/app/lib/battle/model";
 
 function team(id: string, memberId: string, names: string[]): TeamRoster {
@@ -110,6 +111,43 @@ describe("Champions roster names", () => {
 });
 
 describe("calculator prep transitions", () => {
+  it("selects exact learned move IDs without changing any other matchup state", () => {
+    expect(createMatchup().selectedMoveId).toBeNull();
+    const current = prepared();
+    current.contexts = { bulletseed: { hits: 4 } };
+    const before = structuredClone(current);
+    const selected = selectMatchupMove(current, "flamethrower");
+    expect(selected).toEqual({ ...current, selectedMoveId: "flamethrower" });
+    for (const key of ["revision", "notice", "accountId", "selection", "attacker", "defender", "field", "contexts", "cache"] as const) {
+      expect(selected[key]).toBe(current[key]);
+    }
+    expect(current).toEqual(before);
+    expect(selectMatchupMove(selected, "flamethrower")).toBe(selected);
+    expect(movesById.has("surf")).toBe(true);
+    expect(speciesById.get(current.attacker.build.speciesId)!.moves).not.toContain("surf");
+    for (const id of ["", "madeupmove", "Flamethrower", " flamethrower ", "surf"]) {
+      expect(selectMatchupMove(selected, id)).toBe(selected);
+    }
+    for (const id of speciesById.get(current.attacker.build.speciesId)!.moves) {
+      expect(selectMatchupMove(current, id).selectedMoveId).toBe(id);
+    }
+    const cleared = selectMatchupMove(selected, null);
+    expect(cleared).toEqual(current);
+    expect(selectMatchupMove(cleared, null)).toBe(cleared);
+    expect(cleared.cache).toBe(selected.cache);
+    expect(cleared.contexts).toBe(selected.contexts);
+  });
+
+  it("validates selection against the current attacker, not a previous or global learnset", () => {
+    const selected = selectMatchupMove(createMatchup(), "flamethrower");
+    const swapped = swapMatchup(selected);
+    expect(swapped.selectedMoveId).toBeNull();
+    expect(selectMatchupMove(swapped, "flamethrower")).toBe(swapped);
+    expect(selectMatchupMove(swapped, "surf").selectedMoveId).toBe("surf");
+    const unknown = updateMatchupBuild(selected, "attacker", createBuild("madeupmon"));
+    expect(selectMatchupMove(unknown, "flamethrower")).toBe(unknown);
+  });
+
   it("never lets initial data overwrite manual prep and does not import draft costs", () => {
     const manual = createMatchup();
     manual.attacker.build.points.spa = 32;
@@ -127,15 +165,18 @@ describe("calculator prep transitions", () => {
 
   it("restores edited builds including NaN without mutating prior states", () => {
     const { own } = choices();
-    let current = prepared();
+    let current = selectMatchupMove(prepared(), "flamethrower");
     const edit = { ...current.attacker.build, currentHP: Number.NaN, points: { ...current.attacker.build.points, spa: 32, hp: null } };
     current = updateMatchupBuild(current, "attacker", edit);
+    expect(current.selectedMoveId).toBe("flamethrower");
     const before = structuredClone(current);
     const changed = selectRosterPokemon(current, "attacker", own[2]);
     const restored = selectRosterPokemon(changed, "attacker", own[0]);
     expect(restored.attacker.build).toBe(edit);
     expect(restored.attacker.build.currentHP).toBeNaN();
     expect(restored.attacker.build.points.hp).toBeNull();
+    expect(changed.selectedMoveId).toBeNull();
+    expect(restored.selectedMoveId).toBeNull();
     expect(current).toEqual(before);
     expect(changed.cache).not.toBe(current.cache);
     expect(restored.cache.get(own[0].source!.key)?.build).toBe(edit);
@@ -143,7 +184,7 @@ describe("calculator prep transitions", () => {
 
   it("isolates same-species prep by owner and treats the active entry as a no-op", () => {
     const { own, other } = choices();
-    let current = prepared();
+    let current = selectMatchupMove(prepared(), "flamethrower");
     current = updateMatchupBuild(current, "attacker", { ...current.attacker.build, nature: "Timid" });
     current.contexts = { bulletseed: { hits: 4 } };
     expect(selectRosterPokemon(current, "attacker", own[0])).toBe(current);
@@ -153,6 +194,15 @@ describe("calculator prep transitions", () => {
     expect(selectRosterPokemon(current, "attacker", other[0])).toBe(current);
   });
 
+  it.each(["attacker", "defender"] as const)("clears selection when a different %s roster entry is activated", (side) => {
+    const current = selectMatchupMove(prepared(), "flamethrower");
+    const choice = side === "attacker" ? choices().own[2] : choices().other[1];
+    const next = selectRosterPokemon(current, side, choice);
+    expect(next.selectedMoveId).toBeNull();
+    expect(next.revision).toBe(current.revision);
+    expect(next.field).toBe(current.field);
+  });
+
   it("gives a different same-species entry fresh editor identity without resetting result controls", () => {
     const state = loaded();
     state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Charizard-Mega-X"]);
@@ -160,6 +210,7 @@ describe("calculator prep transitions", () => {
     let current = reconcileRosters(createMatchup(3), state);
     current = selectRosterPokemon(current, "attacker", own[0]);
     current = updateMatchupBuild(current, "attacker", { ...current.attacker.build, currentHP: Number.NaN });
+    current = selectMatchupMove(current, "flamethrower");
     current.contexts = { bulletseed: { hits: 4 } };
     const next = selectRosterPokemon(current, "attacker", own[1]);
     expect(next.attacker.build.speciesId).toBe(current.attacker.build.speciesId);
@@ -168,16 +219,19 @@ describe("calculator prep transitions", () => {
     expect(next.attacker.key).toBe(current.attacker.key);
     expect(next.revision).toBe(3);
     expect(next.contexts).toEqual({});
+    expect(next.selectedMoveId).toBeNull();
   });
 
   it("preserves every shared and side effect across roster activation and Swap", () => {
-    let current = prepared();
+    let current = selectMatchupMove(prepared(), "flamethrower");
     for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
     current.field.weather = "Snow";
     current.field.attackerSide.helpingHand = true;
     current.field.defenderSide.auroraVeil = true;
     current.contexts = { bulletseed: { hits: 4 } };
     current = selectRosterPokemon(current, "attacker", choices().own[1]);
+    expect(current.selectedMoveId).toBeNull();
+    current = selectMatchupMove(current, "flamethrower");
     const swapped = swapMatchup(current);
     expect(swapped.attacker).toBe(current.defender);
     expect(swapped.defender).toBe(current.attacker);
@@ -186,50 +240,74 @@ describe("calculator prep transitions", () => {
     expect(swapped.defender.editorRevision).toBe(current.attacker.editorRevision);
     expect(swapped.field).toEqual({ ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide });
     expect(swapped.contexts).toEqual({});
+    expect(swapped.selectedMoveId).toBeNull();
     expect(swapped.cache).toBe(current.cache);
     expect(swapMatchup(swapped).attacker).toBe(current.attacker);
   });
 
   it("changes the opponent-bound slot after Swap rather than assuming the right side", () => {
-    const current = swapMatchup(prepared());
+    const current = selectMatchupMove(swapMatchup(prepared()), "flamethrower");
     const state = { ...loaded(), opponentId: "member-empty" };
     const changed = reconcileRosters(current, state);
     expect(changed.attacker.source).toBeNull();
+    expect(changed.selectedMoveId).toBeNull();
     expect(changed.attacker.build).toBe(current.attacker.build);
     expect(changed.defender.source).toBe(current.defender.source);
     expect(changed.defender.role).toBe("own");
     expect(changed.field).toBe(current.field);
   });
 
-  it("detaches a manual species change, but retains its cached prep and normal edits' context", () => {
-    let current = prepared();
+  it.each(["attacker", "defender"] as const)("detaches a manual %s species change, but retains cached prep and normal edits' context", (side) => {
+    let current = selectMatchupMove(prepared(), "flamethrower");
     current.contexts = { bulletseed: { hits: 3 } };
-    const edited = updateMatchupBuild(current, "attacker", { ...current.attacker.build, nature: "Timid" });
-    expect(edited.attacker.source).toBe(current.attacker.source);
+    const edited = updateMatchupBuild(current, side, { ...current[side].build, nature: "Timid" });
+    expect(edited[side].source).toBe(current[side].source);
     expect(edited.contexts).toBe(current.contexts);
-    current = updateMatchupBuild(edited, "attacker", createBuild("venusaur"));
-    expect(current.attacker.source).toBeNull();
+    expect(edited.selectedMoveId).toBe("flamethrower");
+    current = updateMatchupBuild(edited, side, createBuild("venusaur"));
+    expect(current[side].source).toBeNull();
     expect(current.contexts).toEqual({});
-    expect(selectRosterPokemon(current, "attacker", choices().own[0]).attacker.build.nature).toBe("Timid");
+    expect(current.selectedMoveId).toBeNull();
+    const choice = side === "attacker" ? choices().own[0] : choices().other[0];
+    expect(selectRosterPokemon(current, side, choice)[side].build.nature).toBe("Timid");
   });
 
   it("preserves prep during refresh/error and invalidates removed entries only after success", () => {
-    const current = prepared();
+    const current = selectMatchupMove(prepared(), "flamethrower");
     const state = loaded();
     const loading = { ...state, status: "loading" as const, data: null, teamsStatus: "idle" as const };
+    expect(reconcileRosters(current, state)).toBe(current);
     expect(reconcileRosters(current, loading)).toBe(current);
     expect(reconcileRosters(current, { ...loading, status: "error", message: "Try again" })).toBe(current);
+    expect(reconcileRosters(current, { ...state, teamsStatus: "loading", data: null })).toBe(current);
+    expect(reconcileRosters(current, { ...state, teamsStatus: "error", teamsMessage: "Try again" })).toBe(current);
     state.data!.teams[0].pokemon.shift();
     const refreshed = reconcileRosters(current, state);
     expect(refreshed.attacker.build).toBe(current.attacker.build);
     expect(refreshed.attacker.source).toBeNull();
+    expect(refreshed.selectedMoveId).toBeNull();
     expect(refreshed.cache.has(current.attacker.source!.key)).toBe(false);
     expect(refreshed.defender).toBe(current.defender);
   });
 
+  it("does not clear a selected move when a refresh only prunes inactive cached prep", () => {
+    const { own } = choices();
+    let current = selectRosterPokemon(prepared(), "attacker", own[1]);
+    current = selectMatchupMove(selectRosterPokemon(current, "attacker", own[0]), "flamethrower");
+    const state = loaded();
+    state.data!.teams[0].pokemon.splice(1, 1);
+    const refreshed = reconcileRosters(current, state);
+    expect(refreshed.cache.has(own[1].source!.key)).toBe(false);
+    expect(refreshed.selectedMoveId).toBe("flamethrower");
+    expect(refreshed.contexts).toBe(current.contexts);
+    expect(refreshed.attacker).toBe(current.attacker);
+    expect(refreshed.defender).toBe(current.defender);
+    expect(refreshed.revision).toBe(current.revision);
+  });
+
   it("invalidates changed acquisitions, duplicate teams and duplicate entry identities", () => {
     for (const corrupt of ["acquisition", "team", "name"] as const) {
-      const current = prepared();
+      const current = selectMatchupMove(prepared(), "flamethrower");
       const state = loaded();
       const own = state.data!.teams[0];
       if (corrupt === "acquisition") own.pokemon[0] = { ...own.pokemon[0], acquired: "free_agent", pick_number: null };
@@ -237,14 +315,16 @@ describe("calculator prep transitions", () => {
       if (corrupt === "name") own.pokemon.push({ ...own.pokemon[0] });
       const refreshed = reconcileRosters(current, state);
       expect(refreshed.attacker.source).toBeNull();
+      expect(refreshed.selectedMoveId).toBeNull();
       expect(refreshed.cache.has(current.attacker.source!.key)).toBe(false);
     }
   });
 
   it("keeps cache scoped when switching leagues and prunes revoked memberships", () => {
-    const current = prepared();
+    const current = selectMatchupMove(prepared(), "flamethrower");
     const state = { ...loaded(), selectedLeagueId: "league-b", opponentId: "", data: null, teamsStatus: "loading" as const };
     const changed = reconcileRosters(current, state);
+    expect(changed.selectedMoveId).toBeNull();
     expect(changed.attacker.source).toBeNull();
     expect(changed.defender.source).toBeNull();
     expect(changed.attacker.build).toBe(current.attacker.build);
@@ -254,12 +334,29 @@ describe("calculator prep transitions", () => {
     expect(revoked.cache.size).toBe(0);
   });
 
+  it("clears move selection on navigation even without a roster-bound combatant", () => {
+    const current = selectMatchupMove(reconcileRosters(createMatchup(), loaded()), "flamethrower");
+    const next = reconcileRosters(current, { ...loaded(), opponentId: "member-empty" });
+    expect(next.selectedMoveId).toBeNull();
+    expect(next.attacker).toBe(current.attacker);
+    expect(next.defender).toBe(current.defender);
+    expect(next.cache).toBe(current.cache);
+    expect(next.revision).toBe(current.revision);
+  });
+
   it("clears private prep and announcements on account replacement or signout, not the first auth lookup", () => {
-    const current = prepared();
+    const manual = selectMatchupMove(createMatchup(), "flamethrower");
+    const firstLookup = reconcileRosters(manual, { ...loaded(), status: "loading", leagues: [], selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" });
+    expect(firstLookup.selectedMoveId).toBe("flamethrower");
+    expect(firstLookup.attacker).toBe(manual.attacker);
+    expect(firstLookup.revision).toBe(manual.revision);
+    const current = selectMatchupMove(prepared(), "flamethrower");
     expect(current.notice).toContain("Charizard selected as defender");
     for (const userId of ["different-account", null]) {
       const next = reconcileRosters(current, { ...loaded(), status: userId ? "loading" : "signed-out", userId, leagues: [], selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" });
       expect(next.cache.size).toBe(0);
+      expect(next.selectedMoveId).toBeNull();
+      expect(next.contexts).toEqual({});
       expect(next.notice).toBe("");
       expect(next.attacker.source).toBeNull();
       expect(next.defender.source).toBeNull();
@@ -284,9 +381,12 @@ describe("calculator prep transitions", () => {
   });
 
   it("reset clears prep and effects while keeping navigation and restoring own-left orientation", () => {
-    const current = swapMatchup(prepared());
+    const current = selectMatchupMove(swapMatchup(prepared()), "flamethrower");
     current.field.gravity = true;
+    current.contexts = { bulletseed: { hits: 3 } };
     const reset = resetMatchup(current);
+    expect(reset.selectedMoveId).toBeNull();
+    expect(reset.contexts).toEqual({});
     expect(reset.selection).toBe(current.selection);
     expect(reset.accountId).toBe(current.accountId);
     expect(reset.cache.size).toBe(0);

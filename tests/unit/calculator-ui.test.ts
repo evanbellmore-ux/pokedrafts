@@ -1,12 +1,28 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
 import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel, { parseBuildInput } from "@/app/(app)/calculator/PokemonPanel";
-import MoveResults, { filterMoveResults } from "@/app/(app)/calculator/MoveResults";
-import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calculator/MoveResults";
+import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
+import { selectMatchupMove, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
+import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { speciesById } from "@/app/lib/battle/catalog";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
+
+const viewport = vi.hoisted(() => ({ wide: false }));
+vi.mock("@/app/(app)/leagues/[leagueId]/useMinWidthMd", () => ({ useMinWidthMd: () => viewport.wide }));
+afterEach(() => { viewport.wide = false; });
+
+function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string) {
+  return renderToStaticMarkup(createElement(MatchupSummary, {
+    attacker: matchup.attacker, defender: matchup.defender,
+    selectedMoveId: matchup.selectedMoveId, selectedRow, blockedReason,
+    controls: { attacker: "attacker-editor", defender: "defender-editor", moves: "moves" },
+    onEdit: () => undefined, onShowMove: () => undefined,
+  }));
+}
 
 function row(moveId: string, kind: MoveDamageResult["kind"]): MoveDamageResult {
   return {
@@ -56,9 +72,10 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Change defender Pokémon");
   });
 
-  it("opens field controls initially and exposes all requested effects without duplicates", () => {
+  it("starts field controls closed but keeps all requested effects mounted without duplicates", () => {
     const html = renderToStaticMarkup(createElement(BattleConditions, { value: createConditions(), issues: [], onChange: () => undefined }));
-    expect(html).toMatch(/^<details\b[^>]*open=""/);
+    expect(html).toMatch(/^<details\b/);
+    expect(html).not.toMatch(/^<details\b[^>]*open=""/);
     expect(html).toContain("1 toggles on");
     for (const { key, label } of SHARED_FIELD_EFFECTS) {
       const inputs = [...html.matchAll(new RegExp(`<input\\b[^>]*id="[^"]*-${key}"[^>]*>`, "g"))];
@@ -178,6 +195,7 @@ describe("Champions calculator UI", () => {
   it("uses only mobile cards for SSR, distinguishing known zero damage from unsupported", () => {
     const html = renderToStaticMarkup(createElement(MoveResults, {
       rows: [row("thunderbolt", "calculated"), row("growth", "unsupported")],
+      selectedMoveId: "thunderbolt", onSelectMove: () => undefined,
       contexts: {}, onContextChange: () => undefined,
       sourceMoveCount: 2, abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
@@ -186,10 +204,234 @@ describe("Champions calculator UI", () => {
     expect(html).not.toMatch(/<table\b/);
     expect(html).toContain("0 HP");
     expect(html).toContain("Unranked · Unsupported");
-    expect(html).toContain("Coverage not verified.");
+    expect(html).not.toContain("Coverage not verified."); // Lengthy reasons live in Details.
     expect(html).toContain("Not estimated");
     expect(html).toContain("2 of 2 source-listed moves accounted for");
     expect(html).toContain("conditional on the move hitting");
-    expect(html).toContain("Variable / special");
+    expect(html).not.toContain("Base power:");
+    expect(html).not.toContain("Accuracy:");
+    expect(html).toMatch(/type="radio"[^>]*value="thunderbolt"/);
+    expect(html).toMatch(/type="radio"[^>]*aria-label="Select Thunderbolt to preview HP"[^>]*checked=""/);
+    expect([...html.matchAll(/type="radio"/g)]).toHaveLength(2);
+    expect(html).toContain("Selected");
+  });
+
+  it("puts active HP and moves before collapsed settings while keeping original editors mounted", () => {
+    const html = renderToStaticMarkup(createElement(CalculatorClient));
+    const moves = html.indexOf(">Choose a move</h2>");
+    expect(moves).toBeGreaterThan(0);
+    expect(html.indexOf("Active Pokémon and HP")).toBeLessThan(moves);
+    expect(html.indexOf('aria-valuenow="153"')).toBeLessThan(moves);
+    expect(html.indexOf('aria-valuenow="154"')).toBeLessThan(moves);
+    expect(html.indexOf("Prepare a league matchup")).toBeGreaterThan(moves);
+    expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(moves);
+    expect([...html.matchAll(/<details\b[^>]*>/g)].length).toBeGreaterThan(5);
+    for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
+    expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+    for (const [, references] of html.matchAll(/\baria-controls="([^"]+)"/g)) {
+      for (const reference of references.split(" ")) expect(ids).toContain(reference);
+    }
+    expect(html).toContain('aria-label="Edit attacker HP"');
+    expect(html).toContain('aria-label="Edit defender HP"');
+    expect(html).toContain("Field settings");
+  });
+
+  it("keeps HP ahead of advanced build settings and exposes closed-section errors", () => {
+    const build = { ...createBuild("charizard"), currentHP: 0, points: { ...createBuild().points, spa: 33 } };
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined }));
+    expect(html.indexOf(">Current HP</label>")).toBeLessThan(html.indexOf(">Nature</label>"));
+    expect(html).toMatch(/<summary\b[^>]*>Build settings[\s\S]*?settings to check<\/span><\/summary>/);
+    const hpInput = html.match(/<input\b[^>]*data-calculator-hp="true"[^>]*>/)?.[0];
+    expect(hpInput).toContain('aria-invalid="true"');
+    const field = { ...createConditions(), gravity: "bad" as unknown as boolean };
+    const fieldHTML = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
+    expect(fieldHTML).toMatch(/<summary\b[^>]*>[\s\S]*?1 settings to check<\/span><\/summary>/);
+  });
+
+  it.each([false, true])("renders one responsive move-selection branch (wide=%s) with unique labelled controls", (wide) => {
+    viewport.wide = wide;
+    const html = renderToStaticMarkup(createElement(MoveResults, {
+      rows: [row("flamethrower", "calculated"), row("bulletseed", "needs-context")],
+      selectedMoveId: "bulletseed", onSelectMove: () => undefined,
+      contexts: {}, onContextChange: () => undefined,
+      sourceMoveCount: 2, abilityId: "blaze", itemId: "",
+      attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+    }));
+    expect([...html.matchAll(/type="radio"/g)]).toHaveLength(2);
+    expect([...html.matchAll(/type="radio"[^>]*checked=""/g)]).toHaveLength(1);
+    expect(html.includes('<table ')).toBe(wide);
+    expect(html.includes('<ul aria-label="Move damage results"')).toBe(!wide);
+    expect(html).toContain("Set hits");
+    expect(html).not.toContain("Base power:");
+    expect(html).not.toContain("Accuracy:");
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const [, label] of html.matchAll(/\bfor="([^"]+)"/g)) expect(ids).toContain(label);
+    for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
+      for (const reference of references.split(" ")) expect(ids).toContain(reference);
+    }
+  });
+
+  it("offers explicit access to a selected move beyond the visible page", () => {
+    const rows = speciesById.get("charizard")!.moves.map((moveId) => row(moveId, "calculated"));
+    const selectedMoveId = rankResults(rows, "minimum").at(-1)!.moveId;
+    const html = renderToStaticMarkup(createElement(MoveResults, {
+      rows, selectedMoveId, onSelectMove: () => undefined,
+      contexts: {}, onContextChange: () => undefined,
+      sourceMoveCount: rows.length, abilityId: "blaze", itemId: "",
+      attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+    }));
+    expect(rows.length).toBeGreaterThan(30);
+    expect([...html.matchAll(/type="radio"/g)]).toHaveLength(30);
+    expect(html).toContain(">Show selected move</button>");
+    expect(html).toContain(">Show more moves</button>");
+    expect(html).not.toMatch(/type="radio"[^>]*checked=""/);
+  });
+
+  it("marks aggregate Stat Point and ability-condition errors on focusable controls", () => {
+    const build = createBuild("greninja");
+    build.abilityId = "protean";
+    build.abilityActive = false;
+    build.points = { hp: 3, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined }));
+    const ability = html.match(/<input\b[^>]*id="[^"]*-ability-active"[^>]*>/)?.[0];
+    expect(ability).toContain('aria-invalid="true"');
+    const descriptions = ability!.match(/aria-describedby="([^"]+)"/)![1].split(" ");
+    expect(descriptions).toHaveLength(2);
+    for (const id of descriptions) expect(html).toContain(`id="${id}"`);
+    const points = [...html.matchAll(/<input\b[^>]*id="[^"]*-points-[a-z]+"[^>]*>/g)];
+    expect(points).toHaveLength(6);
+    for (const [input] of points) expect(input).toContain('aria-invalid="true"');
+  });
+
+  it("keeps power, accuracy, reasons, rolls and the single hit editor in Details", () => {
+    const render = (abilityId: string, itemId = "") => renderToStaticMarkup(createElement(MoveDetails, {
+      row: { ...row("bulletseed", "needs-context"), reason: "Choose hits before calculating." },
+      id: "bulletseed-details", context: undefined, abilityId, itemId, onContextChange: () => undefined,
+    }));
+    const html = render("overgrow");
+    expect([...html.matchAll(/<select\b/g)]).toHaveLength(1);
+    expect(html).toContain('id="bulletseed-details-hits"');
+    expect(html).toContain('for="bulletseed-details-hits"');
+    expect(html).toContain("Choose hits before calculating.");
+    expect(html).toContain("Base power: 25");
+    expect(html).toContain("Accuracy: 100%");
+    expect(html).toContain("No damage rolls available.");
+    expect(render("skilllink")).not.toMatch(/<select\b/);
+    expect(render("skilllink")).toContain("Skill Link fixes this move at 5 hits");
+    const dice = render("overgrow", "loadeddice");
+    expect(dice).toContain('<option value="4">4 hits</option>');
+    expect(dice).not.toContain('<option value="2">');
+    const unsupported = renderToStaticMarkup(createElement(MoveDetails, {
+      row: row("growth", "unsupported"), id: "growth-details", context: undefined,
+      abilityId: "overgrow", itemId: "", onContextChange: () => undefined,
+    }));
+    expect(unsupported).toContain("Coverage not verified.");
+    expect(unsupported).toContain("Variable / special");
+  });
+});
+
+describe("active matchup and selected-move summary", () => {
+  it("starts with current HP, accessible bars, editor shortcuts and no selected outcome", () => {
+    const matchup = createMatchup();
+    const html = summaryHTML(matchup);
+    expect(html).toContain("Charizard");
+    expect(html).toContain("Blastoise");
+    expect(html).toContain('aria-label="Charizard attacker current HP"');
+    expect(html).toContain('aria-valuenow="153"');
+    expect(html).toContain('aria-valuemax="154"');
+    expect(html).toContain("Choose a move below");
+    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).toContain('aria-controls="attacker-editor"');
+    expect(html).toContain('aria-controls="defender-editor"');
+    expect(html).not.toMatch(/<input\b/);
+  });
+
+  it("shows latest damage-only remaining bounds without altering current HP or inferring KO", () => {
+    let matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 100 });
+    const result = { ...row("flamethrower", "calculated"), min: 20, max: 35, rolls: Array.from({ length: 16 }, (_, i) => 20 + i), ohkoChance: 0.375 };
+    const before = structuredClone(matchup);
+    const html = summaryHTML(matchup, result);
+    expect(html).toContain('aria-valuenow="100"');
+    expect(html).toContain("20–35 damage");
+    expect(html).toContain("65–80 / 154");
+    expect(html).toContain("One-use KO: 37.5%");
+    expect(html).toContain("Current HP is unchanged");
+    expect(html).toContain("if it connects");
+    expect(html).toContain('aria-live="polite" aria-atomic="true"');
+    const edited = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 40 });
+    expect(summaryHTML(edited, result)).toContain("5–20 / 154");
+    expect(summaryHTML(edited, { ...result, min: 50, max: 50, rolls: 50 })).toContain("0 / 154");
+    expect(matchup).toEqual(before);
+  });
+
+  it.each(["Loading the calculator.", "Retry the calculator.", "Fix invalid settings."])("withholds stale damage and projected HP while blocked: %s", (reason) => {
+    const matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    const html = summaryHTML(matchup, row("flamethrower", "calculated"), reason);
+    expect(html).toContain("Flamethrower");
+    expect(html).toContain(reason);
+    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).not.toContain("0 damage");
+    expect(html).not.toContain("One-use KO:");
+    expect(html).not.toContain(">Show move</button>");
+  });
+
+  it.each([0, Number.NaN, 1.5, 155])("does not turn invalid defender HP %s into a full-health bar", (currentHP) => {
+    const matchup = updateMatchupBuild(selectMatchupMove(createMatchup(), "flamethrower"), "defender", { ...createBuild("blastoise"), currentHP });
+    const html = summaryHTML(matchup, undefined, "Fix invalid settings.");
+    expect([...html.matchAll(/role="meter"/g)]).toHaveLength(1);
+    expect(html).toContain("Check build settings to show HP");
+    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).not.toContain('aria-valuenow="154"');
+  });
+
+  it("keeps true zero distinct from unknown, missing and noncalculated results", () => {
+    const matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    const zero = summaryHTML(matchup, row("flamethrower", "calculated"));
+    expect(zero).toContain("0 damage");
+    expect(zero).toContain("154 / 154");
+    for (const kind of ["status", "needs-context", "unsupported"] as const) {
+      const html = summaryHTML(matchup, row("flamethrower", kind));
+      expect(html).not.toContain("0 damage");
+      expect(html).not.toContain("Defender HP remaining:");
+    }
+    expect(summaryHTML(matchup)).not.toContain("Defender HP remaining:");
+  });
+
+  it("retains raw damage and supplied KO while withholding survival-sensitive HP", () => {
+    let matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    matchup = updateMatchupBuild(matchup, "defender", { ...createBuild("venusaur"), itemId: "focussash" });
+    // A defender species change deliberately clears selection.
+    matchup = selectMatchupMove(matchup, "flamethrower");
+    const damage = { ...row("flamethrower", "calculated"), min: 138, max: 164, rolls: [138, ...Array(14).fill(150), 164] };
+    const html = summaryHTML(matchup, damage);
+    expect(html).toContain("138–164 damage");
+    expect(html).toContain("One-use KO: 0%");
+    expect(html).toContain("Remaining HP is withheld for Focus Sash");
+    expect(html).not.toContain("Defender HP remaining:");
+  });
+
+  it("keeps the selected summary independent of filtering and offers one Set hits action", () => {
+    const matchup = selectMatchupMove(updateMatchupBuild(createMatchup(), "attacker", createBuild("venusaur")), "bulletseed");
+    const result = row("bulletseed", "needs-context");
+    expect(filterMoveResults([result], "surf", "all")).toEqual([]);
+    const html = summaryHTML(matchup, result);
+    expect(html).toContain("Bullet Seed");
+    expect(html).toContain(">Set hits</button>");
+    expect(html).not.toMatch(/<select\b/);
+    expect(html).not.toContain("Defender HP remaining:");
+  });
+
+  it("shows ownership independently of attacker/defender and keeps it correct after Swap", () => {
+    const matchup = createMatchup();
+    matchup.attacker.source = { key: "own", leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
+    matchup.defender.source = { key: "opponent", leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
+    const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
+    expect(html).toContain("Attacker · Opponent's team");
+    expect(html).toContain("Defender · Your team");
+    expect(html).toContain('aria-label="Blastoise attacker current HP"');
+    expect(html).toContain('aria-label="Charizard defender current HP"');
   });
 });
