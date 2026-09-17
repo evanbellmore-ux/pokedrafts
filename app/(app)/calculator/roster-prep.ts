@@ -135,6 +135,7 @@ export type PreparedMatchup = {
   defender: Combatant;
   field: BattleConditions;
   contexts: Record<string, MoveContext>;
+  selectedMoveId: string | null;
   cache: Map<string, { source: RosterSource; build: BattleBuild }>;
 };
 
@@ -148,8 +149,15 @@ export function createMatchup(revision = 0): PreparedMatchup {
     defender: { key: revision * 2 + 1, editorRevision: 0, role: "opponent", build: createBuild("blastoise"), source: null },
     field: createConditions(),
     contexts: {},
+    selectedMoveId: null,
     cache: new Map(),
   };
+}
+
+export function selectMatchupMove(current: PreparedMatchup, moveId: string | null): PreparedMatchup {
+  if (current.selectedMoveId === moveId) return current;
+  if (moveId !== null && !speciesById.get(current.attacker.build.speciesId)?.moves.includes(moveId)) return current;
+  return { ...current, selectedMoveId: moveId };
 }
 
 export function swapMatchup(current: PreparedMatchup): PreparedMatchup {
@@ -159,6 +167,7 @@ export function swapMatchup(current: PreparedMatchup): PreparedMatchup {
     defender: current.attacker,
     field: { ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide },
     contexts: {},
+    selectedMoveId: null,
     notice: "Attacker and defender swapped with their roster shortcuts and side conditions. Shared field settings are unchanged; move hit counts cleared.",
   };
 }
@@ -175,7 +184,11 @@ export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, b
   const changedSpecies = slot.build.speciesId !== build.speciesId;
   const source = changedSpecies ? null : slot.source;
   const cache = source ? new Map(current.cache).set(source.key, { source, build }) : current.cache;
-  return { ...current, [side]: { ...slot, build, source }, cache, contexts: changedSpecies ? {} : current.contexts };
+  return {
+    ...current, [side]: { ...slot, build, source }, cache,
+    contexts: changedSpecies ? {} : current.contexts,
+    selectedMoveId: changedSpecies ? null : current.selectedMoveId,
+  };
 }
 
 export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice): PreparedMatchup {
@@ -191,6 +204,7 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     [side]: { ...slot, build, source, editorRevision: slot.editorRevision + 1 },
     cache: new Map(current.cache).set(source.key, { source, build }),
     contexts: {},
+    selectedMoveId: null,
     notice: `${choice.name} selected as ${side}. ${cached ? "Your session build edits were restored." : "Default build loaded; adjust nature, ability, item and Stat Points as needed."} Field settings are unchanged; move hit counts cleared.`,
   };
 }
@@ -244,5 +258,6 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
   return {
     ...current, accountId: state.userId, selection, attacker, defender, cache,
     contexts: navigationChanged || detached ? {} : current.contexts,
+    selectedMoveId: navigationChanged || detached ? null : current.selectedMoveId,
   };
 }
