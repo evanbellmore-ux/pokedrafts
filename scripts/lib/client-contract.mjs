@@ -6,11 +6,14 @@
 // section 10, and the three legacy timer functions no longer exist. Later
 // feature migrations (20260912120000_playoffs.sql and on) add to that catalog
 // in a "Grants" section of their own, so the catalog is the union of every
-// migration's grants section. A client that calls a function outside it gets
-// PGRST202 (function not found); a direct insert gets 42501, and a direct
-// update or delete that a policy filters out "succeeds" with zero rows. This
-// module finds both kinds of call site in the client source so a migration is
-// never applied ahead of the client.
+// migration's grants section. The same sections name the tables that are
+// read-only for the client (20260916120000_pool_builder.sql: `pokemon`, which
+// only the seed script writes, with the service-role key) as bare
+// `'public.<table>'` entries. A client that calls a function outside the
+// catalog gets PGRST202 (function not found); a direct insert gets 42501, and
+// a direct update or delete that a policy filters out "succeeds" with zero
+// rows. This module finds every such call site in the client source so a
+// migration is never applied ahead of the client.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
@@ -50,7 +53,11 @@ const SOURCE_FILE = /\.(?:ts|tsx|js|jsx|mjs)$/;
  * A migration's grants section starts at a comment heading that reads
  * "-- Grants" or "-- <n>. Grants" (the hardening file boxes its headings
  * between two rules of dashes) and ends at the next boxed heading or at the
- * end of the file.
+ * end of the file. The patterns expect LF line endings; grantsSection()
+ * normalises the file first, because a checkout with core.autocrlf (the
+ * default on Windows) hands the parser CRLF files, and a rule of dashes that
+ * ends in "\r\n" would otherwise never match, running the section to the end
+ * of the file and pulling table names out of function bodies.
  */
 const GRANTS_HEADING = /^--\s*(?:\d+\.\s*)?Grants\s*$/m;
 const HEADING_RULE = /^\s*\n-{10,}[ \t]*\n/;
@@ -62,17 +69,19 @@ const NEXT_BOXED_HEADING = /^-{10,}[ \t]*\n--/m;
  */
 
 /**
- * The text of a migration's grants section, or null when the file has none
- * (the base schema and the eight legacy files grant nothing).
+ * The text of a migration's grants section (with LF line endings whatever
+ * the file used), or null when the file has none (the base schema and the
+ * eight legacy files grant nothing).
  * @param {string} migrationSql
  * @returns {string | null}
  */
 export function grantsSection(migrationSql) {
-  const heading = GRANTS_HEADING.exec(migrationSql);
+  const sql = migrationSql.replace(/\r\n?/g, "\n");
+  const heading = GRANTS_HEADING.exec(sql);
   if (!heading) {
     return null;
   }
-  const rest = migrationSql.slice(heading.index + heading[0].length);
+  const rest = sql.slice(heading.index + heading[0].length);
   const rule = HEADING_RULE.exec(rest);
   const body = rule ? rest.slice(rule[0].length) : rest;
   const end = body.search(NEXT_BOXED_HEADING);
@@ -94,6 +103,28 @@ export function parseRpcCatalog(migrationSql) {
   }
   const names = new Set();
   for (const match of section.matchAll(/'public\.([a-z][a-z0-9_]*)\(/g)) {
+    names.add(match[1]);
+  }
+  return [...names].sort();
+}
+
+/**
+ * The tables a migration's grants section marks read-only for the client:
+ * every bare `'public.<table>'` entry (a name with no parameter list; the
+ * function entries above always carry one). The browser may select from them
+ * and never writes them; the seed scripts do, with the service-role key.
+ * Sorted and unique. Throws when the file has no grants section, like
+ * parseRpcCatalog.
+ * @param {string} migrationSql
+ * @returns {string[]}
+ */
+export function parseReadOnlyTables(migrationSql) {
+  const section = grantsSection(migrationSql);
+  if (section === null) {
+    throw new Error("migration: no 'Grants' section heading found");
+  }
+  const names = new Set();
+  for (const match of section.matchAll(/'public\.([a-z][a-z0-9_]*)'/g)) {
     names.add(match[1]);
   }
   return [...names].sort();
@@ -138,16 +169,38 @@ export function readRpcCatalog(root) {
 }
 
 /**
+ * The union of the read-only tables of every migration's grants section
+ * under `root` (files without a grants section contribute nothing).
+ * @param {string} root project root (absolute)
+ * @returns {string[]} sorted and unique
+ */
+export function readReadOnlyTables(root) {
+  const names = new Set();
+  for (const migration of readMigrationFiles(root)) {
+    if (grantsSection(migration.sql) === null) {
+      continue;
+    }
+    for (const name of parseReadOnlyTables(migration.sql)) {
+      names.add(name);
+    }
+  }
+  return [...names].sort();
+}
+
+/**
  * Finds `.rpc("<name>")` calls that name a dropped or unknown function and
  * `.from("<table>").<insert|update|upsert|delete>(` chains on the
- * function-only tables (the chain may span lines). Reads are never reported.
+ * function-only tables and on the read-only tables (the chain may span
+ * lines). Reads are never reported.
  * @param {string} source
  * @param {string} file label used in the findings
  * @param {string[]} catalog from parseRpcCatalog / readRpcCatalog
+ * @param {string[]} [readOnlyTables] from parseReadOnlyTables / readReadOnlyTables
  * @returns {Finding[]} ordered by line
  */
-export function scanSource(source, file, catalog) {
+export function scanSource(source, file, catalog, readOnlyTables = []) {
   const known = new Set(catalog);
+  const readOnly = new Set(readOnlyTables);
   /** @type {Finding[]} */
   const findings = [];
   /** @param {number | undefined} index */
@@ -165,7 +218,14 @@ export function scanSource(source, file, catalog) {
   for (const match of source.matchAll(/\.from\(\s*["']([A-Za-z0-9_]+)["']\s*\)\s*\.\s*([A-Za-z]+)\s*\(/g)) {
     const table = match[1];
     const method = match[2];
-    if (!FUNCTION_ONLY_TABLES.includes(table) || !WRITE_METHODS.has(method)) {
+    if (!WRITE_METHODS.has(method)) {
+      continue;
+    }
+    if (readOnly.has(table)) {
+      findings.push({ file, line: lineOf(match.index), kind: "direct_write", detail: `from("${table}").${method}() is not allowed: ${table} is read-only for the client (only the seed scripts write it, with the service-role key)` });
+      continue;
+    }
+    if (!FUNCTION_ONLY_TABLES.includes(table)) {
       continue;
     }
     if ((ALLOWED_DIRECT_WRITES[table] ?? []).includes(method)) {
@@ -199,9 +259,10 @@ function collectSourceFiles(dir, out) {
  * Scans app/ and proxy.ts under `root`.
  * @param {string} root project root (absolute)
  * @param {string[]} [catalog] defaults to the union of every migration's grants under root
+ * @param {string[]} [readOnlyTables] defaults to the read-only tables of those same sections
  * @returns {{ files: number, findings: Finding[] }}
  */
-export function scanProject(root, catalog = readRpcCatalog(root)) {
+export function scanProject(root, catalog = readRpcCatalog(root), readOnlyTables = readReadOnlyTables(root)) {
   /** @type {string[]} */
   const files = [];
   for (const dir of SCAN_DIRS) {
@@ -220,7 +281,7 @@ export function scanProject(root, catalog = readRpcCatalog(root)) {
   const findings = [];
   for (const path of files) {
     const label = relative(root, path).split(sep).join("/");
-    findings.push(...scanSource(readFileSync(path, "utf8"), label, catalog));
+    findings.push(...scanSource(readFileSync(path, "utf8"), label, catalog, readOnlyTables));
   }
   findings.sort((a, b) => (a.file === b.file ? a.line - b.line : a.file < b.file ? -1 : 1));
   return { files: files.length, findings };

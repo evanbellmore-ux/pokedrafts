@@ -247,6 +247,13 @@ describe("security probes", () => {
         ["league_news", "insert into public.league_news (league_id, member_id, news_type, message) values ($1, $2, 'free_agent', 'fake')", [id, coach.memberId]],
         ["draft_order", "insert into public.draft_order (league_id, member_id, pick_slot) values ($1, $2, 1)", [id, coach.memberId]],
         ["pokemon_dex", "insert into public.pokemon_dex (dex_number, name) values (99999, 'Fake')", []],
+        // The Pool Builder dataset is read-only for the client; only the seed
+        // script writes it (20260916120000_pool_builder.sql, Grants).
+        [
+          "pokemon",
+          "insert into public.pokemon (id, species_id, slug, display_name, species_name, form_kind, type1, hp, attack, defense, special_attack, special_defense, speed, generation) values (999999, 999999, 'fake', 'Fake', 'Fake', 'default', 'Normal', 1, 1, 1, 1, 1, 1, 1)",
+          [],
+        ],
         ["draft_formats (shared)", "insert into public.draft_formats (name, json, created_by) values ('Shared', '{}', null)", []],
       ];
       for (const [label, sql, params] of inserts) {

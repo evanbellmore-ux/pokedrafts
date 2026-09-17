@@ -1,6 +1,9 @@
 import { CREATE_LEAGUE_DEFAULTS } from "@/app/lib/league/limits";
-import type { DraftFormat, DraftPokemon } from "@/app/types/draft";
+import { isDraftPokemon, type DraftFormat, type DraftPokemon } from "@/app/types/draft";
 import type { League } from "@/app/types/league";
+
+// The entry guard lives with the type; re-exported so existing imports keep working.
+export { isDraftPokemon };
 
 /**
  * `leagues.custom_pool` is the only pool a league drafts from
@@ -22,19 +25,6 @@ export type LeaguePoolInfo = {
   /** True when the pool is an untouched copy of a draft format. */
   mirrorsFormat: boolean;
 };
-
-export function isDraftPokemon(value: unknown): value is DraftPokemon {
-  if (typeof value !== "object" || value === null) return false;
-  const entry = value as Record<string, unknown>;
-  return (
-    typeof entry.name === "string" &&
-    entry.name.trim().length > 0 &&
-    typeof entry.points === "number" &&
-    Number.isFinite(entry.points) &&
-    typeof entry.tier === "number" &&
-    Number.isFinite(entry.tier)
-  );
-}
 
 export function readLeaguePool(
   league: Pick<League, "custom_pool">

@@ -1,9 +1,10 @@
 // Release gate for the migrations under supabase/migrations (the hardening
 // file and the feature migrations after it). Fails (exit 1) when the client
 // under app/ or proxy.ts still calls one of the dropped timer RPCs, calls an
-// RPC that no migration's grants section lists, or writes directly to a table
-// the policy set no longer lets the browser write to. Prints nothing but a
-// one-line summary when clean.
+// RPC that no migration's grants section lists, writes directly to a table
+// the policy set no longer lets the browser write to, or writes a read-only
+// table (the Pool Builder dataset `pokemon`, which only the seed script
+// writes). Prints nothing but a one-line summary when clean.
 // Run with: node scripts/check-client-contract.mjs   (from any directory)
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,7 +14,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const { files, findings } = scanProject(root);
 
 if (findings.length === 0) {
-  console.log(`client contract OK: ${files} files scanned, no dropped RPCs and no direct writes to function-only tables.`);
+  console.log(`client contract OK: ${files} files scanned, no dropped RPCs and no direct writes to function-only or read-only tables.`);
   process.exit(0);
 }
 

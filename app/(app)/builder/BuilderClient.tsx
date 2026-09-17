@@ -19,13 +19,25 @@ import PageHeader from "@/app/components/ui/PageHeader";
 import StatusPill from "@/app/components/ui/StatusPill";
 import { getCurrentUser } from "@/app/lib/auth/current-user";
 import { friendlyError } from "@/app/lib/errors";
+import {
+  findDatasetEntry,
+  getCachedDataset,
+  loadDataset,
+} from "@/app/lib/pokemon/dataset";
+import { defaultRules, PRESETS } from "@/app/lib/pokemon/rules";
 import { createClient } from "@/app/lib/supabase/client";
+import type { FormatRules, PokemonEntry } from "@/app/types/pokemon";
 import FormatLibrary, {
   type LibraryState,
   type Notice,
   type SavedFormat,
 } from "./FormatLibrary";
 import PoolTable from "./PoolTable";
+import RuleBuilder, {
+  pointsFor,
+  type ApplyMode,
+  type DatasetState,
+} from "./RuleBuilder";
 import {
   cleanName,
   copyName,
@@ -39,26 +51,42 @@ import {
   MAX_POKEMON_NAME_LENGTH,
   MAX_POOL_SIZE,
   MIN_POINTS,
+  missingEntries,
+  needsPriceChoice,
   parsePoolFile,
   parsePoolJson,
+  poolRowFor,
   rowProblem,
+  rulesToSave,
   serializeEntries,
   toDraftFormat,
   type ParsedPool,
   type PoolEntry,
+  type PriceChoice,
 } from "./poolFormat";
 import { resolvePokemonName } from "./resolvePokemon";
 
 /** Rows rendered before a "Show more" button appears. */
 const PAGE_SIZE = 100;
 
-/** The saved row the editor is working on; `owned` decides update vs insert. */
-type LoadedFormat = { id: string; owned: boolean };
+/**
+ * The saved row the editor is working on; `owned` decides update vs insert
+ * and `rules` is what the row was saved with (null for a hand-built format).
+ */
+type LoadedFormat = { id: string; owned: boolean; rules: FormatRules | null };
 
 /** What the editor last loaded or saved, for unsaved-change detection. */
-type Snapshot = { name: string; pool: string };
+type Snapshot = { name: string; pool: string; rules: string };
+
+/** Stable fingerprint of the rules Save would write. */
+function serializeRules(rules: FormatRules | null): string {
+  return rules ? JSON.stringify(rules) : "";
+}
 
 type PendingSwitch = { kind: "load"; format: SavedFormat } | { kind: "new" };
+
+/** A Save or Export waiting on the "Keep the prices you edited?" choice. */
+type PendingWrite = "save" | "export";
 
 /** "Pokémon" is its own plural. */
 function countPokemon(count: number) {
@@ -87,7 +115,17 @@ export default function BuilderClient() {
   const [snapshot, setSnapshot] = useState<Snapshot>({
     name: "",
     pool: serializeEntries([]),
+    rules: "",
   });
+  // The rule card's state, the rules that produced the current pool (null
+  // for a hand-built pool), whether a price was edited since, and what the
+  // coach chose to do about that when saving (13.5).
+  const [rules, setRules] = useState<FormatRules>(() => defaultRules());
+  const [poolRules, setPoolRules] = useState<FormatRules | null>(null);
+  const [handPriced, setHandPriced] = useState(false);
+  const [priceChoice, setPriceChoice] = useState<PriceChoice | null>(null);
+  const [pendingWrite, setPendingWrite] = useState<PendingWrite | null>(null);
+  const [dataset, setDataset] = useState<DatasetState>({ status: "loading" });
   const [search, setSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [newName, setNewName] = useState("");
@@ -144,6 +182,26 @@ export default function BuilderClient() {
     void loadLibrary().then(setLibrary);
   }
 
+  const [datasetAttempt, setDatasetAttempt] = useState(0);
+  useEffect(() => {
+    let active = true;
+    loadDataset()
+      .then((entries) => {
+        if (active) setDataset({ status: "ready", entries });
+      })
+      .catch((caught) => {
+        if (active) setDataset({ status: "error", message: friendlyError(caught) });
+      });
+    return () => {
+      active = false;
+    };
+  }, [datasetAttempt]);
+
+  function retryDataset() {
+    setDataset({ status: "loading" });
+    setDatasetAttempt((current) => current + 1);
+  }
+
   /** Re-reads the list after a write without blanking it. */
   async function refreshLibrary() {
     setLibrary(await loadLibrary());
@@ -155,7 +213,15 @@ export default function BuilderClient() {
   const duplicateKeys = useMemo(() => findDuplicateKeys(entries), [entries]);
   const problem = useMemo(() => rowProblem(entries), [entries]);
   const fingerprint = useMemo(() => serializeEntries(entries), [entries]);
-  const dirty = trimmedName !== snapshot.name || fingerprint !== snapshot.pool;
+  const savedRules = useMemo(
+    () => rulesToSave(poolRules, handPriced, priceChoice),
+    [poolRules, handPriced, priceChoice]
+  );
+  const rulesFingerprint = serializeRules(savedRules);
+  const dirty =
+    trimmedName !== snapshot.name ||
+    fingerprint !== snapshot.pool ||
+    rulesFingerprint !== snapshot.rules;
 
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase();
@@ -180,6 +246,7 @@ export default function BuilderClient() {
     : "Save format";
 
   function updateEntry(key: string, patch: Partial<PoolEntry>) {
+    if (patch.points !== undefined && poolRules !== null) setHandPriced(true);
     setEntries((prev) =>
       prev.map((entry) => (entry.key === key ? { ...entry, ...patch } : entry))
     );
@@ -189,13 +256,26 @@ export default function BuilderClient() {
     setEntries((prev) => prev.filter((entry) => entry.key !== key));
   }
 
-  /** Replaces the editor content and records it as the saved state. */
+  /**
+   * Replaces the editor content and records it as the saved state. A format
+   * with rules seeds the rule card with them; one without shows the card in
+   * its default state ("built by hand", docs 13.7).
+   */
   function applyPool(name: string, next: PoolEntry[], target: LoadedFormat | null) {
     setFormatName(name);
     setNameTouched(false);
     setEntries(next);
     setLoaded(target);
-    setSnapshot({ name: cleanName(name), pool: serializeEntries(next) });
+    const formatRulesToKeep = target?.rules ?? null;
+    setPoolRules(formatRulesToKeep);
+    setHandPriced(false);
+    setPriceChoice(null);
+    setRules(formatRulesToKeep ?? defaultRules());
+    setSnapshot({
+      name: cleanName(name),
+      pool: serializeEntries(next),
+      rules: serializeRules(formatRulesToKeep),
+    });
     setSearch("");
     setVisibleCount(PAGE_SIZE);
   }
@@ -215,6 +295,7 @@ export default function BuilderClient() {
     applyPool(format.name, parsed.entries, {
       id: format.id,
       owned: userId !== null && format.created_by === userId,
+      rules: parsed.rules,
     });
 
     const skipped =
@@ -287,6 +368,23 @@ export default function BuilderClient() {
         });
         return;
       }
+      // The resolved name may already be in the pool under another spelling
+      // ("Paldean Tauros Blaze" for "Paldean Tauros (Blaze Breed)").
+      const dataset = getCachedDataset();
+      const row = dataset ? findDatasetEntry(dataset, resolved) : null;
+      const existing = row
+        ? poolRowFor(entries, row)
+        : (entries.find((entry) => entryKey(entry.name) === entryKey(resolved)) ?? null);
+      if (existing) {
+        setAddNotice({
+          variant: "warning",
+          message:
+            entryKey(existing.name) === entryKey(resolved)
+              ? `${resolved} is already in this pool.`
+              : `${resolved} is already in this pool as "${existing.name}".`,
+        });
+        return;
+      }
       setEntries((prev) => [...prev, makeEntry(resolved, DEFAULT_POINTS)]);
       setNewName("");
       setAddNotice({
@@ -309,6 +407,11 @@ export default function BuilderClient() {
       const parsed = parsePoolFile(await file.text());
       setEntries(parsed.entries);
       if (parsed.name && trimmedName.length === 0) setFormatName(parsed.name);
+      // The file's rules (if any) become the pool's recipe, like a load.
+      setPoolRules(parsed.rules);
+      setHandPriced(false);
+      setPriceChoice(null);
+      if (parsed.rules) setRules(parsed.rules);
       setSearch("");
       setVisibleCount(PAGE_SIZE);
 
@@ -369,8 +472,19 @@ export default function BuilderClient() {
       });
       return;
     }
+    // A price edited by hand on a bands-priced pool: ask whether the format
+    // keeps manual prices or the bands before writing (docs 13.5).
+    if (needsPriceChoice(poolRules, handPriced, priceChoice)) {
+      setPendingWrite("save");
+      return;
+    }
 
-    const json = toDraftFormat(trimmedName, entries);
+    await writeFormat(savedRules);
+  }
+
+  /** Writes the format with the given rules; validation has already passed. */
+  async function writeFormat(rulesToWrite: FormatRules | null) {
+    const json = toDraftFormat(trimmedName, entries, rulesToWrite);
     setSaving(true);
     setEditorNotice(null);
     try {
@@ -402,10 +516,15 @@ export default function BuilderClient() {
           setEditorNotice({ variant: "error", message: friendlyError(error) });
           return;
         }
-        setLoaded({ id: (data as { id: string }).id, owned: true });
+        setLoaded({ id: (data as { id: string }).id, owned: true, rules: rulesToWrite });
       }
+      if (loaded?.owned) setLoaded({ ...loaded, rules: rulesToWrite });
 
-      setSnapshot({ name: trimmedName, pool: serializeEntries(entries) });
+      setSnapshot({
+        name: trimmedName,
+        pool: serializeEntries(entries),
+        rules: serializeRules(rulesToWrite),
+      });
       await refreshLibrary();
       setEditorNotice({
         variant: "success",
@@ -424,8 +543,17 @@ export default function BuilderClient() {
       setEditorNotice({ variant: "error", message: problem });
       return;
     }
+    if (needsPriceChoice(poolRules, handPriced, priceChoice)) {
+      setPendingWrite("export");
+      return;
+    }
 
-    const json = toDraftFormat(trimmedName || "Untitled format", entries);
+    writeExport(savedRules);
+  }
+
+  /** Downloads the format with the given rules; validation has already passed. */
+  function writeExport(rulesToWrite: FormatRules | null) {
+    const json = toDraftFormat(trimmedName || "Untitled format", entries, rulesToWrite);
     const fileName = exportFileName(json.leagueName);
     const blob = new Blob([JSON.stringify(json, null, 2)], {
       type: "application/json",
@@ -443,6 +571,21 @@ export default function BuilderClient() {
       variant: "success",
       message: `Exported ${countPokemon(entries.length)} to ${fileName}.`,
     });
+  }
+
+  /**
+   * The answer to "Keep the prices you edited?": remembered until the pool
+   * is priced again (load, upload or Replace), then the waiting Save or
+   * Export goes ahead with the rules that answer produces.
+   */
+  function choosePricing(choice: PriceChoice) {
+    const action = pendingWrite;
+    setPendingWrite(null);
+    setPriceChoice(choice);
+    if (!action) return;
+    const rulesToWrite = rulesToSave(poolRules, handPriced, choice);
+    if (action === "save") void writeFormat(rulesToWrite);
+    else writeExport(rulesToWrite);
   }
 
   async function duplicateFormat(format: SavedFormat) {
@@ -526,7 +669,7 @@ export default function BuilderClient() {
       if (wasLoaded) {
         // The rows stay in the editor as an unsaved new format.
         setLoaded(null);
-        setSnapshot({ name: "", pool: serializeEntries([]) });
+        setSnapshot({ name: "", pool: serializeEntries([]), rules: "" });
       }
       await refreshLibrary();
       setLibraryNotice({
@@ -539,6 +682,60 @@ export default function BuilderClient() {
     } catch (caught) {
       return friendlyError(caught);
     }
+  }
+
+  /**
+   * "Apply to pool" (docs 13.7 item 6): the rule result replaces the pool,
+   * or is appended to it without touching existing rows and prices.
+   */
+  function handleApply(
+    result: PokemonEntry[],
+    appliedRules: FormatRules,
+    mode: ApplyMode
+  ) {
+    let next: PoolEntry[];
+    let added: number;
+    if (mode === "replace") {
+      next = result.map((entry) =>
+        makeEntry(entry.display_name, pointsFor(entry, appliedRules))
+      );
+      added = next.length;
+    } else {
+      // A row the pool stores under an older spelling counts as present
+      // (poolFormat.ts `missingEntries`), so no Pokémon lands twice.
+      const missing = missingEntries(entries, result);
+      next = [
+        ...entries,
+        ...missing.map((entry) =>
+          makeEntry(entry.display_name, pointsFor(entry, appliedRules))
+        ),
+      ];
+      added = missing.length;
+    }
+
+    if (next.length > MAX_POOL_SIZE) {
+      setEditorNotice({
+        variant: "error",
+        message: `A draft pool can hold at most ${MAX_POOL_SIZE} Pokémon; these rules would make ${next.length}. Narrow the filters and try again.`,
+      });
+      return;
+    }
+
+    setEntries(next);
+    setPoolRules(appliedRules);
+    if (mode === "replace") {
+      setHandPriced(false);
+      setPriceChoice(null);
+    }
+    setSearch("");
+    setVisibleCount(PAGE_SIZE);
+    setEditorNotice({
+      variant: "success",
+      message:
+        mode === "replace"
+          ? `Applied the rules: the pool now has ${countPokemon(next.length)}. Adjust single rows in the list below.`
+          : `Added ${countPokemon(added)} that ${added === 1 ? "was" : "were"} missing; the pool now has ${countPokemon(next.length)}.`,
+    });
   }
 
   const canStartNew = dirty || loaded !== null || entries.length > 0;
@@ -720,6 +917,20 @@ export default function BuilderClient() {
             )}
           </section>
 
+          <RuleBuilder
+            rules={rules}
+            onRulesChange={setRules}
+            dataset={dataset}
+            onRetryDataset={retryDataset}
+            presets={PRESETS}
+            poolSize={entries.length}
+            builtByHand={loaded !== null && loaded.rules === null && poolRules === null}
+            savedRules={loaded?.rules ?? null}
+            handPriced={handPriced}
+            onApply={handleApply}
+            disabled={saving}
+          />
+
           <section aria-labelledby="pool-list-heading" className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-3">
               <h2 id="pool-list-heading" className="text-lg font-semibold text-text">
@@ -806,6 +1017,19 @@ export default function BuilderClient() {
         onConfirm={confirmSwitch}
         confirmLabel="Discard changes"
       />
+
+      <Dialog
+        open={pendingWrite !== null}
+        onClose={() => setPendingWrite(null)}
+        title="Keep the prices you edited?"
+        description={`Some prices were changed by hand after the rules priced the pool. Keep manual prices ${pendingWrite === "export" ? "exports" : "saves"} the format as manually priced, so a rebuild from its rules adds every Pokémon at ${DEFAULT_POINTS} points. Keep the bands ${pendingWrite === "export" ? "exports" : "saves"} the pricing bands with the format; the edited prices stay in this pool, and a rebuild prices by the bands again.`}
+        onConfirm={() => choosePricing("manual")}
+        confirmLabel="Keep manual prices"
+      >
+        <Button variant="secondary" onClick={() => choosePricing("bands")}>
+          Keep the bands
+        </Button>
+      </Dialog>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // Review test (applyability lens): what the README's CLI guidance implies
 // about re-running migration files.
 //
-// 1. The whole eleven-file set is re-runnable in filename order (README.md,
+// 1. The whole twelve-file set is re-runnable in filename order (README.md,
 //    "Applying migrations"), so an operator who lets `supabase db push
 //    --include-all` re-run files that were applied by hand through the SQL
 //    editor ends up in the hardened state.
@@ -21,7 +21,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { asUser, connect, createUser, inviteCodeFor, rpcAs, type Client } from "./harness";
-import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
 
 const RERUN_DB = "pokedrafts_rerun_review";
 
@@ -39,7 +39,7 @@ describe("review: re-running migration files", () => {
   beforeAll(async () => {
     admin = await connect();
     await admin.query(`drop database if exists ${RERUN_DB}`);
-    await admin.query(`create database ${RERUN_DB}`);
+    await admin.query(createDatabaseSql(RERUN_DB));
     db = await connect(RERUN_DB);
     await createScaffolding(db);
     for (const migration of readMigrations()) {
@@ -53,14 +53,20 @@ describe("review: re-running migration files", () => {
     await admin.end();
   });
 
-  it("all eleven files apply a second time in filename order and leave the hardened policy set", async () => {
+  it("all twelve files apply a second time in filename order and leave the hardened policy set", async () => {
     const migrations = readMigrations();
-    expect(migrations).toHaveLength(11);
+    expect(migrations).toHaveLength(12);
     for (const migration of migrations) {
       await applyMigration(db, migration);
     }
     const policies = await policyRows(db);
-    expect(policies).toHaveLength(16);
+    // The hardening file's 16 policies plus the pool builder's one select
+    // policy on public.pokemon, which a hardening re-run leaves alone (its
+    // policy loop only lists its own tables).
+    expect(policies).toHaveLength(17);
+    expect(policies.filter((p) => p.tablename === "pokemon").map((p) => [p.policyname, p.cmd])).toEqual([
+      ["Signed-in users can read the dataset", "SELECT"],
+    ]);
     expect(policies.filter((p) => p.tablename === "league_members" && p.cmd !== "SELECT")).toEqual([]);
     expect(policies.filter((p) => p.tablename === "leagues" && p.cmd === "DELETE").map((p) => p.policyname)).toEqual([
       "Commissioners can delete their leagues",
@@ -111,7 +117,7 @@ describe("review: re-running migration files", () => {
     if (!hardening) throw new Error("hardening migration missing");
     await applyMigration(db, hardening);
     const after = await policyRows(db);
-    expect(after).toHaveLength(16);
+    expect(after).toHaveLength(17);
     expect(after.filter((p) => p.cmd !== "SELECT").map((p) => `${p.tablename}.${p.cmd}`).sort()).toEqual([
       "draft_chat_messages.INSERT",
       "draft_formats.DELETE",

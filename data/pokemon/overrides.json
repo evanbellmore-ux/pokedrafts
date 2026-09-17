@@ -1,0 +1,123 @@
+{
+  "notes": "Hand-maintained corrections to the PokéAPI crawl, reviewed in pull requests (docs/release-architecture.md 13.3). `tags` lists species slugs per curated tag; every row of those species carries the tag. `keep` exempts a variety from the battle-only skip of rule 2 with the reason. `rows` patches a dataset row by slug: `games` and `tags` are added to the built values, any other column replaces it, and a slug PokéAPI does not know must give every column. `notes` inside a row is documentation.",
+  "tags": {
+    "restricted": [
+      "mewtwo",
+      "lugia",
+      "ho-oh",
+      "kyogre",
+      "groudon",
+      "rayquaza",
+      "dialga",
+      "palkia",
+      "giratina",
+      "reshiram",
+      "zekrom",
+      "kyurem",
+      "cosmog",
+      "cosmoem",
+      "solgaleo",
+      "lunala",
+      "necrozma",
+      "zacian",
+      "zamazenta",
+      "eternatus",
+      "calyrex",
+      "koraidon",
+      "miraidon",
+      "terapagos"
+    ],
+    "paradox": [
+      "great-tusk",
+      "scream-tail",
+      "brute-bonnet",
+      "flutter-mane",
+      "slither-wing",
+      "sandy-shocks",
+      "iron-treads",
+      "iron-bundle",
+      "iron-hands",
+      "iron-jugulis",
+      "iron-moth",
+      "iron-thorns",
+      "roaring-moon",
+      "iron-valiant",
+      "walking-wake",
+      "iron-leaves",
+      "gouging-fire",
+      "raging-bolt",
+      "iron-boulder",
+      "iron-crown"
+    ],
+    "ultra_beast": [
+      "nihilego",
+      "buzzwole",
+      "pheromosa",
+      "xurkitree",
+      "celesteela",
+      "kartana",
+      "guzzlord",
+      "poipole",
+      "naganadel",
+      "stakataka",
+      "blacephalon"
+    ]
+  },
+  "keep": {
+    "zacian-crowned": "Crowned Sword is an item-held form listed as an included form in 13.1; PokéAPI flags it battle-only.",
+    "zamazenta-crowned": "Crowned Shield is an item-held form listed as an included form in 13.1; PokéAPI flags it battle-only."
+  },
+  "rows": {
+    "zygarde-10-power-construct": {
+      "display_name": "Zygarde (10% Power Construct)",
+      "form_label": "10% Power Construct",
+      "notes": "PokéAPI names both zygarde-10 and zygarde-10-power-construct \"10% Forme\"."
+    },
+    "zygarde-50-power-construct": {
+      "display_name": "Zygarde (50% Power Construct)",
+      "form_label": "50% Power Construct",
+      "notes": "Distinguishes the Power Construct ability variant from the default 50% Zygarde."
+    },
+    "minior-red": {
+      "display_name": "Minior (Core)",
+      "form_label": "Core",
+      "notes": "The one Core row stands for every colour: the other six cores have the same stats, types and abilities and are dropped by rule 7."
+    },
+    "persian-alola": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "toxtricity-low-key": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "indeedee-female": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "salamence-mega": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "golisopod-mega": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "baxcalibur-mega": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "absol-mega-z": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "garchomp-mega-z": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    },
+    "lucario-mega-z": {
+      "games": ["champions"],
+      "notes": "Regulation Set M-C addition (Serebii); PokéAPI has no Champions learnset for it yet."
+    }
+  }
+}

@@ -12,7 +12,7 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { computeStandings, roundPercentage, tiebreakerSteps } from "../../app/lib/league/standings";
 import { asUser, connect, createUser, rpcAs, type Client } from "./harness";
-import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createScaffolding, readMigrations } from "./migrations-lib";
+import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
 
 type Tiebreaker = "head_to_head" | "differential";
 type FixtureMember = { id: string; team_name: string; draft_position: number | null };
@@ -273,14 +273,16 @@ describe("review r3: applying the playoffs file to a database shaped like the li
 
   it("replaces a news_type check under any name, tolerates a hand-added playoff_format column with a value outside the set, and crowns finished leagues", async () => {
     await admin.query(`drop database if exists ${FRESH_DB}`);
-    await admin.query(`create database ${FRESH_DB}`);
+    await admin.query(createDatabaseSql(FRESH_DB));
     const fresh = await connect(FRESH_DB);
     try {
       await createScaffolding(fresh);
       const migrations = readMigrations();
       // The live project: the base schema (and the eight legacy files) only.
+      // Every file from the hardening on (playoffs, pool builder, whatever
+      // comes next) is a release the simulated project has not applied yet.
       for (const migration of migrations) {
-        if (migration.name === HARDENING_MIGRATION || migration.name === PLAYOFFS_MIGRATION) continue;
+        if (migration.name >= HARDENING_MIGRATION) continue;
         await applyMigration(fresh, migration);
       }
       // A news_type check the project named by hand, a playoff_format column

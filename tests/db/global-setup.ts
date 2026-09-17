@@ -7,7 +7,7 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { TestProject } from "vitest/node";
-import { DB_NAME, DB_PASSWORD, DB_USER, applyAllMigrations, createScaffolding } from "./migrations-lib";
+import { DB_NAME, DB_PASSWORD, DB_USER, applyAllMigrations, createDatabaseSql, createScaffolding } from "./migrations-lib";
 
 declare module "vitest" {
   export interface ProvidedContext {
@@ -66,6 +66,12 @@ async function startServer(Server: typeof EmbeddedPostgres, dir: string): Promis
       password: DB_PASSWORD,
       port,
       persistent: false,
+      // Supabase databases are UTF8. Without this, initdb takes the OS code
+      // page on Windows (WIN1252), every database created from template1
+      // inherits it, and the Pokémon dataset cannot be stored (Nidoran♀ and
+      // ♂ fail with SQLSTATE 22P05). UTF8 is allowed with any locale on
+      // Windows and with the C or a UTF-8 locale elsewhere.
+      initdbFlags: ["--encoding=UTF8"],
       onLog: (message) => logs.push(String(message)),
       onError: (message) => logs.push(String(message)),
     });
@@ -94,7 +100,9 @@ export default async function setup(project: TestProject): Promise<() => Promise
 
   const admin = new pg.Client({ host: "127.0.0.1", port, user: DB_USER, password: DB_PASSWORD, database: "postgres" });
   await admin.connect();
-  await admin.query(`create database ${DB_NAME}`);
+  // UTF8 from template0 whatever the cluster default is, the same way the
+  // suites that create their own databases do (migrations-lib).
+  await admin.query(createDatabaseSql(DB_NAME));
   await admin.end();
 
   const db = new pg.Client({ host: "127.0.0.1", port, user: DB_USER, password: DB_PASSWORD, database: DB_NAME });

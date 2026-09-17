@@ -5,22 +5,44 @@ import {
   normalizePokemonName,
   type DexMap,
 } from "@/app/lib/pokemon";
+import {
+  findDatasetEntry,
+  getCachedDataset,
+  loadDataset,
+} from "@/app/lib/pokemon/dataset";
+import type { PokemonEntry } from "@/app/types/pokemon";
 import { cleanName } from "./poolFormat";
 
 /**
  * Checks that a typed name is a Pokémon the app knows and returns the name to
  * store in the pool, or null when nothing matches.
  *
- * The stored name is always a display name, never a PokeAPI slug: the dex's
- * own spelling when the dex has the species, otherwise the name the coach
- * typed (Mega and Primal forms of a dex species, and regional forms that only
- * PokeAPI knows). `toPokeApiSlug` is used inside `fetchPokeApiSprite` purely
- * for the existence check. Throws on a network failure so the caller can show
- * a connection message instead of "not found".
+ * The stored name is always a display name, never a PokeAPI slug: the
+ * dataset's `display_name` when a row matches by display name or slug
+ * (docs/release-architecture.md 13.7), the dex's own spelling when the dex
+ * has the species, otherwise the name the coach typed (Mega and Primal forms
+ * of a dex species, and regional forms that only PokeAPI knows).
+ * `toPokeApiSlug` is used inside `fetchPokeApiSprite` purely for the
+ * existence check. Throws on a network failure so the caller can show a
+ * connection message instead of "not found".
  */
 export async function resolvePokemonName(typed: string): Promise<string | null> {
   const name = cleanName(typed);
   if (!name) return null;
+
+  let dataset: readonly PokemonEntry[] | null = getCachedDataset();
+  if (!dataset) {
+    try {
+      dataset = await loadDataset();
+    } catch {
+      // The dataset is unavailable; the dex and PokeAPI below still answer.
+      dataset = null;
+    }
+  }
+  if (dataset) {
+    const entry = findDatasetEntry(dataset, name);
+    if (entry) return entry.display_name;
+  }
 
   let dex: DexMap | null = null;
   try {

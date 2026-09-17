@@ -7,10 +7,13 @@ import { createClient } from "@/app/lib/supabase/client";
  *   ("Mr. Mime", "mr-mime", "MrMime" -> "mrmime").
  * - `toPokeApiSlug` maps a display name to the PokeAPI slug used for sprite
  *   fallbacks ("Alolan Raichu" -> "raichu-alola").
- * - `loadDex` reads `pokemon_dex` once per session (paginated) into a map of
- *   normalized name -> { sprite_url, type1, type2 }.
- * - `getPokemonTypes` consults the regional/mega override table first, then
- *   the dex (falling back to the base species for Mega forms).
+ * - `loadDex` reads the `pokemon` dataset once per session (paginated) into
+ *   a map of normalized display name and normalized slug -> { name,
+ *   sprite_url, type1, type2 }, so every form resolves by either spelling;
+ *   it falls back to `pokemon_dex` when the dataset has not been seeded
+ *   (docs/release-architecture.md 13.7).
+ * - `getPokemonTypes` answers from the dex entry for the exact name, then
+ *   the regional/mega override table, then the base species (Mega forms).
  */
 
 export type PokemonTypes = {
@@ -36,12 +39,16 @@ function replaceGenderSymbols(value: string) {
   return value.replace(/♀/g, " f").replace(/♂/g, " m");
 }
 
-/** Lowercase key with punctuation, spaces, hyphens and accents removed. */
+/**
+ * Lowercase key with punctuation, spaces, hyphens, parentheses and accents
+ * removed, so the dataset's prose form names and PokéAPI's slugs share one
+ * key: "Rotom (Wash)" and "rotom-wash" both become "rotomwash" (13.4).
+ */
 export function normalizePokemonName(name: string): string {
   return stripDiacritics(replaceGenderSymbols(name))
     .toLowerCase()
     .replace(/[’'`]/g, "")
-    .replace(/[.:\s-]/g, "");
+    .replace(/[.:()\s-]/g, "");
 }
 
 const REGION_ALIASES: Record<string, string> = {
@@ -93,11 +100,14 @@ const SPECIAL_SLUGS: Record<string, string> = {
   "tauros-paldea-combat": "tauros-paldea-combat-breed",
   "tauros-paldea-combat-breed": "tauros-paldea-combat-breed",
   "paldean tauros combat": "tauros-paldea-combat-breed",
+  "paldean tauros combat breed": "tauros-paldea-combat-breed",
   "paldean tauros blaze": "tauros-paldea-blaze-breed",
+  "paldean tauros blaze breed": "tauros-paldea-blaze-breed",
   "paldea tauros blaze": "tauros-paldea-blaze-breed",
   "tauros-paldea-blaze": "tauros-paldea-blaze-breed",
   "tauros-paldea-blaze-breed": "tauros-paldea-blaze-breed",
   "paldean tauros aqua": "tauros-paldea-aqua-breed",
+  "paldean tauros aqua breed": "tauros-paldea-aqua-breed",
   "paldea tauros aqua": "tauros-paldea-aqua-breed",
   "tauros-paldea-aqua": "tauros-paldea-aqua-breed",
   "tauros-paldea-aqua-breed": "tauros-paldea-aqua-breed",
@@ -154,16 +164,39 @@ const SPECIAL_SLUGS: Record<string, string> = {
   "terapagos terastal": "terapagos-terastal",
   "ursaluna bloodmoon": "ursaluna-bloodmoon",
   "bloodmoon ursaluna": "ursaluna-bloodmoon",
+  // Megas of a species whose default variety carries a suffix in PokéAPI
+  // (meowstic-male, tatsugiri-curly): "<species>-mega" does not exist.
+  "mega meowstic": "meowstic-male-mega",
+  "mega tatsugiri": "tatsugiri-curly-mega",
 };
 
+/**
+ * Hyphenated lowercase form of a name. Parentheses are dropped so the
+ * dataset's prose convention (13.4) slugs like PokéAPI: "Rotom (Wash)" ->
+ * "rotom-wash", "Urshifu (Rapid Strike)" -> "urshifu-rapid-strike".
+ */
 function slugify(value: string) {
   return stripDiacritics(replaceGenderSymbols(value))
     .toLowerCase()
-    .replace(/[’'`.]/g, "")
+    .replace(/[’'`.()%]/g, "")
     .replace(/:/g, "")
     .trim()
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
+}
+
+/**
+ * The special-slug entry for a name, tried as typed, hyphenated and with
+ * the hyphens turned back into spaces, so "Calyrex (Shadow Rider)",
+ * "calyrex-shadow-rider" and "Calyrex Shadow Rider" all reach one key.
+ */
+function lookupSpecialSlug(lower: string): string | undefined {
+  const hyphenated = slugify(lower);
+  return (
+    SPECIAL_SLUGS[lower] ??
+    SPECIAL_SLUGS[hyphenated] ??
+    SPECIAL_SLUGS[hyphenated.replace(/-/g, " ")]
+  );
 }
 
 /** PokeAPI `pokemon` endpoint slug for a display name. */
@@ -171,7 +204,7 @@ export function toPokeApiSlug(name: string): string {
   const clean = name.trim();
   const lower = clean.toLowerCase().replace(/\s+/g, " ");
 
-  const special = SPECIAL_SLUGS[lower] ?? SPECIAL_SLUGS[slugify(lower)];
+  const special = lookupSpecialSlug(lower);
   if (special) return special;
 
   for (const [inputRegion, apiRegion] of Object.entries(REGION_ALIASES)) {
@@ -180,15 +213,13 @@ export function toPokeApiSlug(name: string): string {
 
     if (lower.startsWith(prefix)) {
       const rest = lower.slice(prefix.length);
-      const restSpecial = SPECIAL_SLUGS[rest];
-      const base = restSpecial ?? slugify(rest);
+      const base = lookupSpecialSlug(rest) ?? slugify(rest);
       return `${base}-${apiRegion}`;
     }
 
     if (lower.endsWith(suffix)) {
       const rest = lower.slice(0, -suffix.length);
-      const restSpecial = SPECIAL_SLUGS[rest];
-      const base = restSpecial ?? slugify(rest);
+      const base = lookupSpecialSlug(rest) ?? slugify(rest);
       return `${base}-${apiRegion}`;
     }
   }
@@ -198,6 +229,8 @@ export function toPokeApiSlug(name: string): string {
 
     if (base.endsWith("-x")) return base.replace(/-x$/, "-mega-x");
     if (base.endsWith("-y")) return base.replace(/-y$/, "-mega-y");
+    // Legends Z-A's "Mega Absol Z" is absol-mega-z (13.4).
+    if (base.endsWith("-z")) return base.replace(/-z$/, "-mega-z");
 
     return `${base}-mega`;
   }
@@ -217,7 +250,7 @@ export function toPokeApiSlug(name: string): string {
 const TYPE_OVERRIDES: Record<string, PokemonTypes> = {
   // Alola
   "raichu-alola": { type1: "Electric", type2: "Psychic" },
-  "sandshrew-alola": { type1: "Ice", type2: null },
+  "sandshrew-alola": { type1: "Ice", type2: "Steel" },
   "sandslash-alola": { type1: "Ice", type2: "Steel" },
   "vulpix-alola": { type1: "Ice", type2: null },
   "ninetales-alola": { type1: "Ice", type2: "Fairy" },
@@ -340,50 +373,118 @@ export function getCachedDex(): DexMap | null {
   return dexCache;
 }
 
+type SupabaseLike = ReturnType<typeof createClient>;
+
+type DexRow = {
+  name: string | null;
+  slug?: string | null;
+  sprite_url: string | null;
+  type1: string | null;
+  type2: string | null;
+};
+
+/** Adds a row under `key`, keeping earlier sprite/type values when the row lacks them. */
+function putDexRow(map: DexMap, key: string, row: DexRow & { name: string }) {
+  if (!key) return;
+  const existing = map.get(key);
+  map.set(key, {
+    name: row.name,
+    sprite_url: row.sprite_url ?? existing?.sprite_url ?? null,
+    type1: row.type1 ?? existing?.type1 ?? null,
+    type2: row.type2 ?? existing?.type2 ?? null,
+  });
+}
+
+/** PostgREST's "table not in the schema cache" and Postgres' "relation does not exist". */
+export function isMissingTable(error: { code?: string | null } | null): boolean {
+  return error?.code === "PGRST205" || error?.code === "42P01";
+}
+
 /**
- * Loads `pokemon_dex` once per session (paginated until exhausted). A failed
- * load clears the cache so the next call retries.
+ * Reads the `pokemon` dataset (13.4) page by page. Returns null when the
+ * table is empty or does not exist yet, so the caller can fall back.
+ */
+async function readDataset(supabase: SupabaseLike): Promise<DexMap | null> {
+  const map: DexMap = new Map();
+  let rowsSeen = 0;
+
+  for (let page = 0; page < DEX_MAX_PAGES; page += 1) {
+    const from = page * DEX_PAGE_SIZE;
+    const { data, error } = await supabase
+      .from("pokemon")
+      .select("display_name, slug, sprite_url, type1, type2")
+      .order("species_id", { ascending: true })
+      .order("id", { ascending: true })
+      .range(from, from + DEX_PAGE_SIZE - 1);
+
+    if (error) {
+      if (page === 0 && isMissingTable(error)) return null;
+      throw error;
+    }
+
+    const rows = (data ?? []) as Array<{
+      display_name: string | null;
+      slug: string | null;
+      sprite_url: string | null;
+      type1: string | null;
+      type2: string | null;
+    }>;
+    rowsSeen += rows.length;
+
+    for (const row of rows) {
+      if (!row.display_name) continue;
+      const entry = { ...row, name: row.display_name };
+      // Slug first, display name second, so a display name wins when two
+      // rows normalize to the same key.
+      if (row.slug) putDexRow(map, normalizePokemonName(row.slug), entry);
+      putDexRow(map, normalizePokemonName(row.display_name), entry);
+    }
+
+    if (rows.length < DEX_PAGE_SIZE) break;
+  }
+
+  return rowsSeen === 0 ? null : map;
+}
+
+/** The pre-dataset `pokemon_dex` species table (one row per species). */
+async function readLegacyDex(supabase: SupabaseLike): Promise<DexMap> {
+  const map: DexMap = new Map();
+
+  for (let page = 0; page < DEX_MAX_PAGES; page += 1) {
+    const from = page * DEX_PAGE_SIZE;
+    const { data, error } = await supabase
+      .from("pokemon_dex")
+      .select("name, sprite_url, type1, type2")
+      .order("dex_number", { ascending: true })
+      .order("id", { ascending: true })
+      .range(from, from + DEX_PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    const rows = (data ?? []) as DexRow[];
+    for (const row of rows) {
+      if (!row.name) continue;
+      putDexRow(map, normalizePokemonName(row.name), { ...row, name: row.name });
+    }
+
+    if (rows.length < DEX_PAGE_SIZE) break;
+  }
+
+  return map;
+}
+
+/**
+ * Loads the dex once per session (paginated until exhausted): the `pokemon`
+ * dataset keyed by normalized display name and normalized slug, or
+ * `pokemon_dex` when the dataset is empty or missing (a project that has not
+ * run the seed yet). A failed load clears the cache so the next call retries.
  */
 export function loadDex(): Promise<DexMap> {
   if (dexPromise) return dexPromise;
 
   dexPromise = (async () => {
     const supabase = createClient();
-    const map: DexMap = new Map();
-
-    for (let page = 0; page < DEX_MAX_PAGES; page += 1) {
-      const from = page * DEX_PAGE_SIZE;
-      const { data, error } = await supabase
-        .from("pokemon_dex")
-        .select("name, sprite_url, type1, type2")
-        .order("dex_number", { ascending: true })
-        .order("id", { ascending: true })
-        .range(from, from + DEX_PAGE_SIZE - 1);
-
-      if (error) throw error;
-
-      const rows = (data ?? []) as Array<{
-        name: string | null;
-        sprite_url: string | null;
-        type1: string | null;
-        type2: string | null;
-      }>;
-
-      for (const row of rows) {
-        if (!row.name) continue;
-        const key = normalizePokemonName(row.name);
-        const existing = map.get(key);
-        map.set(key, {
-          name: row.name,
-          sprite_url: row.sprite_url ?? existing?.sprite_url ?? null,
-          type1: row.type1 ?? existing?.type1 ?? null,
-          type2: row.type2 ?? existing?.type2 ?? null,
-        });
-      }
-
-      if (rows.length < DEX_PAGE_SIZE) break;
-    }
-
+    const map = (await readDataset(supabase)) ?? (await readLegacyDex(supabase));
     dexCache = map;
     return map;
   })().catch((error) => {
@@ -411,20 +512,36 @@ function lookupOverride(name: string): PokemonTypes | null {
 }
 
 /**
- * Types for a display name. Override table first, then the dex entry for
- * the exact name, then the base species (for Mega/Primal forms).
+ * The dex entry for a name: the exact key, then the key of the PokéAPI slug
+ * the app derives from it, so the spellings `SPECIAL_SLUGS` and the region
+ * prefixes already map ("Indeedee-F", "Paldean Tauros Blaze") reach the
+ * dataset row keyed by its slug ("indeedee-female") the way
+ * `findDatasetEntry` does. A species-only dex has no slug keys, so for it
+ * the second lookup misses and the callers fall through as before.
+ */
+function lookupDex(dex: DexMap, name: string): DexEntry | undefined {
+  return (
+    dex.get(normalizePokemonName(name)) ??
+    dex.get(normalizePokemonName(toPokeApiSlug(name)))
+  );
+}
+
+/**
+ * Types for a display name: the dex entry for the exact name or its derived
+ * slug (the dataset carries every form), then the override table, then the
+ * base species (for Mega/Primal forms a species-only dex does not list).
  */
 export function getPokemonTypes(
   name: string,
   dex: DexMap | null = dexCache
 ): PokemonTypes | null {
+  const direct = dex ? lookupDex(dex, name) : undefined;
+  if (direct?.type1) return { type1: direct.type1, type2: direct.type2 };
+
   const override = lookupOverride(name);
   if (override) return override;
 
   if (!dex) return null;
-
-  const direct = dex.get(normalizePokemonName(name));
-  if (direct?.type1) return { type1: direct.type1, type2: direct.type2 };
 
   const base = dex.get(normalizePokemonName(getBaseSpeciesName(name)));
   if (base?.type1) return { type1: base.type1, type2: base.type2 };
@@ -432,13 +549,13 @@ export function getPokemonTypes(
   return null;
 }
 
-/** Sprite URL from the dex for a display name (exact, then base species). */
+/** Sprite URL from the dex for a display name (exact or derived slug, then base species). */
 export function getSpriteUrl(
   name: string,
   dex: DexMap | null = dexCache
 ): string | null {
   if (!dex) return null;
-  const direct = dex.get(normalizePokemonName(name));
+  const direct = lookupDex(dex, name);
   if (direct?.sprite_url) return direct.sprite_url;
   const base = dex.get(normalizePokemonName(getBaseSpeciesName(name)));
   return base?.sprite_url ?? null;
