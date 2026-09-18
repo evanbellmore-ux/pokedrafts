@@ -40,8 +40,8 @@ export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "
   }
   return (name: string): SpeciesResolution => {
     const ids = aliases.get(normalizeAlias(name));
-    if (!ids?.size) return { status: "unavailable", reason: "No exact Champions match. Use the manual Pokémon selector below." };
-    if (ids.size !== 1) return { status: "ambiguous", reason: "This name matches multiple Champions forms. Choose the form manually below." };
+    if (!ids?.size) return { status: "unavailable", reason: "No exact Champions match. Use the manual Pokémon selector." };
+    if (ids.size !== 1) return { status: "ambiguous", reason: "This name matches multiple Champions forms. Choose the form manually." };
     return { status: "resolved", speciesId: [...ids][0] };
   };
 }
@@ -83,7 +83,7 @@ export function rosterChoices(leagueId: string, team: TeamRoster): RosterChoice[
       name: pokemon.name,
       speciesId,
       source: !duplicate && speciesId ? { key, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId } : null,
-      reason: duplicate ? "Duplicate roster name. Choose the Pokémon manually below." : resolved.status === "resolved" ? null : resolved.reason,
+      reason: duplicate ? "Duplicate roster name. Choose the Pokémon manually." : resolved.status === "resolved" ? null : resolved.reason,
     };
   });
 }
@@ -100,10 +100,10 @@ export function getRosterPanel(state: CalculatorRosterState, role: RosterRole): 
   if (state.status === "loading") return empty("Loading your leagues…", "loading");
   if (state.status !== "ready") return empty("League rosters are unavailable. Manual Pokémon selection still works.", "error");
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
-  if (!league) return empty(state.leagues.length ? "Choose a league above to see its team rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
-  if (role === "opponent" && !state.opponentId) return empty("Choose an opponent above to see their team.");
+  if (!league) return empty(state.leagues.length ? "Choose a league in Teams to see its team rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
+  if (role === "opponent" && !state.opponentId) return empty("Choose an opponent in Teams to see their team.");
   if (state.teamsStatus === "loading") return empty("Loading current team rosters…", "loading");
-  if (state.teamsStatus === "error") return empty("Could not load this league's teams. Retry above or select Pokémon manually.", "error");
+  if (state.teamsStatus === "error") return empty("Could not load this league's teams. Use Retry teams or select Pokémon manually.", "error");
   if (!state.data || state.data.leagueId !== league.id || state.teamsStatus !== "ready") return empty("Current team rosters are not loaded.");
   const memberId = role === "own" ? league.memberId : state.opponentId;
   const member = state.data.members.find((entry) => entry.id === memberId);

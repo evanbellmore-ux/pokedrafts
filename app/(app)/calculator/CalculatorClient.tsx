@@ -13,9 +13,10 @@ import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
 import LeagueMatchupPicker, { RosterPicker } from "./LeagueMatchupPicker";
 import useCalculatorRosters from "./useCalculatorRosters";
+import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { createMatchup, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, type BattleSide, type RosterChoice } from "./roster-prep";
+import { createMatchup, getRosterPanel, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, type BattleSide, type RosterChoice } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -26,8 +27,15 @@ type EngineState =
   | { status: "ready"; calculate: CalculateMatchup }
   | { status: "error"; message: string };
 
+type RosterFocus = { pickerId: string; choiceKey: string; element: HTMLButtonElement };
+
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "An unexpected calculator error occurred.";
+}
+
+function rosterFocusTarget(picker: HTMLElement | null) {
+  return picker?.querySelector<HTMLButtonElement>("[data-roster-choice][aria-pressed=true]:not(:disabled)")
+    ?? picker?.querySelector<HTMLButtonElement>("[data-roster-choice]:not(:disabled)");
 }
 
 export default function CalculatorClient() {
@@ -35,6 +43,17 @@ export default function CalculatorClient() {
   const rootRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const movesRef = useRef<MoveResultsHandle>(null);
+  const rosterFocusRef = useRef<RosterFocus | null>(null);
+  const rememberRosterFocus = useCallback(() => {
+    rosterFocusRef.current = null;
+    const element = document.activeElement;
+    if (!(element instanceof HTMLButtonElement) || !rootRef.current?.contains(element) || element.disabled) return;
+    const picker = element.closest<HTMLElement>("[data-calculator-roster]");
+    if (picker?.id && element.dataset.rosterChoice !== undefined) {
+      rosterFocusRef.current = { pickerId: picker.id, choiceKey: element.dataset.rosterChoice, element };
+    }
+  }, []);
+  const desktopRosters = useDesktopRosterLayout(rememberRosterFocus);
   const [matchup, setMatchup] = useState(() => createMatchup());
   const [rollMode, setRollMode] = useState<DamageRollMode>("average");
   const [engine, setEngine] = useState<EngineState>({ status: "loading" });
@@ -49,6 +68,11 @@ export default function CalculatorClient() {
   const buildsId = `${prefix}-builds`;
   const fieldId = `${prefix}-field`;
   const controls = { attacker: `${prefix}-build-${matchup.attacker.key}`, defender: `${prefix}-build-${matchup.defender.key}`, moves: `${prefix}-moves` };
+  const rosterControls = { attacker: `${prefix}-roster-${matchup.attacker.key}`, defender: `${prefix}-roster-${matchup.defender.key}` };
+  const pokemonControls = {
+    attacker: desktopRosters && getRosterPanel(rosters.state, matchup.attacker.role).choices.some((choice) => choice.source) ? rosterControls.attacker : controls.attacker,
+    defender: desktopRosters && getRosterPanel(rosters.state, matchup.defender.role).choices.some((choice) => choice.source) ? rosterControls.defender : controls.defender,
+  };
 
   useEffect(() => {
     let current = true;
@@ -70,7 +94,7 @@ export default function CalculatorClient() {
     return () => observer.disconnect();
   }, []);
 
-  const reveal = useCallback((element: HTMLElement) => {
+  const reveal = useCallback((element: HTMLElement, includeSummary = true) => {
     // Native disclosures keep the original editors mounted, including invalid raw input.
     for (let parent = element.parentElement; parent; parent = parent.parentElement) {
       if (parent instanceof HTMLDetailsElement) parent.open = true;
@@ -78,9 +102,20 @@ export default function CalculatorClient() {
     element.focus({ preventScroll: true });
     const navHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--app-nav-height")) || 0;
     const summary = summaryRef.current;
-    const stickyHeight = summary && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
+    const stickyHeight = includeSummary && summary && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
     window.scrollTo({ top: Math.max(0, window.scrollY + element.getBoundingClientRect().top - navHeight - stickyHeight - 16) });
   }, []);
+
+  useEffect(() => {
+    const focused = rosterFocusRef.current;
+    rosterFocusRef.current = null;
+    if (!focused || (document.activeElement !== document.body && document.activeElement !== focused.element)) return;
+    const picker = document.getElementById(focused.pickerId);
+    const sameChoice = picker && [...picker.querySelectorAll<HTMLButtonElement>("[data-roster-choice]:not(:disabled)")]
+      .find((button) => button.dataset.rosterChoice === focused.choiceKey);
+    const target = sameChoice ?? rosterFocusTarget(picker);
+    if (target) reveal(target, !desktopRosters);
+  }, [desktopRosters, reveal]);
 
   const calculation = useMemo(() => {
     if (engine.status !== "ready") return null;
@@ -127,7 +162,16 @@ export default function CalculatorClient() {
     setMatchup((current) => selectRosterPokemon(current, side, choice));
   }
 
+  function renderRoster(side: BattleSide, variant: "inline" | "rail") {
+    const slot = matchup[side];
+    return <RosterPicker pickerId={rosterControls[side]} variant={variant} state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(side, choice)} />;
+  }
+
   function edit(side: BattleSide, target: "pokemon" | "hp") {
+    if (target === "pokemon" && pokemonControls[side] === rosterControls[side]) {
+      const button = rosterFocusTarget(document.getElementById(rosterControls[side]));
+      if (button) { reveal(button, false); return; }
+    }
     const panel = document.getElementById(controls[side]);
     const element = target === "hp" ? panel?.querySelector<HTMLElement>("[data-calculator-hp]")
       : panel?.querySelector<HTMLElement>("[data-calculator-pokemon] button:not(:disabled), [data-calculator-pokemon] input[type=search]");
@@ -169,119 +213,127 @@ export default function CalculatorClient() {
   }
 
   return (
-    <div ref={rootRef} className={`${styles.root} space-y-5`}>
-      <PageHeader
-        eyebrow="Pokémon Champions · Level 50"
-        title="Damage Calculator"
-        description="Pick a move. See damage and remaining HP."
-        actions={
-          <>
-            <Button variant="secondary" onClick={() => setMatchup(swapMatchup)}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
-            <Button variant="secondary" onClick={() => { setMatchup(resetMatchup); setRollMode("average"); }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
-          </>
-        }
-      />
-      <p role="status" className="sr-only">{matchup.notice}</p>
-      <div ref={summaryRef} className={styles.summary}>
-        <MatchupSummary
-          attacker={matchup.attacker}
-          defender={matchup.defender}
-          selectedMoveId={matchup.selectedMoveId}
-          selectedRow={selectedRow}
-          rollMode={rollMode}
-          onRollModeChange={setRollMode}
-          blockedReason={blockedReason}
-          controls={controls}
-          onEdit={edit}
-          onShowMove={() => { if (matchup.selectedMoveId) movesRef.current?.showMove(matchup.selectedMoveId); }}
+    <div ref={rootRef} data-calculator-layout={desktopRosters ? "desktop" : "compact"} className={`${styles.root} ${desktopRosters ? styles.withRosters : ""}`}>
+      <div data-calculator-center className={`${styles.center} space-y-5`}>
+        <PageHeader
+          eyebrow="Pokémon Champions · Level 50"
+          title="Damage Calculator"
+          description="Pick a move. See damage and remaining HP."
+          actions={
+            <>
+              <Button variant="secondary" onClick={() => setMatchup(swapMatchup)}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
+              <Button variant="secondary" onClick={() => { setMatchup(resetMatchup); setRollMode("average"); }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
+            </>
+          }
         />
-      </div>
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="secondary" size="sm" aria-controls={teamsId} onClick={() => showSettings(teamsId)}>Teams</Button>
-          <Button variant="secondary" size="sm" aria-controls={fieldId} onClick={() => showSettings(fieldId)}>Field settings{issues.field.length > 0 && " · Check settings"}</Button>
-          <span className="text-xs text-muted">{describeConditions(matchup.field)}</span>
+        <p role="status" className="sr-only">{matchup.notice}</p>
+        <div ref={summaryRef} className={styles.summary}>
+          <MatchupSummary
+            attacker={matchup.attacker}
+            defender={matchup.defender}
+            selectedMoveId={matchup.selectedMoveId}
+            selectedRow={selectedRow}
+            rollMode={rollMode}
+            onRollModeChange={setRollMode}
+            blockedReason={blockedReason}
+            controls={controls}
+            pokemonControls={pokemonControls}
+            onEdit={edit}
+            onShowMove={() => { if (matchup.selectedMoveId) movesRef.current?.showMove(matchup.selectedMoveId); }}
+          />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <p role="status" className={`wrap-anywhere text-xs ${teamsFailed ? "text-danger" : "text-muted"}`}>{teamSummary}</p>
-          {teamsFailed && <Button variant="secondary" size="sm" onClick={rosters.refresh}>Retry teams</Button>}
-        </div>
-      </div>
-      <MoveResults
-        key={matchup.revision}
-        ref={movesRef}
-        id={controls.moves}
-        rows={rows}
-        selectedMoveId={matchup.selectedMoveId}
-        onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId))}
-        contexts={matchup.contexts}
-        onContextChange={(moveId, context) => setMatchup((current) => ({ ...current, contexts: { ...current.contexts, [moveId]: context } }))}
-        sourceMoveCount={attackerSpecies?.moves.length ?? 0}
-        abilityId={attacker.abilityId}
-        itemId={attacker.itemId}
-        attackerName={attackerSpecies?.name ?? "Attacker"}
-        defenderName={defenderSpecies?.name ?? "Defender"}
-        defenderHP={currentHP}
-        feedback={feedback}
-        onReveal={reveal}
-      />
-      <details id={teamsId} className="rounded-xl border border-line bg-panel">
-        <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
-          League and opponent<span className="ml-2 font-normal text-muted">{league?.name ?? "Manual matchup"}</span>
-          {teamsFailed && <span className="ml-2 text-danger">Could not load teams</span>}
-        </summary>
-        <div className="px-4 pb-4 sm:px-5 sm:pb-5"><LeagueMatchupPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} /></div>
-      </details>
-      <details id={buildsId} className="rounded-xl border border-line bg-panel">
-        <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
-          Pokémon and build settings
-          {buildIssueCount > 0 && <span className="ml-2 text-danger">{buildIssueCount} settings to check</span>}
-        </summary>
-        <div className="grid items-start gap-4 px-4 pb-4 sm:px-5 sm:pb-5 lg:grid-cols-2">
-          {/* Keys travel with builds so raw numeric edits also survive a Swap. */}
-          {(["attacker", "defender"] as const).map((side) => {
-            const slot = matchup[side];
-            const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
-            return (
-              <PokemonPanel
-                key={slot.key}
-                panelId={controls[side]}
-                side={side}
-                build={slot.build}
-                issues={issues[side]}
-                editorRevision={slot.editorRevision}
-                provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
-                onChange={(build) => updateBuild(side, build)}
-                roster={<RosterPicker state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(side, choice)} />}
-              />
-            );
-          })}
-        </div>
-      </details>
-      <BattleConditions id={fieldId} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => ({ ...current, field }))} />
-      <details className="rounded-xl border border-line bg-panel">
-        <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and v1 assumptions</summary>
-        <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
-          <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
-          <ul className="list-disc space-y-2 pl-5">
-            <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
-            <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
-            <li>Select a Mega form directly to supply its required stone. This does not simulate transformation timing.</li>
-            <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition; do not manually apply the same entry-stage change twice.</li>
-            <li>One move use only. Variable multihit moves need an explicit hit count unless Skill Link fixes it; fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
-            <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
-            <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
-          </ul>
-          <div className="space-y-2 text-xs">
-            <p>Engine revision: <a href={champions.sources.engine.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{champions.sources.engine.revision}</a></p>
-            <p>Champions data revision: <a href={champions.sources.showdown.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{champions.sources.showdown.revision}</a></p>
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" size="sm" aria-controls={teamsId} onClick={() => showSettings(teamsId)}>Teams</Button>
+            <Button variant="secondary" size="sm" aria-controls={fieldId} onClick={() => showSettings(fieldId)}>Field settings{issues.field.length > 0 && " · Check settings"}</Button>
+            <span className="text-xs text-muted">{describeConditions(matchup.field)}</span>
           </div>
-          <details>
-            <summary className="cursor-pointer rounded py-2 font-medium text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Source coverage notes</summary>
-            <ul className="mt-2 list-disc space-y-2 wrap-anywhere pl-5 text-xs">{champions.coverage.notes.map((note, index) => <li key={index}>{note}</li>)}</ul>
-          </details>
+          <div className="flex flex-wrap items-center gap-2">
+            <p role="status" className={`wrap-anywhere text-xs ${teamsFailed ? "text-danger" : "text-muted"}`}>{teamSummary}</p>
+            {teamsFailed && <Button variant="secondary" size="sm" onClick={rosters.refresh}>Retry teams</Button>}
+          </div>
         </div>
-      </details>
+        <MoveResults
+          key={matchup.revision}
+          ref={movesRef}
+          id={controls.moves}
+          rows={rows}
+          selectedMoveId={matchup.selectedMoveId}
+          onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId))}
+          contexts={matchup.contexts}
+          onContextChange={(moveId, context) => setMatchup((current) => ({ ...current, contexts: { ...current.contexts, [moveId]: context } }))}
+          sourceMoveCount={attackerSpecies?.moves.length ?? 0}
+          abilityId={attacker.abilityId}
+          itemId={attacker.itemId}
+          attackerName={attackerSpecies?.name ?? "Attacker"}
+          defenderName={defenderSpecies?.name ?? "Defender"}
+          defenderHP={currentHP}
+          feedback={feedback}
+          onReveal={reveal}
+        />
+        <details id={teamsId} className="rounded-xl border border-line bg-panel">
+          <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
+            League and opponent<span className="ml-2 font-normal text-muted">{league?.name ?? "Manual matchup"}</span>
+            {teamsFailed && <span className="ml-2 text-danger">Could not load teams</span>}
+          </summary>
+          <div className="px-4 pb-4 sm:px-5 sm:pb-5"><LeagueMatchupPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} /></div>
+        </details>
+        <details id={buildsId} className="rounded-xl border border-line bg-panel">
+          <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
+            Pokémon and build settings
+            {buildIssueCount > 0 && <span className="ml-2 text-danger">{buildIssueCount} settings to check</span>}
+          </summary>
+          <div className={`${styles.builds} grid items-start gap-4 px-4 pb-4 sm:px-5 sm:pb-5`}>
+            {/* Keys travel with builds so raw numeric edits also survive a Swap. */}
+            {(["attacker", "defender"] as const).map((side) => {
+              const slot = matchup[side];
+              const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
+              return (
+                <PokemonPanel
+                  key={slot.key}
+                  panelId={controls[side]}
+                  side={side}
+                  build={slot.build}
+                  issues={issues[side]}
+                  editorRevision={slot.editorRevision}
+                  provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
+                  onChange={(build) => updateBuild(side, build)}
+                  roster={desktopRosters ? undefined : renderRoster(side, "inline")}
+                />
+              );
+            })}
+          </div>
+        </details>
+        <BattleConditions id={fieldId} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => ({ ...current, field }))} />
+        <details className="rounded-xl border border-line bg-panel">
+          <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and v1 assumptions</summary>
+          <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
+            <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
+            <ul className="list-disc space-y-2 pl-5">
+              <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
+              <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
+              <li>Select a Mega form directly to supply its required stone. This does not simulate transformation timing.</li>
+              <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition; do not manually apply the same entry-stage change twice.</li>
+              <li>One move use only. Variable multihit moves need an explicit hit count unless Skill Link fixes it; fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
+              <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
+              <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
+            </ul>
+            <div className="space-y-2 text-xs">
+              <p>Engine revision: <a href={champions.sources.engine.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{champions.sources.engine.revision}</a></p>
+              <p>Champions data revision: <a href={champions.sources.showdown.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{champions.sources.showdown.revision}</a></p>
+            </div>
+            <details>
+              <summary className="cursor-pointer rounded py-2 font-medium text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Source coverage notes</summary>
+              <ul className="mt-2 list-disc space-y-2 wrap-anywhere pl-5 text-xs">{champions.coverage.notes.map((note, index) => <li key={index}>{note}</li>)}</ul>
+            </details>
+          </div>
+        </details>
+      </div>
+      {desktopRosters && (["attacker", "defender"] as const).map((side) => (
+        <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "attacker" ? "Attacker" : "Defender"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
+          {renderRoster(side, "rail")}
+        </aside>
+      ))}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { RefreshCw } from "lucide-react";
+import PokemonSprite from "@/app/components/PokemonSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Alert, Button, Field, Select } from "@/app/components/ui";
 import { ButtonLink } from "@/app/components/ui/Button";
@@ -75,46 +76,60 @@ export default function LeagueMatchupPicker({ state, onLeagueChange, onOpponentC
   );
 }
 
-export function RosterPicker({ state, role, side, activeSource, onSelect }: {
+export function RosterPicker({ state, role, side, activeSource, onSelect, pickerId, variant = "inline" }: {
   state: CalculatorRosterState;
   role: RosterRole;
   side: BattleSide;
   activeSource: RosterSource | null;
   onSelect: (choice: RosterChoice) => void;
+  pickerId?: string;
+  variant?: "inline" | "rail";
 }) {
   const id = useId();
   const panel = getRosterPanel(state, role);
   const ownership = role === "own" ? "Your team" : "Opponent's team";
+  const rail = variant === "rail";
   return (
-    <div aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className="mt-4 rounded-lg border border-line bg-bg p-3">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 id={`${id}-heading`} className="text-sm font-semibold text-text">{ownership} <span className="font-normal text-muted">· {side === "attacker" ? "Attacker" : "Defender"}</span></h3>
-        {panel.teamName && <span className="wrap-anywhere text-xs text-muted">{panel.teamName}</span>}
+    <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
+      <div className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
+        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership} <span className="font-normal text-muted">· {side === "attacker" ? "Attacker" : "Defender"}</span></h3>
+        {panel.teamName && <span className={rail ? "max-w-full wrap-anywhere text-xs text-muted" : "wrap-anywhere text-xs text-muted"}>{panel.teamName}</span>}
       </div>
       {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
       {panel.status === "ready" && (
-        <ul aria-label={`${ownership} ${side} roster`} className="mt-3 grid gap-2 sm:grid-cols-2">
+        <ul aria-label={`${ownership} ${side} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? speciesById.get(choice.speciesId) : null;
             const selected = !!choice.source && choice.source.key === activeSource?.key;
             const reason = choice.reason ?? (species?.unsupported.length ? `Unsupported calculation: ${species.unsupported.join(" ")}` : null);
+            const content = (
+              <>
+                <span className="flex flex-wrap items-baseline justify-between gap-1">
+                  <span className="wrap-anywhere font-medium">{choice.name}</span>
+                  {selected && <span className={rail ? "shrink-0 rounded border border-accent-border px-1.5 py-0.5 text-xs font-semibold" : "text-xs font-semibold"}>Active</span>}
+                </span>
+                {!!species?.types.length && <span className="mt-1 flex flex-wrap gap-1">{species.types.map((type) => <TypeBadge key={type} type={type} />)}</span>}
+                {!!species?.unsupported.length && !choice.reason && <span className="mt-1 block text-xs">Unsupported · inspect build</span>}
+              </>
+            );
             return (
               <li key={choice.key} className="min-w-0">
                 <button
                   type="button"
+                  data-roster-choice={choice.key}
                   disabled={!choice.source}
                   aria-pressed={selected}
                   aria-label={`Use ${choice.name} as ${side} from ${ownership.toLowerCase()}`}
                   aria-describedby={reason ? `${id}-reason-${index}` : undefined}
                   onClick={() => onSelect(choice)}
-                  className={`min-h-11 w-full rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
+                  className={`${rail ? "flex items-start gap-3 " : ""}min-h-11 w-full rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
                 >
-                  <span className="flex flex-wrap items-baseline justify-between gap-1">
-                    <span className="wrap-anywhere font-medium">{choice.name}</span>
-                    {selected && <span className="text-xs font-semibold">Active</span>}
-                  </span>
-                  {!!species?.types.length && <span className="mt-1 flex flex-wrap gap-1">{species.types.map((type) => <TypeBadge key={type} type={type} />)}</span>}
-                  {!!species?.unsupported.length && !choice.reason && <span className="mt-1 block text-xs">Unsupported · inspect build</span>}
+                  {rail ? (
+                    <>
+                      {species && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={species.name} size="md" /></span>}
+                      <span className="min-w-0 flex-1">{content}</span>
+                    </>
+                  ) : content}
                 </button>
                 {reason && <p id={`${id}-reason-${index}`} className="mt-1 wrap-anywhere text-xs text-muted">{reason}</p>}
               </li>
