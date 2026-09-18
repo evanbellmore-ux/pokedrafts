@@ -20,11 +20,12 @@ type Props = {
   onRollModeChange: (mode: DamageRollMode) => void;
   blockedReason?: string;
   controls: Record<BattleSide | "moves", string>;
+  pokemonControls?: Record<BattleSide, string>;
   onEdit: (side: BattleSide, target: "pokemon" | "hp") => void;
   onShowMove: () => void;
 };
 
-export default function MatchupSummary({ attacker, defender, selectedMoveId, selectedRow, rollMode, onRollModeChange, blockedReason, controls, onEdit, onShowMove }: Props) {
+export default function MatchupSummary({ attacker, defender, selectedMoveId, selectedRow, rollMode, onRollModeChange, blockedReason, controls, pokemonControls, onEdit, onShowMove }: Props) {
   const id = useId();
   const move = selectedMoveId ? movesById.get(selectedMoveId) : undefined;
   const row = selectedMoveId && selectedRow?.moveId === selectedMoveId && !blockedReason ? selectedRow : undefined;
@@ -78,7 +79,7 @@ export default function MatchupSummary({ attacker, defender, selectedMoveId, sel
                 </>
               ) : <p className="mt-2 text-sm font-semibold text-danger">Check build settings to show HP</p>}
               <div className="mt-1 flex flex-wrap gap-x-3">
-                <button type="button" aria-label={`Change ${side} Pokémon`} aria-controls={controls[side]} onClick={() => onEdit(side, "pokemon")} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Change<span className="sr-only sm:not-sr-only"> Pokémon</span></button>
+                <button type="button" aria-label={`Change ${side} Pokémon`} aria-controls={pokemonControls?.[side] ?? controls[side]} onClick={() => onEdit(side, "pokemon")} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Change<span className="sr-only sm:not-sr-only"> Pokémon</span></button>
                 <button type="button" aria-label={`Edit ${side} HP`} aria-controls={controls[side]} onClick={() => onEdit(side, "hp")} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Edit HP</button>
               </div>
             </div>

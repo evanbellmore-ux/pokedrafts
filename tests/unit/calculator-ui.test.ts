@@ -7,14 +7,41 @@ import PokemonPanel, { parseBuildInput } from "@/app/(app)/calculator/PokemonPan
 import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calculator/MoveResults";
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
+import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import { selectMatchupMove, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
 import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import { speciesById } from "@/app/lib/battle/catalog";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 
-const viewport = vi.hoisted(() => ({ wide: false }));
+const viewport = vi.hoisted(() => ({ wide: false, desktop: false }));
+const roster = vi.hoisted(() => ({ state: null as CalculatorRosterState | null }));
 vi.mock("@/app/(app)/leagues/[leagueId]/useMinWidthMd", () => ({ useMinWidthMd: () => viewport.wide }));
-afterEach(() => { viewport.wide = false; });
+vi.mock("@/app/(app)/calculator/useDesktopRosterLayout", () => ({ useDesktopRosterLayout: () => viewport.desktop }));
+vi.mock("@/app/(app)/calculator/useCalculatorRosters", () => ({
+  default: () => ({ state: roster.state ?? createRosterState(), selectLeague: () => undefined, selectOpponent: () => undefined, refresh: () => undefined }),
+}));
+afterEach(() => { viewport.wide = false; viewport.desktop = false; roster.state = null; });
+
+function loadedRosters(own = ["Charizard", "Blastoise"], opponent = ["Venusaur"]): CalculatorRosterState {
+  return {
+    ...createRosterState(), status: "ready", userId: "account", selectedLeagueId: "league", opponentId: "away", teamsStatus: "ready",
+    leagues: [{ id: "league", name: "Fixture league", memberId: "home", teamName: "Home", draftStarted: true, draftCompleted: true }],
+    data: {
+      leagueId: "league",
+      members: [{ id: "home", role: "coach", team_name: "Home", draft_position: 1 }, { id: "away", role: "coach", team_name: "Away", draft_position: 2 }],
+      teams: [own, opponent].map((names, index) => ({
+        id: `roster-${index}`, member_id: index ? "away" : "home", team_name: null, role: null, total_points: names.length * 15,
+        pokemon: names.map((name, position) => ({ name, points: 15, tier: 1, pick_number: position + 1, acquired: "draft" as const })),
+      })),
+    },
+  };
+}
+
+function controlTarget(html: string, label: string) {
+  const target = html.match(new RegExp(`aria-label="${label}" aria-controls="([^"]+)"`))?.[1];
+  expect(target).toBeDefined();
+  return target!;
+}
 
 function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string, rollMode: DamageRollMode = "average") {
   return renderToStaticMarkup(createElement(MatchupSummary, {
@@ -77,6 +104,64 @@ describe("Champions calculator UI", () => {
     expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
     expect(html).toContain("Change attacker Pokémon");
     expect(html).toContain("Change defender Pokémon");
+  });
+
+  it.each([false, true])("renders each roster once in the right location (desktop=%s)", (desktop) => {
+    viewport.desktop = desktop;
+    roster.state = loadedRosters();
+    const html = renderToStaticMarkup(createElement(CalculatorClient));
+    expect(html).toContain(`data-calculator-layout="${desktop ? "desktop" : "compact"}"`);
+    expect([...html.matchAll(/data-calculator-center="true"/g)]).toHaveLength(1);
+    expect([...html.matchAll(/data-calculator-roster="/g)]).toHaveLength(2);
+    expect([...html.matchAll(/data-roster-choice="/g)]).toHaveLength(3);
+    expect([...html.matchAll(/data-calculator-roster-rail="/g)]).toHaveLength(desktop ? 2 : 0);
+    expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
+    expect(html).not.toMatch(/<main\b/);
+    expect(html).not.toContain('aria-pressed="true"'); // Loading a roster is not activation.
+    for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
+    for (const side of ["attacker", "defender"]) {
+      const change = controlTarget(html, `Change ${side} Pokémon`);
+      const hp = controlTarget(html, `Edit ${side} HP`);
+      const build = html.match(new RegExp(`<section id="${hp}"[\\s\\S]*?</section>`))?.[0];
+      expect(build).toContain('data-calculator-hp="true"');
+      if (desktop) {
+        expect(change).toContain("-roster-");
+        expect(change).not.toBe(hp);
+        expect(build).not.toContain("data-calculator-roster=");
+        expect(html).toMatch(new RegExp(`<aside[^>]*data-calculator-roster-rail="${side}"[^>]*><div id="${change}"[^>]*data-calculator-roster="${side}"`));
+      } else {
+        expect(change).toBe(hp);
+        expect(build).toContain(`data-calculator-roster="${side}"`);
+      }
+    }
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const [, references] of html.matchAll(/\baria-(?:controls|describedby|labelledby)="([^"]+)"/g)) {
+      for (const reference of references.split(" ")) expect(ids).toContain(reference);
+    }
+    for (const [, label] of html.matchAll(/\bfor="([^"]+)"/g)) expect(ids).toContain(label);
+  });
+
+  it.each([
+    ["loading", () => createRosterState(), false, false],
+    ["signed out", () => ({ ...createRosterState(), status: "signed-out" as const }), false, false],
+    ["read error", () => ({ ...loadedRosters(), teamsStatus: "error" as const }), false, false],
+    ["empty rosters", () => loadedRosters([], []), false, false],
+    ["disabled entries", () => loadedRosters(["Unknown form"], ["Unknown form"]), false, false],
+    ["no opponent", () => ({ ...loadedRosters(), opponentId: "" }), true, false],
+    ["unsupported but inspectable", () => loadedRosters(["Lucario-Mega-Z"], ["Venusaur"]), true, true],
+  ] as const)("uses manual destinations only when needed on desktop: %s", (_name, state, ownAvailable, opponentAvailable) => {
+    viewport.desktop = true;
+    roster.state = state();
+    const html = renderToStaticMarkup(createElement(CalculatorClient));
+    for (const [side, available] of [["attacker", ownAvailable], ["defender", opponentAvailable]] as const) {
+      const change = controlTarget(html, `Change ${side} Pokémon`);
+      const hp = controlTarget(html, `Edit ${side} HP`);
+      expect(change.includes("-roster-")).toBe(available);
+      expect(change === hp).toBe(!available);
+      expect(html).toContain(`id="${change}"`);
+      expect(html).toContain(`id="${hp}"`);
+    }
   });
 
   it("starts field controls closed but keeps all requested effects mounted without duplicates", () => {

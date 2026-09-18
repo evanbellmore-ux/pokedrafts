@@ -1,7 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import LeagueMatchupPicker, { RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
+import * as pokemonSprite from "@/app/components/PokemonSprite";
 import {
   createMatchup, createSpeciesResolver, getRosterPanel, reconcileRosters, resetMatchup,
   resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild,
@@ -412,11 +413,11 @@ describe("league matchup UI", () => {
     expect(html).toContain("Build edits stay in this page session only");
   });
 
-  it("exposes active states, unavailable reasons and unsupported inspection without disabling manual controls", () => {
+  it.each(["inline", "rail"] as const)("exposes active states, unavailable reasons and unsupported inspection in the %s variant", (variant) => {
     const state = loaded();
     state.data!.teams[0].pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Lucario-Mega-Z", points: 20, tier: 1 });
     const own = choices(state).own;
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: () => undefined }));
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: () => undefined, variant }));
     assertLabels(html);
     expect([...html.matchAll(/aria-pressed="true"/g)]).toHaveLength(1);
     expect(html).toContain("Your team");
@@ -427,6 +428,98 @@ describe("league matchup UI", () => {
     expect(unsupported).not.toContain('disabled=""');
     expect(html).toContain("No exact Champions match");
     expect(html).toContain("Unsupported · inspect build");
+  });
+
+  it("defaults to the unchanged compact inline layout without sprites", () => {
+    const props = { state: loaded(), role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined };
+    const html = renderToStaticMarkup(createElement(RosterPicker, props));
+    expect(html).toBe(renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "inline" })));
+    expect(html).toContain('class="mt-4 rounded-lg border border-line bg-bg p-3"');
+    expect(html).toContain('<ul aria-label="Your team attacker roster" class="mt-3 grid gap-2 sm:grid-cols-2">');
+    expect(html).toMatch(/<button\b[^>]*><span class="flex flex-wrap items-baseline justify-between gap-1">/);
+    expect(html).not.toContain("h-10 w-10");
+    assertLabels(html);
+  });
+
+  it.each(["inline", "rail"] as const)("provides stable focus hooks and unique labelled headings and reasons for %s pickers", (variant) => {
+    const state = loaded();
+    for (const roster of state.data!.teams) {
+      roster.pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Lucario-Mega-Z", points: 20, tier: 1 });
+    }
+    const { own, other } = choices(state);
+    const html = renderToStaticMarkup(createElement("div", null,
+      createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, pickerId: "attacker-roster", variant }),
+      createElement(RosterPicker, { state, role: "opponent", side: "defender", activeSource: null, onSelect: () => undefined, pickerId: "defender-roster", variant }),
+    ));
+    expect(html).toContain('<div id="attacker-roster" data-calculator-roster="attacker"');
+    expect(html).toContain('<div id="defender-roster" data-calculator-roster="defender"');
+    expect([...html.matchAll(/data-roster-choice="([^"]+)"/g)].map((match) => match[1]))
+      .toEqual([...own, ...other].map((choice) => choice.key.replaceAll('"', "&quot;")));
+    expect([...html.matchAll(/aria-labelledby="[^"]+-heading"/g)]).toHaveLength(2);
+    const reasonIds = [...html.matchAll(/aria-describedby="([^"]+)"/g)].map((match) => match[1]);
+    expect(reasonIds).toHaveLength(4);
+    expect(new Set(reasonIds).size).toBe(4);
+    for (const id of reasonIds) expect(html).toContain(`<p id="${id}"`);
+    assertLabels(html);
+  });
+
+  it("stacks full-width rail cards with wrapping labels, team names and at least 44px targets", () => {
+    const state = loaded();
+    const teamName = "AnExtremelyLongUnbrokenTeamNameThatMustFitTheSidebar";
+    const rosterName = "AnExtremelyLongUnresolvedRosterNameThatMustAlsoWrap";
+    state.data!.members[0].team_name = teamName;
+    state.data!.teams[0].pokemon.push({ name: rosterName, points: 1, tier: 1 });
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: choices(state).own[0].source, onSelect: () => undefined, variant: "rail" }));
+    expect(html).toContain('class="min-w-0 rounded-lg border border-line bg-bg p-3"');
+    expect(html).not.toContain("mt-4");
+    expect(html).toContain('<ul aria-label="Your team attacker roster" class="mt-3 grid grid-cols-1 gap-2">');
+    expect(html).not.toContain("sm:grid-cols-2");
+    expect(html).toContain(`<span class="max-w-full wrap-anywhere text-xs text-muted">${teamName}</span>`);
+    expect(html).toContain(`<span class="wrap-anywhere font-medium">${rosterName}</span>`);
+    const buttons = [...html.matchAll(/<button\b[^>]*>/g)];
+    expect(buttons).toHaveLength(4);
+    for (const [button] of buttons) expect(button).toContain("min-h-11 w-full");
+    expect(html).toMatch(/<span class="shrink-0 [^"]+">Active<\/span>/);
+    expect(html).toContain("Fire");
+    expect(html).toContain("Flying");
+  });
+
+  it.each(["inline", "rail"] as const)("keeps %s activation bound to source identity rather than a shared species", (variant) => {
+    const state = loaded();
+    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Charizard-Mega-X"]);
+    const own = choices(state).own;
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[1].source, onSelect: () => undefined, variant }));
+    const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
+    expect(buttons).toHaveLength(2);
+    expect(buttons[0]).toContain('aria-pressed="false"');
+    expect(buttons[0]).not.toContain("Active");
+    expect(buttons[1]).toContain('aria-pressed="true"');
+    expect(buttons[1]).toContain("Active");
+    expect(html).not.toContain('disabled=""');
+  });
+
+  it("uses decorative 40px sprite fallbacks only for resolved rail species, including unsupported forms", () => {
+    const state = loaded();
+    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Lucario-Mega-Z", "Custom mascot"]);
+    const props = { state, role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined };
+    const sprite = vi.spyOn(pokemonSprite, "default");
+    try {
+      renderToStaticMarkup(createElement(RosterPicker, props));
+      expect(sprite).not.toHaveBeenCalled();
+      const html = renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "rail" }));
+      expect(sprite.mock.calls.map(([props]) => ({ name: props.name, size: props.size }))).toEqual([
+        { name: "Charizard-Mega-X", size: "md" },
+        { name: "Lucario-Mega-Z", size: "md" },
+      ]);
+      const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
+      for (const button of buttons.slice(0, 2)) {
+        expect(button).toMatch(/<span aria-hidden="true" class="shrink-0"><div aria-hidden="true" class="h-10 w-10 [^"]*animate-pulse/);
+      }
+      expect(buttons[2]).not.toContain("h-10 w-10");
+      expect(html).not.toContain("<img");
+    } finally {
+      sprite.mockRestore();
+    }
   });
 
   it("distinguishes pending, failed, incomplete-draft, missing and empty rosters", () => {
