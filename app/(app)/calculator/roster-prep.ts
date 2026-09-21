@@ -100,8 +100,8 @@ export function getRosterPanel(state: CalculatorRosterState, role: RosterRole): 
   if (state.status === "loading") return empty("Loading your leagues…", "loading");
   if (state.status !== "ready") return empty("League rosters are unavailable. Manual Pokémon selection still works.", "error");
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
-  if (!league) return empty(state.leagues.length ? "Choose a league in Teams to see its team rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
-  if (role === "opponent" && !state.opponentId) return empty("Choose an opponent in Teams to see their team.");
+  if (!league) return empty(state.leagues.length ? "Choose your team in My team to see its league rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
+  if (role === "opponent" && !state.opponentId) return empty("Choose a team in Opponent to see their roster.");
   if (state.teamsStatus === "loading") return empty("Loading current team rosters…", "loading");
   if (state.teamsStatus === "error") return empty("Could not load this league's teams. Use Retry teams or select Pokémon manually.", "error");
   if (!state.data || state.data.leagueId !== league.id || state.teamsStatus !== "ready") return empty("Current team rosters are not loaded.");

@@ -1,8 +1,9 @@
-import { createElement } from "react";
+import { createElement, type ChangeEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import LeagueMatchupPicker, { RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
+import { MyTeamPicker, OpponentPicker, RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import * as pokemonSprite from "@/app/components/PokemonSprite";
+import * as selectControl from "@/app/components/ui/Select";
 import {
   createMatchup, createSpeciesResolver, getRosterPanel, reconcileRosters, resetMatchup,
   resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild,
@@ -402,17 +403,261 @@ describe("calculator prep transitions", () => {
   });
 });
 
-describe("league matchup UI", () => {
-  it("labels selectors and includes opponents without finalized rosters, excluding the account", () => {
-    const html = renderToStaticMarkup(createElement(LeagueMatchupPicker, { state: loaded(), onLeagueChange: () => undefined, onOpponentChange: () => undefined, onRefresh: () => undefined }));
+describe("calculator team sources", () => {
+  function sourceHtml(pane: "own" | "opponent", state = loaded()) {
+    return renderToStaticMarkup(pane === "own"
+      ? createElement(MyTeamPicker, { state, onLeagueChange: () => undefined, onRefresh: () => undefined })
+      : createElement(OpponentPicker, { state, onOpponentChange: () => undefined, onRefresh: () => undefined }));
+  }
+
+  function options(html: string) {
+    return [...html.matchAll(/<option\b([^>]*)>([^<]*)<\/option>/g)].map(([, attributes, label]) => ({
+      value: attributes.match(/\bvalue="([^"]*)"/)![1], label, selected: attributes.includes('selected=""'),
+    }));
+  }
+
+  it("associates each pane's one native selector with its own label and help", () => {
+    const state = loaded();
+    const html = renderToStaticMarkup(createElement("div", null,
+      createElement(MyTeamPicker, { state, onLeagueChange: () => undefined, onRefresh: () => undefined }),
+      createElement(OpponentPicker, { state, onOpponentChange: () => undefined, onRefresh: () => undefined }),
+    ));
     assertLabels(html);
-    expect(html).toContain('value="member-empty"');
-    expect(html).not.toContain('value="member-own"');
-    expect(html).toContain("Refresh teams");
-    expect(html).toContain("draft costs are not Stat Points");
-    expect(html).toContain("Build edits stay in this page session only");
+    const labels = [...html.matchAll(/<label\b[^>]*for="([^"]+)"[^>]*>(My team|Opponent)<\/label>/g)];
+    expect(labels.map(([, , label]) => label)).toEqual(["My team", "Opponent"]);
+    const selects = html.match(/<select\b[^>]*>/g)!;
+    expect(selects).toHaveLength(2);
+    labels.forEach(([, id], index) => {
+      expect(selects[index]).toContain(`id="${id}"`);
+      expect(selects[index]).toContain(`aria-describedby="${id}-help"`);
+    });
   });
 
+  it("shows own team and league labels while selecting only existing league IDs", () => {
+    const state = { ...loaded(), selectedLeagueId: "league-b" };
+    const html = sourceHtml("own", state);
+    expect(options(html)).toEqual([
+      { value: "", label: "Choose your team", selected: false },
+      { value: "league-a", label: "Home — Alpha", selected: false },
+      { value: "league-b", label: "Home B — Beta", selected: true },
+    ]);
+    expect(html.match(/<select\b/g)).toHaveLength(1);
+    expect(html).not.toContain('value="member-own');
+    expect(html).not.toContain('value="team-own');
+    expect(html).not.toContain("Choose an opponent");
+  });
+
+  it("disambiguates only exactly duplicate full own-team labels, including unnamed teams", () => {
+    const state = loaded();
+    const entries = [
+      ["league-a", "Home", "Alpha"], ["league-copy", " Home ", "Alpha"],
+      ["league-b", "Home", "Beta"], ["league-away", "Away", "Alpha"],
+      ["league-unnamed", null, "Gamma"], ["league-blank", "  ", "Gamma"],
+      ["league-case", "home", "Alpha"],
+    ] as const;
+    state.leagues = entries.map(([id, teamName, name], index) => ({ ...state.leagues[0], id, memberId: `member-${index}`, teamName, name }));
+    state.selectedLeagueId = "league-copy";
+    const rendered = options(sourceHtml("own", state));
+    expect(rendered.map(({ value }) => value)).toEqual(["", ...entries.map(([id]) => id)]);
+    expect(rendered.slice(1).map(({ label }) => label)).toEqual([
+      "Home — Alpha (league 1)", "Home — Alpha (league 2)", "Home — Beta", "Away — Alpha",
+      "Unnamed team — Gamma (league 5)", "Unnamed team — Gamma (league 6)", "home — Alpha",
+    ]);
+    expect(rendered.filter(({ selected }) => selected).map(({ value }) => value)).toEqual(["league-copy"]);
+  });
+
+  it("keeps both controls controlled and forwards exact IDs and empty choices without selecting on render", () => {
+    const state = loaded();
+    const onLeagueChange = vi.fn();
+    const onOpponentChange = vi.fn();
+    const onRefresh = vi.fn();
+    const select = vi.spyOn(selectControl, "default");
+    try {
+      renderToStaticMarkup(createElement(MyTeamPicker, { state, onLeagueChange, onRefresh }));
+      renderToStaticMarkup(createElement(OpponentPicker, { state, onOpponentChange, onRefresh }));
+      expect(onLeagueChange).not.toHaveBeenCalled();
+      expect(onOpponentChange).not.toHaveBeenCalled();
+      expect(onRefresh).not.toHaveBeenCalled();
+      const [own, opponent] = select.mock.calls.map(([props]) => props);
+      expect(own.value).toBe("league-a");
+      expect(opponent.value).toBe("member-other");
+      for (const value of ["league-b", ""]) own.onChange!({ target: { value } } as ChangeEvent<HTMLSelectElement>);
+      for (const value of ["member-empty", ""]) opponent.onChange!({ target: { value } } as ChangeEvent<HTMLSelectElement>);
+      expect(onLeagueChange.mock.calls).toEqual([["league-b"], [""]]);
+      expect(onOpponentChange.mock.calls).toEqual([["member-empty"], [""]]);
+      expect(state.selectedLeagueId).toBe("league-a");
+      expect(state.opponentId).toBe("member-other");
+    } finally {
+      select.mockRestore();
+    }
+  });
+
+  it("explains an empty own selection without auto-selecting and directs the opponent pane to My team", () => {
+    const state = { ...loaded(), selectedLeagueId: "", opponentId: "", teamsStatus: "idle" as const, data: null };
+    const own = sourceHtml("own", state);
+    expect(options(own).filter(({ selected }) => selected).map(({ value }) => value)).toEqual([""]);
+    expect(own).toContain("Choose your team above to load its league roster.");
+    expect(own.match(/<select\b[^>]*>/)![0]).not.toContain('disabled=""');
+    const opponent = sourceHtml("opponent", state);
+    expect(opponent).toContain("Choose your team in the My team tab");
+    expect(opponent).not.toContain("There are no other members");
+    expect(options(opponent)).toEqual([{ value: "", label: "Choose an opponent", selected: true }]);
+    expect(opponent.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
+  });
+
+  it("shows the selected own-team and league context with opponents that lack finalized rosters", () => {
+    const html = sourceHtml("opponent");
+    expect(html).toMatch(/<dt[^>]*>Your team<\/dt><dd[^>]*>Home<\/dd>/);
+    expect(html).toMatch(/<dt[^>]*>League<\/dt><dd[^>]*>Alpha<\/dd>/);
+    expect(options(html)).toEqual([
+      { value: "", label: "Choose an opponent", selected: false },
+      { value: "member-other", label: "Away", selected: true },
+      { value: "member-empty", label: "No roster yet", selected: false },
+    ]);
+    expect(html.match(/<select\b/g)).toHaveLength(1);
+    expect(html).not.toContain('value="member-own"');
+    expect(html).not.toContain('value="league-a"');
+    expect(html).not.toContain('value="team-other"');
+  });
+
+  it("preserves sorted opponent names, member-ID tie breaks and duplicate/unnamed labels", () => {
+    const state = loaded();
+    const member = state.data!.members[1];
+    state.leagues[0].teamName = "  ";
+    state.leagues[0].draftCompleted = false;
+    state.data!.members = [
+      { ...state.data!.members[0], team_name: "Alpha" },
+      { ...member, id: "member-z", team_name: "Twin" }, { ...member, id: "member-a", team_name: " Twin " },
+      { ...member, id: "member-null", team_name: null }, { ...member, id: "member-blank", team_name: " " },
+      { ...member, id: "member-alpha", team_name: "Alpha" },
+    ];
+    state.data!.teams = [];
+    state.opponentId = "member-z";
+    const html = sourceHtml("opponent", state);
+    expect(html).toMatch(/<dt[^>]*>Your team<\/dt><dd[^>]*>Unnamed team<\/dd>/);
+    expect(options(html).slice(1)).toEqual([
+      { value: "member-alpha", label: "Alpha", selected: false },
+      { value: "member-a", label: "Twin (team 2)", selected: false },
+      { value: "member-z", label: "Twin (team 3)", selected: true },
+      { value: "member-blank", label: "Unnamed team (team 4)", selected: false },
+      { value: "member-null", label: "Unnamed team (team 5)", selected: false },
+    ]);
+    state.data!.members = [state.data!.members[0], { ...member, id: "member-upper", team_name: "AWAY" }, { ...member, id: "member-lower", team_name: "away" }];
+    expect(options(sourceHtml("opponent", state)).slice(1).every(({ label }) => /^away \(team [12]\)$/i.test(label))).toBe(true);
+  });
+
+  it.each([
+    ["no own selection", { selectedLeagueId: "" }],
+    ["unknown league", { selectedLeagueId: "league-removed" }],
+    ["stale league data", { selectedLeagueId: "league-b" }],
+    ["account loading", { status: "loading" }],
+    ["account failure", { status: "error" }],
+    ["idle rosters", { teamsStatus: "idle" }],
+    ["loading rosters", { teamsStatus: "loading" }],
+    ["failed rosters", { teamsStatus: "error" }],
+    ["missing data", { data: null }],
+  ] satisfies [string, Partial<CalculatorRosterState>][])("hides and disables dependent opponents for %s", (_, patch) => {
+    const html = sourceHtml("opponent", { ...loaded(), ...patch });
+    expect(options(html)).toEqual([{ value: "", label: "Choose an opponent", selected: true }]);
+    expect(html.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
+    expect(html).not.toContain("There are no other members");
+  });
+
+  it("uses only the current league's member IDs after its roster data is ready", () => {
+    const state = loaded();
+    state.selectedLeagueId = "league-b";
+    state.opponentId = "member-other-b";
+    state.data = {
+      leagueId: "league-b", teams: [], members: [
+        { ...state.data!.members[0], id: "member-own-b", team_name: "Home B" },
+        { ...state.data!.members[1], id: "member-other-b", team_name: "Away B" },
+      ],
+    };
+    const html = sourceHtml("opponent", state);
+    expect(html).toMatch(/<dt[^>]*>Your team<\/dt><dd[^>]*>Home B<\/dd>/);
+    expect(html).toMatch(/<dt[^>]*>League<\/dt><dd[^>]*>Beta<\/dd>/);
+    expect(options(html)).toEqual([
+      { value: "", label: "Choose an opponent", selected: false },
+      { value: "member-other-b", label: "Away B", selected: true },
+    ]);
+    expect(html.match(/<select\b[^>]*>/)![0]).not.toContain('disabled=""');
+  });
+
+  it.each(["", "member-own", "member-removed"])("uses the opponent placeholder rather than an invalid selection: %s", (opponentId) => {
+    const html = sourceHtml("opponent", { ...loaded(), opponentId });
+    expect(options(html).filter(({ selected }) => selected).map(({ value }) => value)).toEqual([""]);
+    expect(html.match(/<select\b[^>]*>/)![0]).not.toContain('disabled=""');
+  });
+
+  it("explains when the current league has no other members", () => {
+    const state = loaded();
+    state.data!.members = [state.data!.members[0]];
+    const html = sourceHtml("opponent", state);
+    expect(options(html)).toEqual([{ value: "", label: "Choose an opponent", selected: true }]);
+    expect(html.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
+    expect(html).toContain("There are no other members in this league yet.");
+  });
+
+  it.each(["own", "opponent"] as const)("keeps %s source refresh and selection guards during loading", (pane) => {
+    for (const phase of ["account", "rosters"] as const) {
+      const state = loaded();
+      if (phase === "account") state.status = "loading";
+      else state.teamsStatus = "loading";
+      const html = sourceHtml(pane, state);
+      expect(html).toContain(phase === "account" ? "Loading your leagues…" : "Loading current team rosters…");
+      expect(html).toContain("You can still edit the calculator.");
+      expect(html.match(/<button\b[^>]*>/)![0]).toContain('disabled=""');
+      expect(html.match(/<select\b[^>]*>/)![0].includes('disabled=""')).toBe(pane === "opponent" || phase === "account");
+    }
+  });
+
+  it.each(["own", "opponent"] as const)("preserves %s source errors and an enabled Retry action", (pane) => {
+    for (const patch of [
+      { status: "error" as const, message: "Membership lookup failed." },
+      { teamsStatus: "error" as const, teamsMessage: "Roster lookup failed." },
+      { teamsStatus: "error" as const },
+    ]) {
+      const html = sourceHtml(pane, { ...loaded(), ...patch });
+      expect(html).toContain("League teams unavailable");
+      expect(html).toContain(patch.message ?? patch.teamsMessage ?? "Could not load league teams.");
+      expect(html).toContain("Retry teams");
+      expect(html).toContain("Your manual calculator remains available");
+      expect(html.match(/<button\b[^>]*>/)![0]).not.toContain('disabled=""');
+      assertLabels(html);
+    }
+  });
+
+  it.each(["own", "opponent"] as const)("preserves %s source signed-out and no-leagues explanations", (pane) => {
+    const state = { ...loaded(), leagues: [], selectedLeagueId: "", opponentId: "", teamsStatus: "idle" as const, data: null };
+    const signedOut = sourceHtml(pane, { ...state, status: "signed-out", userId: null });
+    expect(signedOut).toContain("Sign in to see your leagues");
+    expect(signedOut).toContain('href="/login?next=%2Fcalculator"');
+    expect(signedOut).toContain("Log in again");
+    expect(signedOut).toContain("You can keep using manual Pokémon selection.");
+    expect(signedOut).not.toContain("No leagues yet");
+    expect(signedOut.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
+    const noLeagues = sourceHtml(pane, state);
+    expect(noLeagues).toContain("No leagues yet. Join or create a league from your dashboard");
+    expect(noLeagues.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
+    expect(noLeagues).not.toContain("There are no other members");
+    assertLabels(signedOut);
+    assertLabels(noLeagues);
+  });
+
+  it.each(["own", "opponent"] as const)("keeps %s source caveats and refresh without duplicating roster pickers", (pane) => {
+    const html = sourceHtml(pane);
+    expect(html).toContain("Refresh teams");
+    expect(html).toContain("Rosters provide Pokémon names, not saved sets.");
+    expect(html).toContain("New selections use editable default builds");
+    expect(html).toContain("draft costs are not Stat Points");
+    expect(html).toContain("Build edits stay in this page session only and never change a league roster.");
+    expect(html).not.toContain("data-calculator-roster");
+    expect(html).not.toContain("data-roster-choice");
+    expect(html).not.toContain("in Teams");
+  });
+});
+
+describe("league matchup UI", () => {
   it.each(["inline", "rail"] as const)("exposes active states, unavailable reasons and unsupported inspection in the %s variant", (variant) => {
     const state = loaded();
     state.data!.teams[0].pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Lucario-Mega-Z", points: 20, tier: 1 });
@@ -526,7 +771,7 @@ describe("league matchup UI", () => {
     const state = loaded();
     expect(getRosterPanel({ ...state, status: "loading" }, "own").status).toBe("loading");
     expect(getRosterPanel({ ...state, teamsStatus: "error" }, "own").status).toBe("error");
-    expect(getRosterPanel({ ...state, opponentId: "" }, "opponent").message).toContain("Choose an opponent");
+    expect(getRosterPanel({ ...state, opponentId: "" }, "opponent").message).toContain("Choose a team in Opponent");
     expect(getRosterPanel({ ...state, opponentId: "member-empty" }, "opponent").message).toContain("No finalized roster");
     state.data!.teams[0].pokemon = [];
     expect(getRosterPanel(state, "own").message).toContain("current roster is empty");

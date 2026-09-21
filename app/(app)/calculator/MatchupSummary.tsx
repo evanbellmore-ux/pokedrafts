@@ -90,7 +90,7 @@ export default function MatchupSummary({ attacker, defender, selectedMoveId, sel
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div aria-live="polite" aria-atomic="true" className="min-w-0 flex-1">
             {!selectedMoveId ? (
-              <p className="text-sm font-medium text-accent-text">Choose a move below to preview damage and HP remaining.</p>
+              <p className="text-sm font-medium text-accent-text">Choose a move in Moves to preview damage and HP remaining.</p>
             ) : (
               <>
                 <p className="wrap-anywhere text-sm font-bold text-text">{move?.name ?? selectedMoveId}</p>

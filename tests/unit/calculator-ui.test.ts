@@ -99,7 +99,7 @@ describe("Champions calculator UI", () => {
     expect(html).not.toMatch(/<main\b/);
     expect(html).toContain("Loading the Champions engine");
     expect(html).toContain("Damage Calculator");
-    expect(html).toContain("Prepare a league matchup");
+    expect(html).toContain("Choose your team and league for this matchup.");
     expect(html).toContain("Loading your leagues");
     expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
     expect(html).toContain("Change attacker Pokémon");
@@ -164,10 +164,11 @@ describe("Champions calculator UI", () => {
     }
   });
 
-  it("starts field controls closed but keeps all requested effects mounted without duplicates", () => {
+  it("exposes field controls without a second disclosure and keeps each requested effect mounted once", () => {
     const html = renderToStaticMarkup(createElement(BattleConditions, { value: createConditions(), issues: [], onChange: () => undefined }));
-    expect(html).toMatch(/^<details\b/);
-    expect(html).not.toMatch(/^<details\b[^>]*open=""/);
+    expect(html).toMatch(/^<section\b[^>]*aria-labelledby=/);
+    expect(html).not.toMatch(/<details\b/);
+    expect(html).toMatch(/<h2\b[^>]*tabindex="-1"/);
     expect(html).toContain("1 toggles on");
     for (const { key, label } of SHARED_FIELD_EFFECTS) {
       const inputs = [...html.matchAll(new RegExp(`<input\\b[^>]*id="[^"]*-${key}"[^>]*>`, "g"))];
@@ -308,15 +309,31 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Selected");
   });
 
-  it("puts active HP and moves before collapsed settings while keeping original editors mounted", () => {
+  it("keeps HP and feedback outside five mounted menu panes with only Moves initially visible", () => {
     const html = renderToStaticMarkup(createElement(CalculatorClient));
-    const moves = html.indexOf(">Choose a move</h2>");
-    expect(moves).toBeGreaterThan(0);
-    expect(html.indexOf("Active Pokémon and HP")).toBeLessThan(moves);
-    expect(html.indexOf('aria-valuenow="153"')).toBeLessThan(moves);
-    expect(html.indexOf('aria-valuenow="154"')).toBeLessThan(moves);
-    expect(html.indexOf("Prepare a league matchup")).toBeGreaterThan(moves);
-    expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(moves);
+    const tabs = [...html.matchAll(/<button\b[^>]*role="tab"[^>]*>/g)].map(([tag]) => tag);
+    const panels = [...html.matchAll(/<div\b[^>]*role="tabpanel"[^>]*>/g)].map(([tag]) => tag);
+    const order = ["team", "moves", "builds", "field", "opponent"];
+    expect(tabs).toHaveLength(5);
+    expect(panels).toHaveLength(5);
+    order.forEach((tab, index) => {
+      expect(tabs[index]).toContain(`data-calculator-tab="${tab}"`);
+      expect(tabs[index]).toContain(`aria-selected="${tab === "moves"}"`);
+      expect(tabs[index]).toContain(`tabindex="${tab === "moves" ? 0 : -1}"`);
+      expect(panels[index]).toContain(`data-calculator-panel="${tab}"`);
+      expect(panels[index].includes('hidden=""')).toBe(tab !== "moves");
+      const tabId = tabs[index].match(/\bid="([^"]+)"/)![1];
+      const panelId = panels[index].match(/\bid="([^"]+)"/)![1];
+      expect(tabs[index]).toContain(`aria-controls="${panelId}"`);
+      expect(panels[index]).toContain(`aria-labelledby="${tabId}"`);
+    });
+    expect(html.indexOf('role="tablist"')).toBeLessThan(html.indexOf("Active Pokémon and HP"));
+    for (const text of ["Active Pokémon and HP", 'aria-valuenow="153"', 'aria-valuenow="154"', "Loading the Champions engine"]) {
+      expect(html.indexOf(text)).toBeLessThan(html.indexOf(panels[0]));
+    }
+    expect([...html.matchAll(/data-calculator-feedback="true"/g)]).toHaveLength(1);
+    expect([...html.matchAll(/Loading the Champions engine/g)]).toHaveLength(1);
+    expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(html.indexOf(panels[2]));
     expect([...html.matchAll(/<details\b[^>]*>/g)].length).toBeGreaterThan(5);
     for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
     expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
@@ -326,7 +343,7 @@ describe("Champions calculator UI", () => {
     }
     expect(html).toContain('aria-label="Edit attacker HP"');
     expect(html).toContain('aria-label="Edit defender HP"');
-    expect(html).toContain("Field settings");
+    expect(html).toContain("Field conditions");
   });
 
   it("keeps HP ahead of advanced build settings and exposes closed-section errors", () => {
@@ -338,7 +355,7 @@ describe("Champions calculator UI", () => {
     expect(hpInput).toContain('aria-invalid="true"');
     const field = { ...createConditions(), gravity: "bad" as unknown as boolean };
     const fieldHTML = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
-    expect(fieldHTML).toMatch(/<summary\b[^>]*>[\s\S]*?1 settings to check<\/span><\/summary>/);
+    expect(fieldHTML).toMatch(/<h2\b[^>]*>[\s\S]*?1 settings to check<\/span><\/h2>/);
   });
 
   it.each([false, true])("renders one responsive move-selection branch (wide=%s) with unique labelled controls", (wide) => {
@@ -363,6 +380,19 @@ describe("Champions calculator UI", () => {
     for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
       for (const reference of references.split(" ")) expect(ids).toContain(reference);
     }
+  });
+
+  it.each([false, true])("uses an explicit blocked flag instead of rendering feedback inside Moves (blocked=%s)", (blocked) => {
+    const html = renderToStaticMarkup(createElement(MoveResults, {
+      rows: [row("flamethrower", "calculated")], selectedMoveId: "flamethrower", onSelectMove: () => undefined,
+      contexts: {}, onContextChange: () => undefined, sourceMoveCount: 1, abilityId: "blaze", itemId: "",
+      attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154, blocked,
+    }));
+    expect(html).toContain(">Choose a move</h2>");
+    expect(html.includes('type="radio"')).toBe(!blocked);
+    expect(html.includes('type="search"')).toBe(!blocked);
+    expect(html.includes("Move damage results")).toBe(!blocked);
+    expect(html).not.toContain('role="alert"');
   });
 
   it("offers explicit access to a selected move beyond the visible page", () => {
@@ -433,7 +463,7 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain('aria-label="Charizard attacker current HP"');
     expect(html).toContain('aria-valuenow="153"');
     expect(html).toContain('aria-valuemax="154"');
-    expect(html).toContain("Choose a move below");
+    expect(html).toContain("Choose a move in Moves");
     expect(html).not.toContain("Defender HP remaining:");
     expect(html).toContain('aria-controls="attacker-editor"');
     expect(html).toContain('aria-controls="defender-editor"');

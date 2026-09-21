@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useId, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
+import { Fragment, useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button, EmptyState, Field, Input, Select, TableWrap, tableClassName, tdClassName, thClassName, theadClassName, trClassName } from "@/app/components/ui";
 import { movesById } from "@/app/lib/battle/catalog";
@@ -115,13 +115,13 @@ type Props = {
   attackerName: string;
   defenderName: string;
   defenderHP: number | null;
-  feedback?: ReactNode;
+  blocked?: boolean;
   id?: string;
   ref?: Ref<MoveResultsHandle>;
   onReveal?: (element: HTMLElement) => void;
 };
 
-export default function MoveResults({ rows, selectedMoveId, onSelectMove, contexts, onContextChange, sourceMoveCount, abilityId, itemId, attackerName, defenderName, defenderHP, feedback, id, ref, onReveal }: Props) {
+export default function MoveResults({ rows, selectedMoveId, onSelectMove, contexts, onContextChange, sourceMoveCount, abilityId, itemId, attackerName, defenderName, defenderHP, blocked = false, id, ref, onReveal }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -154,7 +154,7 @@ export default function MoveResults({ rows, selectedMoveId, onSelectMove, contex
   }
 
   function showMove(moveId: string) {
-    if (!rows.some((row) => row.moveId === moveId) || feedback) return;
+    if (!rows.some((row) => row.moveId === moveId) || blocked) return;
     if (expanded === moveId && visible.some((row) => row.moveId === moveId) && focusDetails(moveId)) return;
     pendingFocus.current = moveId;
     resetFilter();
@@ -167,6 +167,7 @@ export default function MoveResults({ rows, selectedMoveId, onSelectMove, contex
     const moveId = pendingFocus.current;
     if (moveId !== null) {
       pendingFocus.current = null;
+      if (blocked) return;
       const element = document.getElementById(`${prefix}-${moveId}-details-hits`) ?? document.getElementById(`${prefix}-${moveId}-details`);
       if (element) {
         if (onReveal) onReveal(element);
@@ -176,7 +177,7 @@ export default function MoveResults({ rows, selectedMoveId, onSelectMove, contex
         }
       }
     }
-  }, [expanded, query, filter, limit, prefix, onReveal]);
+  }, [expanded, query, filter, limit, prefix, blocked, onReveal]);
 
   function needsHits(row: MoveDamageResult) {
     return row.kind === "needs-context" && Array.isArray(movesById.get(row.moveId)?.multihit) && abilityId !== "skilllink";
@@ -230,7 +231,7 @@ export default function MoveResults({ rows, selectedMoveId, onSelectMove, contex
         <h2 id={`${prefix}-heading`} className="text-xl font-bold text-text">Choose a move</h2>
         <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} → {defenderName}{defenderHP !== null && ` (${defenderHP} current HP)`}. Select a move to preview HP above.</p>
       </div>
-      {feedback || (
+      {!blocked && (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <Field id={`${prefix}-search`} label="Find a move" className="col-span-2 sm:col-span-1">

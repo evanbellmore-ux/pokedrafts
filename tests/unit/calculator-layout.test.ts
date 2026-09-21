@@ -17,6 +17,11 @@ describe("calculator desktop layout SSR", () => {
     expect([...html.matchAll(/data-calculator-roster="/g)]).toHaveLength(2);
     expect(html).toContain("Loading your leagues");
     expect(html).toContain("Loading the Champions engine");
+    expect([...html.matchAll(/role="tab"/g)]).toHaveLength(5);
+    expect([...html.matchAll(/role="tabpanel"/g)]).toHaveLength(5);
+    const panels = [...html.matchAll(/<div\b[^>]*role="tabpanel"[^>]*>/g)].map(([panel]) => panel);
+    expect(panels.filter((panel) => !panel.includes('hidden=""'))).toEqual([expect.stringContaining('data-calculator-panel="moves"')]);
+    expect(html).toMatch(/role="tab"[^>]*data-calculator-tab="moves"[^>]*aria-selected="true"[^>]*tabindex="0"/);
   });
 
   it("uses compact markup without a browser or invoking focus capture", () => {

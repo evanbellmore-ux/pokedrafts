@@ -1,5 +1,31 @@
 .root {
   --calculator-sticky-height: 0px;
+  min-width: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 0.25rem;
+}
+
+.tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.tab:first-child {
+  margin-inline-end: auto;
+}
+
+.tab:last-child {
+  margin-inline-start: auto;
+}
+
+.panel[hidden] {
+  display: none;
 }
 
 .root :is(input, select, button, summary, [tabindex]) {
