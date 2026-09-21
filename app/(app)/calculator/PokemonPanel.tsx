@@ -1,13 +1,12 @@
 "use client";
 
-import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
-import { Button, Dialog, Field, Input, Select, TableWrap } from "@/app/components/ui";
+import { Button, Field, Input, Select, TableWrap } from "@/app/components/ui";
 import type { InputProps } from "@/app/components/ui/Input";
 import { abilitiesById, champions, itemsById, speciesById } from "@/app/lib/battle/catalog";
 import {
   ABILITY_ACTIVATION_LABELS,
-  createBuild,
   defaultAbilityActive,
   getBuildStats,
   NATURES,
@@ -18,30 +17,21 @@ import {
 } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleStatus, BuildIssue } from "@/app/lib/battle/types";
 
-const SEARCH_PAGE_SIZE = 8;
-const speciesOptions = [...champions.species].sort((a, b) => a.name.localeCompare(b.name, "en"));
+import CurrentHPField from "./CurrentHPField";
+import PokemonChooser from "./PokemonChooser";
+import { parseBuildInput } from "./build-input";
+
 const itemOptions = [...champions.items].sort((a, b) => a.name.localeCompare(b.name, "en"));
 const stages = Array.from({ length: 13 }, (_, index) => index - 6);
 
-function normalizeName(text: string) {
-  return text.normalize("NFKD").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-export function parseBuildInput(text: string, fullHP = false) {
-  const parsed = parseIntegerInput(text);
-  return fullHP && text !== "" ? parsed ?? Number.NaN : parsed;
-}
-
-/** Keep invalid text visible; only an empty HP field means full HP. */
+/** Keep unfinished Stat Point text visible while its parsed value is invalid. */
 function IntegerInput({
   value,
   onValueChange,
-  fullHP = false,
   ...props
 }: Omit<InputProps, "value" | "onChange"> & {
   value: number | null;
   onValueChange: (value: number | null) => void;
-  fullHP?: boolean;
 }) {
   const format = (number: number | null) => number === null ? "" : String(number);
   const [text, setText] = useState(() => format(value));
@@ -60,7 +50,7 @@ function IntegerInput({
       value={text}
       onChange={(event) => {
         const nextText = event.target.value;
-        const nextValue = parseBuildInput(nextText, fullHP);
+        const nextValue = parseBuildInput(nextText);
         setText(nextText);
         setSyncedValue(nextValue);
         onValueChange(nextValue);
@@ -69,64 +59,35 @@ function IntegerInput({
   );
 }
 
-// Some native dialogs briefly visit the document body at these keyboard boundaries.
-function wrapPickerFocus(event: KeyboardEvent<HTMLElement>) {
-  if (event.key !== "Tab" || event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) return;
-  const dialog = event.currentTarget.querySelector("dialog[open]");
-  if (!dialog) return;
-  const controls = [...dialog.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled)")]
-    .filter((control) => control.tabIndex >= 0 && control.getClientRects().length > 0);
-  const first = controls[0];
-  const last = controls.at(-1);
-  const destination = event.shiftKey && event.target === first ? last
-    : !event.shiftKey && event.target === last ? first : undefined;
-  if (destination) {
-    event.preventDefault();
-    destination.focus();
-  }
-}
-
 type Props = {
   side: "attacker" | "defender";
   build: BattleBuild;
   issues: BuildIssue[];
   onChange: (build: BattleBuild) => void;
+  hpInput: string;
+  onHPChange: (text: string) => void;
+  onReveal?: (element: HTMLElement) => void;
   roster?: ReactNode;
   provenance?: string;
   editorRevision?: number;
   panelId?: string;
 };
 
-export default function PokemonPanel({ side, build, issues, onChange, roster, provenance, editorRevision = 0, panelId }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const label = side === "attacker" ? "Attacker" : "Defender";
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(0);
-  const [notice, setNotice] = useState("");
   const species = speciesById.get(build.speciesId);
   const stats = getBuildStats(build);
   const activationLabel = ABILITY_ACTIVATION_LABELS[build.abilityId];
-  const tokens = query.trim().split(/\s+/).map(normalizeName).filter(Boolean);
-  const matches = speciesOptions.filter((entry) => tokens.every((token) =>
-    normalizeName(`${entry.name} ${entry.id} ${entry.baseSpecies}`).includes(token),
-  ));
-  const visible = matches.slice(page * SEARCH_PAGE_SIZE, (page + 1) * SEARCH_PAGE_SIZE);
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
   const pointIssues = issues.filter((issue) => issue.field === "points" || issue.field.startsWith("points.") || issue.field.startsWith("boosts."));
   const pointsComplete = STATS.every((stat) => build.points[stat] !== null && Number.isFinite(build.points[stat]));
   const total = STATS.reduce((sum, stat) => sum + (build.points[stat] ?? 0), 0);
 
-  function selectSpecies(speciesId: string) {
-    setPickerOpen(false);
-    if (speciesId === build.speciesId) return;
-    onChange(createBuild(speciesId));
-    setNotice(`${label} changed to ${speciesById.get(speciesId)?.name}. Build settings reset; any required Mega Stone is selected.`);
-  }
-
   return (
-    <section id={panelId} aria-labelledby={`${prefix}-heading`} onKeyDown={wrapPickerFocus} className="min-w-0 rounded-xl border border-line bg-panel p-4 sm:p-5">
+    <section id={panelId} aria-labelledby={`${prefix}-heading`} className="min-w-0 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <h2 id={`${prefix}-heading`} className="text-xs font-semibold uppercase tracking-wide text-accent-text">{label}</h2>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <h3 className="wrap-anywhere text-xl font-bold text-text">{species?.name ?? "Select a Pokémon"}</h3>
@@ -135,10 +96,9 @@ export default function PokemonPanel({ side, build, issues, onChange, roster, pr
       </div>
       <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
-      <p role="status" className="sr-only">{notice}</p>
-      <Field id={`${prefix}-hp`} label="Current HP" error={errorFor("currentHP")} help={`Blank means full HP${stats ? ` (${stats.hp})` : ""}. Damage percentages use maximum HP; KO chances use current HP.`} className="mt-4">
-        <IntegerInput key={`${build.speciesId}-${editorRevision}`} value={build.currentHP} fullHP data-calculator-hp placeholder={stats ? `Full HP (${stats.hp})` : "Full HP"} onValueChange={(value) => onChange({ ...build, currentHP: value })} />
-      </Field>
+      <div className="mt-4">
+        <CurrentHPField id={`${prefix}-hp`} build={build} issues={issues} text={hpInput} onTextChange={onHPChange} data-calculator-hp />
+      </div>
       {roster && <div className="mt-4">{roster}</div>}
 
       <div data-calculator-build-settings className="mt-4 border-t border-line pt-4">
@@ -259,38 +219,7 @@ export default function PokemonPanel({ side, build, issues, onChange, roster, pr
         </div>
       </div>
 
-      <Dialog open={pickerOpen} onClose={() => setPickerOpen(false)} title={`Change ${label.toLowerCase()} Pokémon`}>
-        <div className="space-y-3">
-          <Field id={`${prefix}-search`} label={`Find ${label.toLowerCase()} Pokémon`} help="Search any name or form. Changing Pokémon resets nature, ability, item, Stat Points, stages, HP and status.">
-            <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
-          </Field>
-          <p role="status" className="text-xs text-muted">
-            {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
-            {matches.length > SEARCH_PAGE_SIZE && " · Refine the name or browse pages."}
-          </p>
-          <ul aria-label={`${label} Pokémon choices`} className="space-y-1">
-            {visible.map((entry) => (
-              <li key={entry.id}>
-                <button
-                  type="button"
-                  aria-pressed={entry.id === build.speciesId}
-                  onClick={() => selectSpecies(entry.id)}
-                  className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-2 rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${entry.id === build.speciesId ? "border-accent-border bg-accent-soft text-accent-text" : "border-line text-text hover:bg-panel-hover"}`}
-                >
-                  <span className="wrap-anywhere font-medium">{entry.name}</span>
-                  <span className="text-xs">{entry.unsupported.length > 0 ? "Unsupported in v1" : entry.id === build.speciesId ? "Selected" : ""}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          {matches.length > SEARCH_PAGE_SIZE && (
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${label.toLowerCase()} Pokémon page`}>Previous</Button>
-              <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${label.toLowerCase()} Pokémon page`}>Next</Button>
-            </div>
-          )}
-        </div>
-      </Dialog>
+      <PokemonChooser side={side} build={build} open={pickerOpen} onClose={() => setPickerOpen(false)} onChange={onChange} onReturnFocus={onReveal} />
     </section>
   );
 }

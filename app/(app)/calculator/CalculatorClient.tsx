@@ -18,7 +18,7 @@ import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { createMatchup, getRosterPanel, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, type BattleSide, type RosterChoice } from "./roster-prep";
+import { createMatchup, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP, type BattleSide, type PreparedMatchup, type RosterChoice } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -72,10 +72,6 @@ export default function CalculatorClient() {
   const fieldId = `${prefix}-field`;
   const controls = { attacker: `${prefix}-build-${matchup.attacker.key}`, defender: `${prefix}-build-${matchup.defender.key}`, moves: `${prefix}-moves` };
   const rosterControls = { attacker: `${prefix}-roster-${matchup.attacker.key}`, defender: `${prefix}-roster-${matchup.defender.key}` };
-  const pokemonControls = {
-    attacker: desktopRosters && getRosterPanel(rosters.state, matchup.attacker.role).choices.some((choice) => choice.source) ? rosterControls.attacker : controls.attacker,
-    defender: desktopRosters && getRosterPanel(rosters.state, matchup.defender.role).choices.some((choice) => choice.source) ? rosterControls.defender : controls.defender,
-  };
 
   useEffect(() => {
     let current = true;
@@ -191,40 +187,29 @@ export default function CalculatorClient() {
     setAttempt((value) => value + 1);
   }
 
-  function updateBuild(side: BattleSide, build: BattleBuild) {
+  function updateCombatant(key: number, update: (current: PreparedMatchup, side: BattleSide) => PreparedMatchup) {
     pendingNavigation.current = null;
-    setMatchup((current) => updateMatchupBuild(current, side, build));
+    setMatchup((current) => {
+      const side = current.attacker.key === key ? "attacker" : current.defender.key === key ? "defender" : null;
+      return side ? update(current, side) : current;
+    });
   }
 
-  function chooseRosterPokemon(side: BattleSide, choice: RosterChoice) {
-    pendingNavigation.current = null;
-    setMatchup((current) => selectRosterPokemon(current, side, choice));
+  function updateBuild(key: number, build: BattleBuild) {
+    updateCombatant(key, (current, side) => updateMatchupBuild(current, side, build));
+  }
+
+  function updateHP(key: number, text: string) {
+    updateCombatant(key, (current, side) => updateMatchupHP(current, side, text));
+  }
+
+  function chooseRosterPokemon(key: number, choice: RosterChoice) {
+    updateCombatant(key, (current, side) => selectRosterPokemon(current, side, choice));
   }
 
   function renderRoster(side: BattleSide, variant: "inline" | "rail") {
     const slot = matchup[side];
-    return <RosterPicker pickerId={rosterControls[side]} variant={variant} state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(side, choice)} />;
-  }
-
-  function edit(side: BattleSide, target: "pokemon" | "hp") {
-    if (target === "pokemon" && pokemonControls[side] === rosterControls[side]) {
-      const button = rosterFocusTarget(document.getElementById(rosterControls[side]));
-      if (button) {
-        pendingNavigation.current = null;
-        reveal(button, false);
-        return;
-      }
-    }
-    visit("builds", () => {
-      const panel = document.getElementById(controls[side]);
-      const element = target === "hp" ? panel?.querySelector<HTMLElement>("[data-calculator-hp]")
-        : rosterFocusTarget(panel?.querySelector<HTMLElement>("[data-calculator-roster]") ?? null)
-          ?? panel?.querySelector<HTMLButtonElement>("[data-calculator-change]");
-      if (element) {
-        reveal(element);
-        if (element.matches("[data-calculator-change]")) element.click();
-      }
-    });
+    return <RosterPicker pickerId={rosterControls[side]} variant={variant} state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
   }
 
   function fixSettings() {
@@ -302,9 +287,12 @@ export default function CalculatorClient() {
               rollMode={rollMode}
               onRollModeChange={setRollMode}
               blockedReason={blockedReason}
-              controls={controls}
-              pokemonControls={pokemonControls}
-              onEdit={edit}
+              issues={issues}
+              movesControl={controls.moves}
+              rosterState={rosters.state}
+              onBuildChange={updateBuild}
+              onHPChange={updateHP}
+              onRosterSelect={chooseRosterPokemon}
               onShowMove={showMove}
             />
           </div>
@@ -383,7 +371,10 @@ export default function CalculatorClient() {
                         issues={issues[side]}
                         editorRevision={slot.editorRevision}
                         provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
-                        onChange={(build) => updateBuild(side, build)}
+                        onChange={(build) => updateBuild(slot.key, build)}
+                        hpInput={slot.hpInput}
+                        onHPChange={(text) => updateHP(slot.key, text)}
+                        onReveal={reveal}
                         roster={desktopRosters ? undefined : renderRoster(side, "inline")}
                       />
                     );

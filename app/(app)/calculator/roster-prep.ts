@@ -4,6 +4,7 @@ import type { BattleBuild, BattleConditions, ChampionsSpecies, MoveContext } fro
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { pokemonKey, type TeamRoster } from "../leagues/[leagueId]/team/roster";
 import type { CalculatorRosterState } from "./roster-data";
+import { formatHPInput, parseBuildInput } from "./build-input";
 
 export type BattleSide = "attacker" | "defender";
 export type RosterRole = "own" | "opponent";
@@ -122,6 +123,8 @@ type Combatant = {
   editorRevision: number;
   role: RosterRole;
   build: BattleBuild;
+  // Shared by both HP editors; parsed NaN cannot retain unfinished input text.
+  hpInput: string;
   source: RosterSource | null;
 };
 
@@ -136,7 +139,7 @@ export type PreparedMatchup = {
   field: BattleConditions;
   contexts: Record<string, MoveContext>;
   selectedMoveId: string | null;
-  cache: Map<string, { source: RosterSource; build: BattleBuild }>;
+  cache: Map<string, { source: RosterSource; build: BattleBuild; hpInput: string }>;
 };
 
 export function createMatchup(revision = 0): PreparedMatchup {
@@ -145,8 +148,8 @@ export function createMatchup(revision = 0): PreparedMatchup {
     notice: "",
     accountId: null,
     selection: { leagueId: "", ownMemberId: "", opponentId: "" },
-    attacker: { key: revision * 2, editorRevision: 0, role: "own", build: createBuild("charizard"), source: null },
-    defender: { key: revision * 2 + 1, editorRevision: 0, role: "opponent", build: createBuild("blastoise"), source: null },
+    attacker: { key: revision * 2, editorRevision: 0, role: "own", build: createBuild("charizard"), hpInput: "", source: null },
+    defender: { key: revision * 2 + 1, editorRevision: 0, role: "opponent", build: createBuild("blastoise"), hpInput: "", source: null },
     field: createConditions(),
     contexts: {},
     selectedMoveId: null,
@@ -179,16 +182,27 @@ export function resetMatchup(current: PreparedMatchup): PreparedMatchup {
   };
 }
 
-export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild): PreparedMatchup {
+function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, hpInput: string): PreparedMatchup {
   const slot = current[side];
   const changedSpecies = slot.build.speciesId !== build.speciesId;
   const source = changedSpecies ? null : slot.source;
-  const cache = source ? new Map(current.cache).set(source.key, { source, build }) : current.cache;
+  const cache = source ? new Map(current.cache).set(source.key, { source, build, hpInput }) : current.cache;
   return {
-    ...current, [side]: { ...slot, build, source }, cache,
+    ...current, [side]: { ...slot, build, source, hpInput }, cache,
     contexts: changedSpecies ? {} : current.contexts,
     selectedMoveId: changedSpecies ? null : current.selectedMoveId,
   };
+}
+
+export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild): PreparedMatchup {
+  const slot = current[side];
+  const sameHP = slot.build.speciesId === build.speciesId && Object.is(slot.build.currentHP, build.currentHP);
+  return storeBuild(current, side, build, sameHP ? slot.hpInput : formatHPInput(build.currentHP));
+}
+
+export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpInput: string): PreparedMatchup {
+  const build = { ...current[side].build, currentHP: parseBuildInput(hpInput, true) };
+  return storeBuild(current, side, build, hpInput);
 }
 
 export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice): PreparedMatchup {
@@ -199,10 +213,11 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
   if (slot.source?.key === source.key) return current;
   const cached = current.cache.get(source.key);
   const build = cached?.build ?? createBuild(source.speciesId);
+  const hpInput = cached?.hpInput ?? formatHPInput(build.currentHP);
   return {
     ...current,
-    [side]: { ...slot, build, source, editorRevision: slot.editorRevision + 1 },
-    cache: new Map(current.cache).set(source.key, { source, build }),
+    [side]: { ...slot, build, source, hpInput, editorRevision: slot.editorRevision + 1 },
+    cache: new Map(current.cache).set(source.key, { source, build, hpInput }),
     contexts: {},
     selectedMoveId: null,
     notice: `${choice.name} selected as ${side}. ${cached ? "Your session build edits were restored." : "Default build loaded; adjust nature, ability, item and Stat Points as needed."} Field settings are unchanged; move hit counts cleared.`,

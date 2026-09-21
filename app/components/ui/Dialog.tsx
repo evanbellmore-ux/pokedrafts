@@ -16,6 +16,8 @@ export type DialogProps = {
   open: boolean;
   /** Called when the user cancels (Escape, backdrop, Cancel button). */
   onClose: () => void;
+  /** Restore and reveal the opener when the surrounding view has sticky overlays. */
+  onReturnFocus?: (opener: HTMLElement) => void;
   title: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
@@ -41,6 +43,7 @@ export type DialogProps = {
 export default function Dialog({
   open,
   onClose,
+  onReturnFocus,
   title,
   description,
   children,
@@ -87,7 +90,10 @@ export default function Dialog({
     function handleClose() {
       const opener = openerRef.current;
       openerRef.current = null;
-      if (opener && document.contains(opener)) opener.focus();
+      if (opener && document.contains(opener)) {
+        if (onReturnFocus) onReturnFocus(opener);
+        else opener.focus();
+      }
     }
 
     dialog.addEventListener("cancel", handleCancel);
@@ -96,7 +102,7 @@ export default function Dialog({
       dialog.removeEventListener("cancel", handleCancel);
       dialog.removeEventListener("close", handleClose);
     };
-  }, [onClose, pending]);
+  }, [onClose, onReturnFocus, pending]);
 
   const confirmEnabled =
     !pending && (confirmText === undefined || typed.trim() === confirmText);
