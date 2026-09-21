@@ -6,7 +6,7 @@ import * as pokemonSprite from "@/app/components/PokemonSprite";
 import * as selectControl from "@/app/components/ui/Select";
 import {
   createMatchup, createSpeciesResolver, getRosterPanel, reconcileRosters, resetMatchup,
-  resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild,
+  resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP,
 } from "@/app/(app)/calculator/roster-prep";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
@@ -163,6 +163,93 @@ describe("calculator prep transitions", () => {
     expect(selected.attacker.build.points.spa).toBe(0);
     expect(selected.field).toBe(manual.field);
     expect(selected.defender).toBe(manual.defender);
+  });
+
+  it.each(["attacker", "defender"] as const)("shares exact %s HP text without resetting battle context or mutating earlier states", (side) => {
+    let current = selectMatchupMove(prepared(), "flamethrower");
+    current.contexts = { bulletseed: { hits: 4 } };
+    for (const text of ["00100", "abc", "2e1", " ", "", "0", "999", "1.5"]) {
+      const before = structuredClone(current);
+      const next = updateMatchupHP(current, side, text);
+      expect(next[side].hpInput).toBe(text);
+      expect(next[side].build.currentHP).toEqual(text === "" ? null : /^\d+$/.test(text) ? Number(text) : Number.NaN);
+      expect(next.cache.get(next[side].source!.key)?.hpInput).toBe(text);
+      expect(next.cache.get(next[side].source!.key)?.build).toBe(next[side].build);
+      expect(next[side].source).toBe(current[side].source);
+      expect(next[side].editorRevision).toBe(current[side].editorRevision);
+      expect(next.contexts).toBe(current.contexts);
+      expect(next.field).toBe(current.field);
+      expect(next.selectedMoveId).toBe("flamethrower");
+      expect(next[side === "attacker" ? "defender" : "attacker"]).toBe(current[side === "attacker" ? "defender" : "attacker"]);
+      expect(current).toEqual(before);
+      current = next;
+    }
+  });
+
+  it.each(["00100", "abc", "2e1", " ", ""])("keeps HP spelling %j on unrelated build edits and repeated roster activation", (text) => {
+    const current = updateMatchupHP(prepared(), "attacker", text);
+    const next = updateMatchupBuild(current, "attacker", { ...current.attacker.build, nature: "Timid" });
+    expect(next.attacker.hpInput).toBe(text);
+    expect(next.attacker.build.currentHP).toEqual(current.attacker.build.currentHP);
+    expect(next.cache.get(next.attacker.source!.key)?.hpInput).toBe(text);
+    expect(selectRosterPokemon(next, "attacker", choices().own[0])).toBe(next);
+  });
+
+  it("restores distinct invalid HP drafts for different roster identities with the same species", () => {
+    const state = loaded();
+    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Charizard-Mega-X"]);
+    const { own } = choices(state);
+    let current = selectRosterPokemon(reconcileRosters(createMatchup(), state), "attacker", own[0]);
+    current = updateMatchupHP(current, "attacker", "abc");
+    current = selectRosterPokemon(current, "attacker", own[1]);
+    expect(current.attacker.hpInput).toBe("");
+    current = updateMatchupHP(current, "attacker", "2e1");
+    const first = selectRosterPokemon(current, "attacker", own[0]);
+    expect(first.attacker.hpInput).toBe("abc");
+    expect(first.attacker.build.currentHP).toBeNaN();
+    const second = selectRosterPokemon(first, "attacker", own[1]);
+    expect(second.attacker.hpInput).toBe("2e1");
+    expect(second.attacker.build.currentHP).toBeNaN();
+    expect(second.attacker.key).toBe(first.attacker.key);
+    expect(second.attacker.editorRevision).toBeGreaterThan(first.attacker.editorRevision);
+  });
+
+  it("carries each raw HP draft with Swap and restores the correct owner's cache", () => {
+    let current = updateMatchupHP(prepared(), "attacker", "abc");
+    current = updateMatchupHP(current, "defender", "2e1");
+    const swapped = swapMatchup(current);
+    expect(swapped.attacker.hpInput).toBe("2e1");
+    expect(swapped.defender.hpInput).toBe("abc");
+    const switched = selectRosterPokemon(swapped, "defender", choices().own[2]);
+    expect(switched.defender.hpInput).toBe("");
+    const restored = selectRosterPokemon(switched, "defender", choices().own[0]);
+    expect(restored.defender.hpInput).toBe("abc");
+    expect(restored.attacker.hpInput).toBe("2e1");
+  });
+
+  it("reseeds raw HP after explicit numeric and species replacements without losing outgoing prep", () => {
+    const current = updateMatchupHP(prepared(), "attacker", "abc");
+    const numeric = updateMatchupBuild(current, "attacker", { ...current.attacker.build, currentHP: 100 });
+    expect(numeric.attacker.hpInput).toBe("100");
+    const full = updateMatchupBuild(numeric, "attacker", { ...numeric.attacker.build, currentHP: null });
+    expect(full.attacker.hpInput).toBe("");
+    const manual = updateMatchupBuild(current, "attacker", createBuild("venusaur"));
+    expect(manual.attacker.hpInput).toBe("");
+    expect(manual.attacker.source).toBeNull();
+    expect(selectRosterPokemon(manual, "attacker", choices().own[0]).attacker.hpInput).toBe("abc");
+  });
+
+  it("preserves detached HP text but clears drafts and their caches on Reset or account replacement", () => {
+    const current = updateMatchupHP(prepared(), "defender", "2e1");
+    const detached = reconcileRosters(current, { ...loaded(), opponentId: "" });
+    expect(detached.defender.source).toBeNull();
+    expect(detached.defender.hpInput).toBe("2e1");
+    for (const fresh of [resetMatchup(current), reconcileRosters(current, { ...loaded(), userId: "new-account" })]) {
+      expect(fresh.attacker.hpInput).toBe("");
+      expect(fresh.defender.hpInput).toBe("");
+      expect(fresh.defender.key).not.toBe(current.defender.key);
+      expect(fresh.cache.size).toBe(0);
+    }
   });
 
   it("restores edited builds including NaN without mutating prior states", () => {

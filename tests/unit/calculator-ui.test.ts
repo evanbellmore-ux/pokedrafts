@@ -3,7 +3,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
 import BattleConditions from "@/app/(app)/calculator/BattleConditions";
-import PokemonPanel, { parseBuildInput } from "@/app/(app)/calculator/PokemonPanel";
+import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
+import CurrentHPField from "@/app/(app)/calculator/CurrentHPField";
+import { formatHPInput, parseBuildInput } from "@/app/(app)/calculator/build-input";
 import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calculator/MoveResults";
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
@@ -38,7 +40,7 @@ function loadedRosters(own = ["Charizard", "Blastoise"], opponent = ["Venusaur"]
 }
 
 function controlTarget(html: string, label: string) {
-  const target = html.match(new RegExp(`aria-label="${label}" aria-controls="([^"]+)"`))?.[1];
+  const target = html.match(new RegExp(`aria-label="${label}"[^>]*aria-controls="([^"]+)"`))?.[1];
   expect(target).toBeDefined();
   return target!;
 }
@@ -47,8 +49,9 @@ function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: Mo
   return renderToStaticMarkup(createElement(MatchupSummary, {
     attacker: matchup.attacker, defender: matchup.defender,
     selectedMoveId: matchup.selectedMoveId, selectedRow, blockedReason, rollMode,
-    controls: { attacker: "attacker-editor", defender: "defender-editor", moves: "moves" },
-    onEdit: () => undefined, onShowMove: () => undefined, onRollModeChange: () => undefined,
+    issues: { attacker: validateBuild(matchup.attacker.build), defender: validateBuild(matchup.defender.build) },
+    movesControl: "moves", onBuildChange: () => undefined, onHPChange: () => undefined, onRosterSelect: () => undefined,
+    onShowMove: () => undefined, onRollModeChange: () => undefined,
   }));
 }
 
@@ -86,6 +89,35 @@ describe("Champions calculator UI", () => {
     }
   });
 
+  it.each(["", "00100", "abc", "2e1", " ", "0", "155"])("renders shared current HP text %j with maximum-HP help and associated validation", (text) => {
+    const build = { ...createBuild("blastoise"), currentHP: parseBuildInput(text, true) };
+    const issues = validateBuild(build);
+    for (const compact of [false, true]) {
+      const onTextChange = vi.fn();
+      const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues, text, onTextChange, compact }));
+      expect(html).toContain(`value="${text}"`);
+      expect(html).toContain('type="text"');
+      expect(html).toContain('inputMode="numeric"');
+      expect(html).toContain("Blank means full HP (154).");
+      expect(html).toContain('placeholder="Full HP (154)"');
+      expect(html.includes('aria-invalid="true"')).toBe(issues.some((issue) => issue.field === "currentHP"));
+      for (const issue of issues) expect(html).toContain(issue.message);
+      const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+      for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
+        for (const reference of references.split(" ")) expect(ids).toContain(reference);
+      }
+      expect(onTextChange).not.toHaveBeenCalled();
+    }
+  });
+
+  it("keeps the HP control usable while an unrelated ability field is invalid", () => {
+    const build = { ...createBuild("blastoise"), abilityId: "unknown", currentHP: 70 };
+    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues: validateBuild(build), text: "070", onTextChange: () => undefined, compact: true }));
+    expect(html).toContain('value="070"');
+    expect(html).toContain("Blank means full HP (154).");
+    expect(html).not.toContain('aria-invalid="true"');
+  });
+
   it("server-renders uniquely labelled build controls without another main or loading the engine", () => {
     const html = renderToStaticMarkup(createElement(CalculatorClient));
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
@@ -108,7 +140,7 @@ describe("Champions calculator UI", () => {
 
   it.each(["attacker", "defender"] as const)("puts the %s change button after the types and keeps build controls outside the closed chooser", (side) => {
     const onChange = vi.fn();
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side, build: createBuild("charizard"), issues: [], onChange }));
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side, build: createBuild("charizard"), issues: [], onChange, hpInput: "", onHPChange: vi.fn() }));
     const trigger = html.match(/<button\b[^>]*data-calculator-change="true"[^>]*>/)?.[0];
     expect(trigger).toContain('type="button"');
     expect(trigger).toContain(`aria-label="Change ${side} Pokémon manually"`);
@@ -149,20 +181,22 @@ describe("Champions calculator UI", () => {
     expect([...html.matchAll(/data-calculator-roster-rail="/g)]).toHaveLength(desktop ? 2 : 0);
     expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
     expect(html).not.toMatch(/<main\b/);
-    expect(html).not.toContain('aria-pressed="true"'); // Loading a roster is not activation.
+    expect(html).not.toMatch(/<button[^>]*data-roster-choice="[^"]*"[^>]*aria-pressed="true"/); // Loading a roster is not activation.
     for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
     for (const side of ["attacker", "defender"]) {
-      const change = controlTarget(html, `Change ${side} Pokémon`);
+      const change = html.match(new RegExp(`<button[^>]*aria-label="Change ${side} Pokémon"[^>]*>`))?.[0];
+      expect(change).toContain('aria-haspopup="dialog"');
+      expect(change).not.toContain("aria-controls=");
       const hp = controlTarget(html, `Edit ${side} HP`);
-      const build = html.match(new RegExp(`<section id="${hp}"[\\s\\S]*?</section>`))?.[0];
+      expect(hp).not.toContain("-build-");
+      expect(html).toContain(`<div id="${hp}" hidden="">`);
+      const label = side === "attacker" ? "Attacker" : "Defender";
+      const build = html.match(new RegExp(`<section id="[^"]*-build-[^"]*"[^>]*><h2[^>]*>${label}</h2>[\\s\\S]*?</section>`))?.[0];
       expect(build).toContain('data-calculator-hp="true"');
       if (desktop) {
-        expect(change).toContain("-roster-");
-        expect(change).not.toBe(hp);
         expect(build).not.toContain("data-calculator-roster=");
-        expect(html).toMatch(new RegExp(`<aside[^>]*data-calculator-roster-rail="${side}"[^>]*><div id="${change}"[^>]*data-calculator-roster="${side}"`));
+        expect(html).toMatch(new RegExp(`<aside[^>]*data-calculator-roster-rail="${side}"[^>]*><div id="[^"]*"[^>]*data-calculator-roster="${side}"`));
       } else {
-        expect(change).toBe(hp);
         expect(build).toContain(`data-calculator-roster="${side}"`);
       }
     }
@@ -182,17 +216,18 @@ describe("Champions calculator UI", () => {
     ["disabled entries", () => loadedRosters(["Unknown form"], ["Unknown form"]), false, false],
     ["no opponent", () => ({ ...loadedRosters(), opponentId: "" }), true, false],
     ["unsupported but inspectable", () => loadedRosters(["Lucario-Mega-Z"], ["Venusaur"]), true, true],
-  ] as const)("uses manual destinations only when needed on desktop: %s", (_name, state, ownAvailable, opponentAvailable) => {
+  ] as const)("keeps summary manual selection available and offers usable team choices: %s", (_name, state, ownAvailable, opponentAvailable) => {
     viewport.desktop = true;
     roster.state = state();
     const html = renderToStaticMarkup(createElement(CalculatorClient));
     for (const [side, available] of [["attacker", ownAvailable], ["defender", opponentAvailable]] as const) {
-      const change = controlTarget(html, `Change ${side} Pokémon`);
-      const hp = controlTarget(html, `Edit ${side} HP`);
-      expect(change.includes("-roster-")).toBe(available);
-      expect(change === hp).toBe(!available);
-      expect(html).toContain(`id="${change}"`);
-      expect(html).toContain(`id="${hp}"`);
+      const card = html.match(new RegExp(`<div data-summary-combatant="${side}"[\\s\\S]*?</dialog>`))?.[0];
+      expect(card).toContain(`aria-label="Change ${side} Pokémon" aria-haspopup="dialog"`);
+      expect(card).toContain(`Find ${side} Pokémon`);
+      expect(card?.includes(">Team Pokémon</button>")).toBe(available);
+      const hp = controlTarget(card!, `Edit ${side} HP`);
+      expect(card).toContain(`<div id="${hp}" hidden="">`);
+      expect(card).not.toContain("data-roster-choice="); // Team controls mount only when used in the open chooser.
     }
   });
 
@@ -290,20 +325,20 @@ describe("Champions calculator UI", () => {
 
   it("locks the required Mega Stone and shows unsupported species reasons", () => {
     const mega = createBuild("charizardmegax");
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build: mega, issues: validateBuild(mega), onChange: () => undefined }));
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build: mega, issues: validateBuild(mega), onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
     expect(html).toMatch(/<select\b[^>]*id="[^"]*-item"[^>]*disabled=""/);
     expect(html).toContain('value="charizarditex" selected=""');
     expect(html).toContain("required and locked for this form");
 
     const unsupported = createBuild("lucariomegaz");
-    const unsupportedHTML = renderToStaticMarkup(createElement(PokemonPanel, { side: "defender", build: unsupported, issues: validateBuild(unsupported), onChange: () => undefined }));
+    const unsupportedHTML = renderToStaticMarkup(createElement(PokemonPanel, { side: "defender", build: unsupported, issues: validateBuild(unsupported), onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
     expect(unsupportedHTML).toContain("Unsupported build:");
     expect(unsupportedHTML).toContain("Lucario-Mega-Z");
   });
 
   it("shows a conditional ability switch without implying all abilities can be disabled", () => {
     const build = { ...createBuild("incineroar"), abilityId: "intimidate", abilityActive: true };
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: [], onChange: () => undefined }));
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
     expect(html).toContain("Apply Intimidate on entry");
     expect(html).toContain("Do not manually apply the same entry-stage change twice");
     expect(html).toMatch(/type="checkbox"[^>]*checked=""/);
@@ -383,7 +418,7 @@ describe("Champions calculator UI", () => {
 
   it("keeps HP ahead of visible build controls and exposes validation errors", () => {
     const build = { ...createBuild("charizard"), currentHP: 0, points: { ...createBuild().points, spa: 33 } };
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined }));
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined, hpInput: formatHPInput(build.currentHP), onHPChange: () => undefined }));
     const controls = html.slice(0, html.indexOf("<dialog"));
     expect(controls.indexOf(">Current HP</label>")).toBeLessThan(controls.indexOf(">Nature</label>"));
     expect(controls).not.toMatch(/<(?:details|summary)\b|\shidden=/);
@@ -455,7 +490,7 @@ describe("Champions calculator UI", () => {
     build.abilityId = "protean";
     build.abilityActive = false;
     build.points = { hp: 3, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined }));
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined, hpInput: formatHPInput(build.currentHP), onHPChange: () => undefined }));
     const ability = html.match(/<input\b[^>]*id="[^"]*-ability-active"[^>]*>/)?.[0];
     expect(ability).toContain('aria-invalid="true"');
     const descriptions = ability!.match(/aria-describedby="([^"]+)"/)![1].split(" ");
@@ -504,13 +539,17 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain('aria-valuemax="154"');
     expect(html).toContain("Choose a move in Moves");
     expect(html).not.toContain("Defender HP remaining:");
-    expect(html).toContain('aria-controls="attacker-editor"');
-    expect(html).toContain('aria-controls="defender-editor"');
+    for (const side of ["attacker", "defender"]) {
+      expect(html).toContain(`aria-label="Change ${side} Pokémon" aria-haspopup="dialog"`);
+      expect(html).toContain(`aria-label="Edit ${side} HP" aria-expanded="false"`);
+      expect(html).toContain(`<div id="${controlTarget(html, `Edit ${side} HP`)}" hidden="">`);
+    }
     expect([...html.matchAll(/<fieldset\b/g)]).toHaveLength(1);
     expect(html).toContain('>Damage roll</legend>');
-    const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map(([input]) => input);
+    const inputs = [...html.matchAll(/<input\b[^>]*type="radio"[^>]*>/g)].map(([input]) => input);
     expect(inputs).toHaveLength(3);
-    for (const input of inputs) expect(input).toContain('type="radio"');
+    expect([...html.matchAll(/<dialog\b/g)]).toHaveLength(2);
+    expect(html).not.toContain("data-summary-hp=");
     const names = inputs.map((input) => input.match(/name="([^"]+)"/)?.[1]);
     expect(new Set(names).size).toBe(1);
     expect(names[0]).toContain("damage-roll");
@@ -588,7 +627,7 @@ describe("active matchup and selected-move summary", () => {
     const matchup = updateMatchupBuild(selectMatchupMove(createMatchup(), "flamethrower"), "defender", { ...createBuild("blastoise"), currentHP });
     const html = summaryHTML(matchup, undefined, "Fix invalid settings.");
     expect([...html.matchAll(/role="meter"/g)]).toHaveLength(1);
-    expect(html).toContain("Check build settings to show HP");
+    expect(html).toContain("Edit HP to fix the current value");
     expect(html).not.toContain("Defender HP remaining:");
     expect(html).not.toContain('aria-valuenow="154"');
   });
