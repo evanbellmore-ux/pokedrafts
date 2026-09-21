@@ -218,8 +218,12 @@ export default function CalculatorClient() {
     visit("builds", () => {
       const panel = document.getElementById(controls[side]);
       const element = target === "hp" ? panel?.querySelector<HTMLElement>("[data-calculator-hp]")
-        : panel?.querySelector<HTMLElement>("[data-calculator-pokemon] button:not(:disabled), [data-calculator-pokemon] input[type=search]");
-      if (element) reveal(element);
+        : rosterFocusTarget(panel?.querySelector<HTMLElement>("[data-calculator-roster]") ?? null)
+          ?? panel?.querySelector<HTMLButtonElement>("[data-calculator-change]");
+      if (element) {
+        reveal(element);
+        if (element.matches("[data-calculator-change]")) element.click();
+      }
     });
   }
 
