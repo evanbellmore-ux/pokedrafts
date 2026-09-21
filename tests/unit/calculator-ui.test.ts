@@ -106,6 +106,38 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Change defender Pokémon");
   });
 
+  it.each(["attacker", "defender"] as const)("puts the %s change button after the types and keeps build controls outside the closed chooser", (side) => {
+    const onChange = vi.fn();
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side, build: createBuild("charizard"), issues: [], onChange }));
+    const trigger = html.match(/<button\b[^>]*data-calculator-change="true"[^>]*>/)?.[0];
+    expect(trigger).toContain('type="button"');
+    expect(trigger).toContain(`aria-label="Change ${side} Pokémon manually"`);
+    expect(trigger).toContain('aria-haspopup="dialog"');
+    expect(html).toMatch(/>Flying<\/span><button\b[^>]*data-calculator-change="true"[^>]*>Change Pokémon<\/button><\/div>/);
+    expect(html.indexOf(">Charizard</h3>")).toBeLessThan(html.indexOf(">Fire</span>"));
+    expect(html.indexOf(">Fire</span>")).toBeLessThan(html.indexOf(">Flying</span>"));
+
+    const dialogs = [...html.matchAll(/<dialog\b[\s\S]*?<\/dialog>/g)].map(([dialog]) => dialog);
+    expect(dialogs).toHaveLength(1);
+    expect(dialogs[0].match(/<dialog\b[^>]*>/)?.[0]).not.toContain("open=");
+    expect(dialogs[0]).toContain(`Change ${side} Pokémon`);
+    expect(dialogs[0]).toContain(`Find ${side} Pokémon`);
+    expect([...dialogs[0].matchAll(/type="search"/g)]).toHaveLength(1);
+    expect([...dialogs[0].matchAll(/<li\b/g)]).toHaveLength(8);
+    expect(dialogs[0]).toContain(`aria-label="Next ${side} Pokémon page"`);
+    expect(dialogs[0]).toContain(">Cancel</button>");
+    for (const [button] of dialogs[0].matchAll(/<button\b[^>]*>/g)) expect(button).toContain('type="button"');
+
+    const controls = html.replace(dialogs[0], "");
+    expect(controls).not.toMatch(/<(?:details|summary)\b|\shidden=|type="search"/);
+    expect(controls).toContain('data-calculator-build-settings="true"');
+    for (const label of ["Current HP", "Nature", "Ability", "Held item", "Status"]) expect(controls).toContain(`>${label}</label>`);
+    expect([...controls.matchAll(/<input\b[^>]*id="[^"]*-points-[a-z]+"/g)]).toHaveLength(6);
+    expect([...controls.matchAll(/<select\b[^>]*id="[^"]*-stage-[a-z]+"/g)]).toHaveLength(5);
+    expect(controls).toContain("Stats at level 50");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it.each([false, true])("renders each roster once in the right location (desktop=%s)", (desktop) => {
     viewport.desktop = desktop;
     roster.state = loadedRosters();
@@ -334,7 +366,10 @@ describe("Champions calculator UI", () => {
     expect([...html.matchAll(/data-calculator-feedback="true"/g)]).toHaveLength(1);
     expect([...html.matchAll(/Loading the Champions engine/g)]).toHaveLength(1);
     expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(html.indexOf(panels[2]));
-    expect([...html.matchAll(/<details\b[^>]*>/g)].length).toBeGreaterThan(5);
+    const builds = html.slice(html.indexOf(panels[2]), html.indexOf(panels[3]));
+    expect(builds).not.toMatch(/<(?:details|summary)\b/);
+    expect([...builds.matchAll(/data-calculator-build-settings="true"/g)]).toHaveLength(2);
+    expect([...builds.matchAll(/data-calculator-change="true"/g)]).toHaveLength(2);
     for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
     expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
@@ -346,13 +381,17 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Field conditions");
   });
 
-  it("keeps HP ahead of advanced build settings and exposes closed-section errors", () => {
+  it("keeps HP ahead of visible build controls and exposes validation errors", () => {
     const build = { ...createBuild("charizard"), currentHP: 0, points: { ...createBuild().points, spa: 33 } };
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined }));
-    expect(html.indexOf(">Current HP</label>")).toBeLessThan(html.indexOf(">Nature</label>"));
-    expect(html).toMatch(/<summary\b[^>]*>Build settings[\s\S]*?settings to check<\/span><\/summary>/);
-    const hpInput = html.match(/<input\b[^>]*data-calculator-hp="true"[^>]*>/)?.[0];
+    const controls = html.slice(0, html.indexOf("<dialog"));
+    expect(controls.indexOf(">Current HP</label>")).toBeLessThan(controls.indexOf(">Nature</label>"));
+    expect(controls).not.toMatch(/<(?:details|summary)\b|\shidden=/);
+    const hpInput = controls.match(/<input\b[^>]*data-calculator-hp="true"[^>]*>/)?.[0];
     expect(hpInput).toContain('aria-invalid="true"');
+    const pointsInput = controls.match(/<input\b[^>]*id="[^"]*-points-spa"[^>]*>/)?.[0];
+    expect(pointsInput).toContain('aria-invalid="true"');
+    for (const issue of validateBuild(build)) expect(controls).toContain(issue.message);
     const field = { ...createConditions(), gravity: "bad" as unknown as boolean };
     const fieldHTML = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
     expect(fieldHTML).toMatch(/<h2\b[^>]*>[\s\S]*?1 settings to check<\/span><\/h2>/);
