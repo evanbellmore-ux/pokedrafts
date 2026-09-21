@@ -33,14 +33,14 @@ export default function BattleConditions({ value, issues, onChange, id }: Props)
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
 
   return (
-    <details id={id} className="rounded-xl border border-line bg-panel">
-      <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
+    <section id={id} aria-labelledby={`${prefix}-heading`} className="rounded-xl border border-line bg-panel">
+      <h2 id={`${prefix}-heading`} tabIndex={-1} className="rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">
         Field conditions
         <span className="ml-2 font-normal text-muted">
           {describeConditions(value)}
         </span>
         {issues.length > 0 && <span className="ml-2 text-danger">{issues.length} settings to check</span>}
-      </summary>
+      </h2>
       <div className="space-y-4 px-4 pb-4 sm:px-5 sm:pb-5">
         <p className="text-xs text-muted">Set effects that are already active; move use and duration are not simulated. Weather and terrain are not automatically set by entry abilities. Shared conditions stay in place on Swap; each side’s conditions follow its Pokémon.</p>
         <fieldset className="min-w-0">
@@ -133,6 +133,6 @@ export default function BattleConditions({ value, issues, onChange, id }: Props)
           ))}
         </div>
       </div>
-    </details>
+    </section>
   );
 }
