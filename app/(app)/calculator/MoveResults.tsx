@@ -233,7 +233,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
       return (
         <div className="space-y-2">
           <p className="wrap-anywhere font-semibold text-text">{move.name}</p>
-          <Button size="sm" aria-label={`Use ${move.name} in move ${replacement.slotIndex + 1}`} onClick={() => choose(candidate)}>Use move</Button>
+          <Button size="sm" aria-label={`Replace move ${replacement.slotIndex + 1} with ${move.name}`} onClick={() => choose(candidate)}>Replace</Button>
         </div>
       );
     }
@@ -281,7 +281,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         <div className="min-w-0 flex-1">
           <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
           <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}.</p>
-          <p className="mt-1 text-xs text-muted">{replacement ? "Use a move below to replace only this slot. Choosing a move finishes editing and clears the selection. Already assigned moves are hidden. Done or Escape closes without replacing." : "Select a move to preview HP above without changing your four quick moves."}</p>
+          <p className="mt-1 text-xs text-muted">{replacement ? "Replace changes only this slot and selects the new move to calculate. Keep choosing replacements, or use Done or Escape to close editing and keep the selected move. Already assigned moves are hidden." : "Select a move to preview HP above without changing your four quick moves."}</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>

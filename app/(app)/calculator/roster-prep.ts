@@ -1,6 +1,7 @@
 import { champions, speciesById } from "@/app/lib/battle/catalog";
 import { createBuild, createConditions } from "@/app/lib/battle/model";
 import { createMoveSlots, type MoveSlots } from "@/app/lib/battle/move-defaults";
+import { getMegaOptions } from "@/app/lib/battle/mega-forms";
 import type { BattleBuild, BattleConditions, ChampionsSpecies, MoveContext } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { pokemonKey, type TeamRoster } from "../leagues/[leagueId]/team/roster";
@@ -119,6 +120,8 @@ export function getRosterPanel(state: CalculatorRosterState, role: RosterRole): 
   return { status: "ready", teamName: name, message: null, choices: rosterChoices(league.id, teams[0]) };
 }
 
+type MegaBase = Pick<BattleBuild, "speciesId" | "abilityId" | "abilityActive" | "itemId">;
+
 export type Combatant = {
   key: number;
   editorRevision: number;
@@ -128,6 +131,8 @@ export type Combatant = {
   hpInput: string;
   source: RosterSource | null;
   moves: MoveSlots;
+  // Only form-specific choices are restored; shared preparation keeps later edits.
+  megaBase: MegaBase | null;
   contexts: Record<string, MoveContext>;
   // Move callbacks expire independently of unfinished Stat Point editor text.
   moveEpoch: number;
@@ -148,8 +153,17 @@ export type PreparedMatchup = {
   attack: { owner: MoveOwner; moveId: string | null };
   replacement: MoveReplacement | null;
   replacementSession: number;
-  cache: Map<string, { source: RosterSource; build: BattleBuild; hpInput: string; moves: MoveSlots }>;
+  cache: Map<string, { source: RosterSource; build: BattleBuild; hpInput: string; moves: MoveSlots; megaBase: MegaBase | null }>;
 };
+
+function cacheCombatant(current: PreparedMatchup, slot: Combatant): PreparedMatchup["cache"] {
+  const { source, build, hpInput, moves, megaBase } = slot;
+  return source ? new Map(current.cache).set(source.key, { source, build, hpInput, moves, megaBase }) : current.cache;
+}
+
+function formSettings({ speciesId, abilityId, abilityActive, itemId }: BattleBuild): MegaBase {
+  return { speciesId, abilityId, abilityActive, itemId };
+}
 
 export function getMoveOwner(slot: Combatant): MoveOwner {
   return { key: slot.key, epoch: slot.moveEpoch };
@@ -187,11 +201,11 @@ export function createMatchup(revision = 0): PreparedMatchup {
   const field = createConditions();
   const attacker: Combatant = {
     key: revision * 2, editorRevision: 0, role: "own", build: createBuild("charizard"), hpInput: "", source: null,
-    moves: createMoveSlots("charizard", field.gameType), contexts: {}, moveEpoch: 0,
+    moves: createMoveSlots("charizard", field.gameType), megaBase: null, contexts: {}, moveEpoch: 0,
   };
   const defender: Combatant = {
     key: revision * 2 + 1, editorRevision: 0, role: "opponent", build: createBuild("blastoise"), hpInput: "", source: null,
-    moves: createMoveSlots("blastoise", field.gameType), contexts: {}, moveEpoch: 0,
+    moves: createMoveSlots("blastoise", field.gameType), megaBase: null, contexts: {}, moveEpoch: 0,
   };
   return {
     revision,
@@ -269,11 +283,12 @@ export function replaceMatchupMove(current: PreparedMatchup, replacement: MoveRe
   if (slot.moves[replacement.slotIndex].moveId === moveId) return current;
   const moves: MoveSlots = [...slot.moves];
   moves[replacement.slotIndex] = { moveId, origin: "manual", gameType: null };
-  const { source, build, hpInput } = slot;
-  const cache = source ? new Map(current.cache).set(source.key, { source, build, hpInput, moves }) : current.cache;
+  const next = { ...slot, moves };
+  const session = current.replacementSession + 1;
   return {
-    ...current, [side]: { ...slot, moves }, cache,
-    attack: { owner: getMoveOwner(slot), moveId: null }, replacement: null,
+    ...current, [side]: next, cache: cacheCombatant(current, next),
+    attack: { owner: getMoveOwner(next), moveId },
+    replacement: { ...replacement, session }, replacementSession: session,
   };
 }
 
@@ -287,6 +302,31 @@ export function updateMatchupMoveContext(current: PreparedMatchup, owner: MoveOw
   if (!side || !sameMoveOwner(owner, current.attack.owner) || !learnsMove(current[side], moveId)) return current;
   const slot = current[side];
   return { ...current, [side]: { ...slot, contexts: { ...slot.contexts, [moveId]: { ...context } } } };
+}
+
+/** A Mega form is the same Pokémon, not a fresh build or another roster entry. */
+export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, formId: string): PreparedMatchup {
+  const side = moveOwnerSide(current, owner);
+  if (!side) return current;
+  const slot = current[side];
+  const option = getMegaOptions(slot.build.speciesId).find((entry) => entry.formId === formId);
+  if (!option) return current;
+  const base = slot.build.speciesId === option.baseSpeciesId ? formSettings(slot.build)
+    : slot.megaBase?.speciesId === option.baseSpeciesId ? slot.megaBase : null;
+  const reverting = slot.build.speciesId === formId;
+  const settings = reverting ? base ?? formSettings(createBuild(option.baseSpeciesId)) : formSettings(createBuild(formId));
+  const build = { ...slot.build, ...settings };
+  const next = { ...slot, build, megaBase: reverting ? null : base, moveEpoch: slot.moveEpoch + 1 };
+  const nextOwner = getMoveOwner(next);
+  const editing = current.replacement && sameMoveOwner(current.replacement.owner, owner);
+  const session = current.replacementSession + (editing ? 1 : 0);
+  return {
+    ...current, [side]: next, cache: cacheCombatant(current, next),
+    attack: sameMoveOwner(current.attack.owner, owner) ? { ...current.attack, owner: nextOwner } : current.attack,
+    replacement: editing ? { ...current.replacement!, owner: nextOwner, session } : current.replacement,
+    replacementSession: session,
+    notice: `${speciesById.get(build.speciesId)?.name} selected. Current HP, training and prepared moves kept.`,
+  };
 }
 
 export function swapMatchup(current: PreparedMatchup): PreparedMatchup {
@@ -311,8 +351,12 @@ function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBui
   const changedSpecies = slot.build.speciesId !== build.speciesId;
   const source = changedSpecies ? null : slot.source;
   const moves = changedSpecies ? createMoveSlots(build.speciesId, current.field.gameType) : slot.moves;
-  const cache = source ? new Map(current.cache).set(source.key, { source, build, hpInput, moves }) : current.cache;
-  const next = { ...current, [side]: { ...slot, build, source, hpInput, moves }, cache };
+  const nextSlot = {
+    ...slot, build, source, hpInput, moves,
+    megaBase: changedSpecies ? null : slot.megaBase,
+    editorRevision: slot.editorRevision + (changedSpecies ? 1 : 0),
+  };
+  const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot) };
   return changedSpecies ? clearMoveInteractions(next) : next;
 }
 
@@ -337,10 +381,11 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
   const build = cached?.build ?? createBuild(source.speciesId);
   const hpInput = cached?.hpInput ?? formatHPInput(build.currentHP);
   const moves = cached?.moves ?? createMoveSlots(source.speciesId, current.field.gameType);
+  const nextSlot = { ...slot, build, source, hpInput, moves, megaBase: cached?.megaBase ?? null, editorRevision: slot.editorRevision + 1 };
   return clearMoveInteractions({
     ...current,
-    [side]: { ...slot, build, source, hpInput, moves, editorRevision: slot.editorRevision + 1 },
-    cache: new Map(current.cache).set(source.key, { source, build, hpInput, moves }),
+    [side]: nextSlot,
+    cache: cacheCombatant(current, nextSlot),
     notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : "Default build loaded; adjust nature, ability, item and Stat Points as needed."} Field settings are unchanged; move hit counts cleared.`,
   });
 }

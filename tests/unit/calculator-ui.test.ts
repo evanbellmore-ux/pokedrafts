@@ -1,6 +1,6 @@
-import { createElement, type ChangeEvent, type ComponentProps, type MouseEvent } from "react";
+import { Children, createElement, type ChangeEvent, type ComponentProps, type KeyboardEvent, type MouseEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
 import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
@@ -10,13 +10,53 @@ import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calcula
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
-import { activateMoveSlot, getAttackView, getMoveOwner, replaceMatchupMove, selectMatchupMove, updateMatchupBuild, type BattleSide } from "@/app/(app)/calculator/roster-prep";
+import { activateMoveSlot, dismissMoveReplacement, getAttackView, getMoveOwner, replaceMatchupMove, selectMatchupMove, toggleMatchupMega, updateMatchupBuild, type BattleSide, type MoveOwner } from "@/app/(app)/calculator/roster-prep";
 import * as buttonControl from "@/app/components/ui/Button";
 import * as selectControl from "@/app/components/ui/Select";
 import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import { movesById, speciesById } from "@/app/lib/battle/catalog";
 import type { MoveSlots } from "@/app/lib/battle/move-defaults";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
+
+// Keep real SSR and hooks while recording host handlers for DOM-free callback tests.
+const hostEvents = vi.hoisted(() => ({
+  capture: false,
+  buttons: [] as (ComponentProps<"button"> & { "data-mega-form"?: string; "data-move-slot"?: number })[],
+  sections: [] as (ComponentProps<"section"> & { "data-moves-owner"?: string })[],
+}));
+vi.mock("react/jsx-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react/jsx-runtime")>();
+  const record = (type: unknown, props: unknown) => {
+    if (!hostEvents.capture) return;
+    if (type === "button") hostEvents.buttons.push(props as typeof hostEvents.buttons[number]);
+    if (type === "section") hostEvents.sections.push(props as typeof hostEvents.sections[number]);
+  };
+  return {
+    ...actual,
+    jsx: (...args: Parameters<typeof actual.jsx>) => { record(args[0], args[1]); return actual.jsx(...args); },
+    jsxs: (...args: Parameters<typeof actual.jsxs>) => { record(args[0], args[1]); return actual.jsxs(...args); },
+  };
+});
+
+vi.mock("react/jsx-dev-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react/jsx-dev-runtime")>();
+  return {
+    ...actual,
+    jsxDEV: (...args: Parameters<typeof actual.jsxDEV>) => {
+      if (hostEvents.capture && args[0] === "button") hostEvents.buttons.push(args[1] as typeof hostEvents.buttons[number]);
+      if (hostEvents.capture && args[0] === "section") hostEvents.sections.push(args[1] as typeof hostEvents.sections[number]);
+      return actual.jsxDEV(...args);
+    },
+  };
+});
+
+function captureEvents(render: () => string) {
+  hostEvents.buttons = [];
+  hostEvents.sections = [];
+  hostEvents.capture = true;
+  try { return { html: render(), buttons: hostEvents.buttons, sections: hostEvents.sections }; }
+  finally { hostEvents.capture = false; }
+}
 
 const viewport = vi.hoisted(() => ({ wide: false, desktop: false }));
 const roster = vi.hoisted(() => ({ state: null as CalculatorRosterState | null }));
@@ -56,7 +96,7 @@ function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: Mo
     resultIdentity: { source: view.owner, receiver: view.receiverOwner }, selectedRow, blockedReason, rollMode,
     issues: { attacker: validateBuild(matchup.attacker.build), defender: validateBuild(matchup.defender.build) },
     movesControl: "moves", onBuildChange: () => undefined, onHPChange: () => undefined, onRosterSelect: () => undefined,
-    onShowMove: () => undefined, onRollModeChange: () => undefined, onActivateMove: () => undefined,
+    onShowMove: () => undefined, onRollModeChange: () => undefined, onActivateMove: () => undefined, onToggleMega: () => undefined,
     ...overrides,
   }));
 }
@@ -594,22 +634,23 @@ describe("quick-move replacement UI", () => {
       expect(html).not.toContain('type="radio"');
       expect(html.includes('<table ')).toBe(wide);
       expect(html.includes('<ul aria-label="Move damage results"')).toBe(!wide);
-      expect(html).toContain("Choosing a move finishes editing and clears the selection.");
+      expect(html).toContain("Replace changes only this slot and selects the new move to calculate.");
+      expect(html).toContain("Keep choosing replacements, or use Done or Escape to close editing and keep the selected move.");
       expect(html).toContain("Showing 1 of 1 matching moves.");
       expect(html).not.toContain("Current move");
       expect(html).not.toContain("Already in move");
       expect(html).not.toContain("Show selected move");
       for (const { moveId } of moves) {
         expect(html).not.toContain(`-${moveId}-damage`);
-        expect(buttons.mock.calls.some(([props]) => props["aria-label"] === `Use ${movesById.get(moveId!)!.name} in move 1`)).toBe(false);
+        expect(buttons.mock.calls.some(([props]) => props["aria-label"] === `Replace move 1 with ${movesById.get(moveId!)!.name}`)).toBe(false);
       }
-      const candidate = html.match(/<button\b[^>]*aria-label="Use Protect in move 1"[^>]*>[\s\S]*?<\/button>/)?.[0];
-      expect(candidate).toContain(">Use move</button>");
+      const candidate = html.match(/<button\b[^>]*aria-label="Replace move 1 with Protect"[^>]*>[\s\S]*?<\/button>/)?.[0];
+      expect(candidate).toContain(">Replace</button>");
       expect(candidate).not.toContain('disabled=""');
       expect(onReplace).not.toHaveBeenCalled();
       expect(onDone).not.toHaveBeenCalled();
       const action = (label: string) => buttons.mock.calls.map(([props]) => props).find((props) => props["aria-label"] === label)!;
-      action("Use Protect in move 1").onClick!({} as MouseEvent<HTMLButtonElement>);
+      action("Replace move 1 with Protect").onClick!({} as MouseEvent<HTMLButtonElement>);
       expect(onReplace).toHaveBeenCalledExactlyOnceWith("protect");
       expect(onSelectMove).not.toHaveBeenCalled();
       expect(onDone).not.toHaveBeenCalled();
@@ -623,6 +664,85 @@ describe("quick-move replacement UI", () => {
     } finally {
       buttons.mockRestore();
     }
+  });
+
+  it.each([false, true])("keeps replacement candidates live after each choice, hiding every assigned move (wide=%s)", (wide) => {
+    viewport.wide = wide;
+    let matchup = createMatchup();
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.attacker), 2);
+    const oldMoveId = matchup.attacker.moves[2].moveId!;
+    const moveIds = [...matchup.attacker.moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []), "protect"];
+    const render = () => {
+      const token = matchup.replacement!;
+      return captureEvents(() => renderToStaticMarkup(createElement(MoveResults, {
+        rows: moveIds.map((id) => row(id, id === "protect" ? "status" : "calculated")), moveIds,
+        ownerId: `${token.owner.key}:${token.owner.epoch}`, sourcePosition: "left", selectedMoveId: matchup.attack.moveId,
+        onSelectMove: vi.fn(), contexts: matchup.attacker.contexts, onContextChange: vi.fn(),
+        replacement: {
+          slotIndex: token.slotIndex, moves: matchup.attacker.moves,
+          onReplace: (id) => { matchup = replaceMatchupMove(matchup, token, id); },
+          onDone: () => { matchup = dismissMoveReplacement(matchup, token); },
+        },
+        abilityId: matchup.attacker.build.abilityId, itemId: matchup.attacker.build.itemId,
+        attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+      })));
+    };
+    const first = render();
+    const originalToken = matchup.replacement!;
+    const choose = first.buttons.find((button) => button["aria-label"] === "Replace move 3 with Protect")!;
+    expect(choose).toBeDefined();
+    choose.onClick!({} as MouseEvent<HTMLButtonElement>);
+    expect(matchup.attack.moveId).toBe("protect");
+    expect(matchup.replacement!.session).toBe(originalToken.session + 1);
+    const next = render();
+    expect(next.html).toContain("Replace Charizard’s move 3 — Protect");
+    expect(next.html).not.toContain('aria-label="Replace move 3 with Protect"');
+    for (const slot of matchup.attacker.moves) {
+      expect(next.html).not.toContain(`aria-label="Replace move 3 with ${movesById.get(slot.moveId!)!.name}"`);
+    }
+    const replacedOut = next.buttons.find((button) => button["aria-label"] === `Replace move 3 with ${movesById.get(oldMoveId)!.name}`)!;
+    expect(replacedOut).toBeDefined();
+    expect(Children.toArray(replacedOut.children)).toEqual(["Replace"]);
+    const previous = matchup;
+    choose.onClick!({} as MouseEvent<HTMLButtonElement>);
+    first.buttons.find((button) => button["aria-label"] === "Done replacing move")!.onClick!({} as MouseEvent<HTMLButtonElement>);
+    expect(matchup).toBe(previous);
+    replacedOut.onClick!({} as MouseEvent<HTMLButtonElement>);
+    expect(matchup.attack.moveId).toBe(oldMoveId);
+    expect(matchup.attacker.moves[2]).toEqual({ moveId: oldMoveId, origin: "manual", gameType: null });
+    expect(render().html).toContain('aria-label="Replace move 3 with Protect"');
+  });
+
+  it.each(["Done", "Escape"] as const)("closes replacement with %s without clearing the selected move, HP, context or cache", (action) => {
+    let matchup = createMatchup();
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.attacker), 0);
+    matchup = replaceMatchupMove(matchup, matchup.replacement!, "protect");
+    const before = matchup;
+    const token = matchup.replacement!;
+    const onDone = vi.fn(() => { matchup = dismissMoveReplacement(matchup, token); });
+    const { buttons, sections } = captureEvents(() => renderToStaticMarkup(createElement(MoveResults, {
+      rows: [], moveIds: ["flamethrower", "protect"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: matchup.attack.moveId,
+      onSelectMove: vi.fn(), contexts: matchup.attacker.contexts, onContextChange: vi.fn(),
+      replacement: { slotIndex: 0, moves: matchup.attacker.moves, onReplace: vi.fn(), onDone },
+      abilityId: "blaze", itemId: "", attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+    })));
+    if (action === "Done") buttons.find((button) => button["aria-label"] === "Done replacing move")!.onClick!({} as MouseEvent<HTMLButtonElement>);
+    else {
+      const section = sections.find((section) => section["data-moves-owner"] === "0:0")!;
+      const event = { key: "Escape", defaultPrevented: false, nativeEvent: { isComposing: false }, preventDefault: vi.fn(), stopPropagation: vi.fn() };
+      for (const ignored of [
+        { ...event, key: "Enter" }, { ...event, defaultPrevented: true }, { ...event, nativeEvent: { isComposing: true } },
+      ]) section.onKeyDown!(ignored as unknown as KeyboardEvent<HTMLElement>);
+      expect(onDone).not.toHaveBeenCalled();
+      section.onKeyDown!(event as unknown as KeyboardEvent<HTMLElement>);
+      expect(event.preventDefault).toHaveBeenCalledOnce();
+      expect(event.stopPropagation).toHaveBeenCalledOnce();
+    }
+    expect(onDone).toHaveBeenCalledOnce();
+    expect(matchup).toEqual({ ...before, replacement: null });
+    expect(matchup.attack).toBe(before.attack);
+    expect(matchup.attack.moveId).toBe("protect");
+    for (const key of ["attacker", "defender", "field", "cache"] as const) expect(matchup[key]).toBe(before[key]);
   });
 
   it.each([false, true])("keeps blocked catalog candidates editable without fake or stale damage (wide=%s)", (wide) => {
@@ -662,11 +782,11 @@ describe("quick-move replacement UI", () => {
       expect(html).not.toContain("0% KO");
       expect(html).toContain("Not estimated");
       expect(html).toContain("Set hits");
-      expect(html).toContain('aria-label="Use Bullet Seed in move 1"');
+      expect(html).toContain('aria-label="Replace move 1 with Bullet Seed"');
       expect(html).not.toContain("Already in move");
       expect(html).not.toContain("Energy Ball");
       expect(html).not.toContain("-sludgebomb-damage");
-      const candidate = buttons.mock.calls.map(([props]) => props).find((props) => props["aria-label"] === "Use Protect in move 1")!;
+      const candidate = buttons.mock.calls.map(([props]) => props).find((props) => props["aria-label"] === "Replace move 1 with Protect")!;
       expect(candidate.disabled).toBeFalsy();
       candidate.onClick!({} as MouseEvent<HTMLButtonElement>);
       expect(onReplace).toHaveBeenCalledExactlyOnceWith("protect");
@@ -694,7 +814,7 @@ describe("quick-move replacement UI", () => {
     expect(html).toContain("No matching moves");
     expect(html).toContain("Already assigned moves are hidden.");
     expect(html).not.toContain('aria-label="Move damage results"');
-    expect(html).not.toContain("Use Transform");
+    expect(html).not.toContain("Replace move 2 with Transform");
     expect(html).not.toContain("Current move");
     expect(html).toContain("Done replacing move");
     const browsing = renderToStaticMarkup(createElement(MoveResults, { ...props, replacement: undefined }));
@@ -761,6 +881,97 @@ describe("quick-move replacement UI", () => {
     expect(status).toContain("Category: Status");
     expect(status).toContain("Damage is not available yet.");
     expect(status).not.toContain("<select");
+  });
+});
+
+describe("summary Mega controls", () => {
+  it("requires an owned Mega callback without replacing the quick-move callback", () => {
+    expectTypeOf<Pick<ComponentProps<typeof MatchupSummary>, "onToggleMega">>().toEqualTypeOf<{
+      onToggleMega: (owner: MoveOwner, formId: string) => void;
+    }>();
+    expectTypeOf<ComponentProps<typeof MatchupSummary>["onActivateMove"]>().toEqualTypeOf<(owner: MoveOwner, slotIndex: number) => void>();
+  });
+
+  it.each([
+    ["banette", "Banette", [["banettemega", "Mega"]]],
+    ["charizard", "Charizard", [["charizardmegax", "Mega X"], ["charizardmegay", "Mega Y"]]],
+    ["raichu", "Raichu", [["raichumegax", "Mega X"], ["raichumegay", "Mega Y"]]],
+    ["absol", "Absol", [["absolmega", "Mega"], ["absolmegaz", "Mega Z"]]],
+    ["garchomp", "Garchomp", [["garchompmega", "Mega"], ["garchompmegaz", "Mega Z"]]],
+    ["lucario", "Lucario", [["lucariomega", "Mega"], ["lucariomegaz", "Mega Z"]]],
+    ["floetteeternal", "Floette-Eternal", [["floettemega", "Mega"]]],
+    ["meowstic", "Meowstic", [["meowsticmmega", "Mega"]]],
+    ["meowsticf", "Meowstic-F", [["meowsticfmega", "Mega"]]],
+  ] as const)("labels %s family buttons by base name and physical position before HP, marking only the active form", (baseId, baseName, forms) => {
+    for (const side of ["attacker", "defender"] as const) {
+      for (const selectedId of [baseId, ...forms.map(([formId]) => formId)]) {
+        let matchup = updateMatchupBuild(createMatchup(), side, createBuild(selectedId));
+        matchup = updateMatchupBuild(matchup, side === "attacker" ? "defender" : "attacker", createBuild("ditto"));
+        const before = structuredClone(matchup);
+        const onToggleMega = vi.fn();
+        const onActivateMove = vi.fn();
+        const rendered = captureEvents(() => summaryHTML(matchup, undefined, undefined, "average", { onToggleMega, onActivateMove }));
+        const buttons = [...rendered.html.matchAll(/<button\b[^>]*data-mega-form="[^"]+"[^>]*>[\s\S]*?<\/button>/g)].map(([button]) => button);
+        expect(buttons).toHaveLength(forms.length);
+        expect(onToggleMega).not.toHaveBeenCalled();
+        expect(onActivateMove).not.toHaveBeenCalled();
+        forms.forEach(([formId, label], index) => {
+          const button = buttons[index];
+          expect(button).toContain(`data-mega-form="${formId}"`);
+          expect(button).toContain(`aria-pressed="${formId === selectedId}"`);
+          expect(button).toContain(`aria-label="${baseName} ${position(side)} ${label}"`);
+          expect(button).toContain(`>${label}</button>`);
+          expect(button).toContain('type="button"');
+          expect(button).not.toContain('disabled=""');
+          const card = rendered.html.match(new RegExp(`<div data-summary-combatant="${side}"[\\s\\S]*?</dialog>`))![0];
+          expect(card.indexOf(button)).toBeGreaterThan(card.indexOf("</h3>"));
+          const hpMarker = selectedId === "lucariomegaz" ? "Check build settings to show HP" : 'role="meter"';
+          expect(card.indexOf(button)).toBeLessThan(card.indexOf(hpMarker));
+          const action = rendered.buttons.find((props) => props["data-mega-form"] === formId)!;
+          action.onClick!({} as MouseEvent<HTMLButtonElement>);
+        });
+        expect(onToggleMega.mock.calls).toEqual(forms.map(([formId]) => [getMoveOwner(matchup[side]), formId]));
+        const quick = rendered.buttons.filter((props) => props["data-move-slot"] !== undefined)[side === "attacker" ? 2 : 6];
+        quick.onClick!({} as MouseEvent<HTMLButtonElement>);
+        expect(onActivateMove).toHaveBeenCalledExactlyOnceWith(getMoveOwner(matchup[side]), 2);
+        expect(matchup).toEqual(before);
+        assertControlLabels(rendered.html);
+      }
+    }
+  });
+
+  it.each(["raichualola", "slowbrogalar", "ditto"])("does not show Mega actions for ineligible %s despite regional family names", (speciesId) => {
+    let matchup = updateMatchupBuild(createMatchup(), "attacker", createBuild(speciesId));
+    matchup = updateMatchupBuild(matchup, "defender", createBuild(speciesId));
+    const html = summaryHTML(matchup);
+    expect(html).not.toContain("data-mega-form");
+    expect(html).toContain('aria-label="Edit left HP"');
+    expect(html).toContain('aria-label="Edit right HP"');
+    expect([...html.matchAll(/data-move-slot=/g)]).toHaveLength(8);
+  });
+
+  it.each(["attacker", "defender"] as const)("invalidates the pre-Mega %s result identity while keeping selection and normal HP preview", (side) => {
+    let matchup = createMatchup();
+    matchup = updateMatchupBuild(matchup, "attacker", { ...matchup.attacker.build, currentHP: 100 });
+    matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 100 });
+    matchup = selectMatchupMove(matchup, "flamethrower");
+    const previousView = getAttackView(matchup);
+    const previousRow = { ...row("flamethrower", "calculated"), min: 20, max: 20, rolls: 20 };
+    const next = toggleMatchupMega(matchup, getMoveOwner(matchup[side]), side === "attacker" ? "charizardmegax" : "blastoisemega");
+    const stale = summaryHTML(next, previousRow, undefined, "average", {
+      resultIdentity: { source: previousView.owner, receiver: previousView.receiverOwner },
+    });
+    expect(stale).not.toContain("projected HP");
+    expect(stale).not.toContain("20 damage");
+    for (const physicalSide of ["attacker", "defender"] as const) expect(meterHTML(stale, physicalSide)).toContain('aria-valuenow="100"');
+    const fresh = summaryHTML(next, { ...previousRow, min: 30, max: 30, rolls: 30 });
+    expect(meterHTML(fresh, "attacker")).toContain('aria-valuenow="100"');
+    expect(meterHTML(fresh, "defender")).toContain('aria-valuenow="70"');
+    expect(fresh).toContain("30 damage");
+    expect(fresh).toContain("Current HP is unchanged");
+    expect(next.attack.moveId).toBe("flamethrower");
+    expect(next.attacker.build.currentHP).toBe(100);
+    expect(next.defender.build.currentHP).toBe(100);
   });
 });
 
@@ -843,7 +1054,7 @@ describe("active matchup and selected-move summary", () => {
     expect(html.indexOf('data-summary-combatant="attacker"')).toBeLessThan(html.indexOf('data-summary-combatant="defender"'));
   });
 
-  it.each(["attacker", "defender"] as const)("returns both summary cards to their unselected actual-HP state after a %s replacement", (side) => {
+  it.each(["attacker", "defender"] as const)("keeps the %s replacement selected and editing while withholding the previous move's HP projection", (side) => {
     let matchup = createMatchup();
     matchup = updateMatchupBuild(matchup, "attacker", { ...matchup.attacker.build, currentHP: 100 });
     matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 100 });
@@ -854,20 +1065,28 @@ describe("active matchup and selected-move summary", () => {
     const html = summaryHTML(next, previousRow);
     const buttons = [...html.matchAll(/<button\b[^>]*data-move-slot="\d+"[^>]*>[\s\S]*?<\/button>/g)].map(([button]) => button);
     expect(buttons).toHaveLength(8);
-    expect(buttons.every((button) => button.includes('aria-pressed="false"'))).toBe(true);
-    expect(buttons[side === "attacker" ? 0 : 4]).toContain("Protect");
-    expect(html).not.toContain("data-move-session");
-    expect(html).not.toContain(">Editing</span>");
+    const selected = buttons[side === "attacker" ? 0 : 4];
+    expect(buttons.filter((button) => button.includes('aria-pressed="true"'))).toEqual([selected]);
+    expect(selected).toContain("Protect");
+    expect(selected).toContain(`data-move-session="${next.replacement!.session}"`);
+    expect(selected).toContain(">Editing</span>");
+    expect(next.replacement!.session).toBeGreaterThan(matchup.replacement!.session);
     expect(html).not.toContain("projected HP");
     expect(html).not.toContain("HP remaining:");
-    expect(html).toContain("Click either Pokémon’s quick move");
+    expect(html).not.toContain("Click either Pokémon’s quick move");
     for (const position of ["attacker", "defender"] as const) {
       expect(meterHTML(html, position)).toContain('aria-valuenow="100"');
       expect(next[position].build).toBe(matchup[position].build);
     }
     expect(getAttackView(next).sourceSide).toBe(side);
-    expect(next.replacement).toBeNull();
-    expect(next.attack.moveId).toBeNull();
+    expect(next.replacement).toEqual({ ...matchup.replacement, session: matchup.replacementSession + 1 });
+    expect(next.attack.moveId).toBe("protect");
+    const done = dismissMoveReplacement(next, next.replacement!);
+    expect(done.attack).toBe(next.attack);
+    const finishedHTML = summaryHTML(done, row("protect", "status"));
+    expect(finishedHTML).not.toContain("data-move-session");
+    expect(finishedHTML).not.toContain(">Editing</span>");
+    expect(finishedHTML).toContain('aria-pressed="true"');
     assertControlLabels(html);
   });
 
@@ -1076,6 +1295,29 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain(">Set hits</button>");
     expect(html).not.toMatch(/<select\b/);
     expect(html).not.toContain("Right Pokémon HP remaining:");
+  });
+
+  it.each([["flamethrower", "calculated", "Show move"], ["bulletseed", "needs-context", "Set hits"]] as const)("keeps %s (%s) selected when the summary forwards its reveal action out of replacement editing", (moveId, kind, label) => {
+    let matchup = updateMatchupBuild(createMatchup(), "attacker", createBuild(moveId === "bulletseed" ? "venusaur" : "charizard"));
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.attacker), 0);
+    matchup = selectMatchupMove(matchup, moveId);
+    const before = matchup;
+    const token = matchup.replacement!;
+    const onShowMove = vi.fn(() => { matchup = dismissMoveReplacement(matchup, token); });
+    const onActivateMove = vi.fn();
+    const onToggleMega = vi.fn();
+    const rendered = captureEvents(() => summaryHTML(matchup, row(moveId, kind), undefined, "average", { onShowMove, onActivateMove, onToggleMega }));
+    const action = rendered.buttons.find((button) => Children.toArray(button.children).includes(label))!;
+    expect(action).toBeDefined();
+    expect(action["aria-controls"]).toBe("moves");
+    expect(onShowMove).not.toHaveBeenCalled();
+    action.onClick!({} as MouseEvent<HTMLButtonElement>);
+    expect(onShowMove).toHaveBeenCalledOnce();
+    expect(onActivateMove).not.toHaveBeenCalled();
+    expect(onToggleMega).not.toHaveBeenCalled();
+    expect(matchup).toEqual({ ...before, replacement: null });
+    expect(matchup.attack.moveId).toBe(moveId);
+    expect(matchup.attack).toBe(before.attack);
   });
 
   it("shows ownership independently of attacker/defender and keeps it correct after Swap", () => {

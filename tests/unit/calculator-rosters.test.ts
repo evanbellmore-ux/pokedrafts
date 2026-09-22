@@ -5,13 +5,15 @@ import { MyTeamPicker, OpponentPicker, RosterPicker } from "@/app/(app)/calculat
 import * as pokemonSprite from "@/app/components/PokemonSprite";
 import * as selectControl from "@/app/components/ui/Select";
 import {
-  createMatchup, createSpeciesResolver, getRosterPanel, reconcileRosters, resetMatchup,
-  resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP,
+  activateMoveSlot, createMatchup, createSpeciesResolver, getMoveOwner, getRosterPanel, reconcileRosters, replaceMatchupMove, resetMatchup,
+  resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMega, updateMatchupBuild, updateMatchupHP,
+  type PreparedMatchup,
 } from "@/app/(app)/calculator/roster-prep";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
 import { movesById, speciesById } from "@/app/lib/battle/catalog";
 import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild } from "@/app/lib/battle/model";
+import { createMoveSlots } from "@/app/lib/battle/move-defaults";
 
 function team(id: string, memberId: string, names: string[]): TeamRoster {
   return {
@@ -489,6 +491,163 @@ describe("calculator prep transitions", () => {
     expect(reset.field).toEqual(createConditions());
     expect(reset.revision).toBe(current.revision + 1);
     expect(reset.attacker.key).not.toBe(current.defender.key);
+  });
+});
+
+describe("Mega roster preparation", () => {
+  it.each(["attacker", "defender"] as const)("persists all %s preparation on each writer and restores it without deactivating its roster shortcut", (side) => {
+    const { own, other } = choices();
+    const activeChoice = side === "attacker" ? own[0] : other[0];
+    const otherChoice = side === "attacker" ? own[2] : other[1];
+    let current = prepared();
+    expect(current[side].megaBase).toBeNull();
+    expect(current.cache.get(activeChoice.source!.key)!.megaBase).toBeNull();
+    current = updateMatchupBuild(current, side, { ...current[side].build, abilityId: "solarpower", abilityActive: true, itemId: "lifeorb" });
+    const base = { speciesId: "charizard", abilityId: "solarpower", abilityActive: true, itemId: "lifeorb" };
+    const writers: [string, (value: PreparedMatchup) => PreparedMatchup][] = [
+      ["toggle on", (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "charizardmegax")],
+      ["change variant", (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "charizardmegay")],
+      ["edit build", (value) => updateMatchupBuild(value, side, { ...value[side].build, nature: "Timid", points: { ...value[side].build.points, spa: null } })],
+      ["edit HP", (value) => updateMatchupHP(value, side, "2e1")],
+      ["replace move", (value) => {
+        const editing = activateMoveSlot(value, getMoveOwner(value[side]), 1);
+        return replaceMatchupMove(editing, editing.replacement!, "protect");
+      }],
+      ["toggle off", (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "charizardmegay")],
+    ];
+    for (const [name, write] of writers) {
+      const before = structuredClone(current);
+      const previous = current;
+      current = write(current);
+      expect(previous, name).toEqual(before);
+      const slot = current[side];
+      const cached = current.cache.get(activeChoice.source!.key)!;
+      expect(cached, name).toEqual({ source: slot.source, build: slot.build, hpInput: slot.hpInput, moves: slot.moves, megaBase: slot.megaBase });
+      for (const key of ["build", "hpInput", "moves", "megaBase"] as const) expect(cached[key], name).toBe(slot[key]);
+      expect(slot.source).toBe(previous[side].source);
+      expect(slot.source?.key).toBe(activeChoice.source!.key);
+      expect(slot.megaBase).toEqual(name === "toggle off" ? null : base);
+      expect(selectRosterPokemon(current, side, activeChoice)).toBe(current);
+      expect(reconcileRosters(current, loaded())).toBe(current);
+      const otherSide = side === "attacker" ? "defender" : "attacker";
+      expect(current.cache.get(current[otherSide].source!.key)).toBe(previous.cache.get(previous[otherSide].source!.key));
+      const away = selectRosterPokemon(current, side, otherChoice);
+      expect(away[side].megaBase).toBeNull();
+      const restored = selectRosterPokemon(away, side, activeChoice);
+      for (const key of ["build", "hpInput", "moves", "megaBase"] as const) expect(restored[side][key], name).toBe(slot[key]);
+      expect(restored[side].source).toBe(activeChoice.source);
+      expect(restored.field).toBe(current.field);
+      expect(restored[side].editorRevision).toBeGreaterThan(slot.editorRevision);
+      expect(restored[side].moveEpoch).toBeGreaterThan(slot.moveEpoch);
+      expect(restored.attack.moveId).toBeNull();
+      expect(restored.replacement).toBeNull();
+      current = restored;
+    }
+    expect(current[side].build).toMatchObject({ ...base, nature: "Timid", points: { spa: null }, currentHP: Number.NaN });
+    expect(current[side].hpInput).toBe("2e1");
+    expect(current[side].moves[1]).toEqual({ moveId: "protect", origin: "manual", gameType: null });
+  });
+
+  it("keeps same-species roster identities and directly selected Mega defaults independent", () => {
+    const state = loaded();
+    state.data!.teams[0] = team("team-own", "member-own", ["Charizard", " CHARIZARD "]);
+    // Distinct aliases are valid identities; duplicate normalized roster text remains unavailable.
+    expect(choices(state).own.every((choice) => !choice.source)).toBe(true);
+    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Charizard-Mega-X"]);
+    const { own } = choices(state);
+    let current = selectRosterPokemon(reconcileRosters(createMatchup(), state), "attacker", own[0]);
+    expect(current.attacker.megaBase).toBeNull();
+    current = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
+    current = updateMatchupBuild(current, "attacker", { ...current.attacker.build, abilityId: "solarpower", itemId: "lifeorb" });
+    current = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegay");
+    const first = current.attacker;
+    current = selectRosterPokemon(current, "attacker", own[1]);
+    expect(current.attacker.build).toEqual(createBuild("charizardmegax"));
+    expect(current.attacker.megaBase).toBeNull();
+    const directOff = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
+    expect(directOff.attacker.build).toEqual(createBuild("charizard"));
+    const restored = selectRosterPokemon(directOff, "attacker", own[0]);
+    expect(restored.attacker.build).toBe(first.build);
+    expect(restored.attacker.megaBase).toBe(first.megaBase);
+    expect(restored.attacker.source?.speciesId).toBe("charizardmegax");
+    expect(restored.attacker.build.speciesId).toBe("charizardmegay");
+    expect(selectRosterPokemon(restored, "attacker", own[0])).toBe(restored);
+  });
+
+  it("moves Mega preparation with Swap and detaches sources without losing the active form or snapshot", () => {
+    let current = prepared();
+    current = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
+    current = toggleMatchupMega(current, getMoveOwner(current.defender), "charizardmegay");
+    current = updateMatchupHP(current, "attacker", "abc");
+    current = updateMatchupHP(current, "defender", "00100");
+    current = activateMoveSlot(current, getMoveOwner(current.defender), 2);
+    current.attacker.contexts = { flamethrower: { hits: 2 } };
+    current.defender.contexts = { flamethrower: { hits: 5 } };
+    const swapped = swapMatchup(current);
+    for (const [side, previous] of [["attacker", "defender"], ["defender", "attacker"]] as const) {
+      expect(swapped[side]).toEqual({ ...current[previous], contexts: {}, moveEpoch: current[previous].moveEpoch + 1 });
+      for (const key of ["build", "hpInput", "moves", "megaBase", "source", "editorRevision"] as const) expect(swapped[side][key]).toBe(current[previous][key]);
+    }
+    expect(swapped.cache).toBe(current.cache);
+    expect(swapped.attack.moveId).toBeNull();
+    expect(swapped.replacement).toBeNull();
+    const detached = reconcileRosters(swapped, { ...loaded(), opponentId: "" });
+    expect(detached.attacker.source).toBeNull();
+    for (const key of ["build", "hpInput", "moves", "megaBase", "editorRevision"] as const) expect(detached.attacker[key]).toBe(swapped.attacker[key]);
+    expect(detached.cache).toBe(swapped.cache);
+    const off = toggleMatchupMega(detached, getMoveOwner(detached.attacker), "charizardmegay");
+    expect(off.attacker.build.speciesId).toBe("charizard");
+    expect(off.attacker.hpInput).toBe("00100");
+    expect(off.attacker.source).toBeNull();
+    const removed = loaded();
+    removed.data!.teams[1].pokemon.shift();
+    const pruned = reconcileRosters(current, removed);
+    expect(pruned.defender.source).toBeNull();
+    expect(pruned.defender.megaBase).toBe(current.defender.megaBase);
+    expect(pruned.defender.build).toBe(current.defender.build);
+    expect(pruned.cache.has(current.defender.source!.key)).toBe(false);
+  });
+
+  it("clears Mega metadata on manual changed-species selection, Reset and account replacement without losing outgoing cached prep", () => {
+    let current = prepared();
+    current = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
+    current = toggleMatchupMega(current, getMoveOwner(current.defender), "charizardmegay");
+    current = activateMoveSlot(current, getMoveOwner(current.attacker), 1);
+    current = replaceMatchupMove(current, current.replacement!, "protect");
+    current = updateMatchupHP(current, "attacker", "2e1");
+    const cached = current.cache.get(current.attacker.source!.key)!;
+    const manual = updateMatchupBuild(current, "attacker", createBuild("charizardmegay"));
+    expect(manual.attacker.megaBase).toBeNull();
+    expect(manual.attacker.source).toBeNull();
+    expect(manual.attacker.editorRevision).toBe(current.attacker.editorRevision + 1);
+    expect(manual.attacker.hpInput).toBe("");
+    expect(manual.attacker.moves).toEqual(createMoveSlots("charizardmegay", current.field.gameType));
+    expect(manual.attack.moveId).toBeNull();
+    expect(manual.replacement).toBeNull();
+    expect(manual.cache.get(current.attacker.source!.key)).toBe(cached);
+    const restored = selectRosterPokemon(manual, "attacker", choices().own[0]);
+    for (const key of ["build", "hpInput", "moves", "megaBase"] as const) expect(restored.attacker[key]).toBe(current.attacker[key]);
+    for (const fresh of [resetMatchup(current), reconcileRosters(current, { ...loaded(), userId: "new-account" }), reconcileRosters(current, { ...loaded(), userId: null, status: "signed-out" })]) {
+      expect(fresh.attacker.megaBase).toBeNull();
+      expect(fresh.defender.megaBase).toBeNull();
+      expect(fresh.cache.size).toBe(0);
+      expect(fresh.attacker.build).toEqual(createBuild("charizard"));
+      expect(fresh.defender.build).toEqual(createBuild("blastoise"));
+      expect(toggleMatchupMega(fresh, getMoveOwner(current.attacker), "charizardmegax")).toBe(fresh);
+    }
+  });
+
+  it.each(["inline", "rail"] as const)("keeps exactly the original source shortcut active while transformed in the %s roster", (variant) => {
+    const current = prepared();
+    const mega = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
+    const html = renderToStaticMarkup(createElement(RosterPicker, {
+      state: loaded(), role: "own", side: "attacker", activeSource: mega.attacker.source, onSelect: () => undefined, variant,
+    }));
+    const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
+    expect(buttons.filter((button) => button.includes('aria-pressed="true"'))).toEqual([buttons[0]]);
+    expect(buttons[0]).toContain("Active");
+    expect(buttons[1]).toContain('aria-pressed="false"');
+    expect(mega.attacker.source).toBe(current.attacker.source);
   });
 });
 

@@ -180,7 +180,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                     <td className="w-20 px-2 py-2">
                       <Field id={`${prefix}-points-${stat}`} label={`${position} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
                         <IntegerInput
-                          key={`${build.speciesId}-${editorRevision}`}
+                          key={editorRevision}
                           value={build.points[stat]}
                           aria-invalid={!!errorFor(`points.${stat}`) || !!errorFor("points") || undefined}
                           aria-describedby={`${prefix}-points-help${pointIssues.length ? ` ${prefix}-points-errors` : ""}`}
