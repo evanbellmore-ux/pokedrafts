@@ -18,7 +18,7 @@ import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { createMatchup, reconcileRosters, resetMatchup, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP, type BattleSide, type PreparedMatchup, type RosterChoice } from "./roster-prep";
+import { activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, reconcileRosters, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -86,11 +86,17 @@ export default function CalculatorClient() {
     const root = rootRef.current;
     const summary = summaryRef.current;
     if (!root || !summary) return;
-    const updateHeight = () => root.style.setProperty("--calculator-summary-height", `${summary.getBoundingClientRect().height}px`);
+    const updateHeight = () => {
+      const height = summary.getBoundingClientRect().height;
+      const navHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--app-nav-height")) || 0;
+      root.style.setProperty("--calculator-summary-height", `${height}px`);
+      root.dataset.summaryFits = String(window.innerHeight - navHeight - height - 24 >= 200);
+    };
     updateHeight();
     const observer = new ResizeObserver(updateHeight);
     observer.observe(summary);
-    return () => observer.disconnect();
+    window.addEventListener("resize", updateHeight);
+    return () => { observer.disconnect(); window.removeEventListener("resize", updateHeight); };
   }, []);
 
   const reveal = useCallback((element: HTMLElement, includeSummary = true) => {
@@ -145,16 +151,19 @@ export default function CalculatorClient() {
     } else visit("builds", restore);
   }, [desktopRosters, reveal, visit]);
 
+  const attackView = useMemo(() => getAttackView(matchup), [matchup]);
   const calculation = useMemo(() => {
     if (engine.status !== "ready") return null;
+    const identity = { source: attackView.owner, receiver: attackView.receiverOwner };
     try {
-      return { result: engine.calculate(attacker, defender, matchup.field, matchup.contexts), error: null };
+      return { identity, result: engine.calculate(attackView.source.build, attackView.receiver.build, attackView.field, attackView.contexts), error: null };
     } catch (error) {
-      return { result: null, error: errorMessage(error) };
+      return { identity, result: null, error: errorMessage(error) };
     }
-  }, [engine, attacker, defender, matchup.field, matchup.contexts]);
+  }, [engine, attackView]);
 
-  const issues = calculation?.result?.issues ?? {
+  // Editors and stored side conditions keep their physical left/right identity.
+  const issues = {
     attacker: validateBuild(attacker),
     defender: validateBuild(defender),
     field: validateConditions(matchup.field),
@@ -162,11 +171,13 @@ export default function CalculatorClient() {
   const buildIssueCount = issues.attacker.length + issues.defender.length;
   const invalid = buildIssueCount > 0 || issues.field.length > 0;
   const resultsBlocked = engine.status !== "ready" || !!calculation?.error || invalid;
-  const attackerSpecies = speciesById.get(attacker.speciesId);
-  const defenderSpecies = speciesById.get(defender.speciesId);
-  const rows = invalid ? [] : calculation?.result?.results ?? [];
-  const selectedRow = rows.find((row) => row.moveId === matchup.selectedMoveId);
-  const currentHP = getBuildHealth(defender)?.current ?? null;
+  const sourceSpecies = speciesById.get(attackView.source.build.speciesId);
+  const receiverSpecies = speciesById.get(attackView.receiver.build.speciesId);
+  const currentBatch = calculation && sameMoveOwner(calculation.identity.source, attackView.owner) && sameMoveOwner(calculation.identity.receiver, attackView.receiverOwner);
+  const rows = !resultsBlocked && currentBatch ? calculation.result?.results ?? [] : [];
+  const selectedRow = rows.find((row) => row.moveId === attackView.moveId);
+  const currentHP = getBuildHealth(attackView.receiver.build)?.current ?? null;
+  const replacement = matchup.replacement;
   const league = rosters.state.leagues.find((entry) => entry.id === rosters.state.selectedLeagueId);
   const currentTeams = rosters.state.teamsStatus === "ready" && rosters.state.data?.leagueId === league?.id ? rosters.state.data : null;
   const ownMember = currentTeams?.members.find((member) => member.id === league?.memberId);
@@ -224,9 +235,23 @@ export default function CalculatorClient() {
     });
   }
 
+  function activateQuickMove(owner: MoveOwner, slotIndex: number) {
+    pendingNavigation.current = null;
+    setMatchup((current) => activateMoveSlot(current, owner, slotIndex));
+    selectTab("moves");
+  }
+
+  function finishReplacement(replacement: MoveReplacement) {
+    pendingNavigation.current = null;
+    setMatchup((current) => dismissMoveReplacement(current, replacement));
+    const button = summaryRef.current?.querySelector<HTMLButtonElement>(`[data-move-owner="${replacement.owner.key}:${replacement.owner.epoch}"][data-move-slot="${replacement.slotIndex}"][data-move-session="${replacement.session}"]`);
+    if (button) reveal(button, false);
+  }
+
   function showMove() {
-    const moveId = matchup.selectedMoveId;
-    if (moveId) visit("moves", () => movesRef.current?.showMove(moveId));
+    const moveId = attackView.moveId;
+    const ownerId = `${attackView.owner.key}:${attackView.owner.epoch}`;
+    if (moveId) visit("moves", () => movesRef.current?.showMove(moveId, ownerId));
   }
 
   function panelProps(tab: CalculatorTab) {
@@ -282,8 +307,11 @@ export default function CalculatorClient() {
             <MatchupSummary
               attacker={matchup.attacker}
               defender={matchup.defender}
-              selectedMoveId={matchup.selectedMoveId}
+              attack={matchup.attack}
+              replacement={matchup.replacement}
+              resultIdentity={calculation?.identity}
               selectedRow={selectedRow}
+              onActivateMove={activateQuickMove}
               rollMode={rollMode}
               onRollModeChange={setRollMode}
               blockedReason={blockedReason}
@@ -314,15 +342,23 @@ export default function CalculatorClient() {
                 ref={movesRef}
                 id={controls.moves}
                 rows={rows}
-                selectedMoveId={matchup.selectedMoveId}
-                onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId))}
-                contexts={matchup.contexts}
-                onContextChange={(moveId, context) => setMatchup((current) => ({ ...current, contexts: { ...current.contexts, [moveId]: context } }))}
-                sourceMoveCount={attackerSpecies?.moves.length ?? 0}
-                abilityId={attacker.abilityId}
-                itemId={attacker.itemId}
-                attackerName={attackerSpecies?.name ?? "Attacker"}
-                defenderName={defenderSpecies?.name ?? "Defender"}
+                moveIds={sourceSpecies?.moves ?? []}
+                ownerId={`${attackView.owner.key}:${attackView.owner.epoch}`}
+                selectedMoveId={attackView.moveId}
+                onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId, attackView.owner))}
+                contexts={attackView.contexts}
+                onContextChange={(moveId, context) => setMatchup((current) => updateMatchupMoveContext(current, attackView.owner, moveId, context))}
+                replacement={replacement ? {
+                  slotIndex: replacement.slotIndex,
+                  moves: attackView.source.moves,
+                  onReplace: (moveId) => setMatchup((current) => replaceMatchupMove(current, replacement, moveId)),
+                  onDone: () => finishReplacement(replacement),
+                } : undefined}
+                abilityId={attackView.source.build.abilityId}
+                itemId={attackView.source.build.itemId}
+                attackerName={sourceSpecies?.name ?? "Source Pokémon"}
+                defenderName={receiverSpecies?.name ?? "Receiving Pokémon"}
+                sourcePosition={attackView.sourceSide === "attacker" ? "left" : "right"}
                 defenderHP={currentHP}
                 blocked={resultsBlocked}
                 onReveal={reveal}
@@ -332,6 +368,8 @@ export default function CalculatorClient() {
                 <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
                   <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
                   <ul className="list-disc space-y-2 pl-5">
+                    <li>Quick moves are editable starting assumptions, not a discovered opponent moveset. Defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Suggested moves fill gaps using legal moves, not per-species popularity. Changing format keeps existing picks; new Pokémon use the current format.</li>
+                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. The Moves pane replaces that slot until Done or Escape; ordinary move browsing does not rewrite your prepared moves.</li>
                     <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
                     <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
                     <li>Select a Mega form directly to supply its required stone. This does not simulate transformation timing.</li>
@@ -391,7 +429,7 @@ export default function CalculatorClient() {
           </div>
         </div>
         {desktopRosters && (["attacker", "defender"] as const).map((side) => (
-          <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "attacker" ? "Attacker" : "Defender"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
+          <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "attacker" ? "Left Pokémon" : "Right Pokémon"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
             {renderRoster(side, "rail")}
           </aside>
         ))}

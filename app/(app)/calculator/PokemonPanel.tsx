@@ -76,7 +76,8 @@ type Props = {
 export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
-  const label = side === "attacker" ? "Attacker" : "Defender";
+  const position = side === "attacker" ? "left" : "right";
+  const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
   const [pickerOpen, setPickerOpen] = useState(false);
   const species = speciesById.get(build.speciesId);
   const stats = getBuildStats(build);
@@ -92,7 +93,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <h3 className="wrap-anywhere text-xl font-bold text-text">{species?.name ?? "Select a Pokémon"}</h3>
         {species?.types.map((type) => <TypeBadge key={type} type={type} />)}
-        <Button size="sm" variant="secondary" className="min-h-11" data-calculator-change aria-label={`Change ${label.toLowerCase()} Pokémon manually`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)}>Change Pokémon</Button>
+        <Button size="sm" variant="secondary" className="min-h-11" data-calculator-change aria-label={`Change ${position} Pokémon manually`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)}>Change Pokémon</Button>
       </div>
       <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
@@ -177,7 +178,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                   <tr key={stat} className="border-t border-line">
                     <th scope="row" className="px-2 py-2 text-xs font-medium text-text">{STAT_LABELS[stat]}</th>
                     <td className="w-20 px-2 py-2">
-                      <Field id={`${prefix}-points-${stat}`} label={`${label} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
+                      <Field id={`${prefix}-points-${stat}`} label={`${position} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
                         <IntegerInput
                           key={`${build.speciesId}-${editorRevision}`}
                           value={build.points[stat]}
@@ -192,7 +193,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                     <td className="w-20 px-2 py-2">
                       {stat === "hp" ? <span className="text-muted">—</span> : (
                         <>
-                          <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{label} {STAT_LABELS[stat]} stage</label>
+                          <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{position} {STAT_LABELS[stat]} stage</label>
                           <select
                             id={`${prefix}-stage-${stat}`}
                             value={build.boosts[stat] ?? ""}

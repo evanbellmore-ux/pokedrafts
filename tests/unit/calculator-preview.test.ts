@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "@/app/(app)/calculator/hp-preview";
+import { activateMoveSlot, createMatchup, getAttackView, getMoveOwner, selectMatchupMove, updateMatchupBuild, updateMatchupHP } from "@/app/(app)/calculator/roster-prep";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { createBuild, createConditions, getBuildStats } from "@/app/lib/battle/model";
 import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
@@ -222,5 +223,90 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
     const multi = calculateMatchup(createBuild("heracrossmega"), defender, createConditions()).results.find((row) => row.moveId === "bulletseed");
     expect(multi).toMatchObject({ kind: "calculated", hits: 5, ohkoChance: null });
     expect(preview(defender, multi).status).toBe("unavailable");
+  });
+});
+
+describe.each(modes)("directional receiving-HP preview (%s roll)", (mode) => {
+  it("uses the left receiving build, its trained maximum and actual reverse engine rolls without changing either HP", () => {
+    let matchup = createMatchup();
+    matchup = updateMatchupBuild(matchup, "attacker", {
+      ...matchup.attacker.build, currentHP: 120, points: { ...matchup.attacker.build.points, hp: 32 },
+    });
+    matchup = updateMatchupHP(matchup, "defender", "60");
+    matchup = { ...matchup, field: { ...matchup.field, attackerSide: { ...matchup.field.attackerSide, lightScreen: true } } };
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "surf");
+    const before = structuredClone(matchup);
+    const view = getAttackView(matchup);
+    expect(view.source).toBe(matchup.defender);
+    expect(view.receiver).toBe(matchup.attacker);
+    expect(view.receiverOwner).toEqual(getMoveOwner(matchup.attacker));
+    const actual = calculateMatchup(view.source.build, view.receiver.build, view.field, view.contexts);
+    const expected = calculateMatchup(matchup.defender.build, matchup.attacker.build, {
+      ...matchup.field, attackerSide: matchup.field.defenderSide, defenderSide: matchup.field.attackerSide,
+    }, matchup.defender.contexts);
+    expect(actual).toEqual(expected);
+    expect(actual.issues).toEqual({ attacker: [], defender: [], field: [] });
+    const row = actual.results.find((row) => row.moveId === view.moveId)!;
+    expect(row).toMatchObject({ kind: "calculated", hits: 1 });
+    expect(Array.isArray(row.rolls)).toBe(true);
+    const rolls = row.rolls as number[];
+    const chosen = mode === "low" ? row.min! : mode === "high" ? row.max! : Math.round(rolls.reduce((sum, roll) => sum + roll, 0) / rolls.length);
+    expect(previewRemainingHP(view.receiver.build, row, mode)).toEqual({
+      status: "ready", current: 120, maximum: 185,
+      min: Math.max(0, 120 - row.max!), max: Math.max(0, 120 - row.min!),
+      damage: chosen, remaining: Math.max(0, 120 - chosen),
+    });
+    expect(matchup).toEqual(before);
+    expect(matchup.attacker.build.currentHP).toBe(120);
+    expect(matchup.defender.build.currentHP).toBe(60);
+    const edited = updateMatchupHP(matchup, "attacker", "0010");
+    const latestView = getAttackView(edited);
+    const latestRow = calculateMatchup(latestView.source.build, latestView.receiver.build, latestView.field, latestView.contexts).results.find((entry) => entry.moveId === "surf")!;
+    expect(previewRemainingHP(latestView.receiver.build, latestRow, mode)).toMatchObject({ status: "ready", current: 10, maximum: 185, remaining: 0 });
+    expect(edited.attack).toBe(matchup.attack);
+    expect(edited.attacker.hpInput).toBe("0010");
+    expect(edited.attacker.build.currentHP).toBe(10);
+    expect(edited.defender.build.currentHP).toBe(60);
+    expect(matchup).toEqual(before);
+  });
+
+  it.each(["focussash", "focusband", "sturdy"] as const)("uses survival safety on the reverse receiving Pokémon with %s", (effect) => {
+    let matchup = updateMatchupBuild(createMatchup(), "attacker", survivalBuild(effect));
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "surf");
+    const view = getAttackView(matchup);
+    const row = damage({ moveId: "surf", min: 50, max: 50, rolls: 50 });
+    expect(previewRemainingHP(view.receiver.build, row, mode)).toMatchObject({ status: "unavailable", reason: expect.stringContaining("survival") });
+    expect(previewRemainingHP(view.source.build, row, mode).status).toBe("ready");
+    expect(matchup.attacker.build.currentHP).toBeNull();
+    expect(matchup.defender.build.currentHP).toBeNull();
+  });
+
+  it("does not withhold receiving HP because the source holds a survival item", () => {
+    let matchup = updateMatchupHP(createMatchup(), "attacker", "100");
+    matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, itemId: "focusband" });
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "surf");
+    const view = getAttackView(matchup);
+    const row = calculateMatchup(view.source.build, view.receiver.build, view.field, view.contexts).results.find((entry) => entry.moveId === "surf")!;
+    expect(previewRemainingHP(view.receiver.build, row, mode)).toMatchObject({ status: "ready", current: 100, maximum: 153 });
+    expect(matchup.attacker.build.currentHP).toBe(100);
+    expect(matchup.defender.build.currentHP).toBeNull();
+  });
+
+  it("preserves a proven reverse immunity rather than inventing damage or changing current HP", () => {
+    let matchup = updateMatchupBuild(createMatchup(), "attacker", { ...createBuild("audino"), currentHP: 83 });
+    matchup = updateMatchupBuild(matchup, "defender", createBuild("gengar"));
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "shadowball");
+    const view = getAttackView(matchup);
+    const before = structuredClone(matchup);
+    const row = calculateMatchup(view.source.build, view.receiver.build, view.field, view.contexts).results.find((entry) => entry.moveId === "shadowball")!;
+    expect(row).toMatchObject({ kind: "calculated", min: 0, max: 0 });
+    expect(previewRemainingHP(view.receiver.build, row, mode)).toEqual({
+      status: "ready", current: 83, maximum: getBuildStats(matchup.attacker.build)!.hp, min: 83, max: 83, damage: 0, remaining: 83,
+    });
+    expect(matchup).toEqual(before);
   });
 });

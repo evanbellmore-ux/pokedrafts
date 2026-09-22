@@ -43,7 +43,8 @@ type Props = {
 
 export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster }: Props) {
   const id = useId();
-  const label = side === "attacker" ? "Attacker" : "Defender";
+  const position = side === "attacker" ? "left" : "right";
+  const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [teamMode, setTeamMode] = useState(false);
@@ -65,7 +66,7 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
   return (
     <div onKeyDown={wrapPickerFocus}>
       <p role="status" className="sr-only">{notice}</p>
-      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={`Change ${side} Pokémon`}>
+      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={`Change ${position} Pokémon`}>
         {roster && (
           <div role="group" aria-label="Pokémon source" className="mb-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" className="min-h-11" aria-pressed={!showTeam} onClick={() => setTeamMode(false)}>All Pokémon</Button>
@@ -74,14 +75,14 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={`Find ${side} Pokémon`} help="Search any name or form. Changing Pokémon resets nature, ability, item, Stat Points, stages, HP and status.">
+            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help="Search any name or form. Changing Pokémon resets nature, ability, item, Stat Points, stages, HP and status.">
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">
               {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
               {matches.length > SEARCH_PAGE_SIZE && " · Refine the name or browse pages."}
             </p>
-            <ul aria-label={`${label} Pokémon choices`} className="space-y-1">
+            <ul aria-label={`${label} choices`} className="space-y-1">
               {visible.map((entry) => (
                 <li key={entry.id}>
                   <button
@@ -98,8 +99,8 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
             </ul>
             {matches.length > SEARCH_PAGE_SIZE && (
               <div className="flex flex-wrap gap-2">
-                <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${side} Pokémon page`}>Previous</Button>
-                <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${side} Pokémon page`}>Next</Button>
+                <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${position} Pokémon page`}>Previous</Button>
+                <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${position} Pokémon page`}>Next</Button>
               </div>
             )}
           </div>

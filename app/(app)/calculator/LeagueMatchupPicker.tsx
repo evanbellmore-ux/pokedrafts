@@ -134,16 +134,17 @@ export function RosterPicker({ state, role, side, activeSource, onSelect, picker
   const id = useId();
   const panel = getRosterPanel(state, role);
   const ownership = role === "own" ? "Your team" : "Opponent's team";
+  const position = side === "attacker" ? "left" : "right";
   const rail = variant === "rail";
   return (
     <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
       <div className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
-        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership} <span className="font-normal text-muted">· {side === "attacker" ? "Attacker" : "Defender"}</span></h3>
+        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership} <span className="font-normal text-muted">· {side === "attacker" ? "Left Pokémon" : "Right Pokémon"}</span></h3>
         {panel.teamName && <span className={rail ? "max-w-full wrap-anywhere text-xs text-muted" : "wrap-anywhere text-xs text-muted"}>{panel.teamName}</span>}
       </div>
       {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
       {panel.status === "ready" && (
-        <ul aria-label={`${ownership} ${side} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
+        <ul aria-label={`${ownership} ${position} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? speciesById.get(choice.speciesId) : null;
             const selected = !!choice.source && choice.source.key === activeSource?.key;
@@ -165,7 +166,7 @@ export function RosterPicker({ state, role, side, activeSource, onSelect, picker
                   data-roster-choice={choice.key}
                   disabled={!choice.source}
                   aria-pressed={selected}
-                  aria-label={`Use ${choice.name} as ${side} from ${ownership.toLowerCase()}`}
+                  aria-label={`Use ${choice.name} as the ${position} Pokémon from ${ownership.toLowerCase()}`}
                   aria-describedby={reason ? `${id}-reason-${index}` : undefined}
                   onClick={() => onSelect(choice)}
                   className={`${rail ? "flex items-start gap-3 " : ""}min-h-11 w-full rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
