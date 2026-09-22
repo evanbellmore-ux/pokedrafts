@@ -110,11 +110,11 @@ export default function BattleConditions({ value, issues, onChange, id }: Props)
             })}
           </div>
         </fieldset>
-        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Defender-side screens reduce incoming damage; attacker-side Helping Hand boosts outgoing damage. Aurora Veil does not stack with Reflect or Light Screen and can remain active after Snow ends.</p>
+        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Screens on the receiving Pokémon’s side reduce incoming damage; Helping Hand on the attacking Pokémon’s side boosts outgoing damage, regardless of left/right position. Aurora Veil does not stack with Reflect or Light Screen and can remain active after Snow ends.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {(["attackerSide", "defenderSide"] as const).map((side) => (
             <fieldset key={side} aria-describedby={`${prefix}-sides-help`} className="min-w-0 rounded-lg border border-line px-3 pb-2">
-              <legend className="px-1 text-sm font-semibold text-text">{side === "attackerSide" ? "Attacker’s side" : "Defender’s side"}</legend>
+              <legend className="px-1 text-sm font-semibold text-text">{side === "attackerSide" ? "Left Pokémon’s side" : "Right Pokémon’s side"}</legend>
               <div className="grid grid-cols-2 gap-x-2">
                 {sideOptions.map((option) => (
                   <label key={option.key} htmlFor={`${prefix}-${side}-${option.key}`} className="flex min-h-11 items-center gap-2 text-sm text-text">

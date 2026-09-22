@@ -1,4 +1,4 @@
-import { createElement } from "react";
+import { createElement, type ChangeEvent, type ComponentProps, type MouseEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
@@ -10,9 +10,12 @@ import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calcula
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
-import { selectMatchupMove, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
+import { activateMoveSlot, getAttackView, getMoveOwner, selectMatchupMove, updateMatchupBuild, type BattleSide } from "@/app/(app)/calculator/roster-prep";
+import * as buttonControl from "@/app/components/ui/Button";
+import * as selectControl from "@/app/components/ui/Select";
 import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
-import { speciesById } from "@/app/lib/battle/catalog";
+import { movesById, speciesById } from "@/app/lib/battle/catalog";
+import type { MoveSlots } from "@/app/lib/battle/move-defaults";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 
 const viewport = vi.hoisted(() => ({ wide: false, desktop: false }));
@@ -45,20 +48,36 @@ function controlTarget(html: string, label: string) {
   return target!;
 }
 
-function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string, rollMode: DamageRollMode = "average") {
+function summaryHTML(matchup: ReturnType<typeof createMatchup>, selectedRow?: MoveDamageResult, blockedReason?: string, rollMode: DamageRollMode = "average", overrides: Partial<ComponentProps<typeof MatchupSummary>> = {}) {
+  const view = getAttackView(matchup);
   return renderToStaticMarkup(createElement(MatchupSummary, {
     attacker: matchup.attacker, defender: matchup.defender,
-    selectedMoveId: matchup.selectedMoveId, selectedRow, blockedReason, rollMode,
+    attack: matchup.attack, replacement: matchup.replacement,
+    resultIdentity: { source: view.owner, receiver: view.receiverOwner }, selectedRow, blockedReason, rollMode,
     issues: { attacker: validateBuild(matchup.attacker.build), defender: validateBuild(matchup.defender.build) },
     movesControl: "moves", onBuildChange: () => undefined, onHPChange: () => undefined, onRosterSelect: () => undefined,
-    onShowMove: () => undefined, onRollModeChange: () => undefined,
+    onShowMove: () => undefined, onRollModeChange: () => undefined, onActivateMove: () => undefined,
+    ...overrides,
   }));
 }
 
-function meterHTML(html: string, side: "attacker" | "defender") {
-  const meter = html.match(new RegExp(`<div role="meter" aria-label="[^"]* ${side} [^"]*"[^>]*>[\\s\\S]*?</div>`))?.[0];
+function position(side: BattleSide) {
+  return side === "attacker" ? "left" : "right";
+}
+
+function meterHTML(html: string, side: BattleSide) {
+  const meter = html.match(new RegExp(`<div role="meter" aria-label="[^"]* ${position(side)} [^"]*"[^>]*>[\\s\\S]*?</div>`))?.[0];
   expect(meter).toBeDefined();
   return meter!;
+}
+
+function assertControlLabels(html: string) {
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+  expect(new Set(ids).size).toBe(ids.length);
+  for (const [, id] of html.matchAll(/\bfor="([^"]+)"/g)) expect(ids).toContain(id);
+  for (const [, references] of html.matchAll(/\baria-(?:describedby|labelledby)="([^"]+)"/g)) {
+    for (const id of references.split(" ")) expect(ids).toContain(id);
+  }
 }
 
 function row(moveId: string, kind: MoveDamageResult["kind"]): MoveDamageResult {
@@ -134,8 +153,8 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Choose your team and league for this matchup.");
     expect(html).toContain("Loading your leagues");
     expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
-    expect(html).toContain("Change attacker Pokémon");
-    expect(html).toContain("Change defender Pokémon");
+    expect(html).toContain("Change left Pokémon");
+    expect(html).toContain("Change right Pokémon");
   });
 
   it.each(["attacker", "defender"] as const)("puts the %s change button after the types and keeps build controls outside the closed chooser", (side) => {
@@ -143,7 +162,7 @@ describe("Champions calculator UI", () => {
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side, build: createBuild("charizard"), issues: [], onChange, hpInput: "", onHPChange: vi.fn() }));
     const trigger = html.match(/<button\b[^>]*data-calculator-change="true"[^>]*>/)?.[0];
     expect(trigger).toContain('type="button"');
-    expect(trigger).toContain(`aria-label="Change ${side} Pokémon manually"`);
+    expect(trigger).toContain(`aria-label="Change ${position(side)} Pokémon manually"`);
     expect(trigger).toContain('aria-haspopup="dialog"');
     expect(html).toMatch(/>Flying<\/span><button\b[^>]*data-calculator-change="true"[^>]*>Change Pokémon<\/button><\/div>/);
     expect(html.indexOf(">Charizard</h3>")).toBeLessThan(html.indexOf(">Fire</span>"));
@@ -152,11 +171,11 @@ describe("Champions calculator UI", () => {
     const dialogs = [...html.matchAll(/<dialog\b[\s\S]*?<\/dialog>/g)].map(([dialog]) => dialog);
     expect(dialogs).toHaveLength(1);
     expect(dialogs[0].match(/<dialog\b[^>]*>/)?.[0]).not.toContain("open=");
-    expect(dialogs[0]).toContain(`Change ${side} Pokémon`);
-    expect(dialogs[0]).toContain(`Find ${side} Pokémon`);
+    expect(dialogs[0]).toContain(`Change ${position(side)} Pokémon`);
+    expect(dialogs[0]).toContain(`Find ${position(side)} Pokémon`);
     expect([...dialogs[0].matchAll(/type="search"/g)]).toHaveLength(1);
     expect([...dialogs[0].matchAll(/<li\b/g)]).toHaveLength(8);
-    expect(dialogs[0]).toContain(`aria-label="Next ${side} Pokémon page"`);
+    expect(dialogs[0]).toContain(`aria-label="Next ${position(side)} Pokémon page"`);
     expect(dialogs[0]).toContain(">Cancel</button>");
     for (const [button] of dialogs[0].matchAll(/<button\b[^>]*>/g)) expect(button).toContain('type="button"');
 
@@ -183,14 +202,14 @@ describe("Champions calculator UI", () => {
     expect(html).not.toMatch(/<main\b/);
     expect(html).not.toMatch(/<button[^>]*data-roster-choice="[^"]*"[^>]*aria-pressed="true"/); // Loading a roster is not activation.
     for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
-    for (const side of ["attacker", "defender"]) {
-      const change = html.match(new RegExp(`<button[^>]*aria-label="Change ${side} Pokémon"[^>]*>`))?.[0];
+    for (const side of ["attacker", "defender"] as const) {
+      const change = html.match(new RegExp(`<button[^>]*aria-label="Change ${position(side)} Pokémon"[^>]*>`))?.[0];
       expect(change).toContain('aria-haspopup="dialog"');
       expect(change).not.toContain("aria-controls=");
-      const hp = controlTarget(html, `Edit ${side} HP`);
+      const hp = controlTarget(html, `Edit ${position(side)} HP`);
       expect(hp).not.toContain("-build-");
       expect(html).toContain(`<div id="${hp}" hidden="">`);
-      const label = side === "attacker" ? "Attacker" : "Defender";
+      const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
       const build = html.match(new RegExp(`<section id="[^"]*-build-[^"]*"[^>]*><h2[^>]*>${label}</h2>[\\s\\S]*?</section>`))?.[0];
       expect(build).toContain('data-calculator-hp="true"');
       if (desktop) {
@@ -222,10 +241,10 @@ describe("Champions calculator UI", () => {
     const html = renderToStaticMarkup(createElement(CalculatorClient));
     for (const [side, available] of [["attacker", ownAvailable], ["defender", opponentAvailable]] as const) {
       const card = html.match(new RegExp(`<div data-summary-combatant="${side}"[\\s\\S]*?</dialog>`))?.[0];
-      expect(card).toContain(`aria-label="Change ${side} Pokémon" aria-haspopup="dialog"`);
-      expect(card).toContain(`Find ${side} Pokémon`);
+      expect(card).toContain(`aria-label="Change ${position(side)} Pokémon" aria-haspopup="dialog"`);
+      expect(card).toContain(`Find ${position(side)} Pokémon`);
       expect(card?.includes(">Team Pokémon</button>")).toBe(available);
-      const hp = controlTarget(card!, `Edit ${side} HP`);
+      const hp = controlTarget(card!, `Edit ${position(side)} HP`);
       expect(card).toContain(`<div id="${hp}" hidden="">`);
       expect(card).not.toContain("data-roster-choice="); // Team controls mount only when used in the open chooser.
     }
@@ -288,7 +307,8 @@ describe("Champions calculator UI", () => {
   it("swaps builds and side conditions while retaining shared effects and clearing hit counts", () => {
     const current = createMatchup(4);
     current.attacker.build.points.spa = 32;
-    current.contexts = { bulletseed: { hits: 3 } };
+    current.attacker.contexts = { bulletseed: { hits: 3 } };
+    current.defender.contexts = { bulletseed: { hits: 5 } };
     current.field.weather = "Snow";
     current.field.terrain = "Electric";
     current.field.attackerSide.helpingHand = true;
@@ -296,29 +316,38 @@ describe("Champions calculator UI", () => {
     for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
     const before = structuredClone(current);
     const swapped = swapMatchup(current);
-    expect(swapped.attacker).toBe(current.defender);
-    expect(swapped.defender).toBe(current.attacker);
+    expect(swapped.attacker).toEqual({ ...current.defender, contexts: {}, moveEpoch: current.defender.moveEpoch + 1 });
+    expect(swapped.defender).toEqual({ ...current.attacker, contexts: {}, moveEpoch: current.attacker.moveEpoch + 1 });
+    expect(swapped.attacker.build).toBe(current.defender.build);
+    expect(swapped.defender.build).toBe(current.attacker.build);
+    expect(swapped.attacker.moves).toBe(current.defender.moves);
+    expect(swapped.defender.moves).toBe(current.attacker.moves);
     expect(swapped.field).toEqual({ ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide });
-    expect(swapped.contexts).toEqual({});
+    expect(swapped.attacker.contexts).toEqual({});
+    expect(swapped.defender.contexts).toEqual({});
     expect(swapped.revision).toBe(current.revision);
     expect(current).toEqual(before);
     const restored = swapMatchup(swapped);
-    expect(restored.attacker).toBe(current.attacker);
-    expect(restored.defender).toBe(current.defender);
+    expect(restored.attacker).toEqual({ ...current.attacker, contexts: {}, moveEpoch: current.attacker.moveEpoch + 2 });
+    expect(restored.defender).toEqual({ ...current.defender, contexts: {}, moveEpoch: current.defender.moveEpoch + 2 });
     expect(restored.field).toEqual(current.field);
   });
 
   it("resets all effects, builds and hit counts with new raw-input keys", () => {
     const current = createMatchup(4);
     current.attacker.build.points.spa = 32;
-    current.contexts = { bulletseed: { hits: 3 } };
+    current.attacker.contexts = { bulletseed: { hits: 3 } };
+    current.defender.contexts = { bulletseed: { hits: 5 } };
     for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
     current.field.attackerSide.helpingHand = true;
     const reset = createMatchup(current.revision + 1);
     expect(reset.field).toEqual(createConditions());
     expect(reset.attacker.build).toEqual(createBuild("charizard"));
     expect(reset.defender.build).toEqual(createBuild("blastoise"));
-    expect(reset.contexts).toEqual({});
+    expect(reset.attacker.contexts).toEqual({});
+    expect(reset.defender.contexts).toEqual({});
+    expect(reset.attack).toEqual({ owner: getMoveOwner(reset.attacker), moveId: null });
+    expect(reset.replacement).toBeNull();
     expect(reset.attacker.key).not.toBe(current.attacker.key);
     expect(reset.defender.key).not.toBe(current.defender.key);
   });
@@ -355,9 +384,10 @@ describe("Champions calculator UI", () => {
   it("uses only mobile cards for SSR, distinguishing known zero damage from unsupported", () => {
     const html = renderToStaticMarkup(createElement(MoveResults, {
       rows: [row("thunderbolt", "calculated"), row("growth", "unsupported")],
+      moveIds: ["thunderbolt", "growth"], ownerId: "0:0", sourcePosition: "left",
       selectedMoveId: "thunderbolt", onSelectMove: () => undefined,
       contexts: {}, onContextChange: () => undefined,
-      sourceMoveCount: 2, abilityId: "blaze", itemId: "",
+      abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
     }));
     expect(html).toContain('<ul aria-label="Move damage results"');
@@ -411,8 +441,8 @@ describe("Champions calculator UI", () => {
     for (const [, references] of html.matchAll(/\baria-controls="([^"]+)"/g)) {
       for (const reference of references.split(" ")) expect(ids).toContain(reference);
     }
-    expect(html).toContain('aria-label="Edit attacker HP"');
-    expect(html).toContain('aria-label="Edit defender HP"');
+    expect(html).toContain('aria-label="Edit left HP"');
+    expect(html).toContain('aria-label="Edit right HP"');
     expect(html).toContain("Field conditions");
   });
 
@@ -436,9 +466,10 @@ describe("Champions calculator UI", () => {
     viewport.wide = wide;
     const html = renderToStaticMarkup(createElement(MoveResults, {
       rows: [row("flamethrower", "calculated"), row("bulletseed", "needs-context")],
+      moveIds: ["flamethrower", "bulletseed"], ownerId: "0:0", sourcePosition: "left",
       selectedMoveId: "bulletseed", onSelectMove: () => undefined,
       contexts: {}, onContextChange: () => undefined,
-      sourceMoveCount: 2, abilityId: "blaze", itemId: "",
+      abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
     }));
     expect([...html.matchAll(/type="radio"/g)]).toHaveLength(2);
@@ -456,16 +487,20 @@ describe("Champions calculator UI", () => {
     }
   });
 
-  it.each([false, true])("uses an explicit blocked flag instead of rendering feedback inside Moves (blocked=%s)", (blocked) => {
+  it.each([false, true])("keeps catalog browsing available while withholding stale rows when blocked=%s", (blocked) => {
     const html = renderToStaticMarkup(createElement(MoveResults, {
       rows: [row("flamethrower", "calculated")], selectedMoveId: "flamethrower", onSelectMove: () => undefined,
-      contexts: {}, onContextChange: () => undefined, sourceMoveCount: 1, abilityId: "blaze", itemId: "",
+      moveIds: ["flamethrower"], ownerId: "0:0", sourcePosition: "left",
+      contexts: {}, onContextChange: () => undefined, abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154, blocked,
     }));
     expect(html).toContain(">Choose a move</h2>");
-    expect(html.includes('type="radio"')).toBe(!blocked);
-    expect(html.includes('type="search"')).toBe(!blocked);
-    expect(html.includes("Move damage results")).toBe(!blocked);
+    expect(html).toContain('type="radio"');
+    expect(html).toContain('type="search"');
+    expect(html).toContain("Move damage results");
+    expect(html.includes("Calculations are paused.")).toBe(blocked);
+    expect(html.includes("Not calculated")).toBe(blocked);
+    expect(html.includes("0 HP")).toBe(!blocked);
     expect(html).not.toContain('role="alert"');
   });
 
@@ -473,9 +508,9 @@ describe("Champions calculator UI", () => {
     const rows = speciesById.get("charizard")!.moves.map((moveId) => row(moveId, "calculated"));
     const selectedMoveId = rankResults(rows, "minimum").at(-1)!.moveId;
     const html = renderToStaticMarkup(createElement(MoveResults, {
-      rows, selectedMoveId, onSelectMove: () => undefined,
+      rows, moveIds: rows.map((row) => row.moveId), ownerId: "0:0", sourcePosition: "left", selectedMoveId, onSelectMove: () => undefined,
       contexts: {}, onContextChange: () => undefined,
-      sourceMoveCount: rows.length, abilityId: "blaze", itemId: "",
+      abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
     }));
     expect(rows.length).toBeGreaterThan(30);
@@ -503,7 +538,7 @@ describe("Champions calculator UI", () => {
 
   it("keeps power, accuracy, reasons, rolls and the single hit editor in Details", () => {
     const render = (abilityId: string, itemId = "") => renderToStaticMarkup(createElement(MoveDetails, {
-      row: { ...row("bulletseed", "needs-context"), reason: "Choose hits before calculating." },
+      moveId: "bulletseed", row: { ...row("bulletseed", "needs-context"), reason: "Choose hits before calculating." },
       id: "bulletseed-details", context: undefined, abilityId, itemId, onContextChange: () => undefined,
     }));
     const html = render("overgrow");
@@ -520,7 +555,7 @@ describe("Champions calculator UI", () => {
     expect(dice).toContain('<option value="4">4 hits</option>');
     expect(dice).not.toContain('<option value="2">');
     const unsupported = renderToStaticMarkup(createElement(MoveDetails, {
-      row: row("growth", "unsupported"), id: "growth-details", context: undefined,
+      moveId: "growth", row: row("growth", "unsupported"), id: "growth-details", context: undefined,
       abilityId: "overgrow", itemId: "", onContextChange: () => undefined,
     }));
     expect(unsupported).toContain("Coverage not verified.");
@@ -528,21 +563,331 @@ describe("Champions calculator UI", () => {
   });
 });
 
+describe("quick-move replacement UI", () => {
+  const preparedMoves = (): MoveSlots => [
+    { moveId: "flamethrower", origin: "usage", gameType: "Doubles" },
+    { moveId: "airslash", origin: "suggested", gameType: "Doubles" },
+    { moveId: null, origin: "empty", gameType: null },
+    { moveId: null, origin: "empty", gameType: null },
+  ];
+
+  it.each([[false, "left"], [true, "left"], [false, "right"], [true, "right"]] as const)("offers explicit current, duplicate and replacement actions (wide=%s, source=%s)", (wide, sourcePosition) => {
+    viewport.wide = wide;
+    const onSelectMove = vi.fn();
+    const onReplace = vi.fn();
+    const onDone = vi.fn();
+    const buttons = vi.spyOn(buttonControl, "default");
+    try {
+      const html = renderToStaticMarkup(createElement(MoveResults, {
+        rows: [row("flamethrower", "calculated"), row("airslash", "calculated"), row("protect", "status")],
+        moveIds: ["flamethrower", "airslash", "protect"], ownerId: "7:4", sourcePosition,
+        selectedMoveId: "flamethrower", onSelectMove, contexts: {}, onContextChange: vi.fn(),
+        replacement: { slotIndex: 0, moves: preparedMoves(), onReplace, onDone },
+        abilityId: "blaze", itemId: "", attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+      }));
+      expect(html).toContain("Replace Charizard’s move 1 — Flamethrower");
+      expect(html).toContain(`Charizard (${sourcePosition}) → Blastoise (${sourcePosition === "left" ? "right" : "left"})`);
+      expect(html).toContain('data-moves-owner="7:4"');
+      expect(html).not.toContain('type="radio"');
+      expect(html.includes('<table ')).toBe(wide);
+      expect(html.includes('<ul aria-label="Move damage results"')).toBe(!wide);
+      expect(html).toContain("Done or Escape finishes editing; changes are kept.");
+      const current = html.match(/<button\b[^>]*aria-label="Current move Flamethrower in move 1"[^>]*>[\s\S]*?<\/button>/)?.[0];
+      const duplicate = html.match(/<button\b[^>]*aria-label="Use Air Slash in move 1"[^>]*>[\s\S]*?<\/button>/)?.[0];
+      const candidate = html.match(/<button\b[^>]*aria-label="Use Protect in move 1"[^>]*>[\s\S]*?<\/button>/)?.[0];
+      expect(current).toContain(">Current move</button>");
+      expect(current).not.toContain('disabled=""');
+      expect(duplicate).toContain('disabled=""');
+      expect(duplicate).toContain("Already in move 2");
+      expect(candidate).toContain(">Use move</button>");
+      expect(candidate).not.toContain('disabled=""');
+      expect(onReplace).not.toHaveBeenCalled();
+      expect(onDone).not.toHaveBeenCalled();
+      const action = (label: string) => buttons.mock.calls.map(([props]) => props).find((props) => props["aria-label"] === label)!;
+      action("Current move Flamethrower in move 1").onClick!({} as MouseEvent<HTMLButtonElement>);
+      action("Current move Flamethrower in move 1").onClick!({} as MouseEvent<HTMLButtonElement>);
+      action("Use Protect in move 1").onClick!({} as MouseEvent<HTMLButtonElement>);
+      expect(onReplace.mock.calls).toEqual([["flamethrower"], ["flamethrower"], ["protect"]]);
+      expect(onSelectMove).not.toHaveBeenCalled();
+      expect(onDone).not.toHaveBeenCalled();
+      action("Done replacing move").onClick!({} as MouseEvent<HTMLButtonElement>);
+      expect(onDone).toHaveBeenCalledOnce();
+      assertControlLabels(html);
+    } finally {
+      buttons.mockRestore();
+    }
+  });
+
+  it.each([false, true])("keeps blocked catalog candidates editable without fake or stale damage (wide=%s)", (wide) => {
+    viewport.wide = wide;
+    const moves: MoveSlots = [
+      { moveId: "sludgebomb", origin: "manual", gameType: null },
+      { moveId: "bulletseed", origin: "suggested", gameType: "Doubles" },
+      { moveId: null, origin: "empty", gameType: null },
+      { moveId: null, origin: "empty", gameType: null },
+    ];
+    const onReplace = vi.fn();
+    const onSelectMove = vi.fn();
+    const buttons = vi.spyOn(buttonControl, "default");
+    try {
+      const html = renderToStaticMarkup(createElement(MoveResults, {
+        rows: [{ ...row("sludgebomb", "calculated"), min: 12345, max: 12345, rolls: 12345 }, row("surf", "calculated")],
+        moveIds: ["protect", "sludgebomb", "bulletseed", "sludgebomb", "unknownmove"],
+        ownerId: "3:8", sourcePosition: "right", selectedMoveId: "sludgebomb", onSelectMove,
+        contexts: {}, onContextChange: vi.fn(), replacement: { slotIndex: 0, moves, onReplace, onDone: vi.fn() },
+        abilityId: "overgrow", itemId: "", attackerName: "Venusaur", defenderName: "Blastoise", defenderHP: null, blocked: true,
+      }));
+      expect(html).toContain("Calculations are paused.");
+      expect(html).toContain("Showing 3 of 3 matching moves.");
+      expect(html).toContain("3 source-listed moves available; calculations paused.");
+      expect(html).toContain('type="search"');
+      expect(html).toContain('<option value="status">Status moves</option>');
+      expect(html).toContain('<option value="damaging">Damaging moves</option>');
+      for (const value of ["needs-context", "unsupported", "minimum", "maximum"]) {
+        expect(html).toMatch(new RegExp(`<option\\b[^>]*value="${value}"[^>]*disabled=""`));
+      }
+      expect(html).toContain('<option value="name" selected="">');
+      expect([...html.matchAll(/>Not calculated</g)]).toHaveLength(3);
+      expect(html).not.toContain("12345");
+      expect(html).not.toContain("0 HP");
+      expect(html).not.toContain("Surf");
+      expect(html).not.toContain("Unknownmove");
+      expect(html).not.toContain("0% KO");
+      expect(html).toContain("Not estimated");
+      expect(html).toContain("Set hits");
+      expect(html).toContain("Already in move 2");
+      const candidate = buttons.mock.calls.map(([props]) => props).find((props) => props["aria-label"] === "Use Protect in move 1")!;
+      expect(candidate.disabled).toBe(false);
+      candidate.onClick!({} as MouseEvent<HTMLButtonElement>);
+      expect(onReplace).toHaveBeenCalledExactlyOnceWith("protect");
+      expect(onSelectMove).not.toHaveBeenCalled();
+      assertControlLabels(html);
+    } finally {
+      buttons.mockRestore();
+    }
+  });
+
+  it.each([false, true])("distinguishes an uncalculated catalog candidate from genuine zero outside replacement mode (wide=%s)", (wide) => {
+    viewport.wide = wide;
+    const html = renderToStaticMarkup(createElement(MoveResults, {
+      rows: [row("flamethrower", "calculated")], moveIds: ["flamethrower", "protect"], ownerId: "0:2", sourcePosition: "left",
+      selectedMoveId: "protect", onSelectMove: vi.fn(), contexts: {}, onContextChange: vi.fn(),
+      abilityId: "blaze", itemId: "", attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
+    }));
+    const entries = [...html.matchAll(wide ? /<tr\b[^>]*>[\s\S]*?<\/tr>/g : /<li\b[^>]*>[\s\S]*?<\/li>/g)].map(([entry]) => entry);
+    const unknown = entries.find((entry) => entry.includes('aria-label="Select Protect to preview HP"'))!;
+    const zero = entries.find((entry) => entry.includes('aria-label="Select Flamethrower to preview HP"'))!;
+    expect(unknown).toContain("Not calculated");
+    expect(unknown).toContain("Not estimated");
+    expect(unknown).not.toContain("0 HP");
+    expect(unknown).toContain('checked=""');
+    expect(zero).toContain("0 HP");
+    expect(zero).not.toContain("Not calculated");
+    expect(html).toContain("1 of 2 source-listed moves accounted for");
+    expect(html).not.toContain("Calculations are paused.");
+  });
+
+  it("shows metadata and an owned hit editor with no calculated row or fabricated rolls", () => {
+    const onContextChange = vi.fn();
+    const selects = vi.spyOn(selectControl, "default");
+    try {
+      const html = renderToStaticMarkup(createElement(MoveDetails, {
+        moveId: "bulletseed", id: "catalog-bulletseed", context: { hits: 3 }, abilityId: "overgrow", itemId: "", onContextChange,
+      }));
+      expect(html).toContain('aria-label="Bullet Seed details"');
+      expect(html).toContain("Base power: 25");
+      expect(html).toContain("Accuracy: 100%");
+      expect(html).toContain("Category: Physical");
+      expect(html).toContain(renderToStaticMarkup(createElement("p", { className: "text-muted" }, movesById.get("bulletseed")!.description)));
+      expect(html).toContain('<option value="3" selected="">3 hits</option>');
+      expect(html).toContain("Move information and hit-count editing remain available.");
+      expect(html).not.toContain("Damage rolls:");
+      expect(html).not.toContain("Fixed damage:");
+      expect(html).not.toContain("Assumptions for this result");
+      expect(html).not.toContain("0 HP");
+      expect(selects.mock.calls).toHaveLength(1);
+      const [select] = selects.mock.calls[0];
+      select.onChange!({ target: { value: "5" } } as ChangeEvent<HTMLSelectElement>);
+      select.onChange!({ target: { value: "" } } as ChangeEvent<HTMLSelectElement>);
+      expect(onContextChange.mock.calls).toEqual([[{ hits: 5 }], [{ hits: undefined }]]);
+      assertControlLabels(html);
+    } finally {
+      selects.mockRestore();
+    }
+    const fixed = renderToStaticMarkup(createElement(MoveDetails, {
+      moveId: "bulletseed", id: "skilllink-no-row", context: undefined, abilityId: "skilllink", itemId: "", onContextChange,
+    }));
+    expect(fixed).not.toContain("<select");
+    expect(fixed).toContain("Skill Link fixes this move at 5 hits");
+    const status = renderToStaticMarkup(createElement(MoveDetails, {
+      moveId: "protect", id: "status-no-row", context: undefined, abilityId: "blaze", itemId: "", onContextChange,
+    }));
+    expect(status).toContain("Category: Status");
+    expect(status).toContain("Damage is not available yet.");
+    expect(status).not.toContain("<select");
+  });
+});
+
 describe("active matchup and selected-move summary", () => {
+  it("renders exactly eight labelled quick-move buttons with owner tokens and accessible provenance", () => {
+    const matchup = createMatchup();
+    const onActivateMove = vi.fn();
+    const html = summaryHTML(matchup, undefined, undefined, "average", { onActivateMove });
+    const buttons = [...html.matchAll(/<button\b[^>]*data-move-slot="\d+"[^>]*>[\s\S]*?<\/button>/g)].map(([button]) => button);
+    expect(buttons).toHaveLength(8);
+    for (const [side, offset] of [["attacker", 0], ["defender", 4]] as const) {
+      const slot = matchup[side];
+      const name = speciesById.get(slot.build.speciesId)!.name;
+      expect(html).toContain(`aria-label="${name} ${position(side)} quick moves"`);
+      slot.moves.forEach((move, index) => {
+        const button = buttons[offset + index];
+        expect(button).toContain('type="button"');
+        expect(button).toContain(`aria-label="${name} ${position(side)} move ${index + 1}: ${movesById.get(move.moveId!)?.name ?? "Choose move"}"`);
+        expect(button).toContain(`data-move-owner="${slot.key}:${slot.moveEpoch}"`);
+        expect(button).toContain(`data-move-slot="${index}"`);
+        expect(button).toContain('aria-controls="moves"');
+        expect(button).toContain('aria-pressed="false"');
+        expect(button).toContain("min-h-12");
+        expect(button).not.toContain('disabled=""');
+        const description = button.match(/aria-describedby="([^"]+)"/)![1];
+        expect(button).toContain(`id="${description}"`);
+      });
+    }
+    expect(onActivateMove).not.toHaveBeenCalled();
+    assertControlLabels(html);
+    const client = renderToStaticMarkup(createElement(CalculatorClient));
+    expect(client).toContain("Loading the Champions engine");
+    expect([...client.matchAll(/<button\b[^>]*data-move-slot="\d+"[^>]*>/g)]).toHaveLength(8);
+  });
+
+  it("shows empty and Suggested slots honestly and marks the active empty replacement without choosing damage", () => {
+    let matchup = updateMatchupBuild(createMatchup(), "defender", createBuild("ditto"));
+    matchup.attacker.moves = [
+      { moveId: "flamethrower", origin: "usage", gameType: "Doubles" },
+      { moveId: "airslash", origin: "suggested", gameType: "Singles" },
+      { moveId: "protect", origin: "manual", gameType: null },
+      { moveId: null, origin: "empty", gameType: null },
+    ];
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 3);
+    const before = structuredClone(matchup);
+    const html = summaryHTML(matchup);
+    const buttons = [...html.matchAll(/<button\b[^>]*data-move-slot="\d+"[^>]*>[\s\S]*?<\/button>/g)].map(([button]) => button);
+    expect(buttons).toHaveLength(8);
+    expect(buttons[0]).toContain("Common Champions Doubles usage");
+    expect(buttons[1]).toContain(">Suggested</span>");
+    expect(buttons[1]).toContain("Suggested, per-species usage unavailable for this move");
+    expect(buttons[1]).not.toContain("Common Champions");
+    expect(buttons[2]).toContain("Manually chosen");
+    for (const button of [buttons[3], ...buttons.slice(4)]) {
+      expect(button).toContain("Choose move");
+      expect(button).toContain("Choose a move");
+      expect(button).toContain('aria-pressed="false"');
+      expect(button).not.toContain('disabled=""');
+    }
+    expect(buttons[7]).toContain('aria-label="Ditto right move 4: Choose move"');
+    expect(buttons[7]).toContain(`data-move-session="${matchup.replacement!.session}"`);
+    expect(buttons[7]).toContain(">Editing</span>");
+    expect(buttons.slice(0, 7).some((button) => button.includes("data-move-session"))).toBe(false);
+    expect(html).not.toContain("projected HP");
+    expect(html).not.toContain("HP remaining:");
+    expect(matchup).toEqual(before);
+    assertControlLabels(html);
+  });
+
+  it("selects only the owning side's slot when both Pokémon have the same species and move", () => {
+    let matchup = updateMatchupBuild(createMatchup(), "defender", createBuild("charizard"));
+    expect(matchup.attacker.moves[0].moveId).toBe(matchup.defender.moves[0].moveId);
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    const html = summaryHTML(matchup);
+    const buttons = [...html.matchAll(/<button\b[^>]*data-move-slot="\d+"[^>]*>/g)].map(([button]) => button);
+    expect(buttons.filter((button) => button.includes('aria-pressed="true"'))).toEqual([buttons[4]]);
+    expect(buttons[4]).toContain(`data-move-owner="${matchup.defender.key}:${matchup.defender.moveEpoch}"`);
+    expect(buttons[4]).toContain(`data-move-session="${matchup.replacement!.session}"`);
+    expect(buttons[0]).toContain('aria-pressed="false"');
+    expect(html.indexOf('data-summary-combatant="attacker"')).toBeLessThan(html.indexOf('data-summary-combatant="defender"'));
+  });
+
+  it.each([["low", 20, 80], ["average", 28, 72], ["high", 35, 65]] as const)("projects %s reverse damage only on the physical left receiving card", (mode, damage, remaining) => {
+    let matchup = updateMatchupBuild(createMatchup(), "attacker", { ...createBuild("charizard"), currentHP: 100 });
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "surf");
+    const result = { ...row("surf", "calculated"), min: 20, max: 35, rolls: Array.from({ length: 16 }, (_, index) => 20 + index) };
+    const before = structuredClone({ matchup, result });
+    const html = summaryHTML(matchup, result, undefined, mode);
+    const receiver = meterHTML(html, "attacker");
+    expect(receiver).toContain('aria-label="Charizard left projected HP"');
+    expect(receiver).toContain(`aria-valuenow="${remaining}"`);
+    expect(receiver).toContain('aria-valuemax="153"');
+    expect(receiver).toContain(`${remaining} of 153 HP after Surf`);
+    expect(receiver).toContain(`width:${remaining / 153 * 100}%`);
+    expect(meterHTML(html, "defender")).toContain('aria-label="Blastoise right current HP"');
+    expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
+    expect(html).toContain("Blastoise (right) → Charizard (left)");
+    expect(html).toContain("Left Pokémon HP remaining:");
+    expect(html).toContain(`${remaining} / 153</strong>`);
+    expect(html).toContain(`${damage} damage</strong>`);
+    expect(html).toContain("Current HP: 100 / 153");
+    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).toContain("Current HP is unchanged");
+    expect({ matchup, result }).toEqual(before);
+  });
+
+  it.each(["previous direction", "source key", "source epoch", "receiver key", "receiver epoch", "missing identity"] as const)("withholds same-ID damage for a mismatched result batch: %s", (mismatch) => {
+    let matchup = updateMatchupBuild(createMatchup(), "defender", createBuild("charizard"));
+    matchup = updateMatchupBuild(matchup, "attacker", { ...matchup.attacker.build, currentHP: 100 });
+    matchup = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 75 });
+    matchup = activateMoveSlot(matchup, getMoveOwner(matchup.defender), 0);
+    matchup = selectMatchupMove(matchup, "flamethrower");
+    const view = getAttackView(matchup);
+    let resultIdentity: ComponentProps<typeof MatchupSummary>["resultIdentity"] = { source: view.owner, receiver: view.receiverOwner };
+    if (mismatch === "previous direction") resultIdentity = { source: view.receiverOwner, receiver: view.owner };
+    if (mismatch === "source key") resultIdentity.source = { ...view.owner, key: 999 };
+    if (mismatch === "source epoch") resultIdentity.source = { ...view.owner, epoch: view.owner.epoch - 1 };
+    if (mismatch === "receiver key") resultIdentity.receiver = { ...view.receiverOwner, key: 999 };
+    if (mismatch === "receiver epoch") resultIdentity.receiver = { ...view.receiverOwner, epoch: view.receiverOwner.epoch - 1 };
+    if (mismatch === "missing identity") resultIdentity = undefined;
+    const result = { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 };
+    const html = summaryHTML(matchup, result, undefined, "average", { resultIdentity });
+    expect(html).toContain("Charizard (right) → Charizard (left)");
+    expect(html).toContain("Flamethrower");
+    expect(html).not.toContain("50 damage");
+    expect(html).not.toContain("damage range");
+    expect(html).not.toContain("One-use KO:");
+    expect(html).not.toContain("HP remaining:");
+    expect(html).not.toContain("projected HP");
+    expect(html).not.toContain(">Show move</button>");
+    expect(meterHTML(html, "attacker")).toContain('aria-valuenow="100"');
+    expect(meterHTML(html, "defender")).toContain('aria-valuenow="75"');
+    expect(summaryHTML(matchup, result)).toContain("50 / 153</strong>");
+  });
+
+  it("withholds projection if the attack itself refers to an expired owner", () => {
+    const matchup = selectMatchupMove(createMatchup(), "flamethrower");
+    const result = { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 };
+    const html = summaryHTML(matchup, result, undefined, "average", {
+      attack: { ...matchup.attack, owner: { ...matchup.attack.owner, epoch: matchup.attack.owner.epoch + 1 } },
+    });
+    expect(html).not.toContain("50 damage");
+    expect(html).not.toContain("projected HP");
+    expect(html).not.toContain("HP remaining:");
+    expect(meterHTML(html, "attacker")).toContain('aria-valuenow="153"');
+    expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
+  });
+
   it("starts with current HP, accessible bars, editor shortcuts and Average selected", () => {
     const matchup = createMatchup();
     const html = summaryHTML(matchup);
     expect(html).toContain("Charizard");
     expect(html).toContain("Blastoise");
-    expect(html).toContain('aria-label="Charizard attacker current HP"');
+    expect(html).toContain('aria-label="Charizard left current HP"');
     expect(html).toContain('aria-valuenow="153"');
     expect(html).toContain('aria-valuemax="154"');
-    expect(html).toContain("Choose a move in Moves");
-    expect(html).not.toContain("Defender HP remaining:");
-    for (const side of ["attacker", "defender"]) {
-      expect(html).toContain(`aria-label="Change ${side} Pokémon" aria-haspopup="dialog"`);
-      expect(html).toContain(`aria-label="Edit ${side} HP" aria-expanded="false"`);
-      expect(html).toContain(`<div id="${controlTarget(html, `Edit ${side} HP`)}" hidden="">`);
+    expect(html).toContain("Click either Pokémon’s quick move to calculate and edit that slot, or browse all moves below.");
+    expect(html).not.toContain("Right Pokémon HP remaining:");
+    for (const side of ["attacker", "defender"] as const) {
+      expect(html).toContain(`aria-label="Change ${position(side)} Pokémon" aria-haspopup="dialog"`);
+      expect(html).toContain(`aria-label="Edit ${position(side)} HP" aria-expanded="false"`);
+      expect(html).toContain(`<div id="${controlTarget(html, `Edit ${position(side)} HP`)}" hidden="">`);
     }
     expect([...html.matchAll(/<fieldset\b/g)]).toHaveLength(1);
     expect(html).toContain('>Damage roll</legend>');
@@ -554,7 +899,7 @@ describe("active matchup and selected-move summary", () => {
     expect(new Set(names).size).toBe(1);
     expect(names[0]).toContain("damage-roll");
     expect(inputs.filter((input) => input.includes('checked=""'))).toEqual([expect.stringContaining('value="average"')]);
-    expect(meterHTML(html, "defender")).toContain('aria-label="Blastoise defender current HP"');
+    expect(meterHTML(html, "defender")).toContain('aria-label="Blastoise right current HP"');
   });
 
   it.each([
@@ -566,14 +911,14 @@ describe("active matchup and selected-move summary", () => {
     const before = structuredClone({ matchup, result });
     const html = summaryHTML(matchup, result, undefined, mode);
     const defenderMeter = meterHTML(html, "defender");
-    expect(defenderMeter).toContain('aria-label="Blastoise defender projected HP"');
+    expect(defenderMeter).toContain('aria-label="Blastoise right projected HP"');
     expect(defenderMeter).toContain(`aria-valuenow="${remaining}"`);
     expect(defenderMeter).toContain('aria-valuemax="154"');
     expect(defenderMeter).toContain(`${remaining} of 154 HP after Flamethrower`);
     expect(defenderMeter).toContain(`width:${remaining / 154 * 100}%`);
     expect(defenderMeter).toContain(color);
     expect(meterHTML(html, "attacker")).toContain('aria-valuenow="153"');
-    expect(meterHTML(html, "attacker")).toContain('attacker current HP');
+    expect(meterHTML(html, "attacker")).toContain('left current HP');
     expect(html).toContain(`>${remaining}</span>`);
     expect(html).toContain(`${damage} damage</strong>`);
     expect(html).toContain("20–35 damage range");
@@ -601,9 +946,9 @@ describe("active matchup and selected-move summary", () => {
     const matchup = selectMatchupMove(createMatchup(), "flamethrower");
     const result = { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 };
     for (const html of [summaryHTML(createMatchup(), result), summaryHTML(matchup, { ...result, moveId: "surf" }), summaryHTML(matchup)]) {
-      expect(html).not.toContain("Defender HP remaining:");
+      expect(html).not.toContain("Right Pokémon HP remaining:");
       expect(html).not.toContain("50 damage");
-      expect(meterHTML(html, "defender")).toContain("defender current HP");
+      expect(meterHTML(html, "defender")).toContain("right current HP");
       expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
     }
   });
@@ -614,11 +959,11 @@ describe("active matchup and selected-move summary", () => {
       const html = summaryHTML(matchup, { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 }, reason, mode);
       expect(html).toContain("Flamethrower");
       expect(html).toContain(reason);
-      expect(html).not.toContain("Defender HP remaining:");
+      expect(html).not.toContain("Right Pokémon HP remaining:");
       expect(html).not.toContain("50 damage");
       expect(html).not.toContain("One-use KO:");
       expect(html).not.toContain(">Show move</button>");
-      expect(meterHTML(html, "defender")).toContain("defender current HP");
+      expect(meterHTML(html, "defender")).toContain("right current HP");
       expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
     }
   });
@@ -628,7 +973,7 @@ describe("active matchup and selected-move summary", () => {
     const html = summaryHTML(matchup, undefined, "Fix invalid settings.");
     expect([...html.matchAll(/role="meter"/g)]).toHaveLength(1);
     expect(html).toContain("Edit HP to fix the current value");
-    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).not.toContain("Right Pokémon HP remaining:");
     expect(html).not.toContain('aria-valuenow="154"');
   });
 
@@ -640,9 +985,9 @@ describe("active matchup and selected-move summary", () => {
     for (const kind of ["status", "needs-context", "unsupported"] as const) {
       const html = summaryHTML(matchup, row("flamethrower", kind));
       expect(html).not.toContain("0 damage");
-      expect(html).not.toContain("Defender HP remaining:");
+      expect(html).not.toContain("Right Pokémon HP remaining:");
     }
-    expect(summaryHTML(matchup)).not.toContain("Defender HP remaining:");
+    expect(summaryHTML(matchup)).not.toContain("Right Pokémon HP remaining:");
   });
 
   it("retains raw damage and supplied KO while withholding survival-sensitive HP", () => {
@@ -655,7 +1000,7 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain("138–164 damage");
     expect(html).toContain("One-use KO: 0%");
     expect(html).toContain("Remaining HP is withheld for Focus Sash");
-    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).not.toContain("Right Pokémon HP remaining:");
   });
 
   it("keeps the selected summary independent of filtering and offers one Set hits action", () => {
@@ -666,7 +1011,7 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain("Bullet Seed");
     expect(html).toContain(">Set hits</button>");
     expect(html).not.toMatch(/<select\b/);
-    expect(html).not.toContain("Defender HP remaining:");
+    expect(html).not.toContain("Right Pokémon HP remaining:");
   });
 
   it("shows ownership independently of attacker/defender and keeps it correct after Swap", () => {
@@ -674,9 +1019,9 @@ describe("active matchup and selected-move summary", () => {
     matchup.attacker.source = { key: "own", leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
     matchup.defender.source = { key: "opponent", leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
     const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
-    expect(html).toContain("Attacker · Opponent's team");
-    expect(html).toContain("Defender · Your team");
-    expect(html).toContain('aria-label="Blastoise attacker current HP"');
-    expect(html).toContain('aria-label="Charizard defender current HP"');
+    expect(html).toContain("Left Pokémon · Opponent's team");
+    expect(html).toContain("Right Pokémon · Your team");
+    expect(html).toContain('aria-label="Blastoise left current HP"');
+    expect(html).toContain('aria-label="Charizard right current HP"');
   });
 });
