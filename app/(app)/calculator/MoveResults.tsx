@@ -149,9 +149,10 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   const effectiveFilter = blocked && (filter === "needs-context" || filter === "unsupported") ? "all" : filter;
   const ranked = rankResults(resultRows, effectiveSort);
   const results = new Map(ranked.map((row, index) => [row.moveId, { row, index }]));
+  const assignedMoves = new Set(replacement?.moves.map((slot) => slot.moveId));
   const candidates: Candidate[] = [...new Set(moveIds)].flatMap((moveId) => {
     const move = movesById.get(moveId);
-    return move ? [{ move, row: results.get(moveId)?.row }] : [];
+    return move && !assignedMoves.has(moveId) ? [{ move, row: results.get(moveId)?.row }] : [];
   });
   candidates.sort((a, b) => effectiveSort === "name" ? a.move.name.localeCompare(b.move.name)
     : (results.get(a.move.id)?.index ?? Infinity) - (results.get(b.move.id)?.index ?? Infinity) || a.move.name.localeCompare(b.move.name));
@@ -213,28 +214,26 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   }
 
   function choose(candidate: Candidate) {
-    if (replacement) replacement.onReplace(candidate.move.id);
-    else onSelectMove(candidate.move.id);
+    if (replacement) {
+      pendingFocus.current = null;
+      replacement.onReplace(candidate.move.id);
+      return;
+    }
+    onSelectMove(candidate.move.id);
     if (needsHits(candidate)) {
-      if (expanded === candidate.move.id) focusDetails(candidate.move.id);
-      else {
-        pendingFocus.current = { ownerId, moveId: candidate.move.id };
-        setDetailTarget({ ownerId, moveId: candidate.move.id });
-      }
+      // Reveal after the selection commit updates the sticky summary's height.
+      pendingFocus.current = { ownerId, moveId: candidate.move.id };
+      setDetailTarget({ ownerId, moveId: candidate.move.id });
     }
   }
 
   function selection(candidate: Candidate) {
     const { move } = candidate;
     if (replacement) {
-      const duplicate = replacement.moves.findIndex((slot, index) => index !== replacement.slotIndex && slot.moveId === move.id);
-      const current = currentMoveId === move.id;
       return (
         <div className="space-y-2">
           <p className="wrap-anywhere font-semibold text-text">{move.name}</p>
-          <Button size="sm" variant={current ? "secondary" : "primary"} disabled={duplicate >= 0} aria-label={`${current ? "Current move" : "Use"} ${move.name} in move ${replacement.slotIndex + 1}`} onClick={() => choose(candidate)}>
-            {duplicate >= 0 ? `Already in move ${duplicate + 1}` : current ? "Current move" : "Use move"}
-          </Button>
+          <Button size="sm" aria-label={`Use ${move.name} in move ${replacement.slotIndex + 1}`} onClick={() => choose(candidate)}>Use move</Button>
         </div>
       );
     }
@@ -282,7 +281,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         <div className="min-w-0 flex-1">
           <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
           <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}.</p>
-          <p className="mt-1 text-xs text-muted">{replacement ? "Use a move below to replace only this slot. Done or Escape finishes editing; changes are kept." : "Select a move to preview HP above without changing your four quick moves."}</p>
+          <p className="mt-1 text-xs text-muted">{replacement ? "Use a move below to replace only this slot. Choosing a move finishes editing and clears the selection. Already assigned moves are hidden. Done or Escape closes without replacing." : "Select a move to preview HP above without changing your four quick moves."}</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>
@@ -310,10 +309,10 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
         <p role="status">Showing {visible.length} of {filtered.length} matching moves. Uncalculated moves stay unranked.</p>
-        {selectedHidden && selectedMoveId && <Button size="sm" variant="secondary" onClick={() => showMove(selectedMoveId)}>Show selected move</Button>}
+        {!replacement && selectedHidden && selectedMoveId && <Button size="sm" variant="secondary" onClick={() => showMove(selectedMoveId)}>Show selected move</Button>}
       </div>
       {filtered.length === 0 ? (
-        <EmptyState title="No matching moves" description="Try another name or show all moves, including status and unsupported moves." action={<Button variant="secondary" onClick={resetFilter}>Clear filters</Button>} />
+        <EmptyState title="No matching moves" description={replacement ? "Already assigned moves are hidden. Try another name or show all available moves." : "Try another name or show all moves, including status and unsupported moves."} action={<Button variant="secondary" onClick={resetFilter}>Clear filters</Button>} />
       ) : wide ? (
         <TableWrap>
           <table className={tableClassName} aria-label="Move damage results">

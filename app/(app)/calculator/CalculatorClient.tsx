@@ -241,9 +241,9 @@ export default function CalculatorClient() {
     selectTab("moves");
   }
 
-  function finishReplacement(replacement: MoveReplacement) {
+  function finishReplacement(replacement: MoveReplacement, moveId?: string) {
     pendingNavigation.current = null;
-    setMatchup((current) => dismissMoveReplacement(current, replacement));
+    setMatchup((current) => moveId === undefined ? dismissMoveReplacement(current, replacement) : replaceMatchupMove(current, replacement, moveId));
     const button = summaryRef.current?.querySelector<HTMLButtonElement>(`[data-move-owner="${replacement.owner.key}:${replacement.owner.epoch}"][data-move-slot="${replacement.slotIndex}"][data-move-session="${replacement.session}"]`);
     if (button) reveal(button, false);
   }
@@ -251,7 +251,9 @@ export default function CalculatorClient() {
   function showMove() {
     const moveId = attackView.moveId;
     const ownerId = `${attackView.owner.key}:${attackView.owner.epoch}`;
-    if (moveId) visit("moves", () => movesRef.current?.showMove(moveId, ownerId));
+    if (!moveId) return;
+    if (replacement) setMatchup((current) => dismissMoveReplacement(current, replacement));
+    visit("moves", () => movesRef.current?.showMove(moveId, ownerId));
   }
 
   function panelProps(tab: CalculatorTab) {
@@ -351,7 +353,7 @@ export default function CalculatorClient() {
                 replacement={replacement ? {
                   slotIndex: replacement.slotIndex,
                   moves: attackView.source.moves,
-                  onReplace: (moveId) => setMatchup((current) => replaceMatchupMove(current, replacement, moveId)),
+                  onReplace: (moveId) => finishReplacement(replacement, moveId),
                   onDone: () => finishReplacement(replacement),
                 } : undefined}
                 abilityId={attackView.source.build.abilityId}
@@ -369,7 +371,7 @@ export default function CalculatorClient() {
                   <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
                   <ul className="list-disc space-y-2 pl-5">
                     <li>Quick moves are editable starting assumptions, not a discovered opponent moveset. Defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Suggested moves fill gaps using legal moves, not per-species popularity. Changing format keeps existing picks; new Pokémon use the current format.</li>
-                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. The Moves pane replaces that slot until Done or Escape; ordinary move browsing does not rewrite your prepared moves.</li>
+                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Choose an unassigned replacement in Moves to update that slot and return to an unselected state. Done or Escape closes without replacing; ordinary move browsing does not rewrite your prepared moves.</li>
                     <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
                     <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
                     <li>Select a Mega form directly to supply its required stone. This does not simulate transformation timing.</li>

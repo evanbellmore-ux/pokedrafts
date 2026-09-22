@@ -273,7 +273,7 @@ export function replaceMatchupMove(current: PreparedMatchup, replacement: MoveRe
   const cache = source ? new Map(current.cache).set(source.key, { source, build, hpInput, moves }) : current.cache;
   return {
     ...current, [side]: { ...slot, moves }, cache,
-    attack: { owner: getMoveOwner(slot), moveId },
+    attack: { owner: getMoveOwner(slot), moveId: null }, replacement: null,
   };
 }
 

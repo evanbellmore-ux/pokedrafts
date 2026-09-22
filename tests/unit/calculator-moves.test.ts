@@ -122,7 +122,9 @@ describe("prepared quick moves", () => {
     expect(next.defender.build.currentHP).toBeNull();
     const chosen = replaceMatchupMove(next, next.replacement!, "transform");
     expect(chosen.defender.moves[3]).toEqual({ moveId: "transform", origin: "manual", gameType: null });
-    expect(chosen.attack.moveId).toBe("transform");
+    expect(chosen.attack).toEqual({ owner: getMoveOwner(chosen.defender), moveId: null });
+    expect(chosen.replacement).toBeNull();
+    expect(getAttackView(chosen).sourceSide).toBe("defender");
   });
 
   it.each(["attacker", "defender"] as const)("allows full-learnset %s exploration without rewriting the four slots", (side) => {
@@ -167,7 +169,7 @@ describe("prepared quick moves", () => {
 });
 
 describe("owned replacement sessions", () => {
-  it("replaces exactly one slot with manual provenance and atomically updates source cache and selection", () => {
+  it("replaces exactly one slot and updates its cache while finishing editing and clearing selection", () => {
     let current = withBothContexts(prepared().current);
     current = updateMatchupHP(current, "defender", "abc");
     const before = structuredClone(current);
@@ -177,8 +179,9 @@ describe("owned replacement sessions", () => {
     current.defender.moves.forEach((slot, index) => {
       if (index !== replacement.slotIndex) expect(next.defender.moves[index]).toBe(slot);
     });
-    expect(next.attack).toEqual({ owner: getMoveOwner(current.defender), moveId: "protect" });
-    expect(next.replacement).toBe(current.replacement);
+    expect(next.attack).toEqual({ owner: getMoveOwner(current.defender), moveId: null });
+    expect(next.replacement).toBeNull();
+    expect(getAttackView(next).sourceSide).toBe("defender");
     expect(next.replacementSession).toBe(current.replacementSession);
     expect(next.attacker).toBe(current.attacker);
     expect(next.defender.contexts).toBe(current.defender.contexts);
@@ -193,14 +196,17 @@ describe("owned replacement sessions", () => {
     expect(cached.hpInput).toBe("abc");
     expect(next.cache.get(current.attacker.source!.key)).toBe(current.cache.get(current.attacker.source!.key));
     expect(current).toEqual(before);
-    const second = replaceMatchupMove(next, replacement, unpreparedMove(next, "defender"));
-    expect(second.replacement).toBe(replacement);
-    expect(second.attack.moveId).toBe(second.defender.moves[replacement.slotIndex].moveId);
-    const dismissed = dismissMoveReplacement(second, replacement);
+    expect(replaceMatchupMove(next, replacement, unpreparedMove(next, "defender"))).toBe(next);
+    expect(dismissMoveReplacement(next, replacement)).toBe(next);
+    const reopened = activate(next, "defender", replacement.slotIndex);
+    expect(reopened.attack.moveId).toBe("protect");
+    expect(reopened.replacement!.session).toBeGreaterThan(replacement.session);
+    expect(replaceMatchupMove(reopened, replacement, unpreparedMove(reopened, "defender"))).toBe(reopened);
+    const dismissed = dismissMoveReplacement(reopened, reopened.replacement!);
     expect(dismissed.replacement).toBeNull();
-    expect(dismissed.attack).toBe(second.attack);
-    expect(dismissed.defender.moves).toBe(second.defender.moves);
-    expect(dismissMoveReplacement(dismissed, replacement)).toBe(dismissed);
+    expect(dismissed.attack).toBe(reopened.attack);
+    expect(dismissed.defender.moves).toBe(reopened.defender.moves);
+    expect(dismissMoveReplacement(dismissed, reopened.replacement!)).toBe(dismissed);
   });
 
   it("keeps current-slot actions as exact no-ops without changing usage provenance", () => {
@@ -230,10 +236,12 @@ describe("owned replacement sessions", () => {
     // If it was a default, first clear this particular position with another legal pick.
     if (current.attacker.moves[index].moveId === moveId) {
       current = replaceMatchupMove(current, current.replacement!, unpreparedMove(current));
+      current = activate(current, "attacker", index);
     }
     const next = replaceMatchupMove(current, current.replacement!, moveId);
     expect(next.attacker.moves[index]).toEqual({ moveId, origin: "manual", gameType: null });
-    expect(next.attack.moveId).toBe(moveId);
+    expect(next.attack).toEqual({ owner: getMoveOwner(current.attacker), moveId: null });
+    expect(next.replacement).toBeNull();
   });
 
   it("rejects duplicate, unknown, differently spelled and unlearned IDs on the exact source", () => {
@@ -490,7 +498,7 @@ describe("move lifecycle and roster caching", () => {
       expect(next.attacker.moveEpoch).toBeGreaterThan(current.attacker.moveEpoch);
       expect(next.defender.moveEpoch).toBeGreaterThan(current.defender.moveEpoch);
       expect(next.replacementSession).toBe(current.replacementSession);
-      expect(activate(next).replacement!.session).toBeGreaterThan(current.replacement!.session);
+      expect(activate(next).replacement!.session).toBeGreaterThan(current.replacementSession);
       expectCleared(next);
       expectRejectedOwner(next, getMoveOwner(current.attacker));
       expectRejectedOwner(next, getMoveOwner(current.defender));
