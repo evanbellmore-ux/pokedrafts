@@ -13,12 +13,13 @@ import CalculatorTabs, { calculatorTabIds, type CalculatorTab } from "./Calculat
 import MatchupSummary from "./MatchupSummary";
 import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
+import PokePasteImporter from "./PokePasteImporter";
 import { MyTeamPicker, OpponentPicker, RosterPicker } from "./LeagueMatchupPicker";
 import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, reconcileRosters, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMega, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice } from "./roster-prep";
+import { activateMoveSlot, applyTeamPaste, changeTeamSource, createMatchup, dismissMoveReplacement, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMega, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -182,9 +183,13 @@ export default function CalculatorClient() {
   const currentTeams = rosters.state.teamsStatus === "ready" && rosters.state.data?.leagueId === league?.id ? rosters.state.data : null;
   const ownMember = currentTeams?.members.find((member) => member.id === league?.memberId);
   const opponent = currentTeams?.members.find((member) => member.id === rosters.state.opponentId);
-  const teamsLoading = rosters.state.status === "loading" || rosters.state.teamsStatus === "loading";
-  const teamsFailed = rosters.state.status === "error" || rosters.state.teamsStatus === "error";
-  const teamSummary = teamsLoading ? "Loading your leagues and teams…"
+  const rosterPanels = { own: getTeamPanel(matchup, rosters.state, "own"), opponent: getTeamPanel(matchup, rosters.state, "opponent") };
+  const usesLeague = matchup.teams.own.mode === "league" || matchup.teams.opponent.mode === "league";
+  const onlyLeague = matchup.teams.own.mode === "league" && matchup.teams.opponent.mode === "league";
+  const teamsLoading = usesLeague && (rosters.state.status === "loading" || rosters.state.teamsStatus === "loading");
+  const teamsFailed = usesLeague && (rosters.state.status === "error" || rosters.state.teamsStatus === "error");
+  const describeTeam = (role: RosterRole) => rosterPanels[role].teamName ?? (matchup.teams[role].mode === "paste" ? "Import a PokéPaste" : rosterPanels[role].message);
+  const teamSummary = !onlyLeague ? `Your team: ${describeTeam("own")} · Opponent: ${describeTeam("opponent")}` : teamsLoading ? "Loading your leagues and teams…"
     : teamsFailed ? "Teams unavailable — retry or use manual Pokémon."
       : rosters.state.status === "signed-out" ? "Sign in to use league rosters. Manual Pokémon still work."
         : league ? `${teamNameLabel(ownMember ? ownMember.team_name : league.teamName)} — ${league.name} · ${opponent ? `Facing ${teamNameLabel(opponent.team_name)}` : "Choose an opponent"}`
@@ -220,7 +225,48 @@ export default function CalculatorClient() {
 
   function renderRoster(side: BattleSide, variant: "inline" | "rail") {
     const slot = matchup[side];
-    return <RosterPicker pickerId={rosterControls[side]} variant={variant} state={rosters.state} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
+    return <RosterPicker pickerId={rosterControls[side]} variant={variant} panel={rosterPanels[slot.role]} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
+  }
+
+  function focusTeamSource(role: RosterRole) {
+    visit(role === "own" ? "team" : "opponent", () => {
+      const button = document.getElementById(`${prefix}-source-${role}`)?.querySelector<HTMLButtonElement>("[aria-pressed=true]");
+      if (button) reveal(button);
+    });
+  }
+
+  function applyPaste(owner: TeamSourceOwner, input: PasteImport) {
+    setMatchup((current) => applyTeamPaste(current, owner, input));
+    focusTeamSource(owner.role);
+  }
+
+  function removePaste(owner: TeamSourceOwner) {
+    setMatchup((current) => removeTeamPaste(current, owner));
+    focusTeamSource(owner.role);
+  }
+
+  function renderTeamSource(role: RosterRole) {
+    const owner = getTeamSourceOwner(matchup, role);
+    const selection = matchup.teams[role];
+    return (
+      <>
+        <div id={`${prefix}-source-${role}`} role="group" aria-label={`${role === "own" ? "My team" : "Opponent"} source`} className="flex flex-wrap gap-2">
+          {(["league", "paste"] as const).map((mode) => (
+            <Button key={mode} data-team-source={role} data-team-mode={mode} variant={selection.mode === mode ? "primary" : "secondary"} aria-pressed={selection.mode === mode} onClick={() => {
+              pendingNavigation.current = null;
+              setMatchup((current) => changeTeamSource(current, owner, mode));
+            }}>{mode === "league" ? "League team" : "PokéPaste"}</Button>
+          ))}
+        </div>
+        {selection.mode === "paste" ? (
+          <PokePasteImporter key={`${owner.revision}:${role}:${owner.epoch}`} role={role} owner={owner} applied={selection.paste} onApply={applyPaste} onRemove={removePaste} onReveal={reveal} />
+        ) : role === "own" ? (
+          <MyTeamPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} />
+        ) : (
+          <OpponentPicker state={rosters.state} onOpponentChange={rosters.selectOpponent} onLeagueChange={matchup.teams.own.mode === "paste" ? rosters.selectLeague : undefined} onRefresh={rosters.refresh} />
+        )}
+      </>
+    );
   }
 
   function fixSettings() {
@@ -325,7 +371,7 @@ export default function CalculatorClient() {
               blockedReason={blockedReason}
               issues={issues}
               movesControl={controls.moves}
-              rosterState={rosters.state}
+              rosterPanels={rosterPanels}
               onBuildChange={updateBuild}
               onHPChange={updateHP}
               onRosterSelect={chooseRosterPokemon}
@@ -342,7 +388,7 @@ export default function CalculatorClient() {
           {feedback && <div data-calculator-feedback>{feedback}</div>}
           <div>
             <div {...panelProps("team")}>
-              <MyTeamPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} />
+              {renderTeamSource("own")}
             </div>
             <div {...panelProps("moves")}>
               <MoveResults
@@ -376,7 +422,8 @@ export default function CalculatorClient() {
                 <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
                   <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
                   <ul className="list-disc space-y-2 pl-5">
-                    <li>Quick moves are editable starting assumptions, not a discovered opponent moveset. Defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Suggested moves fill gaps using legal moves, not per-species popularity. Changing format keeps existing picks; new Pokémon use the current format.</li>
+                    <li>Each team can use league roster names or imported PokéPaste sets. Imports keep the specified builds and ordered moves, including status moves and empty slots. Imports and edits stay in this page session; Reset keeps the original imported teams but clears session edits.</li>
+                    <li>Quick moves on non-imported builds are editable starting assumptions, not a discovered opponent moveset. Defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Suggested moves fill gaps using legal moves, not per-species popularity. Changing format keeps existing picks; new Pokémon use the current format.</li>
                     <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Replace updates that slot, selects the new move and keeps the slot editable. Assigned moves are hidden from replacement choices. Done or Escape closes editing while keeping the selected calculation; ordinary move browsing does not rewrite your prepared moves.</li>
                     <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
                     <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
@@ -432,7 +479,7 @@ export default function CalculatorClient() {
               <BattleConditions id={fieldId} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => ({ ...current, field }))} />
             </div>
             <div {...panelProps("opponent")}>
-              <OpponentPicker state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} />
+              {renderTeamSource("opponent")}
             </div>
           </div>
         </div>

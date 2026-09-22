@@ -1,8 +1,11 @@
-import { champions, speciesById } from "@/app/lib/battle/catalog";
+import { speciesById } from "@/app/lib/battle/catalog";
+import { resolveRosterSpecies } from "@/app/lib/battle/species-identity";
+import type { ImportedTeam } from "@/app/lib/battle/team-import";
+export { createSpeciesResolver, resolveRosterSpecies, type SpeciesResolution } from "@/app/lib/battle/species-identity";
 import { createBuild, createConditions } from "@/app/lib/battle/model";
 import { createMoveSlots, type MoveSlots } from "@/app/lib/battle/move-defaults";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
-import type { BattleBuild, BattleConditions, ChampionsSpecies, MoveContext } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleConditions, MoveContext } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { pokemonKey, type TeamRoster } from "../leagues/[leagueId]/team/roster";
 import type { CalculatorRosterState } from "./roster-data";
@@ -10,55 +13,17 @@ import { formatHPInput, parseBuildInput } from "./build-input";
 
 export type BattleSide = "attacker" | "defender";
 export type RosterRole = "own" | "opponent";
-export type SpeciesResolution =
-  | { status: "resolved"; speciesId: string }
-  | { status: "unavailable" | "ambiguous"; reason: string };
+export type TeamSourceMode = "league" | "paste";
+export type TeamSourceOwner = { role: RosterRole; revision: number; epoch: number };
+export type PasteImport = { text: string; title: string; url: string | null; team: ImportedTeam };
+export type AppliedPaste = PasteImport & { id: string };
+export type TeamSelection = { mode: TeamSourceMode; paste: AppliedPaste | null; epoch: number };
 
-function normalizeAlias(name: string) {
-  return name.normalize("NFKD").toLowerCase()
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/♀/g, "f").replace(/♂/g, "m")
-    .replace(/\bfemale\b/g, "f").replace(/\bmale\b/g, "m")
-    .replace(/[\s._'’‘:()[\]-]/g, "");
-}
-
-/** Only complete, catalog-backed aliases; search tokens are not species identities. */
-export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "id" | "name" | "calcName">[]) {
-  const aliases = new Map<string, Set<string>>();
-  for (const entry of species) {
-    const names = [entry.id, entry.name, entry.calcName];
-    const mega = entry.name.match(/^(.+)-Mega(?:-(X|Y|Z))?$/);
-    if (mega) names.push(`Mega ${mega[1]} ${mega[2] ?? ""}`);
-    const regional = entry.name.match(/^(.+)-(Alola|Galar|Hisui|Paldea)(.*)$/);
-    if (regional) {
-      const adjectives: Record<string, string> = { Alola: "Alolan", Galar: "Galarian", Hisui: "Hisuian", Paldea: "Paldean" };
-      names.push(`${adjectives[regional[2]]} ${regional[1]}${regional[3]}`);
-    }
-    for (const name of names) {
-      const alias = normalizeAlias(name);
-      const ids = aliases.get(alias) ?? new Set<string>();
-      ids.add(entry.id);
-      aliases.set(alias, ids);
-    }
-  }
-  return (name: string): SpeciesResolution => {
-    const ids = aliases.get(normalizeAlias(name));
-    if (!ids?.size) return { status: "unavailable", reason: "No exact Champions match. Use the manual Pokémon selector." };
-    if (ids.size !== 1) return { status: "ambiguous", reason: "This name matches multiple Champions forms. Choose the form manually." };
-    return { status: "resolved", speciesId: [...ids][0] };
-  };
-}
-
-export const resolveRosterSpecies = createSpeciesResolver(champions.species);
-
-export type RosterSource = {
-  key: string;
-  leagueId: string;
-  memberId: string;
-  rosterId: string;
-  name: string;
-  speciesId: string;
-};
+type SourceIdentity = { key: string; name: string; speciesId: string };
+export type RosterSource = SourceIdentity & (
+  | { kind: "league"; leagueId: string; memberId: string; rosterId: string }
+  | { kind: "paste"; role: RosterRole; importId: string; index: number }
+);
 
 export type RosterChoice = {
   key: string;
@@ -66,6 +31,7 @@ export type RosterChoice = {
   speciesId: string | null;
   source: RosterSource | null;
   reason: string | null;
+  owner?: TeamSourceOwner;
 };
 
 export function rosterChoices(leagueId: string, team: TeamRoster): RosterChoice[] {
@@ -85,7 +51,7 @@ export function rosterChoices(leagueId: string, team: TeamRoster): RosterChoice[
       key: duplicate ? JSON.stringify([...identity, index]) : key,
       name: pokemon.name,
       speciesId,
-      source: !duplicate && speciesId ? { key, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId } : null,
+      source: !duplicate && speciesId ? { kind: "league", key, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId } : null,
       reason: duplicate ? "Duplicate roster name. Choose the Pokémon manually." : resolved.status === "resolved" ? null : resolved.reason,
     };
   });
@@ -120,6 +86,31 @@ export function getRosterPanel(state: CalculatorRosterState, role: RosterRole): 
   return { status: "ready", teamName: name, message: null, choices: rosterChoices(league.id, teams[0]) };
 }
 
+/** Every picker uses this same role-aware view, including its stale-action token. */
+export function getTeamPanel(current: PreparedMatchup, state: CalculatorRosterState, role: RosterRole): RosterPanel {
+  const owner = getTeamSourceOwner(current, role);
+  const selection = current.teams[role];
+  if (selection.mode === "league") {
+    const panel = getRosterPanel(state, role);
+    return { ...panel, choices: panel.choices.map((choice) => ({ ...choice, owner })) };
+  }
+  const paste = selection.paste;
+  if (!paste) return { status: "empty", teamName: null, message: "Import a PokéPaste link or team text in the team source panel, or choose Pokémon manually.", choices: [] };
+  return {
+    status: "ready", teamName: paste.title, message: "Imported sets · click a Pokémon to load its build and moves.",
+    choices: paste.team.members.map((member) => {
+      const key = JSON.stringify(["paste", role, paste.id, member.index]);
+      return {
+        key, name: member.name, speciesId: member.speciesId, owner,
+        source: member.selectable && member.build && member.speciesId ? {
+          kind: "paste", key, role, importId: paste.id, index: member.index, name: member.name, speciesId: member.speciesId,
+        } : null,
+        reason: member.diagnostics.filter((entry) => entry.severity !== "info").map((entry) => entry.message).join(" ") || null,
+      };
+    }),
+  };
+}
+
 type MegaBase = Pick<BattleBuild, "speciesId" | "abilityId" | "abilityActive" | "itemId">;
 
 export type Combatant = {
@@ -147,6 +138,8 @@ export type PreparedMatchup = {
   notice: string;
   accountId: string | null;
   selection: RosterSelection;
+  teams: Record<RosterRole, TeamSelection>;
+  importRevision: number;
   attacker: Combatant;
   defender: Combatant;
   field: BattleConditions;
@@ -212,6 +205,8 @@ export function createMatchup(revision = 0): PreparedMatchup {
     notice: "",
     accountId: null,
     selection: { leagueId: "", ownMemberId: "", opponentId: "" },
+    teams: { own: { mode: "league", paste: null, epoch: 0 }, opponent: { mode: "league", paste: null, epoch: 0 } },
+    importRevision: 0,
     attacker, defender, field,
     attack: { owner: getMoveOwner(attacker), moveId: null },
     replacement: null,
@@ -342,8 +337,60 @@ export function swapMatchup(current: PreparedMatchup): PreparedMatchup {
 export function resetMatchup(current: PreparedMatchup): PreparedMatchup {
   return {
     ...freshMatchup(current), accountId: current.accountId, selection: current.selection,
-    notice: "Reset to Charizard versus Blastoise, full HP, zero Stat Points and stages, and the default Doubles field. Session build edits cleared. League and opponent choices kept; your team shortcuts are on the left.",
+    teams: {
+      own: { ...current.teams.own, epoch: current.teams.own.epoch + 1 },
+      opponent: { ...current.teams.opponent, epoch: current.teams.opponent.epoch + 1 },
+    },
+    importRevision: current.importRevision,
+    notice: "Reset to Charizard versus Blastoise, full HP, zero Stat Points and stages, and the default Doubles field. Session build edits cleared. League and opponent choices kept; imported teams kept with their original sets. Your team shortcuts are on the left.",
   };
+}
+
+export function getTeamSourceOwner(current: PreparedMatchup, role: RosterRole): TeamSourceOwner {
+  return { role, revision: current.revision, epoch: current.teams[role].epoch };
+}
+
+function currentTeamSource(current: PreparedMatchup, owner: TeamSourceOwner): boolean {
+  return owner.revision === current.revision && owner.epoch === current.teams[owner.role].epoch;
+}
+
+function setTeamSelection(current: PreparedMatchup, role: RosterRole, selection: TeamSelection): PreparedMatchup {
+  const detach = (slot: Combatant) => slot.role === role && slot.source ? { ...slot, source: null } : slot;
+  return clearMoveInteractions({
+    ...current, teams: { ...current.teams, [role]: selection },
+    attacker: detach(current.attacker), defender: detach(current.defender),
+  });
+}
+
+export function changeTeamSource(current: PreparedMatchup, owner: TeamSourceOwner, mode: TeamSourceMode): PreparedMatchup {
+  if (!currentTeamSource(current, owner) || current.teams[owner.role].mode === mode) return current;
+  return {
+    ...setTeamSelection(current, owner.role, { ...current.teams[owner.role], mode, epoch: owner.epoch + 1 }),
+    notice: "Team source changed. Current Pokémon and their preparation kept; choose a team Pokémon to load another set.",
+  };
+}
+
+function prunePaste(current: PreparedMatchup, role: RosterRole): PreparedMatchup["cache"] {
+  return new Map([...current.cache].filter(([, entry]) => entry.source.kind !== "paste" || entry.source.role !== role));
+}
+
+export function applyTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner, input: PasteImport): PreparedMatchup {
+  if (!currentTeamSource(current, owner) || current.teams[owner.role].mode !== "paste"
+    || input.team.diagnostics.some((entry) => entry.severity === "error")
+    || !input.team.members.some((member) => member.selectable && member.build && member.speciesId)) return current;
+  const importRevision = current.importRevision + 1;
+  const paste = { ...structuredClone(input), title: input.title.trim().slice(0, 160) || "Imported team", id: `${current.revision}:${importRevision}` };
+  const next = setTeamSelection(current, owner.role, { mode: "paste", paste, epoch: owner.epoch + 1 });
+  return {
+    ...next, importRevision, cache: prunePaste(current, owner.role),
+    notice: `${paste.title} imported for ${owner.role === "own" ? "your team" : "the opponent"}. Current Pokémon kept; click a team Pokémon to load its set.`,
+  };
+}
+
+export function removeTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner): PreparedMatchup {
+  if (!currentTeamSource(current, owner) || !current.teams[owner.role].paste) return current;
+  const next = setTeamSelection(current, owner.role, { ...current.teams[owner.role], paste: null, epoch: owner.epoch + 1 });
+  return { ...next, cache: prunePaste(current, owner.role), notice: "Imported team removed. Current Pokémon and their preparation kept as manual builds." };
 }
 
 function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, hpInput: string): PreparedMatchup {
@@ -374,19 +421,26 @@ export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpIn
 export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice): PreparedMatchup {
   const source = choice.source;
   const slot = current[side];
+  if (!source || !speciesById.has(source.speciesId) || (choice.owner && (choice.owner.role !== slot.role || !currentTeamSource(current, choice.owner)))) return current;
+  const selection = current.teams[slot.role];
   const memberId = slot.role === "own" ? current.selection.ownMemberId : current.selection.opponentId;
-  if (!source || source.leagueId !== current.selection.leagueId || source.memberId !== memberId || !speciesById.has(source.speciesId)) return current;
+  const seed = source.kind === "paste" ? selection.paste?.team.members.find((member) => member.index === source.index) : undefined;
+  if (source.kind === "league") {
+    if (selection.mode !== "league" || source.leagueId !== current.selection.leagueId || source.memberId !== memberId) return current;
+  } else if (!choice.owner || selection.mode !== "paste" || source.role !== slot.role || selection.paste?.id !== source.importId
+    || !seed?.selectable || !seed.build || seed.speciesId !== source.speciesId
+    || source.key !== JSON.stringify(["paste", slot.role, source.importId, source.index])) return current;
   if (slot.source?.key === source.key) return current;
   const cached = current.cache.get(source.key);
-  const build = cached?.build ?? createBuild(source.speciesId);
+  const build = cached?.build ?? (seed?.build ? structuredClone(seed.build) : createBuild(source.speciesId));
   const hpInput = cached?.hpInput ?? formatHPInput(build.currentHP);
-  const moves = cached?.moves ?? createMoveSlots(source.speciesId, current.field.gameType);
+  const moves = cached?.moves ?? (seed ? structuredClone(seed.moves) : createMoveSlots(source.speciesId, current.field.gameType));
   const nextSlot = { ...slot, build, source, hpInput, moves, megaBase: cached?.megaBase ?? null, editorRevision: slot.editorRevision + 1 };
   return clearMoveInteractions({
     ...current,
     [side]: nextSlot,
     cache: cacheCombatant(current, nextSlot),
-    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : "Default build loaded; adjust nature, ability, item and Stat Points as needed."} Field settings are unchanged; move hit counts cleared.`,
+    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : "Default build loaded; adjust nature, ability, item and Stat Points as needed."} Field settings are unchanged; move hit counts cleared.`,
   });
 }
 
@@ -397,7 +451,10 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
   }
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
   const selection = { leagueId: state.selectedLeagueId, ownMemberId: league?.memberId ?? "", opponentId: state.opponentId };
-  const navigationChanged = Object.keys(selection).some((key) => selection[key as keyof RosterSelection] !== current.selection[key as keyof RosterSelection]);
+  const selectionChanged = Object.keys(selection).some((key) => selection[key as keyof RosterSelection] !== current.selection[key as keyof RosterSelection]);
+  const ownChanged = current.teams.own.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.ownMemberId !== current.selection.ownMemberId);
+  const opponentChanged = current.teams.opponent.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.opponentId !== current.selection.opponentId);
+  const navigationChanged = ownChanged || opponentChanged;
   const availableLeagues = new Set(state.leagues.map((entry) => entry.id));
   const checkedTeams = state.status === "ready" && state.teamsStatus === "ready" && state.data?.leagueId === league?.id;
   const validSources = new Map<string, RosterSource>();
@@ -414,6 +471,7 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
   }
   let cache = current.cache;
   for (const [key, { source }] of current.cache) {
+    if (source.kind !== "league") continue;
     if ((state.status === "ready" && !availableLeagues.has(source.leagueId))
       || (checkedTeams && source.leagueId === selection.leagueId && !validSources.has(key))) {
       if (cache === current.cache) cache = new Map(cache);
@@ -423,8 +481,14 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
   let detached = false;
   const reconcileSlot = (slot: Combatant): Combatant => {
     if (!slot.source) return slot;
+    const team = current.teams[slot.role];
+    if (slot.source.kind === "paste") {
+      if (team.mode === "paste" && slot.source.role === slot.role && team.paste?.id === slot.source.importId) return slot;
+      detached = true;
+      return { ...slot, source: null };
+    }
     const memberId = slot.role === "own" ? selection.ownMemberId : selection.opponentId;
-    if (slot.source.leagueId !== selection.leagueId || slot.source.memberId !== memberId
+    if (team.mode !== "league" || slot.source.leagueId !== selection.leagueId || slot.source.memberId !== memberId
       || (checkedTeams && !validSources.has(slot.source.key))) {
       detached = true;
       return { ...slot, source: null };
@@ -434,8 +498,12 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
   };
   const attacker = reconcileSlot(current.attacker);
   const defender = reconcileSlot(current.defender);
-  if (!navigationChanged && !detached && attacker === current.attacker && defender === current.defender
+  if (!selectionChanged && !detached && attacker === current.attacker && defender === current.defender
     && cache === current.cache && current.accountId === state.userId) return current;
-  const next = { ...current, accountId: state.userId, selection, attacker, defender, cache };
+  const teams = navigationChanged ? {
+    own: ownChanged ? { ...current.teams.own, epoch: current.teams.own.epoch + 1 } : current.teams.own,
+    opponent: opponentChanged ? { ...current.teams.opponent, epoch: current.teams.opponent.epoch + 1 } : current.teams.opponent,
+  } : current.teams;
+  const next = { ...current, accountId: state.userId, selection, teams, attacker, defender, cache };
   return navigationChanged || detached ? clearMoveInteractions(next) : next;
 }

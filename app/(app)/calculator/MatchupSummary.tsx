@@ -12,7 +12,7 @@ import PokemonChooser from "./PokemonChooser";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "./hp-preview";
 import { formatRange, koChance } from "./result-format";
 import type { CalculatorRosterState } from "./roster-data";
-import { getMoveOwner, getRosterPanel, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice } from "./roster-prep";
+import { getMoveOwner, getRosterPanel, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
 import { describeMoveSlot } from "@/app/lib/battle/move-defaults";
 import styles from "./calculator.module.css";
 
@@ -20,6 +20,7 @@ const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Avera
 
 type EditProps = {
   rosterState?: CalculatorRosterState;
+  rosterPanels?: Record<RosterRole, RosterPanel>;
   onBuildChange: (key: number, build: BattleBuild) => void;
   onHPChange: (key: number, text: string) => void;
   onRosterSelect: (key: number, choice: RosterChoice) => void;
@@ -54,7 +55,7 @@ type CombatantProps = EditProps & QuickMoveProps & {
   rollDescription: string;
 };
 
-function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, rosterState, onBuildChange, onHPChange, onRosterSelect, onToggleMega, attack, replacement, movesControl, onActivateMove }: CombatantProps) {
+function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, attack, replacement, movesControl, onActivateMove }: CombatantProps) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const owner = getMoveOwner(slot);
@@ -71,7 +72,8 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   const fraction = health ? displayedHP / health.maximum : 0;
   const hpLabel = projected ? `After ${moveName} · ${rollDescription}` : "Current HP";
   const hpText = health ? `${displayedHP} of ${health.maximum} HP${projected ? ` after ${moveName}, ${rollDescription}. Current HP: ${health.current}.` : ""}` : "";
-  const hasRoster = rosterState && getRosterPanel(rosterState, slot.role).choices.some((choice) => choice.source);
+  const rosterPanel = rosterPanels?.[slot.role] ?? (rosterState ? getRosterPanel(rosterState, slot.role) : undefined);
+  const hasRoster = rosterPanel?.choices.some((choice) => choice.source);
 
   useEffect(() => {
     if (editingHP) hpRef.current?.focus();
@@ -184,7 +186,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onChange={(build) => onBuildChange(slot.key, build)}
-        roster={hasRoster && <RosterPicker state={rosterState} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
+        roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
       />
     </div>
   );

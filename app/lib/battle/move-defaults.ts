@@ -3,7 +3,7 @@ import { movesById, speciesById } from "./catalog";
 
 export type MoveSlot = {
   moveId: string | null;
-  origin: "usage" | "suggested" | "manual" | "empty";
+  origin: "usage" | "suggested" | "manual" | "imported" | "empty";
   gameType: "Singles" | "Doubles" | null;
 };
 export type MoveSlots = [MoveSlot, MoveSlot, MoveSlot, MoveSlot];
@@ -49,6 +49,7 @@ export function createMoveSlots(speciesId: string, gameType: GameType): MoveSlot
 export function describeMoveSlot(slot: MoveSlot): string {
   if (!slot.moveId || slot.origin === "empty") return "Choose a move";
   if (slot.origin === "manual") return "Manually chosen";
+  if (slot.origin === "imported") return "Imported from team paste";
   if (slot.origin === "suggested") return "Suggested, per-species usage unavailable for this move";
   if (!slot.gameType) return "Common Champions usage";
   const [year, month] = formats[slot.gameType].source.month.split("-");

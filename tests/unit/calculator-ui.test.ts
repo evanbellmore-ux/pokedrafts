@@ -1322,8 +1322,8 @@ describe("active matchup and selected-move summary", () => {
 
   it("shows ownership independently of attacker/defender and keeps it correct after Swap", () => {
     const matchup = createMatchup();
-    matchup.attacker.source = { key: "own", leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
-    matchup.defender.source = { key: "opponent", leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
+    matchup.attacker.source = { kind: "league", key: "own", leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
+    matchup.defender.source = { kind: "league", key: "opponent", leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
     const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
     expect(html).toContain("Left Pokémon · Opponent's team");
     expect(html).toContain("Right Pokémon · Your team");
