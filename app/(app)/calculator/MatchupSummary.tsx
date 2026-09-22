@@ -3,7 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
-import { movesById, speciesById } from "@/app/lib/battle/catalog";
+import { itemsById, movesById, speciesById } from "@/app/lib/battle/catalog";
+import { getMegaOptions } from "@/app/lib/battle/mega-forms";
 import type { BattleBuild, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
 import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -22,6 +23,7 @@ type EditProps = {
   onBuildChange: (key: number, build: BattleBuild) => void;
   onHPChange: (key: number, text: string) => void;
   onRosterSelect: (key: number, choice: RosterChoice) => void;
+  onToggleMega: (owner: MoveOwner, formId: string) => void;
 };
 
 type QuickMoveProps = {
@@ -52,7 +54,7 @@ type CombatantProps = EditProps & QuickMoveProps & {
   rollDescription: string;
 };
 
-function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, rosterState, onBuildChange, onHPChange, onRosterSelect, attack, replacement, movesControl, onActivateMove }: CombatantProps) {
+function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, rosterState, onBuildChange, onHPChange, onRosterSelect, onToggleMega, attack, replacement, movesControl, onActivateMove }: CombatantProps) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const owner = getMoveOwner(slot);
@@ -61,6 +63,8 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   const hpRef = useRef<HTMLInputElement>(null);
   const editRef = useRef<HTMLButtonElement>(null);
   const species = speciesById.get(slot.build.speciesId);
+  const megaOptions = getMegaOptions(slot.build.speciesId);
+  const baseName = megaOptions.length ? speciesById.get(megaOptions[0].baseSpeciesId)?.name : undefined;
   const health = getBuildHealth(slot.build);
   const displayedHP = projected?.remaining ?? health?.current ?? 0;
   const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
@@ -81,7 +85,31 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   return (
     <div data-summary-combatant={side} className="min-w-0 px-3 py-3 sm:px-5">
       <p className="text-xs font-semibold text-muted">{side === "attacker" ? "Left Pokémon" : "Right Pokémon"} · {slot.source ? ownership : "Manual"}</p>
-      <h3 className="mt-1 wrap-anywhere text-base font-bold leading-snug text-text sm:text-xl">{species?.name ?? "Choose Pokémon"}</h3>
+      <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-xl">{species?.name ?? "Choose Pokémon"}</h3>
+        {megaOptions.length > 0 && (
+          <div role="group" aria-label={`${baseName} ${position} Mega forms`} aria-describedby={`${id}-mega-help`} className="flex min-w-0 flex-wrap gap-1">
+            {megaOptions.map((option) => {
+              const active = slot.build.speciesId === option.formId;
+              const form = speciesById.get(option.formId);
+              return (
+                <Button
+                  key={option.formId}
+                  size="sm"
+                  variant={active ? "primary" : "secondary"}
+                  className="min-h-11 px-2 text-xs"
+                  data-mega-form={option.formId}
+                  aria-label={`${baseName} ${position} ${option.label}`}
+                  aria-pressed={active}
+                  title={[itemsById.get(option.itemId)?.name, ...(form?.unsupported ?? [])].join(" — ")}
+                  onClick={() => onToggleMega(owner, option.formId)}
+                >{option.label}</Button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      {megaOptions.length > 0 && <p id={`${id}-mega-help`} className="sr-only">Change form, ability and held stone without resetting preparation. Click the active Mega again to return to base.</p>}
       <p className="mt-1 text-xs text-muted sm:hidden">{species?.types.join(" / ")}</p>
       <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{species?.types.map((type) => <TypeBadge key={type} type={type} />)}</div>
       {health ? (

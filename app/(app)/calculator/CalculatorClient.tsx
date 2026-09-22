@@ -18,7 +18,7 @@ import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, reconcileRosters, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice } from "./roster-prep";
+import { activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, reconcileRosters, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMega, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -241,7 +241,12 @@ export default function CalculatorClient() {
     selectTab("moves");
   }
 
-  function finishReplacement(replacement: MoveReplacement, moveId?: string) {
+  function toggleMega(owner: MoveOwner, formId: string) {
+    pendingNavigation.current = null;
+    setMatchup((current) => toggleMatchupMega(current, owner, formId));
+  }
+
+  function updateReplacement(replacement: MoveReplacement, moveId?: string) {
     pendingNavigation.current = null;
     setMatchup((current) => moveId === undefined ? dismissMoveReplacement(current, replacement) : replaceMatchupMove(current, replacement, moveId));
     const button = summaryRef.current?.querySelector<HTMLButtonElement>(`[data-move-owner="${replacement.owner.key}:${replacement.owner.epoch}"][data-move-slot="${replacement.slotIndex}"][data-move-session="${replacement.session}"]`);
@@ -314,6 +319,7 @@ export default function CalculatorClient() {
               resultIdentity={calculation?.identity}
               selectedRow={selectedRow}
               onActivateMove={activateQuickMove}
+              onToggleMega={toggleMega}
               rollMode={rollMode}
               onRollModeChange={setRollMode}
               blockedReason={blockedReason}
@@ -353,8 +359,8 @@ export default function CalculatorClient() {
                 replacement={replacement ? {
                   slotIndex: replacement.slotIndex,
                   moves: attackView.source.moves,
-                  onReplace: (moveId) => finishReplacement(replacement, moveId),
-                  onDone: () => finishReplacement(replacement),
+                  onReplace: (moveId) => updateReplacement(replacement, moveId),
+                  onDone: () => updateReplacement(replacement),
                 } : undefined}
                 abilityId={attackView.source.build.abilityId}
                 itemId={attackView.source.build.itemId}
@@ -371,10 +377,10 @@ export default function CalculatorClient() {
                   <p>Catalog snapshot: {champions.coverage.species} Pokémon/forms and {champions.coverage.moves} moves. {champions.coverage.unsupportedSpecies} Pokémon/forms and {champions.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
                   <ul className="list-disc space-y-2 pl-5">
                     <li>Quick moves are editable starting assumptions, not a discovered opponent moveset. Defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Suggested moves fill gaps using legal moves, not per-species popularity. Changing format keeps existing picks; new Pokémon use the current format.</li>
-                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Choose an unassigned replacement in Moves to update that slot and return to an unselected state. Done or Escape closes without replacing; ordinary move browsing does not rewrite your prepared moves.</li>
+                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Replace updates that slot, selects the new move and keeps the slot editable. Assigned moves are hidden from replacement choices. Done or Escape closes editing while keeping the selected calculation; ordinary move browsing does not rewrite your prepared moves.</li>
                     <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
                     <li>Champions only, fixed level 50. Stats use Stat Points and nature; displayed training stats do not include in-battle stages, abilities or items.</li>
-                    <li>Select a Mega form directly to supply its required stone. This does not simulate transformation timing.</li>
+                    <li>Mega buttons beside each Pokémon’s name change its form, ability, required stone and stats without resetting training, HP or moves. Click the active form again to restore the base ability and item; a directly chosen Mega returns to base defaults. Unsupported forms retain their warnings. This does not simulate transformation timing, entry effects or automatic weather/terrain.</li>
                     <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition; do not manually apply the same entry-stage change twice.</li>
                     <li>One move use only. Variable multihit moves need an explicit hit count unless Skill Link fixes it; fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
                     <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>

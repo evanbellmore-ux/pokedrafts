@@ -122,8 +122,9 @@ describe("prepared quick moves", () => {
     expect(next.defender.build.currentHP).toBeNull();
     const chosen = replaceMatchupMove(next, next.replacement!, "transform");
     expect(chosen.defender.moves[3]).toEqual({ moveId: "transform", origin: "manual", gameType: null });
-    expect(chosen.attack).toEqual({ owner: getMoveOwner(chosen.defender), moveId: null });
-    expect(chosen.replacement).toBeNull();
+    expect(chosen.attack).toEqual({ owner: getMoveOwner(chosen.defender), moveId: "transform" });
+    expect(chosen.replacement).toEqual({ ...next.replacement, session: next.replacementSession + 1 });
+    expect(chosen.replacementSession).toBe(next.replacementSession + 1);
     expect(getAttackView(chosen).sourceSide).toBe("defender");
   });
 
@@ -169,7 +170,7 @@ describe("prepared quick moves", () => {
 });
 
 describe("owned replacement sessions", () => {
-  it("replaces exactly one slot and updates its cache while finishing editing and clearing selection", () => {
+  it("replaces exactly one slot, selects it and renews the active editing token without disturbing preparation", () => {
     let current = withBothContexts(prepared().current);
     current = updateMatchupHP(current, "defender", "abc");
     const before = structuredClone(current);
@@ -179,10 +180,11 @@ describe("owned replacement sessions", () => {
     current.defender.moves.forEach((slot, index) => {
       if (index !== replacement.slotIndex) expect(next.defender.moves[index]).toBe(slot);
     });
-    expect(next.attack).toEqual({ owner: getMoveOwner(current.defender), moveId: null });
-    expect(next.replacement).toBeNull();
+    expect(next.attack).toEqual({ owner: getMoveOwner(current.defender), moveId: "protect" });
+    expect(next.replacement).toEqual({ ...replacement, session: current.replacementSession + 1 });
+    expect(next.replacement).not.toBe(replacement);
     expect(getAttackView(next).sourceSide).toBe("defender");
-    expect(next.replacementSession).toBe(current.replacementSession);
+    expect(next.replacementSession).toBe(current.replacementSession + 1);
     expect(next.attacker).toBe(current.attacker);
     expect(next.defender.contexts).toBe(current.defender.contexts);
     expect(next.defender.build).toBe(current.defender.build);
@@ -190,7 +192,8 @@ describe("owned replacement sessions", () => {
     expect(next.defender.moveEpoch).toBe(current.defender.moveEpoch);
     expect(next.field).toBe(current.field);
     const cached = next.cache.get(current.defender.source!.key)!;
-    expect(Object.keys(cached).sort()).toEqual(["build", "hpInput", "moves", "source"]);
+    expect(Object.keys(cached).sort()).toEqual(["build", "hpInput", "megaBase", "moves", "source"]);
+    expect(cached.megaBase).toBe(current.defender.megaBase);
     expect(cached.moves).toBe(next.defender.moves);
     expect(cached.build).toBe(current.defender.build);
     expect(cached.hpInput).toBe("abc");
@@ -207,6 +210,43 @@ describe("owned replacement sessions", () => {
     expect(dismissed.attack).toBe(reopened.attack);
     expect(dismissed.defender.moves).toBe(reopened.defender.moves);
     expect(dismissMoveReplacement(dismissed, reopened.replacement!)).toBe(dismissed);
+  });
+
+  it.each(["attacker", "defender"] as const)("continues replacing the same %s slot, allowing its now-unassigned previous move again", (side) => {
+    let current = activate(withBothContexts(prepared().current), side, 2);
+    current = updateMatchupHP(current, side, "00100");
+    const original = current;
+    const replacedOut = current[side].moves[2].moveId!;
+    const firstToken = current.replacement!;
+    const first = replaceMatchupMove(current, firstToken, "protect");
+    expect(first.attack.moveId).toBe("protect");
+    expect(first.replacement).toEqual({ ...firstToken, session: firstToken.session + 1 });
+    expect(first[side].moves.some((slot) => slot.moveId === replacedOut)).toBe(false);
+    const secondToken = first.replacement!;
+    const second = replaceMatchupMove(first, secondToken, replacedOut);
+    expect(second.attack.moveId).toBe(replacedOut);
+    expect(second[side].moves[2]).toEqual({ moveId: replacedOut, origin: "manual", gameType: null });
+    expect(second.replacement).toEqual({ ...secondToken, session: secondToken.session + 1 });
+    for (const old of [firstToken, secondToken]) {
+      expect(replaceMatchupMove(second, old, "protect")).toBe(second);
+      expect(dismissMoveReplacement(second, old)).toBe(second);
+    }
+    for (const next of [first, second]) {
+      for (const key of ["revision", "accountId", "selection", "field"] as const) expect(next[key]).toBe(original[key]);
+      expect(next[side].build).toBe(original[side].build);
+      expect(next[side].contexts).toBe(original[side].contexts);
+      expect(next[side].hpInput).toBe("00100");
+      expect(next[side].moveEpoch).toBe(original[side].moveEpoch);
+      expect(next[side].source).toBe(original[side].source);
+      expect(next[side].editorRevision).toBe(original[side].editorRevision);
+      expect(next[side === "attacker" ? "defender" : "attacker"]).toBe(original[side === "attacker" ? "defender" : "attacker"]);
+      expect(getAttackView(next).sourceSide).toBe(side);
+      expect(next.cache.get(next[side].source!.key)!.moves).toBe(next[side].moves);
+    }
+    const done = dismissMoveReplacement(second, second.replacement!);
+    expect(done).toEqual({ ...second, replacement: null });
+    expect(done.attack).toBe(second.attack);
+    expect(done.cache).toBe(second.cache);
   });
 
   it("keeps current-slot actions as exact no-ops without changing usage provenance", () => {
@@ -240,8 +280,9 @@ describe("owned replacement sessions", () => {
     }
     const next = replaceMatchupMove(current, current.replacement!, moveId);
     expect(next.attacker.moves[index]).toEqual({ moveId, origin: "manual", gameType: null });
-    expect(next.attack).toEqual({ owner: getMoveOwner(current.attacker), moveId: null });
-    expect(next.replacement).toBeNull();
+    expect(next.attack).toEqual({ owner: getMoveOwner(current.attacker), moveId });
+    expect(next.replacement).toEqual({ ...current.replacement, session: current.replacementSession + 1 });
+    expect(next.replacementSession).toBe(current.replacementSession + 1);
   });
 
   it("rejects duplicate, unknown, differently spelled and unlearned IDs on the exact source", () => {
