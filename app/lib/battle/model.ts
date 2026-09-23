@@ -1,10 +1,12 @@
-import { abilitiesById, itemsById, movesById, speciesById } from "./catalog";
+import { championsRuntime, type BattleRuntime } from "./runtime";
+import { validateMechanic } from "./mechanics";
 import type {
   BattleBuild,
   BattleConditions,
   BattleStat,
   BuildIssue,
   CombatStat,
+  ChampionsBuild,
   MoveDamageResult,
   SideConditions,
   StatTable,
@@ -75,21 +77,30 @@ export function parseIntegerInput(text: string): number | null {
   return Number.isSafeInteger(value) ? value : null;
 }
 
-export function createBuild(speciesId = "charizard"): BattleBuild {
-  const species = speciesById.get(speciesId);
-  const abilityId = species?.abilities.find((id) => !abilitiesById.get(id)?.unsupported.length)
+export function createBuild(speciesId?: string): ChampionsBuild;
+export function createBuild(speciesId: string, runtime: BattleRuntime): BattleBuild;
+export function createBuild(speciesId = "charizard", runtime: BattleRuntime = championsRuntime): BattleBuild {
+  const species = runtime.speciesById.get(speciesId);
+  const abilityId = species?.abilities.find((id) => !runtime.abilitiesById.get(id)?.unsupported.length)
     ?? species?.abilities[0] ?? "";
-  return {
+  const base = {
     speciesId,
     nature: "Serious",
     abilityId,
     abilityActive: defaultAbilityActive(abilityId),
-    itemId: species?.requiredItem ?? "",
-    points: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+    itemId: species?.requiredItem ?? species?.requiredItems?.[0] ?? "",
     boosts: { atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     currentHP: null,
-    status: "",
+    status: "" as const,
   };
+  const zero = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+  return runtime.profile.id === "champions"
+    ? { ...base, game: "champions", points: zero }
+    : {
+      ...base, game: runtime.profile.id,
+      native: { level: 50, evs: zero, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 } },
+      ...(species?.requiredTeraType ? { configuration: { teraType: species.requiredTeraType } } : {}),
+    };
 }
 
 export function createSide(): SideConditions {
@@ -112,19 +123,27 @@ export function createConditions(): BattleConditions {
   };
 }
 
-/** Champions training stats, before in-battle stages/abilities/items. */
-export function getBuildStats(build: BattleBuild): StatTable | null {
-  const species = speciesById.get(build.speciesId);
+/** Base/pre-transformation training stats, before stages/abilities/items. */
+export function getBuildStats(build: BattleBuild, runtime: BattleRuntime = championsRuntime): StatTable | null {
+  if (build.game !== runtime.profile.id) return null;
+  const species = runtime.speciesById.get(build.speciesId);
   const nature = NATURES.find((entry) => entry.name === build.nature);
-  if (!species || !nature || STATS.some((stat) => !isIntegerWithin(build.points[stat], 0, 32))) return null;
+  if (!species || !nature) return null;
+  if (build.game === "champions") {
+    if (!build.points || build.native || STATS.some((stat) => !isIntegerWithin(build.points[stat], 0, 32))) return null;
+  } else if (!build.native || build.points || !isIntegerWithin(build.native.level, 1, 100)
+    || STATS.some((stat) => !isIntegerWithin(build.native.evs?.[stat], 0, 252) || !isIntegerWithin(build.native.ivs?.[stat], 0, 31))) return null;
   const stats = {} as StatTable;
   for (const stat of STATS) {
     const base = species.baseStats[stat];
-    const points = build.points[stat] as number;
-    if (stat === "hp") stats.hp = base === 1 ? 1 : base + points + 75;
+    const raw = build.game === "champions"
+      ? base + build.points[stat]! + (stat === "hp" ? 75 : 20)
+      : Math.floor((2 * base + build.native.ivs[stat]! + Math.floor(build.native.evs[stat]! / 4)) * build.native.level! / 100)
+        + (stat === "hp" ? build.native.level! + 10 : 5);
+    if (stat === "hp") stats.hp = base === 1 ? 1 : raw;
     else {
-      const multiplier = nature.plus === stat ? 1.1 : nature.minus === stat ? 0.9 : 1;
-      stats[stat] = Math.floor((base + points + 20) * multiplier);
+      const multiplier = nature.plus === stat ? 110 : nature.minus === stat ? 90 : 100;
+      stats[stat] = Math.floor(raw * multiplier / 100);
     }
   }
   return stats;
@@ -134,24 +153,46 @@ function isIntegerWithin(value: number | null, min: number, max: number): value 
   return typeof value === "number" && Number.isSafeInteger(value) && value >= min && value <= max;
 }
 
-export function validateBuild(build: BattleBuild): BuildIssue[] {
+export function validateBuild(build: BattleBuild, runtime: BattleRuntime = championsRuntime): BuildIssue[] {
+  if (build.game !== runtime.profile.id) return [{ field: "game", message: `This build belongs to a different battle game. Recreate it for ${runtime.profile.label}; training data is not silently converted.` }];
   const issues: BuildIssue[] = [];
-  const species = speciesById.get(build.speciesId);
-  if (!species) return [{ field: "speciesId", message: "Select a Pokémon from the Champions catalog." }];
+  const label = build.game === "champions" ? "Champions" : runtime.profile.label;
+  const species = runtime.speciesById.get(build.speciesId);
+  if (!species) return [{ field: "speciesId", message: `Select a Pokémon from the ${label} catalog.` }];
   for (const reason of species.unsupported) issues.push({ field: "speciesId", message: reason });
 
-  for (const stat of STATS) {
-    if (!isIntegerWithin(build.points[stat], 0, 32)) {
-      issues.push({ field: `points.${stat}`, message: `${STAT_LABELS[stat]} needs a whole number from 0 to 32.` });
+  if (build.game === "champions") {
+    if (build.native) issues.push({ field: "native", message: "Native training data cannot be applied as Champions Stat Points." });
+    for (const stat of STATS) {
+      if (!isIntegerWithin(build.points?.[stat], 0, 32)) {
+        issues.push({ field: `points.${stat}`, message: `${STAT_LABELS[stat]} needs a whole number from 0 to 32.` });
+      }
     }
+    const points = STATS.reduce((total, stat) => total + (Number.isFinite(build.points?.[stat]) ? build.points[stat]! : 0), 0);
+    if (points > 66) issues.push({ field: "points", message: `Use at most 66 Stat Points (${points} allocated).` });
+  } else {
+    if (build.points) issues.push({ field: "points", message: "Champions Stat Points cannot be applied as native EVs." });
+    if (!isIntegerWithin(build.native?.level, 1, 100)) issues.push({ field: "native.level", message: "Level must be a whole number from 1 to 100." });
+    for (const stat of STATS) {
+      if (!isIntegerWithin(build.native?.evs?.[stat], 0, 252)) issues.push({ field: `native.evs.${stat}`, message: `${STAT_LABELS[stat]} EVs must be a whole number from 0 to 252.` });
+      if (!isIntegerWithin(build.native?.ivs?.[stat], 0, 31)) issues.push({ field: `native.ivs.${stat}`, message: `${STAT_LABELS[stat]} IVs must be a whole number from 0 to 31.` });
+      if (build.native?.innateIVs) {
+        const innate = build.native.innateIVs[stat];
+        const effective = build.native.ivs?.[stat];
+        if (!isIntegerWithin(innate, 0, 31)) issues.push({ field: `native.innateIVs.${stat}`, message: `${STAT_LABELS[stat]} innate IVs must be a whole number from 0 to 31.` });
+        else if (effective !== innate && (effective !== 31 || (build.native.level ?? 0) < (runtime.profile.generation === 9 ? 50 : 100))) {
+          issues.push({ field: `native.innateIVs.${stat}`, message: `Hyper Training requires effective IV 31 and level ${runtime.profile.generation === 9 ? 50 : 100} or above; original innate IVs are not replaced.` });
+        }
+      }
+    }
+    const evs = STATS.reduce((total, stat) => total + (Number.isFinite(build.native?.evs?.[stat]) ? build.native.evs[stat]! : 0), 0);
+    if (evs > 510) issues.push({ field: "native.evs", message: `Use at most 510 EVs (${evs} allocated).` });
   }
-  const points = STATS.reduce((total, stat) => total + (Number.isFinite(build.points[stat]) ? build.points[stat]! : 0), 0);
-  if (points > 66) issues.push({ field: "points", message: `Use at most 66 Stat Points (${points} allocated).` });
   if (!NATURES.some((nature) => nature.name === build.nature)) issues.push({ field: "nature", message: "Select a valid nature." });
 
-  const ability = abilitiesById.get(build.abilityId);
+  const ability = runtime.abilitiesById.get(build.abilityId);
   if (!ability || !species.abilities.includes(build.abilityId)) {
-    issues.push({ field: "abilityId", message: "Select an ability available to this Pokémon in Champions." });
+    issues.push({ field: "abilityId", message: `Select an ability available to this Pokémon in ${label}.` });
   } else {
     for (const reason of ability.unsupported) issues.push({ field: "abilityId", message: reason });
   }
@@ -159,30 +200,40 @@ export function validateBuild(build: BattleBuild): BuildIssue[] {
     issues.push({ field: "abilityActive", message: "Only unused Protean/Libero with unchanged typing is supported. Previously changed typing needs additional battle context." });
   }
   if (build.itemId) {
-    const item = itemsById.get(build.itemId);
-    if (!item) issues.push({ field: "itemId", message: "Select a held item from the Champions catalog." });
+    const item = runtime.itemsById.get(build.itemId);
+    if (!item) issues.push({ field: "itemId", message: `Select a held item from the ${label} catalog.` });
     else for (const reason of item.unsupported) issues.push({ field: "itemId", message: reason });
   }
-  if (species.requiredItem && species.requiredItem !== build.itemId) {
-    issues.push({ field: "itemId", message: `${species.name} requires ${itemsById.get(species.requiredItem)?.name ?? species.requiredItem}.` });
+  const requiredItems = species.requiredItems?.length ? species.requiredItems : species.requiredItem ? [species.requiredItem] : [];
+  if (requiredItems.length && !requiredItems.includes(build.itemId)) {
+    issues.push({ field: "itemId", message: `${species.name} requires ${requiredItems.map((id) => runtime.itemsById.get(id)?.name ?? id).join(" or ")}.` });
   }
+  if (species.requiredMove && !build.preparedMoves?.includes(species.requiredMove)) {
+    issues.push({ field: "preparedMoves", message: `${species.name} requires ${runtime.movesById.get(species.requiredMove)?.name ?? species.requiredMove} in its prepared moves. A learnset is not proof that the move is equipped.` });
+  }
+  if (species.name.includes("-Mega")) {
+    if (!runtime.profile.mega) issues.push({ field: "speciesId", message: `Mega Evolution is not available in ${label}.` });
+    const heldItem = runtime.itemsById.get(build.itemId);
+    if (heldItem?.zMove || heldItem?.zMoveType) issues.push({ field: "itemId", message: "A Mega-Evolved Pokémon cannot hold a Z-Crystal, including Rayquaza-Mega." });
+  }
+  issues.push(...validateMechanic(build, runtime));
   for (const stat of COMBAT_STATS) {
     if (!isIntegerWithin(build.boosts[stat], -6, 6)) {
       issues.push({ field: `boosts.${stat}`, message: `${STAT_LABELS[stat]} stages must be a whole number from −6 to +6.` });
     }
   }
   if (!STATUSES.some((status) => status.value === build.status)) issues.push({ field: "status", message: "Select a valid battle status." });
-  const stats = getBuildStats(build);
+  const stats = getBuildStats(build, runtime);
   if (build.currentHP !== null && !isIntegerWithin(build.currentHP, 1, stats?.hp ?? Number.MAX_SAFE_INTEGER)) {
     issues.push({ field: "currentHP", message: `Current HP must be a whole number from 1 to ${stats?.hp ?? "maximum HP"}, or blank for full HP.` });
   }
   return issues;
 }
 
-export function validateConditions(field: BattleConditions): BuildIssue[] {
+export function validateConditions(field: BattleConditions, runtime: BattleRuntime = championsRuntime): BuildIssue[] {
   const issues: BuildIssue[] = [];
   if (!["Singles", "Doubles"].includes(field.gameType)) issues.push({ field: "gameType", message: "Select Singles or Doubles." });
-  if (!["", "Sun", "Rain", "Sand", "Snow"].includes(field.weather)) issues.push({ field: "weather", message: "Select a supported weather condition." });
+  if (!runtime.profile.weather.includes(field.weather)) issues.push({ field: "weather", message: "Select a supported weather condition." });
   if (!["", "Electric", "Grassy", "Misty", "Psychic"].includes(field.terrain)) issues.push({ field: "terrain", message: "Select a supported terrain." });
   for (const effect of SHARED_FIELD_EFFECTS) {
     if (typeof field[effect.key] !== "boolean") {
@@ -194,10 +245,10 @@ export function validateConditions(field: BattleConditions): BuildIssue[] {
 
 export type DamageSort = "minimum" | "maximum" | "name";
 
-export function rankResults(results: MoveDamageResult[], sort: DamageSort = "minimum"): MoveDamageResult[] {
+export function rankResults(results: MoveDamageResult[], sort: DamageSort = "minimum", runtime: BattleRuntime = championsRuntime): MoveDamageResult[] {
   return [...results].sort((a, b) => {
-    const nameA = movesById.get(a.moveId)?.name ?? a.moveId;
-    const nameB = movesById.get(b.moveId)?.name ?? b.moveId;
+    const nameA = a.effectiveName ?? runtime.movesById.get(a.moveId)?.name ?? a.moveId;
+    const nameB = b.effectiveName ?? runtime.movesById.get(b.moveId)?.name ?? b.moveId;
     if (sort === "name") return nameA.localeCompare(nameB, "en");
     const calculable = Number(b.kind === "calculated") - Number(a.kind === "calculated");
     if (calculable) return calculable;

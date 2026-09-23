@@ -185,11 +185,30 @@ describe("Champions usage transformation (small offline fixtures)", () => {
     expect(format.coverage.unmatchedSpecies).toEqual(["Fixturemon-Other", "fixtureMon"]);
   });
 
+  it("prefers exact catalog identities over shared engine aliases without copying form usage", () => {
+    const catalog = catalogFixture();
+    catalog.species[0].calcName = "Fixturemon";
+    catalog.species[1].calcName = "Fixturemon";
+    for (const species of [catalog.species, [...catalog.species].reverse()]) {
+      const baseOnly = usageFixture("Doubles", { Fixturemon: { Moves: { alpha: 100 } } });
+      expect(deriveFormatUsage({ ...catalog, species }, baseOnly.payload, baseOnly.source).species)
+        .toEqual({ fixturemon: ["alpha"] });
+      const both = usageFixture("Doubles", {
+        Fixturemon: { Moves: { alpha: 100 } }, "Fixturemon-Mega": { Moves: { beta: 10 } },
+      });
+      expect(deriveFormatUsage({ ...catalog, species }, both.payload, both.source).species)
+        .toEqual({ fixturemon: ["alpha"], fixturemonmega: ["beta"] });
+    }
+  });
+
   it("rejects ambiguous catalog-backed aliases and duplicate resolved source rows", () => {
     const catalog = catalogFixture();
-    catalog.species[1].calcName = "Fixturemon";
+    catalog.species[1].calcName = "Fixturemon-Exact";
     const data = usageFixture();
     expect(() => deriveFormatUsage(catalog, data.payload, data.source)).toThrow("Ambiguous catalog species alias");
+    const canonicalCollision = catalogFixture();
+    canonicalCollision.species[1].name = "Fixturemon";
+    expect(() => deriveFormatUsage(canonicalCollision, data.payload, data.source)).toThrow("Ambiguous catalog species alias");
     const duplicate = usageFixture("Doubles", {
       Fixturemon: { Moves: { alpha: 1 } },
       "Fixturemon-Exact": { Moves: { beta: 2 } },

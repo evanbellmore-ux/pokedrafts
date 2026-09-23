@@ -168,6 +168,49 @@ describe("Champions catalog pure transformation", () => {
     expect(catalog.species[0].unsupported).toEqual([]); // Only the affected move is blocked.
   });
 
+  it.each([
+    "Caramel-Swirl", "Lemon-Cream", "Matcha-Cream", "Mint-Cream", "Rainbow-Swirl", "Ruby-Cream", "Ruby-Swirl",
+  ])("maps only the explicit Alcremie-%s cosmetic engine identity", (flavor) => {
+    const data = fixture();
+    const name = `Alcremie-${flavor}`;
+    data.source.species = [...data.source.species, species({ id: toID(name), name, baseSpecies: "Alcremie" })];
+    data.engine.species = [...data.engine.species, { ...data.engine.species[0], id: "alcremie", name: "Alcremie" }];
+    const row = transform(data).species.find((entry) => entry.id === toID(name))!;
+    expect(row).toMatchObject({ id: toID(name), name, calcName: "Alcremie", baseSpecies: "alcremie", unsupported: [] });
+    expect(row.moves).toEqual(moveIDs);
+    data.engine.species = data.engine.species.filter((entry) => entry.id !== "alcremie");
+    expect(transform(data).species.find((entry) => entry.id === row.id)?.unsupported)
+      .toContain(`Engine species missing: ${name}.`);
+  });
+
+  it("does not use baseSpecies or an Alcremie prefix as a generic engine fallback", () => {
+    const data = fixture();
+    data.source.species = [...data.source.species, ...["Alcremie-Unknown", "Alcremie-Salted-Cream", "Alcremie-Gmax"].map((name) =>
+      species({ id: toID(name), name, baseSpecies: "Alcremie" }))];
+    data.engine.species = [...data.engine.species, { ...data.engine.species[0], id: "alcremie", name: "Alcremie" }];
+    for (const row of transform(data).species.filter((entry) => entry.baseSpecies === "alcremie")) {
+      expect(row.calcName).toBe(row.name);
+      expect(row.unsupported).toContain(`Engine species missing: ${row.name}.`);
+    }
+  });
+
+  it("keeps mismatch and provenance gates active for mapped cosmetics", () => {
+    const data = fixture();
+    const cosmetic = species({ id: "alcremierubycream", name: "Alcremie-Ruby-Cream", baseSpecies: "Alcremie" });
+    cosmetic.learnset = { movePool: [], sources: [] };
+    data.source.species = [...data.source.species, cosmetic];
+    data.engine.species = [...data.engine.species, {
+      ...data.engine.species[0], id: "alcremie", name: "Alcremie",
+      types: ["Fire"], baseStats: { ...baseStats, atk: 200 }, weightkg: 123,
+    }];
+    const row = transform(data).species.find((entry) => entry.id === cosmetic.id)!;
+    expect(row).toMatchObject({ calcName: "Alcremie", baseStats, types: ["Water"], weightkg: 50, moves: [] });
+    expect(row.unsupported).toEqual(expect.arrayContaining([
+      "No proven Champions learnset.", "Engine base stat differs (atk): 200 vs 70.",
+      "Engine species types differ: Fire vs Water.", "Engine weight differs: 123 vs 50 kg.",
+    ]));
+  });
+
   it("preserves source stats/types/weight and reports engine mismatches", () => {
     const data = fixture();
     data.engine.species = data.engine.species.map((row) => row.id !== "fixturemon" ? row : {

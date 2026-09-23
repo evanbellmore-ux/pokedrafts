@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { activateMoveSlot, createMatchup, getAttackView, getMoveOwner, selectMatchupMove, updateMatchupBuild, updateMatchupHP } from "@/app/(app)/calculator/roster-prep";
@@ -229,6 +230,7 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
 describe.each(modes)("directional receiving-HP preview (%s roll)", (mode) => {
   it("uses the left receiving build, its trained maximum and actual reverse engine rolls without changing either HP", () => {
     let matchup = createMatchup();
+    assert(matchup.attacker.build.game === "champions");
     matchup = updateMatchupBuild(matchup, "attacker", {
       ...matchup.attacker.build, currentHP: 120, points: { ...matchup.attacker.build.points, hp: 32 },
     });

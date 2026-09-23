@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 import {
   activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, getMoveOwner, getRosterPanel,
@@ -150,6 +151,8 @@ describe("prepared quick moves", () => {
     let current = withBothContexts(prepared().current);
     const before = structuredClone(current);
     const hp = updateMatchupHP(current, "attacker", "2e1");
+    assert(hp.defender.build.game === "champions");
+    assert(before.defender.build.game === "champions");
     const build = updateMatchupBuild(hp, "defender", { ...hp.defender.build, nature: "Timid", points: { ...hp.defender.build.points, spa: null } });
     current = { ...build, field: { ...build.field, gameType: "Singles", gravity: true } };
     expect(current.attack).toBe(hp.attack);

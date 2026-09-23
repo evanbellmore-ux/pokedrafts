@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { Children, createElement, type ChangeEvent, type ComponentProps, type KeyboardEvent, type MouseEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
@@ -346,6 +347,7 @@ describe("Champions calculator UI", () => {
 
   it("swaps builds and side conditions while retaining shared effects and clearing hit counts", () => {
     const current = createMatchup(4);
+    assert(current.attacker.build.game === "champions");
     current.attacker.build.points.spa = 32;
     current.attacker.contexts = { bulletseed: { hits: 3 } };
     current.defender.contexts = { bulletseed: { hits: 5 } };
@@ -375,6 +377,7 @@ describe("Champions calculator UI", () => {
 
   it("resets all effects, builds and hit counts with new raw-input keys", () => {
     const current = createMatchup(4);
+    assert(current.attacker.build.game === "champions");
     current.attacker.build.points.spa = 32;
     current.attacker.contexts = { bulletseed: { hits: 3 } };
     current.defender.contexts = { bulletseed: { hits: 5 } };
@@ -1322,8 +1325,8 @@ describe("active matchup and selected-move summary", () => {
 
   it("shows ownership independently of attacker/defender and keeps it correct after Swap", () => {
     const matchup = createMatchup();
-    matchup.attacker.source = { kind: "league", key: "own", leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
-    matchup.defender.source = { kind: "league", key: "opponent", leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
+    matchup.attacker.source = { kind: "league", key: "own", runtimeIdentity: matchup.runtime.identity, leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
+    matchup.defender.source = { kind: "league", key: "opponent", runtimeIdentity: matchup.runtime.identity, leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
     const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
     expect(html).toContain("Left Pokémon · Opponent's team");
     expect(html).toContain("Right Pokémon · Your team");

@@ -1,4 +1,6 @@
-import { getBuildStats, validateBuild } from "@/app/lib/battle/model";
+import { getBuildHealth as getEffectiveHealth } from "@/app/lib/battle/health";
+import { validateBuild } from "@/app/lib/battle/model";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
 
 export type BuildHealth = { current: number; maximum: number };
@@ -7,12 +9,12 @@ export type HPPreview =
   | { status: "ready"; min: number; max: number; current: number; maximum: number; damage: number; remaining: number }
   | { status: "unavailable"; reason: string };
 
-export function getBuildHealth(build: BattleBuild): BuildHealth | null {
-  if (validateBuild(build).length) return null;
-  const maximum = getBuildStats(build)?.hp;
-  if (typeof maximum !== "number" || !Number.isSafeInteger(maximum) || maximum < 1) return null;
-  const current = build.currentHP === null ? maximum : build.currentHP;
-  if (!Number.isSafeInteger(current) || current < 1 || current > maximum) return null;
+export function getBuildHealth(build: BattleBuild, runtime: BattleRuntime = championsRuntime): BuildHealth | null {
+  if (validateBuild(build, runtime).length) return null;
+  const health = getEffectiveHealth(build, runtime);
+  if (!health || health.reason) return null;
+  const { current, max: maximum } = health;
+  if (!Number.isSafeInteger(maximum) || maximum < 1 || !Number.isSafeInteger(current) || current < 1 || current > maximum) return null;
   return { current, maximum };
 }
 
@@ -34,15 +36,15 @@ function hasUsableRolls(rolls: MoveDamageResult["rolls"], min: number, max: numb
 }
 
 /** Preview one current result without changing the build or simulating survival effects. */
-export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult | undefined, mode: DamageRollMode = "average"): HPPreview {
-  const health = getBuildHealth(defender);
-  if (!health) return { status: "unavailable", reason: "Enter a valid defender build and current HP to preview remaining HP." };
+export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult | undefined, mode: DamageRollMode = "average", runtime: BattleRuntime = championsRuntime): HPPreview {
+  const health = getBuildHealth(defender, runtime);
+  if (!health) return { status: "unavailable", reason: getEffectiveHealth(defender, runtime)?.reason ?? "Enter a valid defender build and current HP to preview remaining HP." };
   if (!row) return { status: "unavailable", reason: "A current damage result is required to preview remaining HP." };
   if (row.kind !== "calculated") {
     const reason = row.kind === "status" ? "Status moves do not have a direct-damage HP preview."
       : row.kind === "needs-context" ? "This move needs more battle context before HP can be previewed."
         : "This move's damage is unsupported; remaining HP is unavailable.";
-    return { status: "unavailable", reason };
+    return { status: "unavailable", reason: row.reason ?? reason };
   }
   const { min, max, rolls } = row;
   if (!isDamage(min) || !isDamage(max) || max < min) {

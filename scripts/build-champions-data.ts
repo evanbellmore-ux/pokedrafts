@@ -216,7 +216,7 @@ export async function buildChampionsData(check = false): Promise<void> {
     },
     identity: {
       ids: "Showdown toID: lowercase ASCII alphanumerics, no PokeAPI identity inference.",
-      species: "name is the resolved Showdown name; calcName is the exact engine name when present. Aegislash maps explicitly to Aegislash-Shield; all other species use exact IDs, not guessed base forms. Stats, types and weight are the resolved Showdown values.",
+      species: "name is the resolved Showdown name; calcName is the exact engine name when present. Aegislash maps explicitly to Aegislash-Shield; the seven emitted Alcremie cosmetic forms explicitly share engine Alcremie without changing catalog identity. All other species use exact IDs, not guessed base forms. Stats, types and weight are the resolved Showdown values.",
       baseSpecies: "Taxonomic Showdown baseSpecies ID, not changesFrom or a guaranteed available catalog row. Floette-Mega has baseSpecies=floette but inherits from floetteeternal.",
       references: "Species abilities/moves/requiredItem and item megaStone/megaEvolves/megaTargets use IDs. Scalar Mega fields are null for multi-target stones; megaTargets preserves all pairs.",
     },

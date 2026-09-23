@@ -1,7 +1,10 @@
-import { calculate, Field, Generations, Move, Pokemon, toID } from "@smogon/calc";
+import { calculate, Field, Generations, Pokemon, toID } from "@smogon/calc";
 import type { Result, StatsTable } from "@smogon/calc";
-import { abilitiesById, itemsById, movesById, speciesById } from "./catalog";
+import { championsRuntime, type BattleRuntime } from "./runtime";
 import { ABILITY_ACTIVATION_LABELS, validateBuild, validateConditions } from "./model";
+import { getBuildGender, isMaxActive } from "./mechanics";
+import { resolveBattleMove, withResolvedPriority } from "./resolve-move";
+import { withDynamaxHealth } from "./health";
 import type {
   BattleBuild,
   BattleConditions,
@@ -11,8 +14,6 @@ import type {
   MoveDamageResult,
   SideConditions,
 } from "./types";
-
-const generation = Generations.get(0);
 
 export type MatchupResult = {
   issues: { attacker: BuildIssue[]; defender: BuildIssue[]; field: BuildIssue[] };
@@ -50,7 +51,7 @@ const HISTORY_MOVES: Record<string, string> = {
 };
 
 const CONTEXT_ABILITIES: Record<string, string> = {
-  rivalry: "Rivalry needs both Pokémon's genders; gender context is not modeled in this version.",
+  rivalry: "Rivalry needs both Pokémon's genders; specify both instead of assuming the engine's default male gender.",
   supremeoverlord: "Supreme Overlord needs the number of fainted allies when it activated.",
 };
 const EXPLOSIVE_MOVES = new Set(["explosion", "selfdestruct", "mistyexplosion", "mindblown"]);
@@ -60,7 +61,7 @@ const GRAVITY_BLOCKED_MOVES = new Set(["bounce", "floatyfall", "fly", "flyingpre
 const ZERO_POWER_IMPLEMENTED = new Set([
   "seismictoss", "nightshade", "dragonrage", "sonicboom", "finalgambit",
   "electroball", "gyroball", "lowkick", "grassknot", "heavyslam", "heatcrash",
-  "flail", "reversal", "hardpress",
+  "flail", "reversal", "hardpress", "guardianofalola",
 ]);
 
 const SUCCESS_ASSUMPTIONS: Record<string, string> = {
@@ -79,29 +80,38 @@ const SUCCESS_ASSUMPTIONS: Record<string, string> = {
 
 function emptyRow(move: ChampionsMove, kind: MoveDamageResult["kind"], reason: string | null): MoveDamageResult {
   return {
-    moveId: move.id, kind, min: null, max: null, minPercent: null, maxPercent: null,
+    moveId: move.id, effectiveName: move.name, effectiveType: move.type, effectivePower: move.power, effectiveCategory: move.category,
+    kind, min: null, max: null, minPercent: null, maxPercent: null,
     rolls: null, ohkoChance: null, description: move.description, assumptions: [], reason, hits: null,
   };
 }
 
-function makePokemon(build: BattleBuild, speciesId = build.speciesId) {
-  const species = speciesById.get(speciesId);
-  const ability = abilitiesById.get(build.abilityId);
-  if (!species || !generation.species.get(toID(species.calcName)) || !ability) {
-    throw new Error("The selected Pokémon is not present in the pinned Champions engine.");
+function makePokemon(build: BattleBuild, runtime: BattleRuntime, speciesId = build.speciesId) {
+  const generation = Generations.get(runtime.profile.generation);
+  const species = runtime.speciesById.get(speciesId);
+  const ability = runtime.abilitiesById.get(build.abilityId);
+  if (build.game !== runtime.profile.id || !species || !generation.species.get(toID(species.calcName)) || !ability) {
+    throw new Error(`The selected Pokémon is not present in the pinned ${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} engine.`);
   }
-  return new Pokemon(generation, species.calcName, {
-    level: 50,
+  const teraType = build.mechanic === "tera" && build.configuration?.teraType
+    ? generation.types.get(toID(build.configuration.teraType))?.name : undefined;
+  return withDynamaxHealth(new Pokemon(generation, species.calcName, {
+    level: build.game === "champions" ? 50 : build.native.level!,
     nature: build.nature,
-    // Champions uses direct Stat Points in this engine parameter, not EVs.
-    evs: build.points as StatsTable,
+    // Gen 0 uses direct Stat Points; native games retain their real EVs/IVs.
+    evs: (build.game === "champions" ? build.points : build.native.evs) as StatsTable,
+    ivs: build.game === "champions" ? undefined : build.native.ivs as StatsTable,
     boosts: build.boosts as Partial<StatsTable>,
     ability: ability.name,
     abilityOn: build.abilityActive,
-    item: build.itemId ? itemsById.get(build.itemId)?.name : undefined,
+    item: build.itemId ? runtime.itemsById.get(build.itemId)?.name : undefined,
     curHP: build.currentHP ?? undefined,
     status: build.status,
-  });
+    gender: getBuildGender(build, runtime) ?? "N",
+    teraType,
+    isDynamaxed: isMaxActive(build),
+    dynamaxLevel: build.configuration?.dynamaxLevel ?? 10,
+  }));
 }
 
 function makeSide(side: SideConditions) {
@@ -169,46 +179,67 @@ function zeroDamage(move: ChampionsMove, reason: string): MoveDamageResult {
 }
 
 function calculateMove(
-  metadata: ChampionsMove,
+  assigned: ChampionsMove,
   attackerBuild: BattleBuild,
   defenderBuild: BattleBuild,
   conditions: BattleConditions,
-  context?: MoveContext,
+  context: MoveContext | undefined,
+  runtime: BattleRuntime,
 ): MoveDamageResult {
+  let resolved: ReturnType<typeof resolveBattleMove>;
+  try {
+    resolved = resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), context, runtime, {
+      isCrit: conditions.critical,
+      overrides: conditions.gameType === "Doubles" && !conditions.multipleTargets ? { target: "normal" } : {},
+    });
+  } catch (error) {
+    return emptyRow(assigned, "unsupported", `This matchup could not be calculated: ${error instanceof Error ? error.message : "Unknown engine error."}`);
+  }
+  if (resolved.kind) return emptyRow(assigned, resolved.kind, resolved.reason);
+  const metadata = resolved.effective;
   if (metadata.unsupported.length) return emptyRow(metadata, "unsupported", metadata.unsupported.join(" "));
   if (metadata.category === "Status") return emptyRow(metadata, "status", "No direct damage calculated; status and called-move effects are not simulated.");
   if (conditions.gravity && GRAVITY_BLOCKED_MOVES.has(metadata.id)) {
     return zeroDamage(metadata, `Gravity prevents ${metadata.name} from being used.`);
   }
-  if (CONTEXT_ABILITIES[attackerBuild.abilityId]) return emptyRow(metadata, "needs-context", CONTEXT_ABILITIES[attackerBuild.abilityId]);
-  if (metadata.ohko) return emptyRow(metadata, "unsupported", "One-hit KO moves use their own accuracy/eligibility rules, not a normal damage range.");
-  if (HISTORY_MOVES[metadata.id]) return emptyRow(metadata, "needs-context", HISTORY_MOVES[metadata.id]);
-  if (metadata.power === 0 && !ZERO_POWER_IMPLEMENTED.has(metadata.id)) {
-    return emptyRow(metadata, "unsupported", "This move's special damage mechanic is not verified in the pinned Champions engine.");
+  if (CONTEXT_ABILITIES[attackerBuild.abilityId]
+    && (attackerBuild.abilityId !== "rivalry" || !getBuildGender(attackerBuild, runtime) || !getBuildGender(defenderBuild, runtime))) {
+    return emptyRow(metadata, "needs-context", CONTEXT_ABILITIES[attackerBuild.abilityId]);
   }
-  if (defenderBuild.speciesId === "mimikyu" && defenderBuild.abilityId === "disguise" && attackerBuild.abilityId !== "moldbreaker") {
+  if (metadata.ohko) return emptyRow(metadata, "unsupported", "One-hit KO moves use their own accuracy/eligibility rules, not a normal damage range.");
+  if (HISTORY_MOVES[metadata.id]) return emptyRow(metadata, "needs-context", metadata.id === "fling" && runtime.profile.id !== "champions"
+    ? "Fling's item eligibility and consumption need additional verification for this game."
+    : HISTORY_MOVES[metadata.id]);
+  if (metadata.power === 0 && !ZERO_POWER_IMPLEMENTED.has(metadata.id)) {
+    return emptyRow(metadata, "unsupported", `This move's special damage mechanic is not verified in the pinned ${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} engine.`);
+  }
+  if (["mimikyu", "mimikyutotem"].includes(defenderBuild.speciesId) && defenderBuild.abilityId === "disguise"
+    && !["moldbreaker", "teravolt", "turboblaze"].includes(attackerBuild.abilityId)
+    && !["sunsteelstrike", "moongeistbeam", "photongeyser", "lightthatburnsthesky", "searingsunrazesmash", "menacingmoonrazemaelstrom", "gmaxdrumsolo", "gmaxfireball", "gmaxhydrosnipe"].includes(metadata.id)) {
     return emptyRow(metadata, "needs-context", "Intact Disguise absorbs a hit. Select Mimikyu-Busted for damage after the disguise breaks; shield loss is not simulated.");
   }
   if (metadata.id === "expandingforce" && conditions.gameType === "Doubles"
     && !conditions.multipleTargets && conditions.terrain === "Psychic") {
     return emptyRow(metadata, "unsupported", "The pinned engine cannot isolate one-target Expanding Force on Psychic Terrain while retaining doubles screen rules.");
   }
-  if (metadata.id === "dreameater" && defenderBuild.status !== "slp") return zeroDamage(metadata, "Dream Eater fails because the defender is not asleep.");
-  if (metadata.id === "snore" && attackerBuild.status !== "slp") return zeroDamage(metadata, "Snore fails because the attacker is not asleep.");
+  if (metadata.id === "dreameater" && defenderBuild.status !== "slp" && defenderBuild.abilityId !== "comatose") return zeroDamage(metadata, "Dream Eater fails because the defender is not asleep.");
+  if (metadata.id === "snore" && attackerBuild.status !== "slp" && attackerBuild.abilityId !== "comatose") return zeroDamage(metadata, "Snore fails because the attacker is not asleep.");
   if (conditions.trickRoom && attackerBuild.abilityId === "analytic" && !attackerBuild.abilityActive) {
     return emptyRow(metadata, "needs-context", "Analytic under Trick Room needs the actual turn order, including priority and speed ties. Only enable the target-switching condition if the target switches before this attack.");
   }
   if (conditions.wonderRoom && metadata.id === "bodypress") {
-    return emptyRow(metadata, "unsupported", "Body Press under Wonder Room is withheld: the pinned Champions engine does not apply its attacking Defense stages correctly.");
+    // Both Champions and the pinned gen789 implementation read the swapped SpD
+    // stage here; this verified shared limitation also affects native Body Press.
+    return emptyRow(metadata, "unsupported", `Body Press under Wonder Room is withheld: the pinned ${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} engine does not apply its attacking Defense stages correctly.`);
   }
   if (conditions.magicRoom && metadata.id === "acrobatics" && attackerBuild.itemId) {
-    return emptyRow(metadata, "unsupported", "Held-item Acrobatics under Magic Room is withheld: the item is suppressed, not absent, but the pinned Champions engine treats it as absent for move power.");
+    return emptyRow(metadata, "unsupported", `Held-item Acrobatics under Magic Room is withheld: the item is suppressed, not absent, but the pinned ${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} engine treats it as absent for move power.`);
   }
 
   const hitCount = resolveHits(metadata, attackerBuild, context);
   if (hitCount.hits === null) return emptyRow(metadata, "needs-context", hitCount.reason!);
 
-  const assumptions = ["One use, conditional on connecting; damage is before the defender's remaining-HP cap."];
+  const assumptions = ["One use, conditional on connecting; damage is before the defender's remaining-HP cap.", ...resolved.assumptions];
   if (conditions.gravity) assumptions.push("Gravity grounds airborne Pokémon. Displayed accuracy remains the catalog value; accuracy changes are not simulated.");
   if (conditions.trickRoom) assumptions.push("Trick Room changes turn order, not Speed stats. Turn order is not simulated; Electro Ball and Gyro Ball still use actual effective Speed.");
   if (conditions.wonderRoom) assumptions.push("Wonder Room swaps unboosted Defense and Sp. Def; stages stay with their original stat.");
@@ -218,29 +249,23 @@ function calculateMove(
   let attackingSpecies = attackerBuild.speciesId;
   if (attackingSpecies === "aegislash" && attackerBuild.abilityId === "stancechange") {
     attackingSpecies = "aegislashblade";
-    const blade = speciesById.get(attackingSpecies);
+    const blade = runtime.speciesById.get(attackingSpecies);
     if (!blade || blade.unsupported.length) return emptyRow(metadata, "unsupported", "A verified Blade Forme is required for Stance Change attacks.");
     assumptions.push("Stance Change uses Blade Forme for this damaging attack.");
   }
 
   try {
-    const attacker = makePokemon(attackerBuild, attackingSpecies);
-    const defender = makePokemon(defenderBuild);
-    const move = new Move(generation, metadata.name, {
-      ability: attacker.ability,
-      item: attacker.item,
-      species: attacker.name,
-      isCrit: conditions.critical,
-      hits: hitCount.hits,
-      timesUsed: 1,
-      timesUsedWithMetronome: 0,
-      overrides: {
-        ...(conditions.gameType === "Doubles" && !conditions.multipleTargets ? { target: "normal" as const } : {}),
-        // Resolve priority before the engine's Psychic Terrain/Armor Tail checks.
-        ...(attacker.hasAbility("Gale Wings") && metadata.type === "Flying" && attacker.curHP() === attacker.maxHP()
-          ? { priority: metadata.priority + 1 } : {}),
-      },
-    });
+    const generation = Generations.get(runtime.profile.generation);
+    const attacker = makePokemon(attackerBuild, runtime, attackingSpecies);
+    const defender = makePokemon(defenderBuild, runtime);
+    const move = resolved.move;
+    move.hits = hitCount.hits;
+    // Both engines resolve Gale Wings too late for terrain/priority shields.
+    // Showdown battle.ts:2619–2646 applies abilities AFTER Z/Max conversion; the
+    // effective Flying attack gains priority, not its untransformed base move.
+    if (attacker.hasAbility("Gale Wings") && metadata.type === "Flying" && attacker.curHP() === attacker.maxHP()) {
+      withResolvedPriority(move, metadata.priority + 1);
+    }
     const result = calculate(generation, attacker, defender, move, makeField(conditions));
     // Use effective cloned abilities: Mold Breaker may have suppressed Damp.
     if (EXPLOSIVE_MOVES.has(metadata.id) && (result.attacker.hasAbility("Damp") || result.defender.hasAbility("Damp"))) {
@@ -275,7 +300,9 @@ function calculateMove(
       result.rawDesc.weather, result.rawDesc.terrain,
     ].filter(Boolean);
     return {
-      moveId: metadata.id, kind: "calculated", min, max, minPercent, maxPercent,
+      moveId: assigned.id, effectiveName: result.move.name, effectiveType: result.move.type,
+      effectivePower: result.rawDesc.moveBP ?? result.move.bp, effectiveCategory: result.move.category,
+      kind: "calculated", min, max, minPercent, maxPercent,
       rolls: copyRolls(result.damage), ohkoChance: directKOChance(result, hitCount.hits),
       description: `${metadata.name}: ${min}–${max} HP (${minPercent.toFixed(1)}–${maxPercent.toFixed(1)}% of maximum HP).${effectNames.length ? ` Applied: ${effectNames.join(", ")}.` : ""}`,
       assumptions, reason: null, hits: hitCount.hits,
@@ -291,18 +318,19 @@ export function calculateMatchup(
   defender: BattleBuild,
   field: BattleConditions,
   contexts: Record<string, MoveContext> = {},
+  runtime: BattleRuntime = championsRuntime,
 ): MatchupResult {
   const issues = {
-    attacker: validateBuild(attacker),
-    defender: validateBuild(defender),
-    field: validateConditions(field),
+    attacker: validateBuild(attacker, runtime),
+    defender: validateBuild(defender, runtime),
+    field: validateConditions(field, runtime),
   };
   if (Object.values(issues).some((list) => list.length)) return { issues, results: [] };
-  const species = speciesById.get(attacker.speciesId)!;
+  const species = runtime.speciesById.get(attacker.speciesId)!;
   const results = species.moves.map((id) => {
-    const move = movesById.get(id);
-    if (!move) throw new Error(`Champions catalog has an unresolved move: ${id}.`);
-    return calculateMove(move, attacker, defender, field, contexts[id]);
+    const move = runtime.movesById.get(id);
+    if (!move) throw new Error(`${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} catalog has an unresolved move: ${id}.`);
+    return { ...calculateMove(move, attacker, defender, field, contexts[id], runtime), moveId: id };
   });
   return { issues, results };
 }

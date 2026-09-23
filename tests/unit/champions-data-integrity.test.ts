@@ -231,7 +231,7 @@ describe("generated Champions catalog integrity", () => {
     expect(species.get("greninja")?.unsupported).toEqual([]);
     expect(species.get("greninja")?.abilities).toContain("torrent");
     expect(species.get("vivillonarchipelago")?.unsupported).toContain("Engine species missing: Vivillon-Archipelago.");
-    expect(catalog.coverage.unsupportedSpecies).toBe(25);
+    expect(catalog.coverage.unsupportedSpecies).toBe(18);
     expect(catalog.coverage.unsupportedMoves).toBe(2);
     expect(catalog.coverage.unsupportedSpecies).toBe(catalog.species.filter((row) => row.unsupported.length).length);
     expect(catalog.coverage.unsupportedMoves).toBe(catalog.moves.filter((row) => row.unsupported.length).length);

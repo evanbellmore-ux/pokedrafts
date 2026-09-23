@@ -81,9 +81,21 @@ export type EngineSnapshot = {
 };
 
 const STATS: readonly BattleStat[] = ["hp", "atk", "def", "spa", "spd", "spe"];
-// Explicit upstream naming difference, not a base-species/cosmetic fallback.
+// Explicit pinned-source identities, never a generic base-species fallback.
 // Aegislash-Both is an engine-only hypothetical state and is never game data.
-const ENGINE_SPECIES_IDS: Readonly<Record<string, string>> = { aegislash: "aegislashshield" };
+// These seven available Alcremie forms are declared cosmetic in Showdown's
+// pokedex; gen0 stores their identical battle data under Alcremie. All ordinary
+// data/provenance mismatch gates below still apply to each exact catalog form.
+const ENGINE_SPECIES_IDS: Readonly<Record<string, string>> = {
+  aegislash: "aegislashshield",
+  alcremiecaramelswirl: "alcremie",
+  alcremielemoncream: "alcremie",
+  alcremiematchacream: "alcremie",
+  alcremiemintcream: "alcremie",
+  alcremierainbowswirl: "alcremie",
+  alcremierubycream: "alcremie",
+  alcremierubyswirl: "alcremie",
+};
 const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 const sorted = (values: Iterable<string>) => [...new Set(values)].sort(compare);
 const byID = <T extends NamedData>(a: T, b: T) => compare(a.id, b.id);
@@ -339,7 +351,7 @@ export function transformChampionsCatalog(
   const unsupportedMoves = moves.filter((row) => row.unsupported.length);
   const notes = [
     "Availability uses resolved Champions isNonstandard flags and available battleOnly entry forms, not competitive tiers; OU bans and Uber rankings are not game exclusions.",
-    "All IDs and references use Showdown toID. baseSpecies is the taxonomic ID, not a transform parent or guaranteed available catalog row; Mega targets use the actual battleOnly entry form. The explicit Aegislash engine name is Aegislash-Shield, never Aegislash-Both.",
+    "All IDs and references use Showdown toID. baseSpecies is the taxonomic ID, not a transform parent or guaranteed available catalog row; Mega targets use the actual battleOnly entry form. The explicit Aegislash engine name is Aegislash-Shield, never Aegislash-Both. The seven emitted Alcremie cosmetic forms explicitly share engine Alcremie while retaining exact catalog identities; this is not a generic base-form fallback.",
     "Learnsets use Champions getFullLearnset/getMovePool semantics, including form inheritance, with explicit mod provenance. Gen 9 markers such as 9M do not by themselves prove Champions legality; unproven inherited moves are withheld and flagged.",
     "All available moves are retained, including Status, zero-power, fixed-damage and multihit moves. Data coverage checks engine identities, types, categories, power, base stats, weight and Mega targets, not implementation of mechanics; the battle adapter must apply its mechanics/context gate.",
     "Abilities are the resolved assignments of available species; item availability is resolved independently. Engine ability/item name presence is not evidence that their mechanics are implemented.",

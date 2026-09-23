@@ -14,10 +14,15 @@ function normalizeAlias(name: string) {
 }
 
 /** Only complete, catalog-backed aliases; search tokens are not species identities. */
-export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "id" | "name" | "calcName">[]) {
+export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "id" | "name" | "calcName">[], gameLabel = "Champions") {
   const aliases = new Map<string, Set<string>>();
+  const engineAliases = new Map<string, Set<string>>();
   for (const entry of species) {
-    const names = [entry.id, entry.name, entry.calcName];
+    const engineAlias = normalizeAlias(entry.calcName);
+    const engineIDs = engineAliases.get(engineAlias) ?? new Set<string>();
+    engineIDs.add(entry.id);
+    engineAliases.set(engineAlias, engineIDs);
+    const names = [entry.id, entry.name];
     const mega = entry.name.match(/^(.+)-Mega(?:-(X|Y|Z))?$/);
     if (mega) names.push(`Mega ${mega[1]} ${mega[2] ?? ""}`);
     const regional = entry.name.match(/^(.+)-(Alola|Galar|Hisui|Paldea)(.*)$/);
@@ -33,9 +38,12 @@ export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "
     }
   }
   return (name: string): SpeciesResolution => {
-    const ids = aliases.get(normalizeAlias(name));
-    if (!ids?.size) return { status: "unavailable", reason: "No exact Champions match. Use the manual Pokémon selector." };
-    if (ids.size !== 1) return { status: "ambiguous", reason: "This name matches multiple Champions forms. Choose the form manually." };
+    // A shared engine name describes mechanics, not the chosen cosmetic form.
+    // Prefer catalog aliases; keep unique engine-only aliases such as Aegislash-Shield.
+    const alias = normalizeAlias(name);
+    const ids = aliases.get(alias) ?? engineAliases.get(alias);
+    if (!ids?.size) return { status: "unavailable", reason: `No exact ${gameLabel} match. Use the manual Pokémon selector.` };
+    if (ids.size !== 1) return { status: "ambiguous", reason: `This name matches multiple ${gameLabel} forms. Choose the form manually.` };
     return { status: "resolved", speciesId: [...ids][0] };
   };
 }

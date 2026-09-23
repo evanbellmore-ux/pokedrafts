@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { createElement, type ChangeEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
@@ -77,6 +78,14 @@ describe("Champions roster names", () => {
     expect(resolveRosterSpecies(name).status).toBe("unavailable");
   });
 
+  it("resolves every catalog ID and display name independently of engine aliases", () => {
+    for (const species of speciesById.values()) {
+      for (const name of [species.id, species.name]) {
+        expect(resolveRosterSpecies(name), name).toEqual({ status: "resolved", speciesId: species.id });
+      }
+    }
+  });
+
   it("deduplicates aliases for one species but refuses alias collisions", () => {
     const resolver = createSpeciesResolver([
       { id: "one", name: "A-b", calcName: "A b" },
@@ -85,6 +94,21 @@ describe("Champions roster names", () => {
     expect(resolver("A b").status).toBe("ambiguous");
     expect(resolver("one")).toEqual({ status: "resolved", speciesId: "one" });
     expect(resolveRosterSpecies("Charizard")).toEqual({ status: "resolved", speciesId: "charizard" });
+  });
+
+  it("prefers catalog aliases over shared engine names regardless of row order", () => {
+    const entries = [
+      { id: "base", name: "Base", calcName: "Base" },
+      { id: "basecosmetic", name: "Base-Cosmetic", calcName: "Base" },
+    ];
+    for (const species of [entries, [...entries].reverse()]) {
+      const resolver = createSpeciesResolver(species);
+      expect(resolver("Base")).toEqual({ status: "resolved", speciesId: "base" });
+      expect(resolver("Base Cosmetic")).toEqual({ status: "resolved", speciesId: "basecosmetic" });
+    }
+    const ambiguous = createSpeciesResolver(entries.map((entry) => ({ ...entry, calcName: "Engine-Only" })));
+    expect(ambiguous("Engine Only").status).toBe("ambiguous");
+    expect(ambiguous("Base")).toEqual({ status: "resolved", speciesId: "base" });
   });
 
   it("preserves gender symbols rather than falling back to an unqualified form", () => {
@@ -154,6 +178,7 @@ describe("calculator prep transitions", () => {
 
   it("never lets initial data overwrite manual prep and does not import draft costs", () => {
     const manual = createMatchup();
+    assert(manual.attacker.build.game === "champions");
     manual.attacker.build.points.spa = 32;
     manual.field.gravity = true;
     const state = loaded();
@@ -162,6 +187,7 @@ describe("calculator prep transitions", () => {
     expect(bound.attacker.source).toBeNull();
     const selected = selectRosterPokemon(bound, "attacker", choices(state).own[0]);
     expect(selected.attacker.build).toEqual(createBuild("charizard"));
+    assert(selected.attacker.build.game === "champions");
     expect(selected.attacker.build.points.spa).toBe(0);
     expect(selected.field).toBe(manual.field);
     expect(selected.defender.build).toBe(manual.defender.build);
@@ -259,6 +285,7 @@ describe("calculator prep transitions", () => {
   it("restores edited builds including NaN without mutating prior states", () => {
     const { own } = choices();
     let current = selectMatchupMove(prepared(), "flamethrower");
+    assert(current.attacker.build.game === "champions");
     const edit = { ...current.attacker.build, currentHP: Number.NaN, points: { ...current.attacker.build.points, spa: 32, hp: null } };
     current = updateMatchupBuild(current, "attacker", edit);
     expect(current.attack.moveId).toBe("flamethrower");
@@ -267,6 +294,7 @@ describe("calculator prep transitions", () => {
     const restored = selectRosterPokemon(changed, "attacker", own[0]);
     expect(restored.attacker.build).toBe(edit);
     expect(restored.attacker.build.currentHP).toBeNaN();
+    assert(restored.attacker.build.game === "champions");
     expect(restored.attacker.build.points.hp).toBeNull();
     expect(changed.attack.moveId).toBeNull();
     expect(restored.attack.moveId).toBeNull();
@@ -507,7 +535,11 @@ describe("Mega roster preparation", () => {
     const writers: [string, (value: PreparedMatchup) => PreparedMatchup][] = [
       ["toggle on", (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "charizardmegax")],
       ["change variant", (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "charizardmegay")],
-      ["edit build", (value) => updateMatchupBuild(value, side, { ...value[side].build, nature: "Timid", points: { ...value[side].build.points, spa: null } })],
+      ["edit build", (value) => {
+        const build = value[side].build;
+        assert(build.game === "champions");
+        return updateMatchupBuild(value, side, { ...build, nature: "Timid", points: { ...build.points, spa: null } });
+      }],
       ["edit HP", (value) => updateMatchupHP(value, side, "2e1")],
       ["replace move", (value) => {
         const editing = activateMoveSlot(value, getMoveOwner(value[side]), 1);

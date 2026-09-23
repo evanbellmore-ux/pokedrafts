@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { champions, movesById, speciesById } from "@/app/lib/battle/catalog";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { createBuild, createConditions } from "@/app/lib/battle/model";
-import type { BattleBuild, BattleConditions, MoveContext } from "@/app/lib/battle/types";
+import type { ChampionsBuild, BattleConditions, MoveContext } from "@/app/lib/battle/types";
 
 function row(
   moveId: string,
@@ -18,7 +18,7 @@ function row(
   return move!;
 }
 
-function fireMatchup(): [BattleBuild, BattleBuild, BattleConditions] {
+function fireMatchup(): [ChampionsBuild, ChampionsBuild, BattleConditions] {
   const attacker = createBuild("charizard");
   attacker.nature = "Timid";
   attacker.points = { hp: 2, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };

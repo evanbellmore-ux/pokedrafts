@@ -3,10 +3,10 @@
 import { Fragment, useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button, EmptyState, Field, Input, Select, TableWrap, tableClassName, tdClassName, thClassName, theadClassName, trClassName } from "@/app/components/ui";
-import { movesById } from "@/app/lib/battle/catalog";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { parseIntegerInput, rankResults, type DamageSort } from "@/app/lib/battle/model";
 import type { MoveSlots } from "@/app/lib/battle/move-defaults";
-import type { ChampionsMove, MoveContext, MoveDamageResult } from "@/app/lib/battle/types";
+import type { BattleBuild, ChampionsMove, MoveContext, MoveDamageResult } from "@/app/lib/battle/types";
 import { useMinWidthMd } from "../leagues/[leagueId]/useMinWidthMd";
 import { damagePercent, formatRange, koChance } from "./result-format";
 
@@ -20,15 +20,21 @@ const kindLabels: Record<MoveDamageResult["kind"], string> = {
 type MoveFilter = "all" | "damaging" | "status" | "needs-context" | "unsupported";
 type Candidate = { move: ChampionsMove; row?: MoveDamageResult };
 
-export function filterMoveResults(rows: MoveDamageResult[], query: string, filter: MoveFilter) {
+export function filterMoveResults(rows: MoveDamageResult[], query: string, filter: MoveFilter, runtime: BattleRuntime = championsRuntime) {
   const normalizedQuery = query.trim().toLowerCase();
   return rows.filter((row) => {
-    const move = movesById.get(row.moveId);
+    const move = runtime.movesById.get(row.moveId);
+    const category = row.effectiveCategory ?? move?.category;
     const matchesFilter = filter === "all"
-      || (filter === "status" ? move?.category === "Status"
-        : filter === "damaging" ? move?.category !== "Status" : row.kind === filter);
-    return matchesFilter && (move?.name ?? row.moveId).toLowerCase().includes(normalizedQuery);
+      || (filter === "status" ? category === "Status"
+        : filter === "damaging" ? category !== "Status" : row.kind === filter);
+    return matchesFilter && `${move?.name ?? row.moveId} ${row.effectiveName ?? ""}`.toLowerCase().includes(normalizedQuery);
   });
+}
+
+function isConverted(move: ChampionsMove | undefined, row?: MoveDamageResult, context?: MoveContext, sourceBuild?: BattleBuild) {
+  return context?.useZ === true || sourceBuild?.mechanic === "dynamax" || sourceBuild?.mechanic === "gigantamax"
+    || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
 }
 
 function basePower(move: ChampionsMove | undefined) {
@@ -60,7 +66,7 @@ function Rolls({ rolls }: { rolls: MoveDamageResult["rolls"] }) {
   );
 }
 
-export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onContextChange }: {
+export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onContextChange, sourceBuild, runtime = championsRuntime }: {
   moveId: string;
   row?: MoveDamageResult;
   id: string;
@@ -68,25 +74,31 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
   abilityId: string;
   itemId: string;
   onContextChange: (context: MoveContext) => void;
+  sourceBuild?: BattleBuild;
+  runtime?: BattleRuntime;
 }) {
-  const move = movesById.get(moveId);
-  const hitRange = Array.isArray(move?.multihit) ? move.multihit : null;
+  const move = runtime.movesById.get(moveId);
+  const name = row?.effectiveName ?? move?.name ?? moveId;
+  const converted = isConverted(move, row, context, sourceBuild);
+  const hitRange = !converted && Array.isArray(move?.multihit) ? move.multihit : null;
   const minimumHits = hitRange && itemId === "loadeddice" && hitRange[0] === 2 && hitRange[1] === 5 ? 4 : hitRange?.[0] ?? 1;
   return (
-    <div id={id} tabIndex={-1} aria-label={`${move?.name ?? moveId} details`} className="space-y-3 rounded wrap-anywhere text-sm text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+    <div id={id} tabIndex={-1} aria-label={`${name} details`} className="space-y-3 rounded wrap-anywhere text-sm text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
       {row?.reason && <p className="font-medium">{row.reason}</p>}
       {hitRange && (abilityId === "skilllink" ? (
         <p>Skill Link fixes this move at {hitRange[1]} hits; no manual hit count is needed.</p>
       ) : (
         <Field id={`${id}-hits`} label={`${move?.name ?? moveId}: hits this use`} help={`Choose the number of hits for this one use. No hidden hit count or future-turn sequence is assumed.${minimumHits !== hitRange[0] ? " Loaded Dice limits this choice to 4–5 hits." : ""}`} className="max-w-sm">
-          <Select value={context?.hits ?? ""} onChange={(event) => onContextChange({ hits: parseIntegerInput(event.target.value) ?? undefined })}>
+          <Select value={context?.hits ?? ""} onChange={(event) => onContextChange({ ...context, hits: parseIntegerInput(event.target.value) ?? undefined })}>
             <option value="">Choose hit count</option>
             {context?.hits !== undefined && context.hits < minimumHits && <option value={context.hits} disabled>{context.hits} hits — choose again</option>}
             {Array.from({ length: hitRange[1] - minimumHits + 1 }, (_, index) => minimumHits + index).map((hits) => <option key={hits} value={hits}>{hits} hits</option>)}
           </Select>
         </Field>
       ))}
-      <p className="text-xs text-muted">Base power: {basePower(move)} · Accuracy: {move?.accuracy != null ? `${move.accuracy}%` : "—"} · Category: {move?.category ?? "—"}</p>
+      {row?.effectiveName && <p className="flex flex-wrap items-center gap-2 font-semibold">{row.effectiveName}<TypeBadge type={row.effectiveType ?? move?.type ?? "Unknown"} /><span className="text-xs font-normal text-muted">Power: {row.effectivePower ?? "—"} · {row.effectiveCategory ?? move?.category}</span></p>}
+      {converted && <p className="text-xs text-muted">Requested Z / Max conversion uses one transformed attack, not the base move’s hit count. Unsupported requests remain uncalculated.</p>}
+      <p className="text-xs text-muted">{converted ? `Assigned move: ${move?.name ?? moveId} · Catalog base power` : "Base power"}: {basePower(move)} · Accuracy: {move?.accuracy != null ? `${move.accuracy}%` : "—"} · Category: {move?.category ?? "—"}</p>
       {move?.description && <p className="text-muted">{move.description}</p>}
       {row?.description && <p>{row.description}</p>}
       <p className="text-xs text-muted">
@@ -131,9 +143,11 @@ type Props = {
   id?: string;
   ref?: Ref<MoveResultsHandle>;
   onReveal?: (element: HTMLElement) => void;
+  sourceBuild?: BattleBuild;
+  runtime?: BattleRuntime;
 };
 
-export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal }: Props) {
+export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -147,26 +161,33 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   const resultRows = blocked ? [] : rows;
   const effectiveSort = blocked ? "name" : sort;
   const effectiveFilter = blocked && (filter === "needs-context" || filter === "unsupported") ? "all" : filter;
-  const ranked = rankResults(resultRows, effectiveSort);
+  const ranked = rankResults(resultRows, effectiveSort, runtime);
   const results = new Map(ranked.map((row, index) => [row.moveId, { row, index }]));
   const assignedMoves = new Set(replacement?.moves.map((slot) => slot.moveId));
   const candidates: Candidate[] = [...new Set(moveIds)].flatMap((moveId) => {
-    const move = movesById.get(moveId);
+    const move = runtime.movesById.get(moveId);
     return move && !assignedMoves.has(moveId) ? [{ move, row: results.get(moveId)?.row }] : [];
   });
-  candidates.sort((a, b) => effectiveSort === "name" ? a.move.name.localeCompare(b.move.name)
-    : (results.get(a.move.id)?.index ?? Infinity) - (results.get(b.move.id)?.index ?? Infinity) || a.move.name.localeCompare(b.move.name));
+  const candidateName = (candidate: Candidate) => candidate.row?.effectiveName ?? candidate.move.name;
+  candidates.sort((a, b) => effectiveSort === "name" ? candidateName(a).localeCompare(candidateName(b), "en")
+    : (results.get(a.move.id)?.index ?? Infinity) - (results.get(b.move.id)?.index ?? Infinity) || candidateName(a).localeCompare(candidateName(b), "en"));
   const normalizedQuery = query.trim().toLowerCase();
   const filtered = candidates.filter(({ move, row }) => {
-    const matchesFilter = effectiveFilter === "all" || (effectiveFilter === "status" ? move.category === "Status"
-      : effectiveFilter === "damaging" ? move.category !== "Status" : row?.kind === effectiveFilter);
-    return matchesFilter && move.name.toLowerCase().includes(normalizedQuery);
+    const category = row?.effectiveCategory ?? move.category;
+    const matchesFilter = effectiveFilter === "all" || (effectiveFilter === "status" ? category === "Status"
+      : effectiveFilter === "damaging" ? category !== "Status" : row?.kind === effectiveFilter);
+    return matchesFilter && `${move.name} ${row?.effectiveName ?? ""}`.toLowerCase().includes(normalizedQuery);
   });
   // Keep an open editor mounted if its hit count changes the damage ranking.
   const visible = filtered.filter(({ move }, index) => index < limit || move.id === expanded);
   const counts = (kind: MoveDamageResult["kind"]) => resultRows.filter((row) => row.kind === kind).length;
   const selectedHidden = candidates.some(({ move }) => move.id === selectedMoveId) && !visible.some(({ move }) => move.id === selectedMoveId);
   const currentMoveId = replacement?.moves[replacement.slotIndex].moveId;
+  const selectedMove = selectedMoveId && moveIds.includes(selectedMoveId) ? runtime.movesById.get(selectedMoveId) : undefined;
+  const selectedContext = selectedMoveId ? contexts[selectedMoveId] : undefined;
+  const selectedResult = selectedMoveId ? results.get(selectedMoveId)?.row : undefined;
+  const stellarActive = runtime.profile.tera && sourceBuild?.mechanic === "tera" && sourceBuild.configuration?.teraType === "Stellar";
+  const showMoveContext = !!selectedMove && (runtime.profile.zMoves || stellarActive);
 
   function resetFilter() {
     setQuery("");
@@ -210,7 +231,8 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   }, [detailTarget, query, filter, limit, prefix, ownerId, onReveal]);
 
   function needsHits({ move, row }: Candidate) {
-    return Array.isArray(move.multihit) && abilityId !== "skilllink" && (!row || row.kind === "needs-context");
+    return !isConverted(move, row, contexts[move.id], sourceBuild) && Array.isArray(move.multihit) && abilityId !== "skilllink"
+      && (!row || row.kind === "needs-context" && (!row.reason || /\bhits?\b/i.test(row.reason)));
   }
 
   function choose(candidate: Candidate) {
@@ -228,11 +250,12 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   }
 
   function selection(candidate: Candidate) {
-    const { move } = candidate;
+    const { move, row } = candidate;
+    const name = row?.effectiveName ?? move.name;
     if (replacement) {
       return (
         <div className="space-y-2">
-          <p className="wrap-anywhere font-semibold text-text">{move.name}</p>
+          <p className="wrap-anywhere font-semibold text-text">{name}{name !== move.name && <span className="block text-xs font-normal text-muted">From {move.name}</span>}</p>
           <Button size="sm" aria-label={`Replace move ${replacement.slotIndex + 1} with ${move.name}`} onClick={() => choose(candidate)}>Replace</Button>
         </div>
       );
@@ -245,12 +268,12 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
           name={`${prefix}-selected-move`}
           value={move.id}
           checked={selectedMoveId === move.id}
-          aria-label={`Select ${move.name} to preview HP`}
+          aria-label={`Select ${name}${name !== move.name ? ` (from ${move.name})` : ""} to preview HP`}
           aria-describedby={`${prefix}-${move.id}-damage`}
           onChange={() => choose(candidate)}
           className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
         />
-        <span>{move.name}{selectedMoveId === move.id && <span className="ml-2 text-xs font-medium text-accent-text">Selected</span>}</span>
+        <span>{name}{selectedMoveId === move.id && <span className="ml-2 text-xs font-medium text-accent-text">Selected</span>}{name !== move.name && <span className="block text-xs font-normal text-muted">From {move.name}</span>}</span>
       </label>
     );
   }
@@ -266,7 +289,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   }
 
   function details({ move, row }: Candidate) {
-    return <MoveDetails moveId={move.id} row={row} id={`${prefix}-${move.id}-details`} context={contexts[move.id]} abilityId={abilityId} itemId={itemId} onContextChange={(context) => onContextChange(move.id, context)} />;
+    return <MoveDetails moveId={move.id} row={row} id={`${prefix}-${move.id}-details`} context={contexts[move.id]} abilityId={abilityId} itemId={itemId} onContextChange={(context) => onContextChange(move.id, context)} sourceBuild={sourceBuild} runtime={runtime} />;
   }
 
   return (
@@ -279,13 +302,32 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
     }}>
       <div className={`flex flex-wrap items-start justify-between gap-3 ${replacement ? "rounded-xl border border-accent-border bg-accent-soft p-4" : ""}`}>
         <div className="min-w-0 flex-1">
-          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
-          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}.</p>
+          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
+          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
           <p className="mt-1 text-xs text-muted">{replacement ? "Replace changes only this slot and selects the new move to calculate. Keep choosing replacements, or use Done or Escape to close editing and keep the selected move. Already assigned moves are hidden." : "Select a move to preview HP above without changing your four quick moves."}</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>
       {blocked && <p className="text-sm text-muted">Calculations are paused. You can still choose moves and edit hit counts. Damage sorting and result filters resume when calculations are available.</p>}
+      {showMoveContext && selectedMove && <div className="space-y-2 rounded-lg border border-line bg-panel p-3" aria-label="Selected attack context">
+        <p className="wrap-anywhere text-sm font-semibold text-text">{selectedResult?.effectiveName ?? selectedMove.name} · {runtime.profile.label}</p>
+        {runtime.profile.zMoves && <>
+          <label htmlFor={`${prefix}-use-z`} className="flex min-h-11 items-center gap-2 text-sm text-text">
+            <input id={`${prefix}-use-z`} type="checkbox" checked={selectedContext?.useZ === true}
+              disabled={selectedMove.category === "Status" && selectedContext?.useZ !== true}
+              aria-describedby={`${prefix}-z-help`} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
+              onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, useZ: event.target.checked })} />
+            Use Z-Move for {selectedMove.name}
+          </label>
+          <p id={`${prefix}-z-help`} className="text-xs text-muted">{selectedMove.category === "Status" ? "Status Z-Move bonuses are not simulated; no ordinary damage is substituted." : `Requires an eligible Z-Crystal and base move. Held item: ${runtime.itemsById.get(itemId)?.name ?? "None"}. Assumes the team’s Z-Move use is still available; consumption is not tracked.`}</p>
+        </>}
+        {stellarActive && selectedMove.category !== "Status" && <Field id={`${prefix}-stellar-first-use`} label="Stellar: first use of this move’s type?" help="Choose explicitly. Stellar’s once-per-type boost and past attacks are not inferred or tracked.">
+          <Select value={selectedContext?.stellarFirstUse === undefined ? "" : selectedContext.stellarFirstUse ? "yes" : "no"} onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, stellarFirstUse: event.target.value === "" ? undefined : event.target.value === "yes" })}>
+            <option value="">Choose first-use context</option><option value="yes">Yes — boost still available</option><option value="no">No — this type already used</option>
+          </Select>
+        </Field>}
+        {selectedResult?.reason && <p className="wrap-anywhere text-sm text-muted">{selectedResult.reason}</p>}
+      </div>}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <Field id={`${prefix}-search`} label="Find a move" className="col-span-2 sm:col-span-1">
           <Input type="search" placeholder="Move name" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(PAGE_SIZE); }} />
@@ -332,7 +374,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
                     <tr className={`${trClassName} ${selectedMoveId === move.id ? "bg-accent-soft" : ""}`}>
                       <th scope="row" className={`${tdClassName} font-normal`}>
                         {selection(candidate)}
-                        <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={move.type} /><span className="text-xs text-muted">{move.category}</span></div>
+                        <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                       </th>
                       <td id={`${prefix}-${move.id}-damage`} className={tdClassName}><Damage row={row} /></td>
                       <td className={`${tdClassName} tabular-nums text-text`}>{row ? koChance(row) : "Not estimated"}</td>
@@ -353,7 +395,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
               <li key={move.id} className={`min-w-0 space-y-3 rounded-xl border p-4 ${selectedMoveId === move.id ? "border-accent-border bg-accent-soft" : "border-line bg-panel"}`}>
                 <div>
                   {selection(candidate)}
-                  <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={move.type} /><span className="text-xs text-muted">{move.category}</span></div>
+                  <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                 </div>
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div id={`${prefix}-${move.id}-damage`} className="text-sm"><Damage row={row} /><p className="mt-1 text-xs tabular-nums text-muted">One-use KO: {row ? koChance(row) : "Not estimated"}</p></div>

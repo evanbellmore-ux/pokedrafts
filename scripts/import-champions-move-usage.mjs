@@ -104,11 +104,20 @@ function indexCatalog(catalog) {
       throw new Error("Invalid or duplicate catalog species identity/learnset.");
     }
     species.set(row.id, row);
-    for (const name of new Set([row.id, row.name, row.calcName])) {
+    for (const name of new Set([row.id, row.name])) {
       const previous = identities.get(name);
       if (previous && previous.id !== row.id) throw new Error(`Ambiguous catalog species alias: ${name}.`);
       identities.set(name, row);
     }
+  }
+  // Catalog IDs/names own their usage even when cosmetics share that engine name.
+  // Only otherwise-unclaimed, unique engine aliases can identify a species.
+  const canonical = new Set(identities.keys());
+  for (const row of species.values()) {
+    if (canonical.has(row.calcName)) continue;
+    const previous = identities.get(row.calcName);
+    if (previous && previous.id !== row.id) throw new Error(`Ambiguous catalog species alias: ${row.calcName}.`);
+    identities.set(row.calcName, row);
   }
   return { moves, species, identities };
 }
@@ -185,7 +194,7 @@ export function buildMoveUsageSnapshot(catalogJSON, inputs) {
       note: "Community battle usage, not an official Pokemon Champions recommendation. Moves values are raw weighted counts, not percentages.",
     },
     policy: {
-      identities: "Exact catalog id/name/calcName only; ambiguous aliases and duplicate resolved rows fail. No fuzzy matches or base-form usage inheritance.",
+      identities: "Exact catalog id/name take precedence over calcName; otherwise only unique engine aliases resolve. Ambiguous aliases and duplicate resolved rows fail. No fuzzy matches or base-form usage inheritance.",
       species: "Top four positive finite raw move weights, filtered first to catalog-known non-Status moves in the exact proven Champions learnset. Canonical ID breaks ties; zero power and engine warnings do not exclude moves.",
       aggregate: "Complete damaging-move rank by sum of positive finite legal raw weights across exact-matched species in the same format, including moves outside species top fours. Canonical ID breaks ties. No aggregate truncation before exact-learnset intersection.",
       fallback: "Fill unused legal damaging moves from same-format aggregate rank, then canonical ID order. Both fallback tiers are suggested, never per-species usage; pad to four with empty slots.",

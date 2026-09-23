@@ -3,9 +3,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
-import { itemsById, movesById, speciesById } from "@/app/lib/battle/catalog";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
-import type { BattleBuild, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleMechanic, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
+import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
 import PokemonChooser from "./PokemonChooser";
@@ -25,6 +26,8 @@ type EditProps = {
   onHPChange: (key: number, text: string) => void;
   onRosterSelect: (key: number, choice: RosterChoice) => void;
   onToggleMega: (owner: MoveOwner, formId: string) => void;
+  onToggleMechanic?: (owner: MoveOwner, mechanic: BattleMechanic) => void;
+  runtime?: BattleRuntime;
 };
 
 type QuickMoveProps = {
@@ -53,9 +56,10 @@ type CombatantProps = EditProps & QuickMoveProps & {
   projected: Extract<ReturnType<typeof previewRemainingHP>, { status: "ready" }> | null;
   moveName: string | null;
   rollDescription: string;
+  selectedResult?: MoveDamageResult;
 };
 
-function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, attack, replacement, movesControl, onActivateMove }: CombatantProps) {
+function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, selectedResult, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, attack, replacement, movesControl, onActivateMove, runtime = championsRuntime }: CombatantProps) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const owner = getMoveOwner(slot);
@@ -63,16 +67,19 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   const [editingHP, setEditingHP] = useState(false);
   const hpRef = useRef<HTMLInputElement>(null);
   const editRef = useRef<HTMLButtonElement>(null);
-  const species = speciesById.get(slot.build.speciesId);
-  const megaOptions = getMegaOptions(slot.build.speciesId);
-  const baseName = megaOptions.length ? speciesById.get(megaOptions[0].baseSpeciesId)?.name : undefined;
-  const health = getBuildHealth(slot.build);
+  const species = runtime.speciesById.get(slot.build.speciesId);
+  const megaOptions = getMegaOptions(slot.build.speciesId, runtime, slot.megaBase?.speciesId);
+  const baseName = megaOptions.length ? runtime.speciesById.get(megaOptions[0].baseSpeciesId)?.name : undefined;
+  const health = getBuildHealth(slot.build, runtime);
+  const teraType = runtime.profile.tera && slot.build.mechanic === "tera" ? slot.build.configuration?.teraType : undefined;
+  const maxActive = slot.build.mechanic === "dynamax" || slot.build.mechanic === "gigantamax";
+  const types = teraType && teraType !== "Stellar" ? [teraType] : species?.types;
   const displayedHP = projected?.remaining ?? health?.current ?? 0;
   const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
   const fraction = health ? displayedHP / health.maximum : 0;
-  const hpLabel = projected ? `After ${moveName} · ${rollDescription}` : "Current HP";
+  const hpLabel = projected ? `After ${moveName} · ${rollDescription}` : maxActive ? `Current HP (${slot.build.mechanic === "gigantamax" ? "Gigantamax" : "Dynamax"})` : "Current HP";
   const hpText = health ? `${displayedHP} of ${health.maximum} HP${projected ? ` after ${moveName}, ${rollDescription}. Current HP: ${health.current}.` : ""}` : "";
-  const rosterPanel = rosterPanels?.[slot.role] ?? (rosterState ? getRosterPanel(rosterState, slot.role) : undefined);
+  const rosterPanel = rosterPanels?.[slot.role] ?? (rosterState ? getRosterPanel(rosterState, slot.role, runtime) : undefined);
   const hasRoster = rosterPanel?.choices.some((choice) => choice.source);
 
   useEffect(() => {
@@ -90,10 +97,10 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
       <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
         <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-xl">{species?.name ?? "Choose Pokémon"}</h3>
         {megaOptions.length > 0 && (
-          <div role="group" aria-label={`${baseName} ${position} Mega forms`} aria-describedby={`${id}-mega-help`} className="flex min-w-0 flex-wrap gap-1">
+          <div role="group" aria-label={`${baseName} ${position} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} aria-describedby={`${id}-mega-help`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
               const active = slot.build.speciesId === option.formId;
-              const form = speciesById.get(option.formId);
+              const form = runtime.speciesById.get(option.formId);
               return (
                 <Button
                   key={option.formId}
@@ -103,7 +110,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
                   data-mega-form={option.formId}
                   aria-label={`${baseName} ${position} ${option.label}`}
                   aria-pressed={active}
-                  title={[itemsById.get(option.itemId)?.name, ...(form?.unsupported ?? [])].join(" — ")}
+                  title={[runtime.itemsById.get(option.itemId)?.name, option.requiredMove ? `Requires ${runtime.movesById.get(option.requiredMove)?.name ?? option.requiredMove}` : null, ...(form?.unsupported ?? [])].filter(Boolean).join(" — ")}
                   onClick={() => onToggleMega(owner, option.formId)}
                 >{option.label}</Button>
               );
@@ -111,9 +118,13 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
           </div>
         )}
       </div>
-      {megaOptions.length > 0 && <p id={`${id}-mega-help`} className="sr-only">Change form, ability and held stone without resetting preparation. Click the active Mega again to return to base.</p>}
-      <p className="mt-1 text-xs text-muted sm:hidden">{species?.types.join(" / ")}</p>
-      <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{species?.types.map((type) => <TypeBadge key={type} type={type} />)}</div>
+      {megaOptions.length > 0 && <p id={`${id}-mega-help`} className="sr-only">Change form, ability and required held item without resetting preparation. Click the active form again to return to its original base.</p>}
+      <p className="mt-1 text-xs text-muted sm:hidden">{types?.join(" / ")}{teraType && ` · Tera ${teraType}`}</p>
+      <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{types?.map((type) => <TypeBadge key={type} type={type} />)}{teraType && <span className="text-xs font-semibold text-accent-text">Tera {teraType}</span>}</div>
+      {teraType && <p className="mt-1 text-xs text-muted">{teraType === "Stellar" ? "Stellar retains original defensive typing" : `Original types: ${species?.types.join(" / ")}; Tera changes defensive typing`}. Original STAB is retained.</p>}
+      <MechanicControls build={slot.build} position={position} runtime={runtime} onToggle={onToggleMechanic ? (mechanic) => onToggleMechanic(owner, mechanic) : undefined} />
+      {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} compact /></div>}
+      <RetainedConfiguration build={slot.build} runtime={runtime} />
       {health ? (
         <>
           <p className="mt-2 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
@@ -136,6 +147,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
               id={`${id}-hp`}
               compact
               build={slot.build}
+              runtime={runtime}
               issues={issues}
               text={slot.hpInput}
               onTextChange={(text) => onHPChange(slot.key, text)}
@@ -155,8 +167,10 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
         <p className="mb-2 text-xs font-semibold text-muted">Quick moves <span className="font-normal">· click to calculate or replace</span></p>
         <div className={styles.quickMoves}>
           {slot.moves.map((prepared, index) => {
-            const move = prepared.moveId ? movesById.get(prepared.moveId) : undefined;
+            const move = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
             const selected = prepared.moveId !== null && sameMoveOwner(attack.owner, owner) && attack.moveId === prepared.moveId;
+            const effective = selected && selectedResult?.moveId === prepared.moveId ? selectedResult : undefined;
+            const name = effective?.effectiveName ?? move?.name ?? "Choose move";
             const editing = replacement && sameMoveOwner(replacement.owner, owner) && replacement.slotIndex === index;
             return (
               <button
@@ -165,15 +179,16 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
                 data-move-owner={`${owner.key}:${owner.epoch}`}
                 data-move-slot={index}
                 data-move-session={editing ? replacement.session : undefined}
-                aria-label={`${species?.name ?? "Pokémon"} ${position} move ${index + 1}: ${move?.name ?? "Choose move"}`}
+                aria-label={`${species?.name ?? "Pokémon"} ${position} move ${index + 1}: ${name}${name !== move?.name && move ? ` (from ${move.name})` : ""}`}
                 aria-describedby={`${id}-move-${index}-origin`}
                 aria-controls={movesControl}
                 aria-pressed={selected}
                 onClick={() => onActivateMove(owner, index)}
                 className={`min-h-12 min-w-0 rounded-lg border px-2 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${selected || editing ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}
               >
-                <span className="block wrap-anywhere text-xs font-semibold text-text">{move?.name ?? "Choose move"}</span>
-                <span className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted">{move && <TypeBadge type={move.type} />}{prepared.origin === "suggested" && <span>Suggested</span>}{editing && <span className="text-accent-text">Editing</span>}</span>
+                <span className="block wrap-anywhere text-xs font-semibold text-text">{name}</span>
+                {move && name !== move.name && <span className="block wrap-anywhere text-xs text-muted">From {move.name}</span>}
+                <span className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted">{move && <TypeBadge type={effective?.effectiveType ?? move.type} />}{prepared.origin === "suggested" && <span>Suggested</span>}{editing && <span className="text-accent-text">Editing</span>}</span>
                 <span id={`${id}-move-${index}-origin`} className="sr-only">{describeMoveSlot(prepared)}</span>
               </button>
             );
@@ -183,6 +198,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
       <PokemonChooser
         side={side}
         build={slot.build}
+        runtime={runtime}
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onChange={(build) => onBuildChange(slot.key, build)}
@@ -192,20 +208,23 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   );
 }
 
-export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, ...editProps }: Props) {
+export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, runtime = championsRuntime, ...editProps }: Props) {
   const id = useId();
   const selectedMoveId = attack.moveId;
   const source = sameMoveOwner(attack.owner, getMoveOwner(attacker)) ? attacker : sameMoveOwner(attack.owner, getMoveOwner(defender)) ? defender : null;
   const receiver = source === defender ? attacker : defender;
-  const sourceName = source && speciesById.get(source.build.speciesId)?.name;
-  const receiverName = speciesById.get(receiver.build.speciesId)?.name;
+  const sourceName = source && runtime.speciesById.get(source.build.speciesId)?.name;
+  const receiverName = runtime.speciesById.get(receiver.build.speciesId)?.name;
   const receiverPosition = receiver === attacker ? "Left" : "Right";
-  const move = selectedMoveId ? movesById.get(selectedMoveId) : undefined;
+  const move = selectedMoveId ? runtime.movesById.get(selectedMoveId) : undefined;
   const currentResult = source && resultIdentity && sameMoveOwner(resultIdentity.source, getMoveOwner(source)) && sameMoveOwner(resultIdentity.receiver, getMoveOwner(receiver));
   const row = currentResult && selectedMoveId && selectedRow?.moveId === selectedMoveId && !blockedReason ? selectedRow : undefined;
-  const preview = previewRemainingHP(receiver.build, row, rollMode);
+  const moveName = row?.effectiveName ?? move?.name ?? selectedMoveId;
+  const preview = previewRemainingHP(receiver.build, row, rollMode, runtime);
   const rollDescription = `${rollLabels[rollMode]} ${rollMode === "average" ? "estimate" : "roll"}`;
-  const needsHits = row?.kind === "needs-context" && Array.isArray(move?.multihit);
+  const converted = source?.build.mechanic === "dynamax" || source?.build.mechanic === "gigantamax" || !!(selectedMoveId && source?.contexts[selectedMoveId]?.useZ)
+    || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
+  const needsHits = !converted && row?.kind === "needs-context" && Array.isArray(move?.multihit) && (!row.reason || /\bhits?\b/i.test(row.reason));
 
   return (
     <section data-calculator-summary aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
@@ -235,7 +254,9 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
               side={side}
               issues={issues[side]}
               projected={slot === receiver && preview.status === "ready" ? preview : null}
-              moveName={move?.name ?? selectedMoveId}
+              moveName={moveName}
+              selectedResult={slot === source ? row : undefined}
+              runtime={runtime}
               rollDescription={rollDescription}
               attack={attack}
               replacement={replacement}
@@ -254,7 +275,8 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
             ) : (
               <>
                 <p className="wrap-anywhere text-xs font-semibold text-muted">{sourceName ?? "Choose a Pokémon"} ({source === defender ? "right" : "left"}) → {receiverName} ({receiverPosition.toLowerCase()})</p>
-                <p className="mt-1 wrap-anywhere text-sm font-bold text-text">{move?.name ?? selectedMoveId}</p>
+                <p className="mt-1 wrap-anywhere text-sm font-bold text-text">{moveName}</p>
+                {row?.effectiveName && move && row.effectiveName !== move.name && <p className="mt-1 wrap-anywhere text-xs text-muted">From {move.name} · {row.effectiveType} · {row.effectiveCategory} · Power {row.effectivePower ?? "—"}</p>}
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
                   <>
                     {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage} damage</strong> · {rollDescription}</p>}
