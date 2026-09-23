@@ -41,7 +41,8 @@ async function fixtureDefaults(aggregate = ["unknown", "status", "fixed", "unsup
       aggregate,
     },
   };
-  vi.doMock("../../app/lib/battle/catalog", () => ({
+  vi.doMock("../../app/lib/battle/catalog", async (importOriginal) => ({
+    ...await importOriginal<typeof import("../../app/lib/battle/catalog")>(),
     movesById: new Map(moves.map((move) => [move.id, move])),
     speciesById: new Map(species.map((row) => [row.id, row])),
   }));

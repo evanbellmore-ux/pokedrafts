@@ -1,6 +1,17 @@
 export type BattleStat = "hp" | "atk" | "def" | "spa" | "spd" | "spe";
 export type CombatStat = Exclude<BattleStat, "hp">;
 export type StatTable<T = number> = Record<BattleStat, T>;
+export type BattleGame = "champions" | "ultra_sun_ultra_moon" | "sword_shield" | "scarlet_violet";
+export type NativeBattleGame = Exclude<BattleGame, "champions">;
+export type SetConfiguration = {
+  teraType?: string;
+  gigantamax?: boolean;
+  dynamaxLevel?: number;
+  happiness?: number;
+  gender?: "M" | "F" | "N";
+  hiddenPowerType?: string;
+};
+export type BattleMechanic = "tera" | "dynamax" | "gigantamax";
 
 export type ChampionsSpecies = {
   id: string;
@@ -15,6 +26,15 @@ export type ChampionsSpecies = {
   moves: string[];
   battleForm: boolean;
   requiredItem: string | null;
+  requiredItems?: string[];
+  gender?: "M" | "F" | "N";
+  canGigantamax?: string;
+  gmaxNames?: string[];
+  cannotDynamax?: boolean;
+  requiredMove?: string;
+  requiredTeraType?: string;
+  changesFrom?: string;
+  battleOnly?: string[];
   /** Known coverage gaps, never a reason to substitute another species. */
   unsupported: string[];
 };
@@ -31,6 +51,10 @@ export type ChampionsMove = {
   target: string;
   multihit: number | [number, number] | null;
   ohko: boolean;
+  isZ?: boolean;
+  isMax?: boolean;
+  zMovePower?: number;
+  maxMovePower?: number;
   description: string;
   unsupported: string[];
 };
@@ -50,6 +74,10 @@ export type ChampionsItem = {
   megaEvolves: string | null;
   /** Some stones have distinct targets for each gender/form. */
   megaTargets: { baseSpeciesId: string; formId: string }[];
+  zMoveType?: string;
+  zMove?: string;
+  zMoveFrom?: string;
+  itemUser?: string[];
   unsupported: string[];
 };
 
@@ -74,21 +102,47 @@ export type ChampionsCatalog = {
   };
 };
 
+export type NativeCatalog = Omit<ChampionsCatalog, "game" | "level"> & {
+  game: NativeBattleGame;
+  level: null;
+};
+export type BattleCatalog = ChampionsCatalog | NativeCatalog;
 export type BattleStatus = "" | "brn" | "par" | "psn" | "tox" | "slp" | "frz";
 
-export type BattleBuild = {
+type BuildBase = {
   speciesId: string;
   nature: string;
   abilityId: string;
   /** Explicit activation for conditional abilities; not a blanket ability switch. */
   abilityActive: boolean;
   itemId: string;
-  points: StatTable<number | null>;
   boosts: Record<CombatStat, number | null>;
-  /** Null means full HP; an explicit value must be within 1…maximum HP. */
+  /** Base (pre-Dynamax) HP; null means full HP. Raw editor text is stored separately. */
   currentHP: number | null;
   status: BattleStatus;
+  configuration?: SetConfiguration;
+  mechanic?: BattleMechanic;
+  /** Prepared move IDs supplied by the importer/controller for form prerequisites. */
+  preparedMoves?: readonly string[];
 };
+
+export type ChampionsBuild = BuildBase & {
+  game: "champions";
+  points: StatTable<number | null>;
+  native?: never;
+};
+export type NativeBuild = BuildBase & {
+  game: NativeBattleGame;
+  points?: never;
+  native: {
+    level: number | null;
+    evs: StatTable<number | null>;
+    ivs: StatTable<number | null>;
+    /** Optional innate IVs when effective, hyper-trained IVs differ. */
+    innateIVs?: StatTable<number | null>;
+  };
+};
+export type BattleBuild = ChampionsBuild | NativeBuild;
 
 export type SideConditions = {
   reflect: boolean;
@@ -99,7 +153,7 @@ export type SideConditions = {
 
 export type BattleConditions = {
   gameType: "Singles" | "Doubles";
-  weather: "" | "Sun" | "Rain" | "Sand" | "Snow";
+  weather: "" | "Sun" | "Rain" | "Sand" | "Snow" | "Hail" | "Harsh Sunshine" | "Heavy Rain" | "Strong Winds";
   terrain: "" | "Electric" | "Grassy" | "Misty" | "Psychic";
   critical: boolean;
   multipleTargets: boolean;
@@ -112,11 +166,15 @@ export type BattleConditions = {
   defenderSide: SideConditions;
 };
 
-export type MoveContext = { hits?: number };
+export type MoveContext = { hits?: number; useZ?: boolean; stellarFirstUse?: boolean };
 export type BuildIssue = { field: string; message: string };
 
 export type MoveDamageResult = {
   moveId: string;
+  effectiveName?: string;
+  effectiveType?: string;
+  effectivePower?: number;
+  effectiveCategory?: "Physical" | "Special" | "Status";
   kind: "calculated" | "status" | "needs-context" | "unsupported";
   min: number | null;
   max: number | null;

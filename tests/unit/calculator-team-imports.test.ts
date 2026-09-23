@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { createElement, isValidElement, type ChangeEvent, type ComponentProps } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -234,12 +235,16 @@ describe("team import state: source ownership and activation", () => {
     expect(current.attacker.build).not.toBe(applied.team.members[0].build);
     expect(current.attacker.build.points).not.toBe(applied.team.members[0].build!.points);
     expect(current.attacker.moves).not.toBe(applied.team.members[0].moves);
-    const edited = immutable(current, (value) => updateMatchupBuild(value, "attacker", {
-      ...value.attacker.build, nature: "Calm", points: { ...value.attacker.build.points, hp: null },
-    }));
+    const edited = immutable(current, (value) => {
+      assert(value.attacker.build.game === "champions");
+      return updateMatchupBuild(value, "attacker", {
+        ...value.attacker.build, nature: "Calm", points: { ...value.attacker.build.points, hp: null },
+      });
+    });
     expect(edited.teams.own.paste).toBe(applied);
     expect(applied.team).toEqual(snapshot.team);
     expect(input).toEqual(snapshot);
+    assert(input.team.members[0].build?.game === "champions");
     input.team.members[0].build!.points.spa = 0;
     input.team.members[0].moves[0].moveId = "thunderbolt";
     expect(applied.team).toEqual(snapshot.team);
@@ -330,9 +335,11 @@ describe("team import state: cache, Mega and source changes", () => {
     current = immutable(current, (value) => toggleMatchupMega(value, getMoveOwner(value[side]), "raichumegax"));
     expect(current[side].build).toMatchObject({ speciesId: "raichumegax", abilityId: "electricsurge", itemId: "raichunitex" });
     expect(current[side].megaBase).toEqual({ speciesId: "raichu", abilityId: "lightningrod", abilityActive: original.build.abilityActive, itemId: "raichunitex" });
+    const build = current[side].build;
+    assert(build.game === "champions");
     current = updateMatchupBuild(current, side, {
-      ...current[side].build, nature: "Calm", points: { ...current[side].build.points, hp: null },
-      boosts: { ...current[side].build.boosts, spa: 2 }, status: "par",
+      ...build, nature: "Calm", points: { ...build.points, hp: null },
+      boosts: { ...build.boosts, spa: 2 }, status: "par",
     });
     current = updateMatchupHP(current, side, "2e1");
     current = activateMoveSlot(current, getMoveOwner(current[side]), 2);

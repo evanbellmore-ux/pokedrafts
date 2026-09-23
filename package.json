@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --config vitest.unit.config.ts",
     "test:db": "vitest run --config vitest.db.config.ts",
+    "test:battle-data:source": "vitest run --config vitest.battle-data.config.ts",
     "check": "npm run lint && npm run typecheck && npm run test",
     "seed:dex": "tsx scripts/seed-pokemon-dex.ts",
     "seed:sprites": "tsx scripts/link-sprites.ts",
@@ -18,6 +19,7 @@
     "seed:pokemon": "tsx scripts/seed-pokemon.ts",
     "prepare:champions-engine": "node scripts/prepare-champions-engine.mjs",
     "data:champions": "tsx scripts/build-champions-data.ts",
+    "data:battle": "tsx scripts/build-battle-data.ts",
     "data:champions:move-usage": "node scripts/import-champions-move-usage.mjs"
   },
   "dependencies": {

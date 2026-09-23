@@ -1,5 +1,5 @@
 import snapshot from "@/data/champions/move-usage.json";
-import { movesById, speciesById } from "./catalog";
+import { championsRuntime, type BattleRuntime } from "./runtime";
 
 export type MoveSlot = {
   moveId: string | null;
@@ -19,12 +19,13 @@ const emptySlot = (): MoveSlot => ({ moveId: null, origin: "empty", gameType: nu
 const compareIds = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 
 /** Exact proven learnsets, not engine support or base-form usage, determine eligibility. */
-export function createMoveSlots(speciesId: string, gameType: GameType): MoveSlots {
+export function createMoveSlots(speciesId: string, gameType: GameType, runtime: BattleRuntime = championsRuntime): MoveSlots {
+  const { speciesById, movesById } = runtime;
   const species = speciesById.get(speciesId);
   if (!species) return [emptySlot(), emptySlot(), emptySlot(), emptySlot()];
   const legal = new Set(species.moves.filter((id) => {
     const move = movesById.get(id);
-    return Boolean(id && move && move.category !== "Status");
+    return Boolean(id && move && move.category !== "Status" && !move.isZ && !move.isMax);
   }).sort(compareIds));
   const selected = new Set<string>();
   const slots: MoveSlot[] = [];
@@ -39,8 +40,10 @@ export function createMoveSlots(speciesId: string, gameType: GameType): MoveSlot
   const format = formats[gameType];
   // The importer has already filtered before ranking. Recheck against this catalog
   // as a defense against stale snapshots, without mutating either imported dataset.
-  add(format.species[speciesId] ?? [], "usage");
-  add(format.aggregate, "suggested");
+  if (runtime.profile.id === "champions") {
+    add(format.species[speciesId] ?? [], "usage");
+    add(format.aggregate, "suggested");
+  }
   add([...legal], "suggested");
   return [slots[0] ?? emptySlot(), slots[1] ?? emptySlot(), slots[2] ?? emptySlot(), slots[3] ?? emptySlot()];
 }

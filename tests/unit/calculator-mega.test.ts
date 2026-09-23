@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
   activateMoveSlot, createMatchup, dismissMoveReplacement, getAttackView, getMoveOwner,
@@ -110,6 +111,8 @@ describe("authoritative Champions Mega families", () => {
       champions: catalog,
       speciesById: new Map(catalog.species.map((species) => [species.id, species])),
       itemsById: new Map(catalog.items.map((item) => [item.id, item])),
+      movesById: new Map(catalog.moves.map((move) => [move.id, move])),
+      abilitiesById: new Map(catalog.abilities.map((ability) => [ability.id, ability])),
     }));
     try {
       const { getMegaOptions: options } = await import("@/app/lib/battle/mega-forms");
@@ -128,6 +131,7 @@ describe("authoritative Champions Mega families", () => {
 describe("owned Mega preparation", () => {
   it.each(["00100", "abc", "2e1", " ", "", "0", "999", "1.5"])("preserves current shared prep and raw HP %j while switching X/Y and restoring only four base fields", (text) => {
     let current = createMatchup(3);
+    assert(current.attacker.build.game === "champions");
     current = updateMatchupBuild(current, "attacker", {
       ...current.attacker.build, nature: "Modest", abilityId: "solarpower", abilityActive: true, itemId: "lifeorb",
       points: { hp: 5, atk: 0, def: 0, spa: 29, spd: null, spe: 32 },
@@ -148,6 +152,7 @@ describe("owned Mega preparation", () => {
     expectSharedPrep(x, current);
     expect(x.cache).toBe(current.cache);
     expect(current).toEqual(before);
+    assert(x.attacker.build.game === "champions");
     const edited = updateMatchupBuild(x, "attacker", {
       ...x.attacker.build, nature: "Timid", status: "par", points: { ...x.attacker.build.points, hp: 9 },
       boosts: { ...x.attacker.build.boosts, atk: -3 },

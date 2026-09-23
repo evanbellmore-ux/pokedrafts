@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { Pokemon } from "@smogon/calc";
 import { describe, expect, it } from "vitest";
 import { abilitiesById, champions, itemsById, movesById, speciesById } from "@/app/lib/battle/catalog";
@@ -9,7 +10,7 @@ import {
   MAX_TEAM_IMPORT_BYTES, MAX_TEAM_IMPORT_MEMBERS, parseTeamImport,
   type ImportFormat, type ImportedMember,
 } from "@/app/lib/battle/team-import";
-import type { BattleStat, StatTable } from "@/app/lib/battle/types";
+import type { BattleStat, ChampionsBuild, StatTable } from "@/app/lib/battle/types";
 import usage from "@/data/champions/move-usage.json";
 
 function member(text: string, format: ImportFormat = "champions"): ImportedMember {
@@ -19,12 +20,17 @@ function member(text: string, format: ImportFormat = "champions"): ImportedMembe
   return team.members[0];
 }
 
-function valid(text: string, format: ImportFormat = "champions"): ImportedMember {
+function assertChampionsMember(result: ImportedMember): asserts result is ImportedMember & { build: ChampionsBuild } {
+  assert(result.build?.game === "champions");
+}
+
+function valid(text: string, format: ImportFormat = "champions"): ImportedMember & { build: ChampionsBuild } {
   const result = member(text, format);
   expect(result.diagnostics.filter((entry) => entry.severity === "error")).toEqual([]);
   expect(result.selectable).toBe(true);
   expect(result.build).not.toBeNull();
   expect(result.stats).not.toBeNull();
+  assertChampionsMember(result);
   return result;
 }
 
@@ -70,6 +76,7 @@ describe("Champions plain-text team import", () => {
     expect(parsed.build).toEqual({
       ...createBuild("raichualola"), nature: "Timid", itemId: "focussash",
       points: { hp: 2, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 },
+      configuration: { gender: "M" },
     });
     expect(parsed.moves).toEqual(["fakeout", "thunderbolt", "psychic", "protect"].map((moveId) => ({ moveId, origin: "imported", gameType: null })));
     expect(movesById.get(parsed.moves[3].moveId!)?.category).toBe("Status");
@@ -98,7 +105,9 @@ describe("Champions plain-text team import", () => {
     const text = "Charizard\nEVs: 32 SpA / 32 Spe / 2 HP";
     expect(valid(text).build?.points).toEqual({ hp: 2, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 });
     expect(valid(text, "traditional").build?.points).toEqual({ hp: 0, atk: 0, def: 0, spa: 4, spd: 0, spe: 4 });
-    expect(parseTeamImport(`=== [gen9ou] Not a mode switch ===\n${text}`, "champions").members[0].build?.points.spa).toBe(32);
+    const headed = parseTeamImport(`=== [gen9ou] Not a mode switch ===\n${text}`, "champions").members[0];
+    assertChampionsMember(headed);
+    expect(headed.build?.points.spa).toBe(32);
     invalid("Charizard\nEVs: 252 SpA / 252 Spe / 4 HP", "champions");
   });
 
@@ -168,9 +177,9 @@ describe("Champions plain-text team import", () => {
     expect(parsed.gender).toBe(gender);
   });
 
-  it("keeps a cosmetic gender suffix separate from forms and explains unmodeled Rivalry context", () => {
+  it("keeps individual gender separate from forms and explains the required two-Pokémon Rivalry context", () => {
     const parsed = valid("Charizard (F)\nShiny: Yes");
-    expect(parsed).toMatchObject({ speciesId: "charizard", gender: "F", shiny: true });
+    expect(parsed).toMatchObject({ speciesId: "charizard", gender: "F", shiny: true, build: { configuration: { gender: "F" } } });
     expect(parsed.diagnostics.some((entry) => entry.severity === "info" && entry.message.includes("Rivalry"))).toBe(true);
     expect(valid("Indeedee-F (F)").speciesId).toBe("indeedeef");
     expect(valid("Indeedee (M)").speciesId).toBe("indeedee");
@@ -248,6 +257,11 @@ describe("Team import correction diagnostics", () => {
     "- Flamethrower\n- FLAME-THROWER",
     "Shiny: Yes\nShiny: No",
     "Gender: Male\nGender: Female",
+    "Tera Type: Fire\nTera Type: Water",
+    "Gigantamax: Yes\nGigantamax: No",
+    "Dynamax Level: 0\nDynamax Level: 10",
+    "Happiness: 0\nHappiness: 255",
+    "Hidden Power: Ice\nHidden Power: Fire",
   ])("rejects duplicate assignments instead of last-write-wins: %s", (lines) => {
     const parsed = invalid(`Charizard\n${lines}`);
     expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("Duplicate"))).toBe(true);
@@ -262,6 +276,7 @@ describe("Team import correction diagnostics", () => {
 
   it.each(["1.5", "1e1", "12oops", "Infinity", "NaN", "9007199254740992", "-1", "+1", "0x10", "33"])("rejects noninteger or out-of-range Champions value %s", (value) => {
     const parsed = invalid(`Charizard\nEVs: ${value} HP`);
+    assertChampionsMember(parsed);
     expect(parsed.build?.points.hp).toBeNull();
     expect(parsed.diagnostics).toContainEqual(expect.objectContaining({ line: 2, severity: "error", message: expect.stringContaining("whole number from 0 to 32") }));
   });
@@ -276,9 +291,25 @@ describe("Team import correction diagnostics", () => {
     "IVs: 31 HP", "IVs: 0 Atk", "Nature: Unknown", "Shiny: true", "Gender: anything",
     "Ability: Levitate", "Ability: Fake Ability", "Item: Fake Item", "Item:", "Ability:",
     "- Imaginary Move", "- Thunderbolt", "-", "- Flamethrower\n- Air Slash\n- Protect\n- Roost\n- Helping Hand",
-    "Tera Type: Fire", "Tera: Fire", "Gigantamax: Yes", "Dynamax Level: 10", "Happiness: 255", "Hidden Power: Ice", "Status: brn", "Unknown: value", "Unrecognized text",
+    "Tera Type: Unknown", "Tera Type:", "Tera: Fire", "Gigantamax: true", "Dynamax Level: 11", "Dynamax Level: 1.5", "Happiness: 256", "Happiness: -1", "Hidden Power: Fairy", "Hidden Power: Normal", "Status: brn", "Unknown: value", "Unrecognized text",
   ])("requires correction for malformed, unavailable or unsupported input: %s", (line) => {
     invalid(`Charizard\n${line}`);
+  });
+
+  it.each([
+    ["Tera Type: Fire", { teraType: "Fire" }],
+    ["Gigantamax: Yes", { gigantamax: true }],
+    ["Dynamax Level: 10", { dynamaxLevel: 10 }],
+    ["Happiness: 255", { happiness: 255 }],
+    ["Hidden Power: Ice", { hiddenPowerType: "Ice" }],
+  ])("retains valid foreign configuration without activating it: %s", (line, configuration) => {
+    const parsed = valid(`Charizard\n${line}`);
+    expect(parsed.build?.configuration).toEqual(configuration);
+    expect(parsed.build?.mechanic).toBeUndefined();
+    expect(parsed.diagnostics.filter((entry) => entry.severity === "warning")).toEqual([]);
+    expect(parsed.diagnostics).toContainEqual(expect.objectContaining({
+      line: 2, severity: "info", message: expect.stringContaining("retained; inactive in Champions"),
+    }));
   });
 
   it("keeps a bad member in place while other members remain selectable", () => {
@@ -371,6 +402,7 @@ describe("Traditional EV/IV conversion", () => {
     const minimum = getBuildStats(createBuild("charizard"))!.atk;
     for (const [ev, iv, expectedPoints] of [[0, 0, -15], [119, 0, -1], [0, 29, -1]]) {
       const parsed = invalid(`Charizard\nEVs: ${ev} Atk\nIVs: ${iv} Atk`, "traditional");
+      assertChampionsMember(parsed);
       expect(parsed.build?.points.atk).toBe(expectedPoints);
       expect(new Pokemon(9, "Charizard", { level: 50, nature: "Serious", evs: { atk: ev }, ivs: { atk: iv } }).rawStats.atk).toBeLessThan(minimum);
       expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("no clamping"))).toBe(true);
