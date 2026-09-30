@@ -89,7 +89,7 @@ function Rolls({ rolls, alternate }: { rolls: MoveDamageResult["rolls"]; alterna
   if (!rolls.some(Array.isArray)) {
     return alternate ? (
       <>
-        <p className="wrap-anywhere tabular-nums">Damage rolls (usual power): {rolls.join(", ")}</p>
+        <p className="wrap-anywhere tabular-nums">Damage rolls ({alternate.usualLabel}): {rolls.join(", ")}</p>
         <p className="wrap-anywhere tabular-nums">Damage rolls with {alternate.label} ({Math.round(alternate.chance * 100)}% chance): {alternate.rolls.join(", ")}</p>
       </>
     ) : <p className="wrap-anywhere tabular-nums">Damage rolls: {rolls.join(", ")}</p>;
@@ -120,7 +120,7 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
   const move = runtime.movesById.get(moveId);
   const name = row?.effectiveName ?? move?.name ?? moveId;
   const converted = isConverted(move, row, context, sourceBuild);
-  const hitRule = !converted && move ? hitCountRule(move, { abilityId, itemId }, runtime, hitBattle) : null;
+  const hitRule = !converted && move ? hitCountRule(move, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle) : null;
   const choice = hitRule?.kind === "choose" ? hitRule : null;
   const staleHits = choice && context?.hits !== undefined && (context.hits < choice.min || context.hits > choice.max) ? context.hits : null;
   const hitLabel = (hits: number) => `${hits} ${hits === 1 ? "hit" : "hits"}`;
@@ -296,7 +296,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
 
   function needsHits({ move, row }: Candidate) {
     // Moves with a default count never wait for hits, even when their row needs other context.
-    const rule = hitCountRule(move, { abilityId, itemId }, runtime, hitBattle);
+    const rule = hitCountRule(move, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle);
     return !isConverted(move, row, contexts[move.id], sourceBuild) && rule.kind === "choose" && rule.defaultHits === null
       && (!row || row.kind === "needs-context" && (!row.reason || /\bhits?\b/i.test(row.reason)));
   }

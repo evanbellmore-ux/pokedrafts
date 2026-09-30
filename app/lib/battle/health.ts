@@ -12,6 +12,20 @@ export type BuildHealth = {
   reason: string | null;
 };
 
+/**
+ * Current HP once a toggle changes the form's maximum HP, which only Terapagos's Terastallization does
+ * (Terastal <-> Stellar). Pinned Showdown formeChange -> updateMaxHp (sim/pokemon.ts) keeps the damage
+ * taken: new maximum - (old maximum - HP), at least 1. Blank (full) stays blank, and HP that is not valid
+ * for the old form (unfinished text, 0, above its maximum) is left as typed. Values are base/pre-Dynamax HP.
+ */
+export function rebaseCurrentHP(before: BattleBuild, after: BattleBuild, runtime: BattleRuntime = championsRuntime): number | null {
+  const current = before.currentHP;
+  const oldMax = getBuildStats(before, runtime)?.hp;
+  const newMax = getBuildStats(after, runtime)?.hp;
+  if (current === null || !oldMax || !newMax || oldMax === newMax || !Number.isSafeInteger(current) || current < 1 || current > oldMax) return current;
+  return Math.max(1, newMax - (oldMax - current));
+}
+
 /** Input remains pre-Dynamax HP. Never clamp invalid input or multiply it twice. */
 export function getBuildHealth(build: BattleBuild, runtime: BattleRuntime = championsRuntime): BuildHealth | null {
   const stats = getBuildStats(build, runtime);

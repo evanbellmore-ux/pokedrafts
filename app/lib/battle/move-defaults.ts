@@ -1,9 +1,11 @@
 import snapshot from "@/data/champions/move-usage.json";
 import { championsRuntime, cosmeticFamily, type BattleRuntime } from "./runtime";
+import type { ChampionsMove } from "./types";
 
 export type MoveSlot = {
   moveId: string | null;
-  origin: "usage" | "suggested" | "required" | "manual" | "imported" | "empty";
+  /** usage: Champions usage; randomBattle: a native game's pinned Showdown Random Battle sets. */
+  origin: "usage" | "randomBattle" | "suggested" | "required" | "manual" | "imported" | "empty";
   gameType: "Singles" | "Doubles" | null;
 };
 export type MoveSlots = [MoveSlot, MoveSlot, MoveSlot, MoveSlot];
@@ -52,6 +54,32 @@ export function usualAbility(speciesId: string, gameType: GameType, runtime: Bat
 /** Power times accuracy; a move that never misses counts as 100% accurate. */
 const stabStrength = (move: { power: number | string | null; accuracy: number | null }) => (typeof move.power === "number" ? move.power : 0) * (move.accuracy ?? 100);
 
+/**
+ * Attacks the native fill never suggests: recharge, self-KO or half-HP cost, two-turn charge and delayed
+ * attacks, the calculator's history-based moves, and attacks that fail or deal nothing without battle
+ * state a fresh build lacks. Random Battle rows may still name them.
+ */
+const NATIVE_FILL_EXCLUDED: ReadonlySet<string> = new Set([
+  "blastburn", "eternabeam", "frenzyplant", "gigaimpact", "hydrocannon", "hyperbeam", "meteorassault", "prismaticlaser", "roaroftime", "rockwrecker",
+  "explosion", "finalgambit", "mindblown", "mistyexplosion", "selfdestruct", "steelbeam",
+  "electroshot", "freezeshock", "iceburn", "meteorbeam", "razorwind", "skullbash", "skyattack", "solarbeam", "solarblade", "doomdesire", "futuresight",
+  "bide", "comeuppance", "counter", "echoedvoice", "fling", "furycutter", "iceball", "magnitude", "metalburst", "mirrorcoat", "present", "pursuit", "retaliate", "rollout", "spitup", "trumpcard",
+  "terablast", "aurawheel", "belch", "dreameater", "focuspunch", "hyperspacefury", "lastresort", "naturalgift", "poltergeist", "shelltrap", "snore", "steelroller", "synchronoise", "upperhand",
+]);
+
+/** A fixed-power attack a fresh native build can calculate without more context, which the native fill may suggest. */
+export function nativeFillCandidate(move: ChampionsMove): boolean {
+  return typeof move.power === "number" && move.power > 0 && !move.unsupported.length && !move.ohko
+    && !Array.isArray(move.multihit) && !move.id.startsWith("hiddenpower") && !NATIVE_FILL_EXCLUDED.has(move.id);
+}
+
+/** The attacking category a form fills with: its stronger one (Huge Power and Pure Power double Attack), or both when equal. */
+function strongerCategories(speciesId: string, gameType: GameType, runtime: BattleRuntime): string[] {
+  const species = runtime.speciesById.get(speciesId)!;
+  const atk = species.baseStats.atk * (["hugepower", "purepower"].includes(usualAbility(speciesId, gameType, runtime) ?? "") ? 2 : 1);
+  return atk > species.baseStats.spa ? ["Physical"] : species.baseStats.spa > atk ? ["Special"] : ["Physical", "Special"];
+}
+
 /** Exact proven learnsets, not engine support or base-form usage, determine eligibility. */
 export function createMoveSlots(speciesId: string, gameType: GameType, runtime: BattleRuntime = championsRuntime): MoveSlots {
   const { speciesById, movesById } = runtime;
@@ -63,12 +91,12 @@ export function createMoveSlots(speciesId: string, gameType: GameType, runtime: 
   }).sort(compareIds));
   const selected = new Set<string>();
   const slots: MoveSlot[] = [];
-  const add = (ids: readonly string[], origin: "usage" | "suggested" | "required") => {
+  const add = (ids: readonly string[], origin: "usage" | "randomBattle" | "suggested" | "required", format: GameType = gameType) => {
     for (const moveId of ids) {
       if (slots.length === 4) break;
       if (!legal.has(moveId) || selected.has(moveId)) continue;
       selected.add(moveId);
-      slots.push({ moveId, origin, gameType });
+      slots.push({ moveId, origin, gameType: format });
     }
   };
   // A form that only exists with a prepared move (Showdown requiredMove, e.g. Keldeo-Resolute's
@@ -83,9 +111,7 @@ export function createMoveSlots(speciesId: string, gameType: GameType, runtime: 
     // of its types the slots lack: the format's most-used one it learns, in its stronger attacking
     // category (either when they are equal), before the format-wide fill.
     const rank = new Map(format.aggregate.map((id, index) => [id, index]));
-    // Huge Power and Pure Power double Attack.
-    const atk = species.baseStats.atk * (["hugepower", "purepower"].includes(usualAbility(speciesId, gameType, runtime) ?? "") ? 2 : 1);
-    const categories = atk > species.baseStats.spa ? ["Physical"] : species.baseStats.spa > atk ? ["Special"] : ["Physical", "Special"];
+    const categories = strongerCategories(speciesId, gameType, runtime);
     for (const type of species.types) {
       if (slots.some((slot) => slot.moveId && movesById.get(slot.moveId)?.type === type)) continue;
       const stab = [...legal].filter((id) => {
@@ -96,6 +122,28 @@ export function createMoveSlots(speciesId: string, gameType: GameType, runtime: 
       add(stab.slice(0, 1), "suggested");
     }
     add(format.aggregate, "suggested");
+  } else if (runtime.catalog.game !== "champions") {
+    // The native games read pinned Showdown's Random Battle sets. Gen 7 and 8 publish Singles sets only,
+    // which Doubles then reads (and names); Scarlet/Violet reads the other format's row for a form that
+    // one of its files leaves out.
+    const sets = runtime.catalog.randomBattle?.formats ?? {};
+    const own: GameType | null = sets[gameType] ? gameType : sets.Singles ? "Singles" : null;
+    const other: GameType = own === "Singles" ? "Doubles" : "Singles";
+    const rowFormat = own && sets[own]?.species[speciesId] ? own : sets[other]?.species[speciesId] ? other : null;
+    if (rowFormat) add(sets[rowFormat]!.species[speciesId], "randomBattle", rowFormat);
+    // Then, as in Champions, a same-type attack for each type the slots lack (by power x accuracy, in
+    // the stronger category), and coverage by the format's Random Battle ranking, at most two of a type.
+    const categories = strongerCategories(speciesId, gameType, runtime);
+    const candidates = [...legal].filter((id) => nativeFillCandidate(movesById.get(id)!)).sort((a, b) => stabStrength(movesById.get(b)!) - stabStrength(movesById.get(a)!) || compareIds(a, b));
+    const ofType = (type: string) => slots.filter((slot) => slot.moveId && movesById.get(slot.moveId)?.type === type).length;
+    for (const type of species.types) {
+      if (!ofType(type)) add(candidates.filter((id) => movesById.get(id)!.type === type && categories.includes(movesById.get(id)!.category)).slice(0, 1), "suggested");
+    }
+    const common = (own ? sets[own]!.aggregate : []).filter((id) => candidates.includes(id));
+    for (const id of [...common.filter((move) => categories.includes(movesById.get(move)!.category)), ...common, ...candidates]) {
+      if (ofType(movesById.get(id)!.type) < 2) add([id], "suggested");
+    }
+    add(candidates, "suggested");
   }
   add([...legal], "suggested");
   return [slots[0] ?? emptySlot(), slots[1] ?? emptySlot(), slots[2] ?? emptySlot(), slots[3] ?? emptySlot()];
@@ -108,6 +156,7 @@ export function describeMoveSlot(slot: MoveSlot): string {
   if (slot.origin === "imported") return "Imported from team paste";
   if (slot.origin === "suggested") return "Suggested, per-species usage unavailable for this move";
   if (slot.origin === "required") return "Required for this form";
+  if (slot.origin === "randomBattle") return slot.gameType === "Doubles" ? "From Showdown's Random Doubles Battle sets" : "From Showdown's Random Battle sets (Singles)";
   if (!slot.gameType) return "Common Champions usage";
   const [year, month] = formats[slot.gameType].source.month.split("-");
   const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(month) - 1];

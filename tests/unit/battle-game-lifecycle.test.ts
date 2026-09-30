@@ -46,7 +46,8 @@ describe("game-aware runtime and preparation", () => {
       expect(validateBuild(current[side].build, runtime)).toEqual([]);
       expect(runtime.speciesById.has(current[side].build.speciesId)).toBe(true);
       if (game !== "champions") {
-        expect(current[side].moves.every((slot) => slot.origin === "suggested" || slot.origin === "empty")).toBe(true);
+        // Native games never read Champions usage: their defaults come from pinned Random Battle sets.
+        expect(current[side].moves.every((slot) => ["randomBattle", "suggested", "required", "empty"].includes(slot.origin))).toBe(true);
         expect(current[side].build).toMatchObject({ native: { level: 50, ivs: { hp: 31 }, evs: { hp: 0 } } });
         expect(current[side].build.points).toBeUndefined();
       }

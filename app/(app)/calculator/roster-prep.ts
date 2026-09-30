@@ -5,7 +5,9 @@ import type { ImportDraft } from "./PokePasteImporter";
 export { createSpeciesResolver, resolveRosterSpecies, type SpeciesResolution } from "@/app/lib/battle/species-identity";
 import { applyIntimidate, intimidatedKey } from "@/app/lib/battle/intimidate";
 import { tracedAbility } from "@/app/lib/battle/imposter";
-import { createBuild, createConditions, defaultAbilityActive, withUsualAbility } from "@/app/lib/battle/model";
+import { createBuild, createConditions, defaultAbilityActive, getBuildStats, withUsualAbility } from "@/app/lib/battle/model";
+import { rebaseCurrentHP } from "@/app/lib/battle/health";
+import { specialTeraForm } from "@/app/lib/battle/mechanics";
 import { createMoveSlots, usualAbility, type MoveSlots } from "@/app/lib/battle/move-defaults";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
 import type { BattleBuild, BattleConditions, BattleMechanic, MoveContext } from "@/app/lib/battle/types";
@@ -413,15 +415,24 @@ export function toggleMatchupMechanic(current: PreparedMatchup, owner: MoveOwner
   const profile = current.runtime.profile;
   if ((mechanic === "tera" && !profile.tera) || (mechanic !== "tera" && !profile.dynamax)) return current;
   const slot = current[side];
-  const build = { ...slot.build, mechanic: slot.build.mechanic === mechanic ? undefined : mechanic };
-  const next = { ...slot, build, contexts: {}, moveEpoch: slot.moveEpoch + 1 };
+  const toggled = { ...slot.build, mechanic: slot.build.mechanic === mechanic ? undefined : mechanic };
+  // Terapagos changes form and maximum HP (Terastal <-> Stellar); the damage it has taken stays.
+  const currentHP = rebaseCurrentHP(slot.build, toggled, current.runtime);
+  // Object.is: unfinished text is NaN, which must not be rewritten.
+  const rebased = !Object.is(currentHP, slot.build.currentHP);
+  const build = rebased ? { ...toggled, currentHP } : toggled;
+  const next = { ...slot, build, hpInput: rebased ? formatHPInput(currentHP) : slot.hpInput, contexts: {}, moveEpoch: slot.moveEpoch + 1 };
+  const label = mechanic === "tera" ? "Terastallization" : mechanic === "gigantamax" ? "Gigantamax" : "Dynamax";
+  const formId = specialTeraForm(build, current.runtime) ?? build.speciesId;
   const editing = current.replacement && sameMoveOwner(current.replacement.owner, owner);
   const session = current.replacementSession + (editing ? 1 : 0);
   return { ...current, [side]: next, cache: cacheCombatant(current, next),
     attack: sameMoveOwner(current.attack.owner, owner) ? { ...current.attack, owner: getMoveOwner(next) } : current.attack,
     replacement: editing ? { ...current.replacement!, owner: getMoveOwner(next), session } : current.replacement,
     replacementSession: session,
-    notice: `${mechanic === "tera" ? "Terastallization" : mechanic === "gigantamax" ? "Gigantamax" : "Dynamax"} ${build.mechanic ? "enabled" : "disabled"}. Base HP input and prepared moves kept.`,
+    notice: rebased
+      ? `${label} ${build.mechanic ? "enabled" : "disabled"}. ${current.runtime.speciesById.get(formId)?.name ?? formId} has ${getBuildStats(build, current.runtime)?.hp} maximum HP, so its current HP is now ${currentHP}: the damage it had taken is kept. Prepared moves kept.`
+      : `${label} ${build.mechanic ? "enabled" : "disabled"}. Base HP input and prepared moves kept.`,
   };
 }
 

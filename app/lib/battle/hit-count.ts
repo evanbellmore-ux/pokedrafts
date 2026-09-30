@@ -26,7 +26,12 @@ export function checksAccuracyPerHit(move: ChampionsMove, runtime: BattleRuntime
     && !!Generations.get(runtime.profile.generation).moves.get(toID(move.name))?.multiaccuracy;
 }
 
-export function hitCountRule(move: ChampionsMove, build: Pick<BattleBuild, "abilityId" | "itemId">, runtime: BattleRuntime, battle: HitCountBattle = {}): HitCountRule {
+export function hitCountRule(move: ChampionsMove, build: Pick<BattleBuild, "abilityId" | "itemId"> & Partial<Pick<BattleBuild, "speciesId" | "transformedFrom">>, runtime: BattleRuntime, battle: HitCountBattle = {}): HitCountRule {
+  // Battle Bond makes Greninja-Ash's own Water Shuriken hit 3 times (pinned Showdown battlebond
+  // onModifyMove; it cannot be suppressed, and a transformed copy keeps 2-5).
+  if (move.id === "watershuriken" && build.speciesId === "greninjaash" && build.abilityId === "battlebond" && !build.transformedFrom) {
+    return { kind: "fixed", hits: 3, reason: "Battle Bond makes Greninja-Ash's Water Shuriken hit 3 times." };
+  }
   // Showdown ignores a held item under Magic Room or Klutz (sim/pokemon.ts ignoringItem), and an
   // opposing Neutralizing Gas suppresses the ability unless an active Ability Shield protects it
   // (the engines' Neutralizing Gas handling matches). A suppressed effect counts as absent.

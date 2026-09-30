@@ -73,10 +73,12 @@ describe("items suppressed by Magic Room or Klutz", () => {
     expect(row("acrobatics", build("altaria", "naturalcure", "electricseed"), garchomp, { terrain: "Grassy", magicRoom: true }).assumptions.join(" ")).not.toContain("otherwise the Seed");
   });
 
-  it("treat a Seed on its terrain under Magic Room as unused", async () => {
-    const seeded = row("acrobatics", build("altaria", "naturalcure", "grassyseed"), garchomp, { terrain: "Grassy", magicRoom: true });
+  it("treat a Seed on its terrain under Magic Room as used before the room unless its switch says otherwise", async () => {
+    // Used on entry before the room (the default): no item, so Acrobatics doubles.
+    expect(row("acrobatics", build("altaria", "naturalcure", "grassyseed"), garchomp, { terrain: "Grassy", magicRoom: true })).toMatchObject({ effectivePower: 110, min: 49, max: 58 });
+    const seeded = row("acrobatics", { ...build("altaria", "naturalcure", "grassyseed"), itemUsedBeforeRoom: false }, garchomp, { terrain: "Grassy", magicRoom: true });
     expect(seeded).toMatchObject({ effectivePower: 55, min: 25, max: 30 });
-    expect(seeded.assumptions.join(" ")).toContain("This assumes Magic Room started before the terrain; otherwise the Seed was used up.");
+    expect(seeded.assumptions).toContain("The attacker Altaria's Grassy Seed is not used: Magic Room was up when it entered or when Grassy Terrain started. Tick its Grassy Seed choice if it was used before the room was set.");
     // Without Magic Room the Seed is used up, so Acrobatics doubles.
     expect(row("acrobatics", build("altaria", "naturalcure", "grassyseed"), garchomp, { terrain: "Grassy" })).toMatchObject({ effectivePower: 110, min: 49, max: 58 });
     const sv = await loadBattleRuntime("scarlet_violet");

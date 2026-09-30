@@ -5,16 +5,21 @@ import { ROOT } from "./lib/champions-data/sources.mjs";
 import { isAvailable, toID } from "./lib/champions-data/transform";
 import { loadNativeEngine, loadNativeSnapshots } from "./lib/battle-data/snapshot";
 import {
-  CALC_SOURCE, SHOWDOWN_SOURCE, canonical, compact, sha256, sorted, withVerifiedSources,
+  CALC_SOURCE, SHOWDOWN_SOURCE, canonical, compact, runRandomBattleGenerators, sha256, sorted, withVerifiedSources,
 } from "./lib/battle-data/sources";
 import { engineHintDiscrepancies, nativeSpecies, transformNativeCatalog } from "./lib/battle-data/transform";
+import { randomBattleCatalog } from "./lib/battle-data/random-battle";
 
 /** Build in memory so checks never rewrite committed assets, even after a failure. */
 export async function createBattleData() {
-  return withVerifiedSources(async (verified) => loadNativeSnapshots(verified.runtime).map((source) => {
+  return withVerifiedSources(async (verified) => {
+    const snapshots = loadNativeSnapshots(verified.runtime);
+    // After the snapshots, which must see the learnset tables before the generators load Dex data.
+    const generated = runRandomBattleGenerators(verified.runtime);
+    return snapshots.map((source) => {
     const { profile } = source;
     const engine = loadNativeEngine(profile);
-    const catalog = transformNativeCatalog(source, engine, {
+    const transformed = transformNativeCatalog(source, engine, {
       engine: {
         revision: CALC_SOURCE.revision,
         url: `https://github.com/smogon/damage-calc/tree/${CALC_SOURCE.revision}/calc`,
@@ -24,6 +29,8 @@ export async function createBattleData() {
         url: `https://github.com/smogon/pokemon-showdown/tree/${SHOWDOWN_SOURCE.revision}/data${profile.gen === 9 ? "" : `/mods/${profile.mod}`}`,
       },
     });
+    const randomBattle = randomBattleCatalog(transformed, source, profile, verified.randomBattle, generated);
+    const catalog = { ...transformed, randomBattle: randomBattle.block };
     const catalogJSON = compact(catalog);
     const speciesIndex = new Map(catalog.species.map((row) => [row.id, row]));
     const itemIDs = new Set(catalog.items.map((row) => row.id));
@@ -94,6 +101,12 @@ export async function createBattleData() {
           ...(row.learnset.error ? { error: row.learnset.error } : {}),
         };
       }),
+      randomBattleSets: {
+        policy: "Quick-move defaults: pinned Showdown's own Random Battle team generator (teams.ts reading the set file) is run for a fixed number of teams with a fixed Gen 5 RNG seed; each form gets up to four legal damaging moves by how often the generator gave them to its set keys (keys weighted equally), then STAB, power x accuracy and id, with at most one Hidden Power. Keys map to forms as teams.ts getForme does, then battle-only forms take their entry forms' generated sets that reach them (required ability and move), then cosmetic families. Generated sets, not usage statistics.",
+        files: Object.entries(profile.randomBattleSets).map(([format, path]) => ({ format, path, sha256: verified.randomBattle.find((file) => file.path === path)!.sha256 })),
+        getFormeSources: verified.randomBattleCode.filter((file) => file.path.includes(`/gen${profile.gen}/`) || file.path.includes("/gen9/")),
+        formats: randomBattle.report,
+      },
       coverage: {
         ...catalog.coverage, abilities: catalog.abilities.length, items: catalog.items.length,
         engineHintDiscrepancies: engineHintDiscrepancies(source, engine),
@@ -104,8 +117,11 @@ export async function createBattleData() {
       ["LICENSE.pokemon-showdown.txt", verified.licenses.showdown],
       ["LICENSE.damage-calc.txt", verified.licenses.engine],
     ]);
-    return { catalog, manifest, files, source, engine };
-  }));
+    const randomBattleFiles = verified.randomBattle.filter((file) => Object.values(profile.randomBattleSets).includes(file.path as never));
+    const randomBattleGenerated = generated.filter((run) => Object.values(profile.randomBattleFormats).includes(run.format as never));
+    return { catalog, manifest, files, source, engine, randomBattleFiles, randomBattleGenerated };
+    });
+  });
 }
 
 export async function buildBattleData(check = false): Promise<void> {

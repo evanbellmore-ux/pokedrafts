@@ -8,7 +8,7 @@ export type BuildHealth = { current: number; maximum: number };
 export type DamageRollMode = "low" | "average" | "high";
 export type HPPreview =
   | { status: "ready"; min: number; max: number; current: number; maximum: number; damage: number; remaining: number;
-    /** The same roll in the result's alternate outcome (Fickle Beam's doubled power). */
+    /** The same roll in the result's alternate outcome (Fickle Beam's doubled power, a Shell Side Arm tie's physical hit). */
     alternate?: { chance: number; label: string; damage: number; remaining: number } }
   | { status: "unavailable"; reason: string };
 
@@ -58,9 +58,10 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
   }
   // Proven zero cannot trigger survival effects, even on a multi-hit move.
   if (max === 0) return { status: "ready", ...health, min: health.current, max: health.current, damage: 0, remaining: health.current };
-  const survival = defender.itemId === "focussash" ? "Focus Sash"
+  // The calculation's settled target (a Sturdy copied by Trace or Imposter), or the shown selections.
+  const survival = row.survival ?? (defender.itemId === "focussash" ? "Focus Sash"
     : defender.itemId === "focusband" ? "Focus Band"
-      : (() => { const form = specialTeraForm(defender, runtime); return form ? runtime.speciesById.get(form)?.abilities[0] : defender.abilityId; })() === "sturdy" ? "Sturdy" : null;
+      : (() => { const form = specialTeraForm(defender, runtime); return form ? runtime.speciesById.get(form)?.abilities[0] : defender.abilityId; })() === "sturdy" ? "Sturdy" : null);
   if (survival) {
     return { status: "unavailable", reason: `Remaining HP is withheld for ${survival}; survival effects are not simulated.` };
   }

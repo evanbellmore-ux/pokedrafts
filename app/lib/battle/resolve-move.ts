@@ -93,14 +93,19 @@ export function resolveBattleMove(
     if (runtime.profile.generation !== 7 || build.game === "champions") return fail("Hidden Power is only supported in the Ultra Sun/Ultra Moon profile with native IV context.");
     const innate = build.native.innateIVs ?? build.native.ivs;
     const type = hiddenPowerType(innate);
-    if (!type || (selectedHiddenPowerType && type !== selectedHiddenPowerType)
-      || (build.configuration?.hiddenPowerType && type !== build.configuration.hiddenPowerType)) {
+    // A transformed Imposter user keeps its own Hidden Power type, from its own IVs (pinned Showdown
+    // transformInto), and its copy of a typed Hidden Power is renamed to that type.
+    const own = build.transformedFrom && (runtime.speciesById.get(build.transformedFrom.speciesId)?.name ?? build.transformedFrom.speciesId);
+    const declared = build.configuration?.hiddenPowerType;
+    if (!type || (selectedHiddenPowerType && type !== selectedHiddenPowerType) || (declared && type !== declared)) {
+      if (own && type && (!declared || declared === type)) return { kind: "needs-context", reason: `Transform keeps ${own}'s own Hidden Power type, ${type}, so its copy of this move is Hidden Power ${type}.` };
       return { kind: "needs-context", reason: "Hidden Power's declared type does not match the known innate IVs. Supply the original innate IVs for Hyper Training; effective IVs are not silently rewritten." };
     }
     const engineType = gen.types.get(toID(type));
     if (!engineType) return fail("Hidden Power's type is absent from the pinned engine.");
     overrides = { ...overrides, type: engineType.name, basePower: 60 };
-    assumptions.push(`Hidden Power ${type}, 60 power, uses ${build.native.innateIVs ? "explicit innate" : "the provided"} IVs; Hyper Training never changes its type.`);
+    assumptions.push(own ? `Hidden Power ${type}, 60 power: Transform keeps ${own}'s own Hidden Power type, from its own IVs.`
+      : `Hidden Power ${type}, 60 power, uses ${build.native.innateIVs ? "explicit innate" : "the provided"} IVs; Hyper Training never changes its type.`);
   }
   let stellarFirstUse = context?.stellarFirstUse;
   if (build.mechanic === "tera" && build.configuration?.teraType === "Stellar" && metadata.category !== "Status") {

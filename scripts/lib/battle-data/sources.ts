@@ -5,6 +5,8 @@ import { createRequire } from "node:module";
 import { dirname, join, relative, sep } from "node:path";
 import ts from "typescript";
 import { CACHE, CALC_SOURCE, SHOWDOWN_SOURCE } from "../champions-data/sources.mjs";
+import { generateRandomBattle, type GeneratedFormat, type RandomBattleFile, type TeamsAPI } from "./random-battle";
+import { NATIVE_GAMES, RANDOM_BATTLE_CODE, RANDOM_BATTLE_RUN } from "./types";
 
 export { CALC_SOURCE, SHOWDOWN_SOURCE };
 export const loadModule = createRequire(import.meta.url);
@@ -29,6 +31,9 @@ export type SourceFile = { path: string; sha256: string };
 export type VerifiedSources = {
   runtime: string;
   files: SourceFile[];
+  /** Pinned Random Battle set files (quick-move defaults) and the team generators that read them. */
+  randomBattle: RandomBattleFile[];
+  randomBattleCode: SourceFile[];
   licenses: { showdown: string; engine: string };
   engineProvenance: { revision: string; sourceArchiveSha256: string; version: string };
 };
@@ -65,7 +70,8 @@ async function extract(pin: SourcePin, archive: Buffer, stage: string, members: 
 }
 
 async function compileDex(source: string, output: string): Promise<SourceFile[]> {
-  const files = ["lib/utils.ts", "config/formats.ts"];
+  // The Random Battle team generators (quick-move defaults) are compiled from the same pinned source.
+  const files = ["lib/utils.ts", "config/formats.ts", ...RANDOM_BATTLE_CODE];
   // Pinned gen7 -> gen8 -> base(gen9): compile EVERY data table in the chain,
   // including rulesets, formats, learnsets, scripts/init and type chart patches.
   for (const directory of ["sim", "data", "data/text", "data/mods/gen7", "data/mods/gen8"]) {
@@ -106,7 +112,27 @@ async function compileDex(source: string, output: string): Promise<SourceFile[]>
     await mkdir(dirname(destination), { recursive: true });
     await writeFile(destination, result.outputText);
   }
+  // The generators require their data files when constructed, and import Utils from lib/index, which
+  // would also load Net, SQL, REPL and process tools; the build needs only Utils.
+  for (const path of RANDOM_BATTLE_CODE) {
+    const directory = dirname(path);
+    for (const name of (await readdir(join(source, directory))).sort(compare)) {
+      if (name.endsWith(".json")) await writeFile(join(output, directory, name), await readFile(join(source, directory, name)));
+    }
+  }
+  await writeFile(join(output, "lib/index.js"), '"use strict";\nexports.Utils = require("./utils");\n');
   return hashes;
+}
+
+/**
+ * Runs each native Random Battle format's pinned team generator from the compiled runtime. Call it only
+ * after loadNativeSnapshots: the generators load Dex data, and the snapshot must identify the raw
+ * learnset tables before Dex inheritance mutates them.
+ */
+export function runRandomBattleGenerators(runtime: string): GeneratedFormat[] {
+  const { Teams } = loadModule(join(runtime, "sim/teams.js")) as { Teams: TeamsAPI };
+  const formats = sorted(NATIVE_GAMES.flatMap((profile) => Object.values(profile.randomBattleFormats)));
+  return formats.map((format) => generateRandomBattle(Teams, format, RANDOM_BATTLE_RUN.seed, RANDOM_BATTLE_RUN.teams));
 }
 
 /** Fresh disposable compilation; neither verified extractions nor engine are changed. */
@@ -129,8 +155,14 @@ export async function withVerifiedSources<T>(consume: (sources: VerifiedSources)
     const engine = await extract(CALC_SOURCE, engineArchive, stage, ["LICENSE"]);
     const runtime = join(stage, "dex");
     const files = await compileDex(showdown, runtime);
+    const setPaths = sorted(NATIVE_GAMES.flatMap((profile) => Object.values(profile.randomBattleSets)));
+    const randomBattle = await Promise.all(setPaths.map(async (path) => {
+      const text = await readFile(join(showdown, path), "utf8");
+      return { path, sha256: sha256(text), sets: JSON.parse(text) };
+    }));
+    const randomBattleCode = await Promise.all(RANDOM_BATTLE_CODE.map(async (path) => ({ path, sha256: sha256(await readFile(join(showdown, path), "utf8")) })));
     return await consume({
-      runtime, files, engineProvenance,
+      runtime, files, engineProvenance, randomBattle, randomBattleCode,
       licenses: {
         showdown: await readFile(join(showdown, "LICENSE"), "utf8"),
         engine: await readFile(join(engine, "LICENSE"), "utf8"),
