@@ -312,11 +312,11 @@ describe("Champions calculator UI", () => {
       expect(html).toContain(`<option value="${weather}">${weather}</option>`);
     }
     for (const side of ["attackerSide", "defenderSide"]) {
-      for (const effect of ["reflect", "lightScreen", "auroraVeil", "helpingHand", "friendGuard", "protect", "tailwind", "charge"]) {
+      for (const effect of ["reflect", "lightScreen", "auroraVeil", "helpingHand", "friendGuard", "priorityShield", "protect", "tailwind", "charge"]) {
         expect(html).toMatch(new RegExp(`id="[^"]*-${side}-${effect}"`));
       }
     }
-    expect([...html.matchAll(/type="checkbox"/g)]).toHaveLength(23);
+    expect([...html.matchAll(/type="checkbox"/g)]).toHaveLength(25);
   });
 
   it("counts shared and side toggles and retains Aurora Veil without Snow", () => {

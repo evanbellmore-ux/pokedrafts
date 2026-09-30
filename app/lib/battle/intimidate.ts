@@ -1,3 +1,4 @@
+import { megaEntries } from "./mega-forms";
 import { getBuildStats } from "./model";
 import type { BattleRuntime } from "./runtime";
 import type { BattleBuild, BattleConditions, CombatStat } from "./types";
@@ -36,12 +37,108 @@ const EMBODY_STAT: Record<string, CombatStat> = {
 
 const staged = (stat: number, stage: number) => stage >= 0 ? Math.floor(stat * (2 + stage) / 2) : Math.floor(stat * 2 / (2 - stage));
 const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
+/** Held items that change Speed on entry (pinned Showdown onModifySpe): Choice Scarf 1.5x; Iron Ball, Macho Brace and the Power items 0.5x. */
+const ENTRY_SPEED_ITEMS: Record<string, number> = {
+  choicescarf: 6144, ironball: 2048, machobrace: 2048, poweranklet: 2048, powerband: 2048, powerbelt: 2048, powerbracer: 2048, powerlens: 2048, powerweight: 2048,
+};
+
+/**
+ * A Pokémon's Speed as the leads enter (pinned Showdown getActionSpeed, taken when its runSwitch is
+ * queued): its stat and held item only, since no stage, status, Tailwind or Trick Room is up yet. It
+ * orders Download against Dauntless Shield, and neither ability changes Speed or suppresses items.
+ */
+export function leadSpeed(build: BattleBuild, runtime: BattleRuntime): number {
+  const speed = getBuildStats(build, runtime)?.spe ?? 0;
+  return Math.trunc((speed * (ENTRY_SPEED_ITEMS[build.itemId] ?? 4096) + 2047) / 4096);
+}
+
+/**
+ * The foe's entry boosts already on it when Download reads it at a shared lead (pinned Showdown
+ * runSwitch: switch-in effects by priority, then Speed): Dauntless Shield (priority 0) only from a
+ * faster holder (a Speed tie is random; this counts it, as the engine does), never a terrain Seed
+ * (priority -1), and never Embody Aspect, which acts when Ogerpon Terastallizes during the turn.
+ */
+export function beforeDownload(holder: BattleBuild, foe: BattleBuild, foeEntry: EntryBoost[], runtime: BattleRuntime): EntryBoost[] {
+  const shieldFirst = leadSpeed(foe, runtime) >= leadSpeed(holder, runtime);
+  return foeEntry.filter((entry) => entry.id === "dauntlessshield" ? shieldFirst : !SEED_TERRAIN[entry.id] && !EMBODY_STAT[entry.id]);
+}
+
+/**
+ * Battle forms taken after Download acts at a shared lead, with how: Schooling and Shields Down (switch-in
+ * priority -1), Relic Song, Ice Face breaking, Stance Change (when it attacks), Zen Mode (end of the turn)
+ * and Zero to Hero (after switching out).
+ */
+const AFTER_LEAD_FORMS: Record<string, string> = {
+  wishiwashischool: "formed a school", miniormeteor: "became Minior-Meteor", meloettapirouette: "became Meloetta-Pirouette",
+  eiscuenoice: "lost its Ice Face", aegislashblade: "changed to Blade Forme", darmanitanzen: "entered Zen Mode",
+  darmanitangalarzen: "entered Zen Mode", palafinhero: "became Palafin-Hero",
+};
+
+/**
+ * The form a Pokémon had when Download read it at a shared lead, if it has changed since, and how:
+ * Mega Evolution and Ultra Burst (turn actions), Primal Reversion, Schooling and Shields Down (switch-in
+ * priority -1, after Download's 0), Relic Song and a broken Ice Face; and Ogerpon's Terastallization,
+ * whose Tera form has the same stats (`change` is then null). The Crowned forms and Terapagos-Terastal
+ * take their form before Download acts; Necrozma-Ultra and Zygarde-Complete, whose entry form is not
+ * known, keep theirs (unknownLeadForms).
+ */
+export function leadForm(build: BattleBuild, runtime: BattleRuntime): { speciesId: string; change: string | null } | null {
+  const species = runtime.speciesById.get(build.speciesId);
+  if (!species || build.transformedFrom) return null;
+  const megas = megaEntries(build.speciesId, runtime);
+  const bases = [...new Set(megas.map((entry) => entry.baseSpeciesId))];
+  if (bases.length === 1) {
+    const label = megas[0].label;
+    return { speciesId: bases[0], change: label.startsWith("Mega") ? "Mega Evolved" : label === "Primal" ? "underwent Primal Reversion" : "used Ultra Burst" };
+  }
+  if (bases.length || !species.changesFrom || !runtime.speciesById.has(species.changesFrom)) return null;
+  if (AFTER_LEAD_FORMS[species.id]) return { speciesId: species.changesFrom, change: AFTER_LEAD_FORMS[species.id] };
+  return species.baseSpecies === "ogerpon" && species.battleForm ? { speciesId: species.changesFrom, change: null } : null;
+}
+
+/**
+ * The possible lead forms of a form that changed after Download acted but could have led as either of two
+ * (Necrozma-Ultra from Dusk Mane or Dawn Wings by Ultra Burst, Zygarde-Complete from Zygarde or Zygarde-10%
+ * by Power Construct at the end of the turn), with the base species that changed and how, or null.
+ */
+export function unknownLeadForms(build: BattleBuild, runtime: BattleRuntime): { speciesIds: string[]; base: string; change: string } | null {
+  const species = runtime.speciesById.get(build.speciesId);
+  if (!species || build.transformedFrom) return null;
+  const bases = [...new Set(megaEntries(build.speciesId, runtime).map((entry) => entry.baseSpeciesId))];
+  const base = runtime.speciesById.get(species.baseSpecies)?.name ?? species.baseSpecies;
+  if (bases.length > 1) return { speciesIds: bases, base, change: "used Ultra Burst" };
+  const forms = build.speciesId === "zygardecomplete" ? (species.battleOnly ?? []).filter((id) => runtime.speciesById.has(id)) : [];
+  return forms.length > 1 ? { speciesIds: forms, base, change: "became Zygarde-Complete" } : null;
+}
+
+/**
+ * The foe as Download read it at a shared lead: in its lead form, with no Defense or Sp. Def stages yet
+ * (beforeDownload adds the entry boosts that came first) and no room up.
+ */
+export function atLead(foe: BattleBuild, battle: IntimidateBattle, runtime: BattleRuntime): { foe: BattleBuild; battle: IntimidateBattle } {
+  const lead = leadForm(foe, runtime);
+  return { foe: { ...foe, ...(lead ? { speciesId: lead.speciesId } : {}), boosts: { ...foe.boosts, def: 0, spd: 0 } }, battle: { ...battle, wonderRoom: false } };
+}
+
+/** The stat Download raises against the foe's stages plus these entry boosts (pinned Showdown download onStart). */
+export function downloadStat(foe: BattleBuild, foeEntry: EntryBoost[], battle: IntimidateBattle, runtime: BattleRuntime): CombatStat | null {
+  const stats = getBuildStats(foe, runtime);
+  if (!stats) return null;
+  const stage = (stat: CombatStat) => clampStage((foe.boosts[stat] ?? 0) + foeEntry.filter((entry) => entry.stat === stat).reduce((sum, entry) => sum + entry.amount, 0));
+  // Download ignores Wonder Room, but the stages then apply to the other defensive stat.
+  const def = staged(stats.def, stage(battle.wonderRoom ? "spd" : "def"));
+  const spd = staged(stats.spd, stage(battle.wonderRoom ? "def" : "spd"));
+  return spd <= def ? "spa" : "atk";
+}
 
 /**
  * Stage changes the engine adds on every calculation for entry effects it models itself (gen789.js
  * and champions.js: checkSeedBoost, checkDauntlessShield, checkEmbody, checkDownload,
  * checkIntrepidSword, checkWindRider; Champions runs only the Seeds). In Showdown they are already
  * on the Pokémon when Intimidate resolves, and White Herb (switch-in priority -2) acts after them.
+ * Download counts only the foe's boosts that came before it at a shared lead (beforeDownload), and
+ * reads the foe's form then with no room up yet (atLead); when the engine's pick differs, the
+ * calculation bakes this one in (settleEntry, settledDownload).
  */
 /** Without `foeEntry`, Download (which reads the foe's stages after its own entry boosts) is left out. */
 export function entryBoosts(build: BattleBuild, foe: BattleBuild, foeEntry: EntryBoost[] | null, tailwind: boolean, battle: IntimidateBattle, runtime: BattleRuntime): EntryBoost[] {
@@ -64,14 +161,9 @@ export function entryBoosts(build: BattleBuild, foe: BattleBuild, foeEntry: Entr
   if (build.abilityId === "dauntlessshield" && (gen8 || build.abilityActive)) out.push(own("def"));
   if (runtime.profile.id === "scarlet_violet" && EMBODY_STAT[build.abilityId]) out.push(own(EMBODY_STAT[build.abilityId]));
   if (build.abilityId === "download" && foeEntry) {
-    const stats = getBuildStats(foe, runtime);
-    if (stats) {
-      const stage = (stat: CombatStat) => clampStage((foe.boosts[stat] ?? 0) + foeEntry.filter((entry) => entry.stat === stat).reduce((sum, entry) => sum + entry.amount, 0));
-      // Download ignores Wonder Room, but the stages then apply to the other defensive stat.
-      const def = staged(stats.def, stage(battle.wonderRoom ? "spd" : "def"));
-      const spd = staged(stats.spd, stage(battle.wonderRoom ? "def" : "spd"));
-      out.push(own(spd <= def ? "spa" : "atk"));
-    }
+    const lead = atLead(foe, battle, runtime);
+    const stat = downloadStat(lead.foe, beforeDownload(build, foe, foeEntry, runtime), lead.battle, runtime);
+    if (stat) out.push(own(stat));
   }
   if (build.abilityId === "intrepidsword" && (gen8 || build.abilityActive)) out.push(own("atk"));
   if (build.abilityId === "windrider" && tailwind) out.push(own("atk"));

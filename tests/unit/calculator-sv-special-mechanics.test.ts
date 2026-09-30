@@ -102,7 +102,7 @@ describe("review follow-ups for Paradox holders, Tera forms and entry boosts", (
     const hands = build(sv, "ironhands", { ability: "quarkdrive", item: "electricseed" });
     const notes = (foeAbility: string) => row(sv, "drainpunch", hands, build(sv, "pincurchin", { ability: foeAbility }), { terrain: "Electric" }).assumptions.join(" ");
     expect(notes("electricsurge")).toContain("Quark Drive raises its Attack, its highest stat before its Seed");
-    expect(notes("electricsurge")).toContain("This assumes both entered together, so the other Pokémon's Electric Surge set the terrain and Quark Drive activated before the attacker Iron Hands's Electric Seed was used. If it entered after the terrain was up, the Seed came first and Quark Drive raises its Defense.");
+    expect(notes("electricsurge")).toContain("The attacker Iron Hands's Quark Drive activated before its Electric Seed was used: this assumes both entered together, so the other Pokémon's Electric Surge set Electric Terrain first. If the Seed came first, Quark Drive raises its Defense: tick its Electric Seed choice.");
     // Terrain already up when it enters: the Seed's Defense rise comes first.
     expect(notes("lightningrod")).toContain("Quark Drive raises its Defense, its highest stat");
   });

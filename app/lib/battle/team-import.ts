@@ -1,5 +1,5 @@
 import {
-  createBuild, defaultAbilityActive, getBuildStats, NATURES, parseIntegerInput, STATS, validateBuild,
+  createBuild, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, parseIntegerInput, STATS, validateBuild,
 } from "./model";
 import { usualAbility, type MoveSlots } from "./move-defaults";
 import { TERA_TYPES } from "./profiles";
@@ -324,8 +324,24 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
     else source.configuration.gigantamax = true;
     if (!fields.has("gigantamax")) fields.set("gigantamax", first.line);
   }
-  const speciesId = header.resolution.status === "resolved" ? header.resolution.speciesId : null;
+  const resolvedId = header.resolution.status === "resolved" ? header.resolution.speciesId : null;
+  // Zacian or Zamazenta holding its Rusted item battles as its Crowned form, whose Iron Head becomes
+  // Behemoth Blade / Bash (pinned Showdown onBattleStart), so the import takes that form.
+  const crowned = resolvedId && item !== null ? CROWNED_FORMS[resolvedId] : undefined;
+  const crownedBy = crowned && catalogId(item!) === crowned.item && speciesById.has(crowned.form) ? crowned : null;
+  const speciesId = crownedBy ? crownedBy.form : resolvedId;
   const species = speciesId ? speciesById.get(speciesId)! : null;
+  // A Crowned form's Iron Head is its Behemoth move too, whether the paste names the Hero or the Crowned form.
+  const behemoth = crownedBy ?? Object.values(CROWNED_FORMS).find((entry) => entry.form === speciesId) ?? null;
+  const slots = behemoth ? moves.map((slot) => slot.moveId === "ironhead" ? { ...slot, moveId: behemoth.move } : slot) as MoveSlots : moves;
+  const ironHead = parsed.moveLines.get("ironhead");
+  if (behemoth && (crownedBy || ironHead)) {
+    const behemothName = movesById.get(behemoth.move)?.name ?? behemoth.move;
+    report(crownedBy ? fields.get("item") ?? first.line : ironHead!.line, "info", `${crownedBy ? `${speciesById.get(resolvedId!)!.name} holding ${itemsById.get(crownedBy.item)?.name ?? item} battles as ${species!.name}${ironHead ? `, and its Iron Head becomes ${behemothName}` : ""}` : `${species!.name}'s Iron Head becomes ${behemothName}`}, as pinned Showdown does when the battle starts.`);
+    if (ironHead && parsed.moveLines.has(behemoth.move)) report(ironHead.line, "error", `Duplicate move "${behemothName}": Iron Head becomes ${behemothName} when the battle starts.`);
+  }
+  // Moves are checked against the form pasted: a Hero Zacian cannot know Behemoth Blade.
+  const learner = crownedBy ? speciesById.get(resolvedId!)! : species;
   const build = speciesId ? createBuild(speciesId, runtime) : null;
   const configuration = { ...source.configuration };
   // Match the pinned Showdown import default, but do not pretend it was explicit.
@@ -343,7 +359,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   for (const [id, line] of parsed.moveLines) {
     const move = movesById.get(id);
     if (!move) report(line.line, "error", `Move "${line.text}" is unavailable in the ${label} catalog.`);
-    else if (species && !species.moves.includes(id)) report(line.line, "error", `${species.name} cannot learn ${move.name} in ${label}.`);
+    else if (learner && !learner.moves.includes(id)) report(line.line, "error", `${learner.name} cannot learn ${move.name} in ${label}.`);
     else for (const reason of move.unsupported) report(line.line, "warning", `${move.name}: calculation unavailable. ${reason}`);
   }
   const itemId = item === null ? "" : catalogId(item);
@@ -383,7 +399,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
         evs: format === "traditional" ? { ...training } : statTable(null),
         ivs: { ...ivs },
       };
-      build.preparedMoves = moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []);
+      build.preparedMoves = slots.flatMap((slot) => slot.moveId ? [slot.moveId] : []);
     }
 
     const configFields: Record<string, string> = {
@@ -433,7 +449,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   const selectable = Boolean(build) && !diagnostics.some((entry) => entry.severity === "error");
   diagnostics.sort((a, b) => a.line - b.line);
   return {
-    index, name: header.nickname ?? species?.name ?? header.speciesName, speciesId, build, moves,
+    index, name: header.nickname ?? species?.name ?? header.speciesName, speciesId, build, moves: slots,
     stats: selectable && build ? getBuildStats(build, runtime) : null,
     diagnostics, selectable, source,
     ...(header.nickname ? { nickname: header.nickname } : {}),

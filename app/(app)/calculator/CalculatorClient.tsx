@@ -8,7 +8,7 @@ import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { mimicryState } from "@/app/lib/battle/mimicry";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
-import { roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { fieldItemChoice, roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleGame, BattleMechanic } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { linkClassName } from "@/app/lib/theme";
@@ -555,10 +555,10 @@ export default function CalculatorClient() {
                     <li>Dynamax keeps the HP editor in base/pre-Dynamax units and displays effective HP separately. Changing game resets active preparation and caches but retains original team text for revalidation. No future Champions mechanic is enabled until its engine and rules are verified.</li>
                     <li>Mega buttons beside each Pokémon’s name change its form, ability, required stone and stats without resetting training, HP or moves. Click the active form again to restore the base ability and item; a directly chosen Mega returns to base defaults. Unsupported forms retain their warnings. This does not simulate transformation timing, entry effects or automatic weather/terrain.</li>
                     <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition. Intimidate is applied with its button and stays in both Pokémon’s stages, so Mega Evolution keeps it.</li>
-                    <li>Screens, Helping Hand, Friend Guard, Protect, Tailwind and Charge are set per side under Field conditions, which also lists common battle states the calculator cannot represent; results assume those are absent.</li>
+                    <li>Screens, Helping Hand, Friend Guard, a partner that blocks priority moves, Protect, Tailwind and Charge are set per side under Field conditions, which also lists common battle states the calculator cannot represent; results assume those are absent.</li>
                     <li>One move use only. Moves that hit 2–5 times need an explicit hit count unless Skill Link fixes it; Loaded Dice limits the choice to 4–5. Triple Kick, Triple Axel and Population Bomb assume every hit lands, because each hit after the first checks accuracy again; choose fewer hits under the move. Skill Link or Loaded Dice makes all their hits land, except that Loaded Dice makes Population Bomb hit 4–10 times, so choose its count. Magic Room and Klutz switch Loaded Dice off, and an opposing Neutralizing Gas switches Skill Link off. Other fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
                     <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
-                    <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
+                    <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. False Swipe and Hold Back stop at 1 HP. Recoil, healing and later turns are not included.</li>
                   </ul>
                   <div className="space-y-2 text-xs">
                     <p>Engine revision: <a href={catalog.sources.engine.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{catalog.sources.engine.revision}</a></p>
@@ -588,6 +588,7 @@ export default function CalculatorClient() {
                         runtime={runtime}
                         gameType={matchup.field.gameType}
                         roomItemChoice={roomItemChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
+                        fieldItemChoice={fieldItemChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field, runtime)}
                         magicRoom={matchup.field.magicRoom}
                         requiredMove={requiredMoveFix(slot)}
                         panelId={controls[side]}

@@ -1,5 +1,6 @@
 import { championsRuntime, type BattleRuntime } from "./runtime";
-import { specialTeraForm, validateMechanic } from "./mechanics";
+import { CROWNED_FORMS, specialTeraForm, validateMechanic } from "./mechanics";
+export { CROWNED_FORMS } from "./mechanics";
 import { imposterTransforms, NO_TRACE_ABILITIES, tracedAbility } from "./imposter";
 import type {
   BattleBuild,
@@ -111,6 +112,7 @@ export function roomItemChoice(build: BattleBuild, other: BattleBuild, field: Ba
   const fieldOn = build.abilityId === "protosynthesis"
     ? field.weather === "Sun" && ![build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId))
     : field.terrain === "Electric";
+  // With its field up the field switch decides (fieldItemChoice), a held-back Booster included.
   const booster = ["protosynthesis", "quarkdrive"].includes(build.abilityId) && build.itemId === "boosterenergy" && !fieldOn && other.abilityId !== "neutralizinggas";
   // Without Magic Room only an unticked switch is shown: the item it held back stays held after the room ends.
   if (!field.magicRoom) return (seedOrService || booster) && build.itemUsedBeforeRoom === false ? build.itemId : null;
@@ -125,27 +127,157 @@ export function roomItemLabel(itemId: string, runtime: BattleRuntime = champions
   return magicRoom ? `Its ${name} was used ${where} before Magic Room was set` : `Its ${name} was used ${where.replace(/,$/, "")} (Magic Room did not hold it back)`;
 }
 
+/**
+ * The stat Protosynthesis or Quark Drive boosts (pinned Showdown getBestStat(false, true)): the highest
+ * stat with its stages; under Wonder Room each defensive stat uses the other's stage. Ties go to Attack,
+ * Defense, Sp. Atk, Sp. Def, Speed in order.
+ */
+export function paradoxBestStat(stats: StatTable, stage: (stat: CombatStat) => number, wonderRoom: boolean): CombatStat {
+  const swapped = { def: "spd", spd: "def" } as const;
+  let best: CombatStat = "atk";
+  let bestValue = 0;
+  for (const stat of COMBAT_STATS) {
+    const boost = stage(wonderRoom && (stat === "def" || stat === "spd") ? swapped[stat] : stat);
+    const value = boost >= 0 ? Math.floor(stats[stat] * (2 + boost) / 2) : Math.floor(stats[stat] * 2 / (2 - boost));
+    if (value > bestValue) { best = stat; bestValue = value; }
+  }
+  return best;
+}
+
+/** The sun or terrain abilities that set each paradox ability's field on entry (switch-in priority 0). */
+export const PARADOX_FIELD_SETTERS: Readonly<Record<"sun" | "terrain", readonly string[]>> = {
+  sun: ["drought", "orichalcumpulse"], terrain: ["electricsurge", "hadronengine"],
+};
+
+/** A Protosynthesis or Quark Drive holder's item timing against its field (the build's itemUsedBeforeField). */
+export type FieldItemChoice = {
+  itemId: string; abilityId: "protosynthesis" | "quarkdrive"; field: "sun" | "terrain"; checked: boolean;
+  /** The other Pokémon's Cloud Nine or Air Lock that keeps the sun from Protosynthesis (its Booster Energy's timing). */
+  suppressor?: string;
+};
+
+/**
+ * The held item whose timing against the sun or Electric Terrain that activates Protosynthesis or Quark
+ * Drive is a choice (the build's itemUsedBeforeField), with the switch's state, or null. Pinned Showdown:
+ * Booster Energy acts whenever its field is down after the holder has entered (boosterenergy onUpdate),
+ * so it is used up when the field started after the holder entered or ended while it was out, and never
+ * when Magic Room was up at entry; when the terrain or weather changes, each Pokémon's ability runs
+ * before its item, so the ability picks its stat before a Seed (or Room Service) it had not used yet.
+ * Offered for a Booster Energy (the item is used up or still held), and for a Seed on its terrain or
+ * Room Service under Trick Room when the order changes the stat. Unset, the Booster Energy is held and a
+ * Seed or Room Service came first, unless the other Pokémon's ability set the field as both entered
+ * (settleItems foeSetsField). The other Pokémon's Neutralizing Gas stops the ability, so nothing is offered.
+ * With the sun up and the other Pokémon's Cloud Nine or Air Lock out, the Booster Energy's choice is
+ * whether it activated Protosynthesis (checked) or the sun did before that ability came in, which used the
+ * Booster Energy up with no effect (its volatile already existed) and then ended Protosynthesis.
+ */
+export function fieldItemChoice(build: BattleBuild, other: BattleBuild, field: BattleConditions, runtime: BattleRuntime = championsRuntime): FieldItemChoice | null {
+  const abilityId = build.abilityId;
+  if (build.transformedFrom || (abilityId !== "protosynthesis" && abilityId !== "quarkdrive") || other.abilityId === "neutralizinggas") return null;
+  const paradox = abilityId === "protosynthesis" ? "sun" : "terrain";
+  const fieldOn = paradox === "sun"
+    ? field.weather === "Sun" && ![build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId))
+    : field.terrain === "Electric";
+  const choice = (checked: boolean): FieldItemChoice => ({ itemId: build.itemId, abilityId, field: paradox, checked });
+  // With the other Pokémon's Cloud Nine or Air Lock out, whatever the weather or room now: the outcome
+  // stays after the sun ends or a Magic Room is set. One that met a Magic Room on entry never acts (the
+  // room switch decides).
+  if (paradox === "sun" && ["cloudnine", "airlock"].includes(other.abilityId) && build.itemId === "boosterenergy"
+    && build.itemUsedBeforeRoom !== false) return { ...choice(build.itemUsedBeforeField !== false), suppressor: other.abilityId };
+  if (!fieldOn) return null;
+  // One the room held back on entry is shown unticked; ticking it also clears that (PokemonPanel).
+  if (build.itemId === "boosterenergy") return choice(build.itemUsedBeforeField === true && build.itemUsedBeforeRoom !== false);
+  // A Seed or Room Service the room held back is never used, so its order changes nothing.
+  const seed = SEED_TERRAINS[build.itemId]?.terrain === field.terrain && field.terrain ? SEED_TERRAINS[build.itemId] : null;
+  const roomService = build.itemId === "roomservice" && field.trickRoom;
+  if ((!seed && !roomService) || build.itemUsedBeforeRoom === false) return null;
+  const checked = build.itemUsedBeforeField ?? !PARADOX_FIELD_SETTERS[paradox].includes(other.abilityId);
+  const stats = getBuildStats(build, runtime);
+  if (!stats) return null;
+  // Its own item's change: a paradox holder has neither Contrary nor Simple.
+  const change = seed ? { [seed.stat]: 1 } : { spe: -1 };
+  const pick = (withItem: boolean) => paradoxBestStat(stats, (stat) => Math.max(-6, Math.min(6, (build.boosts[stat] ?? 0) + (withItem ? (change as Partial<Record<CombatStat, number>>)[stat] ?? 0 : 0))), field.wonderRoom);
+  // Shown when the order changes the stat, or to undo a choice made earlier.
+  return pick(true) !== pick(false) || build.itemUsedBeforeField !== undefined ? choice(checked) : null;
+}
+
+/** The switch label for fieldItemChoice. */
+export function fieldItemLabel(choice: FieldItemChoice, runtime: BattleRuntime = championsRuntime): string {
+  const name = runtime.itemsById.get(choice.itemId)?.name ?? choice.itemId;
+  if (choice.suppressor) return `Its Booster Energy activated Protosynthesis (the sun had not activated it before ${runtime.abilitiesById.get(choice.suppressor)?.name ?? choice.suppressor} came in)`;
+  if (choice.itemId === "boosterenergy") return `Its Booster Energy was used while ${choice.field === "sun" ? "the sun" : "Electric Terrain"} was down`;
+  return `Its ${name} was used before ${runtime.abilitiesById.get(choice.abilityId)?.name ?? choice.abilityId} activated`;
+}
+
+/** The help under fieldItemLabel: the battles each state stands for. */
+export function fieldItemHelp(choice: FieldItemChoice, runtime: BattleRuntime = championsRuntime): string {
+  const ability = runtime.abilitiesById.get(choice.abilityId)?.name ?? choice.abilityId;
+  const fieldName = choice.field === "sun" ? "the sun" : "Electric Terrain";
+  const setters = choice.field === "sun" ? "Drought or Orichalcum Pulse" : "Electric Surge or Hadron Engine";
+  if (choice.suppressor) {
+    const suppressor = runtime.abilitiesById.get(choice.suppressor)?.name ?? choice.suppressor;
+    return `Untick this if the sun activated ${ability} before the other Pokémon's ${suppressor} came in: the Booster Energy was then used up with no effect and ${ability} ended, so it has no boost and no item, even after the sun ends or a Magic Room is set. Leave it ticked if ${suppressor} was out when it entered, or the sun was down at some point after it entered: the Booster Energy then activated ${ability}.`;
+  }
+  if (choice.itemId === "boosterenergy") {
+    return `Tick this if the Booster Energy was used: ${fieldName} was down at some point after it entered while Magic Room was not up. It entered before ${fieldName} started (set later by a move, or by ${setters} on a Pokémon that switched in after it), ${fieldName} ended while it was out (even if it has started again), or a Magic Room ended while ${fieldName} was down. The Booster Energy is then gone and ${ability} keeps the stat it picked then. Leave it unticked if ${fieldName} has been up whenever Magic Room was not (or another Pokémon's ${setters} set it as they entered together), or Magic Room was up when it entered: the Booster Energy is then still held.`;
+  }
+  // Each switch describes the ability's latest activation: after its field ends and starts again, the
+  // ability picks again, counting a Seed or Room Service already used.
+  const seed = SEED_TERRAINS[choice.itemId];
+  const name = runtime.itemsById.get(choice.itemId)?.name ?? choice.itemId;
+  if (seed && choice.field === "terrain") {
+    return `Untick this if Electric Terrain started while it was on the field (a move, or ${setters} on a Pokémon that entered with it or after it): ${ability} then picks its stat before the Seed raises its ${STAT_LABELS[seed.stat]}. Leave it ticked if it switched in with the terrain already up, or Electric Terrain ended and started again while it was out.`;
+  }
+  if (seed) {
+    return `Untick this if ${ability} activated before ${seed.terrain} Terrain started: it was already out in the sun when the terrain started, or another Pokémon's ${setters} set the sun as they entered together. ${ability} then picks its stat before the ${name} raises its ${STAT_LABELS[seed.stat]}. Leave it ticked if ${seed.terrain} Terrain was up before the sun, or both were up when it switched in (on entry the Seed acts first), even when ${setters} switched in after it, or the sun ended and started again while it was out after its ${name} was used.`;
+  }
+  return `Untick this if ${fieldName} activated ${ability} before Trick Room started, or another Pokémon's ${setters} set it as they entered together: ${ability} then picks its stat before Room Service lowers its Speed. Leave it ticked if Trick Room was up when it entered and ${fieldName} was not set as they entered together, or ${fieldName} ended and started again while it was out after Trick Room started.`;
+}
+
 /** Ability conditions that need an ally, so they never hold in Singles. */
 export const PARTNER_ABILITY_CONDITIONS: ReadonlySet<string> = new Set(["plus", "minus"]);
+
+/**
+ * Abilities that stop a foe's priority move aimed at the holder or its ally (pinned Showdown
+ * data/abilities.ts queenlymajesty, dazzling and armortail onFoeTryMove), set on a side as its
+ * partner's (SideConditions.priorityShield).
+ */
+export const PRIORITY_SHIELD_ABILITIES = ["queenlymajesty", "dazzling", "armortail"] as const;
+
+/** The priority-shield abilities the game has, for labels: "Queenly Majesty or Armor Tail" in Champions. */
+export function priorityShieldNames(runtime: BattleRuntime = championsRuntime): string {
+  return joinOr(PRIORITY_SHIELD_ABILITIES.flatMap((id) => runtime.abilitiesById.get(id)?.name ?? []));
+}
+
+/** What gives an attack priority it does not have in its data, in this game: "Gale Wings or Triage" in USUM (no Grassy Glide). */
+export function priorityRaiserNames(runtime: BattleRuntime = championsRuntime): string {
+  return joinOr([
+    ...["galewings", "triage"].flatMap((id) => runtime.abilitiesById.get(id)?.name ?? []),
+    ...(runtime.movesById.has("grassyglide") ? ["Grassy Glide on Grassy Terrain"] : []),
+  ]);
+}
+
+const joinOr = (names: string[]) => names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
 
 /**
  * Singles has no ally, so Helping Hand (it fails with [notarget] in pinned Showdown), an
  * additional Fairy Aura source and a Plus/Minus partner cannot exist there. Returns what the
  * calculation uses and the names of the Doubles-only settings it ignored.
  */
-export function withoutSinglesPartners<B extends BattleBuild>(field: BattleConditions, attacker: B, defender: B) {
+export function withoutSinglesPartners<B extends BattleBuild>(field: BattleConditions, attacker: B, defender: B, runtime: BattleRuntime = championsRuntime) {
   if (field.gameType !== "Singles") return { field, attacker, defender, ignored: [] as string[] };
   const ignored: string[] = [];
   if (field.attackerSide.helpingHand || field.defenderSide.helpingHand) ignored.push("Helping Hand");
   if (field.attackerSide.friendGuard || field.defenderSide.friendGuard) ignored.push("the Friend Guard partner");
+  if (field.attackerSide.priorityShield || field.defenderSide.priorityShield) ignored.push(`the ${priorityShieldNames(runtime)} partner`);
   if (field.fairyAura) ignored.push("Additional Fairy Aura on the field");
   const partnerless = (build: B): B => PARTNER_ABILITY_CONDITIONS.has(build.abilityId) && build.abilityActive ? { ...build, abilityActive: false } : build;
   if (partnerless(attacker) !== attacker || partnerless(defender) !== defender) ignored.push("the Plus/Minus partner");
   return {
     field: {
       ...field, fairyAura: false,
-      attackerSide: { ...field.attackerSide, helpingHand: false, friendGuard: false },
-      defenderSide: { ...field.defenderSide, helpingHand: false, friendGuard: false },
+      attackerSide: { ...field.attackerSide, helpingHand: false, friendGuard: false, priorityShield: false },
+      defenderSide: { ...field.defenderSide, helpingHand: false, friendGuard: false, priorityShield: false },
     },
     attacker: partnerless(attacker), defender: partnerless(defender), ignored,
   };
@@ -193,7 +325,7 @@ export function createBuild(speciesId = "charizard", runtime: BattleRuntime = ch
 }
 
 export function createSide(): SideConditions {
-  return { reflect: false, lightScreen: false, auroraVeil: false, helpingHand: false, friendGuard: false, protect: false, tailwind: false, charge: false };
+  return { reflect: false, lightScreen: false, auroraVeil: false, helpingHand: false, friendGuard: false, priorityShield: false, protect: false, tailwind: false, charge: false };
 }
 
 export const SHARED_FIELD_EFFECTS = [
@@ -305,6 +437,11 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
     else for (const reason of item.unsupported) issues.push({ field: "itemId", message: reason });
   }
   const requiredItems = species.requiredItems?.length ? species.requiredItems : species.requiredItem ? [species.requiredItem] : [];
+  const crowned = CROWNED_FORMS[build.speciesId];
+  if (crowned && build.itemId === crowned.item && runtime.speciesById.has(crowned.form)) {
+    const form = runtime.speciesById.get(crowned.form)!.name;
+    issues.push({ field: "itemId", message: `${species.name} holding ${runtime.itemsById.get(crowned.item)?.name ?? crowned.item} battles as ${form}: pinned Showdown changes its form when the battle starts. Choose ${form} instead.` });
+  }
   if (requiredItems.length && !requiredItems.includes(build.itemId)) {
     issues.push({ field: "itemId", message: `${species.name} requires ${requiredItems.map((id) => runtime.itemsById.get(id)?.name ?? id).join(" or ")}.` });
   }

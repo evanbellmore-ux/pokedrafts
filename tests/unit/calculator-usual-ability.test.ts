@@ -9,7 +9,8 @@ import { championsRuntime } from "@/app/lib/battle/runtime";
 
 /**
  * A fresh build's usual ability: Champions usage (data/champions/move-usage.json abilities, per
- * format), otherwise Showdown's first ability slot (catalog abilityOrder), never the sorted first.
+ * format), a native game's pinned Random Battle sets (catalog randomBattle abilities, per format),
+ * otherwise Showdown's first ability slot (catalog abilityOrder), never the sorted first.
  * League selection is covered in calculator-rosters.test.ts (a species-only Charizard row).
  */
 describe("usualAbility", () => {
@@ -30,7 +31,36 @@ describe("usualAbility", () => {
     expect(usualAbility("garchomp", "Doubles", championsRuntime, { usage: false })).toBe("sandveil");
     const sv = await loadBattleRuntime("scarlet_violet");
     expect(usualAbility("arcanine", "Doubles", sv)).toBe("intimidate");
-    expect(usualAbility("incineroar", "Singles", sv)).toBe("blaze");
+    // A native form the Random Battle sets leave out (Litten, Axew), or with usage off, takes the first slot.
+    expect(usualAbility("litten", "Singles", sv)).toBe("blaze");
+    expect(usualAbility("axew", "Doubles", sv)).toBe("rivalry");
+    expect(usualAbility("incineroar", "Singles", sv, { usage: false })).toBe("blaze");
+  });
+
+  it("follows a native game's Random Battle sets for each format", async () => {
+    const [usum, swsh, sv] = await Promise.all((["ultra_sun_ultra_moon", "sword_shield", "scarlet_violet"] as const).map((game) => loadBattleRuntime(game)));
+    // The generator's ability, not the first slot (Shell Armor, Rivalry, Swarm, Thick Fat, Blaze, Limber).
+    expect(createBuild("cloyster", usum).abilityId).toBe("overcoat");
+    expect(usualAbility("cloyster", "Singles", usum)).toBe("skilllink");
+    expect(usualAbility("haxorus", "Singles", sv)).toBe("moldbreaker");
+    expect(usualAbility("scizor", "Singles", swsh)).toBe("technician");
+    expect(usualAbility("azumarill", "Doubles", sv)).toBe("hugepower");
+    expect(usualAbility("incineroar", "Singles", sv)).toBe("intimidate");
+    expect(usualAbility("ditto", "Singles", swsh)).toBe("imposter");
+    // Scarlet/Violet Doubles reads its own sets; Gen 7 and 8 Doubles read their Singles sets.
+    expect(usualAbility("haxorus", "Doubles", sv)).toBe("unnerve");
+    expect(usualAbility("cloyster", "Doubles", usum)).toBe("skilllink");
+    // A form one Scarlet/Violet file leaves out reads the other's, as its quick moves do.
+    expect(usualAbility("greninja", "Doubles", sv)).toBe("protean");
+    // Most generated wins (Magnezone: Analytic in 76% of USUM sets); a tie keeps the earlier slot (Sword/Shield
+    // Inteleon's two keys give Torrent and Sniper equally).
+    expect(usualAbility("magnezone", "Singles", usum)).toBe("analytic");
+    expect(usualAbility("inteleon", "Singles", swsh)).toBe("torrent");
+    // A Mega key's sets name its base form's ability, so the Mega keeps its only one.
+    expect(usualAbility("charizardmegax", "Singles", usum)).toBe("toughclaws");
+    // What a hand pick and the default pair get.
+    expect(chosenBuild("cloyster", usum, "Doubles")).toMatchObject({ abilityId: "skilllink", abilityActive: false });
+    expect(createMatchup(0, sv).attacker.build.abilityId).toBe(usualAbility("charizard", "Doubles", sv));
   });
 
   it("has every catalog form's abilities in slot order", async () => {

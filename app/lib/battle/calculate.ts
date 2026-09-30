@@ -8,15 +8,15 @@ import { getBerryResistType, getNaturalGift } from "@smogon/calc/dist/items";
 import { getMaxMoveName, getZMoveName } from "@smogon/calc/dist/move";
 import { championsRuntime, type BattleRuntime } from "./runtime";
 import "./engine-corrections.cjs";
-import { abilityActivationLabel, defaultAbilityActive, getBuildStats, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
+import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
 import { getBuildGender, isMaxActive, specialTeraForm } from "./mechanics";
-import { resolveBattleMove, withResolvedPriority } from "./resolve-move";
+import { resolveBattleMove, STELLAR_FIRST_USE_REASON, withResolvedPriority } from "./resolve-move";
 import { EVENT_DOUBLING_MOVES, eventDoublingAssumption, isEventDoubled } from "./event-moves";
 import { withDynamaxHealth } from "./health";
 import { mimicryState } from "./mimicry";
 import { FIXED_DAMAGE_MOVES, MOVES_FIRST_POWER_MOVES } from "./turn-order";
 import { imposterTransforms, movesSpeciesId, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
-import { applyIntimidate, entryBoosts, intimidatedKey, type IntimidateBattle } from "./intimidate";
+import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, type HitCountBattle } from "./hit-count";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
 import type {
@@ -59,6 +59,13 @@ const CONTEXT_ABILITIES: Record<string, string> = {
   rivalry: "Rivalry needs both Pokémon's genders; specify both instead of assuming the engine's default male gender.",
 };
 const EXPLOSIVE_MOVES = new Set(["explosion", "selfdestruct", "mistyexplosion", "mindblown"]);
+/**
+ * Moves that never knock the target out: pinned Showdown's falseswipe and holdback onDamage
+ * (onDamagePriority -20) return target.hp - 1 for a hit that would reach the target's HP, before
+ * Sturdy (-30), Focus Sash or Focus Band (-40) act, so none of those activates. Their Z-Move and Max
+ * Move (Breakneck Blitz, Max Strike) are other moves, without the effect.
+ */
+const LEAVES_ONE_HP_MOVES = new Set(["falseswipe", "holdback"]);
 // Target items pinned Showdown uses only after the whole move (Kee and Maranga Berry
 // onAfterMoveSecondary, White Herb onAnyAfterMove); the engine's multi-hit loop uses them between hits.
 const AFTER_MOVE_ITEMS = new Set(["Kee Berry", "Maranga Berry", "White Herb"]);
@@ -479,22 +486,64 @@ function settleEntry(
       // The engine adds entry boosts at calculation time; nothing is stored here.
       ...result.lines.slice(1).filter((line) => !/which the calculator adds when it calculates|^This assumes Tailwind started/.test(line)).map(named));
   }
-  // After Intimidate, whose own stage bookkeeping adds the engine's Download boost.
+  // After Intimidate, whose own stage bookkeeping adds the Download boost entryBoosts gives.
   for (const [side, foeSide] of [["attacker", "defender"], ["defender", "attacker"]] as const) {
     const holder = builds[side], foe = builds[foeSide];
     const who = side === "attacker" ? "the attacker" : "the target";
     // At a shared lead Download (switch-in priority 0) reads the foe before its terrain Seed (priority
-    // -1) is used; the engine counts the Seed first.
-    if (holder.abilityId === "download" && !foe.transformedFrom && !gassedAbility(holder, foe, conditions) && SEED_TERRAINS[foe.itemId] === conditions.terrain
-      && !klutzActive(foe, holder) && foe.itemUsedBeforeRoom !== false) {
+    // -1), before Embody Aspect (Ogerpon Terastallizes during the turn) and before a slower foe's
+    // Dauntless Shield (entryBoosts, beforeDownload), in the form it led with and before any room
+    // (atLead); the engine reads the foe as it is now, with all of them.
+    if (holder.abilityId === "download" && !foe.transformedFrom && !gassedAbility(holder, foe, conditions)) {
       const battle = intimidateBattle(conditions, tailwind[side], tailwind[foeSide]);
       const foeEntry = entryBoosts(foe, holder, null, tailwind[foeSide], battle, runtime);
-      const read = (entries: typeof foeEntry) => entryBoosts(holder, foe, entries, tailwind[side], battle, runtime).find((entry) => entry.id === "download");
-      const beforeSeed = read(foeEntry.filter((entry) => entry.id !== foe.itemId));
-      if (beforeSeed && beforeSeed.stat !== read(foeEntry)?.stat) {
-        builds[side] = { ...holder, boosts: { ...holder.boosts, [beforeSeed.stat]: clampStage((holder.boosts[beforeSeed.stat] ?? 0) + 1) }, settledDownload: beforeSeed.stat };
-        lines.push(`${cap(who)} ${ownName(holder)}'s Download read ${ownName(foe)}'s Defense and Sp. Def before its ${runtime.itemsById.get(foe.itemId)?.name ?? foe.itemId} was used, raising its ${STAGE_NAMES[beforeSeed.stat]}. This assumes both entered together; if it entered later, Download counted the Seed's rise.`);
+      const stat = entryBoosts(holder, foe, foeEntry, tailwind[side], battle, runtime).find((entry) => entry.id === "download")?.stat;
+      if (!stat) continue;
+      const lead = atLead(foe, battle, runtime);
+      const before = beforeDownload(holder, foe, foeEntry, runtime);
+      const later = downloadStat(foe, foeEntry, battle, runtime);
+      if (stat !== later) {
+        builds[side] = { ...holder, boosts: { ...holder.boosts, [stat]: clampStage((holder.boosts[stat] ?? 0) + 1) }, settledDownload: stat };
       }
+      // The other outcomes: the holder entered later (the engine's pick), or the other order at a shared entry.
+      const shield = foeEntry.find((entry) => entry.id === "dauntlessshield");
+      const counted = !!shield && before.includes(shield);
+      const swap = shield ? downloadStat(lead.foe, counted ? before.filter((entry) => entry !== shield) : [...before, shield], lead.battle, runtime) : stat;
+      // Necrozma-Ultra or Zygarde-Complete could have led as either of two forms: when a lead read differs
+      // from the one used, name each form's.
+      const unknown = unknownLeadForms(foe, runtime);
+      if (unknown && later === stat && swap === stat) {
+        const reads = unknown.speciesIds.map((id) => ({ id, read: downloadStat({ ...lead.foe, speciesId: id }, before, lead.battle, runtime) }));
+        if (reads.some(({ read }) => read && read !== stat)) {
+          const listed = reads.flatMap(({ id, read }) => read ? [`its ${STAGE_NAMES[read]}${read === stat ? " too" : ""} against ${runtime.speciesById.get(id)?.name ?? id}`] : []);
+          lines.push(`${cap(who)} ${ownName(holder)}'s Download read ${ownName(foe)} as it is now, raising its ${STAGE_NAMES[stat]}: this assumes it entered after ${unknown.base} ${unknown.change}. If both led together, Download read its entry form instead and raised ${listed.join(" or ")}.`);
+        }
+        continue;
+      }
+      if (later === stat && swap === stat) continue;
+      // What Download did not count that could matter to it (Embody Aspect's Attack or Speed never does),
+      // the form the foe had then, and a room that was not up yet.
+      const missed = foeEntry.filter((entry) => !before.includes(entry) && (entry.stat === "def" || entry.stat === "spd"));
+      const embody = missed.some((entry) => EMBODY_STATS[entry.id]);
+      const form = leadForm(foe, runtime);
+      const holderName = ownName(holder), foeName = form ? runtime.speciesById.get(form.speciesId)?.name ?? form.speciesId : ownName(foe);
+      const mine = leadSpeed(holder, runtime), theirs = leadSpeed(foe, runtime);
+      const effect = (entry: EntryBoost) => SEED_TERRAINS[entry.id] ? `its ${entry.cause} was used` : `its ${entry.cause} raised its ${STAGE_NAMES[entry.stat]}`;
+      const befores = [...missed.map(effect), ...(form?.change ? [`it ${form.change}`] : []), ...(conditions.wonderRoom ? ["Wonder Room was set"] : [])];
+      const order = swap === stat ? "" : mine === theirs
+        ? ` and Dauntless Shield acted first: both have ${mine} Speed on entry, so Showdown picks the order at random`
+        : `, where ${counted ? foeName : holderName} acts first (${Math.max(mine, theirs)} Speed on entry against ${Math.min(mine, theirs)})`;
+      const alternatives = new Map<(typeof COMBAT_STATS)[number], string[]>();
+      const add = (other: (typeof COMBAT_STATS)[number] | null, when: string) => { if (other && other !== stat) alternatives.set(other, [...(alternatives.get(other) ?? []), when]); };
+      add(later, `${embody ? "it entered after that" : form?.change ? `it entered after ${foeName} ${form.change}` : "it entered later"}${conditions.wonderRoom ? " (under Wonder Room)" : ""}`);
+      add(swap, mine === theirs ? "Download acted first" : `${counted ? "Download" : "Dauntless Shield"} acted first (as when both are sent in together under Trick Room)`);
+      // A Seed alone: Download then counted the Seed's change (a drop for a Contrary holder).
+      const seedOnly = befores.length === 1 && missed.length === 1 && !!SEED_TERRAINS[missed[0].id] && swap === stat;
+      const outcomes = [...alternatives].map(([other, whens]) => `if ${whens.join(" or ")}, ${whens.every((when) => when.startsWith("Download")) ? "it" : "Download"} ${seedOnly ? `counted the Seed's ${missed[0].amount < 0 ? "drop" : "rise"}` : `raised its ${STAGE_NAMES[other]}`}`);
+      const list = befores.length < 2 ? befores.join("") : `${befores.slice(0, -1).join(", ")} and ${befores[befores.length - 1]}`;
+      const done = [counted ? `counted ${foeName}'s Dauntless Shield rise` : "", befores.length ? `read ${counted ? "its" : `${foeName}'s`} Defense and Sp. Def before ${list}` : ""];
+      lines.push(`${cap(who)} ${holderName}'s Download ${done.filter(Boolean).join(" but ")}, raising its ${STAGE_NAMES[stat]}. `
+        + `This assumes both ${embody ? `led together, so ${foeName} Terastallized after Download acted` : swap !== stat || befores.length > missed.length ? `led together${order}` : "entered together"}; ${outcomes.join("; ")}.`);
       continue;
     }
     if (holder.abilityId === "download" && foe.transformedFrom && !gassedAbility(holder, foe, conditions)) {
@@ -577,42 +626,67 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   if (paradox && abilityOn && !build.transformedFrom) {
     const weatherless = [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === build ? other : build, conditions));
     const fieldOn = paradox === "sun" ? conditions.weather === "Sun" && !weatherless : conditions.terrain === "Electric";
-    // Magic Room set after it entered does not undo a Booster Energy used on entry (usedBeforeRoom); one
-    // that met the room on entry stays unused even after the room ends (pinned Showdown boosterenergy acts
-    // only once its switch-in onStart has run, which the room skipped).
-    const booster = !fieldOn && settled.itemId === "boosterenergy" && !klutz && build.itemUsedBeforeRoom !== false;
-    // At a shared lead the foe's Drought, Orichalcum Pulse, Electric Surge or Hadron Engine (priority 0)
-    // activates it before the holder's Seed (priority -1) is used, so the Seed's rise is not counted.
-    const foeSetsField = fieldOn && !gassedAbility(other, build, conditions)
-      && (paradox === "sun" ? ["drought", "orichalcumpulse"] : ["electricsurge", "hadronengine"]).includes(other.abilityId);
-    if (!fieldOn && !booster && settled.itemId === "boosterenergy") {
+    // With its field up, a Booster Energy was used only if the field was down at some point after the
+    // holder entered (pinned Showdown boosterenergy onUpdate acts whenever its field is down, once its
+    // switch-in onStart has run): the panel's choice. Without it, Magic Room set after it entered does not
+    // undo a Booster Energy used on entry (usedBeforeRoom); one that met the room on entry stays unused even
+    // after the room ends (the room skipped that onStart), with or without its field.
+    const booster = settled.itemId === "boosterenergy" && !klutz && build.itemUsedBeforeRoom !== false
+      && (fieldOn ? build.itemUsedBeforeField === true : true);
+    // The other Pokémon's Cloud Nine or Air Lock is out. If the sun activated Protosynthesis before that
+    // ability came in (the panel's choice), the Booster Energy was used up with no effect, its volatile
+    // already existing, and the ability's WeatherChange then ended Protosynthesis; that stays so after the
+    // sun ends or a Magic Room is set.
+    const cloud = paradox === "sun" && booster && ["cloudnine", "airlock"].includes(other.abilityId) && !gassedAbility(other, build, conditions)
+      ? runtime.abilitiesById.get(other.abilityId)?.name ?? other.abilityId : null;
+    const burned = !!cloud && build.itemUsedBeforeField === false;
+    // Which came first, its Seed or Room Service or the field activating the ability (the panel's choice,
+    // model fieldItemChoice). On entry a Seed or Room Service (switch-in priority -1) acts before the
+    // ability picks its stat (-2), but the foe's Drought, Orichalcum Pulse, Electric Surge or Hadron Engine
+    // (priority 0) sets the field before both at a shared lead, a terrain or sun starting while it is out
+    // runs its ability before its item (pinned Showdown runEvent subOrder: ability, then item), and Room
+    // Service acts only on entry or when Trick Room starts.
+    const foeSetsField = fieldOn && !gassedAbility(other, build, conditions) && PARADOX_FIELD_SETTERS[paradox].includes(other.abilityId);
+    const itemFirst = build.itemUsedBeforeField ?? !foeSetsField;
+    const fieldName = paradox === "sun" ? "the sun" : "Electric Terrain";
+    if (burned) {
+      lines.push(`${cap(who)} ${name}'s Protosynthesis is not active: the sun activated it before the other Pokémon's ${cloud} came in, which used up its Booster Energy with no effect and ended Protosynthesis, as its item choice says.`);
+      settled = { ...settled, itemId: "" };
+    } else if (!fieldOn && !booster && settled.itemId === "boosterenergy") {
       lines.push(klutz ? `${cap(who)} ${name}'s Klutz keeps its Booster Energy from activating.`
         : conditions.magicRoom ? `${cap(who)} ${name}'s Booster Energy is not used: it entered while Magic Room was up. Tick its Booster Energy choice if it was used on entry, before the room was set.`
           : `${cap(who)} ${name}'s Booster Energy is still held: it entered while Magic Room was up, and the room ending does not use it. Tick its Booster Energy choice if it was used on entry.`);
+    } else if (fieldOn && !booster && settled.itemId === "boosterenergy" && !klutz) {
+      lines.push(build.itemUsedBeforeRoom === false
+        ? `${cap(who)} ${name}'s Booster Energy is still held: it entered while Magic Room was up, so it never acts, even after the room ends. Tick its Booster Energy choice if it was used after all.`
+        : `${cap(who)} ${name}'s Booster Energy is still held: this assumes ${fieldName} has been up since it entered, apart from while Magic Room was up (or another Pokémon's ability set it as they entered together), or Magic Room was up when it entered. Tick its Booster Energy choice if ${fieldName} was down at some point after it entered while Magic Room was not up, so the Booster Energy was used.`);
     }
-    if (fieldOn || booster) {
-      // Room Service (switch-in priority -1) lowers Speed before the ability picks its stat on entry (-2),
-      // unless the foe's ability set the field first (priority 0) or Trick Room started later.
-      const roomServiceFirst = roomServiceUsed && !foeSetsField;
-      const picking = roomServiceFirst ? { ...settled, boosts: { ...settled.boosts, spe: clampStage((settled.boosts.spe ?? 0) - boostScale) } } : settled;
-      const stat = paradoxStat(picking, other, conditions, runtime, foeSetsField);
-      const afterSeed = foeSetsField && seedUsed ? paradoxStat(settled, other, conditions, runtime, false) : stat;
-      const beforeRoomService = roomServiceFirst ? paradoxStat(settled, other, conditions, runtime, foeSetsField) : stat;
-      // With the foe's ability setting the field at a shared lead, a holder that switched in later, under
-      // Trick Room, had Room Service first.
-      const lateEntry = roomServiceUsed && foeSetsField
-        ? paradoxStat({ ...settled, boosts: { ...settled.boosts, spe: clampStage((settled.boosts.spe ?? 0) - boostScale) } }, other, conditions, runtime, false) : stat;
+    if (!burned && (fieldOn || booster)) {
+      const spedDown = { ...settled, boosts: { ...settled.boosts, spe: clampStage((settled.boosts.spe ?? 0) - boostScale) } };
+      // A Seed or Room Service used first is counted in the pick; one used after the field activated it is not.
+      const pick = (first: boolean) => paradoxStat(first && roomServiceUsed ? spedDown : settled, other, conditions, runtime, !first);
+      const stat = pick(booster || itemFirst);
+      const otherOrder = !booster && (seedUsed || roomServiceUsed) ? pick(!itemFirst) : stat;
       settled = { ...settled, settledBoostedStat: stat, ...(booster ? { itemId: "" } : {}) };
       const abilityName = runtime.abilitiesById.get(build.abilityId)?.name;
-      lines.push(`${cap(who)} ${name}'s ${abilityName} raises its ${STAGE_NAMES[stat]}, its highest stat${afterSeed !== stat ? " before its Seed" : ""}, ${booster ? `activated by its Booster Energy, which is used up${usedBeforeRoom ? " on entry, before Magic Room was set" : ""}` : paradox === "sun" ? "in the sun" : "on Electric Terrain"}. This assumes its stat stages have not changed since it activated.`);
-      if (lateEntry !== stat) {
-        lines.push(`This assumes both entered together, so the other Pokémon's ${runtime.abilitiesById.get(other.abilityId)?.name} set the ${paradox === "sun" ? "sun" : "terrain"} and ${abilityName} activated before Room Service lowered its Speed. If it switched in under Trick Room after the ${paradox === "sun" ? "sun" : "terrain"} was up, Room Service came first and ${abilityName} raises its ${STAGE_NAMES[lateEntry]}.`);
+      const usedUpText = fieldOn ? ` while ${fieldName} was down (on entry before it started, or when it ended while it was out)${conditions.magicRoom ? ", before Magic Room was set" : ""}` : usedBeforeRoom ? " on entry, before Magic Room was set" : "";
+      // A Seed or Room Service used after the ability picked changed its stages since.
+      const itemAfter = !booster && !itemFirst && (seedUsed || roomServiceUsed);
+      const beforeItem = itemAfter && otherOrder !== stat ? (seedUsed ? " before its Seed" : " before Room Service lowered its Speed") : "";
+      lines.push(`${cap(who)} ${name}'s ${abilityName} raises its ${STAGE_NAMES[stat]}, its highest stat${beforeItem}, ${booster ? `activated by its Booster Energy, which is used up${usedUpText}` : paradox === "sun" ? "in the sun" : "on Electric Terrain"}. This assumes its stat stages have not changed since it activated${itemAfter ? ", other than its item's change" : ""}.`);
+      if (cloud && conditions.weather === "Sun") {
+        lines.push(`This assumes the other Pokémon's ${cloud} was out when it entered, or the sun was down at some point after it entered. If the sun activated ${abilityName} before ${cloud} came in, the Booster Energy was used up with no effect and ${abilityName} ended: untick its Booster Energy choice.`);
       }
-      if (beforeRoomService !== stat) {
-        lines.push(`This assumes Trick Room was up when it entered, so Room Service lowered its Speed before ${abilityName} picked its stat. If Trick Room started later, ${abilityName} raises its ${STAGE_NAMES[beforeRoomService]}.`);
-      }
-      if (afterSeed !== stat) {
-        lines.push(`This assumes both entered together, so the other Pokémon's ${runtime.abilitiesById.get(other.abilityId)?.name} set the ${paradox === "sun" ? "sun" : "terrain"} and ${abilityName} activated before ${who} ${name}'s ${itemName(build.itemId)} was used. If it entered after the ${paradox === "sun" ? "sun" : "terrain"} was up, the Seed came first and ${abilityName} raises its ${STAGE_NAMES[afterSeed]}.`);
+      if (otherOrder !== stat) {
+        const item = seedUsed ? itemName(build.itemId) : "Room Service";
+        const acted = seedUsed ? `its ${item} was used` : "Room Service lowered its Speed";
+        const why = build.itemUsedBeforeField !== undefined ? ", as its item choice says"
+          : foeSetsField ? `: this assumes both entered together, so the other Pokémon's ${runtime.abilitiesById.get(other.abilityId)?.name} set ${fieldName} first`
+            : !seedUsed ? ": this assumes Trick Room was up when it entered"
+              : paradox === "terrain" ? ": this assumes Electric Terrain was up when it entered" : `: this assumes ${conditions.terrain} Terrain was up before the sun started, or both were up when it entered`;
+        lines.push(itemFirst
+          ? `${cap(who)} ${name}'s ${cap(acted.replace(/^its /, ""))} before ${abilityName} activated${why}. If ${abilityName} activated first, it raises its ${STAGE_NAMES[otherOrder]}: untick its ${item} choice.`
+          : `${cap(who)} ${name}'s ${abilityName} activated before ${acted}${why}. If ${seedUsed ? "the Seed" : "Room Service"} came first, ${abilityName} raises its ${STAGE_NAMES[otherOrder]}: tick its ${item} choice.`);
       }
     }
   }
@@ -687,15 +761,7 @@ function paradoxStat(build: BattleBuild, other: BattleBuild, conditions: BattleC
   if (!stats) return "atk";
   const entry = beforeSeed ? [] : entryBoosts(build, other, null, false, intimidateBattle(conditions, false, false), runtime).filter((boost) => SEED_TERRAINS[boost.id]);
   const stage = (stat: (typeof COMBAT_STATS)[number]) => clampStage((build.boosts[stat] ?? 0) + entry.filter((boost) => boost.stat === stat).reduce((sum, boost) => sum + boost.amount, 0));
-  const swapped = { def: "spd", spd: "def" } as const;
-  let best: (typeof COMBAT_STATS)[number] = "atk";
-  let bestValue = 0;
-  for (const stat of COMBAT_STATS) {
-    const boost = stage(conditions.wonderRoom && (stat === "def" || stat === "spd") ? swapped[stat] : stat);
-    const value = boost >= 0 ? Math.floor(stats[stat] * (2 + boost) / 2) : Math.floor(stats[stat] * 2 / (2 - boost));
-    if (value > bestValue) { best = stat; bestValue = value; }
-  }
-  return best;
+  return paradoxBestStat(stats, stage, conditions.wonderRoom);
 }
 
 /** Abilities Neutralizing Gas cannot suppress (the engine's own ignoresNeutralizingGas list). */
@@ -727,6 +793,30 @@ const klutzActive = (build: BattleBuild, other: BattleBuild) =>
   build.abilityId === "klutz" && !(other.abilityId === "neutralizinggas" && build.itemId !== "abilityshield");
 
 /** A copy without its held item when Showdown's ignoringItem() holds: Magic Room, or an active Klutz. */
+/**
+ * The priority a move is used with (pinned Showdown getActionSpeed, after onModifyPriority), for turn
+ * order and priority shields; the engines raise Gale Wings and Triage too late for either, and never
+ * Grassy Glide. Showdown applies abilities after Z/Max conversion, so the effective Flying attack gains
+ * Gale Wings' +1, not its untransformed base move; Hidden Power is queued as the dex Normal move (its type
+ * comes later, in onModifyType), so Gale Wings never raises it. Triage gives a healing move +3 (flags.heal:
+ * for damaging moves, the draining ones). Grassy Glide gains +1 on Grassy Terrain for a grounded user,
+ * where Showdown's isGrounded ignores an Iron Ball or Air Balloon under Magic Room or Klutz (the target's
+ * Neutralizing Gas suppresses Klutz); the engine clears it only inside calculate().
+ */
+function usedPriority(metadata: ChampionsMove, assigned: ChampionsMove, resolved: { transformed: boolean; move: Move }, attacker: Pokemon,
+  attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions): { priority: number; grassyGlide: boolean } {
+  let priority = resolved.move.priority;
+  if (attacker.hasAbility("Gale Wings") && metadata.type === "Flying" && attacker.curHP() === attacker.maxHP()
+    && (resolved.transformed || !assigned.id.startsWith("hiddenpower"))) {
+    priority = metadata.priority + 1;
+  }
+  if (attacker.hasAbility("Triage") && resolved.move.drain) priority = metadata.priority + 3;
+  const grassyGlide = metadata.id === "grassyglide" && conditions.terrain === "Grassy"
+    && isGrounded(ignoringItem(attacker, attackerBuild, defenderBuild, conditions), makeField(conditions));
+  if (grassyGlide) priority = metadata.priority + 1;
+  return { priority, grassyGlide };
+}
+
 function ignoringItem(pokemon: Pokemon, build: BattleBuild, other: BattleBuild, conditions: BattleConditions): Pokemon {
   const klutz = klutzActive(build, other);
   if (!pokemon.item || !(conditions.magicRoom || klutz)) return pokemon;
@@ -933,12 +1023,13 @@ const TARGET_ATTACK_MOVES = new Set(["suckerpunch", "thunderclap", "upperhand"])
 
 /** Moves whose damage is fixed, so damage modifiers such as Friend Guard never apply. */
 
-// Pinned Showdown Friend Guard (data/abilities.ts) is breakable, so these attackers ignore the
-// partner's; Neutralizing Gas on either battler suppresses it, Mold Breaker included. The engine
-// applies it unconditionally.
+// Pinned Showdown's Friend Guard, Queenly Majesty, Dazzling and Armor Tail (data/abilities.ts) are
+// breakable, so these attackers ignore a partner's; Neutralizing Gas on either battler suppresses
+// them, Mold Breaker included. The engine applies Friend Guard unconditionally and has no partner
+// shield. The partner's own Ability Shield, which keeps them through both, is not modelled.
 const ABILITY_IGNORERS = new Set(["moldbreaker", "teravolt", "turboblaze"]);
 
-function friendGuardSuppressor(attacker: BattleBuild, defender: BattleBuild, runtime: BattleRuntime): string | null {
+function partnerAbilitySuppressor(attacker: BattleBuild, defender: BattleBuild, runtime: BattleRuntime): string | null {
   if ([attacker, defender].some((build) => build.abilityId === "neutralizinggas")) return "Neutralizing Gas";
   if (ABILITY_IGNORERS.has(attacker.abilityId)) return runtime.abilitiesById.get(attacker.abilityId)?.name ?? attacker.abilityId;
   return null;
@@ -1080,6 +1171,8 @@ function withSingleTarget<M extends { clone(): M }>(move: M, onRetarget: () => v
 
 /** Only a complete, single-hit roll distribution is used for KO probabilities. */
 function directKOChance(result: Result, hits: number): number | null {
+  // Every hit of False Swipe or Hold Back leaves the target at least 1 HP, whatever the rolls or hit count.
+  if (LEAVES_ONE_HP_MOVES.has(toID(result.move.name))) return 0;
   if (result.defender.hasItem("Focus Band")) return null;
   const hp = result.defender.curHP();
   const damage = result.damage;
@@ -1119,7 +1212,9 @@ function zeroDamage(move: ChampionsMove, reason: string): MoveDamageResult {
  * Mold Breaker, Neutralizing Gas, Magic Room and Klutz switch one off. highest is the most damage this
  * hit can deal (Fickle Beam's doubled case included). The HP preview withholds on it.
  */
-function survivalEffect({ defender }: Result, highest: number): Pick<MoveDamageResult, "survival"> {
+function survivalEffect({ defender, move }: Result, highest: number): Pick<MoveDamageResult, "survival" | "leavesOneHP"> {
+  // False Swipe and Hold Back leave 1 HP first, so no survival effect ever acts on them.
+  if (LEAVES_ONE_HP_MOVES.has(toID(move.name))) return { leavesOneHP: true };
   // Each effect acts only on a hit that would otherwise knock the target out.
   if (highest < defender.curHP()) return {};
   const full = defender.curHP() === defender.maxHP();
@@ -1204,7 +1299,10 @@ function calculateMove(
     // Showdown never raises Beat Up (basePower 0 with a basePowerCallback) to the Tera 60-power floor.
     ...(beatUp && "hits" in beatUp ? { multiaccuracy: true } : {}),
   };
-  const resolveWith = (basePower: number | null, extra: { name?: MoveName; type?: TypeName; category?: "Physical" | "Special"; flags?: { contact: 1 } } = {}) => resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), context, runtime, {
+  // A Stellar first use the partner-shield check below answers for itself (moveContext); the question
+  // is asked only if the shield lets the move through.
+  let moveContext = context;
+  const resolveWith = (basePower: number | null, extra: { name?: MoveName; type?: TypeName; category?: "Physical" | "Special"; flags?: { contact: 1 } } = {}) => resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), moveContext, runtime, {
     isCrit: conditions.critical,
     overrides: { ...baseOverrides, ...(basePower !== null ? { basePower } : {}), ...extra },
   });
@@ -1218,9 +1316,26 @@ function calculateMove(
       : mimicryTypes(attackerBuild, defenderBuild, conditions, "attacker", runtime).types ?? runtime.speciesById.get(attackerBuild.speciesId)?.types ?? [];
     if (!types.includes(earlyGate)) return zeroDamage(assigned, `${assigned.name} fails because the attacker is not ${earlyGate} type.`);
   }
+  // A Crowned Zacian or Zamazenta has Behemoth Blade / Bash in its Iron Head slot (pinned Showdown
+  // onBattleStart), so Iron Head is never used; Transform copies that slot.
+  const crownedMove = Object.values(CROWNED_FORMS).find((entry) => entry.form === attackerBuild.speciesId)?.move;
+  if (crownedMove && assigned.id === "ironhead") {
+    const species = runtime.speciesById.get(attackerBuild.speciesId)?.name ?? attackerBuild.speciesId;
+    const replacement = runtime.movesById.get(crownedMove)?.name ?? crownedMove;
+    return emptyRow(assigned, "unsupported", attackerBuild.transformedFrom
+      ? `The transformed ${species} copied ${replacement}, which replaces its Iron Head when the battle starts (pinned Showdown), so Iron Head is never used: choose ${replacement}.`
+      : `${species}'s Iron Head becomes ${replacement} when the battle starts (pinned Showdown), so it is never used: choose ${replacement}.`);
+  }
   let resolved: ReturnType<typeof resolveBattleMove>;
+  let pendingContext: string | null = null;
   try {
     resolved = resolveWith(overridePower);
+    // A partner's priority shield acts before the Stellar boost could matter.
+    if (resolved.kind === "needs-context" && resolved.reason === STELLAR_FIRST_USE_REASON && conditions.defenderSide.priorityShield) {
+      pendingContext = resolved.reason;
+      moveContext = { ...context, stellarFirstUse: false };
+      resolved = resolveWith(overridePower);
+    }
   } catch (error) {
     return emptyRow(assigned, "unsupported", `This matchup could not be calculated: ${error instanceof Error ? error.message : "Unknown engine error."}`);
   }
@@ -1252,6 +1367,29 @@ function calculateMove(
   if (conditions.gravity && GRAVITY_BLOCKED_MOVES.has(metadata.id)) {
     return zeroDamage(metadata, `Gravity prevents ${metadata.name} from being used.`);
   }
+  // A partner's Queenly Majesty, Dazzling or Armor Tail stops a move with this priority aimed at either
+  // Pokémon on its side, a spread move's other target included (pinned Showdown onFoeTryMove:
+  // move.priority > 0.1). It acts in TryMove, before Protect or Max Guard, the move's own Try (Sucker
+  // Punch) and any question about the hit (genders for Rivalry, a Stellar first use, a hit count). The
+  // attacker's partner never does.
+  let shieldIgnoredBy: string | null = null;
+  let shieldNote: string | null = null;
+  // onFoeTryMove skips a move aimed at the user or the foe's side in the dex data (Bide, whose release
+  // never runs TryMove; the engine gives it another target).
+  if (conditions.defenderSide.priorityShield && !["self", "foeSide"].includes(assigned.target)) {
+    const user = makePokemon(attackerBuild, runtime);
+    // The target's Neutralizing Gas also stops Gale Wings and Triage.
+    if (gassedAbility(attackerBuild, defenderBuild, conditions)) user.ability = "Run Away" as AbilityName;
+    const { priority } = usedPriority(metadata, assigned, resolved, user, attackerBuild, defenderBuild, conditions);
+    if (priority > 0) {
+      const names = priorityShieldNames(runtime);
+      const suppressor = partnerAbilitySuppressor(attackerBuild, defenderBuild, runtime);
+      if (!suppressor) return zeroDamage(metadata, `A partner with ${names} blocks ${metadata.name}: it has +${priority} priority.`);
+      shieldNote = `${suppressor} ${suppressor === "Neutralizing Gas" ? "suppresses" : "ignores"} the partner's ${names}.`;
+      if (suppressor !== "Neutralizing Gas") shieldIgnoredBy = suppressor;
+    }
+  }
+  if (pendingContext) return emptyRow(metadata, "needs-context", pendingContext);
   let protect: ProtectOutcome | null = null;
   if (conditions.defenderSide.protect) {
     if (isMaxActive(defenderBuild)) return emptyRow(metadata, "unsupported", "A Dynamaxed Pokémon protects with Max Guard, which is not modelled.");
@@ -1335,7 +1473,7 @@ function calculateMove(
   let hitCount: { hits: number; reason: string | null } = resolvedHits.hits === null ? { hits: 1, reason: null } : { hits: resolvedHits.hits, reason: resolvedHits.reason };
   const hitRule = hitCountRule(metadata, attackerBuild, runtime, hitBattle);
 
-  const assumptions = ["One use, conditional on connecting; damage is before the defender's remaining-HP cap.", ...resolved.assumptions];
+  const assumptions = ["One use, conditional on connecting; damage is before the defender's remaining-HP cap.", ...resolved.assumptions, ...(shieldNote ? [shieldNote] : [])];
   if (protect && "line" in protect) assumptions.push(protect.line);
   if (suppressedItemNote) assumptions.push(suppressedItemNote);
   if (analyticAfterProtect) assumptions.push("The target protected before this attack, so Analytic boosts it.");
@@ -1378,6 +1516,11 @@ function calculateMove(
     }
   }
   if (SUCCESS_ASSUMPTIONS[metadata.id]) assumptions.push(SUCCESS_ASSUMPTIONS[metadata.id]);
+  if (LEAVES_ONE_HP_MOVES.has(metadata.id)) {
+    assumptions.push(`${metadata.name} cannot knock the target out: damage that would reach its HP leaves it 1 HP instead, before Sturdy, Focus Sash or Focus Band could act.`);
+  } else if (resolved.transformed && LEAVES_ONE_HP_MOVES.has(assigned.id)) {
+    assumptions.push(`${metadata.name} does not keep ${assigned.name}'s effect of leaving the target 1 HP, so it can knock the target out.`);
+  }
   if (hitRule.kind === "fixed" && hitRule.reason) assumptions.push(hitRule.reason);
   if (hitRule.kind === "choose" && hitRule.perHitAccuracy) {
     assumptions.push(hitCount.hits === hitRule.max
@@ -1525,27 +1668,9 @@ function calculateMove(
     let move = hitsOneFoe(metadata, conditions) ? withSingleTarget(resolved.move, () => { retargeted = true; }) : resolved.move;
     move.hits = hitCount.hits;
     if (hitCount.hits > 1 && defender.item && AFTER_MOVE_ITEMS.has(defender.item)) defender.item = undefined;
-    // The priority the move is used with (Showdown getActionSpeed), for turn order and priority shields.
-    let priority = move.priority;
-    // Both engines resolve Gale Wings too late for terrain/priority shields.
-    // Showdown battle.ts:2619–2646 applies abilities AFTER Z/Max conversion; the
-    // effective Flying attack gains priority, not its untransformed base move. Hidden Power is queued
-    // as the dex Normal move (its type comes later, in onModifyType), so Gale Wings never raises it.
-    if (attacker.hasAbility("Gale Wings") && metadata.type === "Flying" && attacker.curHP() === attacker.maxHP()
-      && (resolved.transformed || !assigned.id.startsWith("hiddenpower"))) {
-      priority = metadata.priority + 1;
-    }
-    // Triage gives a healing move +3 (Showdown onModifyPriority, flags.heal: for damaging moves, the
-    // draining ones); the engine raises it only after the power step, too late for priority shields.
-    if (attacker.hasAbility("Triage") && move.drain) priority = metadata.priority + 3;
-    // Grassy Glide gains +1 priority on Grassy Terrain for a grounded user (Showdown data/moves.ts
-    // onModifyPriority), so Armor Tail, Queenly Majesty and Dazzling block it; the engine never raises it.
-    // Showdown's isGrounded ignores an Iron Ball or Air Balloon under Magic Room or Klutz (the target's
-    // Neutralizing Gas suppresses Klutz); the engine clears it only inside calculate().
-    if (metadata.id === "grassyglide" && conditions.terrain === "Grassy" && isGrounded(ignoringItem(attacker, attackerBuild, defenderBuild, conditions), makeField(conditions))) {
-      priority = metadata.priority + 1;
-      assumptions.push("Grassy Glide has +1 priority on Grassy Terrain because the user is grounded.");
-    }
+    // The priority the move is used with, for turn order and the engine's priority shields.
+    const { priority, grassyGlide } = usedPriority(metadata, assigned, resolved, attacker, attackerBuild, defenderBuild, conditions);
+    if (grassyGlide) assumptions.push("Grassy Glide has +1 priority on Grassy Terrain because the user is grounded.");
     // The engine reads move.priority both for its priority shields (Queenly Majesty, Dazzling, Armor Tail,
     // Psychic Terrain) and for the Tera/Stellar 60-power floor, where pinned Showdown's floor reads the
     // dex move's own priority (battle-actions.ts getDamage). A raise that stops the attack goes to the
@@ -1805,9 +1930,10 @@ function calculateMove(
     // engine, which misspells the move, still applies it in a rerun).
     const same = (a: Result, b: Result) => JSON.stringify(a.damage) === JSON.stringify(b.damage) && directKOChance(a, hitCount.hits!) === directKOChance(b, hitCount.hits!);
     // The engine names a breaker only for a target ability it ignores; a Friend Guard partner the
-    // calculation dropped for it counts too.
+    // calculation dropped for it counts too, and so does a partner's priority shield it let a hit through.
     const guarded = !!friendGuardSuppressedBy && friendGuardSuppressedBy !== "Neutralizing Gas" && !FIXED_DAMAGE_MOVES.has(metadata.id);
-    const breaker = result.rawDesc.attackerAbility ?? (guarded ? friendGuardSuppressedBy ?? undefined : undefined);
+    const unshielded = !!shieldIgnoredBy && result.range()[1] > 0;
+    const breaker = result.rawDesc.attackerAbility ?? (guarded ? friendGuardSuppressedBy ?? undefined : undefined) ?? (unshielded ? shieldIgnoredBy ?? undefined : undefined);
     // Only the label checks below need this rerun, so it runs at most once, on demand.
     let baseline: Result | null = null;
     const withIt = () => baseline ??= calculate(generation, attacker, defender, move, makeField(conditions));
@@ -1825,11 +1951,11 @@ function calculateMove(
       if (brokeDisguise) {
         assumptions.push(`${breaker} ignores the target's intact Disguise.`);
         result.rawDesc.attackerAbility = breaker;
-      } else if (same(withIt(), without)) {
+      } else if (same(withIt(), without) && !unshielded) {
         delete result.rawDesc.attackerAbility;
       } else {
         result.rawDesc.attackerAbility = breaker;
-        if (JSON.stringify(withIt().damage) === JSON.stringify(without.damage) && !guarded) {
+        if (!same(withIt(), without) && JSON.stringify(withIt().damage) === JSON.stringify(without.damage) && !guarded) {
           assumptions.push(`${breaker} ignores the target's ${runtime.abilitiesById.get(defenderBuild.abilityId)?.name ?? defenderBuild.abilityId}.`);
         }
       }
@@ -1844,11 +1970,13 @@ function calculateMove(
       if (same(withIt(), rerun)) delete result.rawDesc[key];
     }
     if (conditions.weather && !result.field.weather) assumptions.push("Weather is suppressed by an ability.");
-    if (result.defender.curHP() === result.defender.maxHP()
+    // False Swipe and Hold Back leave 1 HP before these could act (their own note says so).
+    const spares = LEAVES_ONE_HP_MOVES.has(metadata.id);
+    if (!spares && result.defender.curHP() === result.defender.maxHP()
       && (result.defender.hasItem("Focus Sash") || result.defender.hasAbility("Sturdy"))) {
       assumptions.push("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed.");
     }
-    if (result.defender.hasItem("Focus Band")) assumptions.push("Focus Band survival chance is not modeled; KO probability is unavailable.");
+    if (!spares && result.defender.hasItem("Focus Band")) assumptions.push("Focus Band survival chance is not modeled; KO probability is unavailable.");
 
     const minPercent = min / result.defender.maxHP() * 100;
     const maxPercent = max / result.defender.maxHP() * 100;
@@ -1949,7 +2077,7 @@ export function calculateMatchup(
   };
   if (Object.values(issues).some((list) => list.length)) return { issues, results: [] };
   const species = runtime.speciesById.get(attacker.speciesId)!;
-  const effective = withoutSinglesPartners(field, attacker, defender);
+  const effective = withoutSinglesPartners(field, attacker, defender, runtime);
   const notes = effective.ignored.length
     ? [`Singles has only the two battling Pokémon, so ${listNames(effective.ignored)} set for Doubles ${effective.ignored.length === 1 ? "is" : "are"} ignored.`]
     : [];
@@ -1972,7 +2100,7 @@ export function calculateMatchup(
   effective.defender = defenderItems.build;
   notes.push(...attackerAbility.lines, ...defenderAbility.lines, ...entry.lines, ...attackerItems.lines, ...defenderItems.lines);
   // Friend Guard protects the receiving side only; drop it where it cannot apply (per move in calculateMove).
-  const suppressor = effective.field.defenderSide.friendGuard ? friendGuardSuppressor(effective.attacker, effective.defender, runtime) : null;
+  const suppressor = effective.field.defenderSide.friendGuard ? partnerAbilitySuppressor(effective.attacker, effective.defender, runtime) : null;
   if (suppressor) effective.field = { ...effective.field, defenderSide: { ...effective.field.defenderSide, friendGuard: false } };
   // A transformed Imposter user attacks with its target's moves; a form change keeps the Pokémon's own.
   const moveSpecies = effective.attacker.transformedFrom ? runtime.speciesById.get(effective.attacker.speciesId) ?? species : species;

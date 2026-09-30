@@ -8,7 +8,7 @@ import { RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import { createMatchup, getRosterPanel, reconcileRosters, rosterChoices, selectRosterPokemon } from "@/app/(app)/calculator/roster-prep";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
-import { createMoveSlots } from "@/app/lib/battle/move-defaults";
+import { createMoveSlots, usualAbility } from "@/app/lib/battle/move-defaults";
 import { BATTLE_GAMES } from "@/app/lib/battle/profiles";
 import { LEGACY_ROSTER_ALIASES, POOL_BUILDER_ROSTER_ALIASES, POOL_BUILDER_SLUG_NAMES, resolveRosterName } from "@/app/lib/battle/roster-identity";
 import { championsRuntime, resolveRuntimeSpecies, type BattleRuntime } from "@/app/lib/battle/runtime";
@@ -258,6 +258,8 @@ describe("league roster names from the Pool Builder", () => {
         ["Zygarde (10% Power Construct)", "zygarde10", "powerconstruct"],
         ["Zygarde", "zygarde", "aurabreak"],
       ]);
+      // The plain row names Aura Break, so it stays apart where the usual ability (Random Battle's) is Power Construct.
+      expect(usualAbility("zygarde", "Doubles", runtime)).toBe("powerconstruct");
     }
   });
 
