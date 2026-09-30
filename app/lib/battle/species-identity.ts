@@ -5,12 +5,24 @@ export type SpeciesResolution =
   | { status: "resolved"; speciesId: string }
   | { status: "unavailable" | "ambiguous"; reason: string };
 
-function normalizeAlias(name: string) {
+export function normalizeAlias(name: string) {
   return name.normalize("NFKD").toLowerCase()
     .replace(/[̀-ͯ]/g, "")
     .replace(/♀/g, "f").replace(/♂/g, "m")
     .replace(/\bfemale\b/g, "f").replace(/\bmale\b/g, "m")
     .replace(/[\s._'’‘:()[\]-]/g, "");
+}
+
+const REGIONAL_ADJECTIVES: Readonly<Record<string, string>> = { Alola: "Alolan", Galar: "Galarian", Hisui: "Hisuian", Paldea: "Paldean" };
+
+/** A form's complete catalog aliases: id, Showdown name, "Mega <base> <X|Y|Z>" and "<Alolan|…> <base>". */
+export function catalogAliasNames(entry: Pick<ChampionsSpecies, "id" | "name">): string[] {
+  const names = [entry.id, entry.name];
+  const mega = entry.name.match(/^(.+)-Mega(?:-(X|Y|Z))?$/);
+  if (mega) names.push(`Mega ${mega[1]} ${mega[2] ?? ""}`);
+  const regional = entry.name.match(/^(.+)-(Alola|Galar|Hisui|Paldea)(.*)$/);
+  if (regional) names.push(`${REGIONAL_ADJECTIVES[regional[2]]} ${regional[1]}${regional[3]}`);
+  return names;
 }
 
 /** Only complete, catalog-backed aliases; search tokens are not species identities. */
@@ -22,15 +34,7 @@ export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "
     const engineIDs = engineAliases.get(engineAlias) ?? new Set<string>();
     engineIDs.add(entry.id);
     engineAliases.set(engineAlias, engineIDs);
-    const names = [entry.id, entry.name];
-    const mega = entry.name.match(/^(.+)-Mega(?:-(X|Y|Z))?$/);
-    if (mega) names.push(`Mega ${mega[1]} ${mega[2] ?? ""}`);
-    const regional = entry.name.match(/^(.+)-(Alola|Galar|Hisui|Paldea)(.*)$/);
-    if (regional) {
-      const adjectives: Record<string, string> = { Alola: "Alolan", Galar: "Galarian", Hisui: "Hisuian", Paldea: "Paldean" };
-      names.push(`${adjectives[regional[2]]} ${regional[1]}${regional[3]}`);
-    }
-    for (const name of names) {
+    for (const name of catalogAliasNames(entry)) {
       const alias = normalizeAlias(name);
       const ids = aliases.get(alias) ?? new Set<string>();
       ids.add(entry.id);

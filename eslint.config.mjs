@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Git-ignored local caches and scratch work (PokéAPI/Serebii responses,
+    // calculator audit harnesses); never part of the shipped or tested code.
+    "scripts/.cache/**",
     // Placeholder app for another project that shares this repo; not held to
     // the PokeDrafts lint rules.
     "app/api/castmirror/**",

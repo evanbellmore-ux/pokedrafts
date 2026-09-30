@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -214,10 +215,33 @@ describe("historical native game data and actual Dex learnset semantics", () => 
     const entry = data(profile.game);
     const selectable = new Set(entry.catalog.moves.filter((row) => !row.isZ && !row.isMax).map((row) => row.id));
     const hp = entry.catalog.moves.filter((row) => row.id !== "hiddenpower" && row.id.startsWith("hiddenpower")).map((row) => row.id);
+    const rejectedPairs: string[] = [];
     for (const raw of nativeSpecies(entry.source)) {
-      const expected = raw.learnset.movePool.filter((id) => selectable.has(id));
+      // The snapshot keeps pinned getMovePool whole; only USUM's validator withholds moves from it.
+      const rejected = raw.learnset.validatorRejected ?? [];
+      expect(rejected.every((id) => raw.learnset.movePool.includes(id)), raw.id).toBe(true);
+      if (profile.game !== "ultra_sun_ultra_moon") expect(rejected, raw.id).toEqual([]);
+      expect(entry.manifest.learnsets.find((row) => row.speciesId === raw.id)?.validatorRejectedMoves ?? [], raw.id).toEqual(rejected);
+      rejectedPairs.push(...rejected.map((id) => `${raw.id}:${id}`));
+      const expected = raw.learnset.movePool.filter((id) => selectable.has(id) && !rejected.includes(id));
       if (expected.includes("hiddenpower")) expected.push(...hp);
       expect(pokemon(entry, raw.id).moves, raw.id).toEqual(sorted(expected));
+    }
+    // Every one of these 80 fails pinned validateSet for every one-move set, and the catalog's other
+    // USUM pairs fail only set-level checks (audit fix35/review/verify80.ts, fullsweep.ts). Pinning the
+    // exact pairs catches a filter that withholds legal moves, or keeps illegal ones.
+    if (profile.game !== "ultra_sun_ultra_moon") expect(rejectedPairs).toEqual([]);
+    if (profile.game === "ultra_sun_ultra_moon") {
+      const perSpecies = Object.fromEntries([...new Set(rejectedPairs.map((pair) => pair.split(":")[0]))].map((id) => [id, rejectedPairs.filter((pair) => pair.startsWith(`${id}:`)).length]));
+      expect(perSpecies).toEqual({
+        araquanidtotem: 4, greninjaash: 4, greninjabond: 4, gumshoostotem: 3, kommoototem: 2, pikachualola: 7, pikachuhoenn: 7, pikachukalos: 7,
+        pikachuoriginal: 7, pikachupartner: 7, pikachusinnoh: 7, pikachuunova: 7, ribombeetotem: 3, salazzletotem: 4, vikavolttotem: 2,
+        vivillonfancy: 1, vivillonpokeball: 1, zygarde10: 3,
+      });
+      expect(createHash("sha256").update(JSON.stringify(rejectedPairs.sort())).digest("hex")).toBe("f2f0240e75793a82f893d785470c486dc044d104a20779a31a3d5970b5f994ec");
+      expect(pokemon(entry, "zygarde10").moves).not.toContain("strength");
+      expect(pokemon(entry, "zygarde").moves).toContain("strength");
+      expect(pokemon(entry, "necrozmaultra").moves).toEqual(expect.arrayContaining(["moongeistbeam", "sunsteelstrike"]));
     }
     if (profile.gen !== 8) {
       const smeargle = pokemon(entry, "smeargle");

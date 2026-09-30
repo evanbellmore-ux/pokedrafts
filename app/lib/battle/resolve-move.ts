@@ -1,7 +1,7 @@
 import { Generations, toID } from "@smogon/calc";
 import { Move } from "@smogon/calc/dist/move";
 import type { Pokemon } from "@smogon/calc";
-import { HIDDEN_POWER_TYPES, hiddenPowerType, isMaxActive, validateMechanic } from "./mechanics";
+import { HIDDEN_POWER_TYPES, hiddenPowerType, isMaxActive, stellarBoostUsedUp, validateMechanic } from "./mechanics";
 import type { BattleRuntime } from "./runtime";
 import type { BattleBuild, ChampionsMove, MoveContext } from "./types";
 
@@ -76,12 +76,12 @@ export function resolveBattleMove(
     ...options.overrides,
     ...(useMax && metadata.category === "Status" ? { maxMove: { basePower: 0 } } : {}),
   };
-  if ((useMax && ["weatherball", "terrainpulse", "judgment", "multiattack", "technoblast", "naturalgift", "revelationdance", "aurawheel"].includes(metadata.id))
-    || (useZ && metadata.id === "weatherball")) {
+  // The engine types these Max Moves differently from pinned Showdown: Judgment and Revelation Dance
+  // (the user's plate or type), Natural Gift (its berry), and Hangry Morpeko's Aura Wheel (Dark).
+  // Weather Ball, Terrain Pulse, Multi-Attack, Techno Blast, Full Belly Aura Wheel and Liquid Voice
+  // sound moves match (fix35/verify.ts).
+  if (useMax && (["judgment", "naturalgift", "revelationdance"].includes(metadata.id) || (metadata.id === "aurawheel" && build.speciesId !== "morpeko"))) {
     return fail("This move's field/item/form-dependent transformed type and exact Z/Max signature are not verified by the pinned adapter; ordinary damage is not substituted.");
-  }
-  if (useMax && pokemon.hasAbility("Liquid Voice") && gen.moves.get(toID(metadata.name))?.flags.sound) {
-    return fail("Liquid Voice's pre-Max sound-move type conversion is not verified; ordinary damage is not substituted.");
   }
   if (!useZ && !useMax && ["return", "frustration"].includes(metadata.id)) {
     const happiness = build.configuration?.happiness ?? 255;
@@ -102,9 +102,15 @@ export function resolveBattleMove(
     overrides = { ...overrides, type: engineType.name, basePower: 60 };
     assumptions.push(`Hidden Power ${type}, 60 power, uses ${build.native.innateIVs ? "explicit innate" : "the provided"} IVs; Hyper Training never changes its type.`);
   }
+  let stellarFirstUse = context?.stellarFirstUse;
   if (build.mechanic === "tera" && build.configuration?.teraType === "Stellar" && metadata.category !== "Status") {
-    if (typeof context?.stellarFirstUse !== "boolean") return { kind: "needs-context", reason: "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed." };
-    assumptions.push(`Stellar: first use of this move's type — ${context.stellarFirstUse ? "yes" : "no"}.`);
+    if (!stellarBoostUsedUp(build, runtime)) {
+      stellarFirstUse = true;
+      assumptions.push("Terapagos-Stellar keeps its Stellar boost for every type; it is never used up.");
+    } else {
+      if (typeof stellarFirstUse !== "boolean") return { kind: "needs-context", reason: "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed." };
+      assumptions.push(`Stellar: first use of this move's type — ${stellarFirstUse ? "yes" : "no"}.`);
+    }
   }
   let overrideMove: MoveOptions["overrideMove"];
   if (build.mechanic === "gigantamax") {
@@ -117,13 +123,24 @@ export function resolveBattleMove(
   }
   // The root Move declaration omits overrideMove. This inspected typed constructor
   // accepts it, and its clone() preserves it; no dependency patch or API cast.
-  const move = new Move(gen, metadata.name, {
+  let move = new Move(gen, metadata.name, {
     ...options, overrides, ability: pokemon.ability, item: pokemon.item,
     useZ, useMax: useMax ? (build.mechanic === "gigantamax" ? "gmax" : true) : false,
-    overrideMove, isStellarFirstUse: context?.stellarFirstUse,
+    overrideMove, isStellarFirstUse: stellarFirstUse,
     timesUsed: 1, timesUsedWithMetronome: 0,
   });
   if (useZ && (!move.isZ || (item?.zMove && toID(move.name) !== item.zMove))) return fail("The pinned engine did not produce the verified Z-Move; ordinary damage is not substituted.");
+  // Revelation Dance's Z conversion uses its own Normal type (pinned Showdown battle-actions
+  // getActiveZMove), but the engine would retype the Z-Move by the user's type, keyed on the base move's
+  // name, so it is built under its Z name. Weather Ball takes its weather type before Z conversion, as
+  // the engine does, so it is left alone.
+  if (useZ && metadata.id === "revelationdance") {
+    move = new Move(gen, move.name, {
+      ...options, overrides: { basePower: move.bp, category: move.category }, ability: pokemon.ability, item: pokemon.item,
+      timesUsed: 1, timesUsedWithMetronome: 0,
+    });
+    assumptions.push(`Z conversion keeps ${metadata.name}'s own Normal type, so ${move.name} is Normal type.`);
+  }
   if (useMax && !move.isMax) return fail("The pinned engine did not produce a verified Max move; ordinary damage is not substituted.");
   const transformed = useZ || useMax;
   if (transformed) assumptions.push(useMax

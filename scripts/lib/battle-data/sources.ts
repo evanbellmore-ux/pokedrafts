@@ -71,11 +71,17 @@ async function compileDex(source: string, output: string): Promise<SourceFile[]>
   for (const directory of ["sim", "data", "data/text", "data/mods/gen7", "data/mods/gen8"]) {
     for (const name of (await readdir(join(source, directory))).sort(compare)) {
       if (!name.endsWith(".ts") || name.endsWith(".d.ts")) continue;
-      if (directory === "sim" && !/^dex(?:-.*)?\.ts$/.test(name)) continue;
+      // The team validator (and the modules it imports) checks USUM learnsets exactly as Showdown does.
+      if (directory === "sim" && !/^dex(?:-.*)?\.ts$/.test(name) && !["team-validator.ts", "teams.ts", "prng.ts"].includes(name)) continue;
       files.push(`${directory}/${name}`);
     }
   }
   await mkdir(output, { recursive: true });
+  // prng.ts imports ts-chacha20, which is not installed. Learnset checks draw no random numbers, so a
+  // stub that fails if anything ever does keeps this build install-free.
+  await mkdir(join(output, "node_modules", "ts-chacha20"), { recursive: true });
+  await writeFile(join(output, "node_modules", "ts-chacha20", "index.js"),
+    'class Chacha20 { constructor() { throw new Error("The data build has no PRNG; learnset validation must not need one."); } }\nmodule.exports = { Chacha20 };\n');
   // Global formats enumerate other mod names, but never load those mods here.
   for (const entry of await readdir(join(source, "data/mods"), { withFileTypes: true })) {
     if (entry.isDirectory()) await mkdir(join(output, "data/mods", entry.name), { recursive: true });

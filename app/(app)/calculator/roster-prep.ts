@@ -1,9 +1,12 @@
-import { championsRuntime, resolveRuntimeSpecies, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { resolveRosterName } from "@/app/lib/battle/roster-identity";
 import { parseTeamImport, type ImportedTeam } from "@/app/lib/battle/team-import";
 import type { ImportDraft } from "./PokePasteImporter";
 export { createSpeciesResolver, resolveRosterSpecies, type SpeciesResolution } from "@/app/lib/battle/species-identity";
-import { createBuild, createConditions } from "@/app/lib/battle/model";
-import { createMoveSlots, type MoveSlots } from "@/app/lib/battle/move-defaults";
+import { applyIntimidate, intimidatedKey } from "@/app/lib/battle/intimidate";
+import { tracedAbility } from "@/app/lib/battle/imposter";
+import { createBuild, createConditions, defaultAbilityActive, withUsualAbility } from "@/app/lib/battle/model";
+import { createMoveSlots, usualAbility, type MoveSlots } from "@/app/lib/battle/move-defaults";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
 import type { BattleBuild, BattleConditions, BattleMechanic, MoveContext } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
@@ -21,7 +24,8 @@ export type TeamSelection = { mode: TeamSourceMode; paste: AppliedPaste | null; 
 
 type SourceIdentity = { key: string; name: string; speciesId: string; runtimeIdentity: string };
 export type RosterSource = SourceIdentity & (
-  | { kind: "league"; leagueId: string; memberId: string; rosterId: string }
+  // abilityId: an ability the Pool Builder row itself names (Zygarde Power Construct), used for a fresh build.
+  | { kind: "league"; leagueId: string; memberId: string; rosterId: string; abilityId?: string }
   | { kind: "paste"; role: RosterRole; importId: string; index: number }
 );
 
@@ -32,6 +36,8 @@ export type RosterChoice = {
   source: RosterSource | null;
   reason: string | null;
   owner?: TeamSourceOwner;
+  /** League entries, duplicates included: the roster's own (Pool Builder) name, which keys the sprite dex. */
+  spriteName?: string;
 };
 
 export function rosterChoices(leagueId: string, team: TeamRoster, runtime: BattleRuntime = championsRuntime): RosterChoice[] {
@@ -41,7 +47,7 @@ export function rosterChoices(leagueId: string, team: TeamRoster, runtime: Battl
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   return team.pokemon.map((pokemon, index) => {
-    const resolved = resolveRuntimeSpecies(runtime, pokemon.name);
+    const resolved = resolveRosterName(runtime, pokemon.name);
     const speciesId = resolved.status === "resolved" ? resolved.speciesId : null;
     const duplicate = counts.get(pokemonKey(pokemon.name)) !== 1;
     const identity = [runtime.identity, leagueId, team.member_id, team.id, pokemonKey(pokemon.name), pokemon.pick_number, pokemon.acquired ?? null, speciesId];
@@ -51,8 +57,12 @@ export function rosterChoices(leagueId: string, team: TeamRoster, runtime: Battl
       key: duplicate ? JSON.stringify([...identity, index]) : key,
       name: pokemon.name,
       speciesId,
-      source: !duplicate && speciesId ? { kind: "league", key, runtimeIdentity: runtime.identity, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId } : null,
+      source: !duplicate && speciesId ? {
+        kind: "league", key, runtimeIdentity: runtime.identity, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId,
+        ...(resolved.status === "resolved" && resolved.abilityId ? { abilityId: resolved.abilityId } : {}),
+      } : null,
       reason: duplicate ? "Duplicate roster name. Choose the Pokémon manually." : resolved.status === "resolved" ? null : resolved.reason,
+      spriteName: pokemon.name,
     };
   });
 }
@@ -139,6 +149,11 @@ export type PreparedMatchup = {
   accountReady: boolean;
   revision: number;
   notice: string;
+  /**
+   * The last Intimidate result, shown under its button while both builds are the ones it produced.
+   * `count` counts applications in a row, so a repeated identical result is announced again.
+   */
+  intimidate?: { side: BattleSide; lines: string[]; count: number; builds: Record<BattleSide, BattleBuild> } | null;
   accountId: string | null;
   selection: RosterSelection;
   teams: Record<RosterRole, TeamSelection>;
@@ -203,7 +218,7 @@ export function createMatchup(revision = 0, runtime: BattleRuntime = championsRu
     const fallback = runtime.catalog.species.find((entry) => !entry.battleForm && !entry.unsupported.length)?.id ?? "";
     const id = runtime.speciesById.has(speciesId) ? speciesId : fallback;
     const moves = createMoveSlots(id, field.gameType, runtime);
-    return { key: revision * 2 + offset, editorRevision: 0, role, build: withPreparedMoves(createBuild(id, runtime), moves),
+    return { key: revision * 2 + offset, editorRevision: 0, role, build: withPreparedMoves(withUsualAbility(createBuild(id, runtime), usualAbility(id, field.gameType, runtime)), moves),
       hpInput: "", source: null, moves, megaBase: null, contexts: {}, moveEpoch: 0 };
   };
   const attacker = makeSlot("charizard", 0, "own");
@@ -258,6 +273,29 @@ export function selectMatchupMove(current: PreparedMatchup, moveId: string | nul
 
 function validMoveSlot(slotIndex: number): boolean {
   return Number.isInteger(slotIndex) && slotIndex >= 0 && slotIndex < 4;
+}
+
+/**
+ * Puts the form's required move (Showdown requiredMove, e.g. Keldeo-Resolute's Secret Sword)
+ * into one quick-move slot of the Pokémon with this key, which clears its prepared-move issue.
+ */
+export function equipRequiredMove(current: PreparedMatchup, key: number, slotIndex: number): PreparedMatchup {
+  const side: BattleSide | null = current.attacker.key === key ? "attacker" : current.defender.key === key ? "defender" : null;
+  if (!side || !validMoveSlot(slotIndex)) return current;
+  const slot = current[side];
+  const required = current.runtime.speciesById.get(slot.build.speciesId)?.requiredMove;
+  if (!required || !learnsMove(slot, required, current.runtime) || slot.moves.some((move) => move.moveId === required)) return current;
+  const replaced = slot.moves[slotIndex].moveId;
+  const moves: MoveSlots = [...slot.moves];
+  moves[slotIndex] = { moveId: required, origin: "required", gameType: null };
+  const next = { ...slot, moves, build: withPreparedMoves(slot.build, moves), contexts: slot.build.game === "champions" ? slot.contexts : {} };
+  // The selected attack follows only a move that was actually replaced, not an empty slot.
+  const attacking = replaced !== null && sameMoveOwner(current.attack.owner, getMoveOwner(slot)) && current.attack.moveId === replaced;
+  const name = (moveId: string) => current.runtime.movesById.get(moveId)?.name ?? moveId;
+  return {
+    ...current, [side]: next, cache: cacheCombatant(current, next), attack: attacking ? { ...current.attack, moveId: required } : current.attack,
+    notice: `${name(required)} prepared in quick move ${slotIndex + 1}${replaced ? `, replacing ${name(replaced)}` : ""}.`,
+  };
 }
 
 export function activateMoveSlot(current: PreparedMatchup, owner: MoveOwner, slotIndex: number): PreparedMatchup {
@@ -325,10 +363,37 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
   }
   const base = slot.build.speciesId === option.baseSpeciesId ? formSettings(slot.build)
     : slot.megaBase?.speciesId === option.baseSpeciesId ? slot.megaBase : null;
-  const settings = reverting ? base ?? formSettings(createBuild(option.baseSpeciesId, current.runtime)) : formSettings(createBuild(formId, current.runtime));
+  // A base form reached without a snapshot takes the usual ability, as a fresh pick of it does.
+  const freshBase = () => withUsualAbility(createBuild(option.baseSpeciesId, current.runtime), usualAbility(option.baseSpeciesId, current.field.gameType, current.runtime));
+  const settings = reverting ? base ?? formSettings(freshBase()) : formSettings(createBuild(formId, current.runtime));
   if (!reverting && !option.itemId) settings.itemId = slot.build.itemId;
-  const build = withPreparedMoves({ ...slot.build, ...settings, mechanic: undefined }, slot.moves);
-  const next = { ...slot, build, megaBase: reverting ? null : base,
+  // Only the form that needs a move labels it Required: after Rayquaza-Mega reverts, a seeded
+  // Dragon Ascent is a plain prepared choice.
+  const requiredMove = current.runtime.speciesById.get(settings.speciesId)?.requiredMove;
+  const stale = (move: MoveSlots[number]) => move.origin === "required" && move.moveId !== requiredMove;
+  const moves = slot.moves.some(stale) ? slot.moves.map((move) => stale(move) ? { ...move, origin: "manual" as const } : move) as MoveSlots : slot.moves;
+  // An Intimidate the entry form copied with Trace acted on entry; the Mega form loses Trace but the
+  // drop stays, so it is stored now in both builds, as the Apply Intimidate button stores one.
+  const otherSide: BattleSide = side === "attacker" ? "defender" : "attacker";
+  let holder = slot.build;
+  let otherBuild = current[otherSide].build;
+  let stored = false;
+  if (!reverting && holder.abilityId === "trace" && settings.abilityId !== "trace" && holder.copiedIntimidateStored !== intimidatedKey(otherBuild, current.runtime)
+    && tracedAbility(holder, otherBuild, current.field.magicRoom).abilityId === "intimidate") {
+    const sideOf = (entry: BattleSide) => entry === "attacker" ? current.field.attackerSide : current.field.defenderSide;
+    const result = applyIntimidate({ ...holder, abilityId: "intimidate" }, otherBuild, {
+      magicRoom: current.field.magicRoom, wonderRoom: current.field.wonderRoom, terrain: current.field.terrain, gameType: current.field.gameType,
+      tailwind: { source: sideOf(side).tailwind, target: sideOf(otherSide).tailwind },
+      positions: { source: side === "attacker" ? "left" : "right", target: otherSide === "attacker" ? "left" : "right" },
+    }, current.runtime);
+    holder = { ...holder, boosts: result.source.boosts, itemId: result.source.itemId, copiedIntimidateStored: intimidatedKey(otherBuild, current.runtime) };
+    otherBuild = result.target;
+    stored = true;
+  }
+  const build = withPreparedMoves({ ...holder, ...settings, mechanic: undefined }, moves);
+  const withOther = stored ? storeBuild(current, otherSide, otherBuild, current[otherSide].hpInput) : current;
+  current = withOther;
+  const next = { ...slot, moves, build, megaBase: reverting ? null : base,
     contexts: slot.build.game === "champions" ? slot.contexts : {}, moveEpoch: slot.moveEpoch + 1 };
   const nextOwner = getMoveOwner(next);
   const editing = current.replacement && sameMoveOwner(current.replacement.owner, owner);
@@ -338,7 +403,7 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
     attack: sameMoveOwner(current.attack.owner, owner) ? { ...current.attack, owner: nextOwner } : current.attack,
     replacement: editing ? { ...current.replacement!, owner: nextOwner, session } : current.replacement,
     replacementSession: session,
-    notice: `${current.runtime.speciesById.get(build.speciesId)?.name} selected. Current HP, training and prepared moves kept.`,
+    notice: `${current.runtime.speciesById.get(build.speciesId)?.name} selected. Current HP, training, stages and prepared moves kept.${!reverting && build.abilityId === "intimidate" ? " Its Intimidate activates when it Mega Evolves: use Apply Intimidate in its build settings to lower the other Pokémon's Attack." : ""}${stored ? " The Intimidate it copied with Trace on entry still counts, so it is now stored in both Pokémon's stages." : ""}`,
   };
 }
 
@@ -474,9 +539,57 @@ export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, b
   return storeBuild(current, side, build, sameHP ? slot.hpInput : formatHPInput(build.currentHP));
 }
 
+/**
+ * The Pokémon on `side` uses Intimidate (on entry, or on Mega Evolution into an Intimidate form)
+ * against the other one. Both builds' stages and items take the result, so it survives later form
+ * changes and is never applied again by a calculation.
+ */
+export function applyMatchupIntimidate(current: PreparedMatchup, side: BattleSide): PreparedMatchup {
+  const other: BattleSide = side === "attacker" ? "defender" : "attacker";
+  if (current[side].build.abilityId !== "intimidate") return current;
+  const { field } = current;
+  // The left Pokémon's side conditions are attackerSide.
+  const sideOf = (slot: BattleSide) => slot === "attacker" ? field.attackerSide : field.defenderSide;
+  const position = (slot: BattleSide) => slot === "attacker" ? "left" : "right";
+  const result = applyIntimidate(current[side].build, current[other].build, {
+    magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: field.gameType,
+    tailwind: { source: sideOf(side).tailwind, target: sideOf(other).tailwind },
+    positions: { source: position(side), target: position(other) },
+  }, current.runtime);
+  const withSource = storeBuild(current, side, result.source, current[side].hpInput);
+  const next = storeBuild(withSource, other, result.target, withSource[other].hpInput);
+  const again = current.intimidate?.side === side && isIntimidateCurrent(current, current.intimidate);
+  return {
+    ...next, notice: "",
+    intimidate: { side, lines: result.lines, count: again ? current.intimidate!.count + 1 : 1, builds: { attacker: next.attacker.build, defender: next.defender.build } },
+  };
+}
+
+function isIntimidateCurrent(current: PreparedMatchup, intimidate: NonNullable<PreparedMatchup["intimidate"]>) {
+  return intimidate.builds.attacker === current.attacker.build && intimidate.builds.defender === current.defender.build;
+}
+
+/** The text under `side`'s Intimidate button, while nothing has changed either build since. */
+export function intimidateResult(current: PreparedMatchup, side: BattleSide): string | null {
+  const last = current.intimidate;
+  if (!last || last.side !== side || !isIntimidateCurrent(current, last)) return null;
+  return `${last.count > 1 ? `Applied ${last.count} times in a row. ` : ""}${last.lines.join(" ")}`;
+}
+
 export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpInput: string): PreparedMatchup {
   const build = { ...current[side].build, currentHP: parseBuildInput(hpInput, true) };
   return storeBuild(current, side, build, hpInput);
+}
+
+/**
+ * A fresh league build uses the ability its Pool Builder row names, when the form has it, and
+ * otherwise the form's usual ability (usage in Champions, else Showdown's first slot).
+ */
+function withRosterAbility(build: BattleBuild, source: RosterSource, gameType: BattleConditions["gameType"], runtime: BattleRuntime): BattleBuild {
+  if (source.kind === "league" && source.abilityId) {
+    return build.abilityId === source.abilityId ? build : { ...build, abilityId: source.abilityId, abilityActive: defaultAbilityActive(source.abilityId) };
+  }
+  return withUsualAbility(build, usualAbility(build.speciesId, gameType, runtime));
 }
 
 export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice): PreparedMatchup {
@@ -494,7 +607,7 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     || source.key !== JSON.stringify(["paste", current.runtime.identity, slot.role, source.importId, source.index])) return current;
   if (slot.source?.key === source.key) return current;
   const cached = current.cache.get(source.key);
-  const build = cached?.build ?? (seed?.build ? structuredClone(seed.build) : createBuild(source.speciesId, current.runtime));
+  const build = cached?.build ?? (seed?.build ? structuredClone(seed.build) : withRosterAbility(createBuild(source.speciesId, current.runtime), source, current.field.gameType, current.runtime));
   if (build.game !== current.runtime.profile.id) return current;
   const hpInput = cached?.hpInput ?? formatHPInput(build.currentHP);
   const moves = cached?.moves ?? (seed ? structuredClone(seed.moves) : createMoveSlots(source.speciesId, current.field.gameType, current.runtime));

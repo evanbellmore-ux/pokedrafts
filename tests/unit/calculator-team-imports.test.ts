@@ -18,8 +18,11 @@ import {
 import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
 import { speciesById } from "@/app/lib/battle/catalog";
-import { createBuild, createConditions } from "@/app/lib/battle/model";
+import { createBuild, createConditions, withUsualAbility } from "@/app/lib/battle/model";
+import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { parseTeamImport } from "@/app/lib/battle/team-import";
+const usualBuild = (id: string) => withUsualAbility(createBuild(id), usualAbility(id, "Doubles"));
+
 
 const RAICHU = [
   "Raichu @ Raichunite X", "Ability: Lightning Rod", "EVs: 2 HP / 32 SpA / 32 Spe",
@@ -172,7 +175,7 @@ describe("team import state: source ownership and activation", () => {
       expect(current[side].source?.kind).toBe(mode);
       expect(current[side].build).toMatchObject(mode === "paste"
         ? { speciesId: "raichu", nature: "Timid", abilityId: "lightningrod", itemId: "raichunitex", points: { hp: 2, spa: 32, spe: 32 } }
-        : createBuild("charizard"));
+        : { ...createBuild("charizard"), abilityId: "solarpower" });
       expectPrepKept(current[side === "attacker" ? "defender" : "attacker"], before[side === "attacker" ? "defender" : "attacker"]);
     }
   });
@@ -524,8 +527,8 @@ describe("team import state: stale actions, reconciliation, Swap and Reset", () 
     expect(next.importRevision).toBe(0);
     expect(next.attacker.source).toBeNull();
     expect(next.defender.source).toBeNull();
-    expect(next.attacker.build).toEqual(createBuild("charizard"));
-    expect(next.defender.build).toEqual(createBuild("blastoise"));
+    expect(next.attacker.build).toEqual(usualBuild("charizard"));
+    expect(next.defender.build).toEqual(usualBuild("blastoise"));
     expect(next.notice).toBe("");
     expect(next.revision).toBeGreaterThan(current.revision);
   });
@@ -638,8 +641,8 @@ describe("team import state: stale actions, reconciliation, Swap and Reset", () 
     expect(reset.defender.role).toBe("opponent");
     expect(reset.attacker.source).toBeNull();
     expect(reset.defender.source).toBeNull();
-    expect(reset.attacker.build).toEqual(createBuild("charizard"));
-    expect(reset.defender.build).toEqual(createBuild("blastoise"));
+    expect(reset.attacker.build).toEqual(usualBuild("charizard"));
+    expect(reset.defender.build).toEqual(usualBuild("blastoise"));
     expect(reset.cache.size).toBe(0);
     expect(reset.field).toEqual(createConditions());
     const restored = choose(reset, "own");

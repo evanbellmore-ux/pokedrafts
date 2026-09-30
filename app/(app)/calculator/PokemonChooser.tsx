@@ -3,15 +3,13 @@
 import { useId, useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Button, Dialog, Field, Input } from "@/app/components/ui";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
-import { createBuild } from "@/app/lib/battle/model";
+import { createBuild, withUsualAbility } from "@/app/lib/battle/model";
+import { usualAbility } from "@/app/lib/battle/move-defaults";
+import { createSpeciesSearch } from "@/app/lib/battle/species-search";
 import type { BattleBuild } from "@/app/lib/battle/types";
 import type { BattleSide } from "./roster-prep";
 
 const SEARCH_PAGE_SIZE = 8;
-
-function normalizeName(text: string) {
-  return text.normalize("NFKD").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
 
 // Some native dialogs briefly visit the document body at these keyboard boundaries.
 function wrapPickerFocus(event: KeyboardEvent<HTMLElement>) {
@@ -39,9 +37,16 @@ type Props = {
   onReturnFocus?: (opener: HTMLElement) => void;
   roster?: ReactNode;
   runtime?: BattleRuntime;
+  /** Champions usage picks the usual ability per format. */
+  gameType?: "Singles" | "Doubles";
 };
 
-export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime }: Props) {
+/** A hand-picked Pokémon's fresh build, with its usual ability for the format (move-defaults usualAbility). */
+export function chosenBuild(speciesId: string, runtime: BattleRuntime, gameType: "Singles" | "Doubles"): BattleBuild {
+  return withUsualAbility(createBuild(speciesId, runtime), usualAbility(speciesId, gameType, runtime));
+}
+
+export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles" }: Props) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
@@ -57,18 +62,15 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
     setTeamMode(false);
     setNotice("");
   }
-  const speciesOptions = useMemo(() => [...runtime.catalog.species].sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
+  const search = useMemo(() => createSpeciesSearch(runtime), [runtime]);
   const showTeam = !!roster && teamMode;
-  const tokens = query.trim().split(/\s+/).map(normalizeName).filter(Boolean);
-  const matches = speciesOptions.filter((entry) => tokens.every((token) =>
-    normalizeName(`${entry.name} ${entry.id} ${entry.baseSpecies}`).includes(token),
-  ));
+  const matches = useMemo(() => search(query), [search, query]);
   const visible = matches.slice(page * SEARCH_PAGE_SIZE, (page + 1) * SEARCH_PAGE_SIZE);
 
   function selectSpecies(speciesId: string) {
     onClose();
     if (speciesId === build.speciesId && build.game === runtime.profile.id) return;
-    onChange(createBuild(speciesId, runtime));
+    onChange(chosenBuild(speciesId, runtime, gameType));
     setNotice(`${label} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
   }
 
@@ -84,7 +86,7 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help={`Search exact names and forms in ${runtime.profile.label}. Changing Pokémon resets nature, ability, item, ${runtime.profile.training === "points" ? "Stat Points" : "level (50), EVs (0) and IVs (31)"}, stages, HP, status and mechanic configuration.`}>
+            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help={`Search ${runtime.profile.label} Pokémon by name or form, including league roster names such as Alolan Raichu or Paldean Tauros (Blaze Breed). Changing Pokémon resets nature, ability, item, ${runtime.profile.training === "points" ? "Stat Points" : "level (50), EVs (0) and IVs (31)"}, stages, HP, status and mechanic configuration.`}>
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">

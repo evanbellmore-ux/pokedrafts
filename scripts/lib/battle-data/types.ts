@@ -62,6 +62,8 @@ export type NativeLearnsetSource = {
 export type NativeLearnset = {
   movePool: string[];
   sources: NativeLearnsetSource[];
+  /** Moves getMovePool offers (still in movePool) that pinned Showdown's team validator says this form cannot know. */
+  validatorRejected?: string[];
   error?: string;
 };
 export type NativeResolvedSpecies = Omit<ResolvedSpecies, "learnset"> & {
@@ -129,7 +131,7 @@ export type DexAPI = {
     }[];
     getMovePool(id: string, isNatDex?: boolean): Set<string>;
   };
-  moves: { all(): Omit<NativeResolvedMove, "description">[] };
+  moves: { all(): Omit<NativeResolvedMove, "description">[]; get(id: string): Omit<NativeResolvedMove, "description"> };
   abilities: { all(): Omit<ResolvedAbility, "description">[] };
   items: { all(): Omit<NativeResolvedItem, "description">[] };
   text: { get(row: AvailableData): { desc?: string; shortDesc?: string } };

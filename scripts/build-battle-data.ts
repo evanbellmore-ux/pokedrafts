@@ -78,6 +78,9 @@ export async function createBattleData() {
         provenance: "Contributing raw table objects are identified before Dex inheritance mutates module exports; their full learnset markers are hashed. Inheritance is valid native provenance. No Champions explicit-mod rule is applied.",
         exclusions: "Unavailable moves and direct Z/Max selections are withheld; typed Hidden Power placeholders expand a proven base movepool only when present in the exact engine generation.",
         compatibility: "Individual move union only: inter-move incompatibilities, exclusive events, origin marks, ability/level restrictions and regulations require separate validation.",
+        ...(profile.game === "ultra_sun_ultra_moon" ? {
+          validation: "Each (form, move) pair is also checked with pinned TeamValidator.get('gen7anythinggoes').checkCanLearn against the out-of-battle form (any entry form for a battle-only one), then with validateSet's event-only move-origin check; rejected moves are withheld from the catalog and listed per species. resolvedMoves and resolvedMovePoolSha256 still describe pinned getMovePool. The validator's PRNG dependency is stubbed; learnset checks draw no random numbers.",
+        } : {}),
       },
       learnsets: nativeSpecies(source).map((row) => {
         const emitted = speciesIndex.get(row.id)!.moves;
@@ -87,6 +90,7 @@ export async function createBattleData() {
           resolvedMovePoolSha256: sha256(compact(sorted(row.learnset.movePool))),
           emittedMoves: emitted.length, emittedMovePoolSha256: sha256(compact(emitted)),
           unavailableMoves: sorted(row.learnset.movePool.filter((id) => !moveIDs.has(id))),
+          ...(row.learnset.validatorRejected ? { validatorRejectedMoves: row.learnset.validatorRejected } : {}),
           ...(row.learnset.error ? { error: row.learnset.error } : {}),
         };
       }),

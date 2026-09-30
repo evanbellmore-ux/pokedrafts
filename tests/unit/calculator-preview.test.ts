@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
+import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { activateMoveSlot, createMatchup, getAttackView, getMoveOwner, selectMatchupMove, updateMatchupBuild, updateMatchupHP } from "@/app/(app)/calculator/roster-prep";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
@@ -56,7 +57,7 @@ describe("calculator build health", () => {
     overBudget.points = { hp: 3, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };
     expect(getBuildStats(overBudget)?.hp).toBe(158);
     const invalid = [
-      overBudget, createBuild("madeupmon"), createBuild("lucariomegaz"),
+      overBudget, createBuild("madeupmon"),
       { ...createBuild("venusaur"), nature: "Unknown" },
       { ...createBuild("venusaur"), abilityId: "sturdy" },
       { ...createBuild("venusaur"), itemId: "madeupitem" },
@@ -68,6 +69,9 @@ describe("calculator build health", () => {
       expect(getBuildHealth(build)).toBeNull();
       for (const mode of modes) expect(previewRemainingHP(build, zero(), mode).status).toBe("unavailable");
     }
+    const unsupported = createBuild("vivillongarden", unsupportedSpeciesRuntime);
+    expect(getBuildHealth(unsupported, unsupportedSpeciesRuntime)).toBeNull();
+    for (const mode of modes) expect(previewRemainingHP(unsupported, zero(), mode, unsupportedSpeciesRuntime).status).toBe("unavailable");
   });
 
   it("defaults to average damage, rounded once to whole HP", () => {

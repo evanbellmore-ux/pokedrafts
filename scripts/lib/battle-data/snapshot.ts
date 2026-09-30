@@ -13,6 +13,13 @@ import {
 } from "./types";
 
 type RawLearnset = { learnset?: Record<string, string[]> } | null;
+type ValidatorAPI = {
+  get(format: string): {
+    allSources(species: unknown): { maxSourceGen(): number };
+    checkCanLearn(move: unknown, species: unknown, sources: unknown, set: Record<string, unknown>): string | null;
+    getEventOnlyData(species: unknown): { eventData: { generation: number }[] } | null;
+  };
+};
 
 export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
   // Record the owner of the actual table object BEFORE Dex.loadData mutates and
@@ -31,6 +38,7 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
     }
   }
   const { Dex } = loadModule(join(runtime, "sim/dex.js")) as { Dex: DexAPI };
+  const { TeamValidator } = loadModule(join(runtime, "sim/team-validator.js")) as { TeamValidator: ValidatorAPI };
   return NATIVE_GAMES.map((profile) => {
     const dex = Dex.mod(profile.mod);
     const ancestry: string[] = [];
@@ -45,6 +53,10 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
       const text = dex.text.get(row);
       return text.desc || text.shortDesc || "";
     };
+    // getMovePool unions the whole learnset chain, so in USUM forms that cannot breed or transfer
+    // (cap Pikachu, Totems, Greninja-Ash and -Bond, event Vivillon) inherit moves they cannot know.
+    // The pinned team validator decides each pair, checked against the out-of-battle form.
+    const validator = profile.game === "ultra_sun_ultra_moon" ? TeamValidator.get("gen7anythinggoes") : null;
     const speciesRows = [...dex.species.all()];
     const knownIDs = new Set(speciesRows.map((row) => row.id));
     // all() only walks actual Pokedex keys. Some genuine cosmetic identities
@@ -78,6 +90,27 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
             // Use pinned regional-evolution, pre-evolution, Sketch, HM-transfer
             // and HOME-reset semantics; never synthesize a marker-based union.
             learnset.movePool = [...dex.species.getMovePool(row.id, false)];
+            if (validator) {
+              // A battle-only form (Ultra Necrozma) keeps what any of its entry forms can know.
+              const entryForms = row.battleOnly ? (Array.isArray(row.battleOnly) ? row.battleOnly : [row.battleOnly]) : [row.name];
+              const targets = entryForms.map((name) => dex.species.get(name));
+              // validateSet's event-only move check (obtainablemoves) follows checkCanLearn: an event-only
+              // form (Zygarde-10%) cannot know a move whose sources all predate every one of its events.
+              const cannotLearn = (move: ReturnType<DexAPI["moves"]["get"]>, target: ReturnType<DexAPI["species"]["get"]>) => {
+                const sources = validator.allSources(target);
+                if (validator.checkCanLearn(move, target, sources, { name: target.name, species: target.name, moves: [], ability: "", evs: {}, ivs: {}, level: 100 })) return true;
+                const events = validator.getEventOnlyData(target)?.eventData;
+                const latest = sources.maxSourceGen();
+                return !!events && !!latest && !events.some((event) => event.generation <= Math.min(latest, dex.gen));
+              };
+              const rejected = learnset.movePool.filter((id) => {
+                const move = dex.moves.get(id);
+                if (move.isZ || move.isMax) return false;
+                return targets.every((target) => cannotLearn(move, target));
+              });
+              // The pool stays pinned getMovePool's; the transform withholds these.
+              if (rejected.length) learnset.validatorRejected = [...rejected].sort();
+            }
           } catch (error) {
             learnset.error = error instanceof Error ? error.message : String(error);
           }

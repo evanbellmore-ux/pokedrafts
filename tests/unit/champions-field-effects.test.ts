@@ -169,14 +169,16 @@ describe("Champions rooms", () => {
     expect(row("flamethrower", attacker, defender, field).max).toBeLessThan(special.max!);
   });
 
-  it.each([-2, 0, 2])("withholds unverified Wonder Room Body Press at Defense stage %s", (stage) => {
+  it.each([-2, 0, 2])("calculates Wonder Room Body Press at Defense stage %s from the Sp. Def stage", (stage) => {
+    // tests/unit/calculator-expanding-force-body-press.test.ts checks the rolls against Showdown.
     const attacker = createBuild("blastoise");
     attacker.boosts.def = stage;
     attacker.boosts.spd = -stage;
-    expect(row("bodypress", attacker).kind).toBe("calculated");
-    const damage = row("bodypress", attacker, createBuild("blastoise"), { ...createConditions(), wonderRoom: true });
-    expect(damage).toMatchObject({ kind: "unsupported", min: null, max: null, rolls: null, ohkoChance: null });
-    expect(damage.reason).toContain("attacking Defense stages");
+    const wonderRoom = { ...createConditions(), wonderRoom: true };
+    const damage = row("bodypress", attacker, createBuild("blastoise"), wonderRoom);
+    expect(damage.kind).toBe("calculated");
+    const bySpDef = { ...attacker, boosts: { ...attacker.boosts, def: 0 } };
+    expect(row("bodypress", bySpDef, createBuild("blastoise"), wonderRoom).rolls).toEqual(damage.rolls);
   });
 
   it("suppresses offensive items and defensive berries without removing them", () => {
@@ -242,14 +244,16 @@ describe("Champions rooms", () => {
     expect(mega.itemId).toBe("charizarditex");
   });
 
-  it("withholds held-item Acrobatics under Magic Room but supports itemless Acrobatics", () => {
+  it("keeps held-item Acrobatics at its usual power under Magic Room", () => {
     const attacker = { ...createBuild(), itemId: "charcoal" };
     const defender = createBuild("blastoise");
-    expect(row("acrobatics", attacker, defender).kind).toBe("calculated");
     const field = { ...createConditions(), magicRoom: true };
-    expect(row("acrobatics", attacker, defender, field)).toMatchObject({ kind: "unsupported", min: null, ohkoChance: null, reason: expect.stringContaining("suppressed, not absent") });
+    const held = row("acrobatics", attacker, defender, field);
+    expect(held).toMatchObject({ kind: "calculated", effectivePower: 55 });
+    expect(held.rolls).toEqual(row("acrobatics", attacker, defender).rolls);
+    expect(held.assumptions).toContain("Magic Room suppresses the attacker's Charcoal, but it is still held, so Acrobatics keeps its usual power.");
     attacker.itemId = "";
-    expect(row("acrobatics", attacker, defender, field).rolls).toEqual(row("acrobatics", attacker, defender).rolls);
+    expect(row("acrobatics", attacker, defender, field)).toMatchObject({ kind: "calculated", effectivePower: 110 });
   });
 
   it.each([
@@ -262,26 +266,33 @@ describe("Champions rooms", () => {
     const ordinary = row(moveId, attacker, defender);
     const room = row(moveId, attacker, defender, { ...createConditions(), trickRoom: true });
     expect(room.rolls).toEqual(ordinary.rolls);
-    expect(room.assumptions.join(" ")).toContain("Trick Room changes turn order, not Speed stats");
+    expect(room.assumptions.join(" ")).toContain("Trick Room lets the slower Pokémon move first within a priority bracket");
   });
 
-  it.each([-6, 0, 6])("requires Analytic turn order under Trick Room at Speed stage %s", (stage) => {
+  it.each([[-6, false], [0, true], [6, true]] as const)("works out Analytic's turn order under Trick Room at Speed stage %s", (stage, boosted) => {
     const attacker = { ...createBuild("starmie"), abilityId: "analytic", abilityActive: false };
     attacker.boosts.spe = stage;
     const defender = createBuild("blastoise");
-    const field = { ...createConditions(), trickRoom: true };
-    expect(row("thunderbolt", attacker, defender, field)).toMatchObject({ kind: "needs-context", min: null, reason: expect.stringContaining("actual turn order") });
+    const field = { ...createConditions(), gameType: "Singles" as const, trickRoom: true };
+    // Under Trick Room the slower Pokémon moves first, so a faster Starmie moves last and boosts.
+    const room = row("thunderbolt", attacker, defender, field);
+    expect(room.kind).toBe("calculated");
+    expect(room.assumptions.some((line) => line.startsWith(`Analytic: it has`) && line.endsWith(boosted ? "boosts." : "does not boost."))).toBe(true);
     expect(row("protect", attacker, defender, field).kind).toBe("status");
     attacker.abilityActive = true;
     const switching = row("thunderbolt", attacker, defender, field);
     expect(switching.kind).toBe("calculated");
-    expect(switching.rolls).toEqual(row("thunderbolt", attacker, defender).rolls);
+    expect(switching.rolls).toEqual(row("thunderbolt", attacker, defender, { ...createConditions(), gameType: "Singles" }).rolls);
     expect(switching.assumptions.join(" ")).toContain("the target switches before this attack — yes");
   });
 
   it("does not invent Payback turn order when Trick Room is selected", () => {
-    const damage = row("payback", learns("payback"), createBuild("blastoise"), { ...createConditions(), trickRoom: true });
-    expect(damage).toMatchObject({ kind: "needs-context", min: null, reason: expect.stringContaining("actual move order") });
+    // Payback follows its explicit "target has already moved" context, never Speed or Trick Room.
+    const field = { ...createConditions(), trickRoom: true };
+    const attacker = learns("payback");
+    expect(row("payback", attacker, createBuild("blastoise"), field)).toMatchObject({ kind: "calculated", effectivePower: 50 });
+    const moved = calculateMatchup(attacker, createBuild("blastoise"), field, { payback: { doubled: true } }).results.find((entry) => entry.moveId === "payback");
+    expect(moved).toMatchObject({ kind: "calculated", effectivePower: 100 });
   });
 });
 

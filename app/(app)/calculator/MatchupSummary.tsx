@@ -5,7 +5,10 @@ import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
-import type { BattleBuild, BattleMechanic, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
+import { hitCountRule } from "@/app/lib/battle/hit-count";
+import { mimicryNote, mimicryState, type MimicryState } from "@/app/lib/battle/mimicry";
+import { turnOrderQuestion } from "@/app/lib/battle/turn-order";
+import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
 import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -47,6 +50,12 @@ type Props = EditProps & QuickMoveProps & {
   onRollModeChange: (mode: DamageRollMode) => void;
   blockedReason?: string;
   onShowMove: () => void;
+  /** Magic Room switches Loaded Dice off for the hit-count rule. */
+  magicRoom?: boolean;
+  /** The terrain, for Mimicry's type. */
+  terrain?: BattleConditions["terrain"];
+  /** Picks the usual ability for a Pokémon chosen here. */
+  gameType?: BattleConditions["gameType"];
 };
 
 type CombatantProps = EditProps & QuickMoveProps & {
@@ -57,9 +66,11 @@ type CombatantProps = EditProps & QuickMoveProps & {
   moveName: string | null;
   rollDescription: string;
   selectedResult?: MoveDamageResult;
+  mimicry?: MimicryState | null;
+  gameType?: BattleConditions["gameType"];
 };
 
-function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, selectedResult, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, attack, replacement, movesControl, onActivateMove, runtime = championsRuntime }: CombatantProps) {
+function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, selectedResult, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, attack, replacement, movesControl, onActivateMove, mimicry, gameType, runtime = championsRuntime }: CombatantProps) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const owner = getMoveOwner(slot);
@@ -73,7 +84,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   const health = getBuildHealth(slot.build, runtime);
   const teraType = runtime.profile.tera && slot.build.mechanic === "tera" ? slot.build.configuration?.teraType : undefined;
   const maxActive = slot.build.mechanic === "dynamax" || slot.build.mechanic === "gigantamax";
-  const types = teraType && teraType !== "Stellar" ? [teraType] : species?.types;
+  const types = teraType && teraType !== "Stellar" ? [teraType] : mimicry?.type ? [mimicry.type] : species?.types;
   const displayedHP = projected?.remaining ?? health?.current ?? 0;
   const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
   const fraction = health ? displayedHP / health.maximum : 0;
@@ -122,6 +133,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
       <p className="mt-1 text-xs text-muted sm:hidden">{types?.join(" / ")}{teraType && ` · Tera ${teraType}`}</p>
       <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{types?.map((type) => <TypeBadge key={type} type={type} />)}{teraType && <span className="text-xs font-semibold text-accent-text">Tera {teraType}</span>}</div>
       {teraType && <p className="mt-1 text-xs text-muted">{teraType === "Stellar" ? "Stellar retains original defensive typing" : `Original types: ${species?.types.join(" / ")}; Tera changes defensive typing`}. Original STAB is retained.</p>}
+      {mimicry && species && <p className="mt-1 text-xs text-muted">{mimicryNote(mimicry, species.types)}</p>}
       <MechanicControls build={slot.build} position={position} runtime={runtime} onToggle={onToggleMechanic ? (mechanic) => onToggleMechanic(owner, mechanic) : undefined} />
       {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} compact /></div>}
       <RetainedConfiguration build={slot.build} runtime={runtime} />
@@ -134,7 +146,9 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
           </div>
           {projected && <p className="mt-1 text-xs tabular-nums text-muted">Current HP: {health.current} / {health.maximum}</p>}
         </>
-      ) : <p className="mt-2 text-sm font-semibold text-danger">{issues.some((issue) => issue.field === "currentHP") ? "Edit HP to fix the current value" : "Check build settings to show HP"}</p>}
+      ) : <p className="mt-2 text-sm font-semibold text-danger">{issues.some((issue) => issue.field === "currentHP") ? "Edit HP to fix the current value"
+        : issues.length === 1 && issues[0].field === "preparedMoves" ? issues[0].message.replace(/ A learnset is not proof.*$/, "")
+        : "Check build settings to show HP"}</p>}
       <div className="mt-1 flex flex-wrap gap-x-3">
         <button type="button" aria-label={`Change ${position} Pokémon`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Change<span className="sr-only sm:not-sr-only"> Pokémon</span></button>
         <button ref={editRef} type="button" aria-label={`Edit ${position} HP`} aria-expanded={editingHP} aria-controls={`${id}-hp-editor`} onClick={() => editingHP ? finishHP() : setEditingHP(true)} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Edit HP</button>
@@ -188,7 +202,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
               >
                 <span className="block wrap-anywhere text-xs font-semibold text-text">{name}</span>
                 {move && name !== move.name && <span className="block wrap-anywhere text-xs text-muted">From {move.name}</span>}
-                <span className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted">{move && <TypeBadge type={effective?.effectiveType ?? move.type} />}{prepared.origin === "suggested" && <span>Suggested</span>}{editing && <span className="text-accent-text">Editing</span>}</span>
+                <span className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted">{move && <TypeBadge type={effective?.effectiveType ?? move.type} />}{prepared.origin === "suggested" && <span>Suggested</span>}{prepared.origin === "required" && <span>Required</span>}{editing && <span className="text-accent-text">Editing</span>}</span>
                 <span id={`${id}-move-${index}-origin`} className="sr-only">{describeMoveSlot(prepared)}</span>
               </button>
             );
@@ -199,16 +213,17 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
         side={side}
         build={slot.build}
         runtime={runtime}
+        gameType={gameType}
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onChange={(build) => onBuildChange(slot.key, build)}
-        roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
+        roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={side} activeSource={slot.source} runtime={runtime} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
       />
     </div>
   );
 }
 
-export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, runtime = championsRuntime, ...editProps }: Props) {
+export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, runtime = championsRuntime, magicRoom = false, terrain = "", gameType, ...editProps }: Props) {
   const id = useId();
   const selectedMoveId = attack.moveId;
   const source = sameMoveOwner(attack.owner, getMoveOwner(attacker)) ? attacker : sameMoveOwner(attack.owner, getMoveOwner(defender)) ? defender : null;
@@ -224,7 +239,14 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   const rollDescription = `${rollLabels[rollMode]} ${rollMode === "average" ? "estimate" : "roll"}`;
   const converted = source?.build.mechanic === "dynamax" || source?.build.mechanic === "gigantamax" || !!(selectedMoveId && source?.contexts[selectedMoveId]?.useZ)
     || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
-  const needsHits = !converted && row?.kind === "needs-context" && Array.isArray(move?.multihit) && (!row.reason || /\bhits?\b/i.test(row.reason));
+  const hitRule = move && source ? hitCountRule(move, source.build, runtime, { magicRoom, opponentAbilityId: receiver.build.abilityId }) : null;
+  const needsHits = !converted && row?.kind === "needs-context" && hitRule?.kind === "choose" && hitRule.defaultHits === null
+    && (!row.reason || /\bhits?\b/i.test(row.reason));
+  // Beat Up's party is chosen in the move settings, which Show move focuses.
+  const needsParty = !converted && row?.kind === "needs-context" && move?.id === "beatup";
+  // Analytic and Bolt Beak ask for the turn order in the same move settings.
+  const needsTurnOrder = !!move && !!source && row?.kind === "needs-context" && /turn order/.test(row.reason ?? "")
+    && !!turnOrderQuestion(move, source.build, converted, { opponentAbilityId: receiver.build.abilityId, magicRoom, gameType });
 
   return (
     <section data-calculator-summary aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
@@ -262,6 +284,8 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
               replacement={replacement}
               movesControl={movesControl}
               onActivateMove={onActivateMove}
+              mimicry={mimicryState(slot.build, (side === "attacker" ? defender : attacker).build, { terrain, magicRoom })}
+              gameType={gameType}
               {...editProps}
             />
           );
@@ -280,16 +304,19 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
                   <>
                     {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage} damage</strong> · {rollDescription}</p>}
-                    {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range · One-use KO: {koChance(row)} (all rolls)</p>}
+                    {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range{row.alternate ? `, or ${formatRange(row.alternate.min, row.alternate.max)} with ${row.alternate.label} (${Math.round(row.alternate.chance * 100)}% chance)` : ""} · One-use KO: {koChance(row)} (all rolls{row.alternate ? ", both cases" : ""})</p>}
                     {preview.status === "ready" ? (
-                      <p className="mt-1 text-sm text-text">{receiverPosition} Pokémon HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
+                      <>
+                        <p className="mt-1 text-sm text-text">{receiverPosition} Pokémon HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
+                        {preview.alternate && <p className="mt-1 text-xs tabular-nums text-muted">With {preview.alternate.label} ({Math.round(preview.alternate.chance * 100)}% chance, same {rollDescription}): {preview.alternate.damage} damage, {preview.alternate.remaining} / {preview.maximum} HP remaining.</p>}
+                      </>
                     ) : <p className="mt-1 text-sm text-muted">{preview.reason}</p>}
                   </>
                 )}
               </>
             )}
           </div>
-          {row && <Button size="sm" variant="secondary" aria-controls={movesControl} onClick={onShowMove}>{needsHits ? "Set hits" : "Show move"}</Button>}
+          {row && <Button size="sm" variant="secondary" aria-controls={movesControl} onClick={onShowMove}>{needsHits ? "Set hits" : needsParty ? "Set party" : needsTurnOrder ? "Set turn order" : "Show move"}</Button>}
         </div>
         {preview.status === "ready" && <p className="mt-1 text-xs text-muted">{rollMode === "average" && "Average damage is the mean of all rolls, rounded to whole HP. "}Damage-only estimate if it connects. Current HP is unchanged; recoil, healing and later turns are not included.</p>}
       </div>

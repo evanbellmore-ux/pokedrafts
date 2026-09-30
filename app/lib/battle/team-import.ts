@@ -1,7 +1,7 @@
 import {
   createBuild, defaultAbilityActive, getBuildStats, NATURES, parseIntegerInput, STATS, validateBuild,
 } from "./model";
-import type { MoveSlots } from "./move-defaults";
+import { usualAbility, type MoveSlots } from "./move-defaults";
 import { TERA_TYPES } from "./profiles";
 import { championsRuntime, resolveRuntimeSpecies, type BattleRuntime } from "./runtime";
 import { createSpeciesResolver, type SpeciesResolution } from "./species-identity";
@@ -31,6 +31,8 @@ export type ImportedMember = {
   nickname?: string;
   gender?: "M" | "F" | "N";
   shiny?: boolean;
+  /** Cosmetic, from a Showdown `Pokeball:` line. */
+  pokeball?: string;
   source?: ImportedSetSource;
 };
 export type ImportedTeam = {
@@ -165,16 +167,22 @@ function boundedInteger(value: string, label: string, minimum: number, maximum: 
 /** Bounded syntax only: target rules and availability are applied afterwards. */
 function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Report) {
   const first = lines[0];
-  const parts = first.text.split("@");
-  if (parts.length > 2) report(first.line, "error", "A set header can contain only one held item (@).");
+  // Showdown's parseExportedTeamLine (sim/teams.ts) splits the header on " @ ", so a bare "@"
+  // stays in the nickname or species text. Extra spaces around the separator are accepted.
+  const parts = first.text.split(/\s+@(?:\s+|$)/);
+  if (parts.length > 2) report(first.line, "error", "A set header can contain only one held item ( @ ).");
   let item = parts.length > 1 ? parts[1].trim() : null;
   if (item === "") report(first.line, "error", "A held item name is required after @; omit @ for no item.");
   const fields = new Map<string, number>();
+  // The header claims the item field even for "@ No Item", which Showdown reads as an empty
+  // slot, so a later Item: line is still a duplicate.
   if (item !== null) fields.set("item", first.line);
+  if (item !== null && catalogId(item) === "noitem") item = null;
   const source: ImportedSetSource = { format, lines: lines.map((line) => ({ ...line })), configuration: {} };
   let ability: string | null = null;
   let nature: string | null = null;
   let shiny: boolean | undefined;
+  let pokeball: string | undefined;
   let training = statTable(0);
   let ivs = statTable(31);
   const moves = emptyMoves();
@@ -224,7 +232,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
     const incompatiblePoints = format === "traditional" && explicitPoints;
     if (["evs", "sps", "stat points"].includes(field)) field = "training";
     if (field === "trait") field = "ability";
-    if (!["item", "ability", "nature", "level", "training", "ivs", "shiny", "gender", "tera type", "gigantamax", "dynamax level", "happiness", "hidden power"].includes(field)) {
+    if (!["item", "ability", "nature", "level", "training", "ivs", "shiny", "gender", "tera type", "gigantamax", "dynamax level", "happiness", "hidden power", "pokeball"].includes(field)) {
       report(line.line, "error", `Unsupported or unknown set line "${line.text}". Correct or remove it; only recognized Showdown set fields are imported.`);
       continue;
     }
@@ -234,6 +242,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
     }
     fields.set(field, line.line);
     if (field === "item") item = value;
+    else if (field === "pokeball") pokeball = value || undefined;
     else if (field === "ability") ability = value;
     else if (field === "nature") nature = value;
     else if (field === "level") source.level = boundedInteger(value, "Level", 1, 100, line.line, report);
@@ -276,7 +285,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
     } else configuration.hiddenPowerType = typedHiddenPower.type;
     if (!fields.has("hidden power")) fields.set("hidden power", typedHiddenPower.line);
   }
-  return { headerText: parts[0].trim(), item, ability, nature, shiny, training, ivs, moves, moveLines, moveCount, fields, source };
+  return { headerText: parts[0].trim(), itemSeparated: parts.length > 1, item, ability, nature, shiny, pokeball, training, ivs, moves, moveLines, moveCount, fields, source };
 }
 
 function parseMember(lines: SourceLine[], index: number, format: ImportFormat, runtime: BattleRuntime, resolve: ImportResolver): ImportedMember {
@@ -284,11 +293,28 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   const report: Report = (line, severity, message) => diagnostics.push({ line, severity, message });
   const first = lines[0];
   const parsed = parseSetSyntax(lines, format, report);
-  const { item, ability, nature, shiny, training, ivs, moves, fields, source } = parsed;
+  const { ability, nature, shiny, pokeball, training, ivs, moves, fields, source } = parsed;
+  let item = parsed.item;
   const { speciesById, abilitiesById, itemsById, movesById, profile } = runtime;
   const label = profile.id === "champions" ? "Champions" : profile.label;
-  const header = resolveHeader(parsed.headerText, resolve);
-  if (header.resolution.status !== "resolved") report(first.line, "error", `${header.speciesName || "Missing species"}: ${header.resolution.reason}`);
+  let header = resolveHeader(parsed.headerText, resolve);
+  const bareAt = !parsed.itemSeparated && parsed.headerText.includes("@");
+  if (header.resolution.status !== "resolved" && bareAt && !fields.has("item")) {
+    // Hand-typed "Garchomp@Life Orb": Showdown cannot read it, but when the header as a whole
+    // is no Pokémon, a single bare @ between an exact Pokémon and an exact item is accepted.
+    const [before, after, ...rest] = parsed.headerText.split("@");
+    const retry = rest.length ? null : resolveHeader(before.trim(), resolve);
+    if (retry?.resolution.status === "resolved" && itemsById.has(catalogId(after))) {
+      header = retry;
+      item = after.trim();
+      fields.set("item", first.line);
+      report(first.line, "info", "Read the bare @ as the held-item separator; Showdown exports it with a space on each side ( @ ).");
+    }
+  }
+  if (header.resolution.status !== "resolved") {
+    const hint = bareAt ? " To add a held item, put a space on each side of @, as Showdown exports it; a bare @ is read as part of the name." : "";
+    report(first.line, "error", `${header.speciesName || "Missing species"}: ${header.resolution.reason}${hint}`);
+  }
   if (header.gender) {
     if (fields.has("gender")) report(fields.get("gender")!, "error", `Duplicate gender field (first supplied on line ${first.line}).`);
     else { source.configuration.gender = header.gender; fields.set("gender", first.line); }
@@ -333,7 +359,9 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   if (build && species) {
     // Manual creation may equip a required stone. Import never supplies one.
     build.itemId = itemId;
+    // An omitted ability takes Showdown's first ability slot, as its teambuilder fills in.
     if (ability !== null) build.abilityId = catalogId(ability);
+    else build.abilityId = usualAbility(build.speciesId, "Doubles", runtime, { usage: false }) ?? build.abilityId;
     build.abilityActive = defaultAbilityActive(build.abilityId);
     if (nature !== null) build.nature = selectedNature?.name ?? nature;
     if (Object.keys(configuration).length) build.configuration = { ...build.configuration, ...configuration };
@@ -382,7 +410,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
       );
       if (!alreadyReported) report(line, unsupported ? "warning" : "error", unsupported ? `Calculation paused: ${issue.message}` : issue.message);
     }
-    if (ability === null) report(first.line, "info", `Ability omitted: using ${abilitiesById.get(build.abilityId)?.name ?? build.abilityId}.`);
+    if (ability === null) report(first.line, "info", `Ability omitted: using ${abilitiesById.get(build.abilityId)?.name ?? build.abilityId}, the form's first ability, as Showdown's teambuilder fills it in.`);
     if (nature === null) report(first.line, "info", `Nature omitted: using ${build.nature} (neutral).`);
   }
 
@@ -399,7 +427,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
     : "Unlisted IVs default to 31. Native levels, EVs and IVs are retained without conversion or inferred hyper-training history.");
   if (item === null) report(first.line, "info", "Item omitted: no held item is equipped, including for Mega forms.");
   report(first.line, "info", "Full HP, healthy status and zero stat stages assumed. Rivalry requires known individual genders for both Pokémon.");
-  if (header.nickname || shiny !== undefined) report(first.line, "info", "Nickname and shiny are cosmetic metadata only; they do not alter battle calculations.");
+  if (header.nickname || shiny !== undefined || pokeball) report(first.line, "info", "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations.");
   if (parsed.moveCount < 4) report(first.line, "info", `${4 - parsed.moveCount} move slot${parsed.moveCount === 3 ? " remains" : "s remain"} empty; no suggested moves are added.`);
 
   const selectable = Boolean(build) && !diagnostics.some((entry) => entry.severity === "error");
@@ -411,6 +439,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
     ...(header.nickname ? { nickname: header.nickname } : {}),
     ...(configuration.gender ? { gender: configuration.gender } : {}),
     ...(shiny !== undefined ? { shiny } : {}),
+    ...(pokeball ? { pokeball } : {}),
   };
 }
 

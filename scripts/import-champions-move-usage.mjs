@@ -127,6 +127,7 @@ export function deriveFormatUsage(catalog, payload, source) {
   validatePayload(payload, source);
   const { moves, species, identities } = indexCatalog(catalog);
   const rankedSpecies = new Map();
+  const topAbilities = new Map();
   const aggregate = new Map();
   const unmatchedSpecies = [];
   const filteredMoves = { emptyId: 0, invalidWeight: 0, unknownId: 0, illegal: 0, status: 0 };
@@ -153,6 +154,11 @@ export function deriveFormatUsage(catalog, payload, source) {
       aggregate.set(id, total);
     }
     rankedSpecies.set(row.id, rank(weightedMoves).slice(0, 4).map(([id]) => id));
+    // The most-used ability the exact catalog form can have (positive finite raw weight).
+    const legalAbilities = new Set(Array.isArray(row.abilities) ? row.abilities : []);
+    const weightedAbilities = Object.entries(isRecord(payload.data[name].Abilities) ? payload.data[name].Abilities : {})
+      .filter(([id, weight]) => legalAbilities.has(id) && typeof weight === "number" && Number.isFinite(weight) && weight > 0);
+    if (weightedAbilities.length) topAbilities.set(row.id, rank(weightedAbilities)[0][0]);
   }
   const withUsage = [...rankedSpecies.values()].filter((ids) => ids.length > 0).length;
   return {
@@ -161,6 +167,7 @@ export function deriveFormatUsage(catalog, payload, source) {
       battles: source.battles, archiveBytes: source.archiveBytes, archiveSha256: source.sha256,
     },
     species: Object.fromEntries([...rankedSpecies].sort(([a], [b]) => compareIds(a, b))),
+    abilities: Object.fromEntries([...topAbilities].sort(([a], [b]) => compareIds(a, b))),
     aggregate: rank(aggregate).map(([id]) => id),
     coverage: {
       sourceSpeciesRows: source.speciesRows,
@@ -194,10 +201,11 @@ export function buildMoveUsageSnapshot(catalogJSON, inputs) {
       note: "Community battle usage, not an official Pokemon Champions recommendation. Moves values are raw weighted counts, not percentages.",
     },
     policy: {
-      identities: "Exact catalog id/name take precedence over calcName; otherwise only unique engine aliases resolve. Ambiguous aliases and duplicate resolved rows fail. No fuzzy matches or base-form usage inheritance.",
+      identities: "Exact catalog id/name take precedence over calcName; otherwise only unique engine aliases resolve. Ambiguous aliases and duplicate resolved rows fail. No fuzzy matches or base-form usage inheritance in the snapshot; the app reads a cosmetic form's family row and Maushold-Four's Maushold row, where Smogon's statistics count them.",
       species: "Top four positive finite raw move weights, filtered first to catalog-known non-Status moves in the exact proven Champions learnset. Canonical ID breaks ties; zero power and engine warnings do not exclude moves.",
       aggregate: "Complete damaging-move rank by sum of positive finite legal raw weights across exact-matched species in the same format, including moves outside species top fours. Canonical ID breaks ties. No aggregate truncation before exact-learnset intersection.",
-      fallback: "Fill unused legal damaging moves from same-format aggregate rank, then canonical ID order. Both fallback tiers are suggested, never per-species usage; pad to four with empty slots.",
+      fallback: "Fill unused slots in three suggested tiers: first, for each of the form's types the slots lack, one legal damaging attack of that type in its stronger attacking category (Attack doubled for Huge Power or Pure Power; both on a tie) with positive numeric power and no unsupported reason, ranked by same-format aggregate rank, then power x accuracy, then canonical ID; then same-format aggregate rank; then canonical ID order. None is per-species usage; pad to four with empty slots.",
+      abilities: "The highest positive finite raw weight among the exact catalog form's abilities; canonical ID breaks ties. Species without a legal weighted ability are omitted.",
     },
     formats: Object.fromEntries(["Singles", "Doubles"].map((gameType) => {
       const { payload, source } = inputs.find((input) => input.source.gameType === gameType);

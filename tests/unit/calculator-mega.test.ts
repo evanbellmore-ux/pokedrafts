@@ -8,8 +8,11 @@ import {
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { champions, itemsById, speciesById } from "@/app/lib/battle/catalog";
 import { getMegaOptions, type MegaOption } from "@/app/lib/battle/mega-forms";
-import { createBuild, getBuildStats, SHARED_FIELD_EFFECTS, validateBuild } from "@/app/lib/battle/model";
+import { createBuild, createConditions, getBuildStats, SHARED_FIELD_EFFECTS, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
+import { usualAbility } from "@/app/lib/battle/move-defaults";
 import type { BattleBuild } from "@/app/lib/battle/types";
+const usualBuild = (id: string) => withUsualAbility(createBuild(id), usualAbility(id, "Doubles"));
+
 
 type BaseSnapshot = Pick<BattleBuild, "speciesId" | "abilityId" | "abilityActive" | "itemId">;
 
@@ -199,7 +202,7 @@ describe("owned Mega preparation", () => {
       expect(current.attacker.megaBase).toBeNull();
     }
     const next = toggle(current, alternate);
-    expect(next.attacker.build).toEqual({ ...current.attacker.build, ...baseFields(createBuild(baseSpeciesId)) });
+    expect(next.attacker.build).toEqual({ ...current.attacker.build, ...baseFields(usualBuild(baseSpeciesId)) });
     expect(next.attacker.megaBase).toBeNull();
     expectSharedPrep(next, current);
   });
@@ -335,20 +338,28 @@ describe("Mega calculations and honest unsupported states", () => {
     }
   });
 
-  it("keeps Lucario Z selectable but exposes unsupported Aura Guard and never fabricates damage", () => {
+  it("calculates Lucario Z with Aura Guard, matching the pinned Showdown simulator", () => {
     let base = updateMatchupBuild(createMatchup(), "attacker", createBuild("lucario"));
     base = selectMatchupMove(base, "aurasphere");
     const mega = toggle(base, "lucariomegaz");
     expect(mega.attacker.build).toMatchObject({ speciesId: "lucariomegaz", itemId: "lucarionitez", abilityId: "auraguard" });
     expect(mega.attack.moveId).toBe("aurasphere");
-    const issues = validateBuild(mega.attacker.build);
-    expect(issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({ field: "speciesId", message: expect.stringMatching(/Aura Guard|auraguard/i) }),
-      expect.objectContaining({ field: "abilityId" }),
-    ]));
-    const result = calculateMatchup(mega.attacker.build, mega.defender.build, mega.field);
-    expect(result.issues.attacker).toEqual(issues);
-    expect(result.results).toEqual([]);
+    expect(validateBuild(mega.attacker.build)).toEqual([]);
+
+    // Reference rolls from pinned Showdown c23d2e94 (champions mod), level 50,
+    // 0 Stat Points, Serious nature, Singles: Aura Guard halves contact damage
+    // only, and Mold Breaker ignores it (verified with real battle turns).
+    const singles = { ...createConditions(), gameType: "Singles" as const, multipleTargets: false };
+    const lucarioZ = { ...createBuild("lucariomegaz"), abilityId: "auraguard" };
+    const garchomp = { ...createBuild("garchomp"), abilityId: "roughskin" };
+    const into = (attacker: typeof garchomp, moveId: string) =>
+      calculateMatchup(attacker, lucarioZ, singles).results.find((row) => row.moveId === moveId)!;
+    expect(into(garchomp, "dragonclaw")).toMatchObject({ kind: "calculated", min: 19, max: 22 });
+    expect(into(garchomp, "earthquake")).toMatchObject({ kind: "calculated", min: 188, max: 224 });
+    expect(into({ ...createBuild("excadrill"), abilityId: "moldbreaker" }, "ironhead")).toMatchObject({ kind: "calculated", min: 39, max: 46 });
+    const out = calculateMatchup(lucarioZ, garchomp, singles).results.find((row) => row.moveId === "aurasphere")!;
+    expect(out).toMatchObject({ kind: "calculated", min: 79, max: 94 });
+
     const normalMega = toggle(mega, "lucariomega");
     expect(normalMega.attacker.megaBase).toBe(mega.attacker.megaBase);
     expect(validateBuild(normalMega.attacker.build)).toEqual([]);
