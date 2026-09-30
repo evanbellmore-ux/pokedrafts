@@ -17,7 +17,10 @@ import { normalizeAlias, type SpeciesResolution } from "./species-identity";
  *   Minior is a Core), and its "Maushold" is Family of Four (Showdown's plain
  *   Maushold is Family of Three, 2.3 kg instead of 2.8 kg).
  * - Rows defined by an ability rather than a form: the Power Construct Zygarde
- *   rows carry that ability, which a fresh roster build then uses.
+ *   rows carry that ability, which a fresh roster build then uses, and the
+ *   default 50% row carries Aura Break (PokéAPI's zygarde-50), so it stays
+ *   apart from them where the usual ability is Power Construct (a native
+ *   game's Random Battle Zygarde).
  *
  * This is not fuzzy matching. tests/unit/calculator-roster-identity.test.ts
  * derives each Pool Builder row's exact form from its PokéAPI slug, checks the
@@ -51,6 +54,7 @@ export const POOL_BUILDER_ROSTER_ALIASES: Readonly<Record<string, RosterAlias>> 
   "Squawkabilly (Yellow Plumage)": "squawkabillyyellow",
   "Zacian (Crowned Sword)": "zaciancrowned",
   "Zamazenta (Crowned Shield)": "zamazentacrowned",
+  "Zygarde": { speciesId: "zygarde", abilityId: "aurabreak" },
   "Zygarde (10% Power Construct)": { speciesId: "zygarde10", abilityId: "powerconstruct" },
   "Zygarde (50% Power Construct)": { speciesId: "zygarde", abilityId: "powerconstruct" },
 };

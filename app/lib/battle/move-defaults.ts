@@ -1,6 +1,7 @@
 import snapshot from "@/data/champions/move-usage.json";
+import { CROWNED_FORMS, HIDDEN_POWER_IVS, HIDDEN_POWER_TYPES, hiddenPowerType } from "./mechanics";
 import { championsRuntime, cosmeticFamily, type BattleRuntime } from "./runtime";
-import type { ChampionsMove } from "./types";
+import type { BattleBuild, ChampionsMove } from "./types";
 
 export type MoveSlot = {
   moveId: string | null;
@@ -36,9 +37,10 @@ const compareIds = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 
 /**
  * The usual ability for a fresh build of this form: in Champions the most-used one in the format's
- * usage statistics (unless `usage` is false), otherwise Showdown's first ability slot (0, 1, Hidden,
- * Special), as its teambuilder fills in. Only abilities the form has and the engine supports count;
- * null when none does.
+ * usage statistics, in a native game the one pinned Showdown's Random Battle generator gave it most often
+ * (catalog randomBattle, from the format its quick moves read), unless `usage` is false; otherwise
+ * Showdown's first ability slot (0, 1, Hidden, Special), as its teambuilder fills in. Only abilities the
+ * form has and the engine supports count; null when none does.
  */
 export function usualAbility(speciesId: string, gameType: GameType, runtime: BattleRuntime = championsRuntime, { usage = true } = {}): string | null {
   const species = runtime.speciesById.get(speciesId);
@@ -47,6 +49,12 @@ export function usualAbility(speciesId: string, gameType: GameType, runtime: Bat
   if (usage && runtime.profile.id === "champions") {
     const used = formats[gameType].abilities?.[usageRow(speciesId, runtime)];
     if (usable(used)) return used;
+  } else if (usage && runtime.catalog.game !== "champions") {
+    // Its own format's sets first, else the other one's, as createMoveSlots reads the rows.
+    const sets = runtime.catalog.randomBattle?.formats ?? {};
+    const own = sets[gameType] ?? sets.Singles;
+    const generated = own?.abilities[speciesId] ?? (own === sets.Singles ? sets.Doubles : sets.Singles)?.abilities[speciesId];
+    if (usable(generated)) return generated;
   }
   return (species.abilityOrder ?? species.abilities ?? []).find(usable) ?? null;
 }
@@ -85,9 +93,11 @@ export function createMoveSlots(speciesId: string, gameType: GameType, runtime: 
   const { speciesById, movesById } = runtime;
   const species = speciesById.get(speciesId);
   if (!species) return [emptySlot(), emptySlot(), emptySlot(), emptySlot()];
+  // A Crowned Zacian or Zamazenta never uses Iron Head: its Behemoth move replaces it (pinned Showdown onBattleStart).
+  const crowned = Object.values(CROWNED_FORMS).some((entry) => entry.form === speciesId);
   const legal = new Set(species.moves.filter((id) => {
     const move = movesById.get(id);
-    return Boolean(id && move && move.category !== "Status" && !move.isZ && !move.isMax);
+    return Boolean(id && move && move.category !== "Status" && !move.isZ && !move.isMax && !(crowned && id === "ironhead"));
   }).sort(compareIds));
   const selected = new Set<string>();
   const slots: MoveSlot[] = [];
@@ -145,8 +155,35 @@ export function createMoveSlots(speciesId: string, gameType: GameType, runtime: 
     }
     add(candidates, "suggested");
   }
-  add([...legal], "suggested");
+  // Typed Hidden Powers are base Hidden Power under a declared type (Unown learns nothing else); a fresh
+  // build's IVs give one type, so the last resort never repeats base Hidden Power as other types.
+  add([...legal].filter((id) => id === "hiddenpower" || !id.startsWith("hiddenpower")), "suggested");
   return [slots[0] ?? emptySlot(), slots[1] ?? emptySlot(), slots[2] ?? emptySlot(), slots[3] ?? emptySlot()];
+}
+
+/** The type of the typed Hidden Power a Random Battle row put in these slots (Magnezone's Ground), if any. */
+export function quickHiddenPowerType(moves: MoveSlots): (typeof HIDDEN_POWER_TYPES)[number] | null {
+  for (const slot of moves) {
+    if (slot.origin !== "randomBattle" || !slot.moveId?.startsWith("hiddenpower")) continue;
+    const type = HIDDEN_POWER_TYPES.find((entry) => slot.moveId === `hiddenpower${entry.toLowerCase()}`);
+    if (type) return type;
+  }
+  return null;
+}
+
+/**
+ * A fresh Ultra Sun/Ultra Moon build with these quick moves. A typed Hidden Power from the Random Battle
+ * row calculates only with its type's IVs, which Showdown's team validator fills in for that set (HIDDEN_POWER_IVS): below level
+ * 100 Hyper Training cannot keep 31s and change the type. So all-31 IVs take them; at the fresh level 50
+ * with no EVs no stat changes. Any other build is returned as it is: imported, cached or edited IVs,
+ * innate IVs and a declared Hidden Power type are never rewritten.
+ */
+export function withHiddenPowerIVs(build: BattleBuild, moves: MoveSlots, runtime: BattleRuntime = championsRuntime): BattleBuild {
+  if (build.game === "champions" || runtime.profile.generation !== 7 || build.native.innateIVs || build.configuration?.hiddenPowerType
+    || (build.native.level ?? 100) >= 100 || Object.values(build.native.ivs).some((iv) => iv !== 31)) return build;
+  const type = quickHiddenPowerType(moves);
+  if (!type || hiddenPowerType(build.native.ivs) === type) return build;
+  return { ...build, native: { ...build.native, ivs: { ...build.native.ivs, ...HIDDEN_POWER_IVS[type] } } };
 }
 
 /** Plain text for both visible hints and accessible move-picker provenance. */

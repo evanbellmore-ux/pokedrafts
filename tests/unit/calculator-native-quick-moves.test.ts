@@ -1,4 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
+import { chosenBuild } from "@/app/(app)/calculator/PokemonChooser";
+import { calculateMatchup } from "@/app/lib/battle/calculate";
+import { createConditions } from "@/app/lib/battle/model";
 import { createMoveSlots, describeMoveSlot, nativeFillCandidate } from "@/app/lib/battle/move-defaults";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
@@ -45,6 +48,30 @@ describe("native quick-move defaults", () => {
     expect(labelled(us, "meloettapirouette")).toEqual(["relicsong (req)", "closecombat", "return", "knockoff"]);
     expect(labelled(us, "mimikyubusted")).toEqual(["playrough", "shadowsneak", "drainpunch", "shadowclaw"]);
     expect(labelled(ss, "alcremierubycream")).toEqual(["dazzlinggleam", "mysticalfire", "psychic*", "psyshock*"]);
+  });
+
+  it("calculate with the ability the same sets give the form, as pinned Showdown battles do", () => {
+    // Fresh hand picks (level 50, Serious, no EVs, 31 IVs) against a fresh Mew in Singles; the ranges are real
+    // pinned-Showdown battles with each roll forced on every hit (audit gaps/rb-abilities real-check.ts).
+    const quick = (runtime: BattleRuntime, id: string) => {
+      const moves = createMoveSlots(id, "Singles", runtime);
+      const build = { ...chosenBuild(id, runtime, "Singles"), preparedMoves: moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []) };
+      const rows = calculateMatchup(build, chosenBuild("mew", runtime, "Singles"), { ...createConditions(), gameType: "Singles" }, {}, runtime).results;
+      return Object.fromEntries(moves.flatMap((slot) => {
+        const row = rows.find((entry) => entry.moveId === slot.moveId)!;
+        return slot.moveId ? [[slot.moveId, row.kind === "calculated" ? `${row.min}-${row.max}` : row.kind]] : [];
+      }));
+    };
+    // Skill Link: Cloyster's Icicle Spear and Rock Blast hit five times instead of asking for a hit count.
+    expect(quick(us, "cloyster")).toMatchObject({ iciclespear: "75-90", rockblast: "50-60" });
+    expect(quick(sv, "cloyster")).toMatchObject({ iciclespear: "75-90" });
+    // Mold Breaker instead of Rivalry, which needs both genders.
+    expect(quick(sv, "haxorus")).toMatchObject({ earthquake: "53-63" });
+    expect(quick(us, "haxorus")).toMatchObject({ outrage: "94-112" });
+    // Technician, Huge Power and Adaptability change the numbers.
+    expect(quick(sv, "scizor")).toMatchObject({ bulletpunch: "43-52" });
+    expect(quick(sv, "azumarill")).toMatchObject({ liquidation: "57-67" });
+    expect(quick(sv, "crawdaunt")).toMatchObject({ crabhammer: "90-106" });
   });
 
   it("fill forms without a row by same-type power and coverage, never with recharge, self-KO or history moves", () => {

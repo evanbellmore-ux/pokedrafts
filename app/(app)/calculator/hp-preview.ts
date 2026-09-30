@@ -58,8 +58,10 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
   }
   // Proven zero cannot trigger survival effects, even on a multi-hit move.
   if (max === 0) return { status: "ready", ...health, min: health.current, max: health.current, damage: 0, remaining: health.current };
+  // False Swipe and Hold Back leave 1 HP before any survival effect could act, so none withholds.
+  const floor = row.leavesOneHP ? 1 : 0;
   // The calculation's settled target (a Sturdy copied by Trace or Imposter), or the shown selections.
-  const survival = row.survival ?? (defender.itemId === "focussash" ? "Focus Sash"
+  const survival = floor ? null : row.survival ?? (defender.itemId === "focussash" ? "Focus Sash"
     : defender.itemId === "focusband" ? "Focus Band"
       : (() => { const form = specialTeraForm(defender, runtime); return form ? runtime.speciesById.get(form)?.abilities[0] : defender.abilityId; })() === "sturdy" ? "Sturdy" : null);
   if (survival) {
@@ -79,15 +81,15 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
   }
   return {
     status: "ready", ...health,
-    min: Math.max(0, health.current - max),
-    max: Math.max(0, health.current - min),
-    damage, remaining: Math.max(0, health.current - damage),
-    ...(row.alternate ? { alternate: alternatePreview(row.alternate, mode, health.current) } : {}),
+    min: Math.max(floor, health.current - max),
+    max: Math.max(floor, health.current - min),
+    damage, remaining: Math.max(floor, health.current - damage),
+    ...(row.alternate ? { alternate: alternatePreview(row.alternate, mode, health.current, floor) } : {}),
   };
 }
 
-function alternatePreview(alternate: NonNullable<MoveDamageResult["alternate"]>, mode: DamageRollMode, current: number) {
+function alternatePreview(alternate: NonNullable<MoveDamageResult["alternate"]>, mode: DamageRollMode, current: number, floor: number) {
   const { rolls } = alternate;
   const damage = mode === "low" ? alternate.min : mode === "high" ? alternate.max : Math.round(rolls.reduce((sum, roll) => sum + roll / rolls.length, 0));
-  return { chance: alternate.chance, label: alternate.label, damage, remaining: Math.max(0, current - damage) };
+  return { chance: alternate.chance, label: alternate.label, damage, remaining: Math.max(floor, current - damage) };
 }

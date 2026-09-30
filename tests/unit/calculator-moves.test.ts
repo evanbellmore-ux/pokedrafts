@@ -595,8 +595,8 @@ describe("directional attack view", () => {
     for (const { key } of SHARED_FIELD_EFFECTS) current.field[key] = true;
     current.field = {
       ...current.field, gameType: "Singles", weather: "Snow", terrain: "Grassy", critical: true, multipleTargets: false,
-      attackerSide: { reflect: true, lightScreen: false, auroraVeil: true, helpingHand: false, friendGuard: false, protect: false, tailwind: false, charge: false },
-      defenderSide: { reflect: false, lightScreen: true, auroraVeil: false, helpingHand: true, friendGuard: false, protect: false, tailwind: false, charge: false },
+      attackerSide: { reflect: true, lightScreen: false, auroraVeil: true, helpingHand: false, friendGuard: false, priorityShield: false, protect: false, tailwind: false, charge: false },
+      defenderSide: { reflect: false, lightScreen: true, auroraVeil: false, helpingHand: true, friendGuard: false, priorityShield: false, protect: false, tailwind: false, charge: false },
     };
     const before = structuredClone(current);
     const forward = getAttackView(current);

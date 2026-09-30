@@ -54,6 +54,11 @@ function indexForms(runtime: BattleRuntime): FormIndex {
   return index;
 }
 
+/** The Mega, Primal and Ultra Burst options that lead to this form (two for Necrozma-Ultra), or none. */
+export function megaEntries(formId: string, runtime: BattleRuntime = championsRuntime): readonly MegaOption[] {
+  return indexForms(runtime).byForm.get(formId) ?? [];
+}
+
 export function getMegaOptions(speciesId: string, runtime: BattleRuntime = championsRuntime, originalBaseId?: string): readonly MegaOption[] {
   const { byBase, byForm } = indexForms(runtime);
   const direct = byBase.get(speciesId);

@@ -105,7 +105,13 @@ export type ChampionsCatalog = {
 };
 
 /** One format's quick-move defaults from pinned Showdown Random Battle sets (scripts/lib/battle-data/random-battle.ts). */
-export type RandomBattleFormat = { file: string; species: Record<string, string[]>; aggregate: string[] };
+export type RandomBattleFormat = {
+  file: string;
+  species: Record<string, string[]>;
+  /** Each form's most generated ability among its own supported ones (move-defaults usualAbility). */
+  abilities: Record<string, string>;
+  aggregate: string[];
+};
 export type RandomBattle = { formats: Partial<Record<"Singles" | "Doubles", RandomBattleFormat>> };
 export type NativeCatalog = Omit<ChampionsCatalog, "game" | "level"> & {
   game: NativeBattleGame;
@@ -142,11 +148,28 @@ type BuildBase = {
    * started, before the room (always true of a lead); pinned Showdown's room does not undo a used item.
    */
   itemUsedBeforeRoom?: boolean;
+  /**
+   * Protosynthesis / Quark Drive item timing (model fieldItemChoice), with the sun or Electric Terrain
+   * up: whether its Booster Energy, terrain Seed or Room Service acted before that field activated the
+   * ability. True: the Booster Energy was used while the field was down after the holder entered (on
+   * entry before it started, or when it ended; it is gone and the ability keeps the stat it picked then),
+   * or the Seed or Room Service was used first, so the ability's stat counts its stage change. False: the
+   * field activated the ability first (pinned Showdown runs a Pokémon's ability before its item when the
+   * terrain or weather changes). Unset: the Booster Energy is still held, and a Seed or Room Service came
+   * first unless the other shown Pokémon's Drought, Orichalcum Pulse, Electric Surge or Hadron Engine set
+   * the field as both entered. With the sun up but the other Pokémon's Cloud Nine or Air Lock out, false
+   * means the sun activated Protosynthesis before that ability came in, which used up the Booster Energy
+   * with no effect and ended Protosynthesis; otherwise its Booster Energy activated it.
+   */
+  itemUsedBeforeField?: boolean;
   /** Set only by the calculation for a transformed Imposter user: its own species and base HP. */
   transformedFrom?: { speciesId: string; baseHP: number };
   /**
    * Set only by the calculation: the stat Download raised on entry, already in the stages, when the
-   * foe transformed after it (the engine would read the transformed foe's defenses instead).
+   * engine would pick differently: the foe transformed after Download read it, or at a shared lead
+   * Download acted before the foe's terrain Seed, Embody Aspect or a slower Dauntless Shield, before
+   * its form changed (Mega Evolution, Primal Reversion, Schooling...) and before any Wonder Room
+   * (intimidate.ts beforeDownload, atLead). The engine's own Download is then switched off.
    */
   settledDownload?: CombatStat;
   /**
@@ -184,6 +207,11 @@ export type SideConditions = {
   helpingHand: boolean;
   /** This side's Pokémon has a Friend Guard partner (Doubles), cutting damage it takes to 75%. */
   friendGuard: boolean;
+  /**
+   * This side's Pokémon has a partner (Doubles) with Queenly Majesty, Dazzling or Armor Tail, which stops
+   * the other side's priority moves aimed at either of them (pinned Showdown onFoeTryMove).
+   */
+  priorityShield: boolean;
   /** This side's Pokémon is protecting (Protect, Detect or a similar move) this turn. */
   protect: boolean;
   /** Tailwind is active on this side, doubling its Pokémon's Speed. */
@@ -247,6 +275,12 @@ export type MoveDamageResult = {
    * damage reaches: Focus Sash or Sturdy at full HP, or Focus Band. The HP preview withholds on it.
    */
   survival?: "Focus Sash" | "Focus Band" | "Sturdy";
+  /**
+   * False Swipe and Hold Back (not their Z-Move or Max Move): the hit leaves the target at least 1 HP
+   * (pinned Showdown onDamage returns target.hp - 1) before any survival effect can act, so survival is
+   * never set and ohkoChance is 0. The rolls stay before that cap; the HP preview stops at 1 HP.
+   */
+  leavesOneHP?: true;
   /**
    * A second outcome with its own chance, such as Fickle Beam's 30% doubled power or the 50% physical hit
    * of a Shell Side Arm tie. The main fields describe the case usualLabel names; ohkoChance weighs both.

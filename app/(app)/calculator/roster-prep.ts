@@ -5,12 +5,12 @@ import type { ImportDraft } from "./PokePasteImporter";
 export { createSpeciesResolver, resolveRosterSpecies, type SpeciesResolution } from "@/app/lib/battle/species-identity";
 import { applyIntimidate, intimidatedKey } from "@/app/lib/battle/intimidate";
 import { tracedAbility } from "@/app/lib/battle/imposter";
-import { createBuild, createConditions, defaultAbilityActive, getBuildStats, withUsualAbility } from "@/app/lib/battle/model";
+import { createBuild, createConditions, defaultAbilityActive, getBuildStats, STAT_LABELS, withUsualAbility } from "@/app/lib/battle/model";
 import { rebaseCurrentHP } from "@/app/lib/battle/health";
-import { specialTeraForm } from "@/app/lib/battle/mechanics";
-import { createMoveSlots, usualAbility, type MoveSlots } from "@/app/lib/battle/move-defaults";
+import { HIDDEN_POWER_IVS, specialTeraForm } from "@/app/lib/battle/mechanics";
+import { createMoveSlots, quickHiddenPowerType, usualAbility, withHiddenPowerIVs, type MoveSlots } from "@/app/lib/battle/move-defaults";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
-import type { BattleBuild, BattleConditions, BattleMechanic, MoveContext } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleConditions, BattleMechanic, BattleStat, MoveContext } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { pokemonKey, type TeamRoster } from "../leagues/[leagueId]/team/roster";
 import type { CalculatorRosterState } from "./roster-data";
@@ -214,13 +214,20 @@ function withPreparedMoves(build: BattleBuild, moves: MoveSlots): BattleBuild {
   return build.game === "champions" ? build : { ...build, preparedMoves: moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []) };
 }
 
+/** The notice sentence for the IVs withHiddenPowerIVs gave a fresh build (`fresh` is not `build`), else "". */
+function hiddenPowerIVsNote(build: BattleBuild, fresh: BattleBuild, moves: MoveSlots): string {
+  const type = fresh !== build && quickHiddenPowerType(moves);
+  return type ? ` IVs set for its suggested Hidden Power ${type} (30 ${(Object.keys(HIDDEN_POWER_IVS[type]) as BattleStat[]).map((stat) => STAT_LABELS[stat]).join(", ")}), the IVs Showdown's team validator gives a level-50 set with that Hidden Power.` : "";
+}
+
 export function createMatchup(revision = 0, runtime: BattleRuntime = championsRuntime): PreparedMatchup {
   const field = createConditions();
   const makeSlot = (speciesId: string, offset: number, role: RosterRole): Combatant => {
     const fallback = runtime.catalog.species.find((entry) => !entry.battleForm && !entry.unsupported.length)?.id ?? "";
     const id = runtime.speciesById.has(speciesId) ? speciesId : fallback;
     const moves = createMoveSlots(id, field.gameType, runtime);
-    return { key: revision * 2 + offset, editorRevision: 0, role, build: withPreparedMoves(withUsualAbility(createBuild(id, runtime), usualAbility(id, field.gameType, runtime)), moves),
+    const build = withHiddenPowerIVs(withUsualAbility(createBuild(id, runtime), usualAbility(id, field.gameType, runtime)), moves, runtime);
+    return { key: revision * 2 + offset, editorRevision: 0, role, build: withPreparedMoves(build, moves),
       hpInput: "", source: null, moves, megaBase: null, contexts: {}, moveEpoch: 0 };
   };
   const attacker = makeSlot("charizard", 0, "own");
@@ -534,12 +541,18 @@ function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBui
   const changedSpecies = slot.build.speciesId !== build.speciesId;
   const source = changedSpecies ? null : slot.source;
   const moves = changedSpecies ? createMoveSlots(build.speciesId, current.field.gameType, current.runtime) : slot.moves;
+  // A new species is a fresh build (the chooser's), so its suggested typed Hidden Power sets its IVs.
+  const fresh = changedSpecies ? withHiddenPowerIVs(build, moves, current.runtime) : build;
   const nextSlot = {
-    ...slot, build: withPreparedMoves(build, moves), source, hpInput, moves,
+    ...slot, build: withPreparedMoves(fresh, moves), source, hpInput, moves,
     megaBase: changedSpecies ? null : slot.megaBase,
     editorRevision: slot.editorRevision + (changedSpecies ? 1 : 0),
   };
-  const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot) };
+  // A species change replaces the notice: its Hidden Power IVs, named by side so a second identical pick is
+  // announced too, or nothing, so an earlier Pokémon's sentence does not linger.
+  const note = hiddenPowerIVsNote(build, fresh, moves);
+  const label = side === "attacker" ? "Left" : "Right";
+  const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot), ...(changedSpecies ? { notice: note ? `${label} Pokémon ${current.runtime.speciesById.get(build.speciesId)?.name}:${note}` : "" } : {}) };
   return changedSpecies ? clearMoveInteractions(next) : next;
 }
 
@@ -594,7 +607,8 @@ export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpIn
 
 /**
  * A fresh league build uses the ability its Pool Builder row names, when the form has it, and
- * otherwise the form's usual ability (usage in Champions, else Showdown's first slot).
+ * otherwise the form's usual ability (usage in Champions, a native game's Random Battle sets, else
+ * Showdown's first slot).
  */
 function withRosterAbility(build: BattleBuild, source: RosterSource, gameType: BattleConditions["gameType"], runtime: BattleRuntime): BattleBuild {
   if (source.kind === "league" && source.abilityId) {
@@ -618,16 +632,18 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     || source.key !== JSON.stringify(["paste", current.runtime.identity, slot.role, source.importId, source.index])) return current;
   if (slot.source?.key === source.key) return current;
   const cached = current.cache.get(source.key);
-  const build = cached?.build ?? (seed?.build ? structuredClone(seed.build) : withRosterAbility(createBuild(source.speciesId, current.runtime), source, current.field.gameType, current.runtime));
+  const moves = cached?.moves ?? (seed ? structuredClone(seed.moves) : createMoveSlots(source.speciesId, current.field.gameType, current.runtime));
+  const base = cached?.build ?? (seed?.build ? structuredClone(seed.build) : withRosterAbility(createBuild(source.speciesId, current.runtime), source, current.field.gameType, current.runtime));
+  // Only a fresh league build takes IVs for its suggested typed Hidden Power; restored and imported ones keep theirs.
+  const build = cached || seed ? base : withHiddenPowerIVs(base, moves, current.runtime);
   if (build.game !== current.runtime.profile.id) return current;
   const hpInput = cached?.hpInput ?? formatHPInput(build.currentHP);
-  const moves = cached?.moves ?? (seed ? structuredClone(seed.moves) : createMoveSlots(source.speciesId, current.field.gameType, current.runtime));
   const nextSlot = { ...slot, build: withPreparedMoves(build, moves), source, hpInput, moves, megaBase: cached?.megaBase ?? null, editorRevision: slot.editorRevision + 1 };
   return clearMoveInteractions({
     ...current,
     [side]: nextSlot,
     cache: cacheCombatant(current, nextSlot),
-    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : current.runtime.profile.id === "champions" ? "Default build loaded; adjust nature, ability, item and Stat Points as needed." : "Default build loaded; adjust level, nature, ability, item, EVs and IVs as needed."} Field settings are unchanged; move contexts cleared.`,
+    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : current.runtime.profile.id === "champions" ? "Default build loaded; adjust nature, ability, item and Stat Points as needed." : `Default build loaded; adjust level, nature, ability, item, EVs and IVs as needed.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
   });
 }
 

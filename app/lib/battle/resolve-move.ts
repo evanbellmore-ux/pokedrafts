@@ -29,6 +29,9 @@ export function withResolvedPriority(move: Move, priority: number): Move {
 }
 
 /** Resolve the requested attack before applying base-move history/hit/failure guards. */
+/** The question a Terastallized Stellar user's move asks until its first use of the type is set. */
+export const STELLAR_FIRST_USE_REASON = "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed.";
+
 export function resolveBattleMove(
   metadata: ChampionsMove,
   build: BattleBuild,
@@ -113,7 +116,7 @@ export function resolveBattleMove(
       stellarFirstUse = true;
       assumptions.push("Terapagos-Stellar keeps its Stellar boost for every type; it is never used up.");
     } else {
-      if (typeof stellarFirstUse !== "boolean") return { kind: "needs-context", reason: "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed." };
+      if (typeof stellarFirstUse !== "boolean") return { kind: "needs-context", reason: STELLAR_FIRST_USE_REASON };
       assumptions.push(`Stellar: first use of this move's type — ${stellarFirstUse ? "yes" : "no"}.`);
     }
   }

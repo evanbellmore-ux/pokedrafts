@@ -128,6 +128,7 @@ describe("native deterministic source pipeline", () => {
     const block = entry.catalog.randomBattle!;
     expect(Object.keys(block.formats).sort()).toEqual(profile.game === "scarlet_violet" ? ["Doubles", "Singles"] : ["Singles"]);
     const rows = { ultra_sun_ultra_moon: { Singles: 625 }, sword_shield: { Singles: 471 }, scarlet_violet: { Singles: 576, Doubles: 571 } }[profile.game] as Record<string, number>;
+    const abilities = { ultra_sun_ultra_moon: { Singles: 582 }, sword_shield: { Singles: 472 }, scarlet_violet: { Singles: 571, Doubles: 566 } }[profile.game] as Record<string, number>;
     for (const [format, table] of Object.entries(block.formats)) {
       expect(table!.file).toBe((profile.randomBattleSets as Record<string, string>)[format]);
       expect(Object.keys(table!.species).length, format).toBe(rows[format]);
@@ -142,6 +143,13 @@ describe("native deterministic source pipeline", () => {
       }
       expect(table!.aggregate.every((id) => move(entry, id).category !== "Status")).toBe(true);
       expect(entry.manifest.randomBattleSets.formats[format].rows).toBe(rows[format]);
+      // Each form's most generated ability is one of its own that the engine supports.
+      expect(Object.keys(table!.abilities).length, format).toBe(abilities[format]);
+      expect(entry.manifest.randomBattleSets.formats[format].abilities).toBe(abilities[format]);
+      for (const [speciesId, ability] of Object.entries(table!.abilities)) {
+        expect(pokemon(entry, speciesId).abilities, speciesId).toContain(ability);
+        expect(entry.catalog.abilities.find((row) => row.id === ability)?.unsupported, speciesId).toEqual([]);
+      }
     }
     for (const file of entry.manifest.randomBattleSets.files) {
       expect(entry.randomBattleFiles.find((row) => row.path === file.path)?.sha256).toBe(file.sha256);
@@ -162,10 +170,22 @@ describe("native deterministic source pipeline", () => {
       expect(block.formats.Singles!.species.nidoking).toContain("icebeam");
       expect(block.formats.Singles!.species.komala).toContain("knockoff");
       expect(entry.manifest.randomBattleSets.formats.Singles.mapping).toEqual({ battleOnly: 12, exact: 573, getForme: 42 });
+      // The sets' ability, not Showdown's first slot; a Mega key's sets name its base form's ability, which the Mega lacks.
+      expect(block.formats.Singles!.abilities).toMatchObject({ cloyster: "skilllink", haxorus: "moldbreaker", magnezone: "analytic", ditto: "imposter" });
+      expect(block.formats.Singles!.abilities.charizardmegax).toBeUndefined();
+    }
+    if (profile.game === "sword_shield") {
+      // Inteleon's two keys (Torrent, and Sniper for Inteleon-Gmax) tie; the earlier slot wins.
+      expect(block.formats.Singles!.abilities).toMatchObject({ inteleon: "torrent", scizor: "technician", zygarde: "powerconstruct" });
     }
     if (profile.game === "scarlet_violet") {
       expect(block.formats.Doubles!.species.meloettapirouette).toEqual(["closecombat", "terablast", "relicsong", "psychic"]);
       expect(entry.manifest.randomBattleSets.formats.Doubles.mapping).toEqual({ battleOnly: 14, exact: 504, getForme: 54 });
+      // Per format, and a 78/78 tie keeps the earlier slot (Venusaur's Overgrow over Chlorophyll).
+      expect(block.formats.Singles!.abilities).toMatchObject({ haxorus: "moldbreaker", venusaur: "overgrow", azumarill: "hugepower" });
+      expect(block.formats.Doubles!.abilities).toMatchObject({ haxorus: "unnerve", perrserker: "toughclaws" });
+      // A Tera form's sets name the entry form's ability (Ogerpon's Sturdy), which the form lacks.
+      expect(block.formats.Singles!.abilities.ogerponcornerstonetera).toBeUndefined();
     }
   });
 

@@ -4,7 +4,7 @@ import { useId, useMemo, useState, type ReactNode } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button, Field, Input, Select, TableWrap } from "@/app/components/ui";
 import type { InputProps } from "@/app/components/ui/Input";
-import { HIDDEN_POWER_TYPES } from "@/app/lib/battle/mechanics";
+import { HIDDEN_POWER_TYPES, hiddenPowerType } from "@/app/lib/battle/mechanics";
 import { mimicryNote, type MimicryState } from "@/app/lib/battle/mimicry";
 import { NO_TRACE_ABILITIES } from "@/app/lib/battle/imposter";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
@@ -12,6 +12,8 @@ import {
   abilityActivationLabel,
   PARTNER_ABILITY_CONDITIONS,
   defaultAbilityActive,
+  fieldItemHelp,
+  fieldItemLabel,
   getBuildStats,
   NATURES,
   parseIntegerInput,
@@ -20,6 +22,7 @@ import {
   STATS,
   STAT_LABELS,
   STATUSES,
+  type FieldItemChoice,
 } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleStatus, BuildIssue } from "@/app/lib/battle/types";
 
@@ -89,13 +92,15 @@ type Props = {
   gameType?: "Singles" | "Doubles";
   /** The held item whose use before Magic Room is a choice (model roomItemChoice), or null. */
   roomItemChoice?: string | null;
+  /** A Protosynthesis / Quark Drive holder's item timing against its field (model fieldItemChoice), or null. */
+  fieldItemChoice?: FieldItemChoice | null;
   /** Whether Magic Room is up now; without it the switch covers a room that has ended. */
   magicRoom?: boolean;
   /** The form's required move and its current quick moves, to fix a prepared-move issue. */
   requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
 };
 
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, mimicry }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, mimicry }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const position = side === "attacker" ? "left" : "right";
@@ -157,7 +162,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </Select>
           </Field>
           <Field id={`${prefix}-item`} label="Held item" error={errorFor("itemId")} help={species?.requiredItem ? `${runtime.itemsById.get(species.requiredItem)?.name ?? species.requiredItem} is required and locked for this form.` : undefined}>
-            <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value, itemUsedBeforeRoom: undefined })}>
+            <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value, itemUsedBeforeRoom: undefined, itemUsedBeforeField: undefined })}>
               <option value="">None</option>
               {itemOptions.map((item) => <option key={item.id} value={item.id}>{item.name}{item.unsupported.length ? " — unsupported" : ""}</option>)}
             </Select>
@@ -185,6 +190,23 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             <p id={`${prefix}-room-item-help`} className="text-xs text-muted">
               Magic Room suppresses held items but does not undo one already used. Untick this if it entered while Magic Room was up{SEED_TERRAINS[roomItemChoice] ? `, or ${SEED_TERRAINS[roomItemChoice].terrain} Terrain started after the room` : roomItemChoice === "roomservice" ? ", or Trick Room started after the room" : ""}: the item is then still held and does nothing{magicRoom ? "" : ", even after the room ends"}.
             </p>
+          </div>
+        )}
+
+        {fieldItemChoice && (
+          <div className="mt-3">
+            <label htmlFor={`${prefix}-field-item`} className="flex min-h-11 items-center gap-2 text-sm text-text">
+              <input
+                id={`${prefix}-field-item`}
+                type="checkbox"
+                checked={fieldItemChoice.checked}
+                aria-describedby={`${prefix}-field-item-help`}
+                onChange={(event) => onChange({ ...build, itemUsedBeforeField: event.target.checked, ...(event.target.checked ? { itemUsedBeforeRoom: undefined } : {}) })}
+                className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              />
+              {fieldItemLabel(fieldItemChoice, runtime)}
+            </label>
+            <p id={`${prefix}-field-item-help`} className="text-xs text-muted">{fieldItemHelp(fieldItemChoice, runtime)}</p>
           </div>
         )}
 
@@ -287,7 +309,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </>}
             {runtime.profile.generation === 7 && <Field id={`${prefix}-hidden-power`} label="Hidden Power type" error={errorFor("configuration.hiddenPowerType")} help="Optional declared type; it must match innate IVs. This never rewrites effective IVs.">
               <Select value={build.configuration?.hiddenPowerType ?? ""} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, hiddenPowerType: event.target.value || undefined } })}>
-                <option value="">Determine from innate IVs</option>
+                <option value="">{`Determine from innate IVs${build.game === "champions" ? "" : ` (${hiddenPowerType(innateIVs ?? build.native.ivs) ?? "incomplete"})`}`}</option>
                 {HIDDEN_POWER_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
               </Select>
             </Field>}

@@ -8,7 +8,8 @@ import type { NativeCatalog, NativeProfile, NativeResolvedSpecies, NativeSnapsho
  * (data/random-battles/gen7|gen8|gen9/teams.ts reading sets.json, and gen9 doubles-sets.json): generated
  * sets, not usage statistics. The build runs each format's generator for a fixed number of teams with a
  * fixed seed and counts, per set key, how often each move appears. Each catalog form then gets up to four
- * legal damaging moves by that frequency, and each format a damaging-move ranking over every key.
+ * legal damaging moves by that frequency, and each format a damaging-move ranking over every key. Each
+ * form also gets the ability the generator gave it most often, which a fresh build then starts with.
  */
 type SetRow = { role?: string; movepool: string[]; abilities?: string[] };
 export type RandomBattleTable = Record<string, { level?: number; sets: SetRow[] }>;
@@ -25,11 +26,12 @@ export type TeamsAPI = {
   };
 };
 type Format = "Singles" | "Doubles";
-type Source = { key: string; n: number; moves: Record<string, number> };
+type Source = { key: string; n: number; moves: Record<string, number>; abilities: Record<string, number> };
 type Rule = "exact" | "getForme" | "battleOnly" | "cosmetic";
 type SourceRow = Omit<NativeResolvedSpecies, "learnset">;
 type CatalogSpecies = NativeCatalog["species"][number];
 type CatalogMove = NativeCatalog["moves"][number];
+type CatalogAbility = NativeCatalog["abilities"][number];
 
 /**
  * Runs the pinned generator for `teams` whole teams and records every set it builds, by set key. A
@@ -84,18 +86,20 @@ function keyForms(key: string, gen: number, sourceById: ReadonlyMap<string, Sour
   return [row.id];
 }
 
-/** Move counts over the generated sets that pass `keep` (ability and move ids). */
-function countsOf(key: GeneratedKey, keep: (ability: string, moves: string[]) => boolean): { n: number; moves: Record<string, number> } {
+/** Move and ability counts over the generated sets that pass `keep` (ability and move ids). */
+function countsOf(key: GeneratedKey, keep: (ability: string, moves: string[]) => boolean): Omit<Source, "key"> {
   let n = 0;
   const moves: Record<string, number> = {};
+  const abilities: Record<string, number> = {};
   for (const [tag, count] of Object.entries(key.sets)) {
     const [ability, , list] = tag.split("|");
     const ids = list ? list.split(",") : [];
     if (!keep(ability, ids)) continue;
     n += count;
+    abilities[ability] = (abilities[ability] ?? 0) + count;
     for (const id of ids) moves[id] = (moves[id] ?? 0) + count;
   }
-  return { n, moves };
+  return { n, moves, abilities };
 }
 
 /**
@@ -115,7 +119,7 @@ function mapSpecies(catalog: NativeCatalog, speciesById: ReadonlyMap<string, Cat
     for (const id of forms) {
       const row = out.get(id) ?? { rule: "getForme" as Rule, sources: [], keys: [] };
       if (id === key) row.rule = "exact";
-      row.sources.push({ key, n: stats.n, moves: stats.moves });
+      row.sources.push({ key, n: stats.n, moves: stats.moves, abilities: countsOf(stats, () => true).abilities });
       row.keys.push(key);
       out.set(id, row);
     }
@@ -169,6 +173,22 @@ function rankMoves(species: CatalogSpecies, movesById: ReadonlyMap<string, Catal
   return { moves, dropped: [...dropped].sort(compare) };
 }
 
+/**
+ * The ability the generator gave this form most often (each source key's share of its sets, keys weighted
+ * equally, as for moves), among the form's own abilities the engine supports; on a tie, the earlier
+ * Showdown ability slot. Undefined when it generated none of them (a Mega or Primal key's sets name the
+ * entry form's ability).
+ */
+function rankAbility(species: CatalogSpecies, abilitiesById: ReadonlyMap<string, CatalogAbility>, sources: Source[]): string | undefined {
+  const weight = new Map<string, number>();
+  for (const source of sources) for (const [id, count] of Object.entries(source.abilities)) {
+    if (!species.abilities.includes(id) || abilitiesById.get(id)?.unsupported.length !== 0) continue;
+    weight.set(id, (weight.get(id) ?? 0) + count / source.n / sources.length);
+  }
+  const slot = (id: string) => (species.abilityOrder ?? species.abilities).indexOf(id);
+  return [...weight.keys()].sort((a, b) => rounded(weight.get(b)!) - rounded(weight.get(a)!) || slot(a) - slot(b) || compare(a, b))[0];
+}
+
 /** Every generated key's damaging moves by their share of its sets, summed, then id: the format-wide fill order. */
 function aggregateOf(movesById: ReadonlyMap<string, CatalogMove>, generated: GeneratedFormat, skip: readonly string[]): string[] {
   const sum = new Map<string, number>();
@@ -184,7 +204,7 @@ function aggregateOf(movesById: ReadonlyMap<string, CatalogMove>, generated: Gen
 }
 
 export type RandomBattleReport = Record<string, {
-  path: string; generator: string; keys: number; rows: number; mapping: Record<string, number>;
+  path: string; generator: string; keys: number; rows: number; abilities: number; mapping: Record<string, number>;
   keysWithoutForm: string[]; keysNotGenerated: string[]; noDamagingMoves: string[]; illegalMovesDropped: { speciesId: string; moveIds: string[] }[];
 }>;
 
@@ -193,6 +213,7 @@ export function randomBattleCatalog(catalog: NativeCatalog, source: NativeSnapsh
   const sourceById = new Map(source.species.map((row) => [row.id, row as SourceRow]));
   const speciesById = new Map(catalog.species.map((row) => [row.id, row]));
   const movesById = new Map(catalog.moves.map((move) => [move.id, move]));
+  const abilitiesById = new Map(catalog.abilities.map((ability) => [ability.id, ability]));
   const formats: Partial<Record<Format, RandomBattleFormat>> = {};
   const report: RandomBattleReport = {};
   for (const [format, path] of Object.entries(profile.randomBattleSets) as [Format, string][]) {
@@ -202,6 +223,7 @@ export function randomBattleCatalog(catalog: NativeCatalog, source: NativeSnapsh
     if (!file || !run) throw new Error(`Missing pinned Random Battle sets or generated teams for ${path}.`);
     const { out, keysWithoutForm, keysNotGenerated } = mapSpecies(catalog, speciesById, sourceById, file.sets, run, profile.gen);
     const species: Record<string, string[]> = {};
+    const abilities: Record<string, string> = {};
     const mapping: Record<string, number> = {};
     const noDamagingMoves: string[] = [];
     const illegalMovesDropped: { speciesId: string; moveIds: string[] }[] = [];
@@ -213,11 +235,13 @@ export function randomBattleCatalog(catalog: NativeCatalog, source: NativeSnapsh
       if (ranked.dropped.length) illegalMovesDropped.push({ speciesId: row.id, moveIds: ranked.dropped });
       if (ranked.moves.length) species[row.id] = ranked.moves;
       else noDamagingMoves.push(row.id);
+      const ability = rankAbility(row, abilitiesById, mapped.sources);
+      if (ability) abilities[row.id] = ability;
     }
-    formats[format] = { file: path, species, aggregate: aggregateOf(movesById, run, keysWithoutForm) };
+    formats[format] = { file: path, species, abilities, aggregate: aggregateOf(movesById, run, keysWithoutForm) };
     report[format] = {
       path, generator: `${run.format}, seed ${run.seed}, ${run.teams} teams (${run.errors} failed)`,
-      keys: Object.keys(file.sets).length, rows: Object.keys(species).length,
+      keys: Object.keys(file.sets).length, rows: Object.keys(species).length, abilities: Object.keys(abilities).length,
       mapping: Object.fromEntries(Object.entries(mapping).sort(([a], [b]) => compare(a, b))),
       keysWithoutForm, keysNotGenerated, noDamagingMoves, illegalMovesDropped,
     };

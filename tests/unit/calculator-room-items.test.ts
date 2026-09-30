@@ -286,7 +286,7 @@ describe("entry order and room timing follow-ups", () => {
     const bundle = build(sv, "ironbundle", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Timid" });
     const hit = row(sv, "hydropump", bundle, build(sv, "snorlax", { evs: { hp: 252 } }), { magicRoom: false, trickRoom: true, terrain: "Electric" });
     expect(range(hit)).toBe("90-106");
-    expect(hit.assumptions).toContain("This assumes Trick Room was up when it entered, so Room Service lowered its Speed before Quark Drive picked its stat. If Trick Room started later, Quark Drive raises its Speed.");
+    expect(hit.assumptions).toContain("The attacker Iron Bundle's Room Service lowered its Speed before Quark Drive activated: this assumes Trick Room was up when it entered. If Quark Drive activated first, it raises its Speed: untick its Room Service choice.");
     const treads = build(sv, "irontreads", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Jolly" });
     expect(range(row(sv, "dragonclaw", build(sv, "garchomp", { evs: { atk: 252 }, nature: "Adamant" }), treads, { magicRoom: false, trickRoom: true, terrain: "Electric" }))).toBe("25-30");
   });
@@ -335,7 +335,7 @@ describe("final follow-ups", () => {
     const bundle = build(sv, "ironbundle", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Timid" });
     const hit = row(sv, "hydropump", bundle, build(sv, "pincurchin", { ability: "electricsurge" }), { magicRoom: false, trickRoom: true, terrain: "Electric" });
     expect(range(hit)).toBe("85-102");
-    expect(hit.assumptions.join(" ")).toContain("This assumes both entered together, so the other Pokémon's Electric Surge set the terrain and Quark Drive activated before Room Service lowered its Speed. If it switched in under Trick Room after the terrain was up, Room Service came first and Quark Drive raises its Sp. Atk.");
+    expect(hit.assumptions.join(" ")).toContain("The attacker Iron Bundle's Quark Drive activated before Room Service lowered its Speed: this assumes both entered together, so the other Pokémon's Electric Surge set Electric Terrain first. If Room Service came first, Quark Drive raises its Sp. Atk: tick its Room Service choice.");
   });
 
   it("fails a transformed Imposter user's Double Shock before the target's Protect", () => {

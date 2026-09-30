@@ -122,6 +122,30 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   return issues;
 }
 
+/**
+ * Each type's usual Hidden Power IVs: the listed stats are 30 and the rest 31 (pinned Showdown
+ * data/typechart.ts HPivs). Showdown's team validator (sim/team-validator.ts) fills them in for a set with
+ * that typed Hidden Power and all-31 IVs below level 100, where Hyper Training cannot keep the 31s. (Its gen
+ * 7 Random Battle generator gives them only to sets with a physical attack; the rest get 0 Attack.)
+ */
+export const HIDDEN_POWER_IVS: Readonly<Record<(typeof HIDDEN_POWER_TYPES)[number], Partial<StatTable>>> = {
+  Fighting: { def: 30, spa: 30, spd: 30, spe: 30 }, Flying: { hp: 30, atk: 30, def: 30, spa: 30, spd: 30 },
+  Poison: { def: 30, spa: 30, spd: 30 }, Ground: { spa: 30, spd: 30 }, Rock: { def: 30, spd: 30, spe: 30 },
+  Bug: { atk: 30, def: 30, spd: 30 }, Ghost: { def: 30, spd: 30 }, Steel: { spd: 30 },
+  Fire: { atk: 30, spa: 30, spe: 30 }, Water: { atk: 30, def: 30, spa: 30 }, Grass: { atk: 30, spa: 30 },
+  Electric: { spa: 30 }, Psychic: { atk: 30, spe: 30 }, Ice: { atk: 30, def: 30 }, Dragon: { atk: 30 }, Dark: {},
+};
+
+/**
+ * Hero-form Zacian and Zamazenta holding their Rusted item battle as the Crowned form (pinned Showdown
+ * data/conditions.ts zacian / zamazenta onBattleStart), which also replaces an Iron Head with Behemoth
+ * Blade / Behemoth Bash.
+ */
+export const CROWNED_FORMS: Readonly<Record<string, { form: string; item: string; move: string }>> = {
+  zacian: { form: "zaciancrowned", item: "rustedsword", move: "behemothblade" },
+  zamazenta: { form: "zamazentacrowned", item: "rustedshield", move: "behemothbash" },
+};
+
 /** Gen 7's innate IV parity determines type; Hyper Training does not change it. */
 export function hiddenPowerType(ivs: StatTable<number | null>): string | null {
   if (IV_ORDER.some((stat) => !integerWithin(ivs[stat], 0, 31))) return null;

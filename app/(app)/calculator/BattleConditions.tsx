@@ -2,17 +2,18 @@
 
 import { useId } from "react";
 import { Field, Select } from "@/app/components/ui";
-import { SHARED_FIELD_EFFECTS } from "@/app/lib/battle/model";
+import { priorityRaiserNames, priorityShieldNames, SHARED_FIELD_EFFECTS } from "@/app/lib/battle/model";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { unmodelledBattleStates } from "@/app/lib/battle/unmodelled-states";
 import type { BattleConditions as Conditions, BuildIssue, SideConditions } from "@/app/lib/battle/types";
 
-const sideOptions: { key: keyof SideConditions; label: string }[] = [
+const sideOptions: { key: keyof SideConditions; label: string | ((runtime: BattleRuntime) => string) }[] = [
   { key: "reflect", label: "Reflect" },
   { key: "lightScreen", label: "Light Screen" },
   { key: "auroraVeil", label: "Aurora Veil" },
   { key: "helpingHand", label: "Helping Hand" },
   { key: "friendGuard", label: "Partner has Friend Guard" },
+  { key: "priorityShield", label: (runtime) => `Partner has ${priorityShieldNames(runtime)}` },
   { key: "protect", label: "Protecting" },
   { key: "tailwind", label: "Tailwind" },
   { key: "charge", label: "Charge" },
@@ -44,7 +45,7 @@ function protectHelp(runtime: BattleRuntime) {
 }
 
 /** Settings that need an ally; Singles ignores them. */
-const doublesOnly = (key: string) => key === "helpingHand" || key === "fairyAura" || key === "friendGuard";
+const doublesOnly = (key: string) => key === "helpingHand" || key === "fairyAura" || key === "friendGuard" || key === "priorityShield";
 
 export function describeConditions(value: Conditions) {
   const counts = (key: string, on: boolean) => on && !(value.gameType === "Singles" && doublesOnly(key));
@@ -136,7 +137,7 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
             })}
           </div>
         </fieldset>
-        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Screens on the receiving Pokémon’s side reduce incoming damage; Helping Hand on the attacking Pokémon’s side boosts outgoing damage, regardless of left/right position{singles ? "; it needs an ally, so it is ignored in Singles" : ""}. A Friend Guard partner on the receiving Pokémon’s side cuts its damage taken to 75%; Mold Breaker, Teravolt, Turboblaze and moves such as Sunsteel Strike ignore it and Neutralizing Gas suppresses it. Protecting means that side’s Pokémon used Protect, Detect or a similar move this turn: it blocks attacks except moves that bypass Protect{protectHelp(runtime)}. Tailwind doubles that side’s Speed, which sets Electro Ball, Gyro Ball and turn order. Charge means that side’s Pokémon used Charge, doubling its next Electric attack{runtime.abilitiesById.has("windpower") ? " (tick it too after Tailwind starts beside a Wind Power Pokémon)" : ""}. Aurora Veil does not stack with Reflect or Light Screen and can remain active after {runtime.profile.weather.includes("Hail") ? "Hail" : "Snow"} ends.</p>
+        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Screens on the receiving Pokémon’s side reduce incoming damage; Helping Hand on the attacking Pokémon’s side boosts outgoing damage, regardless of left/right position{singles ? "; it needs an ally, so it is ignored in Singles" : ""}. A Friend Guard partner on the receiving Pokémon’s side cuts its damage taken to 75%; Mold Breaker, Teravolt, Turboblaze and moves such as Sunsteel Strike ignore it and Neutralizing Gas suppresses it. A partner with {priorityShieldNames(runtime)} on the receiving Pokémon’s side stops the other side’s priority moves aimed at either of them{priorityRaiserNames(runtime) ? `, including priority from ${priorityRaiserNames(runtime)}` : ""}; Mold Breaker, Teravolt and Turboblaze ignore it and Neutralizing Gas suppresses it. Protecting means that side’s Pokémon used Protect, Detect or a similar move this turn: it blocks attacks except moves that bypass Protect{protectHelp(runtime)}. Tailwind doubles that side’s Speed, which sets Electro Ball, Gyro Ball and turn order. Charge means that side’s Pokémon used Charge, doubling its next Electric attack{runtime.abilitiesById.has("windpower") ? " (tick it too after Tailwind starts beside a Wind Power Pokémon)" : ""}. Aurora Veil does not stack with Reflect or Light Screen and can remain active after {runtime.profile.weather.includes("Hail") ? "Hail" : "Snow"} ends.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {(["attackerSide", "defenderSide"] as const).map((side) => (
             <fieldset key={side} aria-describedby={`${prefix}-sides-help`} className="min-w-0 rounded-lg border border-line px-3 pb-2">
@@ -152,7 +153,7 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
                       onChange={(event) => onChange({ ...value, [side]: { ...value[side], [option.key]: event.target.checked } })}
                       className={doublesOnly(option.key) ? `${checkboxClassName} disabled:opacity-50` : checkboxClassName}
                     />
-                    {option.label}
+                    {typeof option.label === "function" ? option.label(runtime) : option.label}
                   </label>
                 ))}
               </div>

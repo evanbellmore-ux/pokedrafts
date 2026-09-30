@@ -37,7 +37,7 @@ type Props = {
   onReturnFocus?: (opener: HTMLElement) => void;
   roster?: ReactNode;
   runtime?: BattleRuntime;
-  /** Champions usage picks the usual ability per format. */
+  /** Champions usage, or a native game's Random Battle sets, pick the usual ability per format. */
   gameType?: "Singles" | "Doubles";
 };
 
@@ -86,7 +86,7 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help={`Search ${runtime.profile.label} Pokémon by name or form, including league roster names such as Alolan Raichu or Paldean Tauros (Blaze Breed). Changing Pokémon resets nature, ability, item, ${runtime.profile.training === "points" ? "Stat Points" : "level (50), EVs (0) and IVs (31)"}, stages, HP, status and mechanic configuration.`}>
+            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help={`Search ${runtime.profile.label} Pokémon by name or form, including league roster names such as Alolan Raichu or Paldean Tauros (Blaze Breed). Changing Pokémon resets nature, ability, item, ${runtime.profile.training === "points" ? "Stat Points" : `level (50), EVs (0) and IVs (31${runtime.profile.generation === 7 ? ", or a suggested typed Hidden Power's usual IVs" : ""})`}, stages, HP, status and mechanic configuration.`}>
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">
