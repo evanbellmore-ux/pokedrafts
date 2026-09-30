@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { previewRemainingHP } from "@/app/(app)/calculator/hp-preview";
-import { boosterRoomChoice, createBuild, createConditions, getBuildStats, validateBuild } from "@/app/lib/battle/model";
+import { createBuild, createConditions, getBuildStats, roomItemChoice, validateBuild } from "@/app/lib/battle/model";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, BattleConditions, StatTable } from "@/app/lib/battle/types";
 
@@ -78,7 +78,7 @@ describe("Protosynthesis, Quark Drive and Booster Energy", () => {
     const plain = range(row(sv, "moonblast", { ...flutter, itemId: "" }, amoonguss));
     expect(plain).toBe("51-60");
     // Entering while Magic Room is already up keeps the Booster Energy unused.
-    const room = row(sv, "moonblast", { ...flutter, abilityActive: false }, amoonguss, { magicRoom: true });
+    const room = row(sv, "moonblast", { ...flutter, itemUsedBeforeRoom: false }, amoonguss, { magicRoom: true });
     expect(range(room)).toBe(plain);
     expect(room.assumptions.join(" ")).not.toContain("Protosynthesis raises");
     expect(room.assumptions).toContain("The attacker Flutter Mane's Booster Energy is not used: it entered while Magic Room was up. Tick its Booster Energy choice if it was used on entry, before the room was set.");
@@ -162,26 +162,26 @@ describe("Booster Energy and a later Magic Room", () => {
   // held items but does not end the boost (audit fix32/review/v-mr-order.ts, real battles).
   it("keeps the boost by default, with the Booster Energy used up, and asks only under Magic Room", () => {
     const flutter = build(sv, "fluttermane", { ability: "protosynthesis", item: "boosterenergy" });
-    expect(flutter.abilityActive).toBe(true);
+    expect(flutter.itemUsedBeforeRoom).toBeUndefined();
     const snorlax = build(sv, "snorlax");
     const later = row(sv, "moonblast", flutter, snorlax, { magicRoom: true });
     expect(range(later)).toBe("84-99");
     expect(later.assumptions).toContain("The attacker Flutter Mane's Protosynthesis raises its Sp. Atk, its highest stat, activated by its Booster Energy, which is used up on entry, before Magic Room was set. This assumes its stat stages have not changed since it activated.");
-    expect(range(row(sv, "moonblast", { ...flutter, abilityActive: false }, snorlax, { magicRoom: true }))).toBe("64-76");
+    expect(range(row(sv, "moonblast", { ...flutter, itemUsedBeforeRoom: false }, snorlax, { magicRoom: true }))).toBe("64-76");
     // The room still suppresses the other Pokémon's Assault Vest.
     expect(range(row(sv, "moonblast", flutter, build(sv, "snorlax", { item: "assaultvest" }), { magicRoom: true }))).toBe("84-99");
     // Knock Off keeps its boost into a held Eviolite, whose Defense boost the room suppresses.
     const tusk = build(sv, "greattusk", { ability: "protosynthesis", item: "boosterenergy", evs: { atk: 252 } });
     const dusclops = build(sv, "dusclops", { item: "eviolite" });
     expect(range(row(sv, "knockoff", tusk, dusclops, { magicRoom: true }))).toBe("116-138");
-    expect(range(row(sv, "knockoff", { ...tusk, abilityActive: false }, dusclops, { magicRoom: true }))).toBe("90-108");
+    expect(range(row(sv, "knockoff", { ...tusk, itemUsedBeforeRoom: false }, dusclops, { magicRoom: true }))).toBe("90-108");
     // A used-up Booster Energy leaves Acrobatics itemless; an unused one is still held.
     const jugulis = build(sv, "ironjugulis", { ability: "quarkdrive", item: "boosterenergy" });
     expect(range(row(sv, "acrobatics", jugulis, snorlax, { magicRoom: true }))).toBe("73-87");
-    expect(range(row(sv, "acrobatics", { ...jugulis, abilityActive: false }, snorlax, { magicRoom: true }))).toBe("37-45");
+    expect(range(row(sv, "acrobatics", { ...jugulis, itemUsedBeforeRoom: false }, snorlax, { magicRoom: true }))).toBe("37-45");
     const panel = (field: Partial<BattleConditions>, value = flutter, other = snorlax) => renderToStaticMarkup(createElement(PokemonPanel, {
       side: "attacker", build: value, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined, runtime: sv,
-      boosterRoomChoice: boosterRoomChoice(value, other, { ...createConditions(), ...field }),
+      roomItemChoice: roomItemChoice(value, other, { ...createConditions(), ...field }),
     }));
     expect(panel({ magicRoom: true })).toContain("Its Booster Energy was used on entry, before Magic Room was set");
     expect(panel({})).not.toContain("before Magic Room was set");
@@ -191,8 +191,8 @@ describe("Booster Energy and a later Magic Room", () => {
     expect(panel({ magicRoom: true, weather: "Sun" })).not.toContain("before Magic Room was set");
     expect(panel({ magicRoom: true, weather: "Sun" }, flutter, build(sv, "golduck", { ability: "cloudnine" }))).toContain("before Magic Room was set");
     expect(panel({ magicRoom: true }, flutter, build(sv, "weezinggalar", { ability: "neutralizinggas" }))).not.toContain("before Magic Room was set");
-    expect(boosterRoomChoice(jugulis, snorlax, { ...createConditions(), magicRoom: true, terrain: "Electric" })).toBe(false);
-    expect(boosterRoomChoice(jugulis, snorlax, { ...createConditions(), magicRoom: true, weather: "Sun" })).toBe(true);
+    expect(roomItemChoice(jugulis, snorlax, { ...createConditions(), magicRoom: true, terrain: "Electric" })).toBeNull();
+    expect(roomItemChoice(jugulis, snorlax, { ...createConditions(), magicRoom: true, weather: "Sun" })).toBe("boosterenergy");
   });
 });
 

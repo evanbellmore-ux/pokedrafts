@@ -46,10 +46,17 @@ const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
 /** Without `foeEntry`, Download (which reads the foe's stages after its own entry boosts) is left out. */
 export function entryBoosts(build: BattleBuild, foe: BattleBuild, foeEntry: EntryBoost[] | null, tailwind: boolean, battle: IntimidateBattle, runtime: BattleRuntime): EntryBoost[] {
   const out: EntryBoost[] = [];
-  const itemOn = !battle.magicRoom && build.abilityId !== "klutz";
+  // Magic Room holds back a Seed unless it was used before the room was set (itemUsedBeforeRoom);
+  // settleItems then adds that stage itself, since the engine drops a Magic Room item first.
+  // A Klutz the foe's Neutralizing Gas suppresses lets items work, unless an Ability Shield keeps it.
+  const klutz = build.abilityId === "klutz" && !(foe.abilityId === "neutralizinggas" && build.itemId !== "abilityshield");
+  // (It stays held after the room ends, so the switch counts without Magic Room too.)
+  const itemOn = !klutz && build.itemUsedBeforeRoom !== false;
   const seed = SEED_TERRAIN[build.itemId];
   if (seed && itemOn && battle.terrain === seed.terrain) {
-    out.push({ stat: seed.stat, amount: build.abilityId === "contrary" ? -1 : 1, id: build.itemId, cause: runtime.itemsById.get(build.itemId)?.name ?? build.itemId });
+    // Showdown's boost(): Contrary inverts it and Simple doubles it.
+    const amount = (build.abilityId === "contrary" ? -1 : 1) * (build.abilityId === "simple" ? 2 : 1);
+    out.push({ stat: seed.stat, amount, id: build.itemId, cause: runtime.itemsById.get(build.itemId)?.name ?? build.itemId });
   }
   if (runtime.profile.id === "champions") return out;
   const own = (stat: CombatStat) => ({ stat, amount: 1, id: build.abilityId, cause: runtime.abilitiesById.get(build.abilityId)?.name ?? build.abilityId });

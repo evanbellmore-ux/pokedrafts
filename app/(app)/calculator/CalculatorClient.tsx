@@ -8,7 +8,7 @@ import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { mimicryState } from "@/app/lib/battle/mimicry";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
-import { boosterRoomChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleGame, BattleMechanic } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { linkClassName } from "@/app/lib/theme";
@@ -547,7 +547,7 @@ export default function CalculatorClient() {
                   <p>Catalog snapshot: {catalog.coverage.species} Pokémon/forms and {catalog.coverage.moves} moves. {catalog.coverage.unsupportedSpecies} Pokémon/forms and {catalog.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
                   <ul className="list-disc space-y-2 pl-5">
                     <li>Each team can use league roster names or imported PokéPaste sets. Imports keep the specified builds and ordered moves, including status moves and empty slots. Imports and edits stay in this page session; Reset keeps the original imported teams but clears session edits.</li>
-                    <li>Quick moves on non-imported builds are editable starting assumptions, not a discovered opponent moveset. Champions defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Other games use legal suggestions, not Champions usage or claimed per-species popularity. Changing Singles/Doubles keeps existing picks.</li>
+                    <li>Quick moves on non-imported builds are editable starting assumptions, not a discovered opponent moveset. Champions defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Other games use pinned Showdown Random Battle sets (generated sets, not usage statistics), then legal same-type and coverage suggestions. Changing Singles/Doubles keeps existing picks.</li>
                     <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Replace updates that slot, selects the new move and keeps the slot editable. Assigned moves are hidden from replacement choices. Done or Escape closes editing while keeping the selected calculation; ordinary move browsing does not rewrite your prepared moves.</li>
                     <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
                     <li>Champions uses fixed level 50 and Stat Points. Native games preserve levels, EVs and IVs; a native paste with no level defaults to 100. Displayed training stats exclude stages, abilities and items. The Battle game selector applies to both sides and is independent of paste spread encoding and league pool rules.</li>
@@ -587,7 +587,8 @@ export default function CalculatorClient() {
                         key={slot.key}
                         runtime={runtime}
                         gameType={matchup.field.gameType}
-                        boosterRoomChoice={boosterRoomChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
+                        roomItemChoice={roomItemChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
+                        magicRoom={matchup.field.magicRoom}
                         requiredMove={requiredMoveFix(slot)}
                         panelId={controls[side]}
                         side={side}

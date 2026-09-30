@@ -12,6 +12,7 @@ import { toID } from "../../scripts/lib/champions-data/transform";
 import { canonical, compact, readVerifiedArchive, sha256, sorted } from "../../scripts/lib/battle-data/sources";
 import { engineSpeciesID, nativeSpecies, transformNativeCatalog } from "../../scripts/lib/battle-data/transform";
 import { NATIVE_GAMES, type NativeGame } from "../../scripts/lib/battle-data/types";
+import { randomBattleCatalog } from "../../scripts/lib/battle-data/random-battle";
 
 vi.mock("node:child_process", async (importOriginal) => {
   const original = await importOriginal<typeof import("node:child_process")>();
@@ -98,7 +99,12 @@ describe("native deterministic source pipeline", () => {
     const source = structuredClone(entry.source);
     const engine = structuredClone(entry.engine);
     const before = canonical({ source, engine });
-    expect(compact(transformNativeCatalog(source, engine, entry.catalog.sources))).toBe(compact(entry.catalog));
+    // The builder adds the Random Battle block to the transformed catalog.
+    const build = (files = entry.randomBattleFiles, generated = entry.randomBattleGenerated) => {
+      const catalog = transformNativeCatalog(source, engine, entry.catalog.sources);
+      return { ...catalog, randomBattle: randomBattleCatalog(catalog, source, profile, files, generated).block };
+    };
+    expect(compact(build())).toBe(compact(entry.catalog));
     expect(canonical({ source, engine })).toBe(before);
     for (const rows of [source.species, source.moves, source.abilities, source.items,
       engine.species, engine.moves]) rows.reverse();
@@ -108,7 +114,59 @@ describe("native deterministic source pipeline", () => {
       row.learnset.movePool.reverse();
       row.abilities = Object.fromEntries(Object.entries(row.abilities).reverse());
     }
-    expect(compact(transformNativeCatalog(source, engine, entry.catalog.sources))).toBe(compact(entry.catalog));
+    // Reordered set keys and generated counts give the same ranking.
+    const shuffled = entry.randomBattleFiles.map((file) => ({ ...file, sets: Object.fromEntries(Object.entries(structuredClone(file.sets)).reverse()) }));
+    const reversed = <T>(record: Record<string, T>) => Object.fromEntries(Object.entries(record).reverse());
+    const regenerated = entry.randomBattleGenerated.map((run) => ({ ...run, keys: Object.fromEntries(Object.entries(run.keys).reverse().map(([key, value]) => [key, {
+      n: value.n, moves: reversed(value.moves), sets: reversed(value.sets),
+    }])) }));
+    expect(compact(build(shuffled, regenerated))).toBe(compact(entry.catalog));
+  });
+
+  it.each(NATIVE_GAMES)("ranks $game quick-move defaults from the pinned Random Battle sets", (profile) => {
+    const entry = data(profile.game);
+    const block = entry.catalog.randomBattle!;
+    expect(Object.keys(block.formats).sort()).toEqual(profile.game === "scarlet_violet" ? ["Doubles", "Singles"] : ["Singles"]);
+    const rows = { ultra_sun_ultra_moon: { Singles: 625 }, sword_shield: { Singles: 471 }, scarlet_violet: { Singles: 576, Doubles: 571 } }[profile.game] as Record<string, number>;
+    for (const [format, table] of Object.entries(block.formats)) {
+      expect(table!.file).toBe((profile.randomBattleSets as Record<string, string>)[format]);
+      expect(Object.keys(table!.species).length, format).toBe(rows[format]);
+      for (const [speciesId, moves] of Object.entries(table!.species)) {
+        const species = pokemon(entry, speciesId);
+        expect(new Set(moves).size, speciesId).toBe(moves.length);
+        expect(moves.length, speciesId).toBeLessThanOrEqual(4);
+        for (const id of moves) {
+          expect(species.moves, `${speciesId} ${id}`).toContain(id);
+          expect(move(entry, id).category, `${speciesId} ${id}`).not.toBe("Status");
+        }
+      }
+      expect(table!.aggregate.every((id) => move(entry, id).category !== "Status")).toBe(true);
+      expect(entry.manifest.randomBattleSets.formats[format].rows).toBe(rows[format]);
+    }
+    for (const file of entry.manifest.randomBattleSets.files) {
+      expect(entry.randomBattleFiles.find((row) => row.path === file.path)?.sha256).toBe(file.sha256);
+      expect(file.sha256).toMatch(/^[a-f0-9]{64}$/);
+    }
+    expect(entry.manifest.randomBattleSets.getFormeSources.map((file) => file.path)).toContain("data/random-battles/gen9/teams.ts");
+    // The pinned generator's seeded output ranks them (preferred types, forced moves and banned pairs included).
+    const garchomp = { ultra_sun_ultra_moon: ["earthquake", "outrage", "stoneedge", "firefang"], sword_shield: ["earthquake", "outrage", "scaleshot", "dragontail"], scarlet_violet: ["earthquake", "scaleshot", "outrage", "dragontail"] }[profile.game];
+    expect(block.formats.Singles!.species.garchomp).toEqual(garchomp);
+    for (const table of Object.values(block.formats)) {
+      for (const [speciesId, moves] of Object.entries(table!.species)) expect(moves.filter((id) => id.startsWith("hiddenpower")).length, speciesId).toBeLessThanOrEqual(1);
+    }
+    expect(entry.manifest.randomBattleSets.formats.Singles.generator).toBe(`${profile.randomBattleFormats.Singles}, seed 1,2,3,4, 10000 teams (0 failed)`);
+    if (profile.game === "ultra_sun_ultra_moon") {
+      // A battle-only form takes only the sets that reach it (Relic Song for Meloetta-Pirouette), and a
+      // gen 7 set's preferred type is always added (Nidoking's Ice Beam, Komala's Knock Off).
+      expect(block.formats.Singles!.species.meloettapirouette).toEqual(["closecombat", "relicsong", "return", "knockoff"]);
+      expect(block.formats.Singles!.species.nidoking).toContain("icebeam");
+      expect(block.formats.Singles!.species.komala).toContain("knockoff");
+      expect(entry.manifest.randomBattleSets.formats.Singles.mapping).toEqual({ battleOnly: 12, exact: 573, getForme: 42 });
+    }
+    if (profile.game === "scarlet_violet") {
+      expect(block.formats.Doubles!.species.meloettapirouette).toEqual(["closecombat", "terablast", "relicsong", "psychic"]);
+      expect(entry.manifest.randomBattleSets.formats.Doubles.mapping).toEqual({ battleOnly: 14, exact: 504, getForme: 54 });
+    }
   });
 
   it.each(NATIVE_GAMES)("keeps every $game identity, reference and table deterministically ordered", (profile) => {

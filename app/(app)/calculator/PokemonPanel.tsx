@@ -15,6 +15,8 @@ import {
   getBuildStats,
   NATURES,
   parseIntegerInput,
+  roomItemLabel,
+  SEED_TERRAINS,
   STATS,
   STAT_LABELS,
   STATUSES,
@@ -85,13 +87,15 @@ type Props = {
   runtime?: BattleRuntime;
   /** Plus/Minus needs an ally, so its condition is ignored in Singles. */
   gameType?: "Singles" | "Doubles";
-  /** Magic Room holds back a Booster Energy, so its entry timing is a choice (model boosterRoomChoice). */
-  boosterRoomChoice?: boolean;
+  /** The held item whose use before Magic Room is a choice (model roomItemChoice), or null. */
+  roomItemChoice?: string | null;
+  /** Whether Magic Room is up now; without it the switch covers a room that has ended. */
+  magicRoom?: boolean;
   /** The form's required move and its current quick moves, to fix a prepared-move issue. */
   requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
 };
 
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime, gameType = "Doubles", boosterRoomChoice = false, requiredMove, onApplyIntimidate, intimidateResult, mimicry }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, mimicry }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const position = side === "attacker" ? "left" : "right";
@@ -102,7 +106,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
   const itemOptions = useMemo(() => [...runtime.catalog.items].sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
   const traceOptions = useMemo(() => runtime.catalog.abilities.filter((ability) => !NO_TRACE_ABILITIES.has(ability.id) && !ability.unsupported.length)
     .sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
-  const activationLabel = abilityActivationLabel(build.abilityId, runtime.profile.id, { boosterRoomChoice, level: build.game === "champions" ? 50 : build.native.level ?? undefined });
+  const activationLabel = abilityActivationLabel(build.abilityId, runtime.profile.id, { level: build.game === "champions" ? 50 : build.native.level ?? undefined });
   // Choosing a slot never commits: arrow keys change a closed select's value at once.
   const [requiredSlot, setRequiredSlot] = useState("");
   const partnerIgnored = gameType === "Singles" && PARTNER_ABILITY_CONDITIONS.has(build.abilityId);
@@ -153,7 +157,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </Select>
           </Field>
           <Field id={`${prefix}-item`} label="Held item" error={errorFor("itemId")} help={species?.requiredItem ? `${runtime.itemsById.get(species.requiredItem)?.name ?? species.requiredItem} is required and locked for this form.` : undefined}>
-            <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value })}>
+            <Select value={build.itemId} disabled={!!species?.requiredItem} onChange={(event) => onChange({ ...build, itemId: event.target.value, itemUsedBeforeRoom: undefined })}>
               <option value="">None</option>
               {itemOptions.map((item) => <option key={item.id} value={item.id}>{item.name}{item.unsupported.length ? " — unsupported" : ""}</option>)}
             </Select>
@@ -164,6 +168,25 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </Select>
           </Field>
         </div>
+
+        {roomItemChoice && (
+          <div className="mt-3">
+            <label htmlFor={`${prefix}-room-item`} className="flex min-h-11 items-center gap-2 text-sm text-text">
+              <input
+                id={`${prefix}-room-item`}
+                type="checkbox"
+                checked={build.itemUsedBeforeRoom !== false}
+                aria-describedby={`${prefix}-room-item-help`}
+                onChange={(event) => onChange({ ...build, itemUsedBeforeRoom: event.target.checked ? undefined : false })}
+                className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              />
+              {roomItemLabel(roomItemChoice, runtime, magicRoom)}
+            </label>
+            <p id={`${prefix}-room-item-help`} className="text-xs text-muted">
+              Magic Room suppresses held items but does not undo one already used. Untick this if it entered while Magic Room was up{SEED_TERRAINS[roomItemChoice] ? `, or ${SEED_TERRAINS[roomItemChoice].terrain} Terrain started after the room` : roomItemChoice === "roomservice" ? ", or Trick Room started after the room" : ""}: the item is then still held and does nothing{magicRoom ? "" : ", even after the room ends"}.
+            </p>
+          </div>
+        )}
 
         {errorFor("preparedMoves") && (
           requiredMove ? (

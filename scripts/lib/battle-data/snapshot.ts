@@ -128,6 +128,7 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
           changesFrom: row.changesFrom, isMega: row.isMega,
           requiredItem: row.requiredItem, requiredItems: row.requiredItems,
           requiredMove: row.requiredMove, requiredTeraType: row.requiredTeraType,
+          requiredAbility: row.requiredAbility, otherFormes: row.otherFormes,
           canGigantamax: row.canGigantamax, cannotDynamax: row.cannotDynamax,
           gmaxUnreleased: row.gmaxUnreleased, learnset,
         };

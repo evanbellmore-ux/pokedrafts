@@ -278,7 +278,7 @@ export function transformNativeCatalog(
     "Exact Showdown identities/stats/types/weight are retained. Only source-declared cosmetics and Aegislash's explicit Shield base forme can share an engine identity; there is no generic base-form fallback.",
     "Source-declared Gmax placeholders are represented by gmaxNames and canGigantamax on real SwSh species, never as zero-weight species or automatically active transformations. Future-game mechanic metadata is not activated by presence in inherited source data.",
     "Engine parity checks identity, types, category, power, base stats, weight, gender when present, Mega targets and applicable Z/Max power metadata. Presence/parity alone does not prove all ability/item effects or calculation mechanics; the application must gate context and unsupported mechanics.",
-    "Status-Z bonuses, called moves, residual Gmax turns, multi-turn battle history and competitive origin/combination clauses are not simulated by this catalog. No Champions usage rankings are applied to native games.",
+    "Status-Z bonuses, called moves, residual Gmax turns, multi-turn battle history and competitive origin/combination clauses are not simulated by this catalog. No Champions usage rankings are applied to native games: quick-move defaults come from pinned Showdown Random Battle sets (generated sets, not usage statistics).",
   ];
   for (const hint of hintDiscrepancies) {
     notes.push(`Engine species hint discrepancy (${hint.speciesId}.${hint.field}): ${hint.engineValue ?? "missing"} vs ${hint.sourceValue}. ${hint.resolution}`);

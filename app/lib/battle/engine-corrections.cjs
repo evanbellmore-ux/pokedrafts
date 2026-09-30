@@ -11,6 +11,26 @@ const util = require("@smogon/calc/dist/mechanics/util");
  * Life Orb, a final modifier chained with other bounds), so only the defense chain is corrected.
  * node_modules is untouched.
  */
+/*
+ * A terrain Seed raises its stat through Showdown's boost(), which Simple doubles (data/items.ts
+ * electricseed and its kin, useItem); the engine's checkSeedBoost adds a flat 1 (Contrary's -1 is
+ * right), so a Simple holder's rise is doubled here.
+ */
+if (!util.checkSeedBoost.corrected) {
+  const originalSeed = util.checkSeedBoost;
+  const correctedSeed = (pokemon, field) => {
+    const before = { def: pokemon.boosts.def, spd: pokemon.boosts.spd };
+    originalSeed(pokemon, field);
+    if (!pokemon.hasAbility("Simple")) return;
+    for (const stat of ["def", "spd"]) {
+      const change = pokemon.boosts[stat] - before[stat];
+      if (change) pokemon.boosts[stat] = Math.max(-6, Math.min(6, before[stat] + 2 * Math.sign(change)));
+    }
+  };
+  correctedSeed.corrected = true;
+  util.checkSeedBoost = correctedSeed;
+}
+
 if (!util.chainMods.corrected) {
   const original = util.chainMods;
   const corrected = (mods, lowerBound, upperBound) =>

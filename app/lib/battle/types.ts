@@ -104,9 +104,14 @@ export type ChampionsCatalog = {
   };
 };
 
+/** One format's quick-move defaults from pinned Showdown Random Battle sets (scripts/lib/battle-data/random-battle.ts). */
+export type RandomBattleFormat = { file: string; species: Record<string, string[]>; aggregate: string[] };
+export type RandomBattle = { formats: Partial<Record<"Singles" | "Doubles", RandomBattleFormat>> };
 export type NativeCatalog = Omit<ChampionsCatalog, "game" | "level"> & {
   game: NativeBattleGame;
   level: null;
+  /** Native games only; hand-built test catalogs may omit it. */
+  randomBattle?: RandomBattle;
 };
 export type BattleCatalog = ChampionsCatalog | NativeCatalog;
 export type BattleStatus = "" | "brn" | "par" | "psn" | "tox" | "slp" | "frz";
@@ -130,6 +135,13 @@ type BuildBase = {
   faintedAllies?: number;
   /** Trace: the ability it copied, when not the other shown Pokémon's (imposter.ts tracedAbility). */
   tracedAbility?: string;
+  /**
+   * Magic Room item timing (model roomItemChoice): false when its Booster Energy or terrain Seed was
+   * not used before the room was set (it entered under the room, or the terrain started after it), so
+   * the item is still held and does nothing. Unset means it was used on entry, or when its terrain
+   * started, before the room (always true of a lead); pinned Showdown's room does not undo a used item.
+   */
+  itemUsedBeforeRoom?: boolean;
   /** Set only by the calculation for a transformed Imposter user: its own species and base HP. */
   transformedFrom?: { speciesId: string; baseHP: number };
   /**
@@ -230,8 +242,14 @@ export type MoveDamageResult = {
   reason: string | null;
   hits: number | null;
   /**
-   * A second outcome with its own chance, such as Fickle Beam's 30% doubled power. The main fields
-   * describe the usual case; ohkoChance weighs both.
+   * Set by the calculation when the target it settled on (a Sturdy copied by Trace or Imposter included,
+   * after Mold Breaker, Neutralizing Gas, Magic Room and Klutz) keeps a survival effect that this hit's
+   * damage reaches: Focus Sash or Sturdy at full HP, or Focus Band. The HP preview withholds on it.
    */
-  alternate?: { chance: number; label: string; min: number; max: number; minPercent: number; maxPercent: number; rolls: number[] };
+  survival?: "Focus Sash" | "Focus Band" | "Sturdy";
+  /**
+   * A second outcome with its own chance, such as Fickle Beam's 30% doubled power or the 50% physical hit
+   * of a Shell Side Arm tie. The main fields describe the case usualLabel names; ohkoChance weighs both.
+   */
+  alternate?: { chance: number; label: string; usualLabel: string; min: number; max: number; minPercent: number; maxPercent: number; rolls: number[] };
 };

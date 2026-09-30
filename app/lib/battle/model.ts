@@ -1,6 +1,6 @@
 import { championsRuntime, type BattleRuntime } from "./runtime";
 import { specialTeraForm, validateMechanic } from "./mechanics";
-import { NO_TRACE_ABILITIES } from "./imposter";
+import { imposterTransforms, NO_TRACE_ABILITIES, tracedAbility } from "./imposter";
 import type {
   BattleBuild,
   BattleConditions,
@@ -80,30 +80,49 @@ const SV_ENTRY_BOOST_LABELS: Record<string, string> = {
   dauntlessshield: "Dauntless Shield has raised Defense (on its first entry of the battle)",
 };
 
-/**
- * The condition an ability's switch sets in this game, if it has one. Protosynthesis and Quark Drive
- * have one only when boosterRoomChoice says it matters; Schooling has none below level 20.
- */
-export function abilityActivationLabel(abilityId: string, profileId: string, context?: { boosterRoomChoice?: boolean; level?: number }): string | undefined {
-  if (["protosynthesis", "quarkdrive"].includes(abilityId)) {
-    return context?.boosterRoomChoice ? "Its Booster Energy was used on entry, before Magic Room was set" : undefined;
-  }
+/** The condition an ability's switch sets in this game, if it has one. Schooling has none below level 20. */
+export function abilityActivationLabel(abilityId: string, profileId: string, context?: { level?: number }): string | undefined {
   if (abilityId === "schooling" && context?.level !== undefined && context.level < 20) return undefined;
   return ABILITY_ACTIVATION_LABELS[abilityId] ?? (profileId === "scarlet_violet" ? SV_ENTRY_BOOST_LABELS[abilityId] : undefined);
 }
 
+/** Terrain Seeds: the terrain that uses each one up and the stat it raises (pinned Showdown data/items.ts). */
+export const SEED_TERRAINS: Readonly<Record<string, { terrain: BattleConditions["terrain"]; stat: "def" | "spd" }>> = {
+  grassyseed: { terrain: "Grassy", stat: "def" }, electricseed: { terrain: "Electric", stat: "def" },
+  psychicseed: { terrain: "Psychic", stat: "spd" }, mistyseed: { terrain: "Misty", stat: "spd" },
+};
+
 /**
- * Whether a Protosynthesis or Quark Drive holder's Booster Energy timing is a choice: Magic Room holds
- * the item back now, and neither its own field (sun without Cloud Nine or Air Lock, Electric Terrain)
- * nor the other Pokémon's Neutralizing Gas (Ability Shield is suppressed by the room too) decides it.
- * Pinned Showdown uses the item at once on entry, and a later room does not end the boost.
+ * The held item whose Magic Room timing is a choice (the build's itemUsedBeforeRoom), or null: a
+ * terrain Seed on its terrain, Room Service under Trick Room, or a Protosynthesis / Quark Drive
+ * holder's Booster Energy that neither
+ * its own field (sun without Cloud Nine or Air Lock, Electric Terrain) nor the other Pokémon's
+ * Neutralizing Gas (Ability Shield is suppressed by the room too) decides. Pinned Showdown uses both
+ * at once on entry, and a Seed also when its terrain starts, unless the room is already up; a room set
+ * later does not undo them. An active Klutz never lets either act.
  */
-export function boosterRoomChoice(build: BattleBuild, other: BattleBuild, field: BattleConditions): boolean {
-  if (!["protosynthesis", "quarkdrive"].includes(build.abilityId) || build.itemId !== "boosterenergy" || !field.magicRoom || build.transformedFrom) return false;
+export function roomItemChoice(build: BattleBuild, other: BattleBuild, field: BattleConditions): string | null {
+  if (build.transformedFrom) return null;
+  // The ability it has after entry: a Klutz copied by Trace or Imposter never lets the item act either.
+  const ability = build.abilityId === "trace" ? tracedAbility(build, other, field.magicRoom).abilityId ?? "trace"
+    : imposterTransforms(build, other, field.magicRoom) ? other.abilityId : build.abilityId;
+  if (ability === "klutz" && !(other.abilityId === "neutralizinggas" && build.itemId !== "abilityshield")) return null;
+  const seedOrService = (field.terrain && SEED_TERRAINS[build.itemId]?.terrain === field.terrain) || (field.trickRoom && build.itemId === "roomservice");
   const fieldOn = build.abilityId === "protosynthesis"
     ? field.weather === "Sun" && ![build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId))
     : field.terrain === "Electric";
-  return !fieldOn && other.abilityId !== "neutralizinggas";
+  const booster = ["protosynthesis", "quarkdrive"].includes(build.abilityId) && build.itemId === "boosterenergy" && !fieldOn && other.abilityId !== "neutralizinggas";
+  // Without Magic Room only an unticked switch is shown: the item it held back stays held after the room ends.
+  if (!field.magicRoom) return (seedOrService || booster) && build.itemUsedBeforeRoom === false ? build.itemId : null;
+  return seedOrService || booster ? build.itemId : null;
+}
+
+/** The switch label for roomItemChoice's item; without Magic Room, one it held back that has since ended. */
+export function roomItemLabel(itemId: string, runtime: BattleRuntime = championsRuntime, magicRoom = true): string {
+  const name = runtime.itemsById.get(itemId)?.name ?? itemId;
+  const seed = SEED_TERRAINS[itemId];
+  const where = seed ? `on ${seed.terrain} Terrain` : itemId === "roomservice" ? "under Trick Room" : "on entry,";
+  return magicRoom ? `Its ${name} was used ${where} before Magic Room was set` : `Its ${name} was used ${where.replace(/,$/, "")} (Magic Room did not hold it back)`;
 }
 
 /** Ability conditions that need an ally, so they never hold in Singles. */
@@ -133,7 +152,7 @@ export function withoutSinglesPartners<B extends BattleBuild>(field: BattleCondi
 }
 
 export function defaultAbilityActive(abilityId: string): boolean {
-  return ["slowstart", "protean", "libero", "imposter", "intrepidsword", "dauntlessshield", "protosynthesis", "quarkdrive"].includes(abilityId);
+  return ["slowstart", "protean", "libero", "imposter", "intrepidsword", "dauntlessshield"].includes(abilityId);
 }
 
 export function parseIntegerInput(text: string): number | null {
@@ -273,8 +292,8 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   if (build.abilityId === "trace" && build.tracedAbility !== undefined && (!runtime.abilitiesById.has(build.tracedAbility) || NO_TRACE_ABILITIES.has(build.tracedAbility))) {
     issues.push({ field: "tracedAbility", message: "Choose an ability Trace can copy, or the other Pokémon's." });
   }
-  // Unburden activates only once its item is gone; a terrain Seed may be used up in the calculation.
-  if (build.abilityId === "unburden" && build.abilityActive && build.itemId && !build.itemId.endsWith("seed")) {
+  // Unburden activates only once its item is gone; a terrain Seed or Room Service may be used up in the calculation.
+  if (build.abilityId === "unburden" && build.abilityActive && build.itemId && !build.itemId.endsWith("seed") && build.itemId !== "roomservice") {
     issues.push({ field: "abilityActive", message: "Unburden activates only after its held item is used up. Remove the held item, or untick Unburden." });
   }
   if (["protean", "libero"].includes(build.abilityId) && !build.abilityActive) {

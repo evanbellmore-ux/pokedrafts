@@ -138,6 +138,31 @@ describe("native forms and restricted moves", () => {
     expect(range(row(sv, "terastarstorm", natured(build(sv, "terapagos", { evs: { spa: 252 }, mechanic: "tera", teraType: "Stellar" }), "Modest"), eiscue))).toBe("100-118");
   });
 
+  it("fails Double Shock and Burn Up for a user without the Electric or Fire type", () => {
+    // Real lead battles (oos/iceface-immune/dshock.ts, burnup.ts): Showdown's onTryMove reads the Tera type.
+    const snorlax = build(sv, "snorlax");
+    const pawmot = (teraType?: string) => build(sv, "pawmot", { abilityId: "ironfist", ...(teraType ? { mechanic: "tera", teraType } : {}) });
+    expect(row(sv, "doubleshock", pawmot("Fighting"), snorlax)).toMatchObject({ min: 0, max: 0, description: "Double Shock fails because the attacker is not Electric type." });
+    expect(range(row(sv, "doubleshock", pawmot("Electric"), snorlax))).toBe("144-170");
+    expect(range(row(sv, "doubleshock", pawmot(), snorlax))).toBe("108-127");
+    expect(row(sv, "doubleshock", build(sv, "smeargle"), snorlax)).toMatchObject({ min: 0, max: 0 });
+    expect(row(us, "burnup", build(us, "smeargle"), build(us, "snorlax"))).toMatchObject({ min: 0, max: 0, description: "Burn Up fails because the attacker is not Fire type." });
+    // It fails in onTryMove, before a Stellar first-use question or the target's Protect (oos/review/gate-refute/g.ts).
+    expect(row(sv, "doubleshock", build(sv, "smeargle", { mechanic: "tera", teraType: "Stellar" }), snorlax)).toMatchObject({ kind: "calculated", min: 0, max: 0, description: "Double Shock fails because the attacker is not Electric type." });
+    const protecting = calculateMatchup(pawmot("Fighting"), snorlax, { ...createConditions(), gameType: "Singles", defenderSide: { ...createConditions().defenderSide, protect: true } }, {}, sv)
+      .results.find((result) => result.moveId === "doubleshock")!;
+    expect(protecting.description).toBe("Double Shock fails because the attacker is not Electric type.");
+  });
+
+  it("hits 3 times with Greninja-Ash's Water Shuriken, as Battle Bond makes it (Ultra Sun/Ultra Moon)", () => {
+    // Real battle (oos/greninja/ash.ts): 18-22 per hit at 20 power; Greninja-Bond still chooses 2-5.
+    const ash = row(us, "watershuriken", build(us, "greninjaash", { abilityId: "battlebond", evs: { spa: 252 } }), build(us, "snorlax"));
+    expect(ash).toMatchObject({ kind: "calculated", hits: 3, min: 54, max: 66, effectivePower: 20 });
+    const bond = calculateMatchup(build(us, "greninjabond", { abilityId: "battlebond", evs: { spa: 252 } }), build(us, "snorlax"), { ...createConditions(), gameType: "Singles" }, {}, us)
+      .results.find((result) => result.moveId === "watershuriken")!;
+    expect(bond.kind).toBe("needs-context");
+  });
+
   it("fails Hyperspace Fury and Aura Wheel for any other user", () => {
     const fury = row(sv, "hyperspacefury", build(sv, "hoopa"), build(sv, "snorlax"));
     expect(fury).toMatchObject({ min: 0, max: 0, description: "Hyperspace Fury fails: only Hoopa-Unbound can use it." });
