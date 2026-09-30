@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { Children, createElement, type ChangeEvent, type ComponentProps, type KeyboardEvent, type MouseEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
 import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
@@ -14,10 +15,13 @@ import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calcu
 import { activateMoveSlot, dismissMoveReplacement, getAttackView, getMoveOwner, replaceMatchupMove, selectMatchupMove, toggleMatchupMega, updateMatchupBuild, type BattleSide, type MoveOwner } from "@/app/(app)/calculator/roster-prep";
 import * as buttonControl from "@/app/components/ui/Button";
 import * as selectControl from "@/app/components/ui/Select";
-import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions, withUsualAbility } from "@/app/lib/battle/model";
+import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { movesById, speciesById } from "@/app/lib/battle/catalog";
 import type { MoveSlots } from "@/app/lib/battle/move-defaults";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
+const usualBuild = (id: string) => withUsualAbility(createBuild(id), usualAbility(id, "Doubles"));
+
 
 // Keep real SSR and hooks while recording host handlers for DOM-free callback tests.
 const hostEvents = vi.hoisted(() => ({
@@ -275,7 +279,8 @@ describe("Champions calculator UI", () => {
     ["empty rosters", () => loadedRosters([], []), false, false],
     ["disabled entries", () => loadedRosters(["Unknown form"], ["Unknown form"]), false, false],
     ["no opponent", () => ({ ...loadedRosters(), opponentId: "" }), true, false],
-    ["unsupported but inspectable", () => loadedRosters(["Lucario-Mega-Z"], ["Venusaur"]), true, true],
+    // No shipped species is unsupported; calculator-rosters covers that inspection with a fixture runtime.
+    ["cosmetic form", () => loadedRosters(["Vivillon-Garden"], ["Venusaur"]), true, true],
   ] as const)("keeps summary manual selection available and offers usable team choices: %s", (_name, state, ownAvailable, opponentAvailable) => {
     viewport.desktop = true;
     roster.state = state();
@@ -307,11 +312,11 @@ describe("Champions calculator UI", () => {
       expect(html).toContain(`<option value="${weather}">${weather}</option>`);
     }
     for (const side of ["attackerSide", "defenderSide"]) {
-      for (const effect of ["reflect", "lightScreen", "auroraVeil", "helpingHand"]) {
+      for (const effect of ["reflect", "lightScreen", "auroraVeil", "helpingHand", "friendGuard", "protect", "tailwind", "charge"]) {
         expect(html).toMatch(new RegExp(`id="[^"]*-${side}-${effect}"`));
       }
     }
-    expect([...html.matchAll(/type="checkbox"/g)]).toHaveLength(15);
+    expect([...html.matchAll(/type="checkbox"/g)]).toHaveLength(23);
   });
 
   it("counts shared and side toggles and retains Aurora Veil without Snow", () => {
@@ -319,16 +324,23 @@ describe("Champions calculator UI", () => {
     for (const { key } of SHARED_FIELD_EFFECTS) field[key] = true;
     field.critical = true;
     field.attackerSide.helpingHand = true;
+    field.defenderSide.helpingHand = true;
     field.defenderSide.auroraVeil = true;
     const render = () => renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: [], onChange: () => undefined }));
     const html = render();
-    expect(html).toContain("9 toggles on");
+    expect(html).toContain("10 toggles on");
     expect(html).toContain("No weather");
     const veil = html.match(/<input\b[^>]*id="[^"]*-defenderSide-auroraVeil"[^>]*>/)?.[0];
     expect(veil).toContain('checked=""');
     expect(veil).not.toContain("disabled");
     field.gameType = "Singles";
-    expect(render()).toContain("8 toggles on");
+    // Multiple targets, Helping Hand and the additional Fairy Aura need Doubles.
+    const singles = render();
+    expect(singles).toContain("6 toggles on");
+    expect(singles.match(/<input\b[^>]*id="[^"]*-attackerSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
+    expect(singles.match(/<input\b[^>]*id="[^"]*-defenderSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
+    expect(singles.match(/<input\b[^>]*id="[^"]*-fairyAura"[^>]*>/)?.[0]).toContain('disabled=""');
+    expect(singles).toContain("Ignored in Singles, which has no third Pokémon to supply it.");
   });
 
   it("associates shared-effect help and validation errors with their checkbox", () => {
@@ -385,8 +397,8 @@ describe("Champions calculator UI", () => {
     current.field.attackerSide.helpingHand = true;
     const reset = createMatchup(current.revision + 1);
     expect(reset.field).toEqual(createConditions());
-    expect(reset.attacker.build).toEqual(createBuild("charizard"));
-    expect(reset.defender.build).toEqual(createBuild("blastoise"));
+    expect(reset.attacker.build).toEqual(usualBuild("charizard"));
+    expect(reset.defender.build).toEqual(usualBuild("blastoise"));
     expect(reset.attacker.contexts).toEqual({});
     expect(reset.defender.contexts).toEqual({});
     expect(reset.attack).toEqual({ owner: getMoveOwner(reset.attacker), moveId: null });
@@ -402,17 +414,17 @@ describe("Champions calculator UI", () => {
     expect(html).toContain('value="charizarditex" selected=""');
     expect(html).toContain("required and locked for this form");
 
-    const unsupported = createBuild("lucariomegaz");
-    const unsupportedHTML = renderToStaticMarkup(createElement(PokemonPanel, { side: "defender", build: unsupported, issues: validateBuild(unsupported), onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
+    const unsupported = createBuild("vivillongarden", unsupportedSpeciesRuntime);
+    const unsupportedHTML = renderToStaticMarkup(createElement(PokemonPanel, { side: "defender", build: unsupported, issues: validateBuild(unsupported, unsupportedSpeciesRuntime), onChange: () => undefined, hpInput: "", onHPChange: () => undefined, runtime: unsupportedSpeciesRuntime }));
     expect(unsupportedHTML).toContain("Unsupported build:");
-    expect(unsupportedHTML).toContain("Lucario-Mega-Z");
+    expect(unsupportedHTML).toContain("Vivillon-Garden");
   });
 
   it("shows a conditional ability switch without implying all abilities can be disabled", () => {
-    const build = { ...createBuild("incineroar"), abilityId: "intimidate", abilityActive: true };
+    const build = { ...createBuild("arcanine"), abilityId: "flashfire", abilityActive: true } as ReturnType<typeof createBuild>;
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
-    expect(html).toContain("Apply Intimidate on entry");
-    expect(html).toContain("Do not manually apply the same entry-stage change twice");
+    expect(html).toContain("Flash Fire has been activated");
+    expect(html).toContain("This sets the ability’s condition, not whether the ability exists.");
     expect(html).toMatch(/type="checkbox"[^>]*checked=""/);
   });
 
@@ -603,6 +615,9 @@ describe("Champions calculator UI", () => {
     }));
     expect(unsupported).toContain("Coverage not verified.");
     expect(unsupported).toContain("Variable / special");
+    // Accuracy is always the catalog value, and the footer says so rather than promising changes.
+    expect(unsupported).toContain("Accuracy is never adjusted: No Guard, Compound Eyes, Gravity and weather accuracy are not simulated. A dash means the move skips the accuracy check.");
+    expect(unsupported).not.toContain("effective changes appear above");
   });
 });
 
@@ -928,8 +943,8 @@ describe("summary Mega controls", () => {
           expect(button).not.toContain('disabled=""');
           const card = rendered.html.match(new RegExp(`<div data-summary-combatant="${side}"[\\s\\S]*?</dialog>`))![0];
           expect(card.indexOf(button)).toBeGreaterThan(card.indexOf("</h3>"));
-          const hpMarker = selectedId === "lucariomegaz" ? "Check build settings to show HP" : 'role="meter"';
-          expect(card.indexOf(button)).toBeLessThan(card.indexOf(hpMarker));
+          // Every form here is calculable, including Lucario Z (Aura Guard), so each shows its HP meter.
+          expect(card.indexOf(button)).toBeLessThan(card.indexOf('role="meter"'));
           const action = rendered.buttons.find((props) => props["data-mega-form"] === formId)!;
           action.onClick!({} as MouseEvent<HTMLButtonElement>);
         });

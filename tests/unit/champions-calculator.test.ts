@@ -110,13 +110,36 @@ describe("Champions calculation adapter", () => {
     expect(doublesScreen.min).toBeGreaterThan(row("surf", attacker, defender, field).min!);
   });
 
+  it("splits Dragon Darts one dart per foe in Doubles, matching pinned Showdown turns", () => {
+    // Reference: pinned Showdown c23d2e94 real Doubles turns (getSmartTargets +
+    // hitStepMoveHitLoop). Dragapult (Clear Body, 0 SP, Serious) into Garchomp:
+    // one dart 68–84 when the partner can be hit; both darts (each 68–84) when it
+    // protects or is immune; always both darts in Singles.
+    const dragapult = { ...createBuild("dragapult"), abilityId: "clearbody" };
+    const garchomp = { ...createBuild("garchomp"), abilityId: "roughskin" };
+    const field = createConditions();
+    const split = row("dragondarts", dragapult, garchomp, field);
+    expect(split).toMatchObject({ kind: "calculated", min: 68, max: 84, hits: 1, ohkoChance: 0 });
+    expect(split.assumptions.some((line) => line.includes("one dart hits this target and the other hits its partner"))).toBe(true);
+
+    field.multipleTargets = false;
+    expect(row("dragondarts", dragapult, garchomp, field)).toMatchObject({ kind: "calculated", min: 136, max: 168, hits: 2 });
+    field.gameType = "Singles";
+    field.multipleTargets = true;
+    expect(row("dragondarts", dragapult, garchomp, field)).toMatchObject({ kind: "calculated", min: 136, max: 168, hits: 2 });
+
+    // Other fixed two-hit moves are not smart-targeting and keep both hits on the target.
+    const dualWingbeat = learns("dualwingbeat");
+    expect(row("dualwingbeat", dualWingbeat, garchomp, createConditions()).hits).toBe(2);
+  });
+
   it("distinguishes a genuine immunity from an unimplemented or status move", () => {
     const attacker = createBuild("gengar");
     const damage = row("shadowball", attacker, createBuild("audino"));
     expect(damage).toMatchObject({ kind: "calculated", min: 0, max: 0, ohkoChance: 0 });
     const status = row("protect", attacker);
     expect(status).toMatchObject({ kind: "status", min: null, max: null });
-    const history = row("ragefist", learns("ragefist"));
+    const history = row("counter", learns("counter"));
     expect(history).toMatchObject({ kind: "needs-context", min: null, max: null });
     expect(row("growth", learns("growth"))).toMatchObject({ kind: "unsupported", min: null });
   });
@@ -174,13 +197,9 @@ describe("Champions calculation adapter", () => {
     expect(shield).toEqual(before);
   });
 
-  it("does not silently ignore intact Disguise or unsupported targeting context", () => {
+  it("does not silently ignore intact Disguise", () => {
     expect(row("flamethrower", createBuild(), createBuild("mimikyu")).kind).toBe("needs-context");
     expect(row("flamethrower", createBuild(), createBuild("mimikyubusted")).kind).toBe("calculated");
-    const field = createConditions();
-    field.terrain = "Psychic";
-    field.multipleTargets = false;
-    expect(row("expandingforce", learns("expandingforce"), createBuild("blastoise"), field).kind).toBe("unsupported");
   });
 
   it("reports Snore's known failure as zero and can calculate it while asleep", () => {
@@ -204,13 +223,16 @@ describe("Champions calculation adapter", () => {
     }
   });
 
-  it("does not invent genders or fainted-party history for damage-modifying abilities", () => {
+  it("does not invent genders, and states the fainted-ally count Supreme Overlord uses", () => {
     const rivalry = createBuild("luxray");
     rivalry.abilityId = "rivalry";
     expect(row("thunderbolt", rivalry)).toMatchObject({ kind: "needs-context", min: null, ohkoChance: null });
+    // tests/unit/calculator-count-moves.test.ts checks every count against Showdown.
     const overlord = createBuild("kingambit");
     overlord.abilityId = "supremeoverlord";
-    expect(row("kowtowcleave", overlord)).toMatchObject({ kind: "needs-context", min: null, ohkoChance: null });
+    const start = row("kowtowcleave", overlord);
+    expect(start.kind).toBe("calculated");
+    expect(start.assumptions).toContain("Supreme Overlord: 0 allies had fainted when it entered (1.0x power). Set the count in Build settings.");
   });
 
   it("requires unused Protean/Libero and unchanged typing on either side", () => {

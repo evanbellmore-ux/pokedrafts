@@ -226,12 +226,26 @@ describe("generated Champions catalog integrity", () => {
   it("exposes known engine/source gaps without silently removing game entries", () => {
     expect(moves.get("pound")).toMatchObject({ power: 40, category: "Physical", unsupported: ["Engine move missing: Pound."] });
     expect(moves.get("growth")).toMatchObject({ type: "Grass", unsupported: ["Engine move type differs: Normal vs Grass."] });
-    expect(abilities.get("auraguard")?.unsupported).toContain("Assigned Champions ability is marked Future in the source.");
-    expect(abilities.get("battlebond")?.unsupported).toContain("Engine ability missing: Battle Bond.");
+    // Aura Guard's stale Future tag is overridden (the mod forgot to clear it; Reg M-C
+    // Lucario-Mega-Z is legal and the engine implements it), and the note says so.
+    expect(abilities.get("auraguard")?.unsupported).toEqual([]);
+    expect(species.get("lucariomegaz")?.unsupported).toEqual([]);
+    expect(catalog.coverage.notes.some((note) => note.startsWith("Ability availability override: auraguard keeps its source tag Future"))).toBe(true);
+    // Showdown's validator treats Battle Bond Greninja as Greninja-Bond, which Champions lacks.
+    expect(abilities.get("battlebond")?.unsupported).toEqual([
+      "Greninja with Battle Bond counts as Greninja-Bond, which is not available in Champions (pinned Showdown team validator).",
+      "Engine ability missing: Battle Bond.",
+    ]);
     expect(species.get("greninja")?.unsupported).toEqual([]);
     expect(species.get("greninja")?.abilities).toContain("torrent");
-    expect(species.get("vivillonarchipelago")?.unsupported).toContain("Engine species missing: Vivillon-Archipelago.");
-    expect(catalog.coverage.unsupportedSpecies).toBe(18);
+    // Cosmetic forms share their parent's engine data: Vivillon patterns, Florges colours, Furfrou
+    // trims and Alcremie-Salted-Cream (the last three exist only in the source's cosmeticFormes).
+    for (const [id, parent] of [["vivillonarchipelago", "vivillon"], ["florgeswhite", "florges"], ["furfrouheart", "furfrou"], ["alcremiesaltedcream", "alcremie"]]) {
+      const withoutIdentity = (row: object) => Object.fromEntries(Object.entries(row).filter(([key]) => key !== "id" && key !== "name"));
+      expect(species.get(id)!.name).not.toBe(species.get(parent)!.name);
+      expect(withoutIdentity(species.get(id)!), id).toEqual(withoutIdentity(species.get(parent)!));
+    }
+    expect(catalog.coverage.unsupportedSpecies).toBe(0);
     expect(catalog.coverage.unsupportedMoves).toBe(2);
     expect(catalog.coverage.unsupportedSpecies).toBe(catalog.species.filter((row) => row.unsupported.length).length);
     expect(catalog.coverage.unsupportedMoves).toBe(catalog.moves.filter((row) => row.unsupported.length).length);

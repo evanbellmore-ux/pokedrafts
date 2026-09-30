@@ -8,7 +8,8 @@ import { parseTeamImport } from "@/app/lib/battle/team-import";
 import usage from "@/data/champions/move-usage.json";
 
 // Independently enumerated from the pinned Showdown cosmetic declarations and
-// Champions availability, not from the generator's engine mapping table.
+// Champions availability, not from the generator's engine mapping table. Salted
+// Cream exists only in Alcremie's cosmeticFormes (no Pokedex key of its own).
 const forms = [
   ["alcremiecaramelswirl", "Alcremie-Caramel-Swirl"],
   ["alcremielemoncream", "Alcremie-Lemon-Cream"],
@@ -17,6 +18,7 @@ const forms = [
   ["alcremierainbowswirl", "Alcremie-Rainbow-Swirl"],
   ["alcremierubycream", "Alcremie-Ruby-Cream"],
   ["alcremierubyswirl", "Alcremie-Ruby-Swirl"],
+  ["alcremiesaltedcream", "Alcremie-Salted-Cream"],
 ] as const;
 const base = speciesById.get("alcremie")!;
 
@@ -25,7 +27,7 @@ describe("Alcremie cosmetic engine identities", () => {
     expect(champions.species.filter((entry) => entry.baseSpecies === "alcremie").map((entry) => entry.id))
       .toEqual(["alcremie", ...forms.map(([id]) => id)]);
     expect(resolveRosterSpecies("Alcremie")).toEqual({ status: "resolved", speciesId: "alcremie" });
-    for (const name of ["Alcremie-Salted-Cream", "Alcremie-Gmax", "Alcremie-Unknown"]) {
+    for (const name of ["Alcremie-Gmax", "Alcremie-Unknown"]) {
       expect(resolveRosterSpecies(name).status).toBe("unavailable");
     }
   });
@@ -89,13 +91,13 @@ describe("Alcremie cosmetic engine identities", () => {
     }
   });
 
-  it("does not inherit base-only species usage through a shared engine identity", () => {
+  it("reads the family's usage row, as Smogon's statistics count every flavour as Alcremie", () => {
     for (const gameType of ["Singles", "Doubles"] as const) {
       expect(usage.formats[gameType].species.alcremie).toHaveLength(4);
       expect(createMoveSlots("alcremie", gameType).every((slot) => slot.origin === "usage")).toBe(true);
       for (const [id] of forms) {
         expect(Object.hasOwn(usage.formats[gameType].species, id)).toBe(false);
-        expect(createMoveSlots(id, gameType).every((slot) => slot.origin !== "usage")).toBe(true);
+        expect(createMoveSlots(id, gameType)).toEqual(createMoveSlots("alcremie", gameType));
       }
     }
   });

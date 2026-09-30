@@ -5,9 +5,12 @@ import TypeBadge from "@/app/components/TypeBadge";
 import { Button, Field, Input, Select, TableWrap } from "@/app/components/ui";
 import type { InputProps } from "@/app/components/ui/Input";
 import { HIDDEN_POWER_TYPES } from "@/app/lib/battle/mechanics";
+import { mimicryNote, type MimicryState } from "@/app/lib/battle/mimicry";
+import { NO_TRACE_ABILITIES } from "@/app/lib/battle/imposter";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import {
-  ABILITY_ACTIVATION_LABELS,
+  abilityActivationLabel,
+  PARTNER_ABILITY_CONDITIONS,
   defaultAbilityActive,
   getBuildStats,
   NATURES,
@@ -72,11 +75,23 @@ type Props = {
   roster?: ReactNode;
   provenance?: string;
   editorRevision?: number;
+  /** Intimidate from this Pokémon against the other one (roster-prep applyMatchupIntimidate). */
+  onApplyIntimidate?: () => void;
+  /** The last result of that button (roster-prep intimidateResult). */
+  intimidateResult?: string | null;
+  /** Mimicry's type from the terrain (mimicry.ts mimicryState). */
+  mimicry?: MimicryState | null;
   panelId?: string;
   runtime?: BattleRuntime;
+  /** Plus/Minus needs an ally, so its condition is ignored in Singles. */
+  gameType?: "Singles" | "Doubles";
+  /** Magic Room holds back a Booster Energy, so its entry timing is a choice (model boosterRoomChoice). */
+  boosterRoomChoice?: boolean;
+  /** The form's required move and its current quick moves, to fix a prepared-move issue. */
+  requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
 };
 
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, onReveal, roster, provenance, editorRevision = 0, panelId, runtime = championsRuntime, gameType = "Doubles", boosterRoomChoice = false, requiredMove, onApplyIntimidate, intimidateResult, mimicry }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const position = side === "attacker" ? "left" : "right";
@@ -85,7 +100,12 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
   const species = runtime.speciesById.get(build.speciesId);
   const stats = getBuildStats(build, runtime);
   const itemOptions = useMemo(() => [...runtime.catalog.items].sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
-  const activationLabel = ABILITY_ACTIVATION_LABELS[build.abilityId];
+  const traceOptions = useMemo(() => runtime.catalog.abilities.filter((ability) => !NO_TRACE_ABILITIES.has(ability.id) && !ability.unsupported.length)
+    .sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
+  const activationLabel = abilityActivationLabel(build.abilityId, runtime.profile.id, { boosterRoomChoice, level: build.game === "champions" ? 50 : build.native.level ?? undefined });
+  // Choosing a slot never commits: arrow keys change a closed select's value at once.
+  const [requiredSlot, setRequiredSlot] = useState("");
+  const partnerIgnored = gameType === "Singles" && PARTNER_ABILITY_CONDITIONS.has(build.abilityId);
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
   const trainingIssues = issues.filter((issue) => issue.field === "points" || issue.field.startsWith("points.") || issue.field.startsWith("native.") || issue.field.startsWith("boosts."));
   const allocation = build.game === "champions" ? build.points : build.native.evs;
@@ -100,10 +120,11 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       <h2 id={`${prefix}-heading`} className="text-xs font-semibold uppercase tracking-wide text-accent-text">{label}</h2>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <h3 className="wrap-anywhere text-xl font-bold text-text">{species?.name ?? "Select a Pokémon"}</h3>
-        {species?.types.map((type) => <TypeBadge key={type} type={type} />)}
+        {(mimicry?.type ? [mimicry.type] : species?.types)?.map((type) => <TypeBadge key={type} type={type} />)}
         <Button size="sm" variant="secondary" className="min-h-11" data-calculator-change aria-label={`Change ${position} Pokémon manually`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)}>Change Pokémon</Button>
       </div>
       <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
+      {mimicry && species && <p className="mt-1 text-xs text-muted">{mimicryNote(mimicry, species.types)}</p>}
       {runtime.profile.tera && build.mechanic === "tera" && build.configuration?.teraType && <p className="mt-2 flex flex-wrap items-center gap-1 text-xs text-muted">Active Tera: <TypeBadge type={build.configuration.teraType} />{build.configuration.teraType === "Stellar" ? "Original defensive types are retained." : "Defensive typing; original types above still determine original STAB."}</p>}
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
       {errorFor("game") && <p className="mt-2 text-sm text-danger">{errorFor("game")}</p>}
@@ -124,7 +145,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </Select>
           </Field>
           <Field id={`${prefix}-ability`} label="Ability" error={errorFor("abilityId")}>
-            <Select value={build.abilityId} onChange={(event) => onChange({ ...build, abilityId: event.target.value, abilityActive: defaultAbilityActive(event.target.value) })}>
+            <Select value={build.abilityId} onChange={(event) => onChange({ ...build, abilityId: event.target.value, abilityActive: defaultAbilityActive(event.target.value), tracedAbility: undefined })}>
               {species?.abilities.map((abilityId) => {
                 const ability = runtime.abilitiesById.get(abilityId);
                 return <option key={abilityId} value={abilityId}>{ability?.name ?? abilityId}{ability?.unsupported.length ? " — unsupported" : ""}</option>;
@@ -144,6 +165,34 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
           </Field>
         </div>
 
+        {errorFor("preparedMoves") && (
+          requiredMove ? (
+            <div className="mt-3 flex flex-wrap items-end gap-2">
+              <Field id={`${prefix}-required-move`} label={`Quick move to replace with ${requiredMove.name}`} error={errorFor("preparedMoves")}
+                help="Damage for this form waits until the move is prepared. You can also replace a quick move from the move list." className="min-w-0 flex-1">
+                <Select value={requiredSlot} onChange={(event) => setRequiredSlot(event.target.value)}>
+                  <option value="">Choose a quick move</option>
+                  {requiredMove.slots.map((label, index) => <option key={index} value={index}>{`Quick move ${index + 1}: ${label}`}</option>)}
+                </Select>
+              </Field>
+              <Button variant="secondary" disabled={requiredSlot === ""} onClick={() => {
+                const slot = parseIntegerInput(requiredSlot);
+                setRequiredSlot("");
+                if (slot !== null) requiredMove.onEquip(slot);
+              }}>{`Replace with ${requiredMove.name}`}</Button>
+            </div>
+          ) : <p className="mt-3 text-sm text-danger">{errorFor("preparedMoves")}</p>
+        )}
+
+        {build.abilityId === "supremeoverlord" && (
+          <Field id={`${prefix}-fainted-allies`} label="Allies fainted before it entered" error={errorFor("faintedAllies")}
+            help="Supreme Overlord raises power by 10% per ally that had fainted when this Pokémon entered, up to 5." className="mt-3 max-w-sm">
+            <Select value={build.faintedAllies ?? 0} onChange={(event) => onChange({ ...build, faintedAllies: parseIntegerInput(event.target.value) ?? 0 })}>
+              {Array.from({ length: 6 }, (_, count) => <option key={count} value={count}>{count}</option>)}
+            </Select>
+          </Field>
+        )}
+
         {activationLabel && (
           <div className="mt-3">
             <label htmlFor={`${prefix}-ability-active`} className="flex min-h-11 items-center gap-2 text-sm text-text">
@@ -151,17 +200,40 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 id={`${prefix}-ability-active`}
                 type="checkbox"
                 checked={build.abilityActive}
+                disabled={partnerIgnored}
                 aria-invalid={!!errorFor("abilityActive") || undefined}
                 aria-describedby={`${prefix}-ability-help${errorFor("abilityActive") ? ` ${prefix}-ability-error` : ""}`}
                 onChange={(event) => onChange({ ...build, abilityActive: event.target.checked })}
-                className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
               />
               {activationLabel}
             </label>
             <p id={`${prefix}-ability-help`} className="text-xs text-muted">
-              This sets the ability’s condition, not whether the ability exists. Do not manually apply the same entry-stage change twice.
+              {partnerIgnored
+                ? "Singles has no ally, so this condition is ignored. Switch the battle format to Doubles to use it."
+                : "This sets the ability’s condition, not whether the ability exists."}
             </p>
             {errorFor("abilityActive") && <p id={`${prefix}-ability-error`} className="mt-1 text-xs text-danger">{errorFor("abilityActive")}</p>}
+          </div>
+        )}
+
+        {build.abilityId === "trace" && (
+          <Field id={`${prefix}-traced-ability`} label="Ability Trace copied" error={errorFor("tracedAbility")} className="mt-3 max-w-sm"
+            help="Trace copies a foe's ability when it enters: by default the other Pokémon's, when Trace can copy it. In Doubles it may have copied the other foe's. Abilities Trace cannot copy are not listed, and Ability Shield stops Trace.">
+            <Select value={build.tracedAbility ?? ""} onChange={(event) => onChange({ ...build, tracedAbility: event.target.value || undefined })}>
+              <option value="">The other Pokémon’s ability</option>
+              {traceOptions.map((ability) => <option key={ability.id} value={ability.id}>{ability.name}</option>)}
+            </Select>
+          </Field>
+        )}
+
+        {build.abilityId === "intimidate" && onApplyIntimidate && (
+          <div className="mt-3">
+            <Button size="sm" variant="secondary" className="min-h-11" aria-describedby={`${prefix}-intimidate-help`} onClick={onApplyIntimidate}>
+              Apply Intimidate to the {side === "attacker" ? "right" : "left"} Pokémon
+            </Button>
+            <p role="status" className="mt-1 text-xs text-text">{intimidateResult}</p>
+            <p id={`${prefix}-intimidate-help`} className="mt-1 text-xs text-muted">Use it when this Pokémon enters, or Mega Evolves into an Intimidate form. Each click applies it once more. It changes both Pokémon’s stages and items as Showdown resolves Intimidate, including blocks and reactions such as Mirror Armor, Defiant, Rattled and White Herb. It assumes the other Pokémon is not behind a Substitute, which blocks Intimidate. To undo it, edit the stages, select any used-up item again and clear Unburden.</p>
           </div>
         )}
 
@@ -173,7 +245,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 <option value="">{species?.gender ? "Use species gender" : "Unknown"}</option>
                 <option value="M" disabled={!!species?.gender && species.gender !== "M"}>Male</option>
                 <option value="F" disabled={!!species?.gender && species.gender !== "F"}>Female</option>
-                <option value="N" disabled={!!species?.gender && species.gender !== "N"}>Genderless</option>
+                <option value="N" disabled={!!species && species.gender !== "N"}>Genderless</option>
               </Select>
             </Field>
             <Field id={`${prefix}-happiness`} label="Happiness" error={errorFor("configuration.happiness")} help="0–255. Blank uses 255 for supported Return / Frustration calculations; other moves are unchanged.">
@@ -282,7 +354,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
         </div>
       </div>
 
-      <PokemonChooser side={side} build={build} open={pickerOpen} onClose={() => setPickerOpen(false)} onChange={onChange} onReturnFocus={onReveal} runtime={runtime} />
+      <PokemonChooser side={side} build={build} open={pickerOpen} onClose={() => setPickerOpen(false)} onChange={onChange} onReturnFocus={onReveal} runtime={runtime} gameType={gameType} />
     </section>
   );
 }

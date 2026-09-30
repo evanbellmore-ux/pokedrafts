@@ -35,6 +35,10 @@ export type ResolvedSpecies = AvailableData & {
   baseStats: StatTable;
   weightkg: number;
   abilities: Record<string, string>;
+  /** Showdown's fixed gender: M, F or N (genderless); empty when both are possible. */
+  gender?: string;
+  /** A cosmetic forme's parent (Showdown getAlias), whose battle data it shares. */
+  cosmeticParent?: string;
   battleOnly?: string | readonly string[];
   changesFrom?: string;
   isMega?: boolean;
@@ -83,9 +87,11 @@ export type EngineSnapshot = {
 const STATS: readonly BattleStat[] = ["hp", "atk", "def", "spa", "spd", "spe"];
 // Explicit pinned-source identities, never a generic base-species fallback.
 // Aegislash-Both is an engine-only hypothetical state and is never game data.
-// These seven available Alcremie forms are declared cosmetic in Showdown's
-// pokedex; gen0 stores their identical battle data under Alcremie. All ordinary
-// data/provenance mismatch gates below still apply to each exact catalog form.
+// These Alcremie forms are declared cosmetic in Showdown's pokedex; gen0 stores
+// their identical battle data under Alcremie. Every other source-declared cosmetic
+// forme reaches its parent's engine species through cosmeticParent (Showdown
+// getAlias). All ordinary data/provenance mismatch gates below still apply to each
+// exact catalog form.
 const ENGINE_SPECIES_IDS: Readonly<Record<string, string>> = {
   aegislash: "aegislashshield",
   alcremiecaramelswirl: "alcremie",
@@ -96,6 +102,35 @@ const ENGINE_SPECIES_IDS: Readonly<Record<string, string>> = {
   alcremierubycream: "alcremie",
   alcremierubyswirl: "alcremie",
 };
+/**
+ * Ability availability tags the pinned champions mod forgot to clear. The mod
+ * clears the base-data `isNonstandard: "Future"` of every other new Champions
+ * ability with `inherit: true, isNonstandard: null` (data/mods/champions/
+ * abilities.ts: Dragonize, Eelevate, Fire Mane, Mega Sol, Piercing Drill, Spicy
+ * Spray). Aura Guard, the only ability of Reg M-C's Lucario-Mega-Z, was added
+ * without that entry: the simulator ignores the tag in battle, the Reg M-C
+ * validators accept Lucario @ Lucarionite Z, and the engine implements the
+ * ability (contact damage halved). Each entry is re-proven on every build and
+ * fails loudly once the source changes, so it must be removed then, never kept
+ * as a silent allowlist. This is not a general "Future means available" rule.
+ */
+export const ABILITY_AVAILABILITY_OVERRIDES: Readonly<Record<string, { staleTag: string; reason: string }>> = {
+  auraguard: {
+    staleTag: "Future",
+    reason: "The champions mod omits Aura Guard from the isNonstandard clears it applies to every other new Champions ability; Lucario-Mega-Z is legal in Reg M-C.",
+  },
+};
+
+/**
+ * Abilities that make a set a different, out-of-battle form, as pinned Showdown's team validator
+ * rewrites them (sim/team-validator.ts: Battle Bond Greninja is validated as Greninja-Bond). When that
+ * form is unavailable, the ability is unobtainable on the species, whatever the engine supports.
+ * Each entry is re-proven on every build.
+ */
+export const ABILITY_SET_FORMS: Readonly<Record<string, { species: string; form: string }>> = {
+  battlebond: { species: "greninja", form: "greninjabond" },
+};
+
 const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 const sorted = (values: Iterable<string>) => [...new Set(values)].sort(compare);
 const byID = <T extends NamedData>(a: T, b: T) => compare(a.id, b.id);
@@ -179,6 +214,8 @@ export function transformChampionsCatalog(
   source: ShowdownSnapshot,
   engine: EngineSnapshot,
   sources: ChampionsCatalog["sources"],
+  abilityOverrides: Readonly<Record<string, { staleTag: string; reason: string }>> = ABILITY_AVAILABILITY_OVERRIDES,
+  abilitySetForms: Readonly<Record<string, { species: string; form: string }>> = ABILITY_SET_FORMS,
 ): ChampionsCatalog {
   if (engine.num !== 0) throw new Error("Champions requires engine generation 0, not mainline Gen 9.");
   // Nonstandard tables can contain aliases sharing an ID (Hidden Power types).
@@ -201,9 +238,10 @@ export function transformChampionsCatalog(
       const id = toID(name);
       const ability = dexAbilities.get(id);
       if (!ability) throw new Error(`Invalid Champions ability assignment: ${row.id} -> ${id}`);
-      // An available species may contradict the mod's ability availability (the
-      // pinned Lucario-Mega-Z assigns Future Aura Guard). Preserve the reference
-      // and explicitly flag both rows, rather than inventing another assignment.
+      // An available species may contradict the mod's ability availability.
+      // Preserve the reference and flag the ability (and a species left with no
+      // supported ability) rather than inventing another assignment, unless the
+      // tag is a proven-stale omission in ABILITY_AVAILABILITY_OVERRIDES.
       assignedAbilities.add(id);
     }
     for (const id of learnsets.get(row.id)!.moves) {
@@ -228,15 +266,41 @@ export function transformChampionsCatalog(
     }
   }
 
+  for (const [id, override] of Object.entries(abilityOverrides)) {
+    const row = dexAbilities.get(id);
+    if (!row || !assignedAbilities.has(id)) {
+      throw new Error(`Ability availability override is unused: ${id} is not assigned to an available Champions species. Remove the override.`);
+    }
+    if (row.isNonstandard !== override.staleTag) {
+      throw new Error(`Ability availability override is stale: the source now marks ${id} ${row.isNonstandard ?? "available"}, not ${override.staleTag}. Remove or update the override.`);
+    }
+    if (!engineAbilities.has(id)) {
+      throw new Error(`Ability availability override needs an engine ability: ${id} is missing from the engine.`);
+    }
+  }
+  const setForms = new Map<string, string>();
+  for (const [id, { species: speciesId, form: formId }] of Object.entries(abilitySetForms)) {
+    const holder = eligible.find((row) => row.id === speciesId);
+    const form = source.species.find((row) => row.id === formId);
+    if (!holder || !Object.values(holder.abilities).some((name) => toID(name) === id)) {
+      throw new Error(`Ability set form is unused: ${id} is not assigned to ${speciesId}. Remove the entry.`);
+    }
+    if (!form) throw new Error(`Ability set form is missing from the source: ${formId}.`);
+    if (!isAvailable(form)) {
+      setForms.set(id, `${holder.name} with ${dexAbilities.get(id)!.name} counts as ${form.name}, which is not available in Champions (pinned Showdown team validator).`);
+    }
+  }
   const abilities = sorted(assignedAbilities).map((id) => {
     const row = dexAbilities.get(id)!;
     const calc = engineAbilities.get(id);
+    const staleTag = abilityOverrides[id]?.staleTag === row.isNonstandard;
     return {
       id,
       name: calc?.name ?? row.name,
       description: row.description,
       unsupported: [
-        ...(!isAvailable(row) ? [`Assigned Champions ability is marked ${row.isNonstandard} in the source.`] : []),
+        ...(setForms.has(id) ? [setForms.get(id)!] : []),
+        ...(!isAvailable(row) && !staleTag ? [`Assigned Champions ability is marked ${row.isNonstandard} in the source.`] : []),
         ...(!calc ? [`Engine ability missing: ${row.name}.`] : []),
       ],
     };
@@ -299,7 +363,9 @@ export function transformChampionsCatalog(
     };
   });
   const species = eligible.map((row) => {
-    const calc = engineSpecies.get(ENGINE_SPECIES_IDS[row.id] ?? row.id);
+    // A cosmetic forme shares its parent's engine data (the native pipeline's engineSpeciesID rule);
+    // every data mismatch gate below still applies to the exact catalog form.
+    const calc = engineSpecies.get(ENGINE_SPECIES_IDS[row.id] ?? row.id) ?? (row.cosmeticParent ? engineSpecies.get(row.cosmeticParent) : undefined);
     const learnset = learnsets.get(row.id)!;
     const unsupported = [...learnset.unsupported];
     if (!calc) unsupported.push(`Engine species missing: ${row.name}.`);
@@ -319,6 +385,8 @@ export function transformChampionsCatalog(
       unsupported.push(`Engine weight differs: ${calc.weightkg} vs ${row.weightkg} kg.`);
     }
     const abilityIDs = sorted(Object.values(row.abilities).map(toID));
+    // Showdown's slot order (0, 1, Hidden, Special): the first supported slot is the usual default.
+    const abilityOrder = [...new Set(["0", "1", "H", "S"].filter((slot) => row.abilities[slot]).map((slot) => toID(row.abilities[slot])))];
     // Optional ability gaps are gated on the selected ability by the adapter,
     // not by disabling every otherwise-supported build of that species.
     if (abilityIDs.every((id) => abilityIndex.get(id)!.unsupported.length)) {
@@ -341,6 +409,8 @@ export function transformChampionsCatalog(
       baseStats: Object.fromEntries(STATS.map((stat) => [stat, row.baseStats[stat]])) as StatTable,
       weightkg: row.weightkg,
       abilities: abilityIDs,
+      abilityOrder,
+      ...(row.gender === "M" || row.gender === "F" || row.gender === "N" ? { gender: row.gender as "M" | "F" | "N" } : {}),
       moves: learnset.moves,
       battleForm: Boolean(row.battleOnly),
       requiredItem,
@@ -351,10 +421,12 @@ export function transformChampionsCatalog(
   const unsupportedMoves = moves.filter((row) => row.unsupported.length);
   const notes = [
     "Availability uses resolved Champions isNonstandard flags and available battleOnly entry forms, not competitive tiers; OU bans and Uber rankings are not game exclusions.",
-    "All IDs and references use Showdown toID. baseSpecies is the taxonomic ID, not a transform parent or guaranteed available catalog row; Mega targets use the actual battleOnly entry form. The explicit Aegislash engine name is Aegislash-Shield, never Aegislash-Both. The seven emitted Alcremie cosmetic forms explicitly share engine Alcremie while retaining exact catalog identities; this is not a generic base-form fallback.",
+    "All IDs and references use Showdown toID. baseSpecies is the taxonomic ID, not a transform parent or guaranteed available catalog row; Mega targets use the actual battleOnly entry form. The explicit Aegislash engine name is Aegislash-Shield, never Aegislash-Both. Source-declared cosmetic formes (Showdown isCosmeticForme, parent from getAlias: Vivillon patterns, Florges colours, Furfrou trims, Alcremie flavours) share their parent's engine species while retaining exact catalog identities; Vivillon-Fancy and Vivillon-Pokeball keep their own engine entries. This is limited to cosmetic formes and is not a generic base-form fallback.",
     "Learnsets use Champions getFullLearnset/getMovePool semantics, including form inheritance, with explicit mod provenance. Gen 9 markers such as 9M do not by themselves prove Champions legality; unproven inherited moves are withheld and flagged.",
     "All available moves are retained, including Status, zero-power, fixed-damage and multihit moves. Data coverage checks engine identities, types, categories, power, base stats, weight and Mega targets, not implementation of mechanics; the battle adapter must apply its mechanics/context gate.",
     "Abilities are the resolved assignments of available species; item availability is resolved independently. Engine ability/item name presence is not evidence that their mechanics are implemented.",
+    ...Object.entries(abilityOverrides).map(([id, override]) =>
+      `Ability availability override: ${id} keeps its source tag ${override.staleTag} but is treated as available. ${override.reason}`),
     "Raw Showdown stats, types and weight are never replaced with engine values. A species with a data mismatch remains in the catalog, explicitly unsupported.",
   ];
   for (const [label, rows] of [

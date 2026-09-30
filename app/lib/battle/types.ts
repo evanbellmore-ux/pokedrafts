@@ -23,6 +23,8 @@ export type ChampionsSpecies = {
   baseStats: StatTable;
   weightkg: number;
   abilities: string[];
+  /** The same abilities in Showdown's slot order (0, 1, Hidden, Special); `abilities` is sorted. */
+  abilityOrder?: string[];
   moves: string[];
   battleForm: boolean;
   requiredItem: string | null;
@@ -124,6 +126,25 @@ type BuildBase = {
   mechanic?: BattleMechanic;
   /** Prepared move IDs supplied by the importer/controller for form prerequisites. */
   preparedMoves?: readonly string[];
+  /** Supreme Overlord: allies fainted before this Pokémon entered, 0–5 (count-moves.ts). */
+  faintedAllies?: number;
+  /** Trace: the ability it copied, when not the other shown Pokémon's (imposter.ts tracedAbility). */
+  tracedAbility?: string;
+  /** Set only by the calculation for a transformed Imposter user: its own species and base HP. */
+  transformedFrom?: { speciesId: string; baseHP: number };
+  /**
+   * Set only by the calculation: the stat Download raised on entry, already in the stages, when the
+   * foe transformed after it (the engine would read the transformed foe's defenses instead).
+   */
+  settledDownload?: CombatStat;
+  /**
+   * Set when an Intimidate this Pokémon copied with Trace has been stored in both builds' stages (its
+   * Trace form Mega Evolved): the intimidatedKey of the Pokémon that took it, so the calculation does
+   * not apply it to that Pokémon again (a roster reselect keeps both builds' stages).
+   */
+  copiedIntimidateStored?: string;
+  /** Set only by the calculation: the stat an active Protosynthesis or Quark Drive boosts. */
+  settledBoostedStat?: CombatStat;
 };
 
 export type ChampionsBuild = BuildBase & {
@@ -149,6 +170,14 @@ export type SideConditions = {
   lightScreen: boolean;
   auroraVeil: boolean;
   helpingHand: boolean;
+  /** This side's Pokémon has a Friend Guard partner (Doubles), cutting damage it takes to 75%. */
+  friendGuard: boolean;
+  /** This side's Pokémon is protecting (Protect, Detect or a similar move) this turn. */
+  protect: boolean;
+  /** Tailwind is active on this side, doubling its Pokémon's Speed. */
+  tailwind: boolean;
+  /** This side's Pokémon used Charge, doubling the power of its next Electric attack. */
+  charge: boolean;
 };
 
 export type BattleConditions = {
@@ -166,7 +195,20 @@ export type BattleConditions = {
   defenderSide: SideConditions;
 };
 
-export type MoveContext = { hits?: number; useZ?: boolean; stellarFirstUse?: boolean };
+/**
+ * doubled: the event that doubles a move in EVENT_DOUBLING_MOVES happened (event-moves.ts).
+ * fainted / timesHit / party: Last Respects, Rage Fist and Beat Up counts (count-moves.ts).
+ */
+export type MoveContext = {
+  hits?: number; useZ?: boolean; stellarFirstUse?: boolean; doubled?: boolean;
+  fainted?: number; timesHit?: number; party?: readonly string[];
+  /**
+   * The turn order chosen for a move that depends on it: Analytic's user moves "last" (after every
+   * other Pokémon) or "first" (someone moves after it); Bolt Beak and Fishious Rend move "first"
+   * (before the target, or the target switched in) or "last". Unset, it is worked out when it can be.
+   */
+  turnOrder?: "first" | "last";
+};
 export type BuildIssue = { field: string; message: string };
 
 export type MoveDamageResult = {
@@ -187,4 +229,9 @@ export type MoveDamageResult = {
   assumptions: string[];
   reason: string | null;
   hits: number | null;
+  /**
+   * A second outcome with its own chance, such as Fickle Beam's 30% doubled power. The main fields
+   * describe the usual case; ohkoChance weighs both.
+   */
+  alternate?: { chance: number; label: string; min: number; max: number; minPercent: number; maxPercent: number; rolls: number[] };
 };

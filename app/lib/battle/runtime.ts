@@ -26,6 +26,18 @@ export function resolveRuntimeSpecies(runtime: BattleRuntime, name: string) {
   return resolve(name);
 }
 
+/**
+ * The family row a cosmetic form shares its battle identity with (Vivillon for Vivillon-Jungle,
+ * Alcremie for its flavours): the base species when both have the same engine name. Null for any
+ * other form, including Megas and forms with engine entries of their own (Vivillon-Fancy).
+ */
+export function cosmeticFamily(runtime: BattleRuntime, speciesId: string): ChampionsSpecies | null {
+  const species = runtime.speciesById.get(speciesId);
+  if (!species || species.baseSpecies === species.id) return null;
+  const family = runtime.speciesById.get(species.baseSpecies);
+  return family && family.calcName === species.calcName ? family : null;
+}
+
 /** A runtime is owned by a matchup, never installed as a global current game. */
 export function createBattleRuntime(catalog: BattleCatalog, catalogSha256: string): BattleRuntime {
   const profile = BATTLE_PROFILES[catalog.game];

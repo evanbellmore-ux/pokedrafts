@@ -1,4 +1,5 @@
 import { getBuildHealth as getEffectiveHealth } from "@/app/lib/battle/health";
+import { specialTeraForm } from "@/app/lib/battle/mechanics";
 import { validateBuild } from "@/app/lib/battle/model";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
@@ -6,7 +7,9 @@ import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
 export type BuildHealth = { current: number; maximum: number };
 export type DamageRollMode = "low" | "average" | "high";
 export type HPPreview =
-  | { status: "ready"; min: number; max: number; current: number; maximum: number; damage: number; remaining: number }
+  | { status: "ready"; min: number; max: number; current: number; maximum: number; damage: number; remaining: number;
+    /** The same roll in the result's alternate outcome (Fickle Beam's doubled power). */
+    alternate?: { chance: number; label: string; damage: number; remaining: number } }
   | { status: "unavailable"; reason: string };
 
 export function getBuildHealth(build: BattleBuild, runtime: BattleRuntime = championsRuntime): BuildHealth | null {
@@ -57,7 +60,7 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
   if (max === 0) return { status: "ready", ...health, min: health.current, max: health.current, damage: 0, remaining: health.current };
   const survival = defender.itemId === "focussash" ? "Focus Sash"
     : defender.itemId === "focusband" ? "Focus Band"
-      : defender.abilityId === "sturdy" ? "Sturdy" : null;
+      : (() => { const form = specialTeraForm(defender, runtime); return form ? runtime.speciesById.get(form)?.abilities[0] : defender.abilityId; })() === "sturdy" ? "Sturdy" : null;
   if (survival) {
     return { status: "unavailable", reason: `Remaining HP is withheld for ${survival}; survival effects are not simulated.` };
   }
@@ -78,5 +81,12 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
     min: Math.max(0, health.current - max),
     max: Math.max(0, health.current - min),
     damage, remaining: Math.max(0, health.current - damage),
+    ...(row.alternate ? { alternate: alternatePreview(row.alternate, mode, health.current) } : {}),
   };
+}
+
+function alternatePreview(alternate: NonNullable<MoveDamageResult["alternate"]>, mode: DamageRollMode, current: number) {
+  const { rolls } = alternate;
+  const damage = mode === "low" ? alternate.min : mode === "high" ? alternate.max : Math.round(rolls.reduce((sum, roll) => sum + roll / rolls.length, 0));
+  return { chance: alternate.chance, label: alternate.label, damage, remaining: Math.max(0, current - damage) };
 }

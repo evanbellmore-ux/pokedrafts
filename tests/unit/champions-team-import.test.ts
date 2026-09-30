@@ -320,14 +320,14 @@ describe("Team import correction diagnostics", () => {
     expect(team.diagnostics).toEqual([]);
   });
 
-  it("preserves known unsupported Lucario-Z without substituting its species, stone or ability", () => {
+  it("imports Lucario-Z with its exact species, stone and ability and calculates it", () => {
     const parsed = valid("Mega Lucario Z @ Lucarionite Z\nAbility: Aura Guard\nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature\n- Aura Sphere\n- Protect");
     expect(parsed.build).toMatchObject({ speciesId: "lucariomegaz", abilityId: "auraguard", itemId: "lucarionitez" });
-    expect(parsed.diagnostics.some((entry) => entry.severity === "warning" && entry.message.includes("Calculation paused"))).toBe(true);
+    expect(parsed.diagnostics.some((entry) => entry.message.includes("Calculation paused"))).toBe(false);
     const result = calculateMatchup(parsed.build!, createBuild("blastoise"), createConditions());
-    expect(result.results).toEqual([]);
-    expect(result.issues.attacker).toEqual(validateBuild(parsed.build!));
-    expect(result.issues.attacker.length).toBeGreaterThan(0);
+    expect(result.issues.attacker).toEqual([]);
+    expect(validateBuild(parsed.build!)).toEqual([]);
+    expect(result.results.find((row) => row.moveId === "aurasphere")?.kind).toBe("calculated");
     expect(invalid("Lucario-Mega-Z").diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("requires Lucarionite Z"))).toBe(true);
   });
 
@@ -481,5 +481,72 @@ describe("Plain-text import boundaries", () => {
     const team = parseTeamImport("Charizard", "guess" as ImportFormat);
     expect(team.members).toEqual([]);
     expect(team.diagnostics.some((entry) => entry.severity === "error")).toBe(true);
+  });
+});
+
+describe("Showdown set header and Pokeball lines", () => {
+  // Pinned Showdown sim/teams.ts parseExportedTeamLine splits the header on " @ " and reads
+  // "Pokeball:" as cosmetic; each case matches its Teams.import species, name, item and ball.
+  const set = (header: string, extra = "") => `${header}
+Ability: Rough Skin
+Level: 50
+${extra}EVs: 2 HP / 32 Atk / 32 Spe
+Jolly Nature
+- Earthquake
+- Protect`;
+
+  it.each([
+    ["M@x (Garchomp) @ Life Orb", "M@x", "lifeorb"],
+    ["M@x (Garchomp)", "M@x", ""],
+    ["@lpha (Garchomp) @ Life Orb", "@lpha", "lifeorb"],
+    ["Max@ (Garchomp) @ Life Orb", "Max@", "lifeorb"],
+    ["Garchomp  @  Life Orb", undefined, "lifeorb"],
+  ])("keeps a bare @ in the name: %s", (header, nickname, itemId) => {
+    const parsed = valid(set(header));
+    expect(parsed).toMatchObject({ speciesId: "garchomp", build: { itemId } });
+    expect(parsed.nickname).toBe(nickname);
+  });
+
+  it("reads @ No Item as an empty slot", () => {
+    const parsed = valid(set("Garchomp @ No Item"));
+    expect(parsed.build.itemId).toBe("");
+    expect(parsed.diagnostics.some((entry) => entry.message.startsWith("Item omitted"))).toBe(true);
+  });
+
+  it("reads a hand-typed bare @ only between an exact Pokémon and an exact item", () => {
+    const parsed = valid(set("Garchomp@Life Orb"));
+    expect(parsed).toMatchObject({ speciesId: "garchomp", build: { itemId: "lifeorb" } });
+    expect(parsed.nickname).toBeUndefined();
+    expect(parsed.diagnostics.some((entry) => entry.severity === "info" && entry.message.startsWith("Read the bare @ as the held-item separator"))).toBe(true);
+    expect(valid(set("Chompy (Garchomp)@Life Orb"))).toMatchObject({ speciesId: "garchomp", nickname: "Chompy", build: { itemId: "lifeorb" } });
+  });
+
+  it("explains the separator only when a bare @ could hide the item", () => {
+    const hint = "To add a held item, put a space on each side of @, as Showdown exports it; a bare @ is read as part of the name.";
+    const error = (header: string) => invalid(set(header)).diagnostics.find((entry) => entry.severity === "error")?.message;
+    expect(error("Garchomp@Leftovers Orb")).toContain(hint);
+    // The item is already separated, so the @ belongs to the nickname and the species is the problem.
+    expect(error("M@x (Garchmop) @ Life Orb")).not.toContain(hint);
+    expect(error("M@x (Garchmop) @ Life Orb")).toContain("Garchmop");
+  });
+
+  it("still counts @ No Item as the item declaration", () => {
+    const parsed = invalid(set("Garchomp @ No Item", "Item: Life Orb\n"));
+    expect(parsed.diagnostics.some((entry) => entry.message.startsWith("Duplicate item field"))).toBe(true);
+  });
+
+  it("still rejects two held items and an empty item", () => {
+    expect(invalid(set("Garchomp @ Life Orb @ Leftovers")).diagnostics.some((entry) => entry.message.includes("only one held item"))).toBe(true);
+    expect(invalid(set("Garchomp @")).diagnostics.some((entry) => entry.message.includes("A held item name is required after @"))).toBe(true);
+  });
+
+  it("accepts a Pokeball line as cosmetic metadata", () => {
+    expect(valid(set("Garchomp @ Life Orb", "Pokeball: Poke Ball\n")).diagnostics)
+      .toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations." }));
+    const parsed = valid(set("M@x (Garchomp) @ Life Orb", "Pokeball: Cherish Ball\n"));
+    expect(parsed).toMatchObject({ speciesId: "garchomp", nickname: "M@x", pokeball: "Cherish Ball", build: { itemId: "lifeorb" } });
+    expect(parsed.diagnostics).toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations." }));
+    expect(parsed.stats).toEqual(valid(set("Garchomp @ Life Orb")).stats);
+    expect(invalid(set("Garchomp @ Life Orb", "Pokeball: Poke Ball\nPokeball: Great Ball\n")).diagnostics.some((entry) => entry.message.startsWith("Duplicate pokeball"))).toBe(true);
   });
 });

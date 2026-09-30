@@ -67,6 +67,34 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe("Champions usage abilities (small offline fixtures)", () => {
+  it("keeps each form's most-used legal ability, with id ties and bad weights ignored", () => {
+    const catalog = catalogFixture();
+    catalog.species[0] = { ...catalog.species[0], abilities: ["aaa", "bbb", "ccc"] } as never;
+    catalog.species[2] = { ...catalog.species[2], abilities: ["zzz"] } as never;
+    const rows = {
+      Fixturemon: { Moves: { alpha: 1 }, Abilities: { bbb: 50, aaa: 50, ccc: 10, illegalhigh: 999 } },
+      "Fixturemon-Mega": { Moves: { alpha: 1 }, Abilities: { aaa: 100 } },
+      Othermon: { Moves: { beta: 1 }, Abilities: { zzz: 0, yyy: 5, bad: Number.NaN } },
+    };
+    const { payload, source } = usageFixture("Doubles", rows as never);
+    const usage = deriveFormatUsage(catalog, payload, source);
+    // aaa and bbb tie at 50: the canonical id wins. The Mega lacks a catalog abilities list.
+    expect(usage.abilities).toEqual({ fixturemon: "aaa" });
+  });
+
+  it("only names abilities each committed form can have, in sorted order", () => {
+    const catalog = JSON.parse(readFileSync("data/champions/catalog.json", "utf8"));
+    const abilitiesOf = new Map<string, string[]>(catalog.species.map((row: { id: string; abilities: string[] }) => [row.id, row.abilities]));
+    for (const format of ["Singles", "Doubles"] as const) {
+      const entries = Object.entries((snapshot.formats[format] as { abilities: Record<string, string> }).abilities);
+      expect(entries.length).toBeGreaterThan(200);
+      expect(entries.map(([id]) => id)).toEqual([...entries.map(([id]) => id)].sort());
+      for (const [id, ability] of entries) expect(abilitiesOf.get(id), `${format} ${id}`).toContain(ability);
+    }
+  });
+});
+
 describe("Champions usage transformation (small offline fixtures)", () => {
   it("is reproducible, order-independent and nonmutating, with catalog digest and source provenance", () => {
     const catalog = catalogFixture();
@@ -338,10 +366,10 @@ describe("committed Champions move-usage snapshot", () => {
       expect(snapshot.formats[gameType].coverage).not.toHaveProperty("aggregateRankLimit");
     }
     expect(snapshot.formats.Doubles.coverage).toMatchObject({
-      sourceSpeciesRows: 283, matchedSpecies: 283, catalogSpecies: 382, speciesWithRankedMoves: 282,
+      sourceSpeciesRows: 283, matchedSpecies: 283, catalogSpecies: 396, speciesWithRankedMoves: 282,
     });
     expect(snapshot.formats.Singles.coverage).toMatchObject({
-      sourceSpeciesRows: 271, matchedSpecies: 271, catalogSpecies: 382, speciesWithRankedMoves: 270,
+      sourceSpeciesRows: 271, matchedSpecies: 271, catalogSpecies: 396, speciesWithRankedMoves: 270,
     });
   });
 

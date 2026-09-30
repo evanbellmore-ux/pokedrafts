@@ -42,8 +42,10 @@ type DexAPI = {
   currentMod: string;
   parentMod: string;
   mod(name: string): DexAPI;
+  getAlias(id: string): string | undefined;
   species: {
     all(): DexSpecies[];
+    get(name: string): DexSpecies & { isCosmeticForme?: boolean; cosmeticFormes?: string[] };
     getFullLearnset(id: string): { species: DexSpecies; learnset: Record<string, string[]> }[];
     getMovePool(id: string): Set<string>;
   };
@@ -117,7 +119,22 @@ export async function loadChampionsSnapshot(source: string): Promise<ShowdownSna
     const text = dex.text.get(row);
     return text.desc || text.shortDesc || "";
   };
-  const species = dex.species.all().map((row): ResolvedSpecies => {
+  // all() only walks actual Pokedex keys. Some cosmetic identities (Florges colours, Furfrou trims,
+  // Alcremie-Salted-Cream) exist solely in cosmeticFormes and are synthesized by the pinned get() API,
+  // exactly as the native battle-data snapshot enumerates them.
+  const speciesRows: (DexSpecies & { isCosmeticForme?: boolean; cosmeticFormes?: string[] })[] = [...dex.species.all()];
+  const knownIDs = new Set(speciesRows.map((row) => row.id));
+  for (const row of [...speciesRows].filter(isAvailable)) {
+    for (const name of row.cosmeticFormes ?? []) {
+      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "");
+      if (knownIDs.has(id)) continue;
+      const cosmetic = dex.species.get(name);
+      if (!cosmetic.exists || cosmetic.id !== id || !cosmetic.isCosmeticForme) throw new Error(`Unresolved source-declared cosmetic identity: ${name}`);
+      speciesRows.push(cosmetic);
+      knownIDs.add(cosmetic.id);
+    }
+  }
+  const species = speciesRows.map((row): ResolvedSpecies => {
     let learnset: ResolvedLearnset = { movePool: [], sources: [] };
     if (isAvailable(row)) {
       try {
@@ -145,6 +162,8 @@ export async function loadChampionsSnapshot(source: string): Promise<ShowdownSna
       baseStats: row.baseStats,
       weightkg: row.weightkg,
       abilities: row.abilities,
+      gender: row.gender,
+      ...(row.isCosmeticForme ? { cosmeticParent: dex.getAlias(row.id) } : {}),
       battleOnly: row.battleOnly,
       changesFrom: row.changesFrom,
       isMega: row.isMega,
@@ -216,7 +235,7 @@ export async function buildChampionsData(check = false): Promise<void> {
     },
     identity: {
       ids: "Showdown toID: lowercase ASCII alphanumerics, no PokeAPI identity inference.",
-      species: "name is the resolved Showdown name; calcName is the exact engine name when present. Aegislash maps explicitly to Aegislash-Shield; the seven emitted Alcremie cosmetic forms explicitly share engine Alcremie without changing catalog identity. All other species use exact IDs, not guessed base forms. Stats, types and weight are the resolved Showdown values.",
+      species: "name is the resolved Showdown name; calcName is the exact engine name when present. Aegislash maps explicitly to Aegislash-Shield; source-declared cosmetic formes (isCosmeticForme, parent from getAlias) share their parent's engine species without changing catalog identity. All other species use exact IDs, not guessed base forms. Stats, types and weight are the resolved Showdown values.",
       baseSpecies: "Taxonomic Showdown baseSpecies ID, not changesFrom or a guaranteed available catalog row. Floette-Mega has baseSpecies=floette but inherits from floetteeternal.",
       references: "Species abilities/moves/requiredItem and item megaStone/megaEvolves/megaTargets use IDs. Scalar Mega fields are null for multi-target stones; megaTargets preserves all pairs.",
     },

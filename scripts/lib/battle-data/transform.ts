@@ -233,6 +233,8 @@ export function transformNativeCatalog(
       unsupported.push("Engine Gigantamax signature differs from native game data.");
     }
     const abilityIDs = sorted(Object.values(row.abilities).map(toID));
+    // Showdown's slot order (0, 1, Hidden, Special): the first supported slot is the usual default.
+    const abilityOrder = [...new Set(["0", "1", "H", "S"].filter((slot) => row.abilities[slot]).map((slot) => toID(row.abilities[slot])))];
     if (abilityIDs.every((id) => abilityIndex.get(id)!.unsupported.length)) {
       unsupported.push(`All assigned abilities unsupported: ${abilityIDs.join(", ")}.`);
     }
@@ -242,7 +244,9 @@ export function transformNativeCatalog(
     if (requiredItems.length && requiredItems.every((id) => itemIndex.get(id)!.unsupported.length)) {
       unsupported.push(`Required items unsupported: ${requiredItems.join(", ")}.`);
     }
+    const rejected = new Set(row.learnset.validatorRejected ?? []);
     const moveIDs = sorted(row.learnset.movePool.filter((id) => {
+      if (rejected.has(id)) return false;
       const move = movesByID.get(id);
       return move && !move.isZ && !move.isMax;
     }));
@@ -251,7 +255,7 @@ export function transformNativeCatalog(
       id: row.id, name: row.name, calcName: calc?.name ?? row.name,
       baseSpecies: toID(row.baseSpecies), types: [...row.types],
       baseStats: Object.fromEntries(STATS.map((stat) => [stat, row.baseStats[stat]])) as StatTable,
-      weightkg: row.weightkg, abilities: abilityIDs, moves: sorted(moveIDs),
+      weightkg: row.weightkg, abilities: abilityIDs, abilityOrder, moves: sorted(moveIDs),
       battleForm: Boolean(row.battleOnly), requiredItem: requiredItems.length === 1 ? requiredItems[0] : null,
       ...(requiredItems.length ? { requiredItems } : {}),
       ...(row.gender ? { gender: row.gender } : {}),

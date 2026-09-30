@@ -4,6 +4,7 @@ import { useId } from "react";
 import { Field, Select } from "@/app/components/ui";
 import { SHARED_FIELD_EFFECTS } from "@/app/lib/battle/model";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { unmodelledBattleStates } from "@/app/lib/battle/unmodelled-states";
 import type { BattleConditions as Conditions, BuildIssue, SideConditions } from "@/app/lib/battle/types";
 
 const sideOptions: { key: keyof SideConditions; label: string }[] = [
@@ -11,6 +12,10 @@ const sideOptions: { key: keyof SideConditions; label: string }[] = [
   { key: "lightScreen", label: "Light Screen" },
   { key: "auroraVeil", label: "Aurora Veil" },
   { key: "helpingHand", label: "Helping Hand" },
+  { key: "friendGuard", label: "Partner has Friend Guard" },
+  { key: "protect", label: "Protecting" },
+  { key: "tailwind", label: "Tailwind" },
+  { key: "charge", label: "Charge" },
 ];
 
 const checkboxClassName = "h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
@@ -23,16 +28,37 @@ type Props = {
   runtime?: BattleRuntime;
 };
 
+/** How attacks get through a Protecting Pokémon in this game (calculate.ts protectOutcome). */
+function protectHelp(runtime: BattleRuntime) {
+  const has = (id: string) => runtime.abilitiesById.has(id);
+  const parts: string[] = [];
+  if (runtime.profile.id === "champions") {
+    const piercing = ["unseenfist", "piercingdrill"].filter(has).map((id) => runtime.abilitiesById.get(id)!.name);
+    if (piercing.length) parts.push(`${piercing.join(" and ")} let${piercing.length === 1 ? "s" : ""} contact moves through for a quarter of the damage`);
+  } else {
+    if (has("unseenfist")) parts.push("Unseen Fist lets contact moves through");
+    if (runtime.profile.zMoves) parts.push("Z-Moves break through for a quarter of the damage");
+    if (runtime.profile.dynamax) parts.push("Max Moves break through for a quarter of the damage, and a Dynamaxed Pokémon protects with Max Guard, which is not modelled");
+  }
+  return parts.length ? `; ${parts.join("; ")}` : "";
+}
+
+/** Settings that need an ally; Singles ignores them. */
+const doublesOnly = (key: string) => key === "helpingHand" || key === "fairyAura" || key === "friendGuard";
+
 export function describeConditions(value: Conditions) {
+  const counts = (key: string, on: boolean) => on && !(value.gameType === "Singles" && doublesOnly(key));
   const activeConditions = Number(value.critical) + Number(value.gameType === "Doubles" && value.multipleTargets)
-    + SHARED_FIELD_EFFECTS.filter(({ key }) => value[key] === true).length
-    + Object.values(value.attackerSide).filter(Boolean).length + Object.values(value.defenderSide).filter(Boolean).length;
+    + SHARED_FIELD_EFFECTS.filter(({ key }) => counts(key, value[key] === true)).length
+    + Object.entries(value.attackerSide).filter(([key, on]) => counts(key, on)).length
+    + Object.entries(value.defenderSide).filter(([key, on]) => counts(key, on)).length;
   return `${value.gameType} · ${value.weather || "No weather"} · ${value.terrain ? `${value.terrain} terrain` : "No terrain"} · ${activeConditions} toggles on`;
 }
 
 export default function BattleConditions({ value, issues, onChange, id, runtime = championsRuntime }: Props) {
   const prefix = useId();
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
+  const singles = value.gameType === "Singles";
 
   return (
     <section id={id} aria-labelledby={`${prefix}-heading`} className="rounded-xl border border-line bg-panel">
@@ -81,7 +107,7 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
             Multiple targets hit
           </label>
         </div>
-        <p id={`${prefix}-spread-help`} className="text-xs text-muted">Multiple targets applies only in Doubles and only to eligible spread moves. It does not reduce single-target attacks.</p>
+        <p id={`${prefix}-spread-help`} className="text-xs text-muted">Multiple targets applies only in Doubles. For spread moves, and Expanding Force from a grounded user on Psychic Terrain, keep it on while more than one target is on the field, even if one protects or is immune: Showdown still applies the spread reduction. Dragon Darts sends one dart to each foe only when both can be hit. It does not reduce single-target attacks.</p>
         <fieldset className="min-w-0 rounded-lg border border-line px-3 pb-3">
           <legend className="px-1 text-sm font-semibold text-text">Shared field effects</legend>
           <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -95,21 +121,22 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
                       id={id}
                       type="checkbox"
                       checked={value[effect.key] === true}
+                      disabled={singles && doublesOnly(effect.key)}
                       aria-invalid={!!error || undefined}
                       aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
                       onChange={(event) => onChange({ ...value, [effect.key]: event.target.checked })}
-                      className={checkboxClassName}
+                      className={doublesOnly(effect.key) ? `${checkboxClassName} disabled:opacity-50` : checkboxClassName}
                     />
                     {effect.label}
                   </label>
-                  <p id={`${id}-help`} className="text-xs text-muted">{effect.description}</p>
+                  <p id={`${id}-help`} className="text-xs text-muted">{effect.description}{singles && doublesOnly(effect.key) ? " Ignored in Singles, which has no third Pokémon to supply it." : ""}</p>
                   {error && <p id={`${id}-error`} className="mt-1 text-xs text-danger">{error}</p>}
                 </div>
               );
             })}
           </div>
         </fieldset>
-        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Screens on the receiving Pokémon’s side reduce incoming damage; Helping Hand on the attacking Pokémon’s side boosts outgoing damage, regardless of left/right position. Aurora Veil does not stack with Reflect or Light Screen and can remain active after {runtime.profile.weather.includes("Hail") ? "Hail" : "Snow"} ends.</p>
+        <p id={`${prefix}-sides-help`} className="text-xs text-muted">Screens on the receiving Pokémon’s side reduce incoming damage; Helping Hand on the attacking Pokémon’s side boosts outgoing damage, regardless of left/right position{singles ? "; it needs an ally, so it is ignored in Singles" : ""}. A Friend Guard partner on the receiving Pokémon’s side cuts its damage taken to 75%; Mold Breaker, Teravolt, Turboblaze and moves such as Sunsteel Strike ignore it and Neutralizing Gas suppresses it. Protecting means that side’s Pokémon used Protect, Detect or a similar move this turn: it blocks attacks except moves that bypass Protect{protectHelp(runtime)}. Tailwind doubles that side’s Speed, which sets Electro Ball, Gyro Ball and turn order. Charge means that side’s Pokémon used Charge, doubling its next Electric attack{runtime.abilitiesById.has("windpower") ? " (tick it too after Tailwind starts beside a Wind Power Pokémon)" : ""}. Aurora Veil does not stack with Reflect or Light Screen and can remain active after {runtime.profile.weather.includes("Hail") ? "Hail" : "Snow"} ends.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {(["attackerSide", "defenderSide"] as const).map((side) => (
             <fieldset key={side} aria-describedby={`${prefix}-sides-help`} className="min-w-0 rounded-lg border border-line px-3 pb-2">
@@ -121,8 +148,9 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
                       id={`${prefix}-${side}-${option.key}`}
                       type="checkbox"
                       checked={value[side][option.key]}
+                      disabled={singles && doublesOnly(option.key)}
                       onChange={(event) => onChange({ ...value, [side]: { ...value[side], [option.key]: event.target.checked } })}
-                      className={checkboxClassName}
+                      className={doublesOnly(option.key) ? `${checkboxClassName} disabled:opacity-50` : checkboxClassName}
                     />
                     {option.label}
                   </label>
@@ -130,6 +158,11 @@ export default function BattleConditions({ value, issues, onChange, id, runtime 
               </div>
             </fieldset>
           ))}
+        </div>
+        <div role="note" aria-labelledby={`${prefix}-unmodelled`} className="rounded-lg border border-line px-3 py-2 text-xs text-muted">
+          <h3 id={`${prefix}-unmodelled`} className="text-sm font-semibold text-text">Battle states that cannot be set here</h3>
+          <p className="mt-1">These common states cannot be represented; results assume none is in effect in {runtime.profile.label}:</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">{unmodelledBattleStates(runtime).map((state) => <li key={state}>{state}.</li>)}</ul>
         </div>
       </div>
     </section>

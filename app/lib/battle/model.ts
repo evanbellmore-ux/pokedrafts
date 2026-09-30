@@ -1,5 +1,6 @@
 import { championsRuntime, type BattleRuntime } from "./runtime";
-import { validateMechanic } from "./mechanics";
+import { specialTeraForm, validateMechanic } from "./mechanics";
+import { NO_TRACE_ABILITIES } from "./imposter";
 import type {
   BattleBuild,
   BattleConditions,
@@ -54,7 +55,6 @@ export const STATUSES = [
 ] as const;
 
 export const ABILITY_ACTIVATION_LABELS: Record<string, string> = {
-  intimidate: "Apply Intimidate on entry",
   flashfire: "Flash Fire has been activated",
   electromorphosis: "Electromorphosis is charged",
   unburden: "Unburden has been activated",
@@ -65,16 +65,86 @@ export const ABILITY_ACTIVATION_LABELS: Record<string, string> = {
   analytic: "The target switches before this attack",
   protean: "Protean is unused since switch-in; typing is still unchanged",
   libero: "Libero is unused since switch-in; typing is still unchanged",
+  imposter: "Transformed into the other Pokémon on entry",
+  shieldsdown: "Its HP crossed half this turn; its form changes at the end of the turn",
+  schooling: "Its HP crossed a quarter this turn; its form changes at the end of the turn",
 };
 
+/**
+ * Scarlet/Violet's once-per-battle entry boosts: pinned Showdown raises the stage on the Pokémon's
+ * first entry only (swordBoost / shieldBoost), and the gen 9 engine applies them only when ticked.
+ * Sword/Shield raises them on every entry, which its engine always applies, so there is no switch.
+ */
+const SV_ENTRY_BOOST_LABELS: Record<string, string> = {
+  intrepidsword: "Intrepid Sword has raised Attack (on its first entry of the battle)",
+  dauntlessshield: "Dauntless Shield has raised Defense (on its first entry of the battle)",
+};
+
+/**
+ * The condition an ability's switch sets in this game, if it has one. Protosynthesis and Quark Drive
+ * have one only when boosterRoomChoice says it matters; Schooling has none below level 20.
+ */
+export function abilityActivationLabel(abilityId: string, profileId: string, context?: { boosterRoomChoice?: boolean; level?: number }): string | undefined {
+  if (["protosynthesis", "quarkdrive"].includes(abilityId)) {
+    return context?.boosterRoomChoice ? "Its Booster Energy was used on entry, before Magic Room was set" : undefined;
+  }
+  if (abilityId === "schooling" && context?.level !== undefined && context.level < 20) return undefined;
+  return ABILITY_ACTIVATION_LABELS[abilityId] ?? (profileId === "scarlet_violet" ? SV_ENTRY_BOOST_LABELS[abilityId] : undefined);
+}
+
+/**
+ * Whether a Protosynthesis or Quark Drive holder's Booster Energy timing is a choice: Magic Room holds
+ * the item back now, and neither its own field (sun without Cloud Nine or Air Lock, Electric Terrain)
+ * nor the other Pokémon's Neutralizing Gas (Ability Shield is suppressed by the room too) decides it.
+ * Pinned Showdown uses the item at once on entry, and a later room does not end the boost.
+ */
+export function boosterRoomChoice(build: BattleBuild, other: BattleBuild, field: BattleConditions): boolean {
+  if (!["protosynthesis", "quarkdrive"].includes(build.abilityId) || build.itemId !== "boosterenergy" || !field.magicRoom || build.transformedFrom) return false;
+  const fieldOn = build.abilityId === "protosynthesis"
+    ? field.weather === "Sun" && ![build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId))
+    : field.terrain === "Electric";
+  return !fieldOn && other.abilityId !== "neutralizinggas";
+}
+
+/** Ability conditions that need an ally, so they never hold in Singles. */
+export const PARTNER_ABILITY_CONDITIONS: ReadonlySet<string> = new Set(["plus", "minus"]);
+
+/**
+ * Singles has no ally, so Helping Hand (it fails with [notarget] in pinned Showdown), an
+ * additional Fairy Aura source and a Plus/Minus partner cannot exist there. Returns what the
+ * calculation uses and the names of the Doubles-only settings it ignored.
+ */
+export function withoutSinglesPartners<B extends BattleBuild>(field: BattleConditions, attacker: B, defender: B) {
+  if (field.gameType !== "Singles") return { field, attacker, defender, ignored: [] as string[] };
+  const ignored: string[] = [];
+  if (field.attackerSide.helpingHand || field.defenderSide.helpingHand) ignored.push("Helping Hand");
+  if (field.attackerSide.friendGuard || field.defenderSide.friendGuard) ignored.push("the Friend Guard partner");
+  if (field.fairyAura) ignored.push("Additional Fairy Aura on the field");
+  const partnerless = (build: B): B => PARTNER_ABILITY_CONDITIONS.has(build.abilityId) && build.abilityActive ? { ...build, abilityActive: false } : build;
+  if (partnerless(attacker) !== attacker || partnerless(defender) !== defender) ignored.push("the Plus/Minus partner");
+  return {
+    field: {
+      ...field, fairyAura: false,
+      attackerSide: { ...field.attackerSide, helpingHand: false, friendGuard: false },
+      defenderSide: { ...field.defenderSide, helpingHand: false, friendGuard: false },
+    },
+    attacker: partnerless(attacker), defender: partnerless(defender), ignored,
+  };
+}
+
 export function defaultAbilityActive(abilityId: string): boolean {
-  return ["slowstart", "protean", "libero"].includes(abilityId);
+  return ["slowstart", "protean", "libero", "imposter", "intrepidsword", "dauntlessshield", "protosynthesis", "quarkdrive"].includes(abilityId);
 }
 
 export function parseIntegerInput(text: string): number | null {
   if (!/^-?\d+$/.test(text)) return null;
   const value = Number(text);
   return Number.isSafeInteger(value) ? value : null;
+}
+
+/** A fresh build with the form's usual ability (move-defaults usualAbility) instead of the sorted first one. */
+export function withUsualAbility<T extends BattleBuild>(build: T, abilityId: string | null): T {
+  return abilityId && abilityId !== build.abilityId ? { ...build, abilityId, abilityActive: defaultAbilityActive(abilityId) } : build;
 }
 
 export function createBuild(speciesId?: string): ChampionsBuild;
@@ -104,14 +174,14 @@ export function createBuild(speciesId = "charizard", runtime: BattleRuntime = ch
 }
 
 export function createSide(): SideConditions {
-  return { reflect: false, lightScreen: false, auroraVeil: false, helpingHand: false };
+  return { reflect: false, lightScreen: false, auroraVeil: false, helpingHand: false, friendGuard: false, protect: false, tailwind: false, charge: false };
 }
 
 export const SHARED_FIELD_EFFECTS = [
   { key: "gravity", label: "Gravity", description: "Grounds airborne Pokémon and blocks moves such as Fly and High Jump Kick. Accuracy changes are not simulated." },
-  { key: "trickRoom", label: "Trick Room", description: "Reverses turn order within a priority bracket, not Speed stats. Turn order is not simulated; unresolved Analytic damage needs context." },
-  { key: "wonderRoom", label: "Wonder Room", description: "Swaps unboosted Defense and Sp. Def; stages stay with their original stat. Body Press with this room is not verified." },
-  { key: "magicRoom", label: "Magic Room", description: "Suppresses held-item effects without removing items or Mega forms. Held-item Acrobatics with this room is not verified." },
+  { key: "trickRoom", label: "Trick Room", description: "Lets the slower Pokémon move first within a priority bracket; Speed stats are unchanged. Analytic, Bolt Beak and Fishious Rend use the turn order." },
+  { key: "wonderRoom", label: "Wonder Room", description: "Swaps unboosted Defense and Sp. Def; stages stay with their original stat. Body Press then uses the original Defense with Sp. Def stages, as Showdown calculates." },
+  { key: "magicRoom", label: "Magic Room", description: "Suppresses held-item effects without removing items or Mega forms." },
   { key: "fairyAura", label: "Additional Fairy Aura on the field", description: "Boosts Fairy-type attacks on either side. Does not stack with an existing Fairy Aura ability; leaving this off does not disable that ability." },
 ] as const;
 
@@ -126,7 +196,8 @@ export function createConditions(): BattleConditions {
 /** Base/pre-transformation training stats, before stages/abilities/items. */
 export function getBuildStats(build: BattleBuild, runtime: BattleRuntime = championsRuntime): StatTable | null {
   if (build.game !== runtime.profile.id) return null;
-  const species = runtime.speciesById.get(build.speciesId);
+  // Terapagos battles as Terastal, or Stellar once Terastallized: those forms' stats, HP included.
+  const species = runtime.speciesById.get(specialTeraForm(build, runtime) ?? build.speciesId);
   const nature = NATURES.find((entry) => entry.name === build.nature);
   if (!species || !nature) return null;
   if (build.game === "champions") {
@@ -195,6 +266,16 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
     issues.push({ field: "abilityId", message: `Select an ability available to this Pokémon in ${label}.` });
   } else {
     for (const reason of ability.unsupported) issues.push({ field: "abilityId", message: reason });
+  }
+  if (build.faintedAllies !== undefined && (!Number.isInteger(build.faintedAllies) || build.faintedAllies < 0 || build.faintedAllies > 5)) {
+    issues.push({ field: "faintedAllies", message: "Fainted allies must be a whole number from 0 to 5." });
+  }
+  if (build.abilityId === "trace" && build.tracedAbility !== undefined && (!runtime.abilitiesById.has(build.tracedAbility) || NO_TRACE_ABILITIES.has(build.tracedAbility))) {
+    issues.push({ field: "tracedAbility", message: "Choose an ability Trace can copy, or the other Pokémon's." });
+  }
+  // Unburden activates only once its item is gone; a terrain Seed may be used up in the calculation.
+  if (build.abilityId === "unburden" && build.abilityActive && build.itemId && !build.itemId.endsWith("seed")) {
+    issues.push({ field: "abilityActive", message: "Unburden activates only after its held item is used up. Remove the held item, or untick Unburden." });
   }
   if (["protean", "libero"].includes(build.abilityId) && !build.abilityActive) {
     issues.push({ field: "abilityActive", message: "Only unused Protean/Libero with unchanged typing is supported. Previously changed typing needs additional battle context." });

@@ -6,7 +6,7 @@ export function formatRange(min: number | null, max: number | null) {
   return min === null || max === null ? "—" : min === max ? String(min) : `${min}–${max}`;
 }
 
-export function damagePercent(row: MoveDamageResult) {
+export function damagePercent(row: Pick<MoveDamageResult, "minPercent" | "maxPercent">) {
   return row.minPercent === null || row.maxPercent === null ? "—"
     : `${percent.format(row.minPercent)}–${percent.format(row.maxPercent)}% of max HP`;
 }

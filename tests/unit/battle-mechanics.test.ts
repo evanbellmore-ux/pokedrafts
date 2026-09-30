@@ -100,12 +100,13 @@ describe("native Tera", () => {
     expect(row("terablast", attacker, undefined, { stellarFirstUse: true })).toMatchObject({ kind: "calculated", effectiveType: "Stellar", effectivePower: 100 });
   });
 
-  it.each(["ogerpon", "ogerponhearthflame", "terapagos", "terapagosstellar"])("withholds unverified special Tera transition for %s", (id) => {
+  it.each(["ogerpon", "ogerponhearthflame", "terapagos", "terapagosstellar"])("calculates the special Tera form for %s (calculator-sv-special-mechanics checks the numbers)", (id) => {
     const attacker = build("scarlet_violet", id);
     attacker.mechanic = "tera";
+    attacker.configuration = { ...attacker.configuration, teraType: runtimes.scarlet_violet.speciesById.get(id)!.requiredTeraType as never };
     const result = calculateMatchup(attacker, build("scarlet_violet"), createConditions(), {}, runtimes.scarlet_violet);
-    expect(result.results).toEqual([]);
-    expect(result.issues.attacker).toContainEqual(expect.objectContaining({ field: "mechanic", message: expect.stringContaining("not verified") }));
+    expect(result.issues.attacker).toEqual([]);
+    expect(result.results.some((entry) => entry.kind === "calculated")).toBe(true);
   });
 });
 
@@ -291,13 +292,18 @@ describe("Dynamax and exact G-Max attacks", () => {
     }
   });
 
-  it("withholds unverified field-dependent transformations rather than mislabelling them", () => {
+  it("converts Weather Ball by its weather's type and withholds the transformations the engine types wrongly", () => {
+    // fix35/verify.ts and zwb.ts check these against pinned Showdown.
     const attacker = learner("sword_shield", "weatherball");
     attacker.mechanic = "dynamax";
-    expect(row("weatherball", attacker, undefined, undefined, { ...createConditions(), weather: "Rain" })).toMatchObject({ kind: "unsupported", min: null, reason: expect.stringContaining("transformed type") });
+    expect(row("weatherball", attacker, undefined, undefined, { ...createConditions(), weather: "Rain" })).toMatchObject({ kind: "calculated", effectiveName: "Max Geyser", effectiveType: "Water" });
     const z = learner("ultra_sun_ultra_moon", "weatherball");
     z.itemId = "normaliumz";
-    expect(row("weatherball", z, undefined, { useZ: true }, { ...createConditions(), weather: "Sun" })).toMatchObject({ kind: "unsupported", min: null });
+    expect(row("weatherball", z, undefined, { useZ: true }, { ...createConditions(), weather: "Sun" })).toMatchObject({ kind: "calculated", effectiveName: "Inferno Overdrive", effectiveType: "Fire" });
+    // Hangry Morpeko's Max Aura Wheel is Dark (Max Darkness) in Showdown; the engine makes it Electric.
+    const hangry = build("sword_shield", "morpekohangry");
+    hangry.mechanic = "dynamax";
+    expect(row("aurawheel", hangry)).toMatchObject({ kind: "unsupported", min: null, reason: expect.stringContaining("transformed type") });
   });
 
   it("rejects ordinary Dynamax for a Gmax-factor build instead of silently changing the requested effect", () => {

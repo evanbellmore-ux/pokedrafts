@@ -87,8 +87,9 @@ function fixture(): { source: ShowdownSnapshot; engine: EngineSnapshot } {
   };
 }
 
-function transform(data = fixture()) {
-  return transformChampionsCatalog(data.source, data.engine, sources);
+/** The fixture has none of the real overrides' abilities, so it passes none by default. */
+function transform(data = fixture(), abilityOverrides: Parameters<typeof transformChampionsCatalog>[3] = {}, abilitySetForms: Parameters<typeof transformChampionsCatalog>[4] = {}) {
+  return transformChampionsCatalog(data.source, data.engine, sources, abilityOverrides, abilitySetForms);
 }
 
 describe("Champions catalog pure transformation", () => {
@@ -194,6 +195,23 @@ describe("Champions catalog pure transformation", () => {
     }
   });
 
+  it("maps a source-declared cosmetic forme to its parent's engine species, and only that", () => {
+    const data = fixture();
+    const pattern = species({ id: "fixturemonstripes", name: "Fixturemon-Stripes", baseSpecies: "Fixturemon", cosmeticParent: "fixturemon" });
+    const undeclared = species({ id: "fixturemonspots", name: "Fixturemon-Spots", baseSpecies: "Fixturemon" });
+    data.source.species = [...data.source.species, pattern, undeclared];
+    const rows = new Map(transform(data).species.map((entry) => [entry.id, entry]));
+    expect(rows.get("fixturemonstripes")).toMatchObject({ calcName: "Fixturemon", unsupported: [] });
+    expect(rows.get("fixturemonspots")?.unsupported).toContain("Engine species missing: Fixturemon-Spots.");
+    // An exact engine entry wins over the parent's.
+    data.engine.species = [...data.engine.species, { ...data.engine.species[0], id: "fixturemonstripes", name: "Fixturemon-Stripes" }];
+    expect(transform(data).species.find((entry) => entry.id === "fixturemonstripes")?.calcName).toBe("Fixturemon-Stripes");
+    // The mismatch gates still compare the exact form with the parent's engine data.
+    const odd = fixture();
+    odd.source.species = [...odd.source.species, species({ id: "fixturemonstripes", name: "Fixturemon-Stripes", cosmeticParent: "fixturemon", types: ["Fire"] })];
+    expect(transform(odd).species.find((entry) => entry.id === "fixturemonstripes")?.unsupported).toContain("Engine species types differ: Water vs Fire.");
+  });
+
   it("keeps mismatch and provenance gates active for mapped cosmetics", () => {
     const data = fixture();
     const cosmetic = species({ id: "alcremierubycream", name: "Alcremie-Ruby-Cream", baseSpecies: "Alcremie" });
@@ -247,6 +265,55 @@ describe("Champions catalog pure transformation", () => {
     expect(catalog.species[0].unsupported).toContain("All assigned abilities unsupported: torrent.");
     expect(catalog.abilities.find((row) => row.id === "torrent")?.unsupported)
       .toContain("Assigned Champions ability is marked Future in the source.");
+  });
+
+  it("treats a proven-stale ability tag as available only through an explicit override", () => {
+    const data = fixture();
+    data.source.abilities[0].isNonstandard = "Future";
+    const reason = "Fixture: the mod forgot to clear this tag.";
+    const catalog = transform(data, { torrent: { staleTag: "Future", reason } });
+    expect(catalog.abilities.find((row) => row.id === "torrent")?.unsupported).toEqual([]);
+    expect(catalog.species[0].unsupported).toEqual([]);
+    expect(catalog.coverage.notes.some((note) => note.includes("torrent") && note.includes(reason))).toBe(true);
+  });
+
+  it("fails the build when an ability override is unused, stale or lacks an engine ability", () => {
+    const unused = fixture();
+    expect(() => transform(unused, { neverassigned: { staleTag: "Future", reason: "x" } }))
+      .toThrow("Ability availability override is unused");
+
+    const cleared = fixture();
+    expect(() => transform(cleared, { torrent: { staleTag: "Future", reason: "x" } }))
+      .toThrow("Ability availability override is stale");
+
+    const retagged = fixture();
+    retagged.source.abilities[0].isNonstandard = "Past";
+    expect(() => transform(retagged, { torrent: { staleTag: "Future", reason: "x" } }))
+      .toThrow("Ability availability override is stale");
+
+    const noEngine = fixture();
+    noEngine.source.abilities[0].isNonstandard = "Future";
+    noEngine.engine.abilities = noEngine.engine.abilities.filter((row) => row.id !== "torrent");
+    expect(() => transform(noEngine, { torrent: { staleTag: "Future", reason: "x" } }))
+      .toThrow("Ability availability override needs an engine ability");
+  });
+
+  it("ships exactly one ability override, for Aura Guard's stale Future tag", async () => {
+    const { ABILITY_AVAILABILITY_OVERRIDES } = await import("../../scripts/lib/champions-data/transform");
+    expect(Object.keys(ABILITY_AVAILABILITY_OVERRIDES)).toEqual(["auraguard"]);
+    expect(ABILITY_AVAILABILITY_OVERRIDES.auraguard.staleTag).toBe("Future");
+  });
+
+  it("marks an ability that validates as an unavailable form, and fails on an unused entry", async () => {
+    const data = fixture();
+    const holder = data.source.species.find((row) => Object.values(row.abilities).includes("Torrent"))!;
+    data.source.species = [...data.source.species, { ...holder, id: `${holder.id}bond`, name: `${holder.name}-Bond`, isNonstandard: "Past" }];
+    const catalog = transform(data, {}, { torrent: { species: holder.id, form: `${holder.id}bond` } });
+    expect(catalog.abilities.find((row) => row.id === "torrent")?.unsupported[0])
+      .toBe(`${holder.name} with Torrent counts as ${holder.name}-Bond, which is not available in Champions (pinned Showdown team validator).`);
+    expect(() => transform(fixture(), {}, { torrent: { species: "missingno", form: "missingnobond" } })).toThrow("Ability set form is unused");
+    const { ABILITY_SET_FORMS } = await import("../../scripts/lib/champions-data/transform");
+    expect(ABILITY_SET_FORMS).toEqual({ battlebond: { species: "greninja", form: "greninjabond" } });
   });
 
   it("requires valid ability, move and required-stone references", () => {

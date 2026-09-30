@@ -6,7 +6,7 @@ import PokemonSprite from "@/app/components/PokemonSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Alert, Button, Field, Select } from "@/app/components/ui";
 import { ButtonLink } from "@/app/components/ui/Button";
-import { speciesById } from "@/app/lib/battle/catalog";
+import { championsRuntime, cosmeticFamily, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import type { CalculatorRosterState } from "./roster-data";
 import { getRosterPanel, type BattleSide, type RosterChoice, type RosterPanel, type RosterRole, type RosterSource } from "./roster-prep";
@@ -135,7 +135,7 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
   );
 }
 
-export function RosterPicker({ state, panel: providedPanel, role, side, activeSource, onSelect, pickerId, variant = "inline" }: {
+export function RosterPicker({ state, panel: providedPanel, role, side, activeSource, onSelect, pickerId, variant = "inline", runtime = championsRuntime }: {
   state?: CalculatorRosterState;
   panel?: RosterPanel;
   role: RosterRole;
@@ -144,9 +144,11 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
   onSelect: (choice: RosterChoice) => void;
   pickerId?: string;
   variant?: "inline" | "rail";
+  /** The matchup's game: types, sprites and unsupported notes come from its catalog. */
+  runtime?: BattleRuntime;
 }) {
   const id = useId();
-  const panel: RosterPanel = providedPanel ?? (state ? getRosterPanel(state, role) : { status: "empty", teamName: null, message: "Choose a team source or select Pokémon manually.", choices: [] });
+  const panel: RosterPanel = providedPanel ?? (state ? getRosterPanel(state, role, runtime) : { status: "empty", teamName: null, message: "Choose a team source or select Pokémon manually.", choices: [] });
   const ownership = role === "own" ? "Your team" : "Opponent's team";
   const position = side === "attacker" ? "left" : "right";
   const rail = variant === "rail";
@@ -160,7 +162,12 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
       {panel.status === "ready" && (
         <ul aria-label={`${ownership} ${position} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
-            const species = choice.speciesId ? speciesById.get(choice.speciesId) : null;
+            const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
+            // League rosters store Pool Builder display names, which is what the sprite dex is keyed by.
+            // A pasted cosmetic form (Florges-White) has no sprite of its own there: use its family's.
+            // Minior's cores keep their own artwork (the plain Minior sprite is the Meteor Form's; Showdown's plain Minior is the Red Core).
+            const spriteName = choice.spriteName ?? (species ? (species.baseSpecies === "minior" ? (species.id === "minior" ? "Minior-Red" : undefined)
+              : cosmeticFamily(runtime, species.id)?.name) ?? species.name : undefined);
             const selected = !!choice.source && choice.source.key === activeSource?.key;
             const reason = choice.reason ?? (species?.unsupported.length ? `Unsupported calculation: ${species.unsupported.join(" ")}` : null);
             const content = (
@@ -187,7 +194,7 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
                 >
                   {rail ? (
                     <>
-                      {species && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={species.name} size="md" /></span>}
+                      {species && spriteName && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={spriteName} size="md" /></span>}
                       <span className="min-w-0 flex-1">{content}</span>
                     </>
                   ) : content}

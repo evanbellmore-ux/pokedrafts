@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createElement, type ChangeEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
+import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import { MyTeamPicker, OpponentPicker, RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import * as pokemonSprite from "@/app/components/PokemonSprite";
 import * as selectControl from "@/app/components/ui/Select";
@@ -13,8 +14,11 @@ import {
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
 import { movesById, speciesById } from "@/app/lib/battle/catalog";
-import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild } from "@/app/lib/battle/model";
+import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
+import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { createMoveSlots } from "@/app/lib/battle/move-defaults";
+const usualBuild = (id: string) => withUsualAbility(createBuild(id), usualAbility(id, "Doubles"));
+
 
 function team(id: string, memberId: string, names: string[]): TeamRoster {
   return {
@@ -122,10 +126,11 @@ describe("Champions roster names", () => {
   });
 
   it("keeps unsupported exact forms visible and selectable", () => {
-    const [choice] = rosterChoices("league-a", team("team-own", "member-own", ["Lucario-Mega-Z"]));
-    expect(choice.source?.speciesId).toBe("lucariomegaz");
+    const [choice] = rosterChoices("league-a", team("team-own", "member-own", ["Vivillon-Garden"]), unsupportedSpeciesRuntime);
+    expect(choice.source?.speciesId).toBe("vivillongarden");
     expect(choice.reason).toBeNull();
-    expect(validateBuild(createBuild(choice.speciesId!))).toEqual(expect.arrayContaining([expect.objectContaining({ field: "speciesId" })]));
+    expect(validateBuild(createBuild(choice.speciesId!, unsupportedSpeciesRuntime), unsupportedSpeciesRuntime))
+      .toEqual(expect.arrayContaining([expect.objectContaining({ field: "speciesId" })]));
   });
 
   it("does not cache duplicate roster names or confuse text aliases with entry identity", () => {
@@ -186,7 +191,11 @@ describe("calculator prep transitions", () => {
     expect(bound.attacker.build).toBe(manual.attacker.build);
     expect(bound.attacker.source).toBeNull();
     const selected = selectRosterPokemon(bound, "attacker", choices(state).own[0]);
-    expect(selected.attacker.build).toEqual(createBuild("charizard"));
+    // A species-only league row takes the usual ability: Solar Power in Champions Doubles usage.
+    expect(selected.attacker.build).toEqual({ ...createBuild("charizard"), abilityId: "solarpower" });
+    // The format decides it: Blaze in Champions Singles usage.
+    const singles = selectRosterPokemon({ ...bound, field: { ...bound.field, gameType: "Singles" } }, "attacker", choices(state).own[0]);
+    expect(singles.attacker.build.abilityId).toBe("blaze");
     assert(selected.attacker.build.game === "champions");
     expect(selected.attacker.build.points.spa).toBe(0);
     expect(selected.field).toBe(manual.field);
@@ -481,7 +490,7 @@ describe("calculator prep transitions", () => {
       expect(next.notice).toBe("");
       expect(next.attacker.source).toBeNull();
       expect(next.defender.source).toBeNull();
-      expect(next.attacker.build).toEqual(createBuild("charizard"));
+      expect(next.attacker.build).toEqual(usualBuild("charizard"));
       expect(next.accountId).toBe(userId);
       expect(next.revision).toBeGreaterThan(current.revision);
       expect(reconcileRosters(next, loaded()).notice).toBe("");
@@ -514,8 +523,8 @@ describe("calculator prep transitions", () => {
     expect(reset.attacker.role).toBe("own");
     expect(reset.defender.role).toBe("opponent");
     expect(reset.attacker.source).toBeNull();
-    expect(reset.attacker.build).toEqual(createBuild("charizard"));
-    expect(reset.defender.build).toEqual(createBuild("blastoise"));
+    expect(reset.attacker.build).toEqual(usualBuild("charizard"));
+    expect(reset.defender.build).toEqual(usualBuild("blastoise"));
     expect(reset.field).toEqual(createConditions());
     expect(reset.revision).toBe(current.revision + 1);
     expect(reset.attacker.key).not.toBe(current.defender.key);
@@ -597,7 +606,7 @@ describe("Mega roster preparation", () => {
     expect(current.attacker.build).toEqual(createBuild("charizardmegax"));
     expect(current.attacker.megaBase).toBeNull();
     const directOff = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
-    expect(directOff.attacker.build).toEqual(createBuild("charizard"));
+    expect(directOff.attacker.build).toEqual(usualBuild("charizard"));
     const restored = selectRosterPokemon(directOff, "attacker", own[0]);
     expect(restored.attacker.build).toBe(first.build);
     expect(restored.attacker.megaBase).toBe(first.megaBase);
@@ -663,8 +672,8 @@ describe("Mega roster preparation", () => {
       expect(fresh.attacker.megaBase).toBeNull();
       expect(fresh.defender.megaBase).toBeNull();
       expect(fresh.cache.size).toBe(0);
-      expect(fresh.attacker.build).toEqual(createBuild("charizard"));
-      expect(fresh.defender.build).toEqual(createBuild("blastoise"));
+      expect(fresh.attacker.build).toEqual(usualBuild("charizard"));
+      expect(fresh.defender.build).toEqual(usualBuild("blastoise"));
       expect(toggleMatchupMega(fresh, getMoveOwner(current.attacker), "charizardmegax")).toBe(fresh);
     }
   });
@@ -940,15 +949,15 @@ describe("calculator team sources", () => {
 describe("league matchup UI", () => {
   it.each(["inline", "rail"] as const)("exposes active states, unavailable reasons and unsupported inspection in the %s variant", (variant) => {
     const state = loaded();
-    state.data!.teams[0].pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Lucario-Mega-Z", points: 20, tier: 1 });
-    const own = choices(state).own;
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: () => undefined, variant }));
+    state.data!.teams[0].pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Vivillon-Garden", points: 20, tier: 1 });
+    const own = getRosterPanel(state, "own", unsupportedSpeciesRuntime).choices;
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: () => undefined, variant, runtime: unsupportedSpeciesRuntime }));
     assertLabels(html);
     expect([...html.matchAll(/aria-pressed="true"/g)]).toHaveLength(1);
     expect(html).toContain("Your team");
     expect(html).toContain("Left Pokémon");
     expect(html).toMatch(/<button\b[^>]*disabled=""[^>]*aria-pressed="false"[^>]*aria-label="Use Custom mascot/);
-    const unsupported = html.match(/<button\b[^>]*aria-label="Use Lucario-Mega-Z[^>]*>/)?.[0];
+    const unsupported = html.match(/<button\b[^>]*aria-label="Use Vivillon-Garden[^>]*>/)?.[0];
     expect(unsupported).toBeDefined();
     expect(unsupported).not.toContain('disabled=""');
     expect(html).toContain("No exact Champions match");
@@ -969,12 +978,13 @@ describe("league matchup UI", () => {
   it.each(["inline", "rail"] as const)("provides stable focus hooks and unique labelled headings and reasons for %s pickers", (variant) => {
     const state = loaded();
     for (const roster of state.data!.teams) {
-      roster.pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Lucario-Mega-Z", points: 20, tier: 1 });
+      roster.pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Vivillon-Garden", points: 20, tier: 1 });
     }
-    const { own, other } = choices(state);
+    const own = getRosterPanel(state, "own", unsupportedSpeciesRuntime).choices;
+    const other = getRosterPanel(state, "opponent", unsupportedSpeciesRuntime).choices;
     const html = renderToStaticMarkup(createElement("div", null,
-      createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, pickerId: "attacker-roster", variant }),
-      createElement(RosterPicker, { state, role: "opponent", side: "defender", activeSource: null, onSelect: () => undefined, pickerId: "defender-roster", variant }),
+      createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, pickerId: "attacker-roster", variant, runtime: unsupportedSpeciesRuntime }),
+      createElement(RosterPicker, { state, role: "opponent", side: "defender", activeSource: null, onSelect: () => undefined, pickerId: "defender-roster", variant, runtime: unsupportedSpeciesRuntime }),
     ));
     expect(html).toContain('<div id="attacker-roster" data-calculator-roster="attacker"');
     expect(html).toContain('<div id="defender-roster" data-calculator-roster="defender"');
@@ -1025,18 +1035,20 @@ describe("league matchup UI", () => {
 
   it("uses decorative 40px sprite fallbacks only for resolved rail species, including unsupported forms", () => {
     const state = loaded();
-    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Lucario-Mega-Z", "Custom mascot"]);
-    const props = { state, role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined };
+    state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Vivillon-Garden", "Custom mascot"]);
+    const props = { state, role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined, runtime: unsupportedSpeciesRuntime };
     const sprite = vi.spyOn(pokemonSprite, "default");
     try {
       renderToStaticMarkup(createElement(RosterPicker, props));
       expect(sprite).not.toHaveBeenCalled();
       const html = renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "rail" }));
       expect(sprite.mock.calls.map(([props]) => ({ name: props.name, size: props.size }))).toEqual([
-        { name: "Charizard-Mega-X", size: "md" },
-        { name: "Lucario-Mega-Z", size: "md" },
+        // League entries look up their sprite by the roster's own (Pool Builder) name.
+        { name: "Mega Charizard X", size: "md" },
+        { name: "Vivillon-Garden", size: "md" },
       ]);
       const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
+      expect(buttons[1]).toContain("Unsupported · inspect build");
       for (const button of buttons.slice(0, 2)) {
         expect(button).toMatch(/<span aria-hidden="true" class="shrink-0"><div aria-hidden="true" class="h-10 w-10 [^"]*animate-pulse/);
       }

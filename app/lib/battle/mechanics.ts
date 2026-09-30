@@ -15,6 +15,35 @@ const IV_ORDER = ["hp", "atk", "def", "spe", "spa", "spd"] as const;
 const integerWithin = (value: unknown, min: number, max: number): value is number =>
   typeof value === "number" && Number.isSafeInteger(value) && value >= min && value <= max;
 
+/** Forms that exist only while Terastallized. */
+const TERA_ONLY_FORMS: ReadonlySet<string> = new Set(["ogerpontealtera", "ogerponwellspringtera", "ogerponhearthflametera", "ogerponcornerstonetera", "terapagosstellar"]);
+
+/**
+ * The form a Pokémon battles in because of Terastallization or its entry ability (pinned Showdown
+ * terastallize and Tera Shift): a Terastallized Ogerpon takes its mask's Tera form (Teal for plain
+ * Ogerpon), Terapagos is Terastal from entry, and Stellar once Terastallized. Null otherwise.
+ */
+export function specialTeraForm(build: BattleBuild, runtime: BattleRuntime = championsRuntime): string | null {
+  if (!runtime.profile.tera) return null;
+  const species = runtime.speciesById.get(build.speciesId);
+  if (!species) return null;
+  const tera = build.mechanic === "tera";
+  const base = sourceSpeciesId(species.baseSpecies);
+  const form = base === "ogerpon" && tera && !TERA_ONLY_FORMS.has(species.id) ? (species.id === "ogerpon" ? "ogerpontealtera" : `${species.id}tera`)
+    : base === "terapagos" && species.id !== "terapagosstellar" ? (tera ? "terapagosstellar" : species.id === "terapagos" ? "terapagosterastal" : null)
+      : null;
+  return form && runtime.speciesById.has(form) ? form : null;
+}
+
+/**
+ * Whether a Stellar Tera boost can be used up for a type. Terapagos-Stellar keeps it for every type
+ * (pinned Showdown never records its boosted types), and any Terastallized Terapagos is that form.
+ */
+export function stellarBoostUsedUp(build: BattleBuild, runtime: BattleRuntime = championsRuntime): boolean {
+  const species = runtime.speciesById.get(build.speciesId);
+  return !(species && sourceSpeciesId(species.baseSpecies) === "terapagos");
+}
+
 export function isMaxActive(build: BattleBuild): boolean {
   return build.mechanic === "dynamax" || build.mechanic === "gigantamax";
 }
@@ -43,10 +72,15 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   if (config?.gigantamax !== undefined && typeof config.gigantamax !== "boolean") {
     issues.push({ field: "configuration.gigantamax", message: "Gigantamax factor must be Yes or No." });
   }
-  if (config?.gender !== undefined && !["M", "F", "N"].includes(config.gender)) {
+  // A transformed Imposter user keeps its own gender, already checked against its own species.
+  const genderChecked = !build.transformedFrom;
+  if (genderChecked && config?.gender !== undefined && !["M", "F", "N"].includes(config.gender)) {
     issues.push({ field: "configuration.gender", message: "Gender must be M, F or N." });
-  } else if (config?.gender && species?.gender && config.gender !== species.gender) {
+  } else if (genderChecked && config?.gender && species?.gender && config.gender !== species.gender) {
     issues.push({ field: "configuration.gender", message: `${species.name} has fixed gender ${species.gender}.` });
+  } else if (genderChecked && config?.gender === "N" && species && !species.gender) {
+    // Showdown's team validator turns any gender but M or F into a random one for these species.
+    issues.push({ field: "configuration.gender", message: `${species.name} is always male or female, never genderless.` });
   }
   if (runtime.profile.dynamax && config?.gigantamax && !species?.canGigantamax) {
     issues.push({ field: "configuration.gigantamax", message: `${species?.name ?? "This Pokémon"} has no verified Gigantamax factor in ${runtime.profile.label}.` });
@@ -54,9 +88,10 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   if (runtime.profile.tera && species?.requiredTeraType && config?.teraType && config.teraType !== species.requiredTeraType) {
     issues.push({ field: "configuration.teraType", message: `${species.name} requires Tera ${species.requiredTeraType}.` });
   }
-  if (species && runtime.profile.tera && (sourceSpeciesId(species.baseSpecies) === "terapagos"
-    || (sourceSpeciesId(species.baseSpecies) === "ogerpon" && species.battleForm))) {
-    issues.push({ field: "mechanic", message: `${species.name}'s automatic/special Tera form, ability and stat prerequisites are not verified; selecting the form alone does not establish a supported battle state.` });
+  // Ogerpon's Tera forms and Terapagos-Stellar exist only while Terastallized (pinned Showdown
+  // terastallize); the calculation takes them from Terastallization itself (settleAbilities).
+  if (species && runtime.profile.tera && TERA_ONLY_FORMS.has(species.id) && build.mechanic !== "tera") {
+    issues.push({ field: "mechanic", message: `${species.name} exists only while Terastallized. Turn on Terastallization (Tera ${species.requiredTeraType ?? "type"}).` });
   }
   if (!build.mechanic) return issues;
   if (!["tera", "dynamax", "gigantamax"].includes(build.mechanic)) {
@@ -66,9 +101,6 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   if (build.mechanic === "tera") {
     if (!runtime.profile.tera) issues.push({ field: "mechanic", message: `Terastallization is not available in ${runtime.profile.label}. Retained Tera configuration does not activate it.` });
     else if (!config?.teraType) issues.push({ field: "configuration.teraType", message: "Choose a Tera type before activating Terastallization." });
-    if (species && ["ogerpon", "terapagos"].includes(sourceSpeciesId(species.baseSpecies))) {
-      issues.push({ field: "mechanic", message: `${species.name}'s Tera form transition, ability and stat prerequisites are not verified; this special-form Terastallization is unsupported.` });
-    }
   } else {
     if (!runtime.profile.dynamax) issues.push({ field: "mechanic", message: `Dynamax and Gigantamax are not available in ${runtime.profile.label}.` });
     // Pinned Showdown battle-actions.ts:1483–1501 chooses G-Max from the stored

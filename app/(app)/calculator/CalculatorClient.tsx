@@ -4,8 +4,11 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNod
 import { ArrowLeftRight, RotateCcw } from "lucide-react";
 import { Alert, Button, EmptyState, Field, PageHeader, Select } from "@/app/components/ui";
 import { BATTLE_GAMES, BATTLE_PROFILES, isBattleGame } from "@/app/lib/battle/profiles";
+import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
-import { validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { mimicryState } from "@/app/lib/battle/mimicry";
+import { movesSpeciesId } from "@/app/lib/battle/imposter";
+import { boosterRoomChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleGame, BattleMechanic } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { linkClassName } from "@/app/lib/theme";
@@ -20,7 +23,7 @@ import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
-import { activateMoveSlot, applyTeamPaste, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
+import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -190,7 +193,9 @@ export default function CalculatorClient() {
   const buildIssueCount = issues.attacker.length + issues.defender.length;
   const invalid = buildIssueCount > 0 || issues.field.length > 0;
   const resultsBlocked = engine.status !== "ready" || !!calculation?.error || invalid;
+  // A transformed Imposter user lists its target's moves (imposter.ts).
   const sourceSpecies = speciesById.get(attackView.source.build.speciesId);
+  const moveSpecies = speciesById.get(movesSpeciesId(attackView.source.build, attackView.receiver.build, matchup.field.magicRoom)) ?? sourceSpecies;
   const receiverSpecies = speciesById.get(attackView.receiver.build.speciesId);
   const currentBatch = calculation && sameMoveOwner(calculation.identity.source, attackView.owner) && sameMoveOwner(calculation.identity.receiver, attackView.receiverOwner);
   const rows = !resultsBlocked && currentBatch ? calculation.result?.results ?? [] : [];
@@ -278,7 +283,7 @@ export default function CalculatorClient() {
 
   function renderRoster(side: BattleSide, variant: "inline" | "rail") {
     const slot = matchup[side];
-    return <RosterPicker pickerId={rosterControls[side]} variant={variant} panel={rosterPanels[slot.role]} role={slot.role} side={side} activeSource={slot.source} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
+    return <RosterPicker pickerId={rosterControls[side]} variant={variant} panel={rosterPanels[slot.role]} role={slot.role} side={side} activeSource={slot.source} runtime={runtime} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
   }
 
   function focusTeamSource(role: RosterRole) {
@@ -324,6 +329,26 @@ export default function CalculatorClient() {
         )}
       </>
     );
+  }
+
+  // The attacking Pokémon's team (league roster or import), offered first for Beat Up's party.
+  const partyOptions = beatUpPartyOptions(rosterPanels[attackView.source.role].choices.flatMap((choice) => choice.speciesId ? [choice.speciesId] : []), runtime);
+
+  /** The Build settings control that fixes a missing required move (e.g. Secret Sword). */
+  function requiredMoveFix(slot: PreparedMatchup["attacker"]) {
+    const required = runtime.speciesById.get(slot.build.speciesId)?.requiredMove;
+    if (!required) return undefined;
+    const name = (moveId: string) => runtime.movesById.get(moveId)?.name ?? moveId;
+    return {
+      name: name(required),
+      slots: slot.moves.map((move) => move.moveId ? name(move.moveId) : "Empty"),
+      onEquip: (slotIndex: number) => {
+        setMatchup((current) => equipRequiredMove(current, slot.key, slotIndex));
+        // The fix control unmounts once the move is prepared; continue from the updated quick move.
+        const button = summaryRef.current?.querySelector<HTMLButtonElement>(`[data-move-owner="${slot.key}:${slot.moveEpoch}"][data-move-slot="${slotIndex}"]`);
+        if (button) reveal(button, false);
+      },
+    };
   }
 
   function fixSettings() {
@@ -467,6 +492,9 @@ export default function CalculatorClient() {
               onHPChange={updateHP}
               onRosterSelect={chooseRosterPokemon}
               onShowMove={showMove}
+              magicRoom={matchup.field.magicRoom}
+              terrain={matchup.field.terrain}
+              gameType={matchup.field.gameType}
             />
           </div>
           <div className="space-y-2 text-xs text-muted">
@@ -487,9 +515,10 @@ export default function CalculatorClient() {
                 ref={movesRef}
                 runtime={runtime}
                 sourceBuild={attackView.source.build}
+                gameType={matchup.field.gameType}
                 id={controls.moves}
                 rows={rows}
-                moveIds={sourceSpecies?.moves ?? []}
+                moveIds={moveSpecies?.moves ?? []}
                 ownerId={`${attackView.owner.key}:${attackView.owner.epoch}`}
                 selectedMoveId={attackView.moveId}
                 onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId, attackView.owner))}
@@ -509,6 +538,8 @@ export default function CalculatorClient() {
                 defenderHP={currentHP}
                 blocked={resultsBlocked}
                 onReveal={reveal}
+                hitBattle={{ magicRoom: attackView.field.magicRoom, opponentAbilityId: attackView.receiver.build.abilityId }}
+                partyOptions={partyOptions}
               />
               <details className="rounded-xl border border-line bg-panel">
                 <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and v1 assumptions</summary>
@@ -523,8 +554,9 @@ export default function CalculatorClient() {
                     <li>Imported Tera types, Dynamax levels and Gigantamax factors are configuration, not activation. Use the game-specific controls to activate an effect. Z use is assumed still available; Stellar boosts need explicit first-use context. Status-Z bonuses, G-Max residual turns and battle-wide consumption are not simulated. Unverified effects are labelled instead of falling back to ordinary damage.</li>
                     <li>Dynamax keeps the HP editor in base/pre-Dynamax units and displays effective HP separately. Changing game resets active preparation and caches but retains original team text for revalidation. No future Champions mechanic is enabled until its engine and rules are verified.</li>
                     <li>Mega buttons beside each Pokémon’s name change its form, ability, required stone and stats without resetting training, HP or moves. Click the active form again to restore the base ability and item; a directly chosen Mega returns to base defaults. Unsupported forms retain their warnings. This does not simulate transformation timing, entry effects or automatic weather/terrain.</li>
-                    <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition; do not manually apply the same entry-stage change twice.</li>
-                    <li>One move use only. Variable multihit moves need an explicit hit count unless Skill Link fixes it; fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
+                    <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition. Intimidate is applied with its button and stays in both Pokémon’s stages, so Mega Evolution keeps it.</li>
+                    <li>Screens, Helping Hand, Friend Guard, Protect, Tailwind and Charge are set per side under Field conditions, which also lists common battle states the calculator cannot represent; results assume those are absent.</li>
+                    <li>One move use only. Moves that hit 2–5 times need an explicit hit count unless Skill Link fixes it; Loaded Dice limits the choice to 4–5. Triple Kick, Triple Axel and Population Bomb assume every hit lands, because each hit after the first checks accuracy again; choose fewer hits under the move. Skill Link or Loaded Dice makes all their hits land, except that Loaded Dice makes Population Bomb hit 4–10 times, so choose its count. Magic Room and Klutz switch Loaded Dice off, and an opposing Neutralizing Gas switches Skill Link off. Other fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
                     <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
                     <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. Recoil, healing and later turns are not included.</li>
                   </ul>
@@ -554,6 +586,9 @@ export default function CalculatorClient() {
                       <PokemonPanel
                         key={slot.key}
                         runtime={runtime}
+                        gameType={matchup.field.gameType}
+                        boosterRoomChoice={boosterRoomChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
+                        requiredMove={requiredMoveFix(slot)}
                         panelId={controls[side]}
                         side={side}
                         build={slot.build}
@@ -561,6 +596,9 @@ export default function CalculatorClient() {
                         editorRevision={slot.editorRevision}
                         provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
                         onChange={(build) => updateBuild(slot.key, build)}
+                        onApplyIntimidate={() => updateCombatant(slot.key, (current, slotSide) => applyMatchupIntimidate(current, slotSide))}
+                        intimidateResult={intimidateResult(matchup, side)}
+                        mimicry={mimicryState(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
                         hpInput={slot.hpInput}
                         onHPChange={(text) => updateHP(slot.key, text)}
                         onReveal={reveal}
