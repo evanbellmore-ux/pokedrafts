@@ -40,7 +40,7 @@ describe("native quick-move defaults", () => {
     // The source is named by the file it came from.
     expect(describeMoveSlot(slots(sv, "garchomp", "Doubles")[0])).toBe("From Showdown's Random Doubles Battle sets");
     expect(describeMoveSlot(slots(us, "garchomp", "Doubles")[0])).toBe("From Showdown's Random Battle sets (Singles)");
-    expect(describeMoveSlot(slots(sv, "garchomp", "Doubles")[2])).toBe("Suggested, per-species usage unavailable for this move");
+    expect(describeMoveSlot(slots(sv, "garchomp", "Doubles")[2])).toBe("Suggested (no usage data)");
   });
 
   it("keep a form's required move first and cover battle-only and cosmetic forms", () => {

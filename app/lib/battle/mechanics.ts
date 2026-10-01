@@ -91,7 +91,7 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   // Ogerpon's Tera forms and Terapagos-Stellar exist only while Terastallized (pinned Showdown
   // terastallize); the calculation takes them from Terastallization itself (settleAbilities).
   if (species && runtime.profile.tera && TERA_ONLY_FORMS.has(species.id) && build.mechanic !== "tera") {
-    issues.push({ field: "mechanic", message: `${species.name} exists only while Terastallized. Turn on Terastallization (Tera ${species.requiredTeraType ?? "type"}).` });
+    issues.push({ field: "mechanic", message: `${species.name} exists only while Terastallized.` });
   }
   if (!build.mechanic) return issues;
   if (!["tera", "dynamax", "gigantamax"].includes(build.mechanic)) {
@@ -99,7 +99,7 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
     return issues;
   }
   if (build.mechanic === "tera") {
-    if (!runtime.profile.tera) issues.push({ field: "mechanic", message: `Terastallization is not available in ${runtime.profile.label}. Retained Tera configuration does not activate it.` });
+    if (!runtime.profile.tera) issues.push({ field: "mechanic", message: `Terastallization is not available in ${runtime.profile.label}.` });
     else if (!config?.teraType) issues.push({ field: "configuration.teraType", message: "Choose a Tera type before activating Terastallization." });
   } else {
     if (!runtime.profile.dynamax) issues.push({ field: "mechanic", message: `Dynamax and Gigantamax are not available in ${runtime.profile.label}.` });
@@ -107,7 +107,7 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
     // factor; side.ts:650–653 has only one Dynamax activation, not a normal/Gmax
     // override. Never silently reinterpret a request for ordinary Dynamax.
     if (runtime.profile.dynamax && build.mechanic === "dynamax" && config?.gigantamax && species?.canGigantamax) {
-      issues.push({ field: "mechanic", message: `${species.name}'s Gigantamax factor requires Gigantamax when transformed. Remove the factor to use ordinary Dynamax.` });
+      issues.push({ field: "mechanic", message: `${species.name}'s Gigantamax factor requires Gigantamax, not Dynamax.` });
     }
     if (species?.cannotDynamax || (species && ["zacian", "zamazenta", "eternatus"].includes(sourceSpeciesId(species.baseSpecies)))) {
       issues.push({ field: "mechanic", message: `${species?.name ?? "This Pokémon"} cannot Dynamax or Gigantamax.` });

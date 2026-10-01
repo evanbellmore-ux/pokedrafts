@@ -105,10 +105,10 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   }
 
   return (
-    <div data-summary-combatant={side} className="min-w-0 px-3 py-3 sm:px-5">
-      <p className="text-xs font-semibold text-muted">{side === "attacker" ? "Left Pokémon" : "Right Pokémon"} · {slot.source ? ownership : "Manual"}</p>
-      <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-xl">{species?.name ?? "Choose Pokémon"}</h3>
+    <div data-summary-combatant={side} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">
+      {slot.source && <p className="wrap-anywhere text-xs font-semibold text-muted">{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
+      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg">{species?.name ?? "Choose Pokémon"}</h3>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${baseName} ${position} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
@@ -140,8 +140,8 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
       <RetainedConfiguration build={slot.build} runtime={runtime} />
       {health ? (
         <>
-          <p className="mt-2 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
-          <p className="tabular-nums"><span className="text-2xl font-bold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
+          <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
+          <p className="tabular-nums"><span className="text-xl font-bold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
           <div role="meter" aria-label={`${species?.name ?? side} ${position} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className="mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
           </div>
@@ -177,8 +177,8 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
           </div>
         )}
       </div>
-      <div role="group" aria-label={`${species?.name ?? "Pokémon"} ${position} quick moves`} className="mt-2 border-t border-line pt-2">
-        <p className="mb-2 text-xs font-semibold text-muted">Quick moves</p>
+      {/* At the card's foot, level with the other card's quick moves and the Build settings below them. */}
+      <div role="group" aria-label={`${species?.name ?? "Pokémon"} ${position} quick moves`} className="mt-auto border-t border-line pt-2">
         <div className={styles.quickMoves}>
           {slot.moves.map((prepared, index) => {
             const move = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
@@ -253,7 +253,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   return (
     <section data-calculator-summary aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
       <h2 id={`${id}-heading`} className="sr-only">Active Pokémon and HP</h2>
-      <fieldset className="min-w-0 border-b border-line px-3 py-1 sm:px-5">
+      <fieldset className="min-w-0 border-b border-line px-3 py-0.5 sm:px-4">
         <legend className="sr-only">Damage roll</legend>
         <div className="flex flex-wrap items-center gap-x-3">
           <span aria-hidden="true" className="text-xs font-semibold text-muted">Damage roll</span>
@@ -292,7 +292,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
           );
         })}
       </div>
-      <div className="border-t border-line bg-accent-soft px-3 py-3 sm:px-5">
+      <div className="border-t border-line bg-accent-soft px-3 py-2 sm:px-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div aria-live="polite" aria-atomic="true" className="min-w-0 flex-1">
             {!selectedMoveId ? (

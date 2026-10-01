@@ -33,7 +33,7 @@ export function getBuildHealth(build: BattleBuild, runtime: BattleRuntime = cham
   const baseMax = stats.hp;
   const baseCurrent = build.currentHP ?? baseMax;
   const reason = !Number.isSafeInteger(baseCurrent) || baseCurrent < 1 || baseCurrent > baseMax
-    ? `Current HP must be a whole number from 1 to ${baseMax}, or blank for full HP.`
+    ? `Current HP must be a whole number from 1 to ${baseMax}.`
     : validateMechanic(build, runtime).map((issue) => issue.message).join(" ") || null;
   const multiplier = isMaxActive(build) && baseMax !== 1 ? 150 + 5 * (build.configuration?.dynamaxLevel ?? 10) : 100;
   return { baseMax, baseCurrent, max: Math.floor(baseMax * multiplier / 100), current: Math.floor(baseCurrent * multiplier / 100), reason };

@@ -119,7 +119,7 @@ describe("Champions plain-text team import", () => {
       { moveId: null, origin: "empty", gameType: null },
       { moveId: null, origin: "empty", gameType: null },
     ]);
-    expect(parsed.moves.map(describeMoveSlot)).toEqual(["Imported from team paste", "Imported from team paste", "Choose a move", "Choose a move"]);
+    expect(parsed.moves.map(describeMoveSlot)).toEqual(["Imported from team paste", "Imported from team paste", "No move", "No move"]);
     expect(valid("Charizard").moves.every((slot) => slot.moveId === null && slot.origin === "empty")).toBe(true);
     expect(valid("Charizard\n- Protect").moves[0].moveId).toBe("protect");
     expect(valid("Charizard").moves[0]).not.toBe(valid("Charizard").moves[1]);
@@ -129,7 +129,7 @@ describe("Champions plain-text team import", () => {
     const parsed = valid("Charizard");
     expect(parsed.build).toEqual(createBuild("charizard"));
     const info = parsed.diagnostics.filter((entry) => entry.severity === "info").map((entry) => entry.message).join("\n");
-    for (const phrase of ["Ability omitted", "Blaze", "Nature omitted", "Serious", "Training omitted", "zero Stat Points", "Level omitted", "level 50", "Full HP", "healthy status", "zero stat stages", "Rivalry", "no held item"]) {
+    for (const phrase of ["Ability omitted", "Blaze", "Nature omitted", "Serious", "Training omitted", "zero Stat Points", "Level omitted", "level 50", "Full HP", "healthy status", "zero stat stages", "no held item"]) {
       expect(info).toContain(phrase);
     }
   });
@@ -177,10 +177,9 @@ describe("Champions plain-text team import", () => {
     expect(parsed.gender).toBe(gender);
   });
 
-  it("keeps individual gender separate from forms and explains the required two-Pokémon Rivalry context", () => {
+  it("keeps individual gender separate from forms", () => {
     const parsed = valid("Charizard (F)\nShiny: Yes");
     expect(parsed).toMatchObject({ speciesId: "charizard", gender: "F", shiny: true, build: { configuration: { gender: "F" } } });
-    expect(parsed.diagnostics.some((entry) => entry.severity === "info" && entry.message.includes("Rivalry"))).toBe(true);
     expect(valid("Indeedee-F (F)").speciesId).toBe("indeedeef");
     expect(valid("Indeedee (M)").speciesId).toBe("indeedee");
     expect(valid("Charizard\nGender: Female\nShiny: No")).toMatchObject({ gender: "F", shiny: false });
@@ -405,7 +404,7 @@ describe("Traditional EV/IV conversion", () => {
       assertChampionsMember(parsed);
       expect(parsed.build?.points.atk).toBe(expectedPoints);
       expect(new Pokemon(9, "Charizard", { level: 50, nature: "Serious", evs: { atk: ev }, ivs: { atk: iv } }).rawStats.atk).toBeLessThan(minimum);
-      expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("no clamping"))).toBe(true);
+      expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("below the Champions minimum"))).toBe(true);
     }
   });
 
@@ -419,7 +418,7 @@ describe("Traditional EV/IV conversion", () => {
   it.each(["SPs", "Stat Points"])("rejects explicitly labeled %s in traditional mode without reinterpreting them", (label) => {
     const parsed = invalid(`Charizard\n${label}: 32 SpA / 32 Spe / 2 HP`, "traditional");
     expect(parsed.build?.points).toEqual({ hp: null, atk: null, def: null, spa: null, spd: null, spe: null });
-    expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message.includes("Choose Champions mode"))).toBe(true);
+    expect(parsed.diagnostics.some((entry) => entry.severity === "error" && entry.message === "Stat Points are incompatible with traditional EV/IV mode.")).toBe(true);
   });
 });
 
@@ -522,7 +521,7 @@ Jolly Nature
   });
 
   it("explains the separator only when a bare @ could hide the item", () => {
-    const hint = "To add a held item, put a space on each side of @, as Showdown exports it; a bare @ is read as part of the name.";
+    const hint = "A bare @ is read as part of the name.";
     const error = (header: string) => invalid(set(header)).diagnostics.find((entry) => entry.severity === "error")?.message;
     expect(error("Garchomp@Leftovers Orb")).toContain(hint);
     // The item is already separated, so the @ belongs to the nickname and the species is the problem.
@@ -537,15 +536,15 @@ Jolly Nature
 
   it("still rejects two held items and an empty item", () => {
     expect(invalid(set("Garchomp @ Life Orb @ Leftovers")).diagnostics.some((entry) => entry.message.includes("only one held item"))).toBe(true);
-    expect(invalid(set("Garchomp @")).diagnostics.some((entry) => entry.message.includes("A held item name is required after @"))).toBe(true);
+    expect(invalid(set("Garchomp @")).diagnostics.some((entry) => entry.message.includes("No held item name after @."))).toBe(true);
   });
 
   it("accepts a Pokeball line as cosmetic metadata", () => {
     expect(valid(set("Garchomp @ Life Orb", "Pokeball: Poke Ball\n")).diagnostics)
-      .toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations." }));
+      .toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic only." }));
     const parsed = valid(set("M@x (Garchomp) @ Life Orb", "Pokeball: Cherish Ball\n"));
     expect(parsed).toMatchObject({ speciesId: "garchomp", nickname: "M@x", pokeball: "Cherish Ball", build: { itemId: "lifeorb" } });
-    expect(parsed.diagnostics).toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations." }));
+    expect(parsed.diagnostics).toContainEqual(expect.objectContaining({ severity: "info", message: "Nickname, shiny and Poké Ball are cosmetic only." }));
     expect(parsed.stats).toEqual(valid(set("Garchomp @ Life Orb")).stats);
     expect(invalid(set("Garchomp @ Life Orb", "Pokeball: Poke Ball\nPokeball: Great Ball\n")).diagnostics.some((entry) => entry.message.startsWith("Duplicate pokeball"))).toBe(true);
   });

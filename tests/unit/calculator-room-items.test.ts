@@ -53,10 +53,10 @@ describe("a terrain Seed and a later Magic Room", () => {
     const amoonguss = build(sv, "amoonguss", { item: "grassyseed", evs: { hp: 252 } });
     const used = row(sv, "dragonclaw", garchomp, amoonguss, { terrain: "Grassy" });
     expect(range(used)).toBe("67-81");
-    expect(used.assumptions).toContain("The target Amoonguss's Grassy Seed is used up on Grassy Terrain before Magic Room was set, raising its Defense.");
+    expect(used.assumptions).toContain("The target Amoonguss's Grassy Seed was used up on Grassy Terrain before Magic Room: +1 Defense.");
     const held = row(sv, "dragonclaw", garchomp, unused(amoonguss), { terrain: "Grassy" });
     expect(range(held)).toBe("102-120");
-    expect(held.assumptions).toContain("The target Amoonguss's Grassy Seed is not used: Magic Room was up when it entered or when Grassy Terrain started. Tick its Grassy Seed choice if it was used before the room was set.");
+    expect(held.assumptions).toContain("The target Amoonguss's Grassy Seed is not used: Magic Room was up when it entered or Grassy Terrain started.");
     // Without the room the default uses the Seed; an unticked one stayed held when the room ended.
     expect(range(row(sv, "dragonclaw", garchomp, amoonguss, { terrain: "Grassy", magicRoom: false }))).toBe("67-81");
     expect(range(row(sv, "dragonclaw", garchomp, unused(amoonguss), { terrain: "Grassy", magicRoom: false }))).toBe("102-120");
@@ -99,7 +99,7 @@ describe("a terrain Seed and a later Magic Room", () => {
     const hawlucha = build(sv, "hawlucha", { ability: "unburden", item: "electricseed", evs: { atk: 252 }, nature: "Adamant" });
     const acrobatics = row(sv, "acrobatics", hawlucha, snorlax, { terrain: "Electric" });
     expect(acrobatics).toMatchObject({ effectivePower: 110, min: 115, max: 136 });
-    expect(acrobatics.assumptions).toContain("The attacker Hawlucha's Unburden activates once its Electric Seed is used up, doubling its Speed.");
+    expect(acrobatics.assumptions).toContain("The attacker Hawlucha's Unburden is active (Electric Seed used up).");
     expect(row(sv, "acrobatics", unused(hawlucha), snorlax, { terrain: "Electric" })).toMatchObject({ effectivePower: 55, min: 58, max: 69 });
     const amoonguss = build(sv, "amoonguss", { item: "grassyseed", evs: { hp: 252 } });
     // Poltergeist fails; Knock Off has nothing to remove.
@@ -124,7 +124,7 @@ describe("a terrain Seed and a later Magic Room", () => {
     const flutter = build(sv, "fluttermane", { ability: "protosynthesis", evs: { spa: 252 }, nature: "Modest" });
     const lowered = row(sv, "moonblast", flutter, malamar, { terrain: "Psychic" });
     expect(range(lowered)).toBe("350-414");
-    expect(lowered.assumptions).toContain("The target Malamar's Psychic Seed is used up on Psychic Terrain before Magic Room was set, raising its Sp. Def (lowering it, with Contrary).");
+    expect(lowered.assumptions).toContain("The target Malamar's Psychic Seed was used up on Psychic Terrain before Magic Room: -1 Sp. Def (Contrary).");
     expect(range(row(sv, "moonblast", flutter, unused(malamar), { terrain: "Psychic" }))).toBe("234-276");
     const weezing = build(sv, "weezinggalar", { ability: "neutralizinggas", evs: { spa: 252 }, nature: "Modest" });
     expect(range(row(sv, "sludgebomb", weezing, malamar, { terrain: "Psychic" }))).toBe("54-64");
@@ -226,7 +226,7 @@ describe("Intimidate under Magic Room", () => {
     const amoonguss = build(sv, "amoonguss", { item: "grassyseed" });
     const battle = { magicRoom: true, terrain: "Grassy" as const, gameType: "Singles" as const, tailwind: { source: false, target: false } };
     const used = applyIntimidate(incineroar, amoonguss, battle, sv);
-    expect(used.lines).toContain("Amoonguss's stages count its Grassy Seed (+1 Defense), which the calculator adds when it calculates, so the stored stages leave it out.");
+    expect(used.lines).toContain("Amoonguss's stored stages leave out its Grassy Seed (+1 Defense) (added at calculation).");
     expect(used.target.boosts).toMatchObject({ atk: -1, def: 0 });
     const held = applyIntimidate(incineroar, unused(amoonguss), battle, sv);
     expect(held.lines.join(" ")).not.toContain("Grassy Seed");
@@ -241,11 +241,11 @@ describe("entry items the engine does not order as Showdown does", () => {
     const hatterene = build(sv, "hatterene", { item: "roomservice", evs: { hp: 252 } });
     const noRoom = row(sv, "knockoff", incineroar, hatterene, { magicRoom: false, trickRoom: true });
     expect(range(noRoom)).toBe("58-70");
-    expect(noRoom.assumptions).toContain("The target Hatterene's Room Service is used up under Trick Room, lowering its Speed.");
+    expect(noRoom.assumptions).toContain("The target Hatterene's Room Service was used up under Trick Room: -1 Speed.");
     expect(range(row(sv, "knockoff", incineroar, hatterene, { trickRoom: true }))).toBe("58-70");
     const held = row(sv, "knockoff", incineroar, unused(hatterene), { trickRoom: true });
     expect(range(held)).toBe("87-103");
-    expect(held.assumptions).toContain("The target Hatterene's Room Service is not used: Magic Room was up when it entered or when Trick Room started. Tick its Room Service choice if it was used before the room was set.");
+    expect(held.assumptions).toContain("The target Hatterene's Room Service is not used: Magic Room was up when it entered or Trick Room started.");
     // Without Trick Room it waits (Knock Off still boosted into the held item).
     expect(range(row(sv, "knockoff", incineroar, hatterene, { magicRoom: false }))).toBe("87-103");
     const bronzong = build(sv, "bronzong", { ability: "levitate", evs: { atk: 252 }, nature: "Brave" });
@@ -260,7 +260,7 @@ describe("entry items the engine does not order as Showdown does", () => {
     const swoobat = build(swsh, "swoobat", { ability: "simple", item: "psychicseed", evs: { hp: 252 } });
     const hit = row(swsh, "darkpulse", hydreigon, swoobat, { magicRoom: false, terrain: "Psychic" });
     expect(range(hit)).toBe("116-140");
-    expect(hit.assumptions).toContain("The target Swoobat's Psychic Seed is used up on Psychic Terrain, raising its Sp. Def by 2 stages, with Simple.");
+    expect(hit.assumptions).toContain("The target Swoobat's Psychic Seed was used up on Psychic Terrain: +2 Sp. Def (Simple).");
   });
 
   it("lets Download read the foe before its Seed at a shared lead", () => {
@@ -268,7 +268,7 @@ describe("entry items the engine does not order as Showdown does", () => {
     const amoonguss = build(sv, "amoonguss", { item: "grassyseed", evs: { hp: 252 } });
     const hit = row(sv, "triattack", porygonz, amoonguss, { magicRoom: false, terrain: "Grassy" });
     expect(range(hit)).toBe("93-111");
-    expect(hit.assumptions).toContain("The attacker Porygon-Z's Download read Amoonguss's Defense and Sp. Def before its Grassy Seed was used, raising its Attack. This assumes both entered together; if it entered later, Download counted the Seed's rise.");
+    expect(hit.assumptions).toContain("The attacker Porygon-Z's Download raised its Attack: it read Amoonguss's Defense and Sp. Def before its Grassy Seed was used (assumes both entered together).");
   });
 
   it("counts a Klutz holder's Seed when the foe's Neutralizing Gas suppresses Klutz", () => {
@@ -285,7 +285,7 @@ describe("entry order and room timing follow-ups", () => {
     const bundle = build(sv, "ironbundle", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Timid" });
     const hit = row(sv, "hydropump", bundle, build(sv, "snorlax", { evs: { hp: 252 } }), { magicRoom: false, trickRoom: true, terrain: "Electric" });
     expect(range(hit)).toBe("90-106");
-    expect(hit.assumptions).toContain("The attacker Iron Bundle's Room Service lowered its Speed before Quark Drive activated: this assumes Trick Room was up when it entered. If Quark Drive activated first, it raises its Speed: untick its Room Service choice.");
+    expect(hit.assumptions).toContain("The attacker Iron Bundle's Room Service lowered its Speed before Quark Drive activated (assumes Trick Room was up when it entered).");
     const treads = build(sv, "irontreads", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Jolly" });
     expect(range(row(sv, "dragonclaw", build(sv, "garchomp", { evs: { atk: 252 }, nature: "Adamant" }), treads, { magicRoom: false, trickRoom: true, terrain: "Electric" }))).toBe("25-30");
   });
@@ -299,14 +299,14 @@ describe("entry order and room timing follow-ups", () => {
     const amoonguss = unused(build(sv, "amoonguss", { item: "grassyseed", evs: { hp: 252 } }));
     const held = row(sv, "dragonclaw", build(sv, "garchomp", { evs: { atk: 252 }, nature: "Adamant" }), amoonguss, { magicRoom: false, terrain: "Grassy" });
     expect(range(held)).toBe("102-120");
-    expect(held.assumptions).toContain("The target Amoonguss's Grassy Seed is still held: Magic Room was up when it entered or when Grassy Terrain started, and the room ending does not use it. Tick its Grassy Seed choice if it was used.");
+    expect(held.assumptions).toContain("The target Amoonguss's Grassy Seed is still held: Magic Room was up when it entered or Grassy Terrain started.");
     const hatterene = unused(build(sv, "hatterene", { item: "roomservice", evs: { hp: 252 } }));
     expect(range(row(sv, "knockoff", build(sv, "incineroar", { ability: "blaze", evs: { atk: 252 }, nature: "Adamant" }), hatterene, { magicRoom: false, trickRoom: true }))).toBe("87-103");
     // Without the room the switch shows only once unticked, with its own label.
     const noRoom = { ...createConditions(), terrain: "Grassy" as const };
     expect(roomItemChoice(amoonguss, build(sv, "garchomp"), noRoom)).toBe("grassyseed");
     expect(roomItemChoice({ ...amoonguss, itemUsedBeforeRoom: undefined }, build(sv, "garchomp"), noRoom)).toBeNull();
-    expect(roomItemLabel("grassyseed", sv, false)).toBe("Its Grassy Seed was used on Grassy Terrain (Magic Room did not hold it back)");
+    expect(roomItemLabel("grassyseed", sv, false)).toBe("Its Grassy Seed was used on Grassy Terrain");
   });
 
   it("offers no switch when a copied Klutz stops the item anyway", () => {
@@ -325,7 +325,7 @@ describe("final follow-ups", () => {
     const hatterene = build(sv, "hatterene", { ability: "magicbounce", evs: { hp: 252 } });
     const held = row(sv, "moonblast", flutter, hatterene, { magicRoom: false });
     expect(range(held)).toBe("90-106");
-    expect(held.assumptions).toContain("The attacker Flutter Mane's Booster Energy is still held: it entered while Magic Room was up, and the room ending does not use it. Tick its Booster Energy choice if it was used on entry.");
+    expect(held.assumptions).toContain("The attacker Flutter Mane's Booster Energy is still held: it entered under Magic Room.");
     expect(roomItemChoice(flutter, hatterene, createConditions())).toBe("boosterenergy");
     expect(roomItemChoice({ ...flutter, itemUsedBeforeRoom: undefined }, hatterene, createConditions())).toBeNull();
   });
@@ -334,7 +334,7 @@ describe("final follow-ups", () => {
     const bundle = build(sv, "ironbundle", { ability: "quarkdrive", item: "roomservice", evs: { spe: 252 }, nature: "Timid" });
     const hit = row(sv, "hydropump", bundle, build(sv, "pincurchin", { ability: "electricsurge" }), { magicRoom: false, trickRoom: true, terrain: "Electric" });
     expect(range(hit)).toBe("85-102");
-    expect(hit.assumptions.join(" ")).toContain("The attacker Iron Bundle's Quark Drive activated before Room Service lowered its Speed: this assumes both entered together, so the other Pokémon's Electric Surge set Electric Terrain first. If Room Service came first, Quark Drive raises its Sp. Atk: tick its Room Service choice.");
+    expect(hit.assumptions.join(" ")).toContain("The attacker Iron Bundle's Quark Drive activated before Room Service lowered its Speed (assumes both entered together and the other Pokémon's Electric Surge set Electric Terrain first).");
   });
 
   it("fails a transformed Imposter user's Double Shock before the target's Protect", () => {

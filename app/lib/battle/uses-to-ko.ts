@@ -315,9 +315,9 @@ export function prepareUses(attacker: BattleBuild, defender: BattleBuild, condit
     (own.tailwind || foe.tailwind) && "Tailwind", conditions.trickRoom && "Trick Room", conditions.gravity && "Gravity",
     conditions.magicRoom && "Magic Room", conditions.wonderRoom && "Wonder Room"].filter(Boolean) as string[];
   if (own.helpingHand) notes.push("Assumes Helping Hand on every use.");
-  if (dynamax) notes.push("Assumes Dynamax started this turn; it ends after 3 turns.");
-  if ([attacker, defender].some((build) => build.status === "tox")) notes.push("Assumes bad poison started this turn: 1/16 of the maximum HP at the first end of turn, then 2/16, 3/16 and so on.");
-  if (attAbility === "slowstart" && attacker.abilityActive) notes.push("Assumes Slow Start started this turn; it ends after 5 turns.");
+  if (dynamax) notes.push("Assumes Dynamax started this turn.");
+  if ([attacker, defender].some((build) => build.status === "tox")) notes.push("Assumes bad poison started this turn.");
+  if (attAbility === "slowstart" && attacker.abilityActive) notes.push("Assumes Slow Start started this turn.");
   if (attacker.status === "par") notes.push("Assumes the paralysed attacker is never fully paralysed.");
   return {
     attacker, defender, conditions, runtime, helpers, gen: Generations.get(runtime.profile.generation),
@@ -679,9 +679,8 @@ class UsesSearch {
     const perPP = result.move.isMax ? 1 : LOCK_IN_MOVES.has(move.id) ? 2 : move.id === "uproar" ? 3 : 1;
     let limit = pp === null ? USES_CAP : (turns(pp) + turns(leppa)) * perPP;
     let limitReason: "pp" | "pressure" | "self-cost" | "cap" = pp === null || perPP > 1 ? "cap" : pressure ? "pressure" : "pp";
-    if (leppa) carried.push(`The attacker's Leppa Berry restores ${leppa} PP once the move runs out.`);
-    if (perPP > 1) notes.push(move.id === "uproar" ? "Uproar takes 1 PP for its 3 turns, so the count allows 3 uses per PP."
-      : `${move.name} takes 1 PP for its 2 or 3 turns locked in, so the count allows 2 uses per PP.`);
+    if (leppa) carried.push(`The attacker's Leppa Berry restores ${leppa} PP.`);
+    if (perPP > 1) notes.push(`${move.name}: ${perPP} uses per PP.`);
     if (cap && cap.uses < limit) { limit = cap.uses; limitReason = "cap"; }
     const losesHP = this.attackerLosesHP();
     // The attacker's own berry acts where its HP is followed: the roll paths, and the exact search once a bound
@@ -724,7 +723,7 @@ class UsesSearch {
       guaranteed = fell === null ? ko(low) : null;
       fewest = ko(high) ?? ko(low);
       endOfTurn = [low, high].some((walked) => walked.endOfTurn && ko(walked) !== null);
-      notes.push("There are too many roll sequences to count exactly, so these counts take the lowest and the highest roll on every use, with no chance.");
+      notes.push("Too many roll sequences: lowest and highest rolls only, no chance.");
     } else {
       guaranteed = counted.guaranteed;
       fewest = counted.fewest;
@@ -844,17 +843,18 @@ class UsesSearch {
     const { move, row } = this.input;
     const { conditions } = this.m;
     const notes: string[] = [];
-    if (Array.isArray(move.multihit) && row.hits !== null) notes.push(`Assumes ${row.hits} hits on every use.`);
+    // A Z-Move or Max Move made from a multi-hit move hits once.
+    if (Array.isArray(move.multihit) && row.hits !== null && !this.result.move.isMax && !this.result.move.isZ) notes.push(`Assumes ${row.hits} hits on every use.`);
     if (row.alternate) notes.push(`Each use has its own ${Math.round(row.alternate.chance * 100)}% chance of ${row.alternate.label}.`);
-    if (SUCCESS_MOVES.has(move.id)) notes.push(`Assumes ${move.name} succeeds on every use, as the one use does.`);
-    if (LOCK_IN_MOVES.has(move.id)) notes.push(`Leaves out the confusion after ${move.name}'s lock-in, which can make the attacker hurt itself instead.`);
+    if (SUCCESS_MOVES.has(move.id)) notes.push(`Assumes ${move.name} succeeds on every use.`);
+    if (LOCK_IN_MOVES.has(move.id)) notes.push(`Leaves out the confusion after ${move.name}'s lock-in.`);
     if (this.charges(this.initial, true) && this.m.attackerItem === "powerherb") notes.push("Power Herb skips the first charge turn.");
     // Doubles: the spread reduction, a dart for each foe and Friend Guard hold while the target's partner
     // stays in, and a partner's Pressure would take a PP more (pinned Showdown useMoveInner pressureTargets).
     if (conditions.gameType === "Doubles" && conditions.multipleTargets) {
       const spread = !this.result.move.isMax && !this.result.move.isZ && ["allAdjacentFoes", "allAdjacent"].includes(move.target);
       if (spread || move.id === "dragondarts" || conditions.defenderSide.friendGuard) notes.push("Assumes the target's partner stays in for every use.");
-      if (spread && move.pp !== undefined) notes.push("Assumes the target's partner has no Pressure, which would take a PP more each use.");
+      if (spread && move.pp !== undefined) notes.push("Assumes the target's partner has no Pressure.");
     }
     return notes;
   }
@@ -2432,9 +2432,9 @@ class UsesSearch {
     const cured = this.hydrated(state, who);
     if ((side.status === "psn" || side.status === "tox") && !cured) {
       if (ability === "poisonheal") add(part(8), "Poison Heal heals", 9);
-      else if (!guard) add(-(side.status === "psn" ? part(8) : part(16) * Math.min(15, side.toxic + 1)), side.status === "psn" ? "Poison damages" : "Bad poison damages", 9);
+      else if (!guard) add(-(side.status === "psn" ? part(8) : part(16) * Math.min(15, side.toxic + 1)), side.status === "psn" ? "poison damages" : "bad poison damages", 9);
     }
-    if (side.status === "brn" && !guard && !cured) add(-(ability === "heatproof" ? Math.max(1, Math.floor(part(16) / 2)) : part(16)), "Its burn damages", 10);
+    if (side.status === "brn" && !guard && !cured) add(-(ability === "heatproof" ? Math.max(1, Math.floor(part(16) / 2)) : part(16)), "its burn damages", 10);
     if (side.saltCure && !guard) {
       const resisted = types.includes("Water") || types.includes("Steel");
       add(-part(m.runtime.profile.id === "champions" ? (resisted ? 8 : 16) : (resisted ? 4 : 8)), "Salt Cure damages", 13);
@@ -2744,11 +2744,13 @@ class UsesSearch {
   }
 }
 
-/** The end-of-turn effects as sentences. */
+/** The end-of-turn effects as sentences (a status's own name is lowercase, so only the first is capitalised). */
 function texts(residuals: { att: Residuals; def: Residuals }): string[] {
   const out: string[] = [];
   for (const who of ["def", "att"] as const) {
-    if (residuals[who].names.length) out.push(`${joinResiduals(residuals[who].names)} ${who === "def" ? "the target" : "the attacker"} at the end of each turn.`);
+    if (!residuals[who].names.length) continue;
+    const joined = joinResiduals(residuals[who].names);
+    out.push(`${joined[0].toUpperCase()}${joined.slice(1)} ${who === "def" ? "the target" : "the attacker"} at the end of each turn.`);
   }
   return out;
 }
@@ -2990,7 +2992,7 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   const punished = contact && ((defItem === "rockyhelmet") || ["roughskin", "ironbarbs"].includes(defAbility));
   const heals = !!(engineMove as Move & { drain?: unknown }).drain || attItem === "shellbell";
   if (attHPSensitive && ((attAbility !== "magicguard" && (recoil || punished || attItem === "lifeorb")) || heals || attackerResiduals)) {
-    add(`The attacker's HP after recoil, draining, Life Orb, contact damage or the end of each turn changes ${name}'s damage.`);
+    add(`${name}'s damage follows the attacker's HP.`);
   }
   const table = statMove(move.id, runtime.profile.id);
   if (relevant(table?.self, "att")) own(`${move.name} ${direction(table!.self!, attAbility)} the attacker's ${changed(table!.self!, "att")} after each use.`);

@@ -43,7 +43,7 @@ function row(game: BattleGame, moveId: string, attacker: BattleBuild, defender: 
   return found;
 }
 const modes: DamageRollMode[] = ["low", "average", "high"];
-const NOTE = (name: string) => `${name} cannot knock the target out: damage that would reach its HP leaves it 1 HP instead, before Sturdy, Focus Sash or Focus Band could act.`;
+const NOTE = (name: string) => `${name} leaves the target at least 1 HP.`;
 /** Every roll leaves exactly 1 HP; the damage shown stays the raw roll. */
 function leavesOne(game: BattleGame, defender: BattleBuild, hit: MoveDamageResult, maximum: number, damage: [number, number, number]) {
   for (const [index, mode] of modes.entries()) {
@@ -97,7 +97,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const sturdy = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), pineco);
     expect(sturdy).toMatchObject({ min: 300, max: 354, ohkoChance: 0, leavesOneHP: true });
     expect(sturdy.survival).toBeUndefined();
-    expect(sturdy.assumptions).not.toContain("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed, and Uses to KO counts the next use from 1 HP.");
+    expect(sturdy.assumptions).not.toContain("Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed.");
     leavesOne("ultra_sun_ultra_moon", pineco, sturdy, 21, [300, 327, 354]);
     // Showdown: Pikachu 20/20 -> 1/20 and the Focus Sash is still held.
     const sash = build("sword_shield", "pikachu", { item: "focussash", level: 5 });
@@ -110,7 +110,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const banded = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), band);
     expect(banded).toMatchObject({ ohkoChance: 0, leavesOneHP: true });
     expect(banded.survival).toBeUndefined();
-    expect(banded.assumptions).not.toContain("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
+    expect(banded.assumptions).not.toContain("Focus Band is not modelled: no KO chance or Uses to KO.");
     leavesOne("ultra_sun_ultra_moon", band, banded, 110, [76, 83, 90]);
     // Showdown: Ogerpon-Cornerstone 24/24 -> 1/24 (raw 117-138).
     const ogerpon = build("scarlet_violet", "ogerponcornerstone", { ability: "sturdy", item: "cornerstonemask", level: 5 });
@@ -156,7 +156,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const z = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon", { item: "normaliumz" }), usumPikachu, {}, { useZ: true });
     expect(z).toMatchObject({ effectiveName: "Breakneck Blitz", min: 125, max: 148, ohkoChance: 1 });
     expect(z.leavesOneHP).toBeUndefined();
-    expect(z.assumptions).toContain("Breakneck Blitz does not keep False Swipe's effect of leaving the target 1 HP, so it can knock the target out.");
+    expect(z.assumptions).toContain("Breakneck Blitz can knock the target out, unlike False Swipe.");
     expect(previewRemainingHP(usumPikachu, z, "low", runtimes.ultra_sun_ultra_moon)).toMatchObject({ status: "ready", remaining: 0 });
     // Showdown: Max Strike 113-134 and G-Max Replenish (Hold Back) 151-178 faint Pikachu 20/110.
     const swshPikachu = build("sword_shield", "pikachu", { hp: 20 });
@@ -166,7 +166,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     expect(previewRemainingHP(swshPikachu, max, "low", runtimes.sword_shield)).toMatchObject({ status: "ready", remaining: 0 });
     const gmax = row("sword_shield", "holdback", build("sword_shield", "snorlax", { nature: "Adamant", evs: { atk: 252 }, mechanic: "gigantamax" }), swshPikachu);
     expect(gmax).toMatchObject({ effectiveName: "G-Max Replenish", min: 151, max: 178, ohkoChance: 1 });
-    expect(gmax.assumptions).toContain("G-Max Replenish does not keep Hold Back's effect of leaving the target 1 HP, so it can knock the target out.");
+    expect(gmax.assumptions).toContain("G-Max Replenish can knock the target out, unlike Hold Back.");
   });
 
   it("is the same in Doubles, and Champions has neither move", () => {

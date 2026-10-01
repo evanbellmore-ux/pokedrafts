@@ -146,12 +146,18 @@ describe("native training and set controls", () => {
     const { html, inputs } = capture(() => panel(build));
     expect(html).toContain("0 / 66 Stat Points");
     expect(inputs.filter((input) => /-points-\w+$/.test(input.id ?? ""))).toHaveLength(6);
-    expect(html).toContain("Tera Type: Fighting");
-    expect(html).toContain("Gigantamax factor: Yes");
-    expect(html).toContain("Dynamax Level: 3");
-    expect(html).toContain("Hidden Power: Ice");
-    expect(html).toContain("retained; inactive in");
+    // The summary card directly above its Build settings shows the retained metadata, so the editor does not repeat it.
+    expect(html).not.toContain("retained; inactive in");
+    const matchup = createMatchup();
+    matchup.attacker.build = build;
+    const card = summary(matchup);
+    expect(card).toContain("Tera Type: Fighting");
+    expect(card).toContain("Gigantamax factor: Yes");
+    expect(card).toContain("Dynamax Level: 3");
+    expect(card).toContain("Hidden Power: Ice");
+    expect(card).toContain("retained; inactive in");
     expect(html).not.toContain("data-battle-mechanic");
+    expect(card).not.toContain("data-battle-mechanic");
     expect(html).not.toContain('value="Stellar"');
     expect(build.mechanic).toBeUndefined();
     expect(validateBuild(build)).toEqual([]);
@@ -251,7 +257,7 @@ describe("native summary mechanics and health", () => {
     const factor = render({ ...build, configuration: { gigantamax: true } });
     expect(factor.buttons.find((button) => button["data-battle-mechanic"] === "dynamax")!.disabled).toBe(true);
     expect(factor.buttons.find((button) => button["data-battle-mechanic"] === "gigantamax")!.disabled).toBe(false);
-    expect(factor.html).toContain("Remove the factor to use ordinary Dynamax");
+    expect(factor.html).toContain("Gigantamax factor requires Gigantamax, not Dynamax.");
     expect(render(native(swsh, "zacian")).html).toContain("cannot Dynamax or Gigantamax");
     expect(render(createBuild(), championsRuntime).buttons).toHaveLength(0);
     expect(render(native(usum), usum).buttons).toHaveLength(0);

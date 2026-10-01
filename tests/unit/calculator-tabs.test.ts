@@ -4,8 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 import CalculatorTabs, { CALCULATOR_TABS, calculatorTabForKey, calculatorTabIds } from "@/app/(app)/calculator/CalculatorTabs";
 
 describe("calculator menu tabs", () => {
+  // Build settings and Field conditions are not menus: they are collapsible sections under the summary.
   it("places own-team and dependent-opponent menus at the ends", () => {
-    expect(CALCULATOR_TABS.map(({ label }) => label)).toEqual(["My team", "Moves", "Build settings", "Field conditions", "Opponent"]);
+    expect(CALCULATOR_TABS.map(({ label }) => label)).toEqual(["My team", "Moves", "Opponent"]);
   });
 
   it.each(CALCULATOR_TABS)("renders only $id as the selected sequential tab stop", ({ id: activeTab }) => {
@@ -13,7 +14,7 @@ describe("calculator menu tabs", () => {
     const html = renderToStaticMarkup(createElement(CalculatorTabs, { prefix: "calculator", activeTab, onSelect }));
     expect(html).toContain('role="tablist" aria-label="Calculator menus"');
     const buttons = [...html.matchAll(/<button\b[^>]*>/g)].map(([tag]) => tag);
-    expect(buttons).toHaveLength(5);
+    expect(buttons).toHaveLength(3);
     CALCULATOR_TABS.forEach(({ id }, index) => {
       const ids = calculatorTabIds("calculator", id);
       expect(buttons[index]).toContain('type="button"');
@@ -28,10 +29,10 @@ describe("calculator menu tabs", () => {
   });
 
   it.each(CALCULATOR_TABS)("maps wrapping Left/Right and Home/End from $id", ({ id }) => {
-    const order = ["team", "moves", "builds", "field", "opponent"] as const;
+    const order = ["team", "moves", "opponent"] as const;
     const index = order.indexOf(id);
-    expect(calculatorTabForKey(id, "ArrowLeft")).toBe(order[(index + 4) % 5]);
-    expect(calculatorTabForKey(id, "ArrowRight")).toBe(order[(index + 1) % 5]);
+    expect(calculatorTabForKey(id, "ArrowLeft")).toBe(order[(index + 2) % 3]);
+    expect(calculatorTabForKey(id, "ArrowRight")).toBe(order[(index + 1) % 3]);
     expect(calculatorTabForKey(id, "Home")).toBe("team");
     expect(calculatorTabForKey(id, "End")).toBe("opponent");
   });
@@ -42,19 +43,13 @@ describe("calculator menu tabs", () => {
 
   it("gives each calculator and pane its own stable IDs", () => {
     const ids = ["first", "second"].flatMap((prefix) => CALCULATOR_TABS.flatMap(({ id }) => Object.values(calculatorTabIds(prefix, id))));
-    expect(ids).toHaveLength(20);
-    expect(new Set(ids).size).toBe(20);
+    expect(ids).toHaveLength(12);
+    expect(new Set(ids).size).toBe(12);
     expect(calculatorTabIds("first", "moves")).toEqual({ tabId: "first-tab-moves", panelId: "first-pane-moves" });
   });
 
-  it("shows settings issue counts without disabling a hidden destination", () => {
-    const html = renderToStaticMarkup(createElement(CalculatorTabs, {
-      prefix: "calculator", activeTab: "moves", onSelect: () => undefined,
-      issues: { builds: 2, field: 1, team: 0 },
-    }));
-    expect(html).toMatch(/Build settings<span[^>]*>2<span[^>]*> settings to check/);
-    expect(html).toMatch(/Field conditions<span[^>]*>1<span[^>]*> settings to check/);
-    expect([...html.matchAll(/settings to check/g)]).toHaveLength(2);
-    expect(html).not.toContain("disabled");
+  it("leaves settings and their issue counts to the sections under the summary", () => {
+    const html = renderToStaticMarkup(createElement(CalculatorTabs, { prefix: "calculator", activeTab: "moves", onSelect: () => undefined }));
+    expect(html).not.toMatch(/Build settings|Field conditions|to check|disabled/);
   });
 });

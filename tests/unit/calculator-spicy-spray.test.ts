@@ -13,7 +13,7 @@ function build(id: string, abilityId: string, extra: Partial<BattleBuild> = {}):
   return { ...createBuild(id), abilityId, ...extra } as BattleBuild;
 }
 const scovillain = build("scovillainmega", "spicyspray");
-const NOTE = "Spicy Spray burns the attacker after the first hit, so every later hit is by a burned attacker (Safeguard, not modelled, would stop it).";
+const NOTE = "Spicy Spray: the attacker is burned from the second hit on (assumes no Safeguard).";
 
 function hits(moveId: string, attacker: BattleBuild, context?: MoveContext, field: Partial<BattleConditions> = {}, defender = scovillain) {
   const out = calculateMatchup(attacker, defender, { ...createConditions(), gameType: "Singles", ...field }, context ? { [moveId]: context } : {}, championsRuntime);
@@ -53,7 +53,7 @@ describe("Spicy Spray", () => {
     const berry = (itemId: string) => build("garchomp", "roughskin", { itemId });
     const lum = hits("scaleshot", berry("lumberry"), { hits: 5 });
     expect(lum.hits).toEqual(["21-25", "21-25", "10-12", "10-12", "10-12"]);
-    expect(lum.row.assumptions).toContain("Spicy Spray burns the attacker after the first hit, but its Lum Berry cures that burn at once and is used up. The second hit burns it again, so every hit from the third on is by a burned attacker (Safeguard, not modelled, would stop it).");
+    expect(lum.row.assumptions).toContain("Spicy Spray: the attacker is burned from the third hit on (its Lum Berry cured the first burn; assumes no Safeguard).");
     expect(hits("scaleshot", berry("rawstberry"), { hits: 3 }).hits).toEqual(["21-25", "21-25", "10-12"]);
     expect(hits("tripleaxel", build("weavile", "pressure", { itemId: "lumberry" })).hits).toEqual(["16-19", "31-37", "23-27"]);
     expect(hits("beatup", build("weavile", "pressure", { itemId: "lumberry" }), { party: ["garchomp", "incineroar"] }).hits).toEqual(["13-16", "15-18", "6-8"]);

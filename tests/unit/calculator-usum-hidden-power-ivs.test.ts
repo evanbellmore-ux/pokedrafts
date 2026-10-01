@@ -166,7 +166,7 @@ describe("Hidden Power IVs for USUM quick moves", () => {
         const slot = m.attacker.moves.find((entry) => entry.moveId?.startsWith("hiddenpower"))!;
         const row = calculateMatchup(m.attacker.build, m.defender.build, m.field, {}, us).results.find((entry) => entry.moveId === slot.moveId)!;
         // Analytic in Doubles (read from the Singles sets) asks for the turn order; that is not a Hidden Power gap.
-        if (gameType === "Doubles" && m.attacker.build.abilityId === "analytic") expect(row.reason, id).toContain("Analytic boosts only if");
+        if (gameType === "Doubles" && m.attacker.build.abilityId === "analytic") expect(row.reason, id).toBe("Analytic: needs the Doubles turn order.");
         else expect(row.kind, `${gameType} ${id} ${slot.moveId}`).toBe("calculated");
         expect(getBuildStats(m.attacker.build, us), id).toEqual(getBuildStats(chosenBuild(id, us, gameType), us));
       }

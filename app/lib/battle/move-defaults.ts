@@ -188,10 +188,10 @@ export function withHiddenPowerIVs(build: BattleBuild, moves: MoveSlots, runtime
 
 /** Plain text for both visible hints and accessible move-picker provenance. */
 export function describeMoveSlot(slot: MoveSlot): string {
-  if (!slot.moveId || slot.origin === "empty") return "Choose a move";
+  if (!slot.moveId || slot.origin === "empty") return "No move";
   if (slot.origin === "manual") return "Manually chosen";
   if (slot.origin === "imported") return "Imported from team paste";
-  if (slot.origin === "suggested") return "Suggested, per-species usage unavailable for this move";
+  if (slot.origin === "suggested") return "Suggested (no usage data)";
   if (slot.origin === "required") return "Required for this form";
   if (slot.origin === "randomBattle") return slot.gameType === "Doubles" ? "From Showdown's Random Doubles Battle sets" : "From Showdown's Random Battle sets (Singles)";
   if (!slot.gameType) return "Common Champions usage";

@@ -24,5 +24,5 @@ export function mimicryState(build: BattleBuild, other: BattleBuild, conditions:
 export function mimicryNote(state: MimicryState, originalTypes: readonly string[]): string {
   return state.type
     ? `Mimicry: ${state.type} type on ${state.terrain} Terrain (original types ${originalTypes.join(" / ")}).`
-    : `Neutralizing Gas suppresses Mimicry, so it keeps its original types (${originalTypes.join(" / ")}).`;
+    : `Mimicry: suppressed by Neutralizing Gas (original types ${originalTypes.join(" / ")}).`;
 }

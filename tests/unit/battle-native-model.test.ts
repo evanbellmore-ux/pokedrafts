@@ -108,7 +108,7 @@ describe("native build boundaries and statistics", () => {
     expect(validateBuild(build, runtime)).toEqual([]);
     build.mechanic = "dynamax";
     expect(validateBuild(build, runtime)).toContainEqual(expect.objectContaining({ field: "mechanic", message: expect.stringContaining("Gigantamax factor requires Gigantamax") }));
-    expect(getBuildHealth(build, runtime)?.reason).toContain("Remove the factor");
+    expect(getBuildHealth(build, runtime)?.reason).toBe("Charizard's Gigantamax factor requires Gigantamax, not Dynamax.");
     expect(build.mechanic).toBe("dynamax");
     build.mechanic = "gigantamax";
     expect(validateBuild(build, runtime)).toEqual([]);

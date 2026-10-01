@@ -269,7 +269,7 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
       m.boosts[stat] = clampStage(before + change[stat]!);
       const by = m.boosts[stat] - before;
       if (!by) {
-        if (effect === "Intimidate" || effect === "Mirror Armor") lines.push(`${m.name}'s ${STAT_NAMES[stat]} ${before <= -6 ? "won't go lower" : "won't go higher"}, so nothing reacts.`);
+        if (effect === "Intimidate" || effect === "Mirror Armor") lines.push(`${m.name}'s ${STAT_NAMES[stat]} ${before <= -6 ? "won't go lower" : "won't go higher"}.`);
         continue;
       }
       lines.push(`${m.name}'s ${STAT_NAMES[stat]} ${by > 0 ? "rises" : "falls"} to ${m.boosts[stat] > 0 ? "+" : ""}${m.boosts[stat]}.`);
@@ -321,18 +321,18 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
     boost(src, src, copied, "Mirror Herb");
   }
   for (const m of [tgt, src]) {
-    if (m.lowered && holds(m, "ejectpack")) lines.push(`${m.name}'s Eject Pack would switch it out; results assume it stays in.`);
+    if (m.lowered && holds(m, "ejectpack")) lines.push(`${m.name}'s Eject Pack: assumes it stays in.`);
     if (m.item !== m.build.itemId && m.build.abilityId === "unburden") lines.push(`${m.name}'s Unburden activates.`);
   }
   // A Flower Veil partner (Doubles) guards a Grass-type Pokémon; there is no slot for it.
   if (battle.gameType === "Doubles" && tgt.lowered && types(tgt).includes("Grass") && runtime.abilitiesById.has("flowerveil")) {
-    lines.push(`${tgt.name} is Grass type: a partner with Flower Veil would block this drop in Doubles. Edit the stages if one is there.`);
+    lines.push(`${tgt.name}: assumes no partner with Flower Veil.`);
   }
   for (const m of [src, tgt]) {
     if (!m.entry.length) continue;
     const list = m.entry.map((entry) => `${entry.cause} (${entry.amount > 0 ? "+" : ""}${entry.amount} ${STAT_NAMES[entry.stat]})`).join(" and ");
-    lines.push(`${m.name}'s stages count its ${list}, which the calculator adds when it calculates, so the stored stages leave it out.`);
-    if (m.entry.some((entry) => entry.id === "windrider")) lines.push("This assumes Tailwind started before the Intimidate.");
+    lines.push(`${m.name}'s stored stages leave out its ${list} (added at calculation).`);
+    if (m.entry.some((entry) => entry.id === "windrider")) lines.push("Assumes Tailwind started before Intimidate.");
   }
   const finish = (m: Mon): BattleBuild => {
     const consumed = m.item !== m.build.itemId;

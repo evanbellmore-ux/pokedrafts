@@ -6,8 +6,6 @@ import styles from "./calculator.module.css";
 export const CALCULATOR_TABS = [
   { id: "team", label: "My team" },
   { id: "moves", label: "Moves" },
-  { id: "builds", label: "Build settings" },
-  { id: "field", label: "Field conditions" },
   { id: "opponent", label: "Opponent" },
 ] as const;
 
@@ -34,11 +32,10 @@ function revealTab(element: HTMLButtonElement) {
   else if (button.right > bounds.right - 4) strip.scrollBy({ left: button.right - bounds.right + 4 });
 }
 
-export default function CalculatorTabs({ prefix, activeTab, onSelect, issues = {} }: {
+export default function CalculatorTabs({ prefix, activeTab, onSelect }: {
   prefix: string;
   activeTab: CalculatorTab;
   onSelect: (tab: CalculatorTab) => void;
-  issues?: Partial<Record<CalculatorTab, number>>;
 }) {
   const activeButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -56,7 +53,6 @@ export default function CalculatorTabs({ prefix, activeTab, onSelect, issues = {
       {CALCULATOR_TABS.map(({ id, label }) => {
         const ids = calculatorTabIds(prefix, id);
         const selected = id === activeTab;
-        const count = issues[id] ?? 0;
         return (
           <button
             key={id}
@@ -83,7 +79,6 @@ export default function CalculatorTabs({ prefix, activeTab, onSelect, issues = {
             className={`${styles.tab} min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text hover:bg-panel-hover"}`}
           >
             {label}
-            {count > 0 && <span className="ml-2 text-danger">{count}<span className="sr-only"> settings to check</span></span>}
           </button>
         );
       })}

@@ -139,7 +139,7 @@ describe("Champions Gravity", () => {
     field.gravity = true;
     const grounded = row("thunderbolt", attacker, defender, field);
     expect(grounded.min).toBeGreaterThan(airborne.min!);
-    expect(grounded.assumptions.join(" ")).toContain("accuracy remains the catalog value");
+    expect(grounded.assumptions).toContain("Gravity: accuracy changes are not simulated.");
 
     const priority = { ...createBuild("talonflame"), abilityId: "galewings" };
     field.terrain = "Psychic";
@@ -251,7 +251,7 @@ describe("Champions rooms", () => {
     const held = row("acrobatics", attacker, defender, field);
     expect(held).toMatchObject({ kind: "calculated", effectivePower: 55 });
     expect(held.rolls).toEqual(row("acrobatics", attacker, defender).rolls);
-    expect(held.assumptions).toContain("Magic Room suppresses the attacker's Charcoal, but it is still held, so Acrobatics keeps its usual power.");
+    expect(held.assumptions).toContain("Magic Room suppresses the attacker's Charcoal, still held: Acrobatics has its usual power.");
     attacker.itemId = "";
     expect(row("acrobatics", attacker, defender, field)).toMatchObject({ kind: "calculated", effectivePower: 110 });
   });
@@ -266,7 +266,7 @@ describe("Champions rooms", () => {
     const ordinary = row(moveId, attacker, defender);
     const room = row(moveId, attacker, defender, { ...createConditions(), trickRoom: true });
     expect(room.rolls).toEqual(ordinary.rolls);
-    expect(room.assumptions.join(" ")).toContain("Trick Room lets the slower Pokémon move first within a priority bracket");
+    expect(room.assumptions).toContain("Trick Room: turn order only; Speed is unchanged.");
   });
 
   it.each([[-6, false], [0, true], [6, true]] as const)("works out Analytic's turn order under Trick Room at Speed stage %s", (stage, boosted) => {
@@ -277,7 +277,7 @@ describe("Champions rooms", () => {
     // Under Trick Room the slower Pokémon moves first, so a faster Starmie moves last and boosts.
     const room = row("thunderbolt", attacker, defender, field);
     expect(room.kind).toBe("calculated");
-    expect(room.assumptions.some((line) => line.startsWith(`Analytic: it has`) && line.endsWith(boosted ? "boosts." : "does not boost."))).toBe(true);
+    expect(room.assumptions.some((line) => line.startsWith(boosted ? "Analytic: boosted, moves after the target (" : "Analytic: no boost, moves before the target (") && line.endsWith(" under Trick Room)."))).toBe(true);
     expect(row("protect", attacker, defender, field).kind).toBe("status");
     attacker.abilityActive = true;
     const switching = row("thunderbolt", attacker, defender, field);
@@ -316,7 +316,7 @@ describe("Champions Fairy Aura and field isolation", () => {
     expect(ordinary.min).toBeGreaterThan(0);
     const extra = row("moonblast", attacker, defender, { ...createConditions(), fairyAura: true });
     expect(extra.rolls).toEqual(ordinary.rolls);
-    expect(extra.assumptions.join(" ")).toContain("aura sources do not stack");
+    expect(extra.assumptions).toContain("Fairy Aura is active (sources do not stack).");
   });
 
   it("pauses calculation for every malformed shared-effect flag", () => {

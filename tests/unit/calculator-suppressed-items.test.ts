@@ -25,7 +25,7 @@ describe("items suppressed by Magic Room or Klutz", () => {
   it("keep Acrobatics at its usual power", () => {
     const klutz = row("acrobatics", build("lopunny", "klutz", "leftovers"), garchomp);
     expect(klutz).toMatchObject({ kind: "calculated", effectivePower: 55, min: 18, max: 22 });
-    expect(klutz.assumptions).toContain("Klutz suppresses the attacker's Leftovers, but it is still held, so Acrobatics keeps its usual power.");
+    expect(klutz.assumptions).toContain("Klutz suppresses the attacker's Leftovers, still held: Acrobatics has its usual power.");
     expect(row("acrobatics", build("lopunny", "klutz"), garchomp)).toMatchObject({ effectivePower: 110, min: 35, max: 42 });
     expect(row("acrobatics", build("altaria", "naturalcure", "leftovers"), garchomp, { magicRoom: true })).toMatchObject({ effectivePower: 55, min: 25, max: 30 });
   });
@@ -33,7 +33,7 @@ describe("items suppressed by Magic Room or Klutz", () => {
   it("let Poltergeist hit", () => {
     const golurk = row("poltergeist", build("aegislash", "stancechange"), build("golurk", "klutz", "sitrusberry"));
     expect(golurk).toMatchObject({ min: 200, max: 236 });
-    expect(golurk.assumptions).toContain("Klutz suppresses the target's Sitrus Berry, but it is still held, so Poltergeist hits.");
+    expect(golurk.assumptions).toContain("Klutz suppresses the target's Sitrus Berry, still held: Poltergeist hits.");
     expect(row("poltergeist", build("aegislash", "stancechange"), build("golurk", "klutz"))).toMatchObject({ min: 0, max: 0 });
     expect(row("poltergeist", build("aegislash", "stancechange"), build("garchomp", "roughskin", "leftovers"), { magicRoom: true })).toMatchObject({ min: 87, max: 103 });
   });
@@ -64,7 +64,7 @@ describe("items suppressed by Magic Room or Klutz", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const shield = row("poltergeist", build("banette", "insomnia", "", sv), build("golurk", "klutz", "abilityshield", sv), {}, sv);
     expect(shield).toMatchObject({ min: 168, max: 200 });
-    expect(shield.assumptions).toContain("Klutz does not affect the target's Ability Shield, so Poltergeist hits.");
+    expect(shield.assumptions).toContain("Klutz does not affect the target's Ability Shield: Poltergeist hits.");
     // A Klutz holder's Seed never activates, whichever came first.
     const klutzSeed = row("acrobatics", build("lopunny", "klutz", "grassyseed"), garchomp, { terrain: "Grassy", magicRoom: true });
     expect(klutzSeed.assumptions.join(" ")).toContain("Magic Room and Klutz suppress the attacker's Grassy Seed");
@@ -78,7 +78,7 @@ describe("items suppressed by Magic Room or Klutz", () => {
     expect(row("acrobatics", build("altaria", "naturalcure", "grassyseed"), garchomp, { terrain: "Grassy", magicRoom: true })).toMatchObject({ effectivePower: 110, min: 49, max: 58 });
     const seeded = row("acrobatics", { ...build("altaria", "naturalcure", "grassyseed"), itemUsedBeforeRoom: false }, garchomp, { terrain: "Grassy", magicRoom: true });
     expect(seeded).toMatchObject({ effectivePower: 55, min: 25, max: 30 });
-    expect(seeded.assumptions).toContain("The attacker Altaria's Grassy Seed is not used: Magic Room was up when it entered or when Grassy Terrain started. Tick its Grassy Seed choice if it was used before the room was set.");
+    expect(seeded.assumptions).toContain("The attacker Altaria's Grassy Seed is not used: Magic Room was up when it entered or Grassy Terrain started.");
     // Without Magic Room the Seed is used up, so Acrobatics doubles.
     expect(row("acrobatics", build("altaria", "naturalcure", "grassyseed"), garchomp, { terrain: "Grassy" })).toMatchObject({ effectivePower: 110, min: 49, max: 58 });
     const sv = await loadBattleRuntime("scarlet_violet");

@@ -14,7 +14,7 @@ function row(attacker: BattleBuild, defender: BattleBuild, field: Partial<Battle
   expect(out.issues).toEqual({ attacker: [], defender: [], field: [] });
   return out.results.find((result) => result.moveId === "grassyglide")!;
 }
-const NOTE = "Grassy Glide has +1 priority on Grassy Terrain because the user is grounded.";
+const NOTE = "Grassy Glide: +1 priority.";
 
 describe("Grassy Glide", () => {
   const rillaboom = build("rillaboom", "overgrow");

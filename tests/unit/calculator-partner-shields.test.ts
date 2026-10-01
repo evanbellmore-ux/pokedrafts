@@ -37,7 +37,7 @@ function row(moveId: string, attacker: BattleBuild, defender: BattleBuild, condi
   return out.results.find((result) => result.moveId === moveId)!;
 }
 
-const blocked = (names: string, move: string, priority: number) => `A partner with ${names} blocks ${move}: it has +${priority} priority.`;
+const blocked = (names: string, move: string, priority: number) => `A partner with ${names} blocks ${move} (+${priority} priority).`;
 const CHAMPIONS = "Queenly Majesty or Armor Tail";
 const SV = "Queenly Majesty, Dazzling or Armor Tail";
 const incineroar = build("incineroar", "blaze");
@@ -88,7 +88,7 @@ describe("a partner's Queenly Majesty, Dazzling or Armor Tail", () => {
     expect(outgoing).toMatchObject({ min: 43, max: 51 });
     const singles = row("extremespeed", dragonite, incineroar, field({ gameType: "Singles" }));
     expect(singles).toMatchObject({ min: 43, max: 51 });
-    expect(singles.assumptions).toContain(`Singles has only the two battling Pokémon, so the ${CHAMPIONS} partner set for Doubles is ignored.`);
+    expect(singles.assumptions).toContain(`Singles: the ${CHAMPIONS} partner is ignored.`);
     const cleared = withoutSinglesPartners(field({ gameType: "Singles", attackerShield: true }), dragonite, incineroar);
     expect(cleared.ignored).toEqual([`the ${CHAMPIONS} partner`]);
     expect(cleared.field).toMatchObject({ attackerSide: { priorityShield: false }, defenderSide: { priorityShield: false } });
@@ -184,7 +184,7 @@ describe("the partner shield acts before Protect and before other questions", ()
     // Asked only when the move gets through: without the partner, or past it with Mold Breaker.
     expect(row("extremespeed", build("dragonite", "innerfocus", sv, stellar), target, field({ shield: false }), sv).kind).toBe("needs-context");
     const haxorus = row("firstimpression", build("haxorus", "moldbreaker", sv, stellar), target, field(), sv);
-    expect(haxorus).toMatchObject({ kind: "needs-context", reason: "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed." });
+    expect(haxorus).toMatchObject({ kind: "needs-context", reason: "Stellar: first use of this move's type needed." });
   });
 
   it("names the partner, not Protect or Max Guard, for a priority move into a Protecting target", async () => {

@@ -207,7 +207,7 @@ describe("turns and PP", () => {
   it("Leppa Berry restores the PP: Fire Blast KO on use 11 (154 ... 14, 0) after 8 PP", () => {
     const value = counted(uses(C, "fireblast", build(C, "snorlax", { item: "leppaberry" }), build(C, "blastoise")));
     expect(value).toMatchObject({ fewest: 10, guaranteed: 11, limit: 16, limitReason: "pp" });
-    expect(value.carried).toContain("The attacker's Leppa Berry restores 8 PP once the move runs out.");
+    expect(value.carried).toContain("The attacker's Leppa Berry restores 8 PP.");
   });
 });
 
@@ -280,6 +280,19 @@ describe("what the count carries and assumes", () => {
     expect(counted(uses(S, "bugbite", build(S, "scizor"), build(S, "garchomp", { item: "leftovers" }))).carried).toEqual(["Leftovers heals the target at the end of each turn."]);
     expect(counted(uses(U, "knockoff", build(U, "weavile"), build(U, "muk", { ability: "stickyhold", item: "leftovers" }))).carried).toEqual(["Leftovers heals the target at the end of each turn."]);
   });
+  it("lists the end of turn as one sentence, capitalised only at its start", () => {
+    const burned = { item: "leftovers", status: "brn" } as const;
+    expect(counted(uses(S, "dragonclaw", build(S, "garchomp"), build(S, "snorlax", burned))).carried)
+      .toEqual(["Leftovers heals and its burn damages the target at the end of each turn."]);
+    expect(counted(uses(S, "dragonclaw", build(S, "garchomp"), build(S, "snorlax", { status: "brn" }), sand)).carried)
+      .toEqual(["Sandstorm and its burn damage the target at the end of each turn."]);
+    expect(counted(uses(S, "dragonclaw", build(S, "garchomp"), build(S, "snorlax", { status: "brn" }))).carried)
+      .toEqual(["Its burn damages the target at the end of each turn."]);
+  });
+  it("assumes a hit count only for the multi-hit move itself, not its Max Move", () => {
+    expect(counted(uses(W, "bulletseed", build(W, "rillaboom", { mechanic: "dynamax" }), build(W, "snorlax"))).notes).toEqual(["Assumes Dynamax started this turn."]);
+    expect(counted(row(W, "bulletseed", build(W, "rillaboom"), build(W, "snorlax"), {}, { hits: 5 }).usesToKO!).notes).toEqual(["Assumes 5 hits on every use."]);
+  });
   it("Multiscale and Tera Shell only when they act", () => {
     const dragonite = build(S, "dragonite", { ability: "multiscale", evs: { hp: 252, def: 252 } });
     expect(counted(uses(S, "dragonclaw", build(S, "haxorus", { ability: "moldbreaker", nature: "Adamant", evs: { atk: 252 } }), dragonite)).carried).toEqual([]);
@@ -298,7 +311,7 @@ describe("what the count carries and assumes", () => {
     expect([spinner.carried, spinner.notes]).toEqual([["Ice Spinner ends the terrain."], []]);
     const doubles = { gameType: "Doubles", multipleTargets: true } as const;
     expect(counted(uses(C, "heatwave", build(C, "charizard"), build(C, "blastoise"), doubles)).notes)
-      .toEqual(["Assumes the target's partner stays in for every use.", "Assumes the target's partner has no Pressure, which would take a PP more each use."]);
+      .toEqual(["Assumes the target's partner stays in for every use.", "Assumes the target's partner has no Pressure."]);
     expect(uses(C, "outrage", build(C, "dragonite"), build(C, "blastoise"), doubles)).toEqual({ kind: "not-estimated", reason: "Hits a random foe each turn" });
   });
 });

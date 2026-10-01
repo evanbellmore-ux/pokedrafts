@@ -18,7 +18,7 @@ function row(moveId: string, attacker: BattleBuild, defender: BattleBuild, field
   expect(out.issues).toEqual({ attacker: [], defender: [], field: [] });
   return out.results.find((result) => result.moveId === moveId)!;
 }
-const NOTE = "The target's Iron Ball grounds it, so its Levitate does not stop Ground moves.";
+const NOTE = "Iron Ball: the target is grounded despite its Levitate.";
 
 describe("Iron Ball on a Levitate holder", () => {
   const garchomp = build("garchomp", "roughskin");

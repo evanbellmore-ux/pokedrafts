@@ -120,7 +120,7 @@ describe("Champions calculation adapter", () => {
     const field = createConditions();
     const split = row("dragondarts", dragapult, garchomp, field);
     expect(split).toMatchObject({ kind: "calculated", min: 68, max: 84, hits: 1, ohkoChance: 0 });
-    expect(split.assumptions.some((line) => line.includes("one dart hits this target and the other hits its partner"))).toBe(true);
+    expect(split.assumptions).toContain("Dragon Darts: one dart per foe.");
 
     field.multipleTargets = false;
     expect(row("dragondarts", dragapult, garchomp, field)).toMatchObject({ kind: "calculated", min: 136, max: 168, hits: 2 });
@@ -193,7 +193,7 @@ describe("Champions calculation adapter", () => {
     const damage = row("shadowball", shield);
     expect(damage.kind).toBe("calculated");
     expect(damage.rolls).toEqual(row("shadowball", blade).rolls);
-    expect(damage.assumptions).toContain("Stance Change uses Blade Forme for this damaging attack.");
+    expect(damage.assumptions).toContain("Stance Change: Blade Forme.");
     expect(shield).toEqual(before);
   });
 
@@ -232,7 +232,7 @@ describe("Champions calculation adapter", () => {
     overlord.abilityId = "supremeoverlord";
     const start = row("kowtowcleave", overlord);
     expect(start.kind).toBe("calculated");
-    expect(start.assumptions).toContain("Supreme Overlord: 0 allies had fainted when it entered (1.0x power). Set the count in Build settings.");
+    expect(start.assumptions).toContain("Supreme Overlord: 0 allies fainted, 1.0x power.");
   });
 
   it("requires unused Protean/Libero and unchanged typing on either side", () => {

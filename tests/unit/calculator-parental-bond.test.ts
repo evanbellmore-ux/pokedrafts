@@ -69,18 +69,18 @@ describe("Parental Bond's second strike", () => {
   it("adds no strike to a multi-hit move, and names no Parental Bond", () => {
     const doubleHit = strikes("doublehit", build("snorlax", "thickfat"));
     expect(doubleHit.strikes).toEqual(["34-42", "34-42"]);
-    expect(doubleHit.row.assumptions).toContain("Parental Bond adds no second strike here: Double Hit already hits more than once.");
+    expect(doubleHit.row.assumptions).toContain("Parental Bond: no second strike (multi-hit move).");
     expect(doubleHit.row.description).not.toContain("Parental Bond");
   });
 
   it("is skipped for charge moves and spread hits", () => {
     const dig = strikes("dig", build("meganium", "overgrow"));
     expect(dig.strikes).toEqual(["18-22"]);
-    expect(dig.row.assumptions).toContain("Parental Bond adds no second strike here: Dig is never doubled by Parental Bond.");
+    expect(dig.row.assumptions).toContain("Parental Bond: no second strike (excluded move).");
     expect(strikes("solarbeam", build("garchomp", "roughskin"), { weather: "Sun" }).strikes).toEqual(["35-42"]);
     const spread = strikes("rockslide", build("snorlax", "thickfat"), { gameType: "Doubles", multipleTargets: true });
     expect(spread.strikes).toEqual(["36-43"]);
-    expect(spread.row.assumptions).toContain("Parental Bond adds no second strike here: a spread hit is never doubled.");
+    expect(spread.row.assumptions).toContain("Parental Bond: no second strike (spread hit).");
     expect(strikes("doubleedge", build("snorlax", "thickfat"), { gameType: "Doubles", multipleTargets: false }).strikes).toEqual(["117-138", "28-34"]);
   });
 
@@ -97,7 +97,7 @@ describe("Parental Bond's second strike", () => {
     expect(strikes("doubleedge", build("dragonite", "multiscale")).strikes).toEqual(["42-51", "21-25"]);
     const assurance = strikes("assurance", build("snorlax", "thickfat"));
     expect(assurance.strikes).toEqual(["39-47", "19-23"]);
-    expect(assurance.row.assumptions).toContain("Parental Bond: the second strike doubles Assurance's power because the first strike hurt the target.");
+    expect(assurance.row.assumptions).toContain("Parental Bond: Assurance's second strike has doubled power.");
   });
 
   it("matches Showdown in Ultra Sun and Ultra Moon", async () => {

@@ -133,7 +133,7 @@ function parseStats(source: SourceLine, value: string, maximum: number, totalLim
     const match = segment.trim().match(/^(\S+)\s+(.+)$/);
     const stat = match ? statNames.get(catalogId(match[2])) : undefined;
     if (!match || !stat) {
-      report(source.line, "error", `Invalid stat entry "${segment.trim()}". Use a whole number followed by HP, Atk, Def, SpA, SpD or Spe.`);
+      report(source.line, "error", `Invalid stat entry "${segment.trim()}".`);
       continue;
     }
     if (seen.has(stat)) {
@@ -172,7 +172,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
   const parts = first.text.split(/\s+@(?:\s+|$)/);
   if (parts.length > 2) report(first.line, "error", "A set header can contain only one held item ( @ ).");
   let item = parts.length > 1 ? parts[1].trim() : null;
-  if (item === "") report(first.line, "error", "A held item name is required after @; omit @ for no item.");
+  if (item === "") report(first.line, "error", "No held item name after @.");
   const fields = new Map<string, number>();
   // The header claims the item field even for "@ No Item", which Showdown reads as an empty
   // slot, so a later Item: line is still a duplicate.
@@ -210,7 +210,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
         // Showdown exports brackets but also accepts its unbracketed typed name.
         const type = hiddenPowerTypes.find((type) => catalogId(type) === id.slice("hiddenpower".length));
         const bracketsValid = !/[\[\]]/.test(name) || /^hidden\s+power\s+\[[a-z]+\]$/i.test(name);
-        if (!type || !bracketsValid) report(line.line, "error", `Invalid Hidden Power type in "${name}". Use Hidden Power [Ice], for example.`);
+        if (!type || !bracketsValid) report(line.line, "error", `Invalid Hidden Power type in "${name}".`);
         else if (typedHiddenPower && typedHiddenPower.type !== type) report(line.line, "error", "Conflicting Hidden Power move types.");
         else typedHiddenPower = { type, line: line.line };
         id = "hiddenpower";
@@ -233,7 +233,7 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
     if (["evs", "sps", "stat points"].includes(field)) field = "training";
     if (field === "trait") field = "ability";
     if (!["item", "ability", "nature", "level", "training", "ivs", "shiny", "gender", "tera type", "gigantamax", "dynamax level", "happiness", "hidden power", "pokeball"].includes(field)) {
-      report(line.line, "error", `Unsupported or unknown set line "${line.text}". Correct or remove it; only recognized Showdown set fields are imported.`);
+      report(line.line, "error", `Unsupported or unknown set line "${line.text}".`);
       continue;
     }
     if (fields.has(field)) {
@@ -251,11 +251,11 @@ function parseSetSyntax(lines: SourceLine[], format: ImportFormat, report: Repor
       const values = parseStats(line, value, points ? 32 : 252, points ? 66 : 510, 0, report);
       source.training = { label: originalField, values: { ...values } };
       training = incompatiblePoints ? statTable(null) : values;
-      if (incompatiblePoints) report(line.line, "error", "Explicit Stat Points are incompatible with traditional EV/IV mode. Choose Champions mode only when targeting Champions; native games require original EVs/IVs, not reverse-converted points.");
+      if (incompatiblePoints) report(line.line, "error", "Stat Points are incompatible with traditional EV/IV mode.");
     } else if (field === "ivs") {
       ivs = parseStats(line, value, 31, null, 31, report);
       source.ivs = { ...ivs };
-      if (format === "champions") report(line.line, "error", "IV fields are incompatible with Champions Stat Points. Choose traditional mode for EV/IV conversion.");
+      if (format === "champions") report(line.line, "error", "IV fields are incompatible with Champions Stat Points.");
     } else if (field === "shiny" || field === "gigantamax") {
       if (!/^(yes|no)$/i.test(value)) report(line.line, "error", `${field === "shiny" ? "Shiny" : "Gigantamax"} must be Yes or No.`);
       else if (field === "shiny") shiny = value.toLowerCase() === "yes";
@@ -308,11 +308,11 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
       header = retry;
       item = after.trim();
       fields.set("item", first.line);
-      report(first.line, "info", "Read the bare @ as the held-item separator; Showdown exports it with a space on each side ( @ ).");
+      report(first.line, "info", "Read the bare @ as the held-item separator.");
     }
   }
   if (header.resolution.status !== "resolved") {
-    const hint = bareAt ? " To add a held item, put a space on each side of @, as Showdown exports it; a bare @ is read as part of the name." : "";
+    const hint = bareAt ? " A bare @ is read as part of the name." : "";
     report(first.line, "error", `${header.speciesName || "Missing species"}: ${header.resolution.reason}${hint}`);
   }
   if (header.gender) {
@@ -337,8 +337,8 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   const ironHead = parsed.moveLines.get("ironhead");
   if (behemoth && (crownedBy || ironHead)) {
     const behemothName = movesById.get(behemoth.move)?.name ?? behemoth.move;
-    report(crownedBy ? fields.get("item") ?? first.line : ironHead!.line, "info", `${crownedBy ? `${speciesById.get(resolvedId!)!.name} holding ${itemsById.get(crownedBy.item)?.name ?? item} battles as ${species!.name}${ironHead ? `, and its Iron Head becomes ${behemothName}` : ""}` : `${species!.name}'s Iron Head becomes ${behemothName}`}, as pinned Showdown does when the battle starts.`);
-    if (ironHead && parsed.moveLines.has(behemoth.move)) report(ironHead.line, "error", `Duplicate move "${behemothName}": Iron Head becomes ${behemothName} when the battle starts.`);
+    report(crownedBy ? fields.get("item") ?? first.line : ironHead!.line, "info", `${crownedBy ? `${speciesById.get(resolvedId!)!.name} holding ${itemsById.get(crownedBy.item)?.name ?? item} battles as ${species!.name}${ironHead ? `, and its Iron Head becomes ${behemothName}` : ""}` : `${species!.name}'s Iron Head becomes ${behemothName}`}.`);
+    if (ironHead && parsed.moveLines.has(behemoth.move)) report(ironHead.line, "error", `Duplicate move "${behemothName}" (Iron Head becomes ${behemothName}).`);
   }
   // Moves are checked against the form pasted: a Hero Zacian cannot know Behemoth Blade.
   const learner = crownedBy ? speciesById.get(resolvedId!)! : species;
@@ -347,10 +347,10 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   // Match the pinned Showdown import default, but do not pretend it was explicit.
   if (!fields.has("happiness") && parsed.moveLines.has("frustration")) {
     configuration.happiness = 0;
-    report(parsed.moveLines.get("frustration")!.line, "info", "Happiness omitted: using Showdown's Frustration default of 0.");
+    report(parsed.moveLines.get("frustration")!.line, "info", "Happiness omitted: using 0 for Frustration.");
   }
   if (profile.training === "native" && format !== "traditional") {
-    report(fields.get("training") ?? first.line, "error", `${label} requires traditional EV/IV source format. Champions Stat Points cannot be reverse-converted to a guessed native spread.`);
+    report(fields.get("training") ?? first.line, "error", `${label} requires traditional EV/IV source format.`);
   }
   if (profile.training === "points" && fields.has("level") && source.level !== 50) {
     report(fields.get("level")!, "error", `Only explicit Level: 50 is supported in Champions, not "${source.level ?? "invalid"}".`);
@@ -364,7 +364,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   }
   const itemId = item === null ? "" : catalogId(item);
   if (item !== null && (!itemId || !itemsById.has(itemId))) {
-    report(fields.get("item") ?? first.line, "error", `Item "${item}" is unavailable in the ${label} catalog; omit the item for an empty slot.`);
+    report(fields.get("item") ?? first.line, "error", `Item "${item}" is unavailable in the ${label} catalog.`);
   }
   if (ability !== null && !abilitiesById.has(catalogId(ability))) {
     report(fields.get("ability")!, "error", `Ability "${ability}" is unavailable in the ${label} catalog.`);
@@ -390,7 +390,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
           const iv = ivs[stat];
           const points = ev === null || iv === null ? null : Math.floor((iv + Math.floor(ev / 4)) / 2) - 15;
           build.points[stat] = points;
-          if (points !== null && points < 0) report(fields.get("ivs") ?? fields.get("training") ?? first.line, "error", `${stat.toUpperCase()} would require ${points} Stat Points. These level-50 EV/IV stats are below the Champions minimum; no clamping is applied.`);
+          if (points !== null && points < 0) report(fields.get("ivs") ?? fields.get("training") ?? first.line, "error", `${stat.toUpperCase()} would require ${points} Stat Points, below the Champions minimum.`);
         }
       }
     } else {
@@ -426,7 +426,7 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
       );
       if (!alreadyReported) report(line, unsupported ? "warning" : "error", unsupported ? `Calculation paused: ${issue.message}` : issue.message);
     }
-    if (ability === null) report(first.line, "info", `Ability omitted: using ${abilitiesById.get(build.abilityId)?.name ?? build.abilityId}, the form's first ability, as Showdown's teambuilder fills it in.`);
+    if (ability === null) report(first.line, "info", `Ability omitted: using ${abilitiesById.get(build.abilityId)?.name ?? build.abilityId}, the form's first ability.`);
     if (nature === null) report(first.line, "info", `Nature omitted: using ${build.nature} (neutral).`);
   }
 
@@ -434,17 +434,17 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   if (configuration.gigantamax !== undefined) report(fields.get("gigantamax") ?? first.line, "info", `Gigantamax: ${configuration.gigantamax ? "Yes" : "No"} retained; ${profile.dynamax ? "not activated by import" : `inactive in ${label}`}.`);
   if (configuration.dynamaxLevel !== undefined) report(fields.get("dynamax level")!, "info", `Dynamax Level: ${configuration.dynamaxLevel} retained; ${profile.dynamax ? "not activated by import" : `inactive in ${label}`}.`);
   if (source.configuration.happiness !== undefined) report(fields.get("happiness")!, "info", `Happiness: ${configuration.happiness} retained${profile.generation === 7 ? " for Return/Frustration" : `; inactive in ${label}`}.`);
-  if (configuration.hiddenPowerType) report(fields.get("hidden power")!, "info", `Hidden Power: ${configuration.hiddenPowerType} retained${profile.generation === 7 ? "; effective IVs are unchanged. A different innate-IV type requires explicit context before calculating Hidden Power" : `; inactive in ${label}`}.`);
-  if (!fields.has("level")) report(first.line, "info", profile.training === "points" ? "Level omitted: targeting Champions level 50." : "Level omitted: using Showdown's native level 100 default, not level 50.");
+  if (configuration.hiddenPowerType) report(fields.get("hidden power")!, "info", `Hidden Power: ${configuration.hiddenPowerType} retained${profile.generation === 7 ? "; effective IVs are unchanged" : `; inactive in ${label}`}.`);
+  if (!fields.has("level")) report(first.line, "info", profile.training === "points" ? "Level omitted: targeting Champions level 50." : "Level omitted: using level 100.");
   if (!fields.has("training")) report(first.line, "info", `Training omitted: using zero ${format === "champions" ? "Stat Points" : "EVs"}.`);
   else report(fields.get("training")!, "info", `Unlisted stats use zero ${format === "champions" ? "Stat Points" : "EVs"}.`);
   if (format === "traditional") report(fields.get("ivs") ?? first.line, "info", profile.training === "points"
-    ? "Unlisted IVs default to 31. Traditional level-50 stats are converted to Stat Points without clamping or an extra point."
-    : "Unlisted IVs default to 31. Native levels, EVs and IVs are retained without conversion or inferred hyper-training history.");
-  if (item === null) report(first.line, "info", "Item omitted: no held item is equipped, including for Mega forms.");
-  report(first.line, "info", "Full HP, healthy status and zero stat stages assumed. Rivalry requires known individual genders for both Pokémon.");
-  if (header.nickname || shiny !== undefined || pokeball) report(first.line, "info", "Nickname, shiny and Poké Ball are cosmetic metadata only; they do not alter battle calculations.");
-  if (parsed.moveCount < 4) report(first.line, "info", `${4 - parsed.moveCount} move slot${parsed.moveCount === 3 ? " remains" : "s remain"} empty; no suggested moves are added.`);
+    ? "Unlisted IVs default to 31. Level-50 stats are converted to Stat Points."
+    : "Unlisted IVs default to 31.");
+  if (item === null) report(first.line, "info", "Item omitted: no held item.");
+  report(first.line, "info", "Full HP, healthy status and zero stat stages assumed.");
+  if (header.nickname || shiny !== undefined || pokeball) report(first.line, "info", "Nickname, shiny and Poké Ball are cosmetic only.");
+  if (parsed.moveCount < 4) report(first.line, "info", `${4 - parsed.moveCount} move slot${parsed.moveCount === 3 ? "" : "s"} left empty.`);
 
   const selectable = Boolean(build) && !diagnostics.some((entry) => entry.severity === "error");
   diagnostics.sort((a, b) => a.line - b.line);
@@ -464,11 +464,11 @@ export function parseTeamImport(text: string, format: ImportFormat, runtime: Bat
   const team: ImportedTeam = { format, game: runtime.profile.id, runtimeIdentity: runtime.identity, title: null, members: [], diagnostics: [] };
   const report: Report = (line, severity, message) => team.diagnostics.push({ line, severity, message });
   if (text.length > MAX_TEAM_IMPORT_BYTES || new TextEncoder().encode(text).byteLength > MAX_TEAM_IMPORT_BYTES) {
-    report(1, "error", "Team text exceeds the 64 KiB UTF-8 limit. Paste a smaller team.");
+    report(1, "error", "Team text exceeds the 64 KiB UTF-8 limit.");
     return team;
   }
   if (format !== "champions" && format !== "traditional") {
-    report(1, "error", "Choose Champions Stat Points or traditional EV/IV format explicitly.");
+    report(1, "error", "Unsupported import format.");
     return team;
   }
   const normalized = text.replace(/^﻿/, "").replace(/\r\n?/g, "\n");
@@ -492,8 +492,8 @@ export function parseTeamImport(text: string, format: ImportFormat, runtime: Bat
       flush();
       headings++;
       const heading = value.match(/^===\s*(.*?)\s*===$/);
-      if (headings > 1 || blocks.length) report(i + 1, "error", "Multiple team sections are not supported. Use one optional heading before all sets.");
-      else if (!heading || !heading[1]) report(i + 1, "error", "Use an exported-team heading such as === Team name ===.");
+      if (headings > 1 || blocks.length) report(i + 1, "error", "Multiple team sections are not supported.");
+      else if (!heading || !heading[1]) report(i + 1, "error", "Invalid team heading.");
       else {
         const hint = heading[1].match(/^\[([^\]]+)\]\s*/);
         if (hint) team.formatHint = hint[1];
@@ -505,9 +505,9 @@ export function parseTeamImport(text: string, format: ImportFormat, runtime: Bat
     block.push({ text: value, line: i + 1 });
   }
   flush();
-  if (!blocks.length) report(1, "error", "Paste at least one Pokémon set.");
+  if (!blocks.length) report(1, "error", "No Pokémon sets.");
   if (blocks.length > MAX_TEAM_IMPORT_MEMBERS) {
-    report(blocks[MAX_TEAM_IMPORT_MEMBERS][0].line, "error", "Import at most 24 members at a time.");
+    report(blocks[MAX_TEAM_IMPORT_MEMBERS][0].line, "error", `More than ${MAX_TEAM_IMPORT_MEMBERS} members.`);
     return team;
   }
   const resolve = createImportResolver(runtime);

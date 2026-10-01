@@ -35,7 +35,7 @@ describe("Unburden and used-up items", () => {
     const hawlucha = build("hawlucha", "unburden", { itemId: "psychicseed", abilityActive: false });
     const gyro = row("gyroball", build("avalugg", "owntempo"), hawlucha, { terrain: "Psychic" });
     expect(range(gyro)).toBe("79-93");
-    expect(gyro.assumptions).toContain("The target Hawlucha's Unburden activates once its Psychic Seed is used up, doubling its Speed.");
+    expect(gyro.assumptions).toContain("The target Hawlucha's Unburden is active (Psychic Seed used up).");
   });
 
   it("cures a status at once with a matching berry", () => {
@@ -43,7 +43,7 @@ describe("Unburden and used-up items", () => {
     const snorlax = build("snorlax", "thickfat");
     const cured = row("dragonclaw", burned, snorlax);
     expect(cured.rolls).toEqual(row("dragonclaw", build("garchomp", "roughskin"), snorlax).rolls);
-    expect(cured.assumptions).toContain("The attacker Garchomp's Rawst Berry cures its burn at once and is used up.");
+    expect(cured.assumptions).toContain("The attacker Garchomp's Rawst Berry cured its burn (used up).");
     // Magic Room keeps the berry from working, so the burn stays.
     expect(row("dragonclaw", burned, snorlax, { magicRoom: true }).rolls).toEqual(row("dragonclaw", build("garchomp", "roughskin", { status: "brn" }), snorlax, { magicRoom: true }).rolls);
   });
@@ -54,7 +54,7 @@ describe("Castform's Forecast", () => {
     expect(range(row("weatherball", build("castformsunny", "forecast"), build("garchomp", "roughskin")))).toBe("25-30");
     const rainy = row("thunderbolt", build("jolteon", "voltabsorb"), build("castformrainy", "forecast"));
     expect(range(rainy)).toBe("75-88");
-    expect(rainy.assumptions).toContain("Forecast: without sun, rain or snow, so the target Castform-Rainy is Castform (Normal type).");
+    expect(rainy.assumptions).toContain("Forecast: the target Castform-Rainy is Castform (Normal type) without sun, rain or snow.");
     expect(range(row("closecombat", build("lucario", "innerfocus"), build("castformsnowy", "forecast"), { weather: "Sun" }))).toBe("99-117");
     expect(range(row("weatherball", build("castform", "forecast"), build("garchomp", "roughskin"), { weather: "Sun" }))).toBe("36-43");
   });
@@ -80,7 +80,7 @@ describe("Trace and Imposter", () => {
     expect(psychic.assumptions).toContain("Trace: the attacker Alakazam-Mega copied Adaptability from Lucario-Mega.");
     const chosen = row("psychic", { ...alakazam, tracedAbility: "levitate" } as BattleBuild, build("lucariomega", "adaptability"));
     expect(range(chosen)).toBe("109-130");
-    expect(chosen.assumptions).toContain("Trace: the attacker Alakazam-Mega copied Levitate (chosen in Build settings).");
+    expect(chosen.assumptions).toContain("Trace: the attacker Alakazam-Mega copied Levitate.");
     expect(validateBuild({ ...alakazam, tracedAbility: "imposter" } as BattleBuild)).toContainEqual(expect.objectContaining({ field: "tracedAbility" }));
   });
 
@@ -114,7 +114,7 @@ describe("copied abilities and transformed Pokémon", () => {
     const incineroar = build("incineroar", "intimidate");
     const intoDitto = row("flareblitz", incineroar, build("ditto", "imposter"));
     expect(range(intoDitto)).toBe("28-33");
-    expect(intoDitto.assumptions).toContain("The target Ditto's Intimidate (copied by Imposter) acts when it enters, and this calculation applies it, so do not change the stages for it by hand.");
+    expect(intoDitto.assumptions).toContain("The target Ditto's Intimidate (copied by Imposter) is applied.");
     expect(intoDitto.assumptions).toContain("The attacker Incineroar's Attack falls to -1.");
     expect(range(row("flareblitz", incineroar, build("gardevoir", "trace")))).toBe("72-85");
     // Ditto copied Incineroar's stages before its own Intimidate lowered Incineroar's Attack.
@@ -132,14 +132,14 @@ describe("copied abilities and transformed Pokémon", () => {
   it("switches off a copied Disguise on a transformed Pokémon", () => {
     const hit = row("playrough", build("mimikyu", "disguise", { itemId: "" }), build("ditto", "imposter"));
     expect(hit).toMatchObject({ kind: "calculated", min: 57, max: 67 });
-    expect(hit.assumptions.join(" ")).toContain("Disguise (which does nothing on a transformed Pokémon)");
+    expect(hit.assumptions.join(" ")).toContain("(Disguise, no effect when transformed)");
   });
 
   it("settles items from the copied ability, including a transformed Pokémon's berry", () => {
     const burnedDitto = build("ditto", "imposter", { status: "brn", itemId: "lumberry" });
     const hex = row("hex", build("gengar", "cursedbody"), burnedDitto);
     expect(range(hex)).toBe("116-140");
-    expect(hex.assumptions).toContain("The target Ditto's Lum Berry cures its burn at once and is used up.");
+    expect(hex.assumptions).toContain("The target Ditto's Lum Berry cured its burn (used up).");
     // A traced Unnerve keeps the target's Lum Berry from curing its burn; a traced Klutz stops its own.
     expect(range(row("knockoff", build("gardevoir", "trace"), build("tyranitar", "unnerve", { status: "brn", itemId: "lumberry" })))).toBe("12-14");
     expect(range(row("knockoff", build("gardevoir", "trace", { status: "brn", itemId: "lumberry" }), build("golurk", "klutz")))).toBe("22-26");
@@ -149,7 +149,7 @@ describe("copied abilities and transformed Pokémon", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const shielded = nativeRow(sv, "psychic", nativeBuild(sv, "gardevoir", "trace", { itemId: "abilityshield" }), nativeBuild(sv, "porygonz", "adaptability"));
     expect(range(shielded)).toBe("78-93");
-    expect(shielded.assumptions).toContain("Trace: the attacker Gardevoir copies nothing (its Ability Shield blocks Trace).");
+    expect(shielded.assumptions).toContain("Trace: the attacker Gardevoir copies nothing (Ability Shield).");
     const weezing = nativeBuild(sv, "weezinggalar", "neutralizinggas", { status: "brn", itemId: "lumberry" });
     // Neutralizing Gas cannot suppress As One, or Unnerve behind an Ability Shield: the berry stays.
     expect(range(nativeRow(sv, "hex", nativeBuild(sv, "calyrexshadow", "asonespectrier"), weezing))).toBe("151-178");
@@ -162,21 +162,21 @@ describe("copied abilities and transformed Pokémon", () => {
     expect(gyro.assumptions.join(" ")).not.toContain("Unburden");
     const slam = nativeRow(sv, "bodyslam", gas, nativeBuild(sv, "serperior", "contrary", { itemId: "grassyseed" }), { terrain: "Grassy" });
     expect(range(slam)).toBe("21-25");
-    expect(slam.assumptions).toContain("The target Serperior's Grassy Seed is used up on Grassy Terrain, raising its Defense.");
+    expect(slam.assumptions).toContain("The target Serperior's Grassy Seed was used up on Grassy Terrain: +1 Defense.");
   });
 
   it("copies the target's entry boosts and gives the copied ability its own", async () => {
     const swsh = await loadBattleRuntime("sword_shield");
     const intoZacian = nativeRow(swsh, "playrough", nativeBuild(swsh, "ditto", "imposter"), nativeBuild(swsh, "zacian", "intrepidsword"));
     expect(range(intoZacian)).toBe("114-135");
-    expect(intoZacian.assumptions.join(" ")).toContain("stat stages (with its Intrepid Sword +1 Attack)");
+    expect(intoZacian.assumptions.join(" ")).toContain("(Intrepid Sword; copied Intrepid Sword +1 Attack)");
     expect(range(nativeRow(swsh, "closecombat", nativeBuild(swsh, "zamazenta", "dauntlessshield"), nativeBuild(swsh, "ditto", "imposter")))).toBe("39-46");
     const sv = await loadBattleRuntime("scarlet_violet");
     expect(range(nativeRow(sv, "playrough", nativeBuild(sv, "ditto", "imposter"), nativeBuild(sv, "zacian", "intrepidsword", { abilityActive: true })))).toBe("106-126");
     // Porygon-Z's Download read the untransformed Ditto (Sp. Atk); Ditto's copied one reads Porygon-Z (Attack).
     const download = nativeRow(sv, "triattack", nativeBuild(sv, "ditto", "imposter", { itemId: "choicescarf" }), nativeBuild(sv, "porygonz", "download"));
     expect(range(download)).toBe("109-130");
-    expect(download.assumptions).toContain("The target Porygon-Z's Download read Ditto's Defense and Sp. Def before it transformed, raising its Sp. Atk.");
+    expect(download.assumptions).toContain("The target Porygon-Z's Download raised its Sp. Atk, read from Ditto before it transformed.");
   });
 });
 
@@ -191,7 +191,7 @@ describe("what a transformed Pokémon keeps and loses", () => {
     // Stance Change: Ditto stays in Aegislash's Shield Forme for its attacks.
     const ironHead = row("ironhead", build("ditto", "imposter"), build("aegislash", "stancechange"));
     expect(range(ironHead)).toBe("10-12");
-    expect(ironHead.assumptions.join(" ")).toContain("Stance Change (which does nothing on a transformed Pokémon)");
+    expect(ironHead.assumptions.join(" ")).toContain("(Stance Change, no effect when transformed)");
     expect(ironHead.assumptions.join(" ")).not.toContain("Blade Forme");
     expect(range(row("shadowball", build("ditto", "imposter"), build("aegislash", "stancechange")))).toBe("42-50");
     // Flower Gift gives a transformed Cherrim no boost in the sun (Sword/Shield).
@@ -207,7 +207,7 @@ describe("what a transformed Pokémon keeps and loses", () => {
     const garchomp = build("garchomp", "roughskin", { itemId: "electricseed" });
     const slam = row("bodyslam", garchomp, build("ditto", "imposter"), { terrain: "Electric" });
     expect(range(slam)).toBe("42-50");
-    expect(slam.assumptions.join(" ")).toContain("Seeds, Forecast, Flower Gift, Shields Down and Schooling come after");
+    expect(slam.assumptions.join(" ")).toContain("Imposter: the target Ditto transformed into Garchomp (Rough Skin); Ditto's own stat stages are added on top. Assumes both entered together, Garchomp faster");
   });
 
   it("copies Minior and Wishiwashi before Shields Down or Schooling changes their form", async () => {
@@ -227,7 +227,7 @@ describe("what a transformed Pokémon keeps and loses", () => {
     const minior = usum.make("miniormeteor", "shieldsdown");
     const intoMinior = usum.calc("rockslide", ditto, minior);
     expect(range(intoMinior)).toBe("86-104");
-    expect(intoMinior.assumptions.join(" ")).toContain("Imposter: the attacker Ditto transformed into Minior,");
+    expect(intoMinior.assumptions.join(" ")).toContain("Imposter: the attacker Ditto transformed into Minior (");
     expect(range(usum.calc("rockslide", minior, ditto))).toBe("86-104");
     const swsh = await native("sword_shield");
     const school = swsh.make("wishiwashischool", "schooling");

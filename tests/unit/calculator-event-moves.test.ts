@@ -64,7 +64,7 @@ describe("moves that double after a turn event", () => {
       const normal = result("assurance", kanga, ["snorlax", "thickfat"], { gameType }, false);
       expect(normal).toMatchObject({ kind: "calculated", min: 58, max: 70 });
       expect((normal.rolls as number[][]).map((strike) => [strike[0], strike[15]])).toEqual([[39, 47], [19, 23]]);
-      expect(normal.assumptions.some((line) => line.startsWith("Parental Bond: the second strike doubles"))).toBe(true);
+      expect(normal.assumptions).toContain("Parental Bond: Assurance's second strike has doubled power.");
       // Doubled case: both strikes at 120 BP.
       expect(result("assurance", kanga, ["snorlax", "thickfat"], { gameType }, true)).toMatchObject({ kind: "calculated", min: 97, max: 115 });
     }

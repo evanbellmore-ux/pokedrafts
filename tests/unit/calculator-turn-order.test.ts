@@ -34,15 +34,15 @@ describe("Analytic's turn order in Singles", () => {
   it("boosts only when it moves after the target", () => {
     const slower = row("psychic", starmie, dragapult);
     expect(range(slower)).toBe("84-100");
-    expect(slower.assumptions).toContain("Analytic: it has 135 Speed against the target's 162, so it moves after the target and boosts.");
-    expect(slower.assumptions).toContain("This assumes the target uses a move with 0 priority.");
+    expect(slower.assumptions).toContain("Analytic: boosted, moves after the target (135 Speed against 162).");
+    expect(slower.assumptions).toContain("Assumes the target uses a 0-priority move.");
     expect(range(row("psychic", starmie, snorlax))).toBe("48-57");
   });
 
   it("follows priority, Trick Room and Tailwind", () => {
     const aquaJet = row("aquajet", starmie, dragapult);
     expect(range(aquaJet)).toBe("12-14");
-    expect(aquaJet.assumptions).toContain("Analytic: it has +1 priority, so it moves before the target and does not boost.");
+    expect(aquaJet.assumptions).toContain("Analytic: no boost, moves before the target (+1 priority).");
     expect(range(row("avalanche", starmie, dragapult))).toBe("60-72");
     expect(range(row("psychic", starmie, snorlax, { trickRoom: true }))).toBe("61-73");
     expect(range(row("psychic", starmie, dragapult, { trickRoom: true }))).toBe("66-78");
@@ -59,14 +59,14 @@ describe("Analytic's turn order in Singles", () => {
     const low = star("custapberry");
     const custap = row("psychic", { ...low, currentHP: Math.floor(getBuildStats(low, swsh)!.hp * 0.2) }, build("dragapult", "clearbody", swsh), {}, swsh);
     expect(range(custap)).toBe("66-78");
-    expect(custap.assumptions.join(" ")).toContain("its Custap Berry lets it move first in its priority bracket");
+    expect(custap.assumptions).toContain("Analytic: no boost, moves before the target (the attacker's Custap Berry).");
     expect(range(row("surf", starmie, build("sableye", "stall")))).toBe("72-85");
   });
 
   it("asks on a Speed tie, and takes the move settings' choice", () => {
     const tie = row("psychic", starmie, build("starmie", "naturalcure"));
     expect(tie.kind).toBe("needs-context");
-    expect(tie.reason).toContain("both have 135 Speed, so Showdown picks the order at random");
+    expect(tie.reason).toBe("Analytic: needs the turn order (Speed tie at 135).");
     expect(range(row("psychic", starmie, build("starmie", "naturalcure"), {}, championsRuntime, { turnOrder: "last" }))).toBe("38-45");
     expect(range(row("psychic", starmie, build("starmie", "naturalcure"), {}, championsRuntime, { turnOrder: "first" }))).toBe("29-35");
   });
@@ -76,14 +76,14 @@ describe("the review's turn-order corrections", () => {
   it("orders negative-priority moves by their real priority", () => {
     const avalanche = row("avalanche", starmie, snorlax);
     expect(range(avalanche)).toBe("17-20");
-    expect(avalanche.assumptions).toContain("Analytic: it has -4 priority, so it moves after the target and boosts.");
+    expect(avalanche.assumptions).toContain("Analytic: boosted, moves after the target (-4 priority).");
   });
 
   it("always boosts Future Sight, which lands after everyone has moved", async () => {
     const swsh = await loadBattleRuntime("sword_shield");
     const future = row("futuresight", build("beheeyem", "analytic", swsh), build("snorlax", "thickfat", swsh), {}, swsh);
     expect(range(future)).toBe("99-117");
-    expect(future.assumptions.join(" ")).toContain("Future Sight lands at the end of a later turn, after every Pokémon has moved, so Analytic boosts it");
+    expect(future.assumptions).toContain("Analytic: boosted, Future Sight lands after every Pokémon has moved (assumes the user is still in battle).");
   });
 
   it("uses Speed as Showdown does with Utility Umbrella and Neutralizing Gas", async () => {
@@ -114,7 +114,7 @@ describe("Analytic in Doubles", () => {
   it("asks for the turn order unless its condition or a choice decides it", () => {
     const ask = row("psychic", starmie, snorlax, doubles);
     expect(ask.kind).toBe("needs-context");
-    expect(ask.reason).toContain("after all three other Pokémon");
+    expect(ask.reason).toBe("Analytic: needs the Doubles turn order.");
     expect(range(row("psychic", starmie, snorlax, doubles, championsRuntime, { turnOrder: "last" }))).toBe("61-73");
     expect(range(row("psychic", starmie, snorlax, doubles, championsRuntime, { turnOrder: "first" }))).toBe("48-57");
     // Its "target switches" condition does not settle it in Doubles: the other two still decide it.
@@ -134,7 +134,7 @@ describe("Bolt Beak and Fishious Rend", () => {
     const dracozolt = build("dracozolt", "voltabsorb", swsh);
     const first = row("boltbeak", dracozolt, build("snorlax", "thickfat", swsh), {}, swsh);
     expect(first).toMatchObject({ effectiveName: "Bolt Beak", effectivePower: 170, min: 135, max: 160 });
-    expect(first.assumptions).toContain("Bolt Beak: it has 95 Speed against the target's 50, so it moves before the target and its power doubles.");
+    expect(first.assumptions).toContain("Bolt Beak: doubled power, moves before the target (95 Speed against 50).");
     expect(range(row("boltbeak", dracozolt, build("dragapult", "clearbody", swsh), {}, swsh))).toBe("30-36");
     expect(range(row("boltbeak", dracozolt, build("snorlax", "thickfat", swsh), { trickRoom: true }, swsh))).toBe("67-81");
     expect(range(row("boltbeak", dracozolt, build("dragapult", "clearbody", swsh), { trickRoom: true }, swsh))).toBe("60-72");

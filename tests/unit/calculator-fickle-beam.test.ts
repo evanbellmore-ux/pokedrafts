@@ -26,7 +26,7 @@ describe("Fickle Beam", () => {
     const full = row(build("garchomp", "roughskin"));
     expect(full).toMatchObject({ min: 120, max: 144, ohkoChance: 0.3, alternate: { chance: 0.3, min: 240, max: 284 } });
     expect(full.description).toContain(", or 240–284 HP (131.1–155.2%) when its power doubles (30% chance).");
-    expect(full.assumptions.some((line) => line.startsWith("Fickle Beam's power doubles 30% of the time: then 240–284 HP"))).toBe(true);
+    expect(full.assumptions).toContain("Fickle Beam: doubled power 30% of the time, 240–284 HP (131.1–155.2%). The KO chance includes both cases.");
     // 9 of 16 normal rolls and every doubled roll KO at 130 HP: 0.7 × 9/16 + 0.3.
     expect(row(build("garchomp", "roughskin", championsRuntime, { currentHP: 130 })).ohkoChance).toBeCloseTo(0.69375, 10);
     expect(row(build("garchomp", "roughskin", championsRuntime, { currentHP: 150 })).ohkoChance).toBeCloseTo(0.3, 10);

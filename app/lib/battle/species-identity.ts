@@ -46,8 +46,8 @@ export function createSpeciesResolver(species: readonly Pick<ChampionsSpecies, "
     // Prefer catalog aliases; keep unique engine-only aliases such as Aegislash-Shield.
     const alias = normalizeAlias(name);
     const ids = aliases.get(alias) ?? engineAliases.get(alias);
-    if (!ids?.size) return { status: "unavailable", reason: `No exact ${gameLabel} match. Use the manual Pokémon selector.` };
-    if (ids.size !== 1) return { status: "ambiguous", reason: `This name matches multiple ${gameLabel} forms. Choose the form manually.` };
+    if (!ids?.size) return { status: "unavailable", reason: `No exact ${gameLabel} match.` };
+    if (ids.size !== 1) return { status: "ambiguous", reason: `This name matches multiple ${gameLabel} forms.` };
     return { status: "resolved", speciesId: [...ids][0] };
   };
 }

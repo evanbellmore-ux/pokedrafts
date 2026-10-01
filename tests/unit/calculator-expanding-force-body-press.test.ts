@@ -58,7 +58,7 @@ describe("one-target Expanding Force", () => {
   });
 
   it("explains the one-target case only when the engine retargets the move", () => {
-    const line = "One target: no spread reduction, with Expanding Force's 1.5x power from Psychic Terrain. This fits only when the target's partner is absent or has fainted; a partner on the field still triggers Showdown's spread reduction even when it protects, is immune or is semi-invulnerable, so keep “Multiple targets hit” on then.";
+    const line = "One target: no spread reduction, 1.5x power from Psychic Terrain (assumes the target's partner is absent or fainted).";
     const result = row("expandingforce", alakazam, snorlax, field({ ...oneTarget, terrain: "Psychic" }));
     expect(result.effectivePower).toBe(120);
     expect(result.assumptions).toContain(line);
@@ -104,7 +104,7 @@ describe("Body Press under Wonder Room", () => {
 
   it("states the rule it uses", () => {
     const result = row("bodypress", avalugg(2, -1), snorlax, field({ gameType: "Singles", wonderRoom: true }));
-    expect(result.assumptions).toContain("Under Wonder Room, Body Press uses the attacker's original Defense with its Sp. Def stages, a game quirk that pinned Showdown also calculates.");
+    expect(result.assumptions).toContain("Body Press under Wonder Room: the attacker's original Defense with its Sp. Def stages.");
   });
 
   it("withholds only the Unaware case where Showdown and the engine disagree", () => {
@@ -113,7 +113,7 @@ describe("Body Press under Wonder Room", () => {
     // Showdown keeps the Sp. Def stage through Unaware; the engine drops it.
     const withStage = row("bodypress", avalugg(2, -1), clefable, wonderRoom);
     expect(withStage).toMatchObject({ kind: "unsupported", min: null });
-    expect(withStage.reason).toContain("It is calculated when the attacker has no Sp. Def stage.");
+    expect(withStage.reason).toBe("Body Press under Wonder Room into Unaware with a Sp. Def stage: not calculated.");
     expect(row("bodypress", avalugg(-2, 3), clefable, wonderRoom).kind).toBe("unsupported");
     // Where they agree: no Sp. Def stage (Showdown 28-33), a crit ignoring a negative stage,
     // no Wonder Room (Unaware ignores the Defense stage: Showdown 33-39), or no Unaware.

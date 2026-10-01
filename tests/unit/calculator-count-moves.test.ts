@@ -71,7 +71,7 @@ describe("Last Respects and Rage Fist", () => {
   it.each([[0, 31, 37], [1, 60, 72], [2, 90, 106], [3, 118, 141], [4, 148, 175], [5, 178, 210]])("Last Respects with %s fainted: %s-%s", (fainted, min, max) => {
     const result = row("lastrespects", houndstone, garchomp, { fainted });
     expect(result).toMatchObject({ kind: "calculated", min, max });
-    expect(result.assumptions.some((line) => line.startsWith(`Last Respects: ${fainted} party member`))).toBe(true);
+    expect(result.assumptions).toContain(`Last Respects: ${fainted} fainted, ${50 + 50 * fainted} power.`);
   });
 
   it.each([[0, 33, 40], [1, 67, 79], [2, 100, 118], [3, 133, 157], [4, 166, 196], [5, 198, 234], [6, 231, 273]])("Rage Fist hit %s times: %s-%s", (timesHit, min, max) => {
@@ -79,11 +79,11 @@ describe("Last Respects and Rage Fist", () => {
   });
 
   it("explains each game's Rage Fist count and rejects impossible counts", async () => {
-    expect(row("ragefist", annihilape, garchomp).assumptions).toContain("Rage Fist: the user has been hit 0 times since it last switched in (Champions resets the count on switching out), so it has 50 power. Set the count in the move settings above the move list.");
+    expect(row("ragefist", annihilape, garchomp).assumptions).toContain("Rage Fist: hit 0 times since switching in, 50 power.");
     const sv = await loadBattleRuntime("scarlet_violet");
     const svRow = row("ragefist", build("annihilape", "defiant", sv), build("garchomp", "sandveil", sv), { timesHit: 3 }, sv);
     expect(svRow).toMatchObject({ min: 133, max: 157 });
-    expect(svRow.assumptions.some((line) => line.includes("this battle (the count stays when it switches out)"))).toBe(true);
+    expect(svRow.assumptions).toContain("Rage Fist: hit 3 times, 200 power.");
     expect(row("lastrespects", houndstone, garchomp, { fainted: 6 })).toMatchObject({ kind: "needs-context" });
     expect(row("ragefist", annihilape, garchomp, { timesHit: 7 })).toMatchObject({ kind: "needs-context" });
   });
@@ -97,13 +97,13 @@ describe("Beat Up", () => {
     const result = row("beatup", maushold, snorlax, { party: ["garchomp", "incineroar", "kingambit"] });
     expect(result).toMatchObject({ kind: "calculated", min: 43, max: 53, hits: 4, ohkoChance: null });
     expect(strikes(result)).toEqual(["8-10", "12-15", "11-13", "12-15"]);
-    expect(result.assumptions).toContain("Beat Up: 4 hits, one per party member that is not fainted and has no status: Maushold-Four 12, Garchomp 18, Incineroar 16, Kingambit 18 power. Set the party in the move settings above the move list.");
+    expect(result.assumptions).toContain("Beat Up: 4 hits (Maushold-Four 12, Garchomp 18, Incineroar 16, Kingambit 18 power).");
     expect(row("beatup", maushold, snorlax, { party: [] })).toMatchObject({ kind: "calculated", min: 8, max: 10, hits: 1 });
   });
 
   it("needs its party chosen", () => {
-    expect(row("beatup", maushold, snorlax)).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("Choose Beat Up's party") });
-    expect(row("beatup", maushold, snorlax, { party: ["garchomp", ""] })).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("Choose a Pokémon for each") });
+    expect(row("beatup", maushold, snorlax)).toMatchObject({ kind: "needs-context", reason: "Beat Up: party needed." });
+    expect(row("beatup", maushold, snorlax, { party: ["garchomp", ""] })).toMatchObject({ kind: "needs-context", reason: "Beat Up: a party member has no Pokémon." });
   });
 
   it("uses a Mega's base form and never adds a Parental Bond strike", () => {
@@ -111,12 +111,12 @@ describe("Beat Up", () => {
     const result = row("beatup", kangaskhan, snorlax, { party: ["garchomp", "incineroar"] });
     expect(result).toMatchObject({ kind: "calculated", min: 33, max: 41, hits: 3 });
     expect(result.assumptions.some((line) => line.includes("Kangaskhan 14"))).toBe(true);
-    expect(result.assumptions).toContain("Parental Bond adds no second strike here: Beat Up already hits once per party member.");
+    expect(result.assumptions).toContain("Parental Bond: no second strike (one hit per party member).");
   });
 
   it("withholds defenders whose damage changes after the first hit", () => {
     const dragonite = build("dragonite", "multiscale");
-    expect(row("beatup", maushold, dragonite, { party: ["garchomp"] })).toMatchObject({ kind: "unsupported", reason: expect.stringContaining("Multiscale is withheld: at full HP it halves only the first hit") });
+    expect(row("beatup", maushold, dragonite, { party: ["garchomp"] })).toMatchObject({ kind: "unsupported", reason: "Beat Up into Multiscale: not calculated." });
     expect(row("beatup", maushold, dragonite, { party: [] }).kind).toBe("calculated");
     // Multiscale does nothing below full HP.
     expect(row("beatup", maushold, { ...dragonite, currentHP: 80 }, { party: ["garchomp"] }).kind).toBe("calculated");
@@ -215,7 +215,7 @@ describe("count controls", () => {
       onRollModeChange: vi.fn(), onActivateMove: vi.fn(), onToggleMega: vi.fn(), runtime: championsRuntime,
     }));
     expect(html).toContain(">Set party</button>");
-    expect(result.reason).toContain("in the move settings above the move list");
+    expect(result.reason).toBe("Beat Up: party needed.");
     expect(results("beatup", mausholdFour)).toMatch(/id="[^"]*-settings"[^>]*aria-label="Selected attack context"[\s\S]*Move settings: Beat Up/);
   });
 

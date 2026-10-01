@@ -5,7 +5,6 @@ import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
 import { createMatchup, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
-import { mimicryState } from "@/app/lib/battle/mimicry";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { createBuild, createConditions } from "@/app/lib/battle/model";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
@@ -51,7 +50,7 @@ describe("Mimicry", () => {
     expect(row("earthpower", stunfisk, stunfisk, "Electric")).toMatchObject({ min: 56, max: 68 });
   });
 
-  it("shows the terrain's type in the summary and build panel", () => {
+  it("shows the terrain's type in the summary, once above its Build settings", () => {
     let matchup = createMatchup(0, championsRuntime);
     matchup = updateMatchupBuild(matchup, "attacker", gallade);
     matchup = updateMatchupBuild(matchup, "defender", stunfisk);
@@ -64,12 +63,14 @@ describe("Mimicry", () => {
     const electric = summary("Electric");
     expect(electric).toContain("Mimicry: Electric type on Electric Terrain (original types Ground / Steel).");
     expect(electric).toMatch(/Gallade[\s\S]*Stunfisk[\s\S]*>Electric<\/p>/);
-    expect(summary("")).not.toContain("Mimicry");
-    const panel = renderToStaticMarkup(createElement(PokemonPanel, {
-      side: "defender", build: stunfisk, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined,
-      mimicry: mimicryState(stunfisk, gallade, { ...createConditions(), terrain: "Psychic" }),
+    expect(summary("")).not.toContain("Mimicry:");
+    const psychic = summary("Psychic");
+    expect([...psychic.matchAll(/Mimicry: Psychic type on Psychic Terrain \(original types Ground \/ Steel\)\./g)]).toHaveLength(1);
+    // The card shows it, so the Build settings under that card does not repeat it.
+    const editor = renderToStaticMarkup(createElement(PokemonPanel, {
+      side: "defender", build: matchup.defender.build, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined,
     }));
-    expect(panel).toContain("Mimicry: Psychic type on Psychic Terrain (original types Ground / Steel).");
+    expect(editor).not.toContain("Mimicry:");
   });
 
   it("is suppressed by the other battler's Neutralizing Gas in Sword/Shield", async () => {
@@ -77,7 +78,7 @@ describe("Mimicry", () => {
     const weezing = build("weezinggalar", "neutralizinggas", swsh);
     const gassed = row("sludgebomb", weezing, build("stunfiskgalar", "mimicry", swsh), "Electric", swsh);
     expect(gassed).toMatchObject({ min: 0, max: 0 });
-    expect(gassed.assumptions).toContain("Neutralizing Gas suppresses Mimicry, so the target keeps its own types. This assumes the terrain started, or it entered, while Neutralizing Gas was on the field.");
+    expect(gassed.assumptions).toContain("Mimicry: suppressed by Neutralizing Gas, so the target keeps its own types (assumes the gas was out when the terrain started or the target entered).");
     expect(row("earthpower", build("stunfiskgalar", "mimicry", swsh), weezing, "Grassy", swsh)).toMatchObject({ min: 98, max: 116 });
   });
 });
