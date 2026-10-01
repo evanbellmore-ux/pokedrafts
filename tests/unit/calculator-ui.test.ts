@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
-import BattleConditions from "@/app/(app)/calculator/BattleConditions";
+import BattleConditions, { describeConditions } from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
 import CurrentHPField from "@/app/(app)/calculator/CurrentHPField";
 import { formatHPInput, parseBuildInput } from "@/app/(app)/calculator/build-input";
@@ -110,6 +110,24 @@ function position(side: BattleSide) {
   return side === "attacker" ? "left" : "right";
 }
 
+/** Text a sighted user can see: no tags, attributes or screen-reader-only text. */
+function visibleText(html: string) {
+  return html.replace(/<(\w+)\b[^>]*\bclass="[^"]*\bsr-only\b[^"]*"[^>]*>[\s\S]*?<\/\1>/g, " ").replace(/<[^>]+>/g, " ");
+}
+
+/** The calculator's summary with the Build settings and Field conditions under it, before the menu panes. */
+function summarySection(html: string) {
+  return html.slice(html.indexOf("<section data-calculator-summary"), html.indexOf('role="tabpanel"'));
+}
+
+/** One side's collapsible Build settings region, up to the next settings section. */
+function buildRegion(html: string, side: BattleSide) {
+  const start = html.search(new RegExp(`<div id="[^"]*-build-[^"]*" role="region"[^>]*data-build-region="${side}"`));
+  expect(start).toBeGreaterThan(-1);
+  const rest = html.slice(start);
+  return rest.slice(0, rest.search(/data-(?:build|field)-section=/));
+}
+
 function meterHTML(html: string, side: BattleSide) {
   const meter = html.match(new RegExp(`<div role="meter" aria-label="[^"]* ${position(side)} [^"]*"[^>]*>[\\s\\S]*?</div>`))?.[0];
   expect(meter).toBeDefined();
@@ -194,41 +212,44 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Damage Calculator");
     expect(html).toContain(">My team</h2>");
     expect(html).toContain("Loading your leagues");
-    expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
+    // Manual Pokémon carry no provenance label, and positions stay in accessible names only.
+    expect(visibleText(summarySection(html))).not.toMatch(/Manual|Left Pokémon|Right Pokémon/);
+    expect([...html.matchAll(/>Build settings<\/span>/g)]).toHaveLength(2);
     expect(html).toContain("Change left Pokémon");
     expect(html).toContain("Change right Pokémon");
   });
 
-  it.each(["attacker", "defender"] as const)("puts the %s change button after the types and keeps build controls outside the closed chooser", (side) => {
+  it.each(["attacker", "defender"] as const)("keeps the %s build editor to its controls, with gender and happiness below the stats", (side) => {
     const onChange = vi.fn();
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side, build: createBuild("charizard"), issues: [], onChange, hpInput: "", onHPChange: vi.fn() }));
-    const trigger = html.match(/<button\b[^>]*data-calculator-change="true"[^>]*>/)?.[0];
-    expect(trigger).toContain('type="button"');
-    expect(trigger).toContain(`aria-label="Change ${position(side)} Pokémon manually"`);
-    expect(trigger).toContain('aria-haspopup="dialog"');
-    expect(html).toMatch(/>Flying<\/span><button\b[^>]*data-calculator-change="true"[^>]*>Change Pokémon<\/button><\/div>/);
-    expect(html.indexOf(">Charizard</h3>")).toBeLessThan(html.indexOf(">Fire</span>"));
-    expect(html.indexOf(">Fire</span>")).toBeLessThan(html.indexOf(">Flying</span>"));
-
-    const dialogs = [...html.matchAll(/<dialog\b[\s\S]*?<\/dialog>/g)].map(([dialog]) => dialog);
-    expect(dialogs).toHaveLength(1);
-    expect(dialogs[0].match(/<dialog\b[^>]*>/)?.[0]).not.toContain("open=");
-    expect(dialogs[0]).toContain(`Change ${position(side)} Pokémon`);
-    expect(dialogs[0]).toContain(`Find ${position(side)} Pokémon`);
-    expect([...dialogs[0].matchAll(/type="search"/g)]).toHaveLength(1);
-    expect([...dialogs[0].matchAll(/<li\b/g)]).toHaveLength(8);
-    expect(dialogs[0]).toContain(`aria-label="Next ${position(side)} Pokémon page"`);
-    expect(dialogs[0]).toContain(">Cancel</button>");
-    for (const [button] of dialogs[0].matchAll(/<button\b[^>]*>/g)) expect(button).toContain('type="button"');
-
-    const controls = html.replace(dialogs[0], "");
-    expect(controls).not.toMatch(/<(?:details|summary)\b|\shidden=|type="search"/);
-    expect(controls).toContain('data-calculator-build-settings="true"');
-    for (const label of ["Current HP", "Nature", "Ability", "Held item", "Status"]) expect(controls).toContain(`>${label}</label>`);
-    expect([...controls.matchAll(/<input\b[^>]*id="[^"]*-points-[a-z]+"/g)]).toHaveLength(6);
-    expect([...controls.matchAll(/<select\b[^>]*id="[^"]*-stage-[a-z]+"/g)]).toHaveLength(5);
-    expect(controls).toContain("Stats at level 50");
+    // The summary card above it already names the Pokémon, shows its types and offers Change Pokémon.
+    expect(html).not.toMatch(/<(?:h2|dialog|details|summary)\b|\shidden=|type="search"|data-calculator-change/);
+    expect(html).not.toContain(">Charizard<");
+    expect(visibleText(html)).not.toMatch(/Manual|Left Pokémon|Right Pokémon|Roster selection|Set configuration/);
+    expect(html).toContain(`aria-label="${side === "attacker" ? "Left" : "Right"} Pokémon stats and Stat Points"`);
+    expect(html).toContain('data-calculator-build-settings="true"');
+    for (const label of ["Current HP", "Nature", "Ability", "Held item", "Status", "Gender", "Happiness"]) expect(html).toContain(`>${label}</label>`);
+    expect([...html.matchAll(/<input\b[^>]*id="[^"]*-points-[a-z]+"/g)]).toHaveLength(6);
+    expect([...html.matchAll(/<select\b[^>]*id="[^"]*-stage-[a-z]+"/g)]).toHaveLength(5);
+    expect(html).toContain("Stats at level 50");
+    expect(html.indexOf(">Status</label>")).toBeLessThan(html.indexOf("Stats at level 50"));
+    for (const label of ["Gender", "Happiness"]) expect(html.indexOf(`>${label}</label>`)).toBeGreaterThan(html.indexOf("</table>"));
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps gender and happiness validation on their controls below the stats", () => {
+    const build = { ...createBuild("gallade"), configuration: { gender: "F" as const, happiness: 300 } };
+    const issues = validateBuild(build);
+    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues, onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
+    for (const [field, control] of [["configuration.gender", "gender"], ["configuration.happiness", "happiness"]] as const) {
+      const messages = issues.filter((issue) => issue.field === field).map((issue) => issue.message);
+      expect(messages.length).toBeGreaterThan(0);
+      const tag = html.match(new RegExp(`<(?:select|input)\\b[^>]*id="[^"]*-${control}"[^>]*>`))?.[0];
+      expect(tag).toContain('aria-invalid="true"');
+      expect(tag).toMatch(new RegExp(`aria-describedby="[^"]*-${control}-error`));
+      expect(html.indexOf(tag!)).toBeGreaterThan(html.indexOf("</table>"));
+      for (const message of messages) expect(html).toContain(message);
+    }
   });
 
   it.each([false, true])("renders each roster once in the right location (desktop=%s)", (desktop) => {
@@ -251,8 +272,7 @@ describe("Champions calculator UI", () => {
       const hp = controlTarget(html, `Edit ${position(side)} HP`);
       expect(hp).not.toContain("-build-");
       expect(html).toContain(`<div id="${hp}" hidden="">`);
-      const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
-      const build = html.match(new RegExp(`<section id="[^"]*-build-[^"]*"[^>]*><h2[^>]*>${label}</h2>[\\s\\S]*?</section>`))?.[0];
+      const build = buildRegion(html, side);
       expect(build).toContain('data-calculator-hp="true"');
       if (desktop) {
         expect(build).not.toContain("data-calculator-roster=");
@@ -295,10 +315,10 @@ describe("Champions calculator UI", () => {
 
   it("exposes field controls without a second disclosure and keeps each requested effect mounted once", () => {
     const html = renderToStaticMarkup(createElement(BattleConditions, { value: createConditions(), issues: [], onChange: () => undefined }));
-    expect(html).toMatch(/^<section\b[^>]*aria-labelledby=/);
-    expect(html).not.toMatch(/<details\b/);
-    expect(html).toMatch(/<h2\b[^>]*tabindex="-1"/);
-    expect(html).toContain("1 toggles on");
+    // Its collapsible section's button already names it and shows the field summary.
+    expect(html).toMatch(/^<div data-calculator-field="true"/);
+    expect(html).not.toMatch(/<(?:details|h2)\b|Field conditions|toggles on/);
+    expect(describeConditions(createConditions())).toContain("1 toggles on");
     for (const { key, label } of SHARED_FIELD_EFFECTS) {
       const inputs = [...html.matchAll(new RegExp(`<input\\b[^>]*id="[^"]*-${key}"[^>]*>`, "g"))];
       expect(inputs).toHaveLength(1);
@@ -325,15 +345,15 @@ describe("Champions calculator UI", () => {
     field.defenderSide.auroraVeil = true;
     const render = () => renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: [], onChange: () => undefined }));
     const html = render();
-    expect(html).toContain("10 toggles on");
-    expect(html).toContain("No weather");
+    expect(describeConditions(field)).toContain("10 toggles on");
+    expect(describeConditions(field)).toContain("No weather");
     const veil = html.match(/<input\b[^>]*id="[^"]*-defenderSide-auroraVeil"[^>]*>/)?.[0];
     expect(veil).toContain('checked=""');
     expect(veil).not.toContain("disabled");
     field.gameType = "Singles";
     // Multiple targets, Helping Hand and the additional Fairy Aura need Doubles.
     const singles = render();
-    expect(singles).toContain("6 toggles on");
+    expect(describeConditions(field)).toContain("6 toggles on");
     expect(singles.match(/<input\b[^>]*id="[^"]*-attackerSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
     expect(singles.match(/<input\b[^>]*id="[^"]*-defenderSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
     const aura = singles.match(/<input\b[^>]*id="([^"]*-fairyAura)"[^>]*>/)!;
@@ -457,13 +477,13 @@ describe("Champions calculator UI", () => {
     expect(html).toContain("Selected");
   });
 
-  it("keeps HP and feedback outside five mounted menu panes with only Moves initially visible", () => {
+  it("keeps HP, Build settings, Field conditions and feedback outside three mounted menu panes with only Moves initially visible", () => {
     const html = renderToStaticMarkup(createElement(CalculatorClient));
     const tabs = [...html.matchAll(/<button\b[^>]*role="tab"[^>]*>/g)].map(([tag]) => tag);
     const panels = [...html.matchAll(/<div\b[^>]*role="tabpanel"[^>]*>/g)].map(([tag]) => tag);
-    const order = ["team", "moves", "builds", "field", "opponent"];
-    expect(tabs).toHaveLength(5);
-    expect(panels).toHaveLength(5);
+    const order = ["team", "moves", "opponent"];
+    expect(tabs).toHaveLength(3);
+    expect(panels).toHaveLength(3);
     order.forEach((tab, index) => {
       expect(tabs[index]).toContain(`data-calculator-tab="${tab}"`);
       expect(tabs[index]).toContain(`aria-selected="${tab === "moves"}"`);
@@ -481,11 +501,17 @@ describe("Champions calculator UI", () => {
     }
     expect([...html.matchAll(/data-calculator-feedback="true"/g)]).toHaveLength(1);
     expect([...html.matchAll(/Loading the Champions engine/g)]).toHaveLength(1);
-    expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(html.indexOf(panels[2]));
-    const builds = html.slice(html.indexOf(panels[2]), html.indexOf(panels[3]));
-    expect(builds).not.toMatch(/<(?:details|summary)\b/);
-    expect([...builds.matchAll(/data-calculator-build-settings="true"/g)]).toHaveLength(2);
-    expect([...builds.matchAll(/data-calculator-change="true"/g)]).toHaveLength(2);
+    // Each Pokémon's Build settings, then Field conditions, sit under the summary, ahead of every pane.
+    expect(html.indexOf(">Current HP</label>")).toBeGreaterThan(html.indexOf('data-build-region="attacker"'));
+    expect(html.indexOf('data-build-region="defender"')).toBeLessThan(html.indexOf('data-field-region="true"'));
+    expect(html.indexOf('data-field-region="true"')).toBeLessThan(html.indexOf(panels[0]));
+    expect(html.indexOf(">Weather</label>")).toBeGreaterThan(html.indexOf('data-field-region="true"'));
+    for (const side of ["attacker", "defender"] as const) {
+      const builds = buildRegion(html, side);
+      expect(builds).not.toMatch(/<(?:details|summary|dialog)\b/);
+      expect([...builds.matchAll(/data-calculator-build-settings="true"/g)]).toHaveLength(1);
+    }
+    expect(html).not.toContain("data-calculator-change");
     for (const [tag] of html.matchAll(/<details\b[^>]*>/g)) expect(tag).not.toContain("open=");
     expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
@@ -499,8 +525,7 @@ describe("Champions calculator UI", () => {
 
   it("keeps HP ahead of visible build controls and exposes validation errors", () => {
     const build = { ...createBuild("charizard"), currentHP: 0, points: { ...createBuild().points, spa: 33 } };
-    const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined, hpInput: formatHPInput(build.currentHP), onHPChange: () => undefined }));
-    const controls = html.slice(0, html.indexOf("<dialog"));
+    const controls = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: validateBuild(build), onChange: () => undefined, hpInput: formatHPInput(build.currentHP), onHPChange: () => undefined }));
     expect(controls.indexOf(">Current HP</label>")).toBeLessThan(controls.indexOf(">Nature</label>"));
     expect(controls).not.toMatch(/<(?:details|summary)\b|\shidden=/);
     const hpInput = controls.match(/<input\b[^>]*data-calculator-hp="true"[^>]*>/)?.[0];
@@ -510,7 +535,8 @@ describe("Champions calculator UI", () => {
     for (const issue of validateBuild(build)) expect(controls).toContain(issue.message);
     const field = { ...createConditions(), gravity: "bad" as unknown as boolean };
     const fieldHTML = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
-    expect(fieldHTML).toMatch(/<h2\b[^>]*>[\s\S]*?1 settings to check<\/span><\/h2>/);
+    expect(fieldHTML.match(/<input\b[^>]*id="[^"]*-gravity"[^>]*>/)?.[0]).toContain('aria-invalid="true"');
+    for (const issue of validateConditions(field)) expect(fieldHTML).toContain(issue.message);
   });
 
   it.each([false, true])("renders one responsive move-selection branch (wide=%s) with unique labelled controls", (wide) => {
@@ -594,19 +620,19 @@ describe("Champions calculator UI", () => {
 
   it("keeps power, accuracy, reasons, rolls and the single hit editor in Details", () => {
     const render = (abilityId: string, itemId = "") => renderToStaticMarkup(createElement(MoveDetails, {
-      moveId: "bulletseed", row: { ...row("bulletseed", "needs-context"), reason: "Choose hits before calculating." },
+      moveId: "bulletseed", row: { ...row("bulletseed", "needs-context"), reason: "Needs the hit count (2–5)." },
       id: "bulletseed-details", context: undefined, abilityId, itemId, onContextChange: () => undefined,
     }));
     const html = render("overgrow");
     expect([...html.matchAll(/<select\b/g)]).toHaveLength(1);
     expect(html).toContain('id="bulletseed-details-hits"');
     expect(html).toContain('for="bulletseed-details-hits"');
-    expect(html).toContain("Choose hits before calculating.");
+    expect(html).toContain("Needs the hit count (2–5).");
     expect(html).toContain("Base power: 25");
     expect(html).toContain("Accuracy: 100%");
     expect(html).toContain("No damage rolls available.");
     expect(render("skilllink")).not.toMatch(/<select\b/);
-    expect(render("skilllink")).toContain("Skill Link fixes this move at 5 hits");
+    expect(render("skilllink")).toContain("Skill Link: 5 hits.");
     const dice = render("overgrow", "loadeddice");
     expect(dice).toContain('<option value="4">4 hits</option>');
     expect(dice).not.toContain('<option value="2">');
@@ -888,7 +914,7 @@ describe("quick-move replacement UI", () => {
       moveId: "bulletseed", id: "skilllink-no-row", context: undefined, abilityId: "skilllink", itemId: "", onContextChange,
     }));
     expect(fixed).not.toContain("<select");
-    expect(fixed).toContain("Skill Link fixes this move at 5 hits");
+    expect(fixed).toContain("Skill Link: 5 hits.");
     const status = renderToStaticMarkup(createElement(MoveDetails, {
       moveId: "protect", id: "status-no-row", context: undefined, abilityId: "blaze", itemId: "", onContextChange,
     }));
@@ -1035,12 +1061,12 @@ describe("active matchup and selected-move summary", () => {
     expect(buttons).toHaveLength(8);
     expect(buttons[0]).toContain("Common Champions Doubles usage");
     expect(buttons[1]).toContain(">Suggested</span>");
-    expect(buttons[1]).toContain("Suggested, per-species usage unavailable for this move");
+    expect(buttons[1]).toContain("Suggested (no usage data)");
     expect(buttons[1]).not.toContain("Common Champions");
     expect(buttons[2]).toContain("Manually chosen");
     for (const button of [buttons[3], ...buttons.slice(4)]) {
       expect(button).toContain("Choose move");
-      expect(button).toContain("Choose a move");
+      expect(button).toContain("No move");
       expect(button).toContain('aria-pressed="false"');
       expect(button).not.toContain('disabled=""');
     }
@@ -1334,9 +1360,17 @@ describe("active matchup and selected-move summary", () => {
     matchup.attacker.source = { kind: "league", key: "own", runtimeIdentity: matchup.runtime.identity, leagueId: "league", memberId: "own", rosterId: "own-roster", name: "Charizard", speciesId: "charizard" };
     matchup.defender.source = { kind: "league", key: "opponent", runtimeIdentity: matchup.runtime.identity, leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
     const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
-    expect(html).toContain("Left Pokémon · Opponent's team");
-    expect(html).toContain("Right Pokémon · Your team");
+    const card = (side: BattleSide) => html.match(new RegExp(`<div data-summary-combatant="${side}"[^>]*>([\\s\\S]*?)<h3`))![1];
+    // Only roster Pokémon show their team, without a position label.
+    expect(card("attacker")).toMatch(/^<p\b[^>]*>Opponent's team<\/p>/);
+    expect(card("defender")).toMatch(/^<p\b[^>]*>Your team<\/p>/);
+    expect(visibleText(html)).not.toMatch(/Left Pokémon ·|Right Pokémon ·|Manual/);
     expect(html).toContain('aria-label="Blastoise left current HP"');
     expect(html).toContain('aria-label="Charizard right current HP"');
+    // A roster entry under another name keeps that name next to its team.
+    matchup.defender.source = { ...matchup.defender.source, name: "Shellshock" };
+    expect(summaryHTML(matchup).replace(/&#x27;/g, "'")).toMatch(/<div data-summary-combatant="defender"[^>]*><p\b[^>]*>Opponent's team · Shellshock<\/p>/);
+    const manual = summaryHTML(createMatchup());
+    for (const side of ["attacker", "defender"] as const) expect(manual).toMatch(new RegExp(`<div data-summary-combatant="${side}"[^>]*><div\\b[^>]*><h3`));
   });
 });

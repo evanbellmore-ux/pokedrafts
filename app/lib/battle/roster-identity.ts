@@ -165,5 +165,5 @@ function resolveDisplayName(runtime: BattleRuntime, name: string): RosterResolut
       : { status: "resolved", speciesId: species.id };
   }
   const label = runtime.profile.id === "champions" ? "Champions" : runtime.profile.label;
-  return { status: "unavailable", reason: `No exact ${label} match. Use the manual Pokémon selector.` };
+  return { status: "unavailable", reason: `No exact ${label} match.` };
 }

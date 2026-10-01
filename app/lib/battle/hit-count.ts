@@ -30,7 +30,7 @@ export function hitCountRule(move: ChampionsMove, build: Pick<BattleBuild, "abil
   // Battle Bond makes Greninja-Ash's own Water Shuriken hit 3 times (pinned Showdown battlebond
   // onModifyMove; it cannot be suppressed, and a transformed copy keeps 2-5).
   if (move.id === "watershuriken" && build.speciesId === "greninjaash" && build.abilityId === "battlebond" && !build.transformedFrom) {
-    return { kind: "fixed", hits: 3, reason: "Battle Bond makes Greninja-Ash's Water Shuriken hit 3 times." };
+    return { kind: "fixed", hits: 3, reason: "Battle Bond: 3 hits." };
   }
   // Showdown ignores a held item under Magic Room or Klutz (sim/pokemon.ts ignoringItem), and an
   // opposing Neutralizing Gas suppresses the ability unless an active Ability Shield protects it
@@ -41,7 +41,7 @@ export function hitCountRule(move: ChampionsMove, build: Pick<BattleBuild, "abil
     && !(battle.opponentAbilityId === "neutralizinggas" && !(itemActive && build.itemId === "abilityshield"));
   if (Array.isArray(move.multihit)) {
     const [minimum, maximum] = move.multihit;
-    if (skillLink) return { kind: "fixed", hits: maximum, reason: `Skill Link fixes this move at ${maximum} hits.` };
+    if (skillLink) return { kind: "fixed", hits: maximum, reason: `Skill Link: ${maximum} hits.` };
     const loadedDice = loadedDiceHeld && minimum === 2 && maximum === 5;
     return { kind: "choose", min: loadedDice ? 4 : minimum, max: maximum, defaultHits: null, perHitAccuracy: false, loadedDice };
   }
@@ -52,7 +52,7 @@ export function hitCountRule(move: ChampionsMove, build: Pick<BattleBuild, "abil
   // at random (battle-actions.ts hitStepMoveHitLoop: targetHits -= random(7)).
   // The Loaded Dice 10-hit roll applies with or without Skill Link.
   if (loadedDiceHeld && hits === 10) return { kind: "choose", min: 4, max: 10, defaultHits: null, perHitAccuracy: false, loadedDice: true };
-  if (skillLink) return { kind: "fixed", hits, reason: `Skill Link checks accuracy once, so all ${hits} hits land.` };
-  if (loadedDiceHeld) return { kind: "fixed", hits, reason: `Loaded Dice checks accuracy once, so all ${hits} hits land.` };
+  if (skillLink) return { kind: "fixed", hits, reason: `Skill Link: all ${hits} hits land.` };
+  if (loadedDiceHeld) return { kind: "fixed", hits, reason: `Loaded Dice: all ${hits} hits land.` };
   return { kind: "choose", min: 1, max: hits, defaultHits: hits, perHitAccuracy: true, loadedDice: false };
 }

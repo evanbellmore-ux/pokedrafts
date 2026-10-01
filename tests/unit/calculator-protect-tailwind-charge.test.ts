@@ -42,7 +42,7 @@ describe("Protecting target", () => {
   it("lets Champions' Unseen Fist and Piercing Drill contact moves through for a quarter, after every other modifier", () => {
     const drainPunch = row("drainpunch", golurk, incineroar, protecting());
     expect(drainPunch).toMatchObject({ kind: "calculated", min: 23, max: 27 });
-    expect(drainPunch.assumptions).toContain("The target is protecting: Unseen Fist lets this contact move through for a quarter of the damage, after every other modifier.");
+    expect(drainPunch.assumptions).toContain("Protect: Unseen Fist gets this contact move through at 1/4 damage.");
     expect(row("ironhead", excadrill, build("garchomp", "roughskin"), protecting())).toMatchObject({ min: 18, max: 22 });
     // The engine quarters before Reflect, Multiscale and resist berries; Showdown after them.
     expect(row("drainpunch", golurk, incineroar, protecting({ reflect: true }))).toMatchObject({ min: 11, max: 14 });
@@ -53,7 +53,7 @@ describe("Protecting target", () => {
 
   it("blocks other moves, and never counts the attacker's own Protect", () => {
     const blocked = row("earthquake", excadrill, build("meganium", "overgrow"), protecting());
-    expect(blocked).toMatchObject({ kind: "calculated", min: 0, max: 0, description: "The target is protecting, which blocks Earthquake." });
+    expect(blocked).toMatchObject({ kind: "calculated", min: 0, max: 0, description: "Protect blocks Earthquake." });
     expect(row("dragonclaw", build("garchomp", "roughskin"), incineroar, protecting()).max).toBe(0);
     expect(row("dragonclaw", build("garchomp", "roughskin"), incineroar, field({ attacker: { protect: true } }))).toMatchObject({ min: 63, max: 75 });
   });
@@ -62,12 +62,12 @@ describe("Protecting target", () => {
     const garchomp = build("garchomp", "sandveil");
     const feint = row("feint", build("absol", "pressure"), garchomp, protecting());
     expect(feint).toMatchObject({ min: 16, max: 19 });
-    expect(feint.assumptions).toContain("The target is protecting, but Feint is not blocked by Protect.");
+    expect(feint.assumptions).toContain("Protect does not block Feint.");
     expect(row("phantomforce", build("absol", "pressure"), garchomp, protecting())).toMatchObject({ min: 45, max: 53 });
     // Real turns: Future Sight used on turn 1 lands on turn 3, when the target uses Protect.
     const futureSight = row("futuresight", build("absol", "pressure"), garchomp, protecting());
     expect(futureSight).toMatchObject({ min: 41, max: 49 });
-    expect(futureSight.assumptions).toContain("Future Sight lands at the end of a later turn, which the target's Protect does not block.");
+    expect(futureSight.assumptions).toContain("Protect does not block Future Sight.");
   });
 
   it("lets the main games' Unseen Fist contact moves through in full", async () => {
@@ -76,7 +76,7 @@ describe("Protecting target", () => {
     const garchomp = build("garchomp", "roughskin", sv);
     const wickedBlow = row("wickedblow", urshifu(), garchomp, protecting(), sv);
     expect(wickedBlow).toMatchObject({ min: 84, max: 100 });
-    expect(wickedBlow.assumptions).toContain("The target is protecting, but Unseen Fist lets this contact move through in full.");
+    expect(wickedBlow.assumptions).toContain("Protect: Unseen Fist gets this contact move through in full.");
     expect(row("surgingstrikes", build("urshifurapidstrike", "unseenfist", sv), garchomp, protecting(), sv)).toMatchObject({ min: 90, max: 108, hits: 3 });
     expect(row("rockslide", urshifu(), garchomp, protecting(), sv).max).toBe(0);
     // Punching Glove removes contact from punches, unless Magic Room suppresses it.
@@ -103,19 +103,19 @@ describe("Protecting target", () => {
     for (const game of ["scarlet_violet", "sword_shield"] as const) {
       const runtime = await loadBattleRuntime(game);
       expect(row("suckerpunch", build("urshifu", "unseenfist", runtime), build("snorlax", "thickfat", runtime), protecting(), runtime), game)
-        .toMatchObject({ min: 0, max: 0, description: "Sucker Punch fails: a Pokémon protecting this turn has already used its move." });
+        .toMatchObject({ min: 0, max: 0, description: "Sucker Punch fails: the target is protecting." });
     }
     const swsh = await loadBattleRuntime("sword_shield");
     const payback = row("payback", build("urshifu", "unseenfist", swsh), build("snorlax", "thickfat", swsh), protecting(), swsh);
     expect(payback).toMatchObject({ min: 100, max: 118 });
-    expect(payback.assumptions).toContain("Doubled power: the target is protecting, so it has already moved this turn.");
+    expect(payback.assumptions).toContain("Payback: doubled power (the target protected first).");
   });
 
   it("gives Analytic its boost into a Protecting target in Singles, and asks in Doubles", async () => {
     const usum = await loadBattleRuntime("ultra_sun_ultra_moon");
     const havoc = row("thunderbolt", build("magnezone", "analytic", usum, { itemId: "electriumz" }), build("snorlax", "thickfat", usum), protecting(), usum, { useZ: true });
     expect(havoc).toMatchObject({ effectiveName: "Gigavolt Havoc", min: 37, max: 44 });
-    expect(havoc.assumptions).toContain("The target protected before this attack, so Analytic boosts it.");
+    expect(havoc.assumptions).toContain("Analytic: boosted (the target protected first).");
     const swsh = await loadBattleRuntime("sword_shield");
     const magnezone = build("magnezone", "analytic", swsh, { mechanic: "dynamax" } as Partial<BattleBuild>);
     expect(row("thunderbolt", magnezone, build("snorlax", "thickfat", swsh), protecting(), swsh)).toMatchObject({ min: 27, max: 32 });
@@ -143,7 +143,7 @@ describe("Protecting target", () => {
     const oneBlow = row("wickedblow", build("urshifu", "unseenfist", swsh, { mechanic: "gigantamax", configuration: { gigantamax: true } } as Partial<BattleBuild>), build("garchomp", "roughskin", swsh), { ...protecting(), critical: true }, swsh);
     expect(oneBlow).toMatchObject({ effectiveName: "G-Max One Blow", min: 144, max: 171 });
     expect(row("dragonclaw", build("garchomp", "roughskin", swsh), build("snorlax", "thickfat", swsh, { mechanic: "dynamax" } as Partial<BattleBuild>), protecting(), swsh))
-      .toMatchObject({ kind: "unsupported", reason: "A Dynamaxed Pokémon protects with Max Guard, which is not modelled." });
+      .toMatchObject({ kind: "unsupported", reason: "Max Guard is not modelled." });
   });
 });
 
@@ -152,7 +152,7 @@ describe("Tailwind", () => {
   it("doubles Speed on its side for Electro Ball and Gyro Ball", () => {
     const own = row("electroball", ampharos, build("kingambit", "defiant"), field({ attacker: { tailwind: true } }));
     expect(own).toMatchObject({ min: 58, max: 70 });
-    expect(own.assumptions).toContain("Tailwind doubles Speed on the attacking Pokémon's side, which sets this move's power.");
+    expect(own.assumptions).toContain("Tailwind: doubled Speed on the attacker's side.");
     expect(row("electroball", ampharos, build("snorlax", "thickfat"), field({ defender: { tailwind: true } }))).toMatchObject({ min: 25, max: 30 });
     expect(row("electroball", ampharos, build("snorlax", "thickfat"), field({ attacker: { tailwind: true }, defender: { tailwind: true } }))).toMatchObject({ min: 36, max: 43 });
     expect(row("gyroball", build("forretress", "sturdy"), build("dragapult", "clearbody"), field({ defender: { tailwind: true } }))).toMatchObject({ min: 90, max: 106 });
@@ -165,18 +165,18 @@ describe("Tailwind", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const brambleghast = row("powerwhip", build("brambleghast", "windrider", sv), build("snorlax", "thickfat", sv), field({ attacker: { tailwind: true } }), sv);
     expect(brambleghast).toMatchObject({ min: 160, max: 190 });
-    expect(brambleghast.assumptions).toContain("Wind Rider: Tailwind on its side gave the attacker +1 Attack, added to the stages set here.");
+    expect(brambleghast.assumptions).toContain("Wind Rider: +1 Attack from Tailwind, on top of the set stages.");
     expect(row("foulplay", build("kingambit", "defiant", sv), build("brambleghast", "windrider", sv), field({ defender: { tailwind: true } }), sv)).toMatchObject({ min: 240, max: 284 });
     // The target's Neutralizing Gas suppresses Wind Rider, so it gets no boost (unless Ability Shield keeps it).
     const weezing = build("weezinggalar", "neutralizinggas", sv);
     const gassed = row("leafblade", build("shiftry", "windrider", sv), weezing, field({ attacker: { tailwind: true } }), sv);
     expect(gassed).toMatchObject({ min: 21, max: 26 });
-    expect(gassed.assumptions).toContain("The target's Neutralizing Gas stops Wind Rider's Tailwind boost. Set +1 Attack only if the attacker gained it before Neutralizing Gas came in.");
+    expect(gassed.assumptions).toContain("Wind Rider: no Tailwind boost (Neutralizing Gas).");
     expect(row("leafblade", build("shiftry", "windrider", sv, { itemId: "abilityshield" }), weezing, field({ attacker: { tailwind: true } }), sv)).toMatchObject({ min: 33, max: 39 });
     // Tera Blast turned Physical carries the note too.
     const teraBlast = row("terablast", build("brambleghast", "windrider", sv, { mechanic: "tera", configuration: { teraType: "Grass" } } as Partial<BattleBuild>), build("snorlax", "thickfat", sv), field({ attacker: { tailwind: true } }), sv);
     expect(teraBlast).toMatchObject({ min: 144, max: 170 });
-    expect(teraBlast.assumptions).toContain("Wind Rider: Tailwind on its side gave the attacker +1 Attack, added to the stages set here.");
+    expect(teraBlast.assumptions).toContain("Wind Rider: +1 Attack from Tailwind, on top of the set stages.");
   });
 
   it("does not credit Tailwind for Analytic when its condition is set", async () => {
@@ -185,7 +185,7 @@ describe("Tailwind", () => {
     const on = row("triattack", porygon(true), build("snorlax", "thickfat", sv), field({ defender: { tailwind: true } }), sv);
     expect(on.assumptions.some((line) => line.includes("Tailwind"))).toBe(false);
     const off = row("triattack", porygon(false), build("snorlax", "thickfat", sv), field({ defender: { tailwind: true } }), sv);
-    expect(off.assumptions).toContain("Tailwind doubles Speed on the receiving Pokémon's side, which sets the turn order.");
+    expect(off.assumptions).toContain("Tailwind: doubled Speed on the target's side.");
   });
 });
 
@@ -194,7 +194,7 @@ describe("Charge", () => {
   it("doubles the charged Pokémon's next Electric attack", async () => {
     const thunderbolt = row("thunderbolt", rotom, incineroar, field({ attacker: { charge: true } }));
     expect(thunderbolt).toMatchObject({ min: 117, max: 138 });
-    expect(thunderbolt.assumptions).toContain("Charge doubles this Electric attack's power.");
+    expect(thunderbolt.assumptions).toContain("Charge: 2x power.");
     expect(row("supercellslam", build("pawmot", "voltabsorb"), build("kingambit", "defiant"), field({ attacker: { charge: true } }))).toMatchObject({ min: 109, max: 129 });
     // Charge's exact 2x never changes the rounding of the other power modifiers.
     expect(row("thunderbolt", { ...rotom, itemId: "magnet" }, incineroar, field({ attacker: { charge: true, helpingHand: true }, doubles: true, field: { terrain: "Electric" } })))
@@ -237,7 +237,7 @@ describe("Field conditions", () => {
       "Foresight, Odor Sleuth or Miracle Eye on the target",
       "A partner's Battery or Flower Gift",
       "Dark Aura or Aura Break from a Pokémon other than the two shown",
-      "A target in the middle of Dig, Dive, Fly, Bounce or Sky Drop, which some moves hit for double damage",
+      "A target in the middle of Dig, Dive, Fly, Bounce or Sky Drop",
     ]));
     const sv = await loadBattleRuntime("scarlet_violet");
     expect(unmodelledBattleStates(sv)).toContain("Sword of Ruin, Beads of Ruin, Tablets of Ruin, Vessel of Ruin or Neutralizing Gas from a Pokémon other than the two shown");
@@ -252,10 +252,10 @@ describe("Field conditions", () => {
     expect(html).toContain("<li>Max Guard from a Dynamaxed Pokémon.</li>");
   });
 
-  it("points setup and protection status moves to their toggle", () => {
-    const protect = row("protect", build("garchomp", "roughskin"), incineroar, field());
-    expect(protect).toMatchObject({ kind: "status", reason: expect.stringContaining("tick Protecting on its side under Field conditions") });
-    expect(row("tailwind", build("talonflame", "galewings"), incineroar, field()).reason).toContain("Tick Tailwind on the user's side");
-    expect(row("charge", build("rotomwash", "levitate"), incineroar, field()).reason).toContain("Tick Charge on the user's side");
+  it("gives setup and protection status moves the plain status reason", () => {
+    const reason = "No direct damage; its effects are not simulated.";
+    expect(row("protect", build("garchomp", "roughskin"), incineroar, field())).toMatchObject({ kind: "status", reason });
+    expect(row("tailwind", build("talonflame", "galewings"), incineroar, field())).toMatchObject({ kind: "status", reason });
+    expect(row("charge", build("rotomwash", "levitate"), incineroar, field())).toMatchObject({ kind: "status", reason });
   });
 });

@@ -204,7 +204,7 @@ describe("the target's HP changes later damage", () => {
     const value = counted(uses("scarlet_violet", "hardpress", build("scarlet_violet", "mew", { nature: "Adamant", evs: { atk: 252 } }), build("scarlet_violet", "blissey", { evs: { hp: 252 } })));
     expect(value).toMatchObject({ fewest: 5, guaranteed: 7 });
     expect(value.fasterChance).toBeUndefined();
-    expect(value.notes).toContain("There are too many roll sequences to count exactly, so these counts take the lowest and the highest roll on every use, with no chance.");
+    expect(value.notes).toContain("Too many roll sequences: lowest and highest rolls only, no chance.");
   });
   it("Super Fang halves the HP each use: 10 uses into 267 HP, 12 into a Dynamaxed Chansey", () => {
     expect(counts(uses("ultra_sun_ultra_moon", "superfang", build("ultra_sun_ultra_moon", "mew"), build("ultra_sun_ultra_moon", "snorlax", { evs: { hp: 252 } })))).toEqual({ fewest: 10, guaranteed: 10 });
@@ -511,7 +511,7 @@ describe("self-check against the reference search, which reruns the whole calcul
       USES_REFERENCE.on = false;
     }
     // The budget's fallback is a different method; the reference walks `needed` only so far.
-    const fellBack = (value: UsesToKO | undefined) => value?.kind === "uses" && value.notes.some((note) => note.startsWith("There are too many"));
+    const fellBack = (value: UsesToKO | undefined) => value?.kind === "uses" && value.notes.some((note) => note.startsWith("Too many roll sequences"));
     // The two searches add the same chances in a different order.
     const comparable = (value: UsesToKO | undefined) => value?.kind === "uses"
       ? { ...value, needed: undefined, fasterChance: value.fasterChance?.toPrecision(12), chance: value.chance?.toPrecision(12) } : value;

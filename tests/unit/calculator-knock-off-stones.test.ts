@@ -23,7 +23,7 @@ describe("Knock Off into a Mega Stone", () => {
   it("gets no boost when the stone belongs to the target's family", () => {
     const raichu = row(build("raichualola", "raichunitex"));
     expect(raichu).toMatchObject({ effectiveName: "Knock Off", min: 158, max: 188 });
-    expect(raichu.assumptions).toContain("Knock Off cannot remove the target's Raichunite X, which belongs to its family, so it gets no power boost.");
+    expect(raichu.assumptions).toContain("Knock Off: no power boost (the target's Raichunite X cannot be removed).");
     expect(row(build("slowbrogalar", "slowbronite"))).toMatchObject({ min: 98, max: 116 });
     expect(row(build("slowbrogalar", "slowbronite"), { magicRoom: true })).toMatchObject({ min: 98, max: 116 });
     expect(row(build("charizard", "charizarditex"))).toMatchObject({ min: 57, max: 67 });
@@ -46,13 +46,13 @@ describe("Knock Off into a Mega Stone", () => {
       { ...createConditions(), gameType: "Singles" }, {}, championsRuntime).results.find((result) => result.moveId === "knockoff")!;
     const raichu = knock("raichualola", "surgesurfer", "raichunitex");
     expect(raichu).toMatchObject({ min: 112, max: 132 });
-    expect(raichu.assumptions).toContain("Transform keeps the target's own species, so Knock Off can remove its Raichunite X and gets its power boost.");
+    expect(raichu.assumptions).toContain("Knock Off: boosted power (the transformed target's Raichunite X can be removed).");
     expect(knock("absol", "pressure", "absolite")).toMatchObject({ min: 51, max: 61 });
   });
 
   it("is boosted when the stone can be removed", () => {
     const garchomp = row(build("garchomp", "charizarditex"));
     expect(garchomp).toMatchObject({ min: 72, max: 85 });
-    expect(garchomp.assumptions.join(" ")).not.toContain("cannot remove");
+    expect(garchomp.assumptions.join(" ")).not.toContain("cannot be removed");
   });
 });

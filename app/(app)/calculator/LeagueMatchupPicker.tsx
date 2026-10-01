@@ -148,7 +148,7 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
   return (
     <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
       <div className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
-        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership} <span className="font-normal text-muted">· {side === "attacker" ? "Left Pokémon" : "Right Pokémon"}</span></h3>
+        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership}<span className="sr-only"> · {side === "attacker" ? "Left Pokémon" : "Right Pokémon"}</span></h3>
         {panel.teamName && <span className={rail ? "max-w-full wrap-anywhere text-xs text-muted" : "wrap-anywhere text-xs text-muted"}>{panel.teamName}</span>}
       </div>
       {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}

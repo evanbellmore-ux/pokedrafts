@@ -89,7 +89,7 @@ describe("game-aware team import", () => {
     const imported = member("Charizard", "traditional", runtime);
     expect(imported.build?.native).toEqual({ level: 100, evs: zero, ivs: perfect });
     expect(imported.source?.level).toBeUndefined();
-    expect(imported.diagnostics).toContainEqual(expect.objectContaining({ severity: "info", message: expect.stringContaining("native level 100 default") }));
+    expect(imported.diagnostics).toContainEqual(expect.objectContaining({ severity: "info", message: "Level omitted: using level 100." }));
     expect(createBuild("charizard", runtime).native?.level).toBe(50);
   });
 
@@ -118,7 +118,7 @@ describe("game-aware team import", () => {
     expect(imported.selectable).toBe(false);
     expect(imported.build?.native?.evs).toEqual({ hp: null, atk: null, def: null, spa: null, spd: null, spe: null });
     expect(imported.source?.training?.values).toEqual({ ...zero, hp: 2, spa: 32, spe: 32 });
-    expect(errors(imported)).toContainEqual(expect.objectContaining({ message: expect.stringContaining("cannot be reverse-converted") }));
+    expect(errors(imported)).toContainEqual(expect.objectContaining({ message: "Scarlet and Violet requires traditional EV/IV source format." }));
   });
 
   it.each(["SPs", "Stat Points"])("rejects explicit native %s while retaining its original structured values", (label) => {

@@ -64,11 +64,11 @@ export const ABILITY_ACTIVATION_LABELS: Record<string, string> = {
   stakeout: "The defender just switched in",
   slowstart: "Slow Start is still active",
   analytic: "The target switches before this attack",
-  protean: "Protean is unused since switch-in; typing is still unchanged",
-  libero: "Libero is unused since switch-in; typing is still unchanged",
+  protean: "Protean unused since switch-in",
+  libero: "Libero unused since switch-in",
   imposter: "Transformed into the other Pokémon on entry",
-  shieldsdown: "Its HP crossed half this turn; its form changes at the end of the turn",
-  schooling: "Its HP crossed a quarter this turn; its form changes at the end of the turn",
+  shieldsdown: "Its HP crossed half this turn",
+  schooling: "Its HP crossed a quarter this turn",
 };
 
 /**
@@ -77,8 +77,8 @@ export const ABILITY_ACTIVATION_LABELS: Record<string, string> = {
  * Sword/Shield raises them on every entry, which its engine always applies, so there is no switch.
  */
 const SV_ENTRY_BOOST_LABELS: Record<string, string> = {
-  intrepidsword: "Intrepid Sword has raised Attack (on its first entry of the battle)",
-  dauntlessshield: "Dauntless Shield has raised Defense (on its first entry of the battle)",
+  intrepidsword: "Intrepid Sword has raised Attack",
+  dauntlessshield: "Dauntless Shield has raised Defense",
 };
 
 /** The condition an ability's switch sets in this game, if it has one. Schooling has none below level 20. */
@@ -124,7 +124,7 @@ export function roomItemLabel(itemId: string, runtime: BattleRuntime = champions
   const name = runtime.itemsById.get(itemId)?.name ?? itemId;
   const seed = SEED_TERRAINS[itemId];
   const where = seed ? `on ${seed.terrain} Terrain` : itemId === "roomservice" ? "under Trick Room" : "on entry,";
-  return magicRoom ? `Its ${name} was used ${where} before Magic Room was set` : `Its ${name} was used ${where.replace(/,$/, "")} (Magic Room did not hold it back)`;
+  return magicRoom ? `Its ${name} was used ${where} before Magic Room was set` : `Its ${name} was used ${where.replace(/,$/, "")}`;
 }
 
 /**
@@ -204,7 +204,7 @@ export function fieldItemChoice(build: BattleBuild, other: BattleBuild, field: B
 /** The switch label for fieldItemChoice. */
 export function fieldItemLabel(choice: FieldItemChoice, runtime: BattleRuntime = championsRuntime): string {
   const name = runtime.itemsById.get(choice.itemId)?.name ?? choice.itemId;
-  if (choice.suppressor) return `Its Booster Energy activated Protosynthesis (the sun had not activated it before ${runtime.abilitiesById.get(choice.suppressor)?.name ?? choice.suppressor} came in)`;
+  if (choice.suppressor) return "Its Booster Energy activated Protosynthesis";
   if (choice.itemId === "boosterenergy") return `Its Booster Energy was used while ${choice.field === "sun" ? "the sun" : "Electric Terrain"} was down`;
   return `Its ${name} was used before ${runtime.abilitiesById.get(choice.abilityId)?.name ?? choice.abilityId} activated`;
 }
@@ -343,7 +343,7 @@ function isIntegerWithin(value: number | null, min: number, max: number): value 
 }
 
 export function validateBuild(build: BattleBuild, runtime: BattleRuntime = championsRuntime): BuildIssue[] {
-  if (build.game !== runtime.profile.id) return [{ field: "game", message: `This build belongs to a different battle game. Recreate it for ${runtime.profile.label}; training data is not silently converted.` }];
+  if (build.game !== runtime.profile.id) return [{ field: "game", message: "This build belongs to a different battle game." }];
   const issues: BuildIssue[] = [];
   const label = build.game === "champions" ? "Champions" : runtime.profile.label;
   const species = runtime.speciesById.get(build.speciesId);
@@ -370,7 +370,7 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
         const effective = build.native.ivs?.[stat];
         if (!isIntegerWithin(innate, 0, 31)) issues.push({ field: `native.innateIVs.${stat}`, message: `${STAT_LABELS[stat]} innate IVs must be a whole number from 0 to 31.` });
         else if (effective !== innate && (effective !== 31 || (build.native.level ?? 0) < (runtime.profile.generation === 9 ? 50 : 100))) {
-          issues.push({ field: `native.innateIVs.${stat}`, message: `Hyper Training requires effective IV 31 and level ${runtime.profile.generation === 9 ? 50 : 100} or above; original innate IVs are not replaced.` });
+          issues.push({ field: `native.innateIVs.${stat}`, message: `Hyper Training requires effective IV 31 and level ${runtime.profile.generation === 9 ? 50 : 100} or above.` });
         }
       }
     }
@@ -389,14 +389,14 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
     issues.push({ field: "faintedAllies", message: "Fainted allies must be a whole number from 0 to 5." });
   }
   if (build.abilityId === "trace" && build.tracedAbility !== undefined && (!runtime.abilitiesById.has(build.tracedAbility) || NO_TRACE_ABILITIES.has(build.tracedAbility))) {
-    issues.push({ field: "tracedAbility", message: "Choose an ability Trace can copy, or the other Pokémon's." });
+    issues.push({ field: "tracedAbility", message: "Trace cannot copy that ability." });
   }
   // Unburden activates only once its item is gone; a terrain Seed or Room Service may be used up in the calculation.
   if (build.abilityId === "unburden" && build.abilityActive && build.itemId && !build.itemId.endsWith("seed") && build.itemId !== "roomservice") {
-    issues.push({ field: "abilityActive", message: "Unburden activates only after its held item is used up. Remove the held item, or untick Unburden." });
+    issues.push({ field: "abilityActive", message: "Unburden needs its held item used up." });
   }
   if (["protean", "libero"].includes(build.abilityId) && !build.abilityActive) {
-    issues.push({ field: "abilityActive", message: "Only unused Protean/Libero with unchanged typing is supported. Previously changed typing needs additional battle context." });
+    issues.push({ field: "abilityActive", message: "Only unused Protean/Libero with unchanged typing is supported." });
   }
   if (build.itemId) {
     const item = runtime.itemsById.get(build.itemId);
@@ -407,18 +407,18 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   const crowned = CROWNED_FORMS[build.speciesId];
   if (crowned && build.itemId === crowned.item && runtime.speciesById.has(crowned.form)) {
     const form = runtime.speciesById.get(crowned.form)!.name;
-    issues.push({ field: "itemId", message: `${species.name} holding ${runtime.itemsById.get(crowned.item)?.name ?? crowned.item} battles as ${form}: pinned Showdown changes its form when the battle starts. Choose ${form} instead.` });
+    issues.push({ field: "itemId", message: `${species.name} holding ${runtime.itemsById.get(crowned.item)?.name ?? crowned.item} battles as ${form}.` });
   }
   if (requiredItems.length && !requiredItems.includes(build.itemId)) {
     issues.push({ field: "itemId", message: `${species.name} requires ${requiredItems.map((id) => runtime.itemsById.get(id)?.name ?? id).join(" or ")}.` });
   }
   if (species.requiredMove && !build.preparedMoves?.includes(species.requiredMove)) {
-    issues.push({ field: "preparedMoves", message: `${species.name} requires ${runtime.movesById.get(species.requiredMove)?.name ?? species.requiredMove} in its prepared moves. A learnset is not proof that the move is equipped.` });
+    issues.push({ field: "preparedMoves", message: `${species.name} requires ${runtime.movesById.get(species.requiredMove)?.name ?? species.requiredMove} in its prepared moves.` });
   }
   if (species.name.includes("-Mega")) {
     if (!runtime.profile.mega) issues.push({ field: "speciesId", message: `Mega Evolution is not available in ${label}.` });
     const heldItem = runtime.itemsById.get(build.itemId);
-    if (heldItem?.zMove || heldItem?.zMoveType) issues.push({ field: "itemId", message: "A Mega-Evolved Pokémon cannot hold a Z-Crystal, including Rayquaza-Mega." });
+    if (heldItem?.zMove || heldItem?.zMoveType) issues.push({ field: "itemId", message: "A Mega-Evolved Pokémon cannot hold a Z-Crystal." });
   }
   issues.push(...validateMechanic(build, runtime));
   for (const stat of COMBAT_STATS) {
@@ -429,7 +429,7 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   if (!STATUSES.some((status) => status.value === build.status)) issues.push({ field: "status", message: "Select a valid battle status." });
   const stats = getBuildStats(build, runtime);
   if (build.currentHP !== null && !isIntegerWithin(build.currentHP, 1, stats?.hp ?? Number.MAX_SAFE_INTEGER)) {
-    issues.push({ field: "currentHP", message: `Current HP must be a whole number from 1 to ${stats?.hp ?? "maximum HP"}, or blank for full HP.` });
+    issues.push({ field: "currentHP", message: `Current HP must be a whole number from 1 to ${stats?.hp ?? "maximum HP"}.` });
   }
   return issues;
 }

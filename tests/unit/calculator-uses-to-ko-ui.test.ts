@@ -247,7 +247,7 @@ describe("Uses to KO in the move details", () => {
     expect(visible(details(tantrum))).toContain("Uses to KO Guaranteed KO in 2 uses. 6.25% chance to KO in 1 use. Counts end-of-turn damage.");
     // Champions Hard Press into Vanilluxe at 60 HP: the lowest and highest roll paths only (KO in 4 and in 3).
     const hardPress = row("hardpress", 32, 42, 0, counted({ guaranteed: 4, fewest: 3, limit: 12,
-      notes: ["There are too many roll sequences to count exactly, so these counts take the lowest and the highest roll on every use, with no chance."] }));
+      notes: ["Too many roll sequences: lowest and highest rolls only, no chance."] }));
     expect(visible(details(hardPress))).toContain("Uses to KO Guaranteed KO in 4 uses. Possible KO in 3 uses with the best rolls.");
     expect(visible(details(hardPress))).not.toContain("The best rolls KO");
     const facade = row("facade", 21, 25, 0, counted({ guaranteed: null, fewest: null, faintsFirst: true, limit: 20, attackerFaints: { lowest: 7, highest: 7 } }));

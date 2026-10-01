@@ -30,7 +30,7 @@ export function withResolvedPriority(move: Move, priority: number): Move {
 
 /** Resolve the requested attack before applying base-move history/hit/failure guards. */
 /** The question a Terastallized Stellar user's move asks until its first use of the type is set. */
-export const STELLAR_FIRST_USE_REASON = "Stellar Tera needs explicit first-use context for this move's type; its once-per-type boost is not assumed.";
+export const STELLAR_FIRST_USE_REASON = "Stellar: first use of this move's type needed.";
 
 export function resolveBattleMove(
   metadata: ChampionsMove,
@@ -49,7 +49,7 @@ export function resolveBattleMove(
   const mechanicIssues = validateMechanic(build, runtime);
   if (mechanicIssues.length) return fail(mechanicIssues.map((issue) => issue.message).join(" "));
   if (context?.useZ !== undefined && typeof context.useZ !== "boolean") return fail("Z-Move activation must be on or off.");
-  if (metadata.isZ || metadata.isMax) return fail("Assign the base move and explicitly activate its Z-Move or Max transformation, rather than assigning a transformed attack.");
+  if (metadata.isZ || metadata.isMax) return fail("A Z-Move or Max Move cannot be assigned directly.");
   if (!gen.moves.get(toID(metadata.name))) return fail("This move is absent from the selected game's pinned engine.");
   const useZ = context?.useZ === true;
   const useMax = isMaxActive(build);
@@ -68,8 +68,8 @@ export function resolveBattleMove(
     } else if (item.zMoveType !== (isHiddenPower ? "Normal" : metadata.type)) {
       return fail(`${item.name} does not match this base move's Z-Move type${isHiddenPower ? "; Hidden Power requires Normalium Z" : ""}.`);
     }
-    if (metadata.category === "Status") return fail("Status Z-Move bonuses and called-move effects are not simulated; no ordinary move damage is substituted.");
-    assumptions.push("Assumes the team's Z-Move use is still available and the base move has PP; battle-wide consumption is not tracked.");
+    if (metadata.category === "Status") return fail("Status Z-Moves are not calculated.");
+    assumptions.push("Assumes the Z-Move is still unused.");
   }
   // Pinned Showdown battle-actions.ts getMaxMove maps every status move to Max
   // Guard. Calc omits maxMove on status data, so supply only the conversion marker.
@@ -84,7 +84,7 @@ export function resolveBattleMove(
   // Weather Ball, Terrain Pulse, Multi-Attack, Techno Blast, Full Belly Aura Wheel and Liquid Voice
   // sound moves match (fix35/verify.ts).
   if (useMax && (["judgment", "naturalgift", "revelationdance"].includes(metadata.id) || (metadata.id === "aurawheel" && build.speciesId !== "morpeko"))) {
-    return fail("This move's field/item/form-dependent transformed type and exact Z/Max signature are not verified by the pinned adapter; ordinary damage is not substituted.");
+    return fail("This move's Max Move type is not verified.");
   }
   if (!useZ && !useMax && ["return", "frustration"].includes(metadata.id)) {
     const happiness = build.configuration?.happiness ?? 255;
@@ -93,7 +93,7 @@ export function resolveBattleMove(
     assumptions.push(`Happiness ${happiness}: ${metadata.name} has ${basePower} base power.`);
   }
   if (isHiddenPower && !useZ) {
-    if (runtime.profile.generation !== 7 || build.game === "champions") return fail("Hidden Power is only supported in the Ultra Sun/Ultra Moon profile with native IV context.");
+    if (runtime.profile.generation !== 7 || build.game === "champions") return fail("Hidden Power is supported only in Ultra Sun/Ultra Moon.");
     const innate = build.native.innateIVs ?? build.native.ivs;
     const type = hiddenPowerType(innate);
     // A transformed Imposter user keeps its own Hidden Power type, from its own IVs (pinned Showdown
@@ -101,20 +101,19 @@ export function resolveBattleMove(
     const own = build.transformedFrom && (runtime.speciesById.get(build.transformedFrom.speciesId)?.name ?? build.transformedFrom.speciesId);
     const declared = build.configuration?.hiddenPowerType;
     if (!type || (selectedHiddenPowerType && type !== selectedHiddenPowerType) || (declared && type !== declared)) {
-      if (own && type && (!declared || declared === type)) return { kind: "needs-context", reason: `Transform keeps ${own}'s own Hidden Power type, ${type}, so its copy of this move is Hidden Power ${type}.` };
-      return { kind: "needs-context", reason: "Hidden Power's declared type does not match the known innate IVs. Supply the original innate IVs for Hyper Training; effective IVs are not silently rewritten." };
+      if (own && type && (!declared || declared === type)) return { kind: "needs-context", reason: `Transform keeps ${own}'s Hidden Power type: Hidden Power ${type}.` };
+      return { kind: "needs-context", reason: "Hidden Power's declared type does not match the innate IVs." };
     }
     const engineType = gen.types.get(toID(type));
     if (!engineType) return fail("Hidden Power's type is absent from the pinned engine.");
     overrides = { ...overrides, type: engineType.name, basePower: 60 };
-    assumptions.push(own ? `Hidden Power ${type}, 60 power: Transform keeps ${own}'s own Hidden Power type, from its own IVs.`
-      : `Hidden Power ${type}, 60 power, uses ${build.native.innateIVs ? "explicit innate" : "the provided"} IVs; Hyper Training never changes its type.`);
+    assumptions.push(`Hidden Power ${type}, 60 power${own ? ` (${own}'s own IVs)` : ""}.`);
   }
   let stellarFirstUse = context?.stellarFirstUse;
   if (build.mechanic === "tera" && build.configuration?.teraType === "Stellar" && metadata.category !== "Status") {
     if (!stellarBoostUsedUp(build, runtime)) {
       stellarFirstUse = true;
-      assumptions.push("Terapagos-Stellar keeps its Stellar boost for every type; it is never used up.");
+      assumptions.push("Terapagos-Stellar: Stellar boost on every use.");
     } else {
       if (typeof stellarFirstUse !== "boolean") return { kind: "needs-context", reason: STELLAR_FIRST_USE_REASON };
       assumptions.push(`Stellar: first use of this move's type — ${stellarFirstUse ? "yes" : "no"}.`);
@@ -125,7 +124,7 @@ export function resolveBattleMove(
     const signature = species?.canGigantamax ? runtime.movesById.get(species.canGigantamax) : undefined;
     const engineSignature = signature && gen.moves.get(toID(signature.name));
     if (!signature?.isMax || signature.unsupported.length || !engineSignature?.isMax || !signature.name.startsWith("G-Max ")) {
-      return fail("The selected species has no verified exact G-Max signature mapping in this catalog and engine.");
+      return fail("No verified G-Max move for this species.");
     }
     overrideMove = engineSignature.name;
   }
@@ -137,7 +136,7 @@ export function resolveBattleMove(
     overrideMove, isStellarFirstUse: stellarFirstUse,
     timesUsed: 1, timesUsedWithMetronome: 0,
   });
-  if (useZ && (!move.isZ || (item?.zMove && toID(move.name) !== item.zMove))) return fail("The pinned engine did not produce the verified Z-Move; ordinary damage is not substituted.");
+  if (useZ && (!move.isZ || (item?.zMove && toID(move.name) !== item.zMove))) return fail("The engine did not produce the Z-Move.");
   // Revelation Dance's Z conversion uses its own Normal type (pinned Showdown battle-actions
   // getActiveZMove), but the engine would retype the Z-Move by the user's type, keyed on the base move's
   // name, so it is built under its Z name. Weather Ball takes its weather type before Z conversion, as
@@ -147,13 +146,11 @@ export function resolveBattleMove(
       ...options, overrides: { basePower: move.bp, category: move.category }, ability: pokemon.ability, item: pokemon.item,
       timesUsed: 1, timesUsedWithMetronome: 0,
     });
-    assumptions.push(`Z conversion keeps ${metadata.name}'s own Normal type, so ${move.name} is Normal type.`);
+    assumptions.push(`${move.name}: Normal type (from ${metadata.name}).`);
   }
-  if (useMax && !move.isMax) return fail("The pinned engine did not produce a verified Max move; ordinary damage is not substituted.");
+  if (useMax && !move.isMax) return fail("The engine did not produce the Max Move.");
   const transformed = useZ || useMax;
-  if (transformed) assumptions.push(useMax
-    ? "One Max/G-Max attack. Uses to KO follows its stat, weather and terrain changes and Dynamax ending after 3 turns; a G-Max move that damages every turn is not estimated."
-    : "One damaging Z-Move, once per battle (Uses to KO: one use only); secondary bonuses are not simulated.");
+  if (transformed) assumptions.push(useMax ? "One Max/G-Max attack." : "One Z-Move, once per battle.");
   const effective: ChampionsMove = {
     ...metadata, id: transformed ? toID(move.name) : metadata.id,
     name: move.name, type: move.type, power: move.bp, category: move.category,

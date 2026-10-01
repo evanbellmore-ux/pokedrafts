@@ -53,12 +53,12 @@ describe("Quark Drive and an Electric Seed", () => {
     // Pincurchin's Electric Terrain, then Iron Hands switches in: the Seed first, Quark Drive takes Defense.
     const lead = row("drainpunch", hands, pincurchin, electric);
     expect(range(lead)).toBe("58-70");
-    expect(lead.assumptions).toContain("The attacker Iron Hands's Electric Seed was used before Quark Drive activated: this assumes Electric Terrain was up when it entered. If Quark Drive activated first, it raises its Attack: untick its Electric Seed choice.");
+    expect(lead.assumptions).toContain("The attacker Iron Hands's Electric Seed was used before Quark Drive activated (assumes Electric Terrain was up when it entered).");
     // Iron Hands out first, then Pincurchin's Electric Terrain: Quark Drive takes Attack, then the Seed.
     const later = row("drainpunch", first(hands, false), pincurchin, electric);
     expect(range(later)).toBe("76-91");
-    expect(later.assumptions).toContain("The attacker Iron Hands's Quark Drive raises its Attack, its highest stat before its Seed, on Electric Terrain. This assumes its stat stages have not changed since it activated, other than its item's change.");
-    expect(later.assumptions).toContain("The attacker Iron Hands's Quark Drive activated before its Electric Seed was used, as its item choice says. If the Seed came first, Quark Drive raises its Defense: tick its Electric Seed choice.");
+    expect(later.assumptions).toContain("The attacker Iron Hands's Quark Drive boosts its Attack (its highest stat before its Seed), on Electric Terrain. Assumes no stage changes since it activated, other than its item's.");
+    expect(later.assumptions).toContain("The attacker Iron Hands's Quark Drive activated before its Electric Seed was used.");
     // As the target: Garchomp's Electric Terrain then Iron Hands switches in, or Iron Hands's own Electric Terrain.
     const garchomp = build("garchomp");
     expect(range(row("dragonclaw", garchomp, hands, electric))).toBe("28-34");
@@ -99,10 +99,10 @@ describe("Booster Energy with its field up", () => {
     const pincurchin = build("pincurchin", { ability: "lightningrod" });
     const held = row("acrobatics", bundle, pincurchin, electric);
     expect(range(held)).toBe("9-11");
-    expect(held.assumptions).toContain("The attacker Iron Bundle's Booster Energy is still held: this assumes Electric Terrain has been up since it entered, apart from while Magic Room was up (or another Pokémon's ability set it as they entered together), or Magic Room was up when it entered. Tick its Booster Energy choice if Electric Terrain was down at some point after it entered while Magic Room was not up, so the Booster Energy was used.");
+    expect(held.assumptions).toContain("The attacker Iron Bundle's Booster Energy is still held (assumes Electric Terrain has been up since it entered).");
     const used = row("acrobatics", first(bundle, true), pincurchin, electric);
     expect(range(used)).toBe("18-22");
-    expect(used.assumptions).toContain("The attacker Iron Bundle's Quark Drive raises its Speed, its highest stat, activated by its Booster Energy, which is used up while Electric Terrain was down (on entry before it started, or when it ended while it was out). This assumes its stat stages have not changed since it activated.");
+    expect(used.assumptions).toContain("The attacker Iron Bundle's Quark Drive boosts its Speed (its highest stat), from its Booster Energy (used up while Electric Terrain was down). Assumes no stage changes since it activated.");
     // The foe's Electric Surge: both lead (held) or it switched in later (used).
     const surge = build("pincurchin", { ability: "electricsurge" });
     expect(range(row("acrobatics", bundle, surge, electric))).toBe("9-11");
@@ -141,7 +141,7 @@ describe("Booster Energy with its field up", () => {
     const dropped = applyIntimidate(incineroar, valiant, { magicRoom: false, terrain: "Electric", gameType: "Singles" }, sv).target;
     const hit = row("moonblast", first(dropped, true), incineroar, electric);
     expect(range(hit)).toBe("90-106");
-    expect(hit.assumptions.join(" ")).toContain("Quark Drive raises its Sp. Atk, its highest stat, activated by its Booster Energy");
+    expect(hit.assumptions.join(" ")).toContain("Quark Drive boosts its Sp. Atk (its highest stat), from its Booster Energy");
   });
 });
 
@@ -154,7 +154,7 @@ describe("Protosynthesis and a terrain Seed", () => {
     // Terrain before the sun (at entry, or both after it): the Seed first.
     const seedFirst = row("closecombat", tusk, pincurchin, both);
     expect(range(seedFirst)).toBe("90-106");
-    expect(seedFirst.assumptions).toContain("The attacker Great Tusk's Electric Seed was used before Protosynthesis activated: this assumes Electric Terrain was up before the sun started, or both were up when it entered. If Protosynthesis activated first, it raises its Attack: untick its Electric Seed choice.");
+    expect(seedFirst.assumptions).toContain("The attacker Great Tusk's Electric Seed was used before Protosynthesis activated (assumes Electric Terrain was up before the sun started, or both were up when it entered).");
     // The sun before the terrain: Protosynthesis first.
     expect(range(row("closecombat", first(tusk, false), pincurchin, both))).toBe("115-136");
     // The foe's Drought: replacements for fainted Pokémon enter together (Protosynthesis first);
@@ -245,11 +245,11 @@ describe("Booster Energy and Room Service timelines", () => {
     // Cloud Nine already out as it entered: the Booster Energy activates Protosynthesis.
     const boosted = row("acrobatics", moon, golduck, sun);
     expect(range(boosted)).toBe("88-104");
-    expect(boosted.assumptions).toContain("This assumes the other Pokémon's Cloud Nine was out when it entered, or the sun was down at some point after it entered. If the sun activated Protosynthesis before Cloud Nine came in, the Booster Energy was used up with no effect and Protosynthesis ended: untick its Booster Energy choice.");
+    expect(boosted.assumptions).toContain("Assumes the other Pokémon's Cloud Nine was out when Roaring Moon entered, or the sun was down at some point since.");
     // Golduck switched in after the sun: no item and no boost.
     const burned = row("acrobatics", first(moon, false), golduck, sun);
     expect(range(burned)).toBe("68-80");
-    expect(burned.assumptions).toContain("The attacker Roaring Moon's Protosynthesis is not active: the sun activated it before the other Pokémon's Cloud Nine came in, which used up its Booster Energy with no effect and ended Protosynthesis, as its item choice says.");
+    expect(burned.assumptions).toContain("The attacker Roaring Moon's Protosynthesis is not active: the sun activated it before the other Pokémon's Cloud Nine came in, and its Booster Energy was used up.");
     expect(range(row("acrobatics", first(moon, false), build("rayquaza"), sun))).toBe("60-71");
     // The same after a Magic Room is set afterwards, or after the sun ends (gaps/review2/field-items-hp-ivs c1.ts, c5.ts).
     expect(range(row("acrobatics", first(moon, false), golduck, { ...sun, magicRoom: true }))).toBe("68-80");
@@ -263,7 +263,7 @@ describe("Booster Energy and Room Service timelines", () => {
     const pincurchin = build("pincurchin", { ability: "lightningrod" });
     const held = row("acrobatics", bundle, pincurchin, { ...electric, magicRoom: true });
     expect(range(held)).toBe("9-11");
-    expect(held.assumptions).toContain("The attacker Iron Bundle's Booster Energy is still held: it entered while Magic Room was up, so it never acts, even after the room ends. Tick its Booster Energy choice if it was used after all.");
+    expect(held.assumptions).toContain("The attacker Iron Bundle's Booster Energy is still held: it entered under Magic Room.");
     expect(fieldItemChoice(bundle, pincurchin, conditions({ ...electric, magicRoom: true }), sv)).toMatchObject({ itemId: "boosterenergy", checked: false });
     expect(roomItemChoice(bundle, pincurchin, conditions({ ...electric, magicRoom: true }))).toBeNull();
     // Ticking the field switch also clears the room's hold (PokemonPanel), so the Booster Energy is used.
@@ -274,6 +274,6 @@ describe("Booster Energy and Room Service timelines", () => {
     const service = build("ironbundle", { ability: "quarkdrive", item: "roomservice", nature: "Timid", evs: { spe: 252 } });
     const later = row("hydropump", first(service, false), build("pincurchin", { ability: "lightningrod" }), { ...electric, trickRoom: true });
     expect(range(later)).toBe("85-102");
-    expect(later.assumptions).toContain("The attacker Iron Bundle's Quark Drive raises its Speed, its highest stat before Room Service lowered its Speed, on Electric Terrain. This assumes its stat stages have not changed since it activated, other than its item's change.");
+    expect(later.assumptions).toContain("The attacker Iron Bundle's Quark Drive boosts its Speed (its highest stat before Room Service), on Electric Terrain. Assumes no stage changes since it activated, other than its item's.");
   });
 });

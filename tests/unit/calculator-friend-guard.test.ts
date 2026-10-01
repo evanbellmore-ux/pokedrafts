@@ -32,7 +32,7 @@ function row(moveId: string, attacker: BattleBuild, defender: BattleBuild, condi
   return out.results.find((result) => result.moveId === moveId)!;
 }
 
-const APPLIED = "Friend Guard: the receiving Pokémon's partner reduces this damage to 75%.";
+const APPLIED = "Friend Guard: 75% damage.";
 const garchomp = build("garchomp", "roughskin");
 const incineroar = build("incineroar", "blaze");
 
@@ -120,7 +120,7 @@ describe("Friend Guard partner", () => {
     expect(toss.assumptions).not.toContain(APPLIED);
     const singles = row("dragonclaw", garchomp, incineroar, field({ gameType: "Singles" }));
     expect(singles).toMatchObject({ min: 63, max: 75 });
-    expect(singles.assumptions).toContain("Singles has only the two battling Pokémon, so the Friend Guard partner set for Doubles is ignored.");
+    expect(singles.assumptions).toContain("Singles: the Friend Guard partner is ignored.");
   });
 
   it("matches Showdown in the native games", async () => {

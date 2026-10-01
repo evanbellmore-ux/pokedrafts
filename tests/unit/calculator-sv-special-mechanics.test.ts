@@ -50,7 +50,7 @@ describe("Protosynthesis, Quark Drive and Booster Energy", () => {
     const amoonguss = build(sv, "amoonguss", { evs: { hp: 252 } });
     const moonblast = row(sv, "moonblast", flutter, amoonguss);
     expect(range(moonblast)).toBe("65-77");
-    expect(moonblast.assumptions).toContain("The attacker Flutter Mane's Protosynthesis raises its Sp. Atk, its highest stat, activated by its Booster Energy, which is used up. This assumes its stat stages have not changed since it activated.");
+    expect(moonblast.assumptions).toContain("The attacker Flutter Mane's Protosynthesis boosts its Sp. Atk (its highest stat), from its Booster Energy (used up). Assumes no stage changes since it activated.");
     expect(range(row(sv, "headlongrush", build(sv, "greattusk", { ability: "protosynthesis", evs: { atk: 252 }, nature: "Jolly" }), build(sv, "gholdengo", { evs: { hp: 252 } }), { weather: "Sun" }))).toBe("282-332");
     expect(range(row(sv, "drainpunch", build(sv, "ironhands", { ability: "quarkdrive", evs: { atk: 252 }, nature: "Adamant" }), build(sv, "kingambit", { evs: { hp: 252 } }), { terrain: "Electric" }))).toBe("336-396");
     // The receiving Pokémon's boost applies too: Scream Tail's Sp. Def.
@@ -80,10 +80,10 @@ describe("Protosynthesis, Quark Drive and Booster Energy", () => {
     // Entering while Magic Room is already up keeps the Booster Energy unused.
     const room = row(sv, "moonblast", { ...flutter, itemUsedBeforeRoom: false }, amoonguss, { magicRoom: true });
     expect(range(room)).toBe(plain);
-    expect(room.assumptions.join(" ")).not.toContain("Protosynthesis raises");
-    expect(room.assumptions).toContain("The attacker Flutter Mane's Booster Energy is not used: it entered while Magic Room was up. Tick its Booster Energy choice if it was used on entry, before the room was set.");
+    expect(room.assumptions.join(" ")).not.toContain("Protosynthesis boosts");
+    expect(room.assumptions).toContain("The attacker Flutter Mane's Booster Energy is not used: it entered under Magic Room.");
     const gas = row(sv, "moonblast", flutter, build(sv, "weezinggalar", { ability: "neutralizinggas", evs: { hp: 252 } }));
-    expect(gas.assumptions.join(" ")).not.toContain("Protosynthesis raises");
+    expect(gas.assumptions.join(" ")).not.toContain("Protosynthesis boosts");
   });
 });
 
@@ -101,17 +101,17 @@ describe("review follow-ups for Paradox holders, Tera forms and entry boosts", (
   it("activates before the holder's Seed when the foe's ability sets the field at a shared lead", () => {
     const hands = build(sv, "ironhands", { ability: "quarkdrive", item: "electricseed" });
     const notes = (foeAbility: string) => row(sv, "drainpunch", hands, build(sv, "pincurchin", { ability: foeAbility }), { terrain: "Electric" }).assumptions.join(" ");
-    expect(notes("electricsurge")).toContain("Quark Drive raises its Attack, its highest stat before its Seed");
-    expect(notes("electricsurge")).toContain("The attacker Iron Hands's Quark Drive activated before its Electric Seed was used: this assumes both entered together, so the other Pokémon's Electric Surge set Electric Terrain first. If the Seed came first, Quark Drive raises its Defense: tick its Electric Seed choice.");
+    expect(notes("electricsurge")).toContain("Quark Drive boosts its Attack (its highest stat before its Seed)");
+    expect(notes("electricsurge")).toContain("The attacker Iron Hands's Quark Drive activated before its Electric Seed was used (assumes both entered together and the other Pokémon's Electric Surge set Electric Terrain first).");
     // Terrain already up when it enters: the Seed's Defense rise comes first.
-    expect(notes("lightningrod")).toContain("Quark Drive raises its Defense, its highest stat");
+    expect(notes("lightningrod")).toContain("Quark Drive boosts its Defense (its highest stat)");
   });
 
   it("shows the target's Intrepid Sword choice for Foul Play", () => {
     const zacian = build(sv, "zaciancrowned", { item: "rustedsword" });
     const on = row(sv, "foulplay", build(sv, "umbreon"), zacian);
     expect(range(on)).toBe("51-60");
-    expect(on.assumptions).toContain("Target: Intrepid Sword has raised Attack (on its first entry of the battle) — yes.");
+    expect(on.assumptions).toContain("Target: Intrepid Sword has raised Attack — yes.");
     expect(range(row(sv, "foulplay", build(sv, "umbreon"), { ...zacian, abilityActive: false }))).toBe("33-40");
   });
 
@@ -137,13 +137,13 @@ describe("review follow-ups for Paradox holders, Tera forms and entry boosts", (
   it("words the Tera form notes for Neutralizing Gas", () => {
     const gas = build(sv, "weezinggalar", { ability: "neutralizinggas" });
     const stellar = row(sv, "weatherball", build(sv, "terapagos", { tera: "Stellar" }), gas, { weather: "Sun" });
-    expect(stellar.assumptions).toContain("Terastallization changes the attacker Terapagos into Terapagos-Stellar; Neutralizing Gas suppresses Teraform Zero, so the weather and terrain stay.");
+    expect(stellar.assumptions).toContain("Terastallization: the attacker Terapagos is Terapagos-Stellar; Teraform Zero is suppressed by Neutralizing Gas.");
     const sunny = row(sv, "weatherball", build(sv, "terapagos", { tera: "Stellar" }), build(sv, "weezinggalar", { ability: "levitate" }), { weather: "Sun" });
-    expect(sunny.assumptions).toContain("Terastallization changes the attacker Terapagos into Terapagos-Stellar, whose Teraform Zero clears the weather and terrain when it Terastallizes; set them only if they were restored afterwards.");
+    expect(sunny.assumptions).toContain("Terastallization: the attacker Terapagos is Terapagos-Stellar; Teraform Zero cleared the weather and terrain (assumes the set weather and terrain returned after).");
     const shell = row(sv, "sludgebomb", gas, build(sv, "terapagos"));
-    expect(shell.assumptions).toContain("Tera Shift changes the target Terapagos into Terapagos-Terastal when it enters; Neutralizing Gas suppresses its Tera Shell.");
+    expect(shell.assumptions).toContain("Tera Shift: the target Terapagos is Terapagos-Terastal; Tera Shell is suppressed by Neutralizing Gas.");
     const ogerpon = row(sv, "ivycudgel", build(sv, "ogerponhearthflame", { item: "hearthflamemask", tera: "Fire" }), gas);
-    expect(ogerpon.assumptions).toContain("Terastallization changes the attacker Ogerpon-Hearthflame into Ogerpon-Hearthflame-Tera, whose Embody Aspect (Hearthflame) is suppressed by Neutralizing Gas, so its Attack does not rise.");
+    expect(ogerpon.assumptions).toContain("Terastallization: the attacker Ogerpon-Hearthflame is Ogerpon-Hearthflame-Tera; Embody Aspect (Hearthflame) is suppressed by Neutralizing Gas.");
   });
 
   it("previews remaining HP for a Tera'd Ogerpon-Cornerstone, whose Embody Aspect replaces Sturdy", () => {
@@ -166,7 +166,7 @@ describe("Booster Energy and a later Magic Room", () => {
     const snorlax = build(sv, "snorlax");
     const later = row(sv, "moonblast", flutter, snorlax, { magicRoom: true });
     expect(range(later)).toBe("84-99");
-    expect(later.assumptions).toContain("The attacker Flutter Mane's Protosynthesis raises its Sp. Atk, its highest stat, activated by its Booster Energy, which is used up on entry, before Magic Room was set. This assumes its stat stages have not changed since it activated.");
+    expect(later.assumptions).toContain("The attacker Flutter Mane's Protosynthesis boosts its Sp. Atk (its highest stat), from its Booster Energy (used up before Magic Room). Assumes no stage changes since it activated.");
     expect(range(row(sv, "moonblast", { ...flutter, itemUsedBeforeRoom: false }, snorlax, { magicRoom: true }))).toBe("64-76");
     // The room still suppresses the other Pokémon's Assault Vest.
     expect(range(row(sv, "moonblast", flutter, build(sv, "snorlax", { item: "assaultvest" }), { magicRoom: true }))).toBe("84-99");
@@ -205,7 +205,7 @@ describe("Intrepid Sword and Dauntless Shield in Scarlet/Violet", () => {
     expect(range(row(sv, "behemothblade", { ...zacian, abilityActive: false }, incineroar))).toBe("57-67");
     expect(range(row(sv, "earthquake", build(sv, "garchomp", { evs: { atk: 252 }, nature: "Jolly" }), build(sv, "zamazentacrowned", { item: "rustedshield", evs: { hp: 252 } })))).toBe("86-104");
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build: zacian, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined, runtime: sv }));
-    expect(html).toContain("Intrepid Sword has raised Attack (on its first entry of the battle)");
+    expect(html).toContain("Intrepid Sword has raised Attack");
   });
 
   it("has no switch in Sword/Shield, which raises them on every entry", () => {
@@ -227,15 +227,15 @@ describe("Ogerpon's and Terapagos's Tera forms", () => {
     const ogerpon = build(sv, id, { item, nature: "Adamant", evs, tera });
     const cudgel = row(sv, "ivycudgel", ogerpon, build(sv, "amoonguss", { evs: { hp: 252 } }));
     expect(range(cudgel)).toBe(damage);
-    expect(cudgel.assumptions.join(" ")).toContain(`into ${form}, whose Embody Aspect`);
-    expect(cudgel.assumptions.join(" ")).toContain(`raises its ${stat} by 1 stage on entry`);
+    expect(cudgel.assumptions.join(" ")).toContain(`is ${form}; Embody Aspect`);
+    expect(cudgel.assumptions.join(" ")).toContain(`gives +1 ${stat}.`);
   });
 
   it("defends as the Tera form and needs Terastallization for a Tera-only form", () => {
     const hearthflame = build(sv, "ogerponhearthflame", { item: "hearthflamemask", evs: { hp: 252 }, tera: "Fire" });
     expect(range(row(sv, "earthquake", build(sv, "garchomp", { evs: { atk: 252, spa: 252 } }), hearthflame))).toBe("200-236");
     const direct = build(sv, "ogerponhearthflametera", { item: "hearthflamemask" });
-    expect(validateBuild(direct, sv)).toContainEqual({ field: "mechanic", message: "Ogerpon-Hearthflame-Tera exists only while Terastallized. Turn on Terastallization (Tera Fire)." });
+    expect(validateBuild(direct, sv)).toContainEqual({ field: "mechanic", message: "Ogerpon-Hearthflame-Tera exists only while Terastallized." });
     expect(validateBuild({ ...direct, mechanic: "tera", configuration: { ...direct.configuration, teraType: "Fire" } } as BattleBuild, sv)).toEqual([]);
   });
 
@@ -243,11 +243,11 @@ describe("Ogerpon's and Terapagos's Tera forms", () => {
     const garchomp = build(sv, "garchomp", { evs: { atk: 252 } });
     const intoShell = row(sv, "earthquake", garchomp, build(sv, "terapagos"));
     expect(range(intoShell)).toBe("39-47");
-    expect(intoShell.assumptions).toContain("Tera Shift changes the target Terapagos into Terapagos-Terastal when it enters (with Tera Shell).");
+    expect(intoShell.assumptions).toContain("Tera Shift: the target Terapagos is Terapagos-Terastal, with Tera Shell.");
     const stellar = build(sv, "terapagos", { evs: { spa: 252 }, tera: "Stellar" });
     const starstorm = row(sv, "terastarstorm", stellar, build(sv, "amoonguss"));
     expect(starstorm).toMatchObject({ kind: "calculated", min: 100, max: 118, effectiveType: "Stellar" });
-    expect(starstorm.assumptions).toContain("Terapagos-Stellar keeps its Stellar boost for every type; it is never used up.");
+    expect(starstorm.assumptions).toContain("Terapagos-Stellar: Stellar boost on every use.");
     const doubles = calculateMatchup(stellar, build(sv, "amoonguss"), { ...createConditions(), gameType: "Doubles" }, {}, sv).results.find((result) => result.moveId === "terastarstorm")!;
     expect(range(doubles)).toBe("74-88");
     expect(range(row(sv, "rapidspin", build(sv, "terapagos", { evs: { atk: 252 }, tera: "Stellar" }), build(sv, "amoonguss")))).not.toBe("null-null");

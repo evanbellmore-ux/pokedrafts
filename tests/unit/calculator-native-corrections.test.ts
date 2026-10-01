@@ -101,10 +101,10 @@ describe("native forms and restricted moves", () => {
     const garchomp = build(sv, "garchomp", { evs: { atk: 252 } });
     const kept = row(sv, "ironhead", garchomp, build(sv, "miniormeteor", { abilityId: "shieldsdown", currentHP: 60, abilityActive: true }));
     expect(range(kept)).toBe("92-110");
-    expect(kept.assumptions).toContain("Shields Down: the target Minior-Meteor stays Minior-Meteor until the end of the turn, although it would be Minior at half its HP or less.");
+    expect(kept.assumptions).toContain("Shields Down: the target Minior-Meteor stays Minior-Meteor until the end of the turn (Minior at half its HP or less).");
     expect(range(row(sv, "ironhead", garchomp, build(sv, "miniormeteor", { abilityId: "shieldsdown", currentHP: 60 })))).toBe("138-164");
-    expect(abilityActivationLabel("shieldsdown", "scarlet_violet")).toBe("Its HP crossed half this turn; its form changes at the end of the turn");
-    expect(abilityActivationLabel("schooling", "sword_shield", { level: 50 })).toBe("Its HP crossed a quarter this turn; its form changes at the end of the turn");
+    expect(abilityActivationLabel("shieldsdown", "scarlet_violet")).toBe("Its HP crossed half this turn");
+    expect(abilityActivationLabel("schooling", "sword_shield", { level: 50 })).toBe("Its HP crossed a quarter this turn");
     // Below level 20 Wishiwashi never schools, whatever the switch says, so it is not offered.
     expect(abilityActivationLabel("schooling", "sword_shield", { level: 15 })).toBeUndefined();
     expect(range(row(ss, "earthquake", build(ss, "garchomp", { evs: { atk: 252 } }), build(ss, "wishiwashischool", { abilityId: "schooling", level: 15, abilityActive: true })))).toBe("681-802");
@@ -119,7 +119,7 @@ describe("native forms and restricted moves", () => {
     // Real two-turn battles: the face broke with snow or hail up and stays broken (fix34/review/t-noice-snow*.ts).
     const snowy = row(sv, "earthquake", garchomp, noice, undefined, "Snow");
     expect(range(snowy)).toBe("76-91");
-    expect(snowy.assumptions).toContain("Ice Face: this assumes the target Eiscue-Noice's face broke while the snow was up. Entering in snow, or snow starting, restores it: select Eiscue for that.");
+    expect(snowy.assumptions).toContain("Ice Face: assumes the target Eiscue-Noice's face broke while the snow was up.");
     expect(range(row(sv, "earthpower", garchomp, noice, undefined, "Snow"))).toBe("96-114");
     expect(range(row(ss, "earthquake", build(ss, "garchomp", { evs: { atk: 252 } }), build(ss, "eiscuenoice", { abilityId: "iceface" }), undefined, "Hail"))).toBe("114-135");
     expect(range(row(sv, "earthquake", build(sv, "excadrill", { abilityId: "moldbreaker", evs: { atk: 252 } }), build(sv, "eiscue", { abilityId: "iceface" })))).toBe("82-97");
@@ -207,14 +207,14 @@ describe("moves the engine calculates as Showdown does", () => {
     const gmax = (id: string) => build(ss, id, { mechanic: "gigantamax", gigantamax: true, evs: { spa: 252 } });
     const hydrosnipe = row(ss, "weatherball", gmax("inteleon"), snorlax, undefined, "Rain");
     expect(hydrosnipe).toMatchObject({ effectiveName: "G-Max Hydrosnipe", effectiveType: "Water", effectivePower: 160, min: 184, max: 217 });
-    expect(hydrosnipe.assumptions).toContain("Weather Ball takes its Water type before Max conversion, so it becomes G-Max Hydrosnipe.");
+    expect(hydrosnipe.assumptions).toContain("Weather Ball is Water type, so it becomes G-Max Hydrosnipe.");
     expect(range(row(ss, "weatherball", gmax("inteleon"), build(ss, "lapras", { abilityId: "waterabsorb" }), undefined, "Rain"))).toBe("105-123");
     expect(row(ss, "weatherball", gmax("blastoise"), snorlax, undefined, "Rain")).toMatchObject({ effectiveName: "G-Max Cannonade", min: 118, max: 139 });
     expect(row(ss, "weatherball", gmax("eevee"), snorlax, undefined, "Rain")).toMatchObject({ effectiveName: "Max Geyser", min: 56, max: 66 });
     expect(row(ss, "terrainpulse", gmax("snorlax"), snorlax, undefined, "", "Electric")).toMatchObject({ effectiveName: "Max Lightning", min: 57, max: 68 });
     const zBall = row(us, "weatherball", build(us, "castform", { itemId: "normaliumz", evs: { spa: 252 } }), build(us, "snorlax"), { useZ: true }, "Sun");
     expect(zBall).toMatchObject({ effectiveName: "Inferno Overdrive", effectiveType: "Fire", min: 129, max: 153 });
-    expect(zBall.assumptions).toContain("Weather Ball takes its Fire type before Z conversion, so it becomes Inferno Overdrive.");
+    expect(zBall.assumptions).toContain("Weather Ball is Fire type, so it becomes Inferno Overdrive.");
   });
 });
 

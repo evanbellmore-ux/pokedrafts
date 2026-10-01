@@ -30,16 +30,16 @@ function countIn(value: number | undefined, maximum: number): number | null {
 export function countPower(moveId: string, context: MoveContext | undefined, runtime: BattleRuntime): CountPower | null {
   if (moveId === "lastrespects") {
     const fainted = countIn(context?.fainted, MAX_FAINTED_ALLIES);
-    if (fainted === null) return { reason: `Choose how many party members have fainted, from 0 to ${MAX_FAINTED_ALLIES}.` };
+    if (fainted === null) return { reason: `Last Respects: fainted count must be 0 to ${MAX_FAINTED_ALLIES}.` };
     const power = 50 + 50 * fainted;
-    return { power, line: `Last Respects: ${fainted} party member${fainted === 1 ? " has" : "s have"} fainted, so it has ${power} power. Set the count in the move settings above the move list.` };
+    return { power, line: `Last Respects: ${fainted} fainted, ${power} power.` };
   }
   if (moveId === "ragefist") {
     const hits = countIn(context?.timesHit, MAX_TIMES_HIT);
-    if (hits === null) return { reason: `Choose how many times the user has been hit, from 0 to ${MAX_TIMES_HIT} or more.` };
+    if (hits === null) return { reason: `Rage Fist: hit count must be 0 to ${MAX_TIMES_HIT}.` };
     const power = Math.min(350, 50 + 50 * hits);
-    const scope = runtime.profile.id === "champions" ? "since it last switched in (Champions resets the count on switching out)" : "this battle (the count stays when it switches out)";
-    return { power, line: `Rage Fist: the user has been hit ${hits === MAX_TIMES_HIT ? `${hits} or more times` : `${hits} time${hits === 1 ? "" : "s"}`} ${scope}, so it has ${power} power. Set the count in the move settings above the move list.` };
+    const scope = runtime.profile.id === "champions" ? " since switching in" : "";
+    return { power, line: `Rage Fist: hit ${hits === MAX_TIMES_HIT ? `${hits} or more times` : `${hits} time${hits === 1 ? "" : "s"}`}${scope}, ${power} power.` };
   }
   return null;
 }
@@ -65,10 +65,10 @@ export type BeatUpPlan = { hits: { name: string; power: number }[] } | { reason:
 /** Beat Up's hits for the user and the chosen party members (context.party). */
 export function beatUpPlan(attacker: Pick<BattleBuild, "speciesId">, context: MoveContext | undefined, runtime: BattleRuntime): BeatUpPlan {
   const party = context?.party;
-  if (!party) return { reason: "Choose Beat Up's party in the move settings above the move list: the other party members that are not fainted and have no status." };
-  if (party.some((id) => id === "")) return { reason: "Choose a Pokémon for each Beat Up party member in the move settings above the move list." };
+  if (!party) return { reason: "Beat Up: party needed." };
+  if (party.some((id) => id === "")) return { reason: "Beat Up: a party member has no Pokémon." };
   if (party.length > MAX_BEAT_UP_ALLIES || party.some((id) => !runtime.speciesById.has(id))) {
-    return { reason: `Choose up to ${MAX_BEAT_UP_ALLIES} other party members for Beat Up, each a Pokémon in this game.` };
+    return { reason: `Beat Up: at most ${MAX_BEAT_UP_ALLIES} other party members, each a Pokémon in this game.` };
   }
   const hits = [attacker.speciesId, ...party].map((id) => {
     const species = teamSpecies(id, runtime)!;

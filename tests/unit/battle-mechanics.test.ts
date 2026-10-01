@@ -303,7 +303,7 @@ describe("Dynamax and exact G-Max attacks", () => {
     // Hangry Morpeko's Max Aura Wheel is Dark (Max Darkness) in Showdown; the engine makes it Electric.
     const hangry = build("sword_shield", "morpekohangry");
     hangry.mechanic = "dynamax";
-    expect(row("aurawheel", hangry)).toMatchObject({ kind: "unsupported", min: null, reason: expect.stringContaining("transformed type") });
+    expect(row("aurawheel", hangry)).toMatchObject({ kind: "unsupported", min: null, reason: "This move's Max Move type is not verified." });
   });
 
   it("rejects ordinary Dynamax for a Gmax-factor build instead of silently changing the requested effect", () => {

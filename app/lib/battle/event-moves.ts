@@ -39,5 +39,5 @@ export function eventDoublingAssumption(moveId: string, context: MoveContext | u
   const lower = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
   return isEventDoubled(moveId, context)
     ? `Doubled power: ${lower(rule.label)}.`
-    : `Normal power: assumes ${rule.normal}. For the doubled case, tick “${rule.label}” in the move settings above the move list.`;
+    : `Normal power: assumes ${rule.normal}.`;
 }

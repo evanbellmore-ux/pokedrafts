@@ -6,7 +6,6 @@ import { Alert, Button, EmptyState, Field, PageHeader, Select } from "@/app/comp
 import { BATTLE_GAMES, BATTLE_PROFILES, isBattleGame } from "@/app/lib/battle/profiles";
 import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
-import { mimicryState } from "@/app/lib/battle/mimicry";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { fieldItemChoice, roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleGame, BattleMechanic } from "@/app/lib/battle/types";
@@ -14,6 +13,8 @@ import { teamNameLabel } from "@/app/lib/league/labels";
 import { linkClassName } from "@/app/lib/theme";
 import BattleConditions, { describeConditions } from "./BattleConditions";
 import CalculatorTabs, { calculatorTabIds, type CalculatorTab } from "./CalculatorTabs";
+import BuildSettingsSections, { type BuildSettings } from "./BuildSettings";
+import SettingsDisclosure from "./SettingsDisclosure";
 import MatchupSummary from "./MatchupSummary";
 import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
@@ -23,6 +24,7 @@ import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./useMatchupCalculation";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
+import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "./settings-sections";
 import type { CalculatorRosterState } from "./roster-data";
 import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -35,7 +37,8 @@ type EngineState =
   | { status: "error"; message: string };
 
 type RosterFocus = { pickerId: string; choiceKey: string; element: HTMLButtonElement };
-type NavigationRequest = { tab: CalculatorTab; reveal: () => void };
+/** A pending reveal, run once its tab (or, without one, the opened settings section) has rendered. */
+type NavigationRequest = { tab: CalculatorTab | null; reveal: () => void };
 type GameLoad = { request: number; status: "idle" | "loading" | "error"; target?: BattleGame; message?: string };
 
 function rosterFocusTarget(picker: HTMLElement | null) {
@@ -61,6 +64,7 @@ export default function CalculatorClient() {
   }, []);
   const desktopRosters = useDesktopRosterLayout(rememberRosterFocus);
   const [navigation, setNavigation] = useState<{ tab: CalculatorTab; request: number }>({ tab: "moves", request: 0 });
+  const [sections, setSections] = useState(NO_SETTINGS_SECTIONS);
   const [matchup, setMatchup] = useState(() => createMatchup());
   const gameRequest = useRef(0);
   const [gameLoad, setGameLoad] = useState<GameLoad>({ request: 0, status: "idle" });
@@ -85,9 +89,12 @@ export default function CalculatorClient() {
   const rosters = useCalculatorRosters(receiveRosters);
   const attacker = matchup.attacker.build;
   const defender = matchup.defender.build;
+  const attackerKey = matchup.attacker.key;
+  const defenderKey = matchup.defender.key;
   const fieldId = `${prefix}-field`;
-  const controls = { attacker: `${prefix}-build-${matchup.attacker.key}`, defender: `${prefix}-build-${matchup.defender.key}`, moves: `${prefix}-moves` };
-  const rosterControls = { attacker: `${prefix}-roster-${matchup.attacker.key}`, defender: `${prefix}-roster-${matchup.defender.key}` };
+  const fieldKey = fieldSectionKey(matchup.revision);
+  const controls = { attacker: `${prefix}-build-${attackerKey}`, defender: `${prefix}-build-${defenderKey}`, moves: `${prefix}-moves` };
+  const rosterControls = { attacker: `${prefix}-roster-${attackerKey}`, defender: `${prefix}-roster-${defenderKey}` };
 
   useEffect(() => {
     let current = true;
@@ -100,6 +107,7 @@ export default function CalculatorClient() {
 
   useEffect(() => () => { gameRequest.current += 1; }, []);
 
+  // Only the compact summary is measured: the settings sit below it, outside the pinned box.
   useEffect(() => {
     const root = rootRef.current;
     const summary = summaryRef.current;
@@ -127,14 +135,28 @@ export default function CalculatorClient() {
     element.focus({ preventScroll: true });
     const navHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--app-nav-height")) || 0;
     const summary = summaryRef.current;
-    const stickyHeight = includeSummary && summary && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
-    window.scrollTo({ top: Math.max(0, window.scrollY + element.getBoundingClientRect().top - navHeight - stickyHeight - 16) });
+    const stickyHeight = includeSummary && summary && !summary.contains(element) && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
+    const bounds = element.getBoundingClientRect();
+    // Already in view, such as a quick move in the pinned summary: scrolling would only move the page.
+    if (bounds.top >= navHeight + stickyHeight && bounds.bottom <= window.innerHeight) return;
+    window.scrollTo({ top: Math.max(0, window.scrollY + bounds.top - navHeight - stickyHeight - 16) });
   }, []);
 
   const visit = useCallback((tab: CalculatorTab, action: () => void) => {
     pendingNavigation.current = { tab, reveal: action };
     // A fresh request also processes repeated shortcuts to an already-active tab.
     setNavigation((current) => ({ tab, request: current.request + 1 }));
+  }, []);
+
+  /** Opens a settings section (settings-sections.ts key), then runs the reveal once it has rendered. */
+  const visitSection = useCallback((key: string, action: () => void) => {
+    pendingNavigation.current = { tab: null, reveal: action };
+    setSections((current) => setSectionOpen(current, key, true));
+    setNavigation((current) => ({ ...current, request: current.request + 1 }));
+  }, []);
+
+  const toggleSection = useCallback((key: string) => {
+    setSections((current) => setSectionOpen(current, key, !current.open[key]));
   }, []);
 
   const selectTab = useCallback((tab: CalculatorTab) => {
@@ -144,7 +166,7 @@ export default function CalculatorClient() {
 
   useEffect(() => {
     const pending = pendingNavigation.current;
-    if (!pending || pending.tab !== navigation.tab) return;
+    if (!pending || (pending.tab !== null && pending.tab !== navigation.tab)) return;
     pendingNavigation.current = null;
     pending.reveal();
   }, [navigation]);
@@ -163,11 +185,13 @@ export default function CalculatorClient() {
       const target = sameChoice ?? rosterFocusTarget(picker);
       if (target) reveal(target, !desktopRosters);
     };
-    if (desktopRosters) {
+    // Compact layouts keep the roster in that Pokémon's Build settings, which opens first.
+    const key = desktopRosters ? undefined : [attackerKey, defenderKey].find((candidate) => focused.pickerId === `${prefix}-roster-${candidate}`);
+    if (key === undefined) {
       pendingNavigation.current = null;
       restore();
-    } else visit("builds", restore);
-  }, [desktopRosters, reveal, visit]);
+    } else visitSection(buildSectionKey(key), restore);
+  }, [desktopRosters, reveal, visitSection, prefix, attackerKey, defenderKey]);
 
   const attackView = useMemo(() => getAttackView(matchup), [matchup]);
   // Keyed on the builds, field and contexts, so a row click or an import-draft edit reuses the result.
@@ -181,6 +205,13 @@ export default function CalculatorClient() {
   };
   const buildIssueCount = issues.attacker.length + issues.defender.length;
   const invalid = buildIssueCount > 0 || issues.field.length > 0;
+  // Adjusted while rendering, like IntegerInput's text, so a new problem is never shown collapsed.
+  const trackedSections = trackSectionIssues(sections, [
+    { key: buildSectionKey(attackerKey), issues: issues.attacker },
+    { key: buildSectionKey(defenderKey), issues: issues.defender },
+    { key: fieldKey, issues: issues.field },
+  ]);
+  if (trackedSections !== sections) setSections(trackedSections);
   const resultsBlocked = engine.status !== "ready" || !!calculation?.error || invalid;
   // A transformed Imposter user lists its target's moves (imposter.ts).
   const sourceSpecies = speciesById.get(attackView.source.build.speciesId);
@@ -341,13 +372,25 @@ export default function CalculatorClient() {
   }
 
   function fixSettings() {
-    const tab = issues.attacker.length || issues.defender.length ? "builds" : "field";
-    const id = issues.attacker.length ? controls.attacker : issues.defender.length ? controls.defender : fieldId;
-    visit(tab, () => {
+    const invalidControl = "[aria-invalid=true]:not(:disabled)";
+    const firstControl = "select:not(:disabled), input:not(:disabled), summary, [tabindex]";
+    const side = issues.attacker.length ? "attacker" : issues.defender.length ? "defender" : null;
+    if (!side) {
+      visitSection(fieldKey, () => {
+        const panel = document.getElementById(fieldId);
+        const element = panel?.querySelector<HTMLElement>(invalidControl) ?? panel?.querySelector<HTMLElement>(firstControl)
+          ?? document.querySelector<HTMLElement>(`[aria-controls="${fieldId}"]`);
+        if (element) reveal(element);
+      });
+      return;
+    }
+    const id = controls[side];
+    visitSection(buildSectionKey(matchup[side].key), () => {
       const panel = document.getElementById(id);
-      const element = panel?.querySelector<HTMLElement>("[aria-invalid=true]:not(:disabled)")
-        ?? panel?.querySelector<HTMLElement>("select:not(:disabled), input:not(:disabled), summary, [tabindex]")
-        ?? document.getElementById(calculatorTabIds(prefix, tab).panelId);
+      // The card above keeps a few controls of its own, such as the Tera type.
+      const card = summaryRef.current?.querySelector<HTMLElement>(`[data-summary-combatant="${side}"]`);
+      const element = panel?.querySelector<HTMLElement>(invalidControl) ?? card?.querySelector<HTMLElement>(invalidControl)
+        ?? panel?.querySelector<HTMLElement>(firstControl) ?? document.querySelector<HTMLElement>(`[aria-controls="${id}"]`);
       if (element) reveal(element);
     });
   }
@@ -395,6 +438,37 @@ export default function CalculatorClient() {
       className: `${styles.panel} min-w-0 space-y-5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`,
     };
   }
+
+  function renderBuildEditor(side: BattleSide) {
+    const slot = matchup[side];
+    const other = matchup[side === "attacker" ? "defender" : "attacker"].build;
+    return (
+      <PokemonPanel
+        runtime={runtime}
+        gameType={matchup.field.gameType}
+        roomItemChoice={roomItemChoice(slot.build, other, matchup.field)}
+        fieldItemChoice={fieldItemChoice(slot.build, other, matchup.field, runtime)}
+        magicRoom={matchup.field.magicRoom}
+        requiredMove={requiredMoveFix(slot)}
+        side={side}
+        build={slot.build}
+        issues={issues[side]}
+        editorRevision={slot.editorRevision}
+        onChange={(build) => updateBuild(slot.key, build)}
+        onApplyIntimidate={() => updateCombatant(slot.key, (current, slotSide) => applyMatchupIntimidate(current, slotSide))}
+        intimidateResult={intimidateResult(matchup, side)}
+        hpInput={slot.hpInput}
+        onHPChange={(text) => updateHP(slot.key, text)}
+        roster={desktopRosters ? undefined : renderRoster(side, "inline")}
+      />
+    );
+  }
+
+  // Open state is keyed like the builds, so each Build settings follows its Pokémon on Swap.
+  const builds: Record<BattleSide, BuildSettings> = {
+    attacker: { id: controls.attacker, open: !!trackedSections.open[buildSectionKey(attackerKey)], onToggle: () => toggleSection(buildSectionKey(attackerKey)) },
+    defender: { id: controls.defender, open: !!trackedSections.open[buildSectionKey(defenderKey)], onToggle: () => toggleSection(buildSectionKey(defenderKey)) },
+  };
 
   let feedback: ReactNode;
   if (engine.status === "loading") {
@@ -453,7 +527,7 @@ export default function CalculatorClient() {
           </div>
         </div>}
       </section>
-      <CalculatorTabs prefix={prefix} activeTab={navigation.tab} onSelect={selectTab} issues={{ builds: buildIssueCount, field: issues.field.length }} />
+      <CalculatorTabs prefix={prefix} activeTab={navigation.tab} onSelect={selectTab} />
       <p role="status" className="sr-only">{matchup.notice}</p>
       <div data-calculator-workspace className={desktopRosters ? styles.withRosters : undefined}>
         <div data-calculator-center className={`${styles.center} space-y-5`}>
@@ -484,12 +558,26 @@ export default function CalculatorClient() {
               gameType={matchup.field.gameType}
             />
           </div>
-          <div className="space-y-2 text-xs text-muted">
-            <p>{describeConditions(matchup.field)}</p>
-            <div className="flex flex-wrap items-center gap-2">
-              <p role="status" className={`wrap-anywhere ${teamsFailed ? "text-danger" : ""}`}>{teamSummary}</p>
-              {teamsFailed && <Button variant="secondary" size="sm" disabled={teamsLoading} onClick={rosters.refresh}>Retry teams</Button>}
-            </div>
+          <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`}>
+            <BuildSettingsSections runtime={runtime} attacker={matchup.attacker} defender={matchup.defender} issues={issues} builds={builds} renderEditor={renderBuildEditor} />
+            <SettingsDisclosure
+              kind="field"
+              regionId={fieldId}
+              open={!!trackedSections.open[fieldKey]}
+              onToggle={() => toggleSection(fieldKey)}
+              issueCount={issues.field.length}
+              className={styles.fieldSection}
+              label={<>
+                <span>Field conditions</span>
+                <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeConditions(matchup.field)}</span>
+              </>}
+            >
+              <BattleConditions runtime={runtime} names={{ attackerSide: speciesById.get(attacker.speciesId)?.name, defenderSide: speciesById.get(defender.speciesId)?.name }} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
+            </SettingsDisclosure>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+            <p role="status" className={`wrap-anywhere ${teamsFailed ? "text-danger" : ""}`}>{teamSummary}</p>
+            {teamsFailed && <Button variant="secondary" size="sm" disabled={teamsLoading} onClick={rosters.refresh}>Retry teams</Button>}
           </div>
           {feedback && <div data-calculator-feedback>{feedback}</div>}
           <div>
@@ -542,49 +630,6 @@ export default function CalculatorClient() {
                   </details>
                 </div>
               </details>
-            </div>
-            <div {...panelProps("builds")}>
-              <section aria-labelledby={`${prefix}-builds-heading`} className="rounded-xl border border-line bg-panel">
-                <h2 id={`${prefix}-builds-heading`} className="px-4 py-4 text-sm font-semibold text-text sm:px-5">
-                  Pokémon and build settings
-                  {buildIssueCount > 0 && <span className="ml-2 text-danger">{buildIssueCount} settings to check</span>}
-                </h2>
-                <div className={`${styles.builds} grid items-start gap-4 px-4 pb-4 sm:px-5 sm:pb-5`}>
-                  {/* Keys travel with builds so raw numeric edits also survive a Swap. */}
-                  {(["attacker", "defender"] as const).map((side) => {
-                    const slot = matchup[side];
-                    const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
-                    return (
-                      <PokemonPanel
-                        key={slot.key}
-                        runtime={runtime}
-                        gameType={matchup.field.gameType}
-                        roomItemChoice={roomItemChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
-                        fieldItemChoice={fieldItemChoice(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field, runtime)}
-                        magicRoom={matchup.field.magicRoom}
-                        requiredMove={requiredMoveFix(slot)}
-                        panelId={controls[side]}
-                        side={side}
-                        build={slot.build}
-                        issues={issues[side]}
-                        editorRevision={slot.editorRevision}
-                        provenance={slot.source ? `${ownership} · ${slot.source.name}` : undefined}
-                        onChange={(build) => updateBuild(slot.key, build)}
-                        onApplyIntimidate={() => updateCombatant(slot.key, (current, slotSide) => applyMatchupIntimidate(current, slotSide))}
-                        intimidateResult={intimidateResult(matchup, side)}
-                        mimicry={mimicryState(slot.build, matchup[side === "attacker" ? "defender" : "attacker"].build, matchup.field)}
-                        hpInput={slot.hpInput}
-                        onHPChange={(text) => updateHP(slot.key, text)}
-                        onReveal={reveal}
-                        roster={desktopRosters ? undefined : renderRoster(side, "inline")}
-                      />
-                    );
-                  })}
-                </div>
-              </section>
-            </div>
-            <div {...panelProps("field")}>
-              <BattleConditions runtime={runtime} id={fieldId} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
             </div>
             <div {...panelProps("opponent")}>
               {renderTeamSource("opponent")}

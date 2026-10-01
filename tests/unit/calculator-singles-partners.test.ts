@@ -33,10 +33,10 @@ describe("ally-only settings in Singles", () => {
   ])("ignores %s and says so", (_label, moveId, attacker, defender, extra, min, max, name) => {
     const ignored = row(moveId, attacker, defender, conditions("Singles", extra));
     expect(ignored).toMatchObject({ kind: "calculated", min, max });
-    expect(ignored.assumptions).toContain(`Singles has only the two battling Pokémon, so ${name} set for Doubles is ignored.`);
+    expect(ignored.assumptions).toContain(`Singles: ${name} is ignored.`);
     const plain = row(moveId, { ...attacker, abilityActive: false }, defender, conditions("Singles"));
     expect(plain.rolls).toEqual(ignored.rolls);
-    expect(plain.assumptions.some((line) => line.startsWith("Singles has only"))).toBe(false);
+    expect(plain.assumptions.some((line) => line.startsWith("Singles:"))).toBe(false);
   });
 
   it.each<[string, string, BattleBuild, BattleBuild, { helpingHand?: boolean; fairyAura?: boolean }, number, number]>([
@@ -46,7 +46,7 @@ describe("ally-only settings in Singles", () => {
   ])("still applies %s in Doubles", (_label, moveId, attacker, defender, extra, min, max) => {
     const applied = row(moveId, attacker, defender, conditions("Doubles", extra));
     expect(applied).toMatchObject({ kind: "calculated", min, max });
-    expect(applied.assumptions.some((line) => line.startsWith("Singles has only"))).toBe(false);
+    expect(applied.assumptions.some((line) => line.startsWith("Singles:"))).toBe(false);
   });
 
   it("lists every ignored setting once and leaves Doubles untouched", () => {
@@ -56,7 +56,7 @@ describe("ally-only settings in Singles", () => {
     expect(result.field).toMatchObject({ fairyAura: false, attackerSide: { helpingHand: false }, defenderSide: { helpingHand: false } });
     expect(result.attacker.abilityActive).toBe(false);
     expect(row("thunderbolt", ampharos(true), createBuild("meganium"), field).assumptions)
-      .toContain("Singles has only the two battling Pokémon, so Helping Hand, Additional Fairy Aura on the field and the Plus/Minus partner set for Doubles are ignored.");
+      .toContain("Singles: Helping Hand, Additional Fairy Aura on the field and the Plus/Minus partner are ignored.");
     const doubles = conditions("Doubles", { helpingHand: true });
     const attacker = ampharos(true);
     expect(withoutSinglesPartners(doubles, attacker, garchomp)).toMatchObject({ field: doubles, attacker, ignored: [] });

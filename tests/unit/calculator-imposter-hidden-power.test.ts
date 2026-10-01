@@ -46,7 +46,7 @@ describe("a transformed Imposter Ditto's Hidden Power (Ultra Sun/Ultra Moon)", (
     const intoMagnezone = row("hiddenpower", ditto({ ivs: ALL30 }), magnezone());
     expect(intoMagnezone).toMatchObject({ kind: "calculated", effectiveType: "Fighting", effectivePower: 60, min: 64, max: 76 });
     expect(intoMagnezone.rolls).toEqual([64, 64, 66, 66, 66, 68, 68, 68, 70, 70, 72, 72, 72, 74, 74, 76]);
-    expect(intoMagnezone.assumptions).toContain("Hidden Power Fighting, 60 power: Transform keeps Ditto's own Hidden Power type, from its own IVs.");
+    expect(intoMagnezone.assumptions).toContain("Hidden Power Fighting, 60 power (Ditto's own IVs).");
     expect(row("hiddenpower", ditto({ ivs: ALL30 }), build("snorlax", { abilityId: "thickfat" }))).toMatchObject({ effectiveType: "Fighting", min: 32, max: 38 });
     // All-31 Ditto keeps Dark against an HP Fire (atk/spa/spe 30) or HP Ice (atk/def 30) Magnezone.
     expect(row("hiddenpower", ditto(), magnezone({ ivs: FIRE }))).toMatchObject({ effectiveType: "Dark", min: 32, max: 38 });
@@ -77,7 +77,7 @@ describe("a transformed Imposter Ditto's Hidden Power (Ultra Sun/Ultra Moon)", (
     expect(hiddenPower.filter((result) => result.kind === "calculated").map((result) => [result.moveId, result.effectiveType, range(result)]))
       .toEqual([["hiddenpower", "Fighting", "64-76"], ["hiddenpowerfighting", "Fighting", "64-76"]]);
     expect(hiddenPower.find((result) => result.moveId === "hiddenpowerfire")).toMatchObject({
-      kind: "needs-context", reason: "Transform keeps Ditto's own Hidden Power type, Fighting, so its copy of this move is Hidden Power Fighting.",
+      kind: "needs-context", reason: "Transform keeps Ditto's Hidden Power type: Hidden Power Fighting.",
     });
   });
 
@@ -93,7 +93,7 @@ describe("a transformed Imposter Ditto's Hidden Power (Ultra Sun/Ultra Moon)", (
   it("keeps Normalize, Z-Moves, Trace and a transformed target as before", () => {
     const normalize = row("hiddenpower", ditto({ ivs: ALL30 }), build("delcatty", { abilityId: "normalize" }));
     expect(normalize).toMatchObject({ effectiveType: "Fighting", min: 46, max: 56 });
-    expect(normalize.assumptions).toContain("Normalize does not change Hidden Power's type, so it gets no Normalize boost.");
+    expect(normalize.assumptions).toContain("Normalize: no effect on Hidden Power.");
     expect(row("hiddenpower", ditto({ ivs: ALL30, itemId: "normaliumz" }), magnezone(), { useZ: true })).toMatchObject({ effectiveName: "Breakneck Blitz", effectiveType: "Normal", effectivePower: 120, min: 31, max: 37 });
     expect(row("hiddenpower", build("porygon2", { abilityId: "trace", ivs: ALL30 }), magnezone({ ivs: FIRE }))).toMatchObject({ effectiveType: "Fighting", min: 54, max: 64 });
     expect(row("hiddenpower", magnezone({ ivs: FIRE }), ditto({ ivs: ALL30 }))).toMatchObject({ effectiveType: "Fire", min: 64, max: 76 });

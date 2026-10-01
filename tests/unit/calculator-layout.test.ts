@@ -17,8 +17,13 @@ describe("calculator desktop layout SSR", () => {
     expect([...html.matchAll(/data-calculator-roster="/g)]).toHaveLength(2);
     expect(html).toContain("Loading your leagues");
     expect(html).toContain("Loading the Champions engine");
-    expect([...html.matchAll(/role="tab"/g)]).toHaveLength(5);
-    expect([...html.matchAll(/role="tabpanel"/g)]).toHaveLength(5);
+    expect([...html.matchAll(/role="tab"/g)]).toHaveLength(3);
+    expect([...html.matchAll(/role="tabpanel"/g)]).toHaveLength(3);
+    // Each Pokémon's Build settings and Field conditions start collapsed under the summary.
+    expect([...html.matchAll(/<button\b[^>]*data-build-toggle="[^"]+"[^>]*aria-expanded="false"/g)]).toHaveLength(2);
+    expect([...html.matchAll(/<div\b[^>]*role="region"[^>]*data-build-region="[^"]+"[^>]*hidden=""/g)]).toHaveLength(2);
+    expect([...html.matchAll(/<button\b[^>]*data-field-toggle="true"[^>]*aria-expanded="false"/g)]).toHaveLength(1);
+    expect([...html.matchAll(/<div\b[^>]*role="region"[^>]*data-field-region="true"[^>]*hidden=""/g)]).toHaveLength(1);
     const panels = [...html.matchAll(/<div\b[^>]*role="tabpanel"[^>]*>/g)].map(([panel]) => panel);
     expect(panels.filter((panel) => !panel.includes('hidden=""'))).toEqual([expect.stringContaining('data-calculator-panel="moves"')]);
     expect(html).toMatch(/role="tab"[^>]*data-calculator-tab="moves"[^>]*aria-selected="true"[^>]*tabindex="0"/);

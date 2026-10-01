@@ -61,15 +61,15 @@ describe("moves that check accuracy for every hit", () => {
   it("explains the assumed count and gives one hit an ordinary KO chance", () => {
     const weavile = build("weavile", "pressure");
     expect(row("tripleaxel", weavile, garchomp).assumptions)
-      .toContain("Assumes all 3 hits land. After the first, each hit checks accuracy again and the move stops at the first miss; choose fewer hits under the selected move.");
+      .toContain("Triple Axel: all 3 hits land.");
     const one = row("tripleaxel", weavile, garchomp, { hits: 1 });
-    expect(one.assumptions).toContain("Assumes exactly 1 of up to 3 hits: after the first, each hit checks accuracy again and the move stops at the first miss.");
+    expect(one.assumptions).toContain("Triple Axel: 1 of 3 hits land.");
     expect(one.ohkoChance).toBe(0);
     expect(row("tripleaxel", weavile, garchomp).ohkoChance).toBeNull();
   });
 
   it("asks again for a count outside 1 to the maximum", () => {
-    expect(row("tripleaxel", build("weavile", "pressure"), garchomp, { hits: 4 })).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("from 1 to 3") });
+    expect(row("tripleaxel", build("weavile", "pressure"), garchomp, { hits: 4 })).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (1–3)." });
   });
 
   it("fixes all hits with Skill Link, and with Loaded Dice except Population Bomb", async () => {
@@ -78,12 +78,12 @@ describe("moves that check accuracy for every hit", () => {
     const cinccino = build("cinccino", "skilllink", sv);
     const skillLink = row("tripleaxel", cinccino, svGarchomp, { hits: 1 }, sv);
     expect(skillLink).toMatchObject({ kind: "calculated", hits: 3, min: 188, max: 228 });
-    expect(skillLink.assumptions).toContain("Skill Link checks accuracy once, so all 3 hits land.");
+    expect(skillLink.assumptions).toContain("Skill Link: all 3 hits land.");
     const diceAxel = row("tripleaxel", build("weavile", "pressure", sv, { itemId: "loadeddice" }), svGarchomp, { hits: 1 }, sv);
     expect(diceAxel).toMatchObject({ kind: "calculated", hits: 3, min: 340, max: 412 });
     // Loaded Dice makes Population Bomb hit 4-10 times at random, so a count must be chosen.
     const diceMaushold = build("maushold", "technician", sv, { itemId: "loadeddice" });
-    expect(row("populationbomb", diceMaushold, svGarchomp, undefined, sv)).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("from 4 to 10") });
+    expect(row("populationbomb", diceMaushold, svGarchomp, undefined, sv)).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (4–10)." });
     expect(row("populationbomb", diceMaushold, svGarchomp, { hits: 3 }, sv).kind).toBe("needs-context");
     expect(row("populationbomb", diceMaushold, svGarchomp, { hits: 6 }, sv)).toMatchObject({ kind: "calculated", hits: 6, min: 90, max: 108 });
     expect(hitCountRule(sv.movesById.get("populationbomb")!, { abilityId: "skilllink", itemId: "loadeddice" }, sv)).toMatchObject({ kind: "choose", min: 4, max: 10 });
@@ -139,7 +139,7 @@ describe("hit-count editor for these moves", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const skillLink = render("tripleaxel", "skilllink", "", undefined, sv);
     expect(skillLink).not.toContain("<select");
-    expect(skillLink).toContain("Skill Link checks accuracy once, so all 3 hits land.");
+    expect(skillLink).toContain("Skill Link: all 3 hits land.");
     const dice = render("populationbomb", "technician", "loadeddice", undefined, sv);
     expect(dice).toContain("Choose hit count");
     expect(dice).toContain('<option value="4">4 hits</option>');
@@ -168,7 +168,7 @@ describe("hit-count editor for these moves", () => {
     expect(html).not.toContain("Loaded Dice limits");
     const gas = renderToStaticMarkup(createElement(MoveDetails, { runtime: sv, moveId: "tripleaxel", id: "details", context: undefined, abilityId: "skilllink", itemId: "", onContextChange: vi.fn(), hitBattle: { opponentAbilityId: "neutralizinggas" } }));
     expect(gas).toContain('<option value="1">1 hit</option>');
-    expect(gas).not.toContain("Skill Link checks accuracy once");
+    expect(gas).not.toContain("Skill Link: all");
   });
 
   it("does not offer a count for fixed multi-hit moves", () => {
@@ -214,7 +214,7 @@ describe("Set hits prompts", () => {
     const weavile = build("weavile", "pressure");
     const mimikyu = build("mimikyu", "disguise");
     const result = row("tripleaxel", weavile, mimikyu);
-    expect(result).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("Disguise absorbs a hit") });
+    expect(result).toMatchObject({ kind: "needs-context", reason: "Intact Disguise takes the first hit." });
     expect(results(championsRuntime, weavile, "tripleaxel", result)).not.toContain("Set hits");
     const html = summary(championsRuntime, weavile, mimikyu, "tripleaxel", result);
     expect(html).not.toContain(">Set hits</button>");

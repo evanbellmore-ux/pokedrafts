@@ -24,7 +24,7 @@ describe("result labels", () => {
   it("shows the base power Showdown uses", () => {
     const knockOff = row("knockoff", build("absol", "pressure"), build("garchomp", "roughskin", { itemId: "leftovers" }));
     expect(knockOff.effectivePower).toBe(97);
-    expect(knockOff.assumptions).toContain("Move power reported by the engine: 97.");
+    expect(knockOff.assumptions).toContain("Move power: 97.");
     const axel = row("tripleaxel", build("gallade", "sharpness"), build("garchomp", "roughskin"));
     expect(axel).toMatchObject({ effectivePower: 20, hits: 3 });
     expect(axel.assumptions).toContain("Power per hit: 20, 40, 60.");
@@ -40,7 +40,7 @@ describe("result labels", () => {
     expect(screen.assumptions).toContain("Infiltrator ignores the target's Light Screen.");
     const seed = row("dragonclaw", build("garchomp", "roughskin"), build("baxcalibur", "thermalexchange", { itemId: "grassyseed" }), { terrain: "Grassy" });
     expect(seed).toMatchObject({ min: 84, max: 98 });
-    expect(seed.assumptions).toContain("The target Baxcalibur's Grassy Seed is used up on Grassy Terrain, raising its Defense.");
+    expect(seed.assumptions).toContain("The target Baxcalibur's Grassy Seed was used up on Grassy Terrain: +1 Defense.");
     // Mold Breaker is listed only when ignoring the target's ability changed the damage or the KO chance.
     expect(row("brickbreak", build("tinkaton", "moldbreaker"), build("politoed", "waterabsorb")).description).not.toContain("Mold Breaker");
     const sturdy = row("earthquake", build("excadrill", "moldbreaker"), build("aggron", "sturdy"));
@@ -99,13 +99,13 @@ describe("result labels", () => {
 
   it("states success conditions", () => {
     const upperHand = row("upperhand", build("lucario", "innerfocus"), build("garchomp", "roughskin"));
-    expect(upperHand.assumptions).toContain("Assumes Upper Hand succeeds: the target is about to use a priority attacking move this turn.");
+    expect(upperHand.assumptions).toContain("Assumes Upper Hand succeeds.");
   });
 
   it("states Shell Trap's condition", async () => {
     const usum = await loadBattleRuntime("ultra_sun_ultra_moon");
     const shellTrap = row("shelltrap", { ...createBuild("turtonator", usum), abilityId: "shellarmor" } as BattleBuild, { ...createBuild("garchomp", usum), abilityId: "roughskin" } as BattleBuild, {}, usum);
     expect(shellTrap).toMatchObject({ min: 45, max: 53 });
-    expect(shellTrap.assumptions).toContain("Assumes Shell Trap succeeds: an opposing Pokémon's physical move hits the user earlier this turn.");
+    expect(shellTrap.assumptions).toContain("Assumes Shell Trap succeeds.");
   });
 });

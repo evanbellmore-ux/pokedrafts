@@ -37,7 +37,7 @@ function row(runtime: BattleRuntime, attacker: BattleBuild, defender: BattleBuil
   expect(out.issues).toEqual({ attacker: [], defender: [], field: [] });
   return out.results.find((result) => result.moveId === "shellsidearm")!;
 }
-const TIE = "Shell Side Arm's physical and special damage estimates tie here";
+const TIE = "Shell Side Arm: tied";
 const SPECIAL_51 = [51, 52, 52, 54, 54, 54, 55, 55, 57, 57, 57, 58, 58, 60, 60, 61];
 const AV_34 = [34, 36, 36, 36, 36, 37, 37, 37, 39, 39, 39, 39, 40, 40, 40, 42];
 const HALF_25 = [25, 26, 26, 27, 27, 27, 27, 27, 28, 28, 28, 29, 29, 30, 30, 30];
@@ -50,7 +50,7 @@ describe("Shell Side Arm ties", () => {
       const result = row(sv, slowbro(sv), mew);
       expect(result).toMatchObject({ kind: "calculated", min: 51, max: 61, rolls: SPECIAL_51, effectiveCategory: "Special", ohkoChance: 0 });
       expect(result.alternate).toBeUndefined();
-      expect(result.assumptions).toContain(`${TIE}, so pinned Showdown makes it physical or special at random (50% each). Both deal this damage; only the physical hit makes contact.`);
+      expect(result.assumptions).toContain(`${TIE}, so physical or special at random (50% each), same damage; only the physical hit makes contact.`);
     }
   });
 

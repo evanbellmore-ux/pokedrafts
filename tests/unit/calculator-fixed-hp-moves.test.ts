@@ -106,7 +106,7 @@ describe("HP-based fixed damage", () => {
   it("explains Endeavor's rule, failure and the attacker HP it uses", () => {
     const snorlax = build({ id: "snorlax", ability: "thickfat" }, championsRuntime);
     const hurt = row(championsRuntime, build({ id: "slurpuff", ability: "sweetveil", hp: 50 }, championsRuntime), snorlax, "endeavor");
-    expect(hurt.assumptions).toContain("Fixed damage: the defender's current HP (235) minus the attacker's current HP (50), at least 1. Enter the attacker's HP at the moment it attacks.");
+    expect(hurt.assumptions).toContain("Fixed damage: the defender's current HP (235) minus the attacker's current HP (50), at least 1.");
     expect(hurt.ohkoChance).toBe(0);
     const fails = row(championsRuntime, build({ id: "slurpuff", ability: "sweetveil" }, championsRuntime), { ...snorlax, currentHP: 100 }, "endeavor");
     expect(fails).toMatchObject({ kind: "calculated", min: 0, max: 0, ohkoChance: 0,
@@ -139,7 +139,7 @@ describe("HP-based fixed damage", () => {
     const dynamaxed = row(swsh, build({ id: "diggersby", ability: "hugepower" }, swsh), build({ id: "snorlax", ability: "thickfat", hp: 101, dynamax: true }, swsh), "superfang");
     expect(dynamaxed.assumptions).toContain("Fixed damage: half the defender's current HP scaled back from Dynamax (101), rounded down, at least 1.");
     const level0 = row(swsh, build({ id: "diggersby", ability: "hugepower", hp: 50 }, swsh), build({ id: "snorlax", ability: "thickfat", hp: 102, dynamax: true, dl: 0 }, swsh), "endeavor");
-    expect(level0.assumptions).toContain("Fixed damage: the defender's current HP scaled back from Dynamax (103) minus the attacker's current HP (50), at least 1. Enter the attacker's HP at the moment it attacks.");
+    expect(level0.assumptions).toContain("Fixed damage: the defender's current HP scaled back from Dynamax (103) minus the attacker's current HP (50), at least 1.");
     const even = row(swsh, build({ id: "diggersby", ability: "hugepower", hp: 101 }, swsh), build({ id: "snorlax", ability: "thickfat", hp: 101, dynamax: true }, swsh), "endeavor");
     expect(even).toMatchObject({ kind: "calculated", min: 0, max: 0, ohkoChance: 0,
       description: "Endeavor deals no damage: the defender's HP scaled back from Dynamax (101) equals the attacker's HP." });
@@ -161,7 +161,7 @@ describe("HP-based fixed damage", () => {
     expect(row(championsRuntime, maushold, lastHP, "superfang").ohkoChance).toBe(1);
     const band = row(championsRuntime, maushold, { ...lastHP, itemId: "focusband" }, "superfang");
     expect(band.ohkoChance).toBeNull();
-    expect(band.assumptions).toContain("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
+    expect(band.assumptions).toContain("Focus Band is not modelled: no KO chance or Uses to KO.");
   });
 
   it("leaves Z-Move and Max Move conversions to the ordinary damage path", async () => {

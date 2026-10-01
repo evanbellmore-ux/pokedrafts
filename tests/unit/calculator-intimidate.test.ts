@@ -44,7 +44,7 @@ describe("applyIntimidate", () => {
     // The reflected drop fails at the Intimidate user's -6 too.
     const capped = intimidate(build("corviknight", "mirrorarmor"), championsRuntime, build("incineroar", "intimidate", championsRuntime, { boosts: stages({ atk: -6 }) }));
     expect(capped.source.boosts).toEqual(stages({ atk: -6 }));
-    expect(capped.lines.join(" ")).toContain("Incineroar's Attack won't go lower, so nothing reacts.");
+    expect(capped.lines.join(" ")).toContain("Incineroar's Attack won't go lower.");
   });
 
   it("stops Adrenaline Orb, Rattled and Guard Dog at -6 (Scarlet/Violet)", async () => {
@@ -83,7 +83,7 @@ describe("applyIntimidate", () => {
     // Intrepid Sword's +1 is on Zacian when Intimidate lands, so it goes to 0 and keeps White Herb.
     const zacian = intimidate(build("zacian", "intrepidsword", swsh, { itemId: "whiteherb" }), swsh, build("incineroar", "intimidate", swsh));
     expect(zacian.target).toMatchObject({ itemId: "whiteherb", boosts: stages({ atk: -1 }) });
-    expect(zacian.lines.join(" ")).toContain("Zacian's stages count its Intrepid Sword (+1 Attack), which the calculator adds when it calculates");
+    expect(zacian.lines.join(" ")).toContain("Zacian's stored stages leave out its Intrepid Sword (+1 Attack) (added at calculation).");
     // Its +1 is capped at +6, so Intimidate leaves +5: stored +4.
     expect(intimidate(build("zacian", "intrepidsword", swsh, { boosts: stages({ atk: 6 }) }), swsh, build("incineroar", "intimidate", swsh)).target.boosts).toEqual(stages({ atk: 4 }));
     // Dauntless Shield's +1 Defense cancels a stored -1, so White Herb clears only the Attack drop.
@@ -94,7 +94,7 @@ describe("applyIntimidate", () => {
     const bramble = (tailwind: boolean) => applyIntimidate(build("gyarados", "intimidate", sv), build("brambleghast", "windrider", sv, { itemId: "whiteherb" }),
       { magicRoom: false, tailwind: { source: false, target: tailwind } }, sv);
     expect(bramble(true).target).toMatchObject({ itemId: "whiteherb", boosts: stages({ atk: -1 }) });
-    expect(bramble(true).lines.join(" ")).toContain("This assumes Tailwind started before the Intimidate.");
+    expect(bramble(true).lines.join(" ")).toContain("Assumes Tailwind started before Intimidate.");
     expect(bramble(false).target).toMatchObject({ itemId: "", boosts: stages({}) });
     // Download reads the Intimidate user's Defense and Sp. Def: Porygon-Z takes +1 Attack against Gyarados.
     expect(intimidate(build("porygonz", "download", sv, { itemId: "whiteherb" }), sv, build("gyarados", "intimidate", sv)).target)
@@ -206,7 +206,7 @@ describe("Intimidate in the matchup", () => {
   it("warns about a Flower Veil partner in Doubles for a Grass-type target", () => {
     const venusaur = matchup(build("incineroar", "intimidate"), build("venusaur", "overgrow"));
     const doubles = applyMatchupIntimidate({ ...venusaur, field: { ...venusaur.field, gameType: "Doubles" } }, "attacker");
-    expect(intimidateResult(doubles, "attacker")).toContain("Venusaur is Grass type: a partner with Flower Veil would block this drop in Doubles.");
+    expect(intimidateResult(doubles, "attacker")).toContain("Venusaur: assumes no partner with Flower Veil.");
     expect(intimidateResult(applyMatchupIntimidate(venusaur, "attacker"), "attacker")).not.toContain("Flower Veil");
   });
 

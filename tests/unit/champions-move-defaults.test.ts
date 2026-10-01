@@ -216,8 +216,8 @@ describe("Champions quick-move defaults", () => {
     expect(describeMoveSlot(createMoveSlots("garchomp", "Singles")[0]))
       .toBe("Common Champions Singles usage, Aug 2026");
     expect(describeMoveSlot(createMoveSlots("palafinhero", "Doubles")[0]))
-      .toBe("Suggested, per-species usage unavailable for this move");
+      .toBe("Suggested (no usage data)");
     expect(describeMoveSlot({ moveId: "tackle", origin: "manual", gameType: null })).toBe("Manually chosen");
-    expect(describeMoveSlot({ moveId: null, origin: "empty", gameType: null })).toBe("Choose a move");
+    expect(describeMoveSlot({ moveId: null, origin: "empty", gameType: null })).toBe("No move");
   });
 });
