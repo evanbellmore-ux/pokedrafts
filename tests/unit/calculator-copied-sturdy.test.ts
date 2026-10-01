@@ -44,7 +44,7 @@ const modes: DamageRollMode[] = ["low", "average", "high"];
 const specsMagnezone = (game: BattleGame = "scarlet_violet") => build(game, "magnezone", { ability: "sturdy", item: "choicespecs", nature: "Modest", evs: { spa: 252 } });
 const bandAggron = (game: BattleGame) => build(game, "aggron", { ability: "sturdy", item: "choiceband", nature: "Adamant", evs: { atk: 252 } });
 const withheld = (game: BattleGame, defender: BattleBuild, hit: ReturnType<typeof row>, effect = "Sturdy") => {
-  for (const mode of modes) expect(previewRemainingHP(defender, hit, mode, runtimes[game])).toEqual({ status: "unavailable", reason: `Remaining HP is withheld for ${effect}; survival effects are not simulated.` });
+  for (const mode of modes) expect(previewRemainingHP(defender, hit, mode, runtimes[game])).toEqual({ status: "unavailable", reason: `Remaining HP is withheld for ${effect}.` });
 };
 
 describe("remaining-HP preview with a Sturdy the calculation settled on", () => {

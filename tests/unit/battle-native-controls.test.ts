@@ -198,7 +198,8 @@ describe("native training and set controls", () => {
     next.native.innateIVs!.atk = 30;
     const rendered = capture(() => panel(next, usum));
     expect(rendered.inputs.filter((input) => /-innateIVs-\w+$/.test(input.id ?? ""))).toHaveLength(6);
-    expect(rendered.html).toContain("enter the known originals, not guesses");
+    expect(rendered.inputs.find((input) => input.id?.endsWith("-innate-context"))!.checked).toBe(true);
+    expect(rendered.html).toContain(">Innate IVs</th>");
     expect(build.native.innateIVs).toBeUndefined();
   });
 
@@ -267,7 +268,9 @@ describe("native summary mechanics and health", () => {
     expect(html).toContain(">Charizard</h3>");
     expect(matchup.attacker.build).toEqual(before);
     matchup.attacker.build.configuration.teraType = "Stellar";
-    expect(summary(matchup)).toContain("Stellar retains original defensive typing");
+    const stellar = summary(matchup);
+    expect(stellar).toContain("Fire / Flying · Tera Stellar");
+    expect(stellar).not.toContain("Original types:");
   });
 
   it("uses native Primal/Ultra options and the original Ultra base for toggle ownership", () => {
@@ -291,7 +294,7 @@ describe("native summary mechanics and health", () => {
     const current = Math.floor(101 * (150 + 5 * dynamaxLevel) / 100);
     expect(getBuildHealth(build, swsh)).toEqual({ current, maximum });
     expect(previewRemainingHP(build, row(), "average", swsh)).toMatchObject({ status: "ready", current, maximum, remaining: current - 20 });
-    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, runtime: swsh, issues: [], text: "00101", onTextChange: vi.fn(), compact: true }));
+    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, runtime: swsh, issues: [], text: "00101", onTextChange: vi.fn() }));
     expect(html).toContain("Current HP (base / pre-Dynamax)");
     expect(html).toContain(`Effective Dynamax HP: ${current} / ${maximum}.`);
     expect(html).toContain('placeholder="Full HP (153)"');
@@ -318,7 +321,7 @@ describe("native attack context and effective metadata", () => {
     const rendered = capture(() => moves(usum, build, { contexts: { flamethrower: { hits: 3, useZ: true } }, onContextChange,
       rows: [row("flamethrower", { kind: "unsupported", reason, min: null, max: null, rolls: null, ohkoChance: null, hits: null })] }));
     expect(rendered.html).toContain(reason);
-    expect(rendered.html).toContain("consumption is not tracked");
+    expect(rendered.html).toMatch(/aria-describedby="([^"]*-z-item)"[\s\S]*?<p id="\1"[^>]*>Held item: /);
     expect(rendered.html).not.toContain("20 HP");
     const toggle = rendered.inputs.find((input) => input.id?.endsWith("-use-z"))!;
     expect(toggle.checked).toBe(true);
@@ -332,7 +335,7 @@ describe("native attack context and effective metadata", () => {
     const base = { moveIds: ["protect"], selectedMoveId: "protect", rows: [row("protect", { kind: "status", min: null, max: null, rolls: null })] };
     const initial = capture(() => moves(usum, native(usum), base));
     expect(initial.inputs.find((input) => input.id?.endsWith("-use-z"))!.disabled).toBe(true);
-    expect(initial.html).toContain("Status Z-Move bonuses are not simulated");
+    expect(initial.html).not.toContain("Held item:");
     const invalid = capture(() => moves(usum, native(usum), { ...base, contexts: { protect: { useZ: true } } }));
     expect(invalid.inputs.find((input) => input.id?.endsWith("-use-z"))!.disabled).toBe(false);
   });
@@ -398,7 +401,6 @@ describe("native attack context and effective metadata", () => {
     for (const weather of ["Snow", "Hail", "Harsh Sunshine", "Heavy Rain", "Strong Winds"] as const) {
       expect(html.includes(`<option value="${weather}">`)).toBe(runtime.profile.weather.includes(weather));
     }
-    expect(html).toContain(`after ${runtime.profile.weather.includes("Hail") ? "Hail" : "Snow"} ends.`);
     assertLabels(html);
   });
 });

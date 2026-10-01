@@ -176,7 +176,7 @@ describe("Intimidate in the matchup", () => {
   it("fires again when Scrafty Mega Evolves", () => {
     let scrafty = applyMatchupIntimidate(matchup(build("garchomp", "roughskin"), build("scrafty", "intimidate")), "defender");
     scrafty = toggleMatchupMega(scrafty, getMoveOwner(scrafty.defender), "scraftymega");
-    expect(scrafty.notice).toContain("Its Intimidate activates when it Mega Evolves: use Apply Intimidate");
+    expect(scrafty.notice).toBe("Scrafty-Mega selected. Current HP, training, stages and prepared moves kept.");
     scrafty = applyMatchupIntimidate(scrafty, "defender");
     expect(damage(scrafty, "earthquake")).toEqual(["28-34"]);
   });
@@ -216,8 +216,6 @@ describe("Intimidate in the matchup", () => {
     }));
     const html = panel("intimidate");
     expect(html).toContain("Apply Intimidate to the right Pokémon");
-    expect(html).toContain("not behind a Substitute");
-    expect(html).toContain("select any used-up item again and clear Unburden");
     expect(renderToStaticMarkup(createElement(PokemonPanel, {
       side: "attacker", build: build("incineroar", "intimidate"), issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined,
       onApplyIntimidate: () => undefined, intimidateResult: "Incineroar's Intimidate: Garchomp's Attack falls to -1.",

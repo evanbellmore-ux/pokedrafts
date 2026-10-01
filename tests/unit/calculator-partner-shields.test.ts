@@ -199,18 +199,6 @@ describe("the partner shield acts before Protect and before other questions", ()
   });
 });
 
-describe("the partner shield help", () => {
-  it("names only the priority raisers the game has", async () => {
-    const help = (runtime: BattleRuntime) => {
-      const html = renderToStaticMarkup(createElement(BattleConditions, { value: field(), issues: [], onChange: () => undefined, runtime }));
-      return /stops the other side’s priority moves aimed at either of them([^;]*);/.exec(html)?.[1];
-    };
-    expect(help(championsRuntime)).toBe(", including priority from Gale Wings or Grassy Glide on Grassy Terrain");
-    expect(help(await loadBattleRuntime("scarlet_violet"))).toBe(", including priority from Gale Wings, Triage or Grassy Glide on Grassy Terrain");
-    expect(help(await loadBattleRuntime("ultra_sun_ultra_moon"))).toBe(", including priority from Gale Wings or Triage");
-  });
-});
-
 describe("the partner shield, second review", () => {
   // Real pinned-Showdown Doubles turns from gaps/review2/shield-order-crowned (b1.ts, s1.ts).
   it("never stops Bide, which targets its user", async () => {

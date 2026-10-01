@@ -196,6 +196,7 @@ export function transformNativeCatalog(
     return {
       id: row.id, name: row.name, type: row.type, category: row.category, power: row.basePower,
       accuracy: typeof row.accuracy === "number" ? row.accuracy : null,
+      ...(row.pp !== undefined ? { pp: row.pp } : {}), ...(row.noPPBoosts ? { noPPBoosts: true as const } : {}),
       priority: row.priority, target: row.target,
       multihit: Array.isArray(row.multihit) ? [...row.multihit] : row.multihit ?? null,
       ohko: Boolean(row.ohko), description: row.description,

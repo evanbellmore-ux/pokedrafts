@@ -153,32 +153,29 @@ describe("Champions calculator UI", () => {
     }
   });
 
-  it.each(["", "00100", "abc", "2e1", " ", "0", "155"])("renders shared current HP text %j with maximum-HP help and associated validation", (text) => {
+  it.each(["", "00100", "abc", "2e1", " ", "0", "155"])("renders shared current HP text %j with its full-HP placeholder and associated validation", (text) => {
     const build = { ...createBuild("blastoise"), currentHP: parseBuildInput(text, true) };
     const issues = validateBuild(build);
-    for (const compact of [false, true]) {
-      const onTextChange = vi.fn();
-      const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues, text, onTextChange, compact }));
-      expect(html).toContain(`value="${text}"`);
-      expect(html).toContain('type="text"');
-      expect(html).toContain('inputMode="numeric"');
-      expect(html).toContain("Blank means full HP (154).");
-      expect(html).toContain('placeholder="Full HP (154)"');
-      expect(html.includes('aria-invalid="true"')).toBe(issues.some((issue) => issue.field === "currentHP"));
-      for (const issue of issues) expect(html).toContain(issue.message);
-      const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-      for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
-        for (const reference of references.split(" ")) expect(ids).toContain(reference);
-      }
-      expect(onTextChange).not.toHaveBeenCalled();
+    const onTextChange = vi.fn();
+    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues, text, onTextChange }));
+    expect(html).toContain(`value="${text}"`);
+    expect(html).toContain('type="text"');
+    expect(html).toContain('inputMode="numeric"');
+    expect(html).toContain('placeholder="Full HP (154)"');
+    expect(html.includes('aria-invalid="true"')).toBe(issues.some((issue) => issue.field === "currentHP"));
+    for (const issue of issues) expect(html).toContain(issue.message);
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+    for (const [, references] of html.matchAll(/\baria-describedby="([^"]+)"/g)) {
+      for (const reference of references.split(" ")) expect(ids).toContain(reference);
     }
+    expect(onTextChange).not.toHaveBeenCalled();
   });
 
   it("keeps the HP control usable while an unrelated ability field is invalid", () => {
     const build = { ...createBuild("blastoise"), abilityId: "unknown", currentHP: 70 };
-    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues: validateBuild(build), text: "070", onTextChange: () => undefined, compact: true }));
+    const html = renderToStaticMarkup(createElement(CurrentHPField, { build, issues: validateBuild(build), text: "070", onTextChange: () => undefined }));
     expect(html).toContain('value="070"');
-    expect(html).toContain("Blank means full HP (154).");
+    expect(html).toContain('placeholder="Full HP (154)"');
     expect(html).not.toContain('aria-invalid="true"');
   });
 
@@ -195,7 +192,7 @@ describe("Champions calculator UI", () => {
     expect(html).not.toMatch(/<main\b/);
     expect(html).toContain("Loading the Champions engine");
     expect(html).toContain("Damage Calculator");
-    expect(html).toContain("Choose your team and league for this matchup.");
+    expect(html).toContain(">My team</h2>");
     expect(html).toContain("Loading your leagues");
     expect([...html.matchAll(/Manual build/g)]).toHaveLength(2);
     expect(html).toContain("Change left Pokémon");
@@ -339,11 +336,13 @@ describe("Champions calculator UI", () => {
     expect(singles).toContain("6 toggles on");
     expect(singles.match(/<input\b[^>]*id="[^"]*-attackerSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
     expect(singles.match(/<input\b[^>]*id="[^"]*-defenderSide-helpingHand"[^>]*>/)?.[0]).toContain('disabled=""');
-    expect(singles.match(/<input\b[^>]*id="[^"]*-fairyAura"[^>]*>/)?.[0]).toContain('disabled=""');
-    expect(singles).toContain("Ignored in Singles, which has no third Pokémon to supply it.");
+    const aura = singles.match(/<input\b[^>]*id="([^"]*-fairyAura)"[^>]*>/)!;
+    expect(aura[0]).toContain('disabled=""');
+    expect(aura[0]).toContain(`aria-describedby="${aura[1]}-help"`);
+    expect(singles).toContain(`<p id="${aura[1]}-help" class="text-xs text-muted">Ignored in Singles.</p>`);
   });
 
-  it("associates shared-effect help and validation errors with their checkbox", () => {
+  it("associates shared-effect validation errors with their checkbox", () => {
     const field = { ...createConditions(), gravity: "on" as unknown as boolean };
     const html = renderToStaticMarkup(createElement(BattleConditions, { value: field, issues: validateConditions(field), onChange: () => undefined }));
     const input = html.match(/<input\b[^>]*id="[^"]*-gravity"[^>]*>/)?.[0];
@@ -351,10 +350,9 @@ describe("Champions calculator UI", () => {
     expect(input).toContain('aria-invalid="true"');
     expect(input).not.toContain('checked=""');
     const describedBy = input!.match(/aria-describedby="([^"]+)"/)?.[1].split(" ");
-    expect(describedBy).toHaveLength(2);
+    expect(describedBy).toEqual([expect.stringMatching(/-gravity-error$/)]);
     for (const id of describedBy!) expect(html).toContain(`id="${id}"`);
     expect(html).toContain("Gravity must be on or off.");
-    expect(html).toContain("Accuracy changes are not simulated");
   });
 
   it("swaps builds and side conditions while retaining shared effects and clearing hit counts", () => {
@@ -424,7 +422,6 @@ describe("Champions calculator UI", () => {
     const build = { ...createBuild("arcanine"), abilityId: "flashfire", abilityActive: true } as ReturnType<typeof createBuild>;
     const html = renderToStaticMarkup(createElement(PokemonPanel, { side: "attacker", build, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined }));
     expect(html).toContain("Flash Fire has been activated");
-    expect(html).toContain("This sets the ability’s condition, not whether the ability exists.");
     expect(html).toMatch(/type="checkbox"[^>]*checked=""/);
   });
 
@@ -452,7 +449,6 @@ describe("Champions calculator UI", () => {
     expect(html).not.toContain("Coverage not verified."); // Lengthy reasons live in Details.
     expect(html).toContain("Not estimated");
     expect(html).toContain("2 of 2 source-listed moves accounted for");
-    expect(html).toContain("conditional on the move hitting");
     expect(html).not.toContain("Base power:");
     expect(html).not.toContain("Accuracy:");
     expect(html).toMatch(/type="radio"[^>]*value="thunderbolt"/);
@@ -584,11 +580,16 @@ describe("Champions calculator UI", () => {
     const ability = html.match(/<input\b[^>]*id="[^"]*-ability-active"[^>]*>/)?.[0];
     expect(ability).toContain('aria-invalid="true"');
     const descriptions = ability!.match(/aria-describedby="([^"]+)"/)![1].split(" ");
-    expect(descriptions).toHaveLength(2);
+    expect(descriptions).toEqual([expect.stringMatching(/-ability-error$/)]);
     for (const id of descriptions) expect(html).toContain(`id="${id}"`);
     const points = [...html.matchAll(/<input\b[^>]*id="[^"]*-points-[a-z]+"[^>]*>/g)];
     expect(points).toHaveLength(6);
-    for (const [input] of points) expect(input).toContain('aria-invalid="true"');
+    for (const [input] of points) {
+      expect(input).toContain('aria-invalid="true"');
+      const [, errors] = input.match(/aria-describedby="([^"]+)"/)!;
+      expect(errors).toMatch(/-points-errors$/);
+      expect(html).toContain(`id="${errors}"`);
+    }
   });
 
   it("keeps power, accuracy, reasons, rolls and the single hit editor in Details", () => {
@@ -615,9 +616,6 @@ describe("Champions calculator UI", () => {
     }));
     expect(unsupported).toContain("Coverage not verified.");
     expect(unsupported).toContain("Variable / special");
-    // Accuracy is always the catalog value, and the footer says so rather than promising changes.
-    expect(unsupported).toContain("Accuracy is never adjusted: No Guard, Compound Eyes, Gravity and weather accuracy are not simulated. A dash means the move skips the accuracy check.");
-    expect(unsupported).not.toContain("effective changes appear above");
   });
 });
 
@@ -652,8 +650,6 @@ describe("quick-move replacement UI", () => {
       expect(html).not.toContain('type="radio"');
       expect(html.includes('<table ')).toBe(wide);
       expect(html.includes('<ul aria-label="Move damage results"')).toBe(!wide);
-      expect(html).toContain("Replace changes only this slot and selects the new move to calculate.");
-      expect(html).toContain("Keep choosing replacements, or use Done or Escape to close editing and keep the selected move.");
       expect(html).toContain("Showing 1 of 1 matching moves.");
       expect(html).not.toContain("Current move");
       expect(html).not.toContain("Already in move");
@@ -874,7 +870,7 @@ describe("quick-move replacement UI", () => {
       expect(html).toContain("Category: Physical");
       expect(html).toContain(renderToStaticMarkup(createElement("p", { className: "text-muted" }, movesById.get("bulletseed")!.description)));
       expect(html).toContain('<option value="3" selected="">3 hits</option>');
-      expect(html).toContain("Move information and hit-count editing remain available.");
+      expect(html).toContain("Damage is not available yet.");
       expect(html).not.toContain("Damage rolls:");
       expect(html).not.toContain("Fixed damage:");
       expect(html).not.toContain("Assumptions for this result");
@@ -986,7 +982,6 @@ describe("summary Mega controls", () => {
     expect(meterHTML(fresh, "attacker")).toContain('aria-valuenow="100"');
     expect(meterHTML(fresh, "defender")).toContain('aria-valuenow="70"');
     expect(fresh).toContain("30 damage");
-    expect(fresh).toContain("Current HP is unchanged");
     expect(next.attack.moveId).toBe("flamethrower");
     expect(next.attacker.build.currentHP).toBe(100);
     expect(next.defender.build.currentHP).toBe(100);
@@ -1129,7 +1124,6 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain(`${damage} damage</strong>`);
     expect(html).toContain("Current HP: 100 / 153");
     expect(html).not.toContain("Right Pokémon HP remaining:");
-    expect(html).toContain("Current HP is unchanged");
     expect({ matchup, result }).toEqual(before);
   });
 
@@ -1183,7 +1177,7 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain('aria-label="Charizard left current HP"');
     expect(html).toContain('aria-valuenow="153"');
     expect(html).toContain('aria-valuemax="154"');
-    expect(html).toContain("Click either Pokémon’s quick move to calculate and edit that slot, or browse all moves below.");
+    expect(html).toContain("Click either Pokémon’s quick move, or browse all moves below.");
     expect(html).not.toContain("Right Pokémon HP remaining:");
     for (const side of ["attacker", "defender"] as const) {
       expect(html).toContain(`aria-label="Change ${position(side)} Pokémon" aria-haspopup="dialog"`);
@@ -1227,12 +1221,9 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain("Current HP: 100 / 154");
     expect(html).toContain("After Flamethrower");
     expect(html).toContain("One-use KO: 37.5% (all rolls)");
-    expect(html).toContain("Current HP is unchanged");
-    expect(html).toContain("if it connects");
     expect(html).toContain('aria-live="polite" aria-atomic="true"');
     const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map(([input]) => input);
     expect(inputs.filter((input) => input.includes('checked=""'))).toEqual([expect.stringContaining(`value="${mode}"`)]);
-    if (mode === "average") expect(html).toContain("Average damage is the mean of all rolls, rounded to whole HP.");
     const edited = updateMatchupBuild(matchup, "defender", { ...matchup.defender.build, currentHP: 40 });
     expect(summaryHTML(edited, result, undefined, mode)).toContain(`${40 - damage} / 154</strong>`);
     const overkill = summaryHTML(edited, { ...result, min: 50, max: 50, rolls: 50 }, undefined, mode);

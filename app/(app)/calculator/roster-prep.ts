@@ -79,7 +79,7 @@ export type RosterPanel = {
 export function getRosterPanel(state: CalculatorRosterState, role: RosterRole, runtime: BattleRuntime = championsRuntime): RosterPanel {
   const empty = (message: string, status: RosterPanel["status"] = "empty", teamName: string | null = null): RosterPanel => ({ status, teamName, message, choices: [] });
   if (state.status === "loading") return empty("Loading your leagues…", "loading");
-  if (state.status !== "ready") return empty("League rosters are unavailable. Manual Pokémon selection still works.", "error");
+  if (state.status !== "ready") return empty("League rosters are unavailable.", "error");
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
   if (!league) return empty(state.leagues.length ? "Choose your team in My team to see its league rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
   if (role === "opponent" && !state.opponentId) return empty("Choose a team in Opponent to see their roster.");
@@ -109,7 +109,7 @@ export function getTeamPanel(current: PreparedMatchup, state: CalculatorRosterSt
   const paste = selection.paste;
   if (!paste) return { status: "empty", teamName: null, message: "Import a PokéPaste link or team text in the team source panel, or choose Pokémon manually.", choices: [] };
   return {
-    status: "ready", teamName: paste.title, message: "Imported sets · click a Pokémon to load its build and moves.",
+    status: "ready", teamName: paste.title, message: "Imported sets",
     choices: paste.team.members.map((member) => {
       const key = JSON.stringify(["paste", current.runtime.identity, role, paste.id, member.index]);
       return {
@@ -192,6 +192,11 @@ function moveOwnerSide(current: PreparedMatchup, owner: MoveOwner): BattleSide |
   return null;
 }
 
+/** The field as the move's source sees it: its own side conditions are the attacker's. A swap builds a new object. */
+export function orientField(field: BattleConditions, sourceSide: BattleSide): BattleConditions {
+  return sourceSide === "attacker" ? field : { ...field, attackerSide: field.defenderSide, defenderSide: field.attackerSide };
+}
+
 /** Cards and stored side conditions stay in physical left/right order. */
 export function getAttackView(current: PreparedMatchup) {
   const activeSide = moveOwnerSide(current, current.attack.owner);
@@ -202,13 +207,13 @@ export function getAttackView(current: PreparedMatchup) {
   return {
     source, receiver, sourceSide, receiverSide,
     owner: getMoveOwner(source), receiverOwner: getMoveOwner(receiver),
-    field: sourceSide === "attacker" ? current.field : {
-      ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide,
-    },
+    field: orientField(current.field, sourceSide),
     contexts: source.contexts,
     moveId: activeSide ? current.attack.moveId : null,
   };
 }
+
+export type AttackView = ReturnType<typeof getAttackView>;
 
 function withPreparedMoves(build: BattleBuild, moves: MoveSlots): BattleBuild {
   return build.game === "champions" ? build : { ...build, preparedMoves: moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []) };
@@ -217,7 +222,7 @@ function withPreparedMoves(build: BattleBuild, moves: MoveSlots): BattleBuild {
 /** The notice sentence for the IVs withHiddenPowerIVs gave a fresh build (`fresh` is not `build`), else "". */
 function hiddenPowerIVsNote(build: BattleBuild, fresh: BattleBuild, moves: MoveSlots): string {
   const type = fresh !== build && quickHiddenPowerType(moves);
-  return type ? ` IVs set for its suggested Hidden Power ${type} (30 ${(Object.keys(HIDDEN_POWER_IVS[type]) as BattleStat[]).map((stat) => STAT_LABELS[stat]).join(", ")}), the IVs Showdown's team validator gives a level-50 set with that Hidden Power.` : "";
+  return type ? ` IVs set for its suggested Hidden Power ${type} (30 ${(Object.keys(HIDDEN_POWER_IVS[type]) as BattleStat[]).map((stat) => STAT_LABELS[stat]).join(", ")}).` : "";
 }
 
 export function createMatchup(revision = 0, runtime: BattleRuntime = championsRuntime): PreparedMatchup {
@@ -412,7 +417,7 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
     attack: sameMoveOwner(current.attack.owner, owner) ? { ...current.attack, owner: nextOwner } : current.attack,
     replacement: editing ? { ...current.replacement!, owner: nextOwner, session } : current.replacement,
     replacementSession: session,
-    notice: `${current.runtime.speciesById.get(build.speciesId)?.name} selected. Current HP, training, stages and prepared moves kept.${!reverting && build.abilityId === "intimidate" ? " Its Intimidate activates when it Mega Evolves: use Apply Intimidate in its build settings to lower the other Pokémon's Attack." : ""}${stored ? " The Intimidate it copied with Trace on entry still counts, so it is now stored in both Pokémon's stages." : ""}`,
+    notice: `${current.runtime.speciesById.get(build.speciesId)?.name} selected. Current HP, training, stages and prepared moves kept.${stored ? " The Intimidate it copied with Trace on entry still counts, so it is now stored in both Pokémon's stages." : ""}`,
   };
 }
 
@@ -464,7 +469,7 @@ export function changeBattleGame(current: PreparedMatchup, runtime: BattleRuntim
   return { ...freshMatchup(current, runtime), accountId: current.accountId, accountReady: current.accountReady,
     selection: current.selection, drafts: current.drafts, importRevision: current.importRevision,
     teams: { own: rematerialize("own"), opponent: rematerialize("opponent") },
-    notice: `${runtime.profile.label} selected. Preparation and active mechanics reset; team documents and drafts kept. Select a team Pokémon to load a compatible set.`,
+    notice: `${runtime.profile.label} selected. Preparation and active mechanics reset; team documents and drafts kept.`,
   };
 }
 
@@ -482,8 +487,8 @@ export function resetMatchup(current: PreparedMatchup): PreparedMatchup {
     },
     importRevision: current.importRevision,
     notice: current.runtime.profile.id === "champions"
-      ? "Reset to Charizard versus Blastoise, full HP, zero Stat Points and stages, and the default Doubles field. Session build edits cleared. League and opponent choices kept; imported teams kept with their original sets. Your team shortcuts are on the left."
-      : `Reset ${current.runtime.profile.label} preparation, full HP, zero EVs and stages, and the default Doubles field. Team documents and choices kept; your team shortcuts are on the left.`,
+      ? "Reset to Charizard versus Blastoise, full HP, zero Stat Points and stages, and the default Doubles field. Session build edits cleared. League and opponent choices kept; imported teams kept with their original sets."
+      : `Reset ${current.runtime.profile.label} preparation, full HP, zero EVs and stages, and the default Doubles field. Team documents and choices kept.`,
   };
 }
 
@@ -507,7 +512,7 @@ export function changeTeamSource(current: PreparedMatchup, owner: TeamSourceOwne
   if (!currentTeamSource(current, owner) || current.teams[owner.role].mode === mode) return current;
   return {
     ...setTeamSelection(current, owner.role, { ...current.teams[owner.role], mode, epoch: owner.epoch + 1 }),
-    notice: "Team source changed. Current Pokémon and their preparation kept; choose a team Pokémon to load another set.",
+    notice: "Team source changed. Current Pokémon and their preparation kept.",
   };
 }
 
@@ -526,7 +531,7 @@ export function applyTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner,
   const next = setTeamSelection(current, owner.role, { mode: "paste", paste, epoch: owner.epoch + 1 });
   return {
     ...next, importRevision, cache: prunePaste(current, owner.role),
-    notice: `${paste.title} imported for ${owner.role === "own" ? "your team" : "the opponent"}. Current Pokémon kept; click a team Pokémon to load its set.`,
+    notice: `${paste.title} imported for ${owner.role === "own" ? "your team" : "the opponent"}. Current Pokémon kept.`,
   };
 }
 
@@ -643,7 +648,7 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     ...current,
     [side]: nextSlot,
     cache: cacheCombatant(current, nextSlot),
-    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : current.runtime.profile.id === "champions" ? "Default build loaded; adjust nature, ability, item and Stat Points as needed." : `Default build loaded; adjust level, nature, ability, item, EVs and IVs as needed.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
+    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : `Default build loaded.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
   });
 }
 

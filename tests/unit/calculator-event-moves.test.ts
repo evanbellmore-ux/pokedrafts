@@ -102,7 +102,6 @@ describe("doubled-case toggle in the move list", () => {
     expect(html).toContain("The user&#x27;s previous move failed");
     expect(checkbox(html)).toBeDefined();
     expect(checkbox(html)).not.toContain('checked=""');
-    expect(html).toContain("Unticked, it uses normal power (75)");
     expect(checkbox(render("stompingtantrum", { contexts: { stompingtantrum: { doubled: true } } }))).toContain('checked=""');
   });
 

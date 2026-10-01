@@ -152,8 +152,8 @@ export function resolveBattleMove(
   if (useMax && !move.isMax) return fail("The pinned engine did not produce a verified Max move; ordinary damage is not substituted.");
   const transformed = useZ || useMax;
   if (transformed) assumptions.push(useMax
-    ? "One Max/G-Max attack only; later weather, terrain, stat changes and residual G-Max turns are not simulated."
-    : "One damaging Z-Move only; secondary bonuses and later turns are not simulated.");
+    ? "One Max/G-Max attack. Uses to KO follows its stat, weather and terrain changes and Dynamax ending after 3 turns; a G-Max move that damages every turn is not estimated."
+    : "One damaging Z-Move, once per battle (Uses to KO: one use only); secondary bonuses are not simulated.");
   const effective: ChampionsMove = {
     ...metadata, id: transformed ? toID(move.name) : metadata.id,
     name: move.name, type: move.type, power: move.bp, category: move.category,

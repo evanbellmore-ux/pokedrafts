@@ -5,7 +5,7 @@ import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { applyIntimidate } from "@/app/lib/battle/intimidate";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
-import { createBuild, createConditions, fieldItemChoice, fieldItemHelp, fieldItemLabel, roomItemChoice } from "@/app/lib/battle/model";
+import { createBuild, createConditions, fieldItemChoice, fieldItemLabel, roomItemChoice } from "@/app/lib/battle/model";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, BattleConditions, StatTable } from "@/app/lib/battle/types";
 
@@ -224,7 +224,6 @@ describe("the field timing switch", () => {
     expect(fieldItemLabel(choice("roomservice", "quarkdrive", "terrain"), sv)).toBe("Its Room Service was used before Quark Drive activated");
     expect(fieldItemLabel(choice("boosterenergy", "quarkdrive", "terrain"), sv)).toBe("Its Booster Energy was used while Electric Terrain was down");
     expect(fieldItemLabel(choice("boosterenergy", "protosynthesis", "sun"), sv)).toBe("Its Booster Energy was used while the sun was down");
-    expect(fieldItemHelp(choice("electricseed", "quarkdrive", "terrain"), sv)).toContain("Quark Drive then picks its stat before the Seed raises its Defense");
     const hands = build("ironhands", { ability: "quarkdrive", item: "electricseed" });
     const panel = (value: BattleBuild, fieldChoice: ReturnType<typeof fieldItemChoice>) => renderToStaticMarkup(createElement(PokemonPanel, {
       side: "attacker", build: value, issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined, runtime: sv, fieldItemChoice: fieldChoice,
@@ -232,7 +231,6 @@ describe("the field timing switch", () => {
     const on = panel(hands, fieldItemChoice(hands, build("snorlax"), conditions(electric), sv));
     expect(on).toContain("Its Electric Seed was used before Quark Drive activated");
     expect(on).toMatch(/id="[^"]*-field-item"[^>]*checked/);
-    expect(on).toMatch(/aria-describedby="[^"]*-field-item-help"/);
     expect(panel(hands, fieldItemChoice(hands, build("pincurchin", { ability: "electricsurge" }), conditions(electric), sv))).not.toMatch(/id="[^"]*-field-item"[^>]*checked/);
     expect(panel(hands, null)).not.toContain("was used before Quark Drive activated");
   });

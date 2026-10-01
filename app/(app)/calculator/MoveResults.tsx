@@ -15,6 +15,7 @@ import type { MoveSlots } from "@/app/lib/battle/move-defaults";
 import type { BattleBuild, ChampionsMove, MoveContext, MoveDamageResult } from "@/app/lib/battle/types";
 import { useMinWidthMd } from "../leagues/[leagueId]/useMinWidthMd";
 import { damagePercent, formatRange, koChance } from "./result-format";
+import { bestRollsText, faintsFirstText, speakKO, usesToKOText } from "./uses-format";
 
 const PAGE_SIZE = 30;
 const kindLabels: Record<MoveDamageResult["kind"], string> = {
@@ -83,6 +84,58 @@ function Damage({ row }: { row: MoveDamageResult | undefined }) {
   );
 }
 
+/** A line with "5HKO" or "OHKO" in it, which screen readers hear as "KO in 5 uses". */
+export function KOText({ text }: { text: string }) {
+  const spoken = speakKO(text);
+  return spoken === text ? text : <><span aria-hidden="true">{text}</span><span className="sr-only">{spoken}</span></>;
+}
+
+function UsesToKO({ row }: { row: MoveDamageResult | undefined }) {
+  const { label, details } = usesToKOText(row);
+  if (row?.kind !== "calculated" || !row.usesToKO) return <p className="text-muted">{label}</p>;
+  // A long reason wraps here instead of widening the column and squeezing the move names at 768px.
+  return (
+    <div className="max-w-48 tabular-nums">
+      <p className="font-semibold text-text"><KOText text={label} /></p>
+      {details.map((detail, index) => <p key={index} className="mt-0.5 text-xs text-muted"><KOText text={detail} /></p>)}
+    </div>
+  );
+}
+
+/** The card's Uses to KO line, inside the block the selection radio is described by. */
+function UsesToKOLine({ row }: { row: MoveDamageResult | undefined }) {
+  const { label, details } = usesToKOText(row);
+  return (
+    <p className="mt-0.5 text-xs tabular-nums text-muted">
+      Uses to KO: {row?.kind === "calculated" && row.usesToKO ? <span className="font-semibold text-text"><KOText text={label} /></span> : label}
+      {details.map((detail, index) => <span key={index} className="block"><KOText text={detail} /></span>)}
+    </p>
+  );
+}
+
+/** Every Uses to KO line in words, with what the count carries from use to use and what it leaves out. */
+function UsesToKODetails({ row }: { row: MoveDamageResult }) {
+  const value = row.usesToKO;
+  if (row.kind !== "calculated" || !value) return null;
+  const counted = value.kind === "uses" ? value : null;
+  const best = bestRollsText(value);
+  const faintsFirst = faintsFirstText(value);
+  return (
+    <div>
+      <p className="font-semibold">Uses to KO</p>
+      <p className="mt-1">{usesToKOText(row, Infinity).spoken}.{best && ` ${best}`}{faintsFirst && ` ${faintsFirst}`}</p>
+      {!!counted?.carried.length && <>
+        <p className="mt-2 text-xs font-semibold">Carried into later uses</p>
+        <ul className="mt-1 list-disc space-y-1 pl-5 text-muted">{counted.carried.map((line, index) => <li key={index}>{line}</li>)}</ul>
+      </>}
+      {!!counted?.notes.length && <>
+        <p className="mt-2 text-xs font-semibold">Left out of the count</p>
+        <ul className="mt-1 list-disc space-y-1 pl-5 text-muted">{counted.notes.map((line, index) => <li key={index}>{line}</li>)}</ul>
+      </>}
+    </div>
+  );
+}
+
 function Rolls({ rolls, alternate }: { rolls: MoveDamageResult["rolls"]; alternate?: MoveDamageResult["alternate"] }) {
   if (rolls === null) return <p className="text-muted">No damage rolls available.</p>;
   if (typeof rolls === "number") return <p className="tabular-nums">Fixed damage: {rolls} HP.</p>;
@@ -95,12 +148,9 @@ function Rolls({ rolls, alternate }: { rolls: MoveDamageResult["rolls"]; alterna
     ) : <p className="wrap-anywhere tabular-nums">Damage rolls: {rolls.join(", ")}</p>;
   }
   return (
-    <div className="space-y-2">
-      <p className="text-muted">Separate roll groups are preserved, not flattened into a probability distribution.</p>
-      <ol className="space-y-1">
-        {rolls.map((group, index) => <li key={index} className="wrap-anywhere tabular-nums">Group {index + 1}: {Array.isArray(group) ? `[${group.join(", ")}]` : group}</li>)}
-      </ol>
-    </div>
+    <ol className="space-y-1">
+      {rolls.map((group, index) => <li key={index} className="wrap-anywhere tabular-nums">Group {index + 1}: {Array.isArray(group) ? `[${group.join(", ")}]` : group}</li>)}
+    </ol>
   );
 }
 
@@ -127,11 +177,9 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
   return (
     <div id={id} tabIndex={-1} aria-label={`${name} details`} className="space-y-3 rounded wrap-anywhere text-sm text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
       {row?.reason && <p className="font-medium">{row.reason}</p>}
-      {hitRule?.kind === "fixed" && hitRule.reason && <p>{hitRule.reason} No manual hit count is needed.</p>}
+      {hitRule?.kind === "fixed" && hitRule.reason && <p>{hitRule.reason}</p>}
       {choice && (
-        <Field id={`${id}-hits`} label={`${move?.name ?? moveId}: hits this use`} help={choice.perHitAccuracy
-          ? `After the first hit, each hit checks accuracy again and the move stops at the first miss. All ${choice.max} hits landing is assumed unless you choose fewer.`
-          : `Choose the number of hits for this one use. No hidden hit count or future-turn sequence is assumed.${choice.loadedDice ? ` Loaded Dice limits this choice to ${choice.min}–${choice.max} hits.` : ""}`} className="max-w-sm">
+        <Field id={`${id}-hits`} label={`${move?.name ?? moveId}: hits this use`} help={choice.loadedDice ? `Loaded Dice limits this choice to ${choice.min}–${choice.max} hits.` : undefined} className="max-w-sm">
           <Select value={context?.hits ?? (choice.defaultHits ?? "")} onChange={(event) => {
             // Picking the default keeps it implicit, so a later rule change (e.g. Loaded Dice) asks again.
             const hits = parseIntegerInput(event.target.value) ?? undefined;
@@ -144,7 +192,6 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
         </Field>
       )}
       {row?.effectiveName && <p className="flex flex-wrap items-center gap-2 font-semibold">{row.effectiveName}<TypeBadge type={row.effectiveType ?? move?.type ?? "Unknown"} /><span className="text-xs font-normal text-muted">Power: {row.effectivePower ?? "—"} · {row.effectiveCategory ?? move?.category}</span></p>}
-      {converted && <p className="text-xs text-muted">Requested Z / Max conversion uses one transformed attack, not the base move’s hit count. Unsupported requests remain uncalculated.</p>}
       <p className="text-xs text-muted">{converted ? `Assigned move: ${move?.name ?? moveId} · Catalog base power` : "Base power"}: {basePower(move)} · Accuracy: {move?.accuracy != null ? `${move.accuracy}%` : "—"} · Category: {move?.category ?? "—"}</p>
       {move?.description && <p className="text-muted">{move.description}</p>}
       {row?.description && <p>{row.description}</p>}
@@ -158,8 +205,8 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
           <ul className="mt-1 list-disc space-y-1 pl-5 text-muted">{row.assumptions.map((assumption, index) => <li key={index}>{assumption}</li>)}</ul>
         </div>
       )}
-      {row ? <Rolls rolls={row.rolls} alternate={row.alternate} /> : <p className="text-muted">Damage is not available yet. Move information and hit-count editing remain available.</p>}
-      <p className="text-xs text-muted">Base power, accuracy and category here are catalog values{row?.effectiveName ? row.kind === "calculated" ? "; the bold line with the move's name shows the power and type used for this result" : "; the bold line with the move's name shows catalog values until it can be calculated" : ""}. Accuracy is never adjusted: No Guard, Compound Eyes, Gravity and weather accuracy are not simulated. A dash means the move skips the accuracy check.</p>
+      {row && <UsesToKODetails row={row} />}
+      {row ? <Rolls rolls={row.rolls} alternate={row.alternate} /> : <p className="text-muted">Damage is not available yet.</p>}
     </div>
   );
 }
@@ -339,7 +386,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
           value={move.id}
           checked={selectedMoveId === move.id}
           aria-label={`Select ${name}${name !== move.name ? ` (from ${move.name})` : ""} to preview HP`}
-          aria-describedby={`${prefix}-${move.id}-damage`}
+          aria-describedby={wide ? `${prefix}-${move.id}-damage ${prefix}-${move.id}-ko ${prefix}-${move.id}-uses` : `${prefix}-${move.id}-damage`}
           onChange={() => choose(candidate)}
           className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
         />
@@ -374,41 +421,34 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         <div className="min-w-0 flex-1">
           <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
           <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
-          <p className="mt-1 text-xs text-muted">{replacement ? "Replace changes only this slot and selects the new move to calculate. Keep choosing replacements, or use Done or Escape to close editing and keep the selected move. Already assigned moves are hidden." : "Select a move to preview HP above without changing your four quick moves."}</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>
-      {blocked && <p className="text-sm text-muted">Calculations are paused. You can still choose moves and edit hit counts. Damage sorting and result filters resume when calculations are available.</p>}
+      {blocked && <p className="text-sm text-muted">Calculations are paused.</p>}
       {showMoveContext && selectedMove && <div id={`${prefix}-settings`} data-move-id={selectedMove.id} data-needs-context={selectedResult?.kind === "needs-context" ? "" : undefined} className="space-y-2 rounded-lg border border-line bg-panel p-3" aria-label="Selected attack context">
         <p className="wrap-anywhere text-sm font-semibold text-text">Move settings: {selectedResult?.effectiveName ?? selectedMove.name} · {runtime.profile.label}</p>
         {runtime.profile.zMoves && <>
           <label htmlFor={`${prefix}-use-z`} className="flex min-h-11 items-center gap-2 text-sm text-text">
             <input id={`${prefix}-use-z`} type="checkbox" checked={selectedContext?.useZ === true}
               disabled={selectedMove.category === "Status" && selectedContext?.useZ !== true}
-              aria-describedby={`${prefix}-z-help`} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
+              aria-describedby={selectedMove.category === "Status" ? undefined : `${prefix}-z-item`} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
               onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, useZ: event.target.checked })} />
             Use Z-Move for {selectedMove.name}
           </label>
-          <p id={`${prefix}-z-help`} className="text-xs text-muted">{selectedMove.category === "Status" ? "Status Z-Move bonuses are not simulated; no ordinary damage is substituted." : `Requires an eligible Z-Crystal and base move. Held item: ${runtime.itemsById.get(itemId)?.name ?? "None"}. Assumes the team’s Z-Move use is still available; consumption is not tracked.`}</p>
+          {selectedMove.category !== "Status" && <p id={`${prefix}-z-item`} className="text-xs text-muted">Held item: {runtime.itemsById.get(itemId)?.name ?? "None"}</p>}
         </>}
-        {stellarActive && selectedMove.category !== "Status" && <Field id={`${prefix}-stellar-first-use`} label="Stellar: first use of this move’s type?" help="Choose explicitly. Stellar’s once-per-type boost and past attacks are not inferred or tracked.">
+        {stellarActive && selectedMove.category !== "Status" && <Field id={`${prefix}-stellar-first-use`} label="Stellar: first use of this move’s type?">
           <Select value={selectedContext?.stellarFirstUse === undefined ? "" : selectedContext.stellarFirstUse ? "yes" : "no"} onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, stellarFirstUse: event.target.value === "" ? undefined : event.target.value === "yes" })}>
             <option value="">Choose first-use context</option><option value="yes">Yes — boost still available</option><option value="no">No — this type already used</option>
           </Select>
         </Field>}
-        {eventRule && <>
-          <label htmlFor={`${prefix}-event-doubled`} className="flex min-h-11 items-center gap-2 text-sm text-text">
-            <input id={`${prefix}-event-doubled`} type="checkbox" checked={selectedContext?.doubled === true}
-              aria-describedby={`${prefix}-event-doubled-help`} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
-              onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, doubled: event.target.checked })} />
-            {eventRule.label}
-          </label>
-          <p id={`${prefix}-event-doubled-help`} className="text-xs text-muted">{`${selectedMove.name} doubles its power when this happened. Unticked, it uses normal power (${selectedMove.power}); the battle history is not tracked.`}</p>
-        </>}
-        {turnQuestion && <Field id={`${prefix}-turn-order`} label={turnQuestion === "analytic" ? "Turn order for Analytic" : `Turn order for ${selectedMove.name}`}
-          help={turnQuestion === "analytic"
-            ? `Analytic raises power by 30% when no other Pokémon still has to move this turn. ${gameType === "Doubles" ? "In Doubles the other two Pokémon's order is unknown, so choose it." : "Worked out, it uses priority (the target is assumed to use a priority-0 move), items such as Lagging Tail, Speed and Trick Room; a Speed tie needs a choice."}`
-            : `${selectedMove.name} doubles its power when it moves before the target, or the target switched in this turn. Worked out, it uses priority (the target is assumed to use a priority-0 move), items such as Lagging Tail, Speed and Trick Room; a Speed tie needs a choice.`}>
+        {eventRule && <label htmlFor={`${prefix}-event-doubled`} className="flex min-h-11 items-center gap-2 text-sm text-text">
+          <input id={`${prefix}-event-doubled`} type="checkbox" checked={selectedContext?.doubled === true}
+            className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
+            onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, doubled: event.target.checked })} />
+          {eventRule.label}
+        </label>}
+        {turnQuestion && <Field id={`${prefix}-turn-order`} label={turnQuestion === "analytic" ? "Turn order for Analytic" : `Turn order for ${selectedMove.name}`}>
           <Select value={selectedContext?.turnOrder ?? ""} onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, turnOrder: event.target.value === "first" || event.target.value === "last" ? event.target.value : undefined })}>
             <option value="">{turnQuestion === "analytic" && gameType === "Doubles" ? "Choose the turn order" : "Work it out from priority and Speed"}</option>
             {turnQuestion === "analytic" ? <>
@@ -420,20 +460,19 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
             </>}
           </Select>
         </Field>}
-        {countMove === "lastrespects" && <Field id={`${prefix}-fainted`} label="Party members that have fainted" help="Last Respects gains 50 power for each fainted party member. The battle history is not tracked.">
+        {countMove === "lastrespects" && <Field id={`${prefix}-fainted`} label="Party members that have fainted">
           <Select value={selectedContext?.fainted ?? 0} onChange={(event) => onContextChange(countMove, { ...selectedContext, fainted: parseIntegerInput(event.target.value) ?? 0 })}>
             {Array.from({ length: MAX_FAINTED_ALLIES + 1 }, (_, count) => <option key={count} value={count}>{count}</option>)}
           </Select>
         </Field>}
         {countMove === "ragefist" && <Field id={`${prefix}-times-hit`}
-          label={runtime.profile.id === "champions" ? "Times hit since it last switched in" : "Times hit this battle"}
-          help={`Rage Fist gains 50 power for each hit the user has taken, up to 350.${runtime.profile.id === "champions" ? " In Champions the count resets when the user switches out." : " The count stays when the user switches out."} The battle history is not tracked.`}>
+          label={runtime.profile.id === "champions" ? "Times hit since it last switched in" : "Times hit this battle"}>
           <Select value={selectedContext?.timesHit ?? 0} onChange={(event) => onContextChange(countMove, { ...selectedContext, timesHit: parseIntegerInput(event.target.value) ?? 0 })}>
             {Array.from({ length: MAX_TIMES_HIT + 1 }, (_, count) => <option key={count} value={count}>{count === MAX_TIMES_HIT ? `${count} or more` : count}</option>)}
           </Select>
         </Field>}
         {countMove === "beatup" && <>
-          <Field id={`${prefix}-party-size`} label="Other party members that can attack" help="Count the party members that are not fainted and have no status. The user always attacks. Each hit's power comes from that Pokémon's base Attack.">
+          <Field id={`${prefix}-party-size`} label="Other party members that can attack">
             <Select value={party ? party.length : ""} onChange={(event) => {
               const size = parseIntegerInput(event.target.value);
               setParty(size === null ? undefined : Array.from({ length: size }, (_, index) => party?.[index] ?? ""));
@@ -471,24 +510,26 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
           <Select value={effectiveSort} onChange={(event) => setSort(event.target.value as DamageSort)}>
             <option value="minimum" disabled={blocked}>Minimum damage (high to low)</option>
             <option value="maximum" disabled={blocked}>Maximum damage (high to low)</option>
+            <option value="uses" disabled={blocked}>Uses to KO (fewest first)</option>
             <option value="name">Move name (A–Z)</option>
           </Select>
         </Field>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
-        <p role="status">Showing {visible.length} of {filtered.length} matching moves. Uncalculated moves stay unranked.</p>
+        <p role="status">Showing {visible.length} of {filtered.length} matching moves.</p>
         {!replacement && selectedHidden && selectedMoveId && <Button size="sm" variant="secondary" onClick={() => showMove(selectedMoveId)}>Show selected move</Button>}
       </div>
       {filtered.length === 0 ? (
-        <EmptyState title="No matching moves" description={replacement ? "Already assigned moves are hidden. Try another name or show all available moves." : "Try another name or show all moves, including status and unsupported moves."} action={<Button variant="secondary" onClick={resetFilter}>Clear filters</Button>} />
+        <EmptyState title="No matching moves" description={replacement ? "Already assigned moves are hidden." : undefined} action={<Button variant="secondary" onClick={resetFilter}>Clear filters</Button>} />
       ) : wide ? (
         <TableWrap>
           <table className={tableClassName} aria-label="Move damage results">
             <thead className={theadClassName}>
               <tr>
                 <th scope="col" className={thClassName} aria-sort={effectiveSort === "name" ? "ascending" : undefined}>Move</th>
-                <th scope="col" className={thClassName} aria-sort={effectiveSort !== "name" ? "descending" : undefined}>Damage</th>
+                <th scope="col" className={thClassName} aria-sort={effectiveSort === "minimum" || effectiveSort === "maximum" ? "descending" : undefined}>Damage</th>
                 <th scope="col" className={thClassName}>One-use KO</th>
+                <th scope="col" className={thClassName} aria-sort={effectiveSort === "uses" ? "ascending" : undefined}>Uses to KO</th>
                 <th scope="col" className={thClassName}><span className="sr-only">Details</span></th>
               </tr>
             </thead>
@@ -503,10 +544,11 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
                         <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                       </th>
                       <td id={`${prefix}-${move.id}-damage`} className={tdClassName}><Damage row={row} /></td>
-                      <td className={`${tdClassName} tabular-nums text-text`}>{row ? koChance(row) : "Not estimated"}</td>
+                      <td id={`${prefix}-${move.id}-ko`} className={`${tdClassName} tabular-nums text-text`}>{row ? koChance(row) : "Not estimated"}</td>
+                      <td id={`${prefix}-${move.id}-uses`} className={tdClassName}><UsesToKO row={row} /></td>
                       <td className={tdClassName}>{toggle(candidate)}</td>
                     </tr>
-                    {expanded === move.id && <tr className="border-t border-line bg-panel-hover"><td colSpan={4} className="p-4">{details(candidate)}</td></tr>}
+                    {expanded === move.id && <tr className="border-t border-line bg-panel-hover"><td colSpan={5} className="p-4">{details(candidate)}</td></tr>}
                   </Fragment>
                 );
               })}
@@ -524,7 +566,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
                   <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                 </div>
                 <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div id={`${prefix}-${move.id}-damage`} className="text-sm"><Damage row={row} /><p className="mt-1 text-xs tabular-nums text-muted">One-use KO: {row ? koChance(row) : "Not estimated"}</p></div>
+                  <div id={`${prefix}-${move.id}-damage`} className="min-w-0 text-sm"><Damage row={row} /><p className="mt-1 text-xs tabular-nums text-muted">One-use KO: {row ? koChance(row) : "Not estimated"}</p><UsesToKOLine row={row} /></div>
                   {toggle(candidate)}
                 </div>
                 {expanded === move.id && <div className="border-t border-line pt-3">{details(candidate)}</div>}
@@ -534,17 +576,13 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         </ul>
       )}
       {visible.length < filtered.length && (
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex justify-center">
           <Button variant="secondary" onClick={() => setLimit((current) => current + PAGE_SIZE)}>Show more moves</Button>
-          <p className="text-xs text-muted">Search by name to find any move without expanding the list.</p>
         </div>
       )}
       <details className="text-xs text-muted">
-        <summary className="cursor-pointer rounded py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Move coverage and calculation notes</summary>
-        <div className="mt-1 space-y-2">
-          <p>{blocked ? `${candidates.length} source-listed moves available; calculations paused.` : `${resultRows.length} of ${moveIds.length} source-listed moves accounted for: ${counts("calculated")} calculated, ${counts("status")} status, ${counts("needs-context")} need context, ${counts("unsupported")} unsupported.`}</p>
-          <p>Damage percentages use maximum HP. One-use KO chances use current HP and are conditional on the move hitting, not accuracy-adjusted. No end-of-turn damage or later-turn KO prediction.</p>
-        </div>
+        <summary className="cursor-pointer rounded py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Move coverage</summary>
+        <p className="mt-1">{blocked ? `${candidates.length} source-listed moves available; calculations paused.` : `${resultRows.length} of ${moveIds.length} source-listed moves accounted for: ${counts("calculated")} calculated, ${counts("status")} status, ${counts("needs-context")} need context, ${counts("unsupported")} unsupported.`}</p>
       </details>
     </section>
   );

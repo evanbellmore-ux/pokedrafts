@@ -177,7 +177,7 @@ export async function loadChampionsSnapshot(source: string): Promise<ShowdownSna
     moves: dex.moves.all().map((row) => ({
       id: row.id, name: row.name, exists: row.exists, isNonstandard: row.isNonstandard,
       type: row.type, category: row.category, basePower: row.basePower,
-      accuracy: row.accuracy, priority: row.priority, target: row.target,
+      accuracy: row.accuracy, pp: row.pp, noPPBoosts: row.noPPBoosts, priority: row.priority, target: row.target,
       multihit: row.multihit, ohko: row.ohko, description: describe(row),
     })),
     abilities: dex.abilities.all().map((row) => ({

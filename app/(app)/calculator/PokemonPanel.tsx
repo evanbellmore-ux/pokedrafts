@@ -12,13 +12,11 @@ import {
   abilityActivationLabel,
   PARTNER_ABILITY_CONDITIONS,
   defaultAbilityActive,
-  fieldItemHelp,
   fieldItemLabel,
   getBuildStats,
   NATURES,
   parseIntegerInput,
   roomItemLabel,
-  SEED_TERRAINS,
   STATS,
   STAT_LABELS,
   STATUSES,
@@ -134,7 +132,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       </div>
       <p className="mt-1 wrap-anywhere text-xs text-muted">{provenance ? `Roster selection: ${provenance}` : "Manual build"}</p>
       {mimicry && species && <p className="mt-1 text-xs text-muted">{mimicryNote(mimicry, species.types)}</p>}
-      {runtime.profile.tera && build.mechanic === "tera" && build.configuration?.teraType && <p className="mt-2 flex flex-wrap items-center gap-1 text-xs text-muted">Active Tera: <TypeBadge type={build.configuration.teraType} />{build.configuration.teraType === "Stellar" ? "Original defensive types are retained." : "Defensive typing; original types above still determine original STAB."}</p>}
+      {runtime.profile.tera && build.mechanic === "tera" && build.configuration?.teraType && <p className="mt-2 flex flex-wrap items-center gap-1 text-xs text-muted">Active Tera: <TypeBadge type={build.configuration.teraType} /></p>}
       {errorFor("speciesId") && <p className="mt-2 text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
       {errorFor("game") && <p className="mt-2 text-sm text-danger">{errorFor("game")}</p>}
       <div className="mt-4">
@@ -181,15 +179,11 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 id={`${prefix}-room-item`}
                 type="checkbox"
                 checked={build.itemUsedBeforeRoom !== false}
-                aria-describedby={`${prefix}-room-item-help`}
                 onChange={(event) => onChange({ ...build, itemUsedBeforeRoom: event.target.checked ? undefined : false })}
                 className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
               />
               {roomItemLabel(roomItemChoice, runtime, magicRoom)}
             </label>
-            <p id={`${prefix}-room-item-help`} className="text-xs text-muted">
-              Magic Room suppresses held items but does not undo one already used. Untick this if it entered while Magic Room was up{SEED_TERRAINS[roomItemChoice] ? `, or ${SEED_TERRAINS[roomItemChoice].terrain} Terrain started after the room` : roomItemChoice === "roomservice" ? ", or Trick Room started after the room" : ""}: the item is then still held and does nothing{magicRoom ? "" : ", even after the room ends"}.
-            </p>
           </div>
         )}
 
@@ -200,21 +194,18 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 id={`${prefix}-field-item`}
                 type="checkbox"
                 checked={fieldItemChoice.checked}
-                aria-describedby={`${prefix}-field-item-help`}
                 onChange={(event) => onChange({ ...build, itemUsedBeforeField: event.target.checked, ...(event.target.checked ? { itemUsedBeforeRoom: undefined } : {}) })}
                 className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
               />
               {fieldItemLabel(fieldItemChoice, runtime)}
             </label>
-            <p id={`${prefix}-field-item-help`} className="text-xs text-muted">{fieldItemHelp(fieldItemChoice, runtime)}</p>
           </div>
         )}
 
         {errorFor("preparedMoves") && (
           requiredMove ? (
             <div className="mt-3 flex flex-wrap items-end gap-2">
-              <Field id={`${prefix}-required-move`} label={`Quick move to replace with ${requiredMove.name}`} error={errorFor("preparedMoves")}
-                help="Damage for this form waits until the move is prepared. You can also replace a quick move from the move list." className="min-w-0 flex-1">
+              <Field id={`${prefix}-required-move`} label={`Quick move to replace with ${requiredMove.name}`} error={errorFor("preparedMoves")} className="min-w-0 flex-1">
                 <Select value={requiredSlot} onChange={(event) => setRequiredSlot(event.target.value)}>
                   <option value="">Choose a quick move</option>
                   {requiredMove.slots.map((label, index) => <option key={index} value={index}>{`Quick move ${index + 1}: ${label}`}</option>)}
@@ -230,8 +221,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
         )}
 
         {build.abilityId === "supremeoverlord" && (
-          <Field id={`${prefix}-fainted-allies`} label="Allies fainted before it entered" error={errorFor("faintedAllies")}
-            help="Supreme Overlord raises power by 10% per ally that had fainted when this Pokémon entered, up to 5." className="mt-3 max-w-sm">
+          <Field id={`${prefix}-fainted-allies`} label="Allies fainted before it entered" error={errorFor("faintedAllies")} className="mt-3 max-w-sm">
             <Select value={build.faintedAllies ?? 0} onChange={(event) => onChange({ ...build, faintedAllies: parseIntegerInput(event.target.value) ?? 0 })}>
               {Array.from({ length: 6 }, (_, count) => <option key={count} value={count}>{count}</option>)}
             </Select>
@@ -247,24 +237,19 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 checked={build.abilityActive}
                 disabled={partnerIgnored}
                 aria-invalid={!!errorFor("abilityActive") || undefined}
-                aria-describedby={`${prefix}-ability-help${errorFor("abilityActive") ? ` ${prefix}-ability-error` : ""}`}
+                aria-describedby={[partnerIgnored && `${prefix}-ability-help`, errorFor("abilityActive") && `${prefix}-ability-error`].filter(Boolean).join(" ") || undefined}
                 onChange={(event) => onChange({ ...build, abilityActive: event.target.checked })}
                 className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
               />
               {activationLabel}
             </label>
-            <p id={`${prefix}-ability-help`} className="text-xs text-muted">
-              {partnerIgnored
-                ? "Singles has no ally, so this condition is ignored. Switch the battle format to Doubles to use it."
-                : "This sets the ability’s condition, not whether the ability exists."}
-            </p>
+            {partnerIgnored && <p id={`${prefix}-ability-help`} className="text-xs text-muted">Singles has no ally, so this condition is ignored.</p>}
             {errorFor("abilityActive") && <p id={`${prefix}-ability-error`} className="mt-1 text-xs text-danger">{errorFor("abilityActive")}</p>}
           </div>
         )}
 
         {build.abilityId === "trace" && (
-          <Field id={`${prefix}-traced-ability`} label="Ability Trace copied" error={errorFor("tracedAbility")} className="mt-3 max-w-sm"
-            help="Trace copies a foe's ability when it enters: by default the other Pokémon's, when Trace can copy it. In Doubles it may have copied the other foe's. Abilities Trace cannot copy are not listed, and Ability Shield stops Trace.">
+          <Field id={`${prefix}-traced-ability`} label="Ability Trace copied" error={errorFor("tracedAbility")} className="mt-3 max-w-sm">
             <Select value={build.tracedAbility ?? ""} onChange={(event) => onChange({ ...build, tracedAbility: event.target.value || undefined })}>
               <option value="">The other Pokémon’s ability</option>
               {traceOptions.map((ability) => <option key={ability.id} value={ability.id}>{ability.name}</option>)}
@@ -274,18 +259,17 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
 
         {build.abilityId === "intimidate" && onApplyIntimidate && (
           <div className="mt-3">
-            <Button size="sm" variant="secondary" className="min-h-11" aria-describedby={`${prefix}-intimidate-help`} onClick={onApplyIntimidate}>
+            <Button size="sm" variant="secondary" className="min-h-11" onClick={onApplyIntimidate}>
               Apply Intimidate to the {side === "attacker" ? "right" : "left"} Pokémon
             </Button>
             <p role="status" className="mt-1 text-xs text-text">{intimidateResult}</p>
-            <p id={`${prefix}-intimidate-help`} className="mt-1 text-xs text-muted">Use it when this Pokémon enters, or Mega Evolves into an Intimidate form. Each click applies it once more. It changes both Pokémon’s stages and items as Showdown resolves Intimidate, including blocks and reactions such as Mirror Armor, Defiant, Rattled and White Herb. It assumes the other Pokémon is not behind a Substitute, which blocks Intimidate. To undo it, edit the stages, select any used-up item again and clear Unburden.</p>
           </div>
         )}
 
         <div className="mt-5 space-y-3">
           <h3 className="text-sm font-semibold text-text">Set configuration</h3>
           <div className="grid gap-3 sm:grid-cols-2">
-            <Field id={`${prefix}-gender`} label="Gender" error={errorFor("configuration.gender")} help={species?.gender ? `This species has fixed gender: ${species.gender === "N" ? "genderless" : species.gender === "M" ? "male" : "female"}.` : "Leave unknown unless confirmed. Rivalry needs both Pokémon’s genders."}>
+            <Field id={`${prefix}-gender`} label="Gender" error={errorFor("configuration.gender")} help={species?.gender ? `This species has fixed gender: ${species.gender === "N" ? "genderless" : species.gender === "M" ? "male" : "female"}.` : undefined}>
               <Select value={build.configuration?.gender ?? ""} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, gender: event.target.value ? event.target.value as "M" | "F" | "N" : undefined } })}>
                 <option value="">{species?.gender ? "Use species gender" : "Unknown"}</option>
                 <option value="M" disabled={!!species?.gender && species.gender !== "M"}>Male</option>
@@ -293,21 +277,21 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 <option value="N" disabled={!!species && species.gender !== "N"}>Genderless</option>
               </Select>
             </Field>
-            <Field id={`${prefix}-happiness`} label="Happiness" error={errorFor("configuration.happiness")} help="0–255. Blank uses 255 for supported Return / Frustration calculations; other moves are unchanged.">
+            <Field id={`${prefix}-happiness`} label="Happiness" error={errorFor("configuration.happiness")}>
               <IntegerInput key={editorRevision} value={build.configuration?.happiness ?? null} allowUnset placeholder="Default (255)" onValueChange={(happiness) => onChange({ ...build, configuration: { ...build.configuration, happiness: happiness ?? undefined } })} />
             </Field>
             <TeraTypeField id={`${prefix}-tera-type`} build={build} issues={issues} onChange={onChange} runtime={runtime} />
             {runtime.profile.dynamax && <>
-              <Field id={`${prefix}-dynamax-level`} label="Dynamax Level" error={errorFor("configuration.dynamaxLevel")} help="0–10. Blank uses 10. Sets the HP multiplier only when Dynamax or Gigantamax is active.">
+              <Field id={`${prefix}-dynamax-level`} label="Dynamax Level" error={errorFor("configuration.dynamaxLevel")}>
                 <IntegerInput key={editorRevision} value={build.configuration?.dynamaxLevel ?? null} allowUnset placeholder="Default (10)" onValueChange={(dynamaxLevel) => onChange({ ...build, configuration: { ...build.configuration, dynamaxLevel: dynamaxLevel ?? undefined } })} />
               </Field>
-              <Field id={`${prefix}-gigantamax`} label="Gigantamax factor" error={errorFor("configuration.gigantamax")} help={species?.canGigantamax ? "An eligible factor is configuration, not activation. Use Gigantamax by the Pokémon’s name." : "This species has no verified Gigantamax factor. Dynamax eligibility is separate."}>
+              <Field id={`${prefix}-gigantamax`} label="Gigantamax factor" error={errorFor("configuration.gigantamax")} help={species?.canGigantamax ? undefined : "This species has no verified Gigantamax factor."}>
                 <Select value={build.configuration?.gigantamax === undefined ? "" : build.configuration.gigantamax ? "yes" : "no"} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, gigantamax: event.target.value === "" ? undefined : event.target.value === "yes" } })}>
                   <option value="">Not specified</option><option value="no">No</option><option value="yes" disabled={!species?.canGigantamax}>Yes</option>
                 </Select>
               </Field>
             </>}
-            {runtime.profile.generation === 7 && <Field id={`${prefix}-hidden-power`} label="Hidden Power type" error={errorFor("configuration.hiddenPowerType")} help="Optional declared type; it must match innate IVs. This never rewrites effective IVs.">
+            {runtime.profile.generation === 7 && <Field id={`${prefix}-hidden-power`} label="Hidden Power type" error={errorFor("configuration.hiddenPowerType")}>
               <Select value={build.configuration?.hiddenPowerType ?? ""} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, hiddenPowerType: event.target.value || undefined } })}>
                 <option value="">{`Determine from innate IVs${build.game === "champions" ? "" : ` (${hiddenPowerType(innateIVs ?? build.native.ivs) ?? "incomplete"})`}`}</option>
                 {HIDDEN_POWER_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
@@ -326,17 +310,15 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
             </p>
           </div>
           {build.game !== "champions" && <div className="mb-3 max-w-sm">
-            <Field id={`${prefix}-level`} label="Level" error={errorFor("native.level")} help={`Exact level in ${runtime.profile.label}, from 1 to 100. Imported levels are not reset to 50.`}>
+            <Field id={`${prefix}-level`} label="Level" error={errorFor("native.level")}>
               <IntegerInput key={editorRevision} value={build.native.level} onValueChange={(level) => onChange({ ...build, native: { ...build.native, level } })} />
             </Field>
           </div>}
-          <p id={`${prefix}-points-help`} className="mb-3 text-xs text-muted">{build.game === "champions" ? "Use 0–32 Stat Points per stat, at most 66 total." : "Use 0–252 EVs per stat, at most 510 total, and 0–31 effective IVs. Training values are never guessed from Champions points."} Stat values are before stages, abilities, items and Dynamax.</p>
           {build.game !== "champions" && (runtime.profile.generation === 7 || innateIVs) && <div className="mb-3">
             <label htmlFor={`${prefix}-innate-context`} className="flex min-h-11 items-center gap-2 text-sm text-text">
-              <input id={`${prefix}-innate-context`} type="checkbox" checked={!!innateIVs} aria-describedby={`${prefix}-innate-help`} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" onChange={(event) => onChange({ ...build, native: { ...build.native, innateIVs: event.target.checked ? { ...build.native.ivs } : undefined } })} />
+              <input id={`${prefix}-innate-context`} type="checkbox" checked={!!innateIVs} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" onChange={(event) => onChange({ ...build, native: { ...build.native, innateIVs: event.target.checked ? { ...build.native.ivs } : undefined } })} />
               Specify innate IVs before Hyper Training
             </label>
-            <p id={`${prefix}-innate-help`} className="text-xs text-muted">Enabling starts from the displayed IVs; enter the known originals, not guesses. Hidden Power uses innate IVs without changing trained stats. Without separate context, the provided IVs are used as innate IVs.</p>
           </div>}
           <TableWrap>
             <table className={`w-full ${build.game === "champions" ? "min-w-[17rem]" : innateIVs ? "min-w-[29rem]" : "min-w-[23rem]"} text-left text-sm`} aria-label={`${label} stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
@@ -358,7 +340,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                       <Field id={`${prefix}-points-${stat}`} label={`${position} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
                         <IntegerInput key={editorRevision} value={build.points[stat]}
                           aria-invalid={!!errorFor(`points.${stat}`) || !!errorFor("points") || undefined}
-                          aria-describedby={`${prefix}-points-help${trainingIssues.length ? ` ${prefix}-points-errors` : ""}`}
+                          aria-describedby={trainingIssues.length ? `${prefix}-points-errors` : undefined}
                           onValueChange={(value) => onChange({ ...build, points: { ...build.points, [stat]: value } })} className="tabular-nums" />
                       </Field>
                     </td> : <>
@@ -366,7 +348,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                         <Field id={`${prefix}-${kind}-${stat}`} label={`${position} ${STAT_LABELS[stat]} ${kind === "evs" ? "EVs" : kind === "ivs" ? "IVs" : "innate IVs"}`} hideLabel>
                           <IntegerInput key={editorRevision} value={build.native[kind]?.[stat] ?? null}
                             aria-invalid={!!errorFor(`native.${kind}.${stat}`) || !!errorFor(`native.${kind}`) || undefined}
-                            aria-describedby={`${prefix}-points-help${trainingIssues.length ? ` ${prefix}-points-errors` : ""}`}
+                            aria-describedby={trainingIssues.length ? `${prefix}-points-errors` : undefined}
                             onValueChange={(value) => onChange({ ...build, native: { ...build.native, [kind]: { ...(build.native[kind] ?? build.native.ivs), [stat]: value } } })} className="tabular-nums" />
                         </Field>
                       </td>)}

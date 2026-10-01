@@ -21,6 +21,7 @@ import PokePasteImporter from "./PokePasteImporter";
 import { MyTeamPicker, OpponentPicker, RosterPicker } from "./LeagueMatchupPicker";
 import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
+import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./useMatchupCalculation";
 import { getBuildHealth, type DamageRollMode } from "./hp-preview";
 import type { CalculatorRosterState } from "./roster-data";
 import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
@@ -28,7 +29,6 @@ import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
 
-type CalculateMatchup = typeof import("@/app/lib/battle/calculate").calculateMatchup;
 type EngineState =
   | { status: "loading" }
   | { status: "ready"; calculate: CalculateMatchup }
@@ -37,10 +37,6 @@ type EngineState =
 type RosterFocus = { pickerId: string; choiceKey: string; element: HTMLButtonElement };
 type NavigationRequest = { tab: CalculatorTab; reveal: () => void };
 type GameLoad = { request: number; status: "idle" | "loading" | "error"; target?: BattleGame; message?: string };
-
-function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "An unexpected calculator error occurred.";
-}
 
 function rosterFocusTarget(picker: HTMLElement | null) {
   return picker?.querySelector<HTMLButtonElement>("[data-roster-choice][aria-pressed=true]:not(:disabled)")
@@ -174,15 +170,8 @@ export default function CalculatorClient() {
   }, [desktopRosters, reveal, visit]);
 
   const attackView = useMemo(() => getAttackView(matchup), [matchup]);
-  const calculation = useMemo(() => {
-    if (engine.status !== "ready") return null;
-    const identity = { source: attackView.owner, receiver: attackView.receiverOwner };
-    try {
-      return { identity, result: engine.calculate(attackView.source.build, attackView.receiver.build, attackView.field, attackView.contexts, runtime), error: null };
-    } catch (error) {
-      return { identity, result: null, error: errorMessage(error) };
-    }
-  }, [engine, attackView, runtime]);
+  // Keyed on the builds, field and contexts, so a row click or an import-draft edit reuses the result.
+  const calculation = useMatchupCalculation(engine.status === "ready" ? engine.calculate : null, matchup, attackView);
 
   // Editors and stored side conditions keep their physical left/right identity.
   const issues = {
@@ -214,7 +203,7 @@ export default function CalculatorClient() {
   const describeTeam = (role: RosterRole) => rosterPanels[role].teamName ?? (matchup.teams[role].mode === "paste" ? "Import a PokéPaste" : rosterPanels[role].message);
   const teamSummary = !onlyLeague ? `Your team: ${describeTeam("own")} · Opponent: ${describeTeam("opponent")}` : teamsLoading ? "Loading your leagues and teams…"
     : teamsFailed ? "Teams unavailable — retry or use manual Pokémon."
-      : rosters.state.status === "signed-out" ? "Sign in to use league rosters. Manual Pokémon still work."
+      : rosters.state.status === "signed-out" ? "Sign in to use league rosters."
         : league ? `${teamNameLabel(ownMember ? ownMember.team_name : league.teamName)} — ${league.name} · ${opponent ? `Facing ${teamNameLabel(opponent.team_name)}` : "Choose an opponent"}`
           : "Choose My team, or use manual Pokémon.";
   const blockedReason = engine.status === "loading" ? "HP preview paused while the calculator loads."
@@ -409,7 +398,7 @@ export default function CalculatorClient() {
 
   let feedback: ReactNode;
   if (engine.status === "loading") {
-    feedback = <Alert variant="info" title={runtime.profile.id === "champions" ? "Loading the Champions engine" : "Loading the battle engine"}>You can edit builds while the calculator loads. Calculations run locally once loaded.</Alert>;
+    feedback = <Alert variant="info" title={runtime.profile.id === "champions" ? "Loading the Champions engine" : "Loading the battle engine"} />;
   } else if (engine.status === "error" || calculation?.error) {
     feedback = (
       <Alert variant="error" title="Calculator unavailable">
@@ -421,7 +410,7 @@ export default function CalculatorClient() {
     feedback = (
       <div>
         <p role="status" className="sr-only">Results paused. Check the highlighted build or field settings.</p>
-        <EmptyState title="Check the highlighted settings" description="Invalid or unsupported builds cannot produce damage results. Fix the messages in Build settings or Field conditions to continue." action={<Button variant="secondary" onClick={fixSettings}>Fix settings</Button>} />
+        <EmptyState title="Check the highlighted settings" description="Fix the messages in Build settings or Field conditions to continue." action={<Button variant="secondary" onClick={fixSettings}>Fix settings</Button>} />
       </div>
     );
   }
@@ -431,7 +420,6 @@ export default function CalculatorClient() {
       <PageHeader
         eyebrow={`${runtime.profile.label} · ${runtime.profile.id === "champions" ? "Level 50" : "Native levels, EVs and IVs"}`}
         title="Damage Calculator"
-        description="Choose your teams, pick a move, and preview damage and remaining HP."
         actions={
           <>
             <Button variant="secondary" onClick={() => { pendingNavigation.current = null; cancelGameLoad(); setMatchup(swapMatchup); }}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
@@ -440,7 +428,7 @@ export default function CalculatorClient() {
         }
       />
       <section aria-label="Battle game rules" className="rounded-xl border border-line bg-panel p-4">
-        <Field id={`${prefix}-game`} label="Battle game" help="One game's rules apply to both Pokémon. Changing game resets preparation, not your team documents.">
+        <Field id={`${prefix}-game`} label="Battle game">
           <Select value={runtime.profile.id} onChange={(event) => { if (isBattleGame(event.target.value)) chooseGame(event.target.value); }}>
             {BATTLE_GAMES.map((game) => <option key={game} value={game}>{BATTLE_PROFILES[game].label}</option>)}
           </Select>
@@ -454,14 +442,13 @@ export default function CalculatorClient() {
         </div>}
         {gameLoad.status === "error" && <div className="mt-2">
           <p role="alert" className="text-sm text-danger">Could not load game rules: {gameLoad.message} Your current matchup was kept.</p>
-          <p className="mt-2 text-sm text-muted">A failed game download can stay cached in this tab. If Retry fails again, reload the calculator to retry the download. Reloading clears this page’s imported teams, drafts and preparation.</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {gameLoad.target && <Button size="sm" variant="secondary" onClick={(event) => {
               restoreGameSelectorFocus(event.currentTarget);
               chooseGame(gameLoad.target!, true);
             }}>Retry game rules</Button>}
             <Button size="sm" variant="secondary" onClick={() => {
-              if (window.confirm("Reload the calculator? This clears this page’s imported teams, drafts, game selection and preparation. Cancel to keep your current matchup.")) window.location.reload();
+              if (window.confirm("Reload the calculator? This clears this page’s imported teams, drafts, game selection and preparation.")) window.location.reload();
             }}>Reload calculator</Button>
           </div>
         </div>}
@@ -542,24 +529,9 @@ export default function CalculatorClient() {
                 partyOptions={partyOptions}
               />
               <details className="rounded-xl border border-line bg-panel">
-                <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and v1 assumptions</summary>
+                <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and sources</summary>
                 <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
-                  <p>Catalog snapshot: {catalog.coverage.species} Pokémon/forms and {catalog.coverage.moves} moves. {catalog.coverage.unsupportedSpecies} Pokémon/forms and {catalog.coverage.unsupportedMoves} moves have source or engine data gaps. Further mechanics limitations are reported on builds and individual moves.</p>
-                  <ul className="list-disc space-y-2 pl-5">
-                    <li>Each team can use league roster names or imported PokéPaste sets. Imports keep the specified builds and ordered moves, including status moves and empty slots. Imports and edits stay in this page session; Reset keeps the original imported teams but clears session edits.</li>
-                    <li>Quick moves on non-imported builds are editable starting assumptions, not a discovered opponent moveset. Champions defaults use August 2026 Smogon Pokémon Showdown Champions usage at rating cutoff 1630: VGC Reg M-B for Doubles and Battle Stadium Reg M-B for Singles. Other games use pinned Showdown Random Battle sets (generated sets, not usage statistics), then legal same-type and coverage suggestions. Changing Singles/Doubles keeps existing picks.</li>
-                    <li>Click a quick move on either Pokémon to calculate against the other without moving the cards. Replace updates that slot, selects the new move and keeps the slot editable. Assigned moves are hidden from replacement choices. Done or Escape closes editing while keeping the selected calculation; ordinary move browsing does not rewrite your prepared moves.</li>
-                    <li>Source availability is not a regulation or team-legality check. Unsupported catalog entries remain selectable and explain why they cannot be calculated.</li>
-                    <li>Champions uses fixed level 50 and Stat Points. Native games preserve levels, EVs and IVs; a native paste with no level defaults to 100. Displayed training stats exclude stages, abilities and items. The Battle game selector applies to both sides and is independent of paste spread encoding and league pool rules.</li>
-                    <li>Imported Tera types, Dynamax levels and Gigantamax factors are configuration, not activation. Use the game-specific controls to activate an effect. Z use is assumed still available; Stellar boosts need explicit first-use context. Status-Z bonuses, G-Max residual turns and battle-wide consumption are not simulated. Unverified effects are labelled instead of falling back to ordinary damage.</li>
-                    <li>Dynamax keeps the HP editor in base/pre-Dynamax units and displays effective HP separately. Changing game resets active preparation and caches but retains original team text for revalidation. No future Champions mechanic is enabled until its engine and rules are verified.</li>
-                    <li>Mega buttons beside each Pokémon’s name change its form, ability, required stone and stats without resetting training, HP or moves. Click the active form again to restore the base ability and item; a directly chosen Mega returns to base defaults. Unsupported forms retain their warnings. This does not simulate transformation timing, entry effects or automatic weather/terrain.</li>
-                    <li>Weather and terrain must be set explicitly. Conditional ability switches apply only the named condition. Intimidate is applied with its button and stays in both Pokémon’s stages, so Mega Evolution keeps it.</li>
-                    <li>Screens, Helping Hand, Friend Guard, a partner that blocks priority moves, Protect, Tailwind and Charge are set per side under Field conditions, which also lists common battle states the calculator cannot represent; results assume those are absent.</li>
-                    <li>One move use only. Moves that hit 2–5 times need an explicit hit count unless Skill Link fixes it; Loaded Dice limits the choice to 4–5. Triple Kick, Triple Axel and Population Bomb assume every hit lands, because each hit after the first checks accuracy again; choose fewer hits under the move. Skill Link or Loaded Dice makes all their hits land, except that Loaded Dice makes Population Bomb hit 4–10 times, so choose its count. Magic Room and Klutz switch Loaded Dice off, and an opposing Neutralizing Gas switches Skill Link off. Other fixed multihit moves are handled automatically. State-dependent mechanics without supported context are not reported as zero damage.</li>
-                    <li>KO chances, when available, are conditional on hitting and use the selected current HP. Move details retain the engine’s roll groups and assumptions, without guessed future-turn chances.</li>
-                    <li>The top HP bar previews the selected Low, Average or High damage roll without changing either build. Average uses the mean of all damage rolls, rounded to whole HP before subtracting from current HP. It is not a turn simulation: survival-sensitive selections and multihit results have no remaining-HP estimate. False Swipe and Hold Back stop at 1 HP. Recoil, healing and later turns are not included.</li>
-                  </ul>
+                  <p>Catalog snapshot: {catalog.coverage.species} Pokémon/forms and {catalog.coverage.moves} moves. {catalog.coverage.unsupportedSpecies} Pokémon/forms and {catalog.coverage.unsupportedMoves} moves have source or engine data gaps.</p>
                   <div className="space-y-2 text-xs">
                     <p>Engine revision: <a href={catalog.sources.engine.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{catalog.sources.engine.revision}</a></p>
                     <p>Game data revision: <a href={catalog.sources.showdown.url} target="_blank" rel="noreferrer" className={`${linkClassName} break-all text-accent-text underline`}>{catalog.sources.showdown.revision}</a></p>

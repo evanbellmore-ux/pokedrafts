@@ -132,7 +132,6 @@ describe("hit-count editor for these moves", () => {
     expect(html).toContain('<option value="1">1 hit</option>');
     expect(html).toMatch(/<option value="10" selected="">10 hits \(all\)<\/option>/);
     expect(html).not.toContain("Choose hit count");
-    expect(html).toContain("each hit checks accuracy again and the move stops at the first miss");
     expect(render("tripleaxel", "pressure", "", { hits: 2 })).toMatch(/<option value="2" selected="">2 hits<\/option>/);
   });
 
@@ -140,7 +139,7 @@ describe("hit-count editor for these moves", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const skillLink = render("tripleaxel", "skilllink", "", undefined, sv);
     expect(skillLink).not.toContain("<select");
-    expect(skillLink).toContain("Skill Link checks accuracy once, so all 3 hits land. No manual hit count is needed.");
+    expect(skillLink).toContain("Skill Link checks accuracy once, so all 3 hits land.");
     const dice = render("populationbomb", "technician", "loadeddice", undefined, sv);
     expect(dice).toContain("Choose hit count");
     expect(dice).toContain('<option value="4">4 hits</option>');

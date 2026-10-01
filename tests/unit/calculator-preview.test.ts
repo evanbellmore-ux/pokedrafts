@@ -148,7 +148,7 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
     const defender = survivalBuild(effect);
     const row = damage({ description: "Survival effect suppressed.", assumptions: ["Mold Breaker bypasses the ability."] });
     for (const currentHP of [null, 100]) {
-      expect(preview({ ...defender, currentHP }, row)).toMatchObject({ status: "unavailable", reason: expect.stringContaining("survival") });
+      expect(preview({ ...defender, currentHP }, row)).toMatchObject({ status: "unavailable", reason: expect.stringContaining("Remaining HP is withheld for") });
     }
   });
 
@@ -283,7 +283,7 @@ describe.each(modes)("directional receiving-HP preview (%s roll)", (mode) => {
     matchup = selectMatchupMove(matchup, "surf");
     const view = getAttackView(matchup);
     const row = damage({ moveId: "surf", min: 50, max: 50, rolls: 50 });
-    expect(previewRemainingHP(view.receiver.build, row, mode)).toMatchObject({ status: "unavailable", reason: expect.stringContaining("survival") });
+    expect(previewRemainingHP(view.receiver.build, row, mode)).toMatchObject({ status: "unavailable", reason: expect.stringContaining("Remaining HP is withheld for") });
     expect(previewRemainingHP(view.source.build, row, mode).status).toBe("ready");
     expect(matchup.attacker.build.currentHP).toBeNull();
     expect(matchup.defender.build.currentHP).toBeNull();

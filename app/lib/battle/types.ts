@@ -49,6 +49,13 @@ export type ChampionsMove = {
   power: number;
   /** Null denotes an accuracy check that is not a normal percentage. */
   accuracy: number | null;
+  /**
+   * Base PP in this game's pinned Showdown data (Champions caps it at 20). Generated catalogs always
+   * carry it; hand-built test catalogs may omit it.
+   */
+  pp?: number;
+  /** PP Ups do not raise this move's PP (pinned Showdown noPPBoosts). */
+  noPPBoosts?: true;
   priority: number;
   target: string;
   multihit: number | [number, number] | null;
@@ -286,4 +293,61 @@ export type MoveDamageResult = {
    * of a Shell Side Arm tie. The main fields describe the case usualLabel names; ohkoChance weighs both.
    */
   alternate?: { chance: number; label: string; usualLabel: string; min: number; max: number; minPercent: number; maxPercent: number; rolls: number[] };
+  /** How many uses of this move in a row knock the target out (app/lib/battle/uses-to-ko.ts); set on calculated rows. */
+  usesToKO?: UsesToKO;
 };
+
+/**
+ * Repeated uses of one move by the same attacker into the same target, from the target's current HP,
+ * with both staying in and the target doing nothing that changes it. Each use is conditional on hitting
+ * (accuracy is not applied), with no critical hits unless the field's Critical hit is set, the row's hit
+ * count on every use, and the field as set. The state each use leaves (stat stages, items used up,
+ * abilities, forms, the attacker's HP, counters, end-of-turn healing and damage) carries into the next.
+ */
+export type UsesToKO =
+  | {
+    kind: "uses";
+    /** Uses that knock the target out whatever the rolls (the worst roll sequence); null: more than `limit`. */
+    guaranteed: number | null;
+    /** The fewest uses that can knock it out (the best roll sequence); null: more than `limit`. */
+    fewest: number | null;
+    /**
+     * Chance (0-1) that guaranteed - 1 uses are enough, each use rolling its own damage; set when that is at
+     * least 1 use and possible. For guaranteed 2 it is the chance one use (with that turn's end) knocks out,
+     * which can differ from ohkoChance (a multi-hit move, end-of-turn damage).
+     */
+    fasterChance?: number;
+    /** With no guarantee (guaranteed null): the chance (0-1) the target is out within `limit` uses and before the attacker faints, when some roll sequence does it. */
+    chance?: number;
+    /** Some roll sequence makes the attacker faint (recoil, Life Orb, Rough Skin...) before the target is out, so no count is guaranteed. */
+    faintsFirst?: true;
+    /** End-of-turn damage on the target (weather, status, Black Sludge...) can be what knocks it out, so a count can be lower than the hits alone need. */
+    endOfTurn?: true;
+    /** The most uses counted, and why: the move's PP with PP Ups (halved by the target's Pressure), the uses the attacker's own HP allows (Steel Beam, Mind Blown, Chloroblast), or the calculation cap. */
+    limit: number;
+    limitReason: "pp" | "pressure" | "self-cost" | "cap";
+    /** Uses needed with the lowest rolls when that is more than `limit`, if known. */
+    needed?: number;
+    /** What the count follows, in short sentences ("Draco Meteor lowers the attacker's Sp. Atk after each use."). */
+    carried: string[];
+    /** What the count leaves out, in short sentences ("Assumes 3 hits on every use."). */
+    notes: string[];
+    /** A survival effect that stops the first use's KO (full-HP Focus Sash or Sturdy). */
+    survival?: "Focus Sash" | "Sturdy";
+    /** The use after which the attacker faints, on the lowest and the highest roll paths, when within the count. */
+    attackerFaints?: { lowest?: number; highest?: number };
+    /** Turns that are not uses: "Recharges after each use", "Charges for a turn before each use", "Truant: one use every other turn". */
+    turns?: string;
+  }
+  /**
+   * One use at most: the user faints (Explosion, Final Gambit), the move works only on its first turn out
+   * (Fake Out, First Impression) or once per battle (a Z-Move), or the move cannot be used again (Burn Up,
+   * Steel Roller...). koChance: the chance that use knocks out, with that turn's end-of-turn damage.
+   */
+  | { kind: "single-use"; reason: string; koChance: number }
+  /** No number of uses knocks it out: False Swipe and Hold Back leave 1 HP, Endeavor stops at the user's HP, and no end-of-turn damage finishes it. */
+  | { kind: "never"; reason: string }
+  /** The move deals no damage (immune, blocked or fails). */
+  | { kind: "no-damage" }
+  /** A repeat cannot be counted, with a short reason. */
+  | { kind: "not-estimated"; reason: string };

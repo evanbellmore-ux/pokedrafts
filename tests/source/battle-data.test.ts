@@ -9,10 +9,12 @@ import { Move as EngineMove } from "@smogon/calc/dist/move";
 import { createBattleData } from "../../scripts/build-battle-data";
 import { ROOT } from "../../scripts/lib/champions-data/sources.mjs";
 import { toID } from "../../scripts/lib/champions-data/transform";
-import { canonical, compact, readVerifiedArchive, sha256, sorted } from "../../scripts/lib/battle-data/sources";
+import { canonical, compact, loadModule, readVerifiedArchive, sha256, sorted, withVerifiedSources } from "../../scripts/lib/battle-data/sources";
 import { engineSpeciesID, nativeSpecies, transformNativeCatalog } from "../../scripts/lib/battle-data/transform";
 import { NATIVE_GAMES, type NativeGame } from "../../scripts/lib/battle-data/types";
 import { randomBattleCatalog } from "../../scripts/lib/battle-data/random-battle";
+import { CHARGE_MOVES, NOT_TWICE_MOVES, RECHARGE_MOVES, STAT_MOVES, STATUS_MOVES, statMove, type StatMove } from "../../app/lib/battle/stat-moves";
+import { HIT_ABILITIES, HIT_ITEMS, itemOwner, OWNED_ITEMS, STAT_GUARDS, UNBREAKABLE } from "../../app/lib/battle/uses-to-ko";
 
 vi.mock("node:child_process", async (importOriginal) => {
   const original = await importOriginal<typeof import("node:child_process")>();
@@ -496,5 +498,291 @@ describe("native exact-engine coverage diagnostics", () => {
       calcName: "Charizard-Mega-X", unsupported: ["Engine species missing: Charizard-Mega-X."],
     });
     expect(catalog.moves.find((row) => row.id === "tackle")).toMatchObject({ power: 40, unsupported: ["Engine move power differs: 999 vs 40."] });
+  });
+});
+
+type DexStages = Partial<Record<string, number>>;
+type DexMove = {
+  id: string; category: string; pp: number; noPPBoosts?: boolean; isZ?: unknown; isMax?: unknown; flags: Record<string, number | undefined>;
+  self?: { boosts?: DexStages; chance?: number; volatileStatus?: string; onHit?: unknown }; selfBoost?: { boosts?: DexStages };
+  secondaries?: { chance?: number; boosts?: DexStages; self?: { boosts?: DexStages }; status?: string }[] | null;
+  onTryMove?: unknown; condition?: DexResidual;
+};
+type DexResidual = { onResidualOrder?: number; onResidualSubOrder?: number; onFieldResidualOrder?: number; onResidualPriority?: number; duration?: number; durationCallback?: unknown };
+type DexHandlers = DexResidual & {
+  id: string; boosts?: DexStages; onDamagingHit?: unknown; onAfterMoveSecondary?: unknown; onEat?: unknown; onDamage?: unknown; onWeather?: unknown;
+  onResidual?: unknown; isNonstandard?: string | null; onTryBoost?: unknown; onTakeItem?: unknown; flags?: Record<string, number | undefined>;
+  zMove?: unknown; megaStone?: unknown;
+};
+type UsesDex = {
+  moves: { get(id: string): DexMove };
+  abilities: { all(): DexHandlers[]; get(id: string): DexHandlers };
+  items: { all(): DexHandlers[]; get(id: string): DexHandlers };
+  conditions: { get(id: string): DexResidual };
+  species: { get(id: string): { num: number; name: string } };
+};
+/** How a pinned onTryBoost handler treats a foe's drop of the combat stats: deletes all, deletes some, turns it back, or none (accuracy, Intimidate alone). */
+function guarded(handler: unknown): "all" | string[] | "bounces" | null {
+  const text = String(handler);
+  if (/Intimidate/.test(text)) return null;
+  if (/this\.boost\(/.test(text)) return "bounces";
+  if (/for \((const |let )?\w+ in boost\)/.test(text) && /< 0/.test(text)) return "all";
+  const stats = ["atk", "def", "spa", "spd", "spe"].filter((stat) => new RegExp(`boost\\.${stat} && boost\\.${stat} < 0`).test(text));
+  return stats.length ? stats : null;
+}
+/** What sets off a hit trigger in its pinned handler: its stages, the move types it names, and the category, contact or effectiveness it checks. */
+type Trigger = { stages: DexStages; types: string[]; physical: boolean; special: boolean; contact: boolean; superEffective: boolean };
+type UsesFacts = {
+  moves: Record<string, Pick<DexMove, "pp" | "noPPBoosts">>;
+  stats: Record<string, StatMove>; statuses: Record<string, string>; zStatuses: Record<string, string>; maxStatuses: string[];
+  charge: string[]; recharge: string[]; notTwice: string[];
+  hitAbilities: Record<string, Trigger>; hitItems: Record<string, Trigger>; residuals: Record<string, DexResidual>; residualHandlers: string[];
+  /** Every ability and item with an onResidual handler. */
+  endOfTurn: { abilities: string[]; items: string[] };
+  /** How long a weather or terrain a move or ability sets lasts, and the item that extends it. */
+  durations: Record<string, { turns?: number; extendedBy?: string }>;
+  /** Every ability and item with an onTryBoost handler and what it does to a foe's drop; the breakable flag of the abilities boost() reads. */
+  guards: { abilities: Record<string, ReturnType<typeof guarded>>; items: Record<string, ReturnType<typeof guarded>>; breakable: Record<string, boolean> };
+  /** The hit items acting after the whole move (onAfterMoveSecondary, which Sheer Force skips). */
+  afterMove: string[];
+  /** Every catalog item with an onTakeItem handler: never taken, a Mega Stone's, Booster Energy's, or the Pokédex numbers and names it reads and whether it reads the taker. */
+  takeItems: Record<string, "never" | "mega" | "paradox" | { names: (number | string)[]; taker: boolean }>;
+  /** The Pokédex number and name of each family OWNED_ITEMS names. */
+  families: Record<string, (number | string)[]>;
+};
+
+const TYPES = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+/** Stage changes without accuracy and evasion (every use is assumed to hit), or undefined. */
+function combatStages(stages: DexStages | undefined): DexStages | undefined {
+  const kept = Object.entries(stages ?? {}).filter(([stat]) => stat !== "accuracy" && stat !== "evasion");
+  return kept.length ? Object.fromEntries(kept) : undefined;
+}
+/** The first this.boost({ ... }) literal in a pinned handler's compiled source, or undefined. */
+function boostLiteral(handler: unknown): DexStages | undefined {
+  const literal = /boost\(\s*\{([^}]*)\}/.exec(String(handler))?.[1];
+  return literal ? Object.fromEntries([...literal.matchAll(/(\w+):\s*(-?\d+)/g)].map(([, stat, amount]) => [stat, Number(amount)])) : undefined;
+}
+function trigger(handler: unknown, stages: DexStages): Trigger {
+  const text = String(handler);
+  return {
+    stages, types: TYPES.filter((type) => text.includes(`'${type}'`)), physical: text.includes("'Physical'"), special: text.includes("'Special'"),
+    contact: text.includes("checkMoveMakesContact"), superEffective: text.includes("typeMod > 0"),
+  };
+}
+/** What the app's `when` accepts, in a Trigger's terms (its third argument is contact or super effectiveness). */
+function accepted(when: (type: string, physical: boolean, flag: boolean) => boolean, flag: "contact" | "superEffective") {
+  const types = TYPES.filter((type) => when(type, true, true) || when(type, false, true));
+  const needsFlag = !TYPES.some((type) => when(type, true, false) || when(type, false, false));
+  return {
+    types: types.length === TYPES.length ? [] : types, physical: !TYPES.some((type) => when(type, false, true)), special: !TYPES.some((type) => when(type, true, true)),
+    contact: flag === "contact" && needsFlag, superEffective: flag === "superEffective" && needsFlag,
+  };
+}
+
+describe("Uses to KO tables against the pinned Dex", () => {
+  const facts = {} as Record<NativeGame, UsesFacts>;
+  beforeAll(async () => {
+    await withVerifiedSources(async ({ runtime }) => {
+      const { Dex } = loadModule(join(runtime, "sim/dex.js")) as { Dex: { mod(name: string): UsesDex } };
+      for (const profile of NATIVE_GAMES) {
+        // Everything is read here: Dex loads its data lazily, and the compiled runtime is removed afterwards.
+        const dex = Dex.mod(profile.mod);
+        const fact: UsesFacts = {
+          moves: {}, stats: {}, statuses: {}, zStatuses: {}, maxStatuses: [], charge: [], recharge: [], notTwice: [],
+          hitAbilities: {}, hitItems: {}, residuals: {}, residualHandlers: [], endOfTurn: { abilities: [], items: [] }, durations: {},
+          guards: { abilities: {}, items: {}, breakable: {} }, afterMove: [], takeItems: {}, families: {},
+        };
+        for (const row of data(profile.game).catalog.moves) {
+          const dexMove = dex.moves.get(row.id);
+          fact.moves[row.id] = { pp: dexMove.pp, ...(dexMove.noPPBoosts ? { noPPBoosts: true } : {}) };
+          if (dexMove.category === "Status") continue;
+          const sure = (dexMove.secondaries ?? []).filter((secondary) => secondary.chance === undefined || secondary.chance === 100);
+          const status = sure.find((secondary) => secondary.status)?.status;
+          if (dexMove.isZ) {
+            if (status) fact.zStatuses[row.id] = status;
+            continue;
+          }
+          if (dexMove.isMax) {
+            const onHit = String(dexMove.self?.onHit);
+            if (/trySetStatus\('psn'/.test(onHit) && !/random/.test(onHit)) fact.maxStatuses.push(row.id);
+            continue;
+          }
+          const stat = Object.fromEntries(Object.entries({
+            self: combatStages(dexMove.self && !dexMove.self.chance ? dexMove.self.boosts : dexMove.selfBoost?.boosts),
+            userSecondary: combatStages(sure.find((secondary) => secondary.self?.boosts)?.self?.boosts),
+            target: combatStages(sure.find((secondary) => secondary.boosts)?.boosts),
+            preHit: dexMove.flags.charge ? boostLiteral(dexMove.onTryMove) : undefined,
+          }).filter(([, stages]) => stages)) as StatMove;
+          if (Object.keys(stat).length) fact.stats[row.id] = stat;
+          if (status) fact.statuses[row.id] = status;
+          if (dexMove.flags.charge) fact.charge.push(row.id);
+          if (dexMove.self?.volatileStatus === "mustrecharge") fact.recharge.push(row.id);
+          if (dexMove.flags.cantusetwice) fact.notTwice.push(row.id);
+        }
+        for (const ability of dex.abilities.all()) {
+          const stages = /boost\(/.test(String(ability.onDamagingHit)) ? boostLiteral(ability.onDamagingHit) : undefined;
+          if (stages) fact.hitAbilities[ability.id] = trigger(ability.onDamagingHit, stages);
+        }
+        for (const dexItem of dex.items.all()) {
+          const handler = dexItem.onDamagingHit ?? dexItem.onAfterMoveSecondary;
+          const stages = handler && /useItem|eatItem/.test(String(handler)) ? dexItem.boosts ?? boostLiteral(dexItem.onEat) : undefined;
+          if (stages) fact.hitItems[dexItem.id] = trigger(handler, stages);
+          if (stages && dexItem.onAfterMoveSecondary) fact.afterMove.push(dexItem.id);
+        }
+        for (const entry of dex.abilities.all()) if (entry.onTryBoost && !entry.isNonstandard) fact.guards.abilities[entry.id] = guarded(entry.onTryBoost);
+        for (const entry of dex.items.all()) if (entry.onTryBoost && !entry.isNonstandard) fact.guards.items[entry.id] = guarded(entry.onTryBoost);
+        for (const id of ["contrary", "simple", "mirrorarmor", ...Object.keys(STAT_GUARDS)]) fact.guards.breakable[id] = !!dex.abilities.get(id).flags?.breakable;
+        for (const row of data(profile.game).catalog.items) {
+          const { onTakeItem, zMove, megaStone } = dex.items.get(row.id);
+          if (onTakeItem === undefined) continue;
+          const text = String(onTakeItem);
+          fact.takeItems[row.id] = onTakeItem === false && zMove ? "never" : megaStone && /megaStone/.test(text) ? "mega" : /Paradox/.test(text) ? "paradox" : {
+            names: [...[...text.matchAll(/num === (-?\d+)/g)].map(([, num]) => Number(num)), ...[...text.matchAll(/baseSpecies === '(\w+)'/g)].map(([, name]) => name)],
+            taker: /^\w*\s*\(\s*item,\s*pokemon,\s*source\s*\)/.test(text),
+          };
+        }
+        for (const [family] of Object.values(OWNED_ITEMS)) fact.families[family] = [dex.species.get(family).num, dex.species.get(family).name];
+        const residual = ({ onResidualOrder, onResidualSubOrder, onFieldResidualOrder, onResidualPriority }: DexResidual) =>
+          Object.fromEntries(Object.entries({ onResidualOrder, onResidualSubOrder, onFieldResidualOrder, onResidualPriority }).filter(([, value]) => value !== undefined));
+        for (const id of ["leftovers", "blacksludge", "stickybarb", "flameorb", "toxicorb"]) fact.residuals[id] = residual(dex.items.get(id));
+        for (const id of ["speedboost", "slowstart", "hydration", "shedskin", "baddreams", "powerconstruct"]) fact.residuals[id] = residual(dex.abilities.get(id));
+        const handled = (entry: DexHandlers) => !!entry.onResidual && !entry.isNonstandard;
+        fact.endOfTurn = { abilities: dex.abilities.all().filter(handled).map(({ id }) => id).sort(), items: dex.items.all().filter(handled).map(({ id }) => id).sort() };
+        for (const id of ["sunnyday", "raindance", "sandstorm", "hail", "electricterrain", "grassyterrain", "mistyterrain", "psychicterrain"]) {
+          const { duration, durationCallback } = dex.conditions.get(id);
+          fact.durations[id] = { turns: duration, extendedBy: /hasItem\(["'](\w+)["']\)/.exec(String(durationCallback))?.[1] };
+        }
+        for (const id of ["sandstorm", "hail", "snowscape", "grassyterrain", "psn", "tox", "brn", "dynamax"]) fact.residuals[id] = residual(dex.conditions.get(id));
+        fact.residuals.saltcure = residual(dex.moves.get("saltcure").condition!);
+        fact.residualHandlers = [
+          ...["raindish", "dryskin", "icebody", "solarpower"].filter((id) => dex.abilities.get(id).onWeather).map((id) => `${id} onWeather`),
+          ...(dex.abilities.get("poisonheal").onDamage ? ["poisonheal onDamage"] : []),
+        ];
+        facts[profile.game] = fact;
+      }
+    });
+  }, 120_000);
+
+  it.each(NATIVE_GAMES)("carries the pinned base PP and noPPBoosts of every $game move", (profile) => {
+    const entry = data(profile.game);
+    expect(Object.fromEntries(entry.catalog.moves.map((row) => [row.id, { pp: row.pp, ...(row.noPPBoosts ? { noPPBoosts: true } : {}) }])))
+      .toEqual(facts[profile.game].moves);
+    expect(["dracometeor", "earthquake", "flamethrower", "struggle"].map((id) => [move(entry, id).pp, move(entry, id).noPPBoosts]))
+      .toEqual([[5, undefined], [10, undefined], [15, undefined], [1, true]]);
+    // The simulator itself gives Trump Card no PP Ups (sim/pokemon.ts); its data has no noPPBoosts.
+    if (profile.game === "ultra_sun_ultra_moon") expect([move(entry, "trumpcard").pp, move(entry, "trumpcard").noPPBoosts]).toEqual([5, undefined]);
+    if (profile.gen !== 8) expect(move(entry, "sketch")).toMatchObject({ pp: 1, noPPBoosts: true });
+  });
+
+  it("carries Champions PP from its mod: base PP capped at 20, and the mod's own changes", async () => {
+    // data:champions -- --check rebuilds these from the pinned Champions mod, whose Scripts.init caps base PP at 20.
+    const champions = JSON.parse(await readFile(join(ROOT, "data/champions/catalog.json"), "utf8")) as { moves: { id: string; pp?: number; noPPBoosts?: true }[] };
+    const pp = Object.fromEntries(champions.moves.map((row) => [row.id, row.pp]));
+    expect(champions.moves.every((row) => row.pp !== undefined && row.pp <= 20)).toBe(true);
+    expect(["quickattack", "bite", "protect", "nightslash", "dracometeor", "flamethrower"].map((id) => pp[id])).toEqual([20, 20, 5, 20, 5, 15]);
+    expect(champions.moves.find((row) => row.id === "revivalblessing")).toMatchObject({ pp: 1, noPPBoosts: true });
+  });
+
+  it.each(NATIVE_GAMES)("lists every damaging $game move whose every use changes a stat", (profile) => {
+    const table = Object.fromEntries(data(profile.game).catalog.moves.flatMap((row) => {
+      const entry = statMove(row.id, profile.game);
+      if (!entry || row.isZ || row.isMax) return [];
+      const { self, userSecondary, target, preHit } = entry;
+      return [[row.id, Object.fromEntries(Object.entries({ self, userSecondary, target, preHit }).filter(([, stages]) => stages))]];
+    }));
+    expect(table).toEqual(facts[profile.game].stats);
+  });
+
+  it("keeps no stat move that no native game has (Make It Rain's Champions -2 is checked in a Champions battle)", () => {
+    expect(Object.keys(STAT_MOVES).filter((id) => !NATIVE_GAMES.some(({ game }) => facts[game].stats[id]))).toEqual([]);
+  });
+
+  it.each(NATIVE_GAMES)("lists every $game move that gives a status every use, charges, recharges or cannot be used twice", (profile) => {
+    const fact = facts[profile.game];
+    const ids = new Set(data(profile.game).catalog.moves.map((row) => row.id));
+    const inGame = (table: Iterable<string>) => [...table].filter((id) => ids.has(id)).sort();
+    expect(Object.fromEntries(inGame(Object.keys(STATUS_MOVES)).map((id) => [id, STATUS_MOVES[id].status])))
+      .toEqual({ ...fact.statuses, ...fact.zStatuses, ...Object.fromEntries(fact.maxStatuses.map((id) => [id, "psn"])) });
+    expect(inGame(Object.keys(STATUS_MOVES)).filter((id) => !STATUS_MOVES[id].secondary)).toEqual(fact.maxStatuses);
+    expect(inGame(CHARGE_MOVES)).toEqual(fact.charge.sort());
+    expect(inGame(RECHARGE_MOVES)).toEqual(fact.recharge.sort());
+    expect(inGame(NOT_TWICE_MOVES)).toEqual(fact.notTwice.sort());
+  });
+
+  it.each(NATIVE_GAMES)("triggers the $game abilities and items a hit sets off as their pinned handlers do", (profile) => {
+    const fact = facts[profile.game];
+    // Gulp Missile's boost needs Cramorant's gulping form, which no calculated row has.
+    const { gulpmissile, ...abilities } = fact.hitAbilities;
+    expect(gulpmissile).toBeDefined();
+    expect(Object.fromEntries(Object.entries(HIT_ABILITIES).map(([id, entry]) => [id, { stages: entry.stages, ...accepted(entry.when, "contact") }])))
+      .toEqual(Object.fromEntries(Object.entries(abilities).map(([id, found]) => [id, { ...found, superEffective: false }])));
+    expect(Object.fromEntries(Object.entries(HIT_ITEMS).map(([id, entry]) => [id, { stages: entry.stages, ...accepted(entry.when, "superEffective") }])))
+      .toEqual(Object.fromEntries(Object.entries(fact.hitItems).map(([id, found]) => [id, { ...found, contact: false }])));
+  });
+
+  it.each(NATIVE_GAMES)("ends each $game turn in the residual order the search follows", (profile) => {
+    expect(facts[profile.game].residuals).toEqual({
+      sandstorm: { onFieldResidualOrder: 1 }, hail: { onFieldResidualOrder: 1 }, snowscape: { onFieldResidualOrder: 1 },
+      grassyterrain: { onResidualOrder: 5, onResidualSubOrder: 2, onFieldResidualOrder: 27 },
+      leftovers: { onResidualOrder: 5, onResidualSubOrder: 4 }, blacksludge: { onResidualOrder: 5, onResidualSubOrder: 4 },
+      psn: { onResidualOrder: 9 }, tox: { onResidualOrder: 9 }, brn: { onResidualOrder: 10 }, saltcure: { onResidualOrder: 13 },
+      speedboost: { onResidualOrder: 28, onResidualSubOrder: 2 }, slowstart: { onResidualOrder: 28, onResidualSubOrder: 2 },
+      stickybarb: { onResidualOrder: 28, onResidualSubOrder: 3 }, flameorb: { onResidualOrder: 28, onResidualSubOrder: 3 },
+      toxicorb: { onResidualOrder: 28, onResidualSubOrder: 3 }, dynamax: { onResidualPriority: -100 },
+      // Hydration cures a status at 5.3, before poison and burn (Shed Skin's random cure there is not estimated);
+      // Bad Dreams damages at 28.2, before Sticky Barb; Power Construct changes the form at 29.
+      hydration: { onResidualOrder: 5, onResidualSubOrder: 3 }, shedskin: { onResidualOrder: 5, onResidualSubOrder: 3 },
+      baddreams: { onResidualOrder: 28, onResidualSubOrder: 2 }, powerconstruct: { onResidualOrder: 29 },
+    });
+    expect(facts[profile.game].residualHandlers).toEqual(["raindish onWeather", "dryskin onWeather", "icebody onWeather", "solarpower onWeather", "poisonheal onDamage"]);
+  });
+
+  it.each(NATIVE_GAMES)("accounts for every $game ability and item that acts at the end of a turn", (profile) => {
+    // Followed by the count: Bad Dreams, Hydration, Opportunist (it copies a rise at once), the forms that follow
+    // HP, Slow Start, Speed Boost, and the items in the residual order above (White Herb and Mirror Herb act
+    // after the move). Not estimated: Cud Chew, Harvest, Moody, Power Construct, Shed Skin. Left out, as no
+    // count here reads them: Healer (a partner's status), Hunger Switch (Aura Wheel alone, not estimated),
+    // Pickup (an item the attacker used that turn), Eject Pack (a switch) and Micle Berry (accuracy).
+    const abilities = ["baddreams", "harvest", "healer", "hydration", "moody", "pickup", "powerconstruct", "schooling", "shedskin", "shieldsdown", "slowstart", "speedboost", "zenmode",
+      ...(profile.gen >= 8 ? ["hungerswitch"] : []), ...(profile.gen >= 9 ? ["cudchew", "opportunist"] : [])];
+    const items = ["blacksludge", "flameorb", "leftovers", "micleberry", "stickybarb", "toxicorb", "whiteherb", ...(profile.gen >= 8 ? ["ejectpack"] : []), ...(profile.gen >= 9 ? ["mirrorherb"] : [])];
+    expect(facts[profile.game].endOfTurn).toEqual({ abilities: abilities.sort(), items: items.sort() });
+  });
+
+  it.each(NATIVE_GAMES)("blocks a foe's drops in $game with the abilities and items whose pinned onTryBoost deletes them", (profile) => {
+    // Accuracy guards (Keen Eye, Mind's Eye, Illuminate) and the Intimidate-only ones change no damage; Mirror
+    // Armor turns the drop back on the foe (boost()); Flower Veil guards Grass-type allies only (not modelled).
+    const { abilities, items, breakable } = facts[profile.game].guards;
+    expect(Object.fromEntries(Object.entries(abilities).filter(([, kind]) => kind))).toEqual({ ...STAT_GUARDS, ...(profile.gen >= 8 ? { mirrorarmor: "bounces" } : {}) });
+    expect(items).toEqual(profile.gen >= 9 ? { clearamulet: "all" } : {});
+    expect(Object.keys(breakable).filter((id) => !breakable[id])).toEqual([...UNBREAKABLE]);
+  });
+
+  it.each(NATIVE_GAMES)("skips the $game items acting after the whole move under Sheer Force, and takes only the items pinned Showdown lets go", (profile) => {
+    const fact = facts[profile.game];
+    // Kee and Maranga Berry act in AfterMoveSecondary, which Sheer Force skips; the others in DamagingHit.
+    expect(Object.keys(HIT_ITEMS).filter((id) => HIT_ITEMS[id].berry).sort()).toEqual(fact.afterMove.filter((id) => HIT_ITEMS[id]).sort());
+    // uses-to-ko.ts takeable(): Z-Crystals never, Mega Stones from their family, Booster Energy from a Paradox
+    // Pokémon, and OWNED_ITEMS from (and, where the handler reads it, to) the family whose number or name it names.
+    const entry = data(profile.game);
+    const owner = (id: string) => itemOwner(id, profile.game);
+    const app = Object.fromEntries(entry.catalog.items.filter((row) => row.zMoveType || row.zMove || row.megaTargets.length || row.id === "boosterenergy" || owner(row.id))
+      .map((row) => [row.id, row.zMoveType || row.zMove ? "never" : row.megaTargets.length ? "mega" : row.id === "boosterenergy" ? "paradox"
+        : { names: fact.families[owner(row.id)![0]], taker: owner(row.id)![1] }]));
+    const pinned = Object.fromEntries(Object.entries(fact.takeItems).map(([id, kind]) => {
+      if (typeof kind === "string") return [id, kind];
+      const family = owner(id) && fact.families[owner(id)![0]];
+      return [id, { names: family && kind.names.length && kind.names.every((name) => family.includes(name)) ? family : kind.names, taker: kind.taker }];
+    }));
+    expect(app).toEqual(pinned);
+  });
+
+  it.each(NATIVE_GAMES)("lasts a weather or terrain a use sets for the $game turns and items the search counts", (profile) => {
+    // uses-to-ko.ts fieldTurns: 5 turns, 8 with the setter's rock or Terrain Extender.
+    expect(facts[profile.game].durations).toEqual({
+      sunnyday: { turns: 5, extendedBy: "heatrock" }, raindance: { turns: 5, extendedBy: "damprock" }, sandstorm: { turns: 5, extendedBy: "smoothrock" },
+      hail: { turns: 5, extendedBy: "icyrock" }, electricterrain: { turns: 5, extendedBy: "terrainextender" }, grassyterrain: { turns: 5, extendedBy: "terrainextender" },
+      mistyterrain: { turns: 5, extendedBy: "terrainextender" }, psychicterrain: { turns: 5, extendedBy: "terrainextender" },
+    });
   });
 });

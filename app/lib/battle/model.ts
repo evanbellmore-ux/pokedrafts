@@ -209,31 +209,6 @@ export function fieldItemLabel(choice: FieldItemChoice, runtime: BattleRuntime =
   return `Its ${name} was used before ${runtime.abilitiesById.get(choice.abilityId)?.name ?? choice.abilityId} activated`;
 }
 
-/** The help under fieldItemLabel: the battles each state stands for. */
-export function fieldItemHelp(choice: FieldItemChoice, runtime: BattleRuntime = championsRuntime): string {
-  const ability = runtime.abilitiesById.get(choice.abilityId)?.name ?? choice.abilityId;
-  const fieldName = choice.field === "sun" ? "the sun" : "Electric Terrain";
-  const setters = choice.field === "sun" ? "Drought or Orichalcum Pulse" : "Electric Surge or Hadron Engine";
-  if (choice.suppressor) {
-    const suppressor = runtime.abilitiesById.get(choice.suppressor)?.name ?? choice.suppressor;
-    return `Untick this if the sun activated ${ability} before the other Pokémon's ${suppressor} came in: the Booster Energy was then used up with no effect and ${ability} ended, so it has no boost and no item, even after the sun ends or a Magic Room is set. Leave it ticked if ${suppressor} was out when it entered, or the sun was down at some point after it entered: the Booster Energy then activated ${ability}.`;
-  }
-  if (choice.itemId === "boosterenergy") {
-    return `Tick this if the Booster Energy was used: ${fieldName} was down at some point after it entered while Magic Room was not up. It entered before ${fieldName} started (set later by a move, or by ${setters} on a Pokémon that switched in after it), ${fieldName} ended while it was out (even if it has started again), or a Magic Room ended while ${fieldName} was down. The Booster Energy is then gone and ${ability} keeps the stat it picked then. Leave it unticked if ${fieldName} has been up whenever Magic Room was not (or another Pokémon's ${setters} set it as they entered together), or Magic Room was up when it entered: the Booster Energy is then still held.`;
-  }
-  // Each switch describes the ability's latest activation: after its field ends and starts again, the
-  // ability picks again, counting a Seed or Room Service already used.
-  const seed = SEED_TERRAINS[choice.itemId];
-  const name = runtime.itemsById.get(choice.itemId)?.name ?? choice.itemId;
-  if (seed && choice.field === "terrain") {
-    return `Untick this if Electric Terrain started while it was on the field (a move, or ${setters} on a Pokémon that entered with it or after it): ${ability} then picks its stat before the Seed raises its ${STAT_LABELS[seed.stat]}. Leave it ticked if it switched in with the terrain already up, or Electric Terrain ended and started again while it was out.`;
-  }
-  if (seed) {
-    return `Untick this if ${ability} activated before ${seed.terrain} Terrain started: it was already out in the sun when the terrain started, or another Pokémon's ${setters} set the sun as they entered together. ${ability} then picks its stat before the ${name} raises its ${STAT_LABELS[seed.stat]}. Leave it ticked if ${seed.terrain} Terrain was up before the sun, or both were up when it switched in (on entry the Seed acts first), even when ${setters} switched in after it, or the sun ended and started again while it was out after its ${name} was used.`;
-  }
-  return `Untick this if ${fieldName} activated ${ability} before Trick Room started, or another Pokémon's ${setters} set it as they entered together: ${ability} then picks its stat before Room Service lowers its Speed. Leave it ticked if Trick Room was up when it entered and ${fieldName} was not set as they entered together, or ${fieldName} ended and started again while it was out after Trick Room started.`;
-}
-
 /** Ability conditions that need an ally, so they never hold in Singles. */
 export const PARTNER_ABILITY_CONDITIONS: ReadonlySet<string> = new Set(["plus", "minus"]);
 
@@ -247,14 +222,6 @@ export const PRIORITY_SHIELD_ABILITIES = ["queenlymajesty", "dazzling", "armorta
 /** The priority-shield abilities the game has, for labels: "Queenly Majesty or Armor Tail" in Champions. */
 export function priorityShieldNames(runtime: BattleRuntime = championsRuntime): string {
   return joinOr(PRIORITY_SHIELD_ABILITIES.flatMap((id) => runtime.abilitiesById.get(id)?.name ?? []));
-}
-
-/** What gives an attack priority it does not have in its data, in this game: "Gale Wings or Triage" in USUM (no Grassy Glide). */
-export function priorityRaiserNames(runtime: BattleRuntime = championsRuntime): string {
-  return joinOr([
-    ...["galewings", "triage"].flatMap((id) => runtime.abilitiesById.get(id)?.name ?? []),
-    ...(runtime.movesById.has("grassyglide") ? ["Grassy Glide on Grassy Terrain"] : []),
-  ]);
 }
 
 const joinOr = (names: string[]) => names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
@@ -329,11 +296,11 @@ export function createSide(): SideConditions {
 }
 
 export const SHARED_FIELD_EFFECTS = [
-  { key: "gravity", label: "Gravity", description: "Grounds airborne Pokémon and blocks moves such as Fly and High Jump Kick. Accuracy changes are not simulated." },
-  { key: "trickRoom", label: "Trick Room", description: "Lets the slower Pokémon move first within a priority bracket; Speed stats are unchanged. Analytic, Bolt Beak and Fishious Rend use the turn order." },
-  { key: "wonderRoom", label: "Wonder Room", description: "Swaps unboosted Defense and Sp. Def; stages stay with their original stat. Body Press then uses the original Defense with Sp. Def stages, as Showdown calculates." },
-  { key: "magicRoom", label: "Magic Room", description: "Suppresses held-item effects without removing items or Mega forms." },
-  { key: "fairyAura", label: "Additional Fairy Aura on the field", description: "Boosts Fairy-type attacks on either side. Does not stack with an existing Fairy Aura ability; leaving this off does not disable that ability." },
+  { key: "gravity", label: "Gravity" },
+  { key: "trickRoom", label: "Trick Room" },
+  { key: "wonderRoom", label: "Wonder Room" },
+  { key: "magicRoom", label: "Magic Room" },
+  { key: "fairyAura", label: "Additional Fairy Aura on the field" },
 ] as const;
 
 export function createConditions(): BattleConditions {
@@ -480,7 +447,29 @@ export function validateConditions(field: BattleConditions, runtime: BattleRunti
   return issues;
 }
 
-export type DamageSort = "minimum" | "maximum" | "name";
+export type DamageSort = "minimum" | "maximum" | "uses" | "name";
+
+/**
+ * Uses to KO order, lowest first: guaranteed counts (fewest uses, then the higher chance that one use
+ * fewer is enough, then the best rolls' count when there is no chance), then KOs that are only possible
+ * (the higher chance first, then the fewest uses), then no KO within the uses counted (the user fainting
+ * before any KO included), never, no damage and not estimated.
+ */
+function usesOrder(row: MoveDamageResult): number[] {
+  const value = row.usesToKO;
+  switch (value?.kind) {
+    case "uses":
+      // The calculation's chance, also for a 2HKO: one use with that turn's end, which the One-use KO chance
+      // leaves out (and has none for multihit moves).
+      if (value.guaranteed !== null) return [0, value.guaranteed, -(value.fasterChance ?? 0), value.fewest ?? value.guaranteed];
+      return value.fewest !== null ? [1, -(value.chance ?? 0), value.fewest] : [2];
+    case "single-use":
+      return value.koChance === 1 ? [0, 1, 0, 1] : value.koChance > 0 ? [1, -value.koChance, 1] : [2];
+    case "never": return [3];
+    case "no-damage": return [4];
+    default: return [5];
+  }
+}
 
 export function rankResults(results: MoveDamageResult[], sort: DamageSort = "minimum", runtime: BattleRuntime = championsRuntime): MoveDamageResult[] {
   return [...results].sort((a, b) => {
@@ -489,8 +478,15 @@ export function rankResults(results: MoveDamageResult[], sort: DamageSort = "min
     if (sort === "name") return nameA.localeCompare(nameB, "en");
     const calculable = Number(b.kind === "calculated") - Number(a.kind === "calculated");
     if (calculable) return calculable;
-    const primary = sort === "minimum" ? "min" : "max";
-    const secondary = sort === "minimum" ? "max" : "min";
+    if (sort === "uses") {
+      const orderA = usesOrder(a), orderB = usesOrder(b);
+      // Same-group keys have the same length.
+      const uses = orderA.reduce((order, key, index) => order || key - orderB[index], 0);
+      if (uses) return uses;
+    }
+    // Uses to KO ties fall back to the minimum damage order.
+    const primary = sort === "maximum" ? "max" : "min";
+    const secondary = sort === "maximum" ? "min" : "max";
     return (b[primary] ?? -1) - (a[primary] ?? -1)
       || (b[secondary] ?? -1) - (a[secondary] ?? -1)
       || nameA.localeCompare(nameB, "en");

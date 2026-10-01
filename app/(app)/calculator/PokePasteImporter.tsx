@@ -168,46 +168,40 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
   return (
     <section data-paste-importer={role} aria-labelledby={`${id}-heading`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{ownership} · PokéPaste</h2>
-      <p className="text-sm text-muted">Import a link or paste team text, review the sets, then choose a Pokémon from your team shortcuts. Session only; nothing is saved to your account or a league.</p>
-      <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}. Importing configuration never activates Tera, Dynamax or Gigantamax.</p>
+      <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}</p>
       {applied && (
         <div className="space-y-2 rounded-lg border border-line bg-bg p-3">
           <p className="wrap-anywhere text-sm text-text"><strong>{applied.title}</strong> · {applied.team.members.filter((member) => member.selectable).length} selectable / {applied.team.members.length} imported</p>
-          <p className="text-xs text-muted">Replacing or removing this team clears its cached set edits, but keeps the active Pokémon as manual preparation.</p>
           <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { invalidate(); setRemoveFor(scope); }}>Remove imported team</Button>
         </div>
       )}
-      <Field id={`${id}-format`} label="Spread format" help={native ? "Native games use original EVs/IVs, not Champions Stat Points. The source encoding is retained when changing games; selecting EVs/IVs explicitly changes how this draft is read." : "Champions exports also call Stat Points ‘EVs’. Choose the source format explicitly; values are never auto-detected."}>
+      <Field id={`${id}-format`} label="Spread format">
         <Select value={format} onChange={(event) => { invalidate(); changeDraft({ format: event.target.value as ImportFormat }); }}>
           {(!native || format === "champions") && <option value="champions" disabled={native}>Champions Stat Points{native ? " — incompatible source" : ""}</option>}
           <option value="traditional">{native ? "Traditional EVs/IVs — native levels" : "Traditional EVs/IVs — level-50 equivalent"}</option>
         </Select>
       </Field>
-      <p className="text-xs text-muted">{native
-        ? "Levels 1–100 and original EVs/IVs are retained without conversion. An omitted level defaults to 100. EVs: 0–252 per stat, 510 total; IVs: 0–31."
-        : format === "champions" ? "0–32 points per stat, 66 total. EVs, SPs and Stat Points labels use points in this mode; IV fields are not supported. Explicit levels must be 50."
-          : "EVs and IVs are converted to equivalent level-50 points only when representable. For example, 252/252/4 EVs becomes 32/32/1 points. Low IVs may be impossible to represent. Explicit levels must be 50."}</p>
-      {native && format === "champions" && <Alert variant="info" title="Source encoding preserved">This draft uses Champions points and cannot be imported into {runtime.profile.label}. Supply original native EVs/IVs and explicitly choose that source format; switching games never guesses a reverse conversion.</Alert>}
-      <Field id={`${id}-url`} label="PokéPaste link" help="Only https://pokepast.es links are fetched. Loading a link fills the editable text below." error={error || undefined}>
+      {native && format === "champions" && <Alert variant="info" title="Source encoding preserved">This draft uses Champions points and cannot be imported into {runtime.profile.label}.</Alert>}
+      <Field id={`${id}-url`} label="PokéPaste link" error={error || undefined}>
         <Input ref={urlInput} value={url} placeholder="https://pokepast.es/…" autoComplete="off" spellCheck={false} onChange={(event) => { invalidate(); changeDraft({ url: event.target.value }); }} onKeyDown={(event) => { if (event.key === "Enter" && !event.nativeEvent.isComposing) { event.preventDefault(); if (url.trim()) void loadLink(); } }} />
       </Field>
       <div className="flex flex-wrap gap-2">
         <Button variant="secondary" disabled={!url.trim()} pending={pending} pendingText="Loading PokéPaste…" onClick={() => void loadLink()}>Load link and preview</Button>
         {pending && <Button ref={cancelButton} variant="secondary" onClick={() => { invalidate(); returnFocus(urlInput.current); }}>Cancel loading</Button>}
       </div>
-      {pending && <p role="status" className="text-sm text-muted">Reading PokéPaste… Your current team is unchanged.</p>}
+      {pending && <p role="status" className="text-sm text-muted">Reading PokéPaste…</p>}
       {error && <p role="alert" className="sr-only">{error}</p>}
-      <Field id={`${id}-text`} label="Team text" help="Showdown/PokéPaste text, up to 24 Pokémon and 64 KiB. Separate sets with a blank line. Edit any reported lines here, then preview again.">
-        <textarea id={`${id}-text`} aria-describedby={`${id}-text-help`} value={text} spellCheck={false} rows={10} className={`${controlClassName} min-h-40 resize-y font-mono`} placeholder={native ? "Charizard @ Leftovers\nAbility: Blaze\nLevel: 50\nEVs: 252 SpA / 252 Spe / 4 HP\nTimid Nature\n- Flamethrower\n- Protect" : "Raichu @ Raichunite X\nAbility: Static\nEVs: 32 SpA / 32 Spe\nTimid Nature\n- Thunderbolt\n- Protect"} onChange={(event) => { invalidate(); changeDraft({ text: event.target.value }); }} />
+      <Field id={`${id}-text`} label="Team text">
+        <textarea id={`${id}-text`} value={text} spellCheck={false} rows={10} className={`${controlClassName} min-h-40 resize-y font-mono`} placeholder={native ? "Charizard @ Leftovers\nAbility: Blaze\nLevel: 50\nEVs: 252 SpA / 252 Spe / 4 HP\nTimid Nature\n- Flamethrower\n- Protect" : "Raichu @ Raichunite X\nAbility: Static\nEVs: 32 SpA / 32 Spe\nTimid Nature\n- Thunderbolt\n- Protect"} onChange={(event) => { invalidate(); changeDraft({ text: event.target.value }); }} />
       </Field>
-      <Field id={`${id}-title`} label="Team label" help="Optional; only used to label this imported team.">
+      <Field id={`${id}-title`} label="Team label">
         <Input value={title} maxLength={160} onChange={(event) => { if (request.current) invalidate(); changeDraft({ title: event.target.value }); }} placeholder="Imported team" />
       </Field>
       <Button ref={previewButton} variant="secondary" disabled={!text.trim() || pending} onClick={previewText}>Preview team text</Button>
       {preview && (
         <div data-paste-preview className="space-y-4 border-t border-line pt-4">
           <h3 ref={previewHeading} tabIndex={-1} className="rounded font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Import preview · {runtime.profile.label}</h3>
-          <p role="status" className="text-sm text-muted">{selectable} selectable · {preview.team.members.length - selectable} unavailable. {preview.url ? "Loaded from PokéPaste." : "Pasted team text."} Current Pokémon will not change until you choose a team entry.</p>
+          <p role="status" className="text-sm text-muted">{selectable} selectable · {preview.team.members.length - selectable} unavailable. {preview.url ? "Loaded from PokéPaste." : "Pasted team text."}</p>
           {!!preview.team.diagnostics.length && <Alert variant={preview.team.diagnostics.some((entry) => entry.severity === "error") ? "error" : "info"} title="Import notes"><ul className="list-disc space-y-1 pl-5">{preview.team.diagnostics.map((entry, index) => <li key={index} className="wrap-anywhere">{entry.message}</li>)}</ul></Alert>}
           <ol className="space-y-3">{preview.team.members.map((member) => <MemberPreview key={member.index} member={member} runtime={runtime} />)}</ol>
           <div className="flex flex-wrap gap-2">

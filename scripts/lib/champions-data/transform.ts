@@ -51,6 +51,9 @@ export type ResolvedMove = AvailableData & {
   category: ChampionsMove["category"];
   basePower: number;
   accuracy: number | true;
+  /** Base PP and noPPBoosts as the mod's Dex has them; fixture snapshots may omit them. */
+  pp?: number;
+  noPPBoosts?: boolean;
   priority: number;
   target: string;
   multihit?: number | [number, number];
@@ -354,6 +357,9 @@ export function transformChampionsCatalog(
       category: row.category,
       power: row.basePower,
       accuracy: typeof row.accuracy === "number" ? row.accuracy : null,
+      // The Champions Dex already caps base PP at 20 (mods/champions/scripts.ts init).
+      ...(row.pp !== undefined ? { pp: row.pp } : {}),
+      ...(row.noPPBoosts ? { noPPBoosts: true as const } : {}),
       priority: row.priority,
       target: row.target,
       multihit: Array.isArray(row.multihit) ? [...row.multihit] : row.multihit ?? null,

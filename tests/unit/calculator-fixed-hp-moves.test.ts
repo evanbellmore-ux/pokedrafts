@@ -161,7 +161,7 @@ describe("HP-based fixed damage", () => {
     expect(row(championsRuntime, maushold, lastHP, "superfang").ohkoChance).toBe(1);
     const band = row(championsRuntime, maushold, { ...lastHP, itemId: "focusband" }, "superfang");
     expect(band.ohkoChance).toBeNull();
-    expect(band.assumptions).toContain("Focus Band survival chance is not modeled; KO probability is unavailable.");
+    expect(band.assumptions).toContain("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
   });
 
   it("leaves Z-Move and Max Move conversions to the ordinary damage path", async () => {
