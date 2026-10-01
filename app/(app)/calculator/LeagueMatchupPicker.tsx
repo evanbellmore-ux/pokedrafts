@@ -31,20 +31,19 @@ function SourceFeedback({ state }: { state: CalculatorRosterState }) {
   const failed = state.status === "error" || state.teamsStatus === "error";
   return (
     <>
-      {loading && <p role="status" className="text-sm text-muted">{state.status === "loading" ? "Loading your leagues…" : "Loading current team rosters…"} You can still edit the calculator.</p>}
+      {loading && <p role="status" className="text-sm text-muted">{state.status === "loading" ? "Loading your leagues…" : "Loading current team rosters…"}</p>}
       {failed && (
         <Alert variant="error" title="League teams unavailable">
-          {state.message ?? state.teamsMessage ?? "Could not load league teams."} Your manual calculator remains available; use Retry teams to try again.
+          {state.message ?? state.teamsMessage ?? "Could not load league teams."}
         </Alert>
       )}
       {state.status === "signed-out" && (
         <Alert variant="info" title="Sign in to see your leagues">
-          <p>Your session has ended. You can keep using manual Pokémon selection.</p>
+          <p>Your session has ended.</p>
           <ButtonLink href="/login?next=%2Fcalculator" variant="secondary" size="sm" className="mt-3">Log in again</ButtonLink>
         </Alert>
       )}
-      {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues yet. Join or create a league from your dashboard, or keep using the manual calculator.</p>}
-      <p className="text-xs text-muted">Rosters provide Pokémon names, not saved sets. New selections use editable default builds; draft costs are not Stat Points. Build edits stay in this page session only and never change a league roster.</p>
+      {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues yet. Join or create a league from your dashboard.</p>}
     </>
   );
 }
@@ -57,7 +56,7 @@ function LeagueSelector({ state, onLeagueChange, opponent = false }: {
   const id = useId();
   const labels = state.leagues.map((entry) => `${teamNameLabel(entry.teamName)} — ${entry.name}`);
   return (
-    <Field id={`${id}-league`} label={opponent ? "Opponent league" : "My team"} help={opponent ? "Choose a league you belong to, then another team in that league. Your imported team stays unchanged." : "Your team in each league your signed-in account belongs to."}>
+    <Field id={`${id}-league`} label={opponent ? "Opponent league" : "My team"}>
       <Select data-league-selector value={state.selectedLeagueId} disabled={state.status !== "ready" || !state.leagues.length} onChange={(event) => onLeagueChange(event.target.value)}>
         <option value="">{state.status === "loading" ? "Loading leagues…" : opponent ? "Choose a league" : "Choose your team"}</option>
         {state.leagues.map((entry, index) => {
@@ -79,10 +78,7 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh }: SourcePickerP
   return (
     <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">My team</h2>
-          <p className="mt-1 text-sm text-muted">Choose your team and league for this matchup.</p>
-        </div>
+        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">My team</h2>
         <RefreshTeamsButton state={state} onRefresh={onRefresh} />
       </div>
       <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
@@ -105,10 +101,7 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
   return (
     <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">Opponent</h2>
-          <p className="mt-1 text-sm text-muted">Choose another team from your selected league.</p>
-        </div>
+        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">Opponent</h2>
         <RefreshTeamsButton state={state} onRefresh={onRefresh} />
       </div>
       {onLeagueChange && <LeagueSelector state={state} onLeagueChange={onLeagueChange} opponent />}
@@ -118,7 +111,7 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
           <div><dt className="text-muted">League</dt><dd className="wrap-anywhere font-medium text-text">{league.name}</dd></div>
         </dl>
       )}
-      <Field id={`${id}-opponent`} label="Opponent" help="Choose another team in this league. No battle build is imported.">
+      <Field id={`${id}-opponent`} label="Opponent">
         <Select data-opponent-selector value={opponents.some((member) => member.id === state.opponentId) ? state.opponentId : ""} disabled={!teamsReady || !opponents.length} onChange={(event) => onOpponentChange(event.target.value)}>
           <option value="">Choose an opponent</option>
           {opponents.map((member, index) => {

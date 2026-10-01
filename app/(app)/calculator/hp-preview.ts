@@ -65,7 +65,7 @@ export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult 
     : defender.itemId === "focusband" ? "Focus Band"
       : (() => { const form = specialTeraForm(defender, runtime); return form ? runtime.speciesById.get(form)?.abilities[0] : defender.abilityId; })() === "sturdy" ? "Sturdy" : null);
   if (survival) {
-    return { status: "unavailable", reason: `Remaining HP is withheld for ${survival}; survival effects are not simulated.` };
+    return { status: "unavailable", reason: `Remaining HP is withheld for ${survival}.` };
   }
   if (row.hits !== 1) {
     return { status: "unavailable", reason: "Multi-hit or unresolved hit counts do not have an HP preview." };

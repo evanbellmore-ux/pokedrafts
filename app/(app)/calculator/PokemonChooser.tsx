@@ -86,12 +86,11 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={`Find ${position} Pokémon`} help={`Search ${runtime.profile.label} Pokémon by name or form, including league roster names such as Alolan Raichu or Paldean Tauros (Blaze Breed). Changing Pokémon resets nature, ability, item, ${runtime.profile.training === "points" ? "Stat Points" : `level (50), EVs (0) and IVs (31${runtime.profile.generation === 7 ? ", or a suggested typed Hidden Power's usual IVs" : ""})`}, stages, HP, status and mechanic configuration.`}>
+            <Field id={`${id}-search`} label={`Find ${position} Pokémon`}>
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">
               {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
-              {matches.length > SEARCH_PAGE_SIZE && " · Refine the name or browse pages."}
             </p>
             <ul aria-label={`${label} choices`} className="space-y-1">
               {visible.map((entry) => (

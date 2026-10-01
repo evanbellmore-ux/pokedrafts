@@ -19,6 +19,7 @@ import { imposterTransforms, movesSpeciesId, NO_TRANSFORM_ABILITIES, TRANSFORM_L
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, type HitCountBattle } from "./hit-count";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
+import { ENTRY_ABILITIES, estimateUsesToKO, prepareUses, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
 import type {
   BattleBuild,
   BattleConditions,
@@ -1254,7 +1255,7 @@ function fixedHPDamage(move: ChampionsMove, probe: Result, assumptions: string[]
     : `Fixed damage: half ${targetHP}, rounded down, at least 1.`,
   "Stats, stat stages, items, abilities, weather, screens and critical hits do not change fixed damage; only type and ability immunities apply."];
   if (probe.move.type !== move.type) lines.push(`Effective move type: ${probe.move.type}.`);
-  if (defender.hasItem("Focus Band")) lines.push("Focus Band survival chance is not modeled; KO probability is unavailable.");
+  if (defender.hasItem("Focus Band")) lines.push("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
   probe.damage = damage;
   const percent = damage / defender.maxHP() * 100;
   return {
@@ -1275,6 +1276,12 @@ function calculateMove(
   runtime: BattleRuntime,
   /** The ability that suppresses the receiving side's Friend Guard partner for every move. */
   friendGuardSuppressedBy: string | null = null,
+  /** Filled with the engine result the row reports, for the next use's state (uses-to-ko.ts). */
+  trace: CalcTrace = {},
+  /** The attacker's earlier consecutive turns with this move, for Metronome's boost on a later use. */
+  consecutive = 0,
+  /** A later use's builds, whose stages already hold the entry rises the engine adds (uses-to-ko.ts entryStages). */
+  settledEntry = false,
 ): MoveDamageResult {
   let conditions = battleConditions;
   // Event-doubling moves (event-moves.ts): pass the chosen case's power as an override,
@@ -1302,10 +1309,16 @@ function calculateMove(
   // A Stellar first use the partner-shield check below answers for itself (moveContext); the question
   // is asked only if the shield lets the move through.
   let moveContext = context;
-  const resolveWith = (basePower: number | null, extra: { name?: MoveName; type?: TypeName; category?: "Physical" | "Special"; flags?: { contact: 1 } } = {}) => resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), moveContext, runtime, {
-    isCrit: conditions.critical,
-    overrides: { ...baseOverrides, ...(basePower !== null ? { basePower } : {}), ...extra },
-  });
+  const resolveWith = (basePower: number | null, extra: { name?: MoveName; type?: TypeName; category?: "Physical" | "Special"; flags?: { contact: 1 } } = {}) => {
+    const resolution = resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), moveContext, runtime, {
+      isCrit: conditions.critical,
+      overrides: { ...baseOverrides, ...(basePower !== null ? { basePower } : {}), ...extra },
+    });
+    // Metronome's boost counts earlier consecutive turns (pinned Showdown numConsecutive, at most 5); the
+    // engine reads it from the move, and its clones keep it.
+    if (!resolution.kind && consecutive > 0) resolution.move.timesUsedWithMetronome = Math.min(consecutive, 5);
+    return resolution;
+  };
   // Double Shock and Burn Up fail in onTryMove (pinned Showdown), before a Stellar first-use question or
   // Protect matters; their Z-Move and Max Move do not. A transformed Imposter user has the copied form's
   // types (its settled speciesId), which Mimicry can still change.
@@ -1564,8 +1577,11 @@ function calculateMove(
     // items, and it ignores Utility Umbrella for sun and rain abilities; Run Away has no effect.
     for (const [pokemon, build, other] of [[attacker, attackerBuild, defenderBuild], [defender, defenderBuild, attackerBuild]] as const) {
       if (gassedAbility(build, other, conditions) || umbrellaBlocksAbility(build, other, conditions)) pokemon.ability = "Run Away" as AbilityName;
-      // Download's entry boost is already in the stages (settleEntry); it has no other effect.
+      // Download's entry boost is already in the stages (settleEntry); it has no other effect. So are a later
+      // use's Dauntless Shield, Intrepid Sword, Embody Aspect and Wind Rider rises (a target's Wind Rider still
+      // takes a wind move).
       if (build.settledDownload) pokemon.ability = "Run Away" as AbilityName;
+      if (settledEntry && ENTRY_ABILITIES[build.abilityId] && !(pokemon === defender && build.abilityId === "windrider" && resolved.move.flags?.wind)) pokemon.ability = "Run Away" as AbilityName;
     }
     // The other battler's Neutralizing Gas suppresses Klutz, so the item works (Showdown ignoringItem);
     // the engine's checkItem drops a Klutz holder's item before it applies the gas.
@@ -1722,7 +1738,10 @@ function calculateMove(
       const probe = resolveWith(1, { name: "Fixed-damage probe" as MoveName });
       if (probe.kind) return emptyRow(metadata, probe.kind, probe.reason);
       const run = (target: Pokemon) => calculate(generation, attacker, target, probe.move, makeField(conditions));
-      return fixedHPDamage(metadata, run(defender), assumptions, () => {
+      const probed = run(defender);
+      trace.result = probed;
+      trace.fixedHP = true;
+      return fixedHPDamage(metadata, probed, assumptions, () => {
         // An empty ability would be refilled with the species' first one on the engine's
         // clone; Run Away has no effect anywhere in the engine.
         const bare = defender.clone();
@@ -1737,6 +1756,9 @@ function calculateMove(
     if (attacker.hasAbility("Parental Bond")) attacker.ability = "Run Away" as AbilityName;
     if (bondSkip) assumptions.push(`Parental Bond adds no second strike here: ${bondSkip}.`);
     let result = calculate(generation, attacker, defender, move, makeField(conditions));
+    // A later use's engine-only rerun starts from these inputs; every step below that changes the damage
+    // after the engine call clears them.
+    trace.engine = { attacker, defender, move, conditions };
     // On a Shell Side Arm tie Showdown picks the category at random: the row is the special hit and the
     // physical hit, which makes contact, its 50% alternate. Neutral names keep the engine's own choice off.
     let tiedPhysical: Result | null = null;
@@ -1749,6 +1771,7 @@ function calculateMove(
       move = special.move;
       result = calculate(generation, attacker, defender, move, makeField(conditions));
       tiedPhysical = calculate(generation, attacker, defender, physical.move, makeField(conditions));
+      trace.engine = undefined;
     }
     // Shell Side Arm off a tie, and Tera Blast or Tera Starstorm from a Terastallized user, turn physical
     // only inside the engine's calculate() (as in Showdown's onModifyMove), so Ice Face is checked with the
@@ -1789,6 +1812,7 @@ function calculateMove(
       }
       result.damage = strikes;
       hitCount = { hits: strikes.length, reason: null };
+      trace.engine = undefined;
     }
     if (retargeted && metadata.id === "terastarstorm") assumptions.push("One target: no spread reduction. Terapagos-Stellar's Tera Starstorm hits both foes, so this fits only when the target's partner is absent or has fainted; keep “Multiple targets hit” on otherwise.");
     else if (retargeted) assumptions.push("One target: no spread reduction, with Expanding Force's 1.5x power from Psychic Terrain. This fits only when the target's partner is absent or has fainted; a partner on the field still triggers Showdown's spread reduction even when it protects, is immune or is semi-invulnerable, so keep “Multiple targets hit” on then.");
@@ -1799,6 +1823,7 @@ function calculateMove(
       if (retry.kind) return emptyRow(metadata, retry.kind, retry.reason);
       retry.move.hits = hitCount.hits;
       result = calculate(generation, attacker, defender, retry.move, makeField(conditions));
+      trace.engine = { attacker, defender, move: retry.move, conditions };
     }
     const firstHit = result;
     const firstBurnedHit = spicySprayFirstBurnedHit(firstHit, attackerBuild, conditions);
@@ -1810,6 +1835,7 @@ function calculateMove(
       const later = laterResult.damage as number[][];
       result.damage = [...(result.damage as number[][]).slice(0, firstBurnedHit), ...later.slice(firstBurnedHit)];
       result.rawDesc.attackerAbility ??= laterResult.rawDesc.attackerAbility;
+      trace.engine = undefined;
     }
     // Seed Sower sets Grassy Terrain after the first hit, and a held Grassy Seed then raises Defense
     // at once (Showdown onTerrainChange); the engine's multi-hit loop never checks the Seed again.
@@ -1821,8 +1847,10 @@ function calculateMove(
       seeded.boosts.def = Math.max(-6, Math.min(6, seeded.boosts.def + (seeded.hasAbility("Contrary") ? -1 : 1)));
       const later = calculate(generation, attacker, seeded, move, makeField({ ...conditions, terrain: "Grassy" })).damage as number[][];
       result.damage = [(result.damage as number[][])[0], ...later.slice(1)];
+      trace.engine = undefined;
     }
     if (parentalBond && !bondSkip && result.range()[1] > 0) {
+      trace.engine = undefined;
       const first = result.damage;
       if (typeof first === "number") {
         // Fixed damage (Seismic Toss) is dealt in full by both strikes (damageCallback skips the quarter).
@@ -1868,6 +1896,7 @@ function calculateMove(
       return zeroDamage(metadata, `Damp prevents ${metadata.name} from being used.`);
     }
     if (protect?.kind === "quarter") {
+      trace.engine = undefined;
       const damage = result.damage;
       // Guardian of Alola's own damageCallback: 3/4 of the HP, then round(x / 4) half down, at least 1.
       result.damage = typeof damage === "number" ? (damage === 0 ? 0 : Math.max(1, Math.ceil(damage / 4 - 0.5)))
@@ -1878,9 +1907,9 @@ function calculateMove(
       return emptyRow(metadata, "unsupported", "The engine returned an invalid damage range for this matchup.");
     }
     if (hitCount.hits > 1 || (Array.isArray(result.damage) && Array.isArray(result.damage[0]))) {
-      assumptions.push(`Assumes all ${hitCount.hits > 1 ? hitCount.hits : 2} hits finish. Mid-move healing, retaliation and attacker fainting are not simulated; no multi-hit KO probability is claimed.`);
+      assumptions.push(`Assumes all ${hitCount.hits > 1 ? hitCount.hits : 2} hits finish, on every use. The one-use damage leaves out mid-move healing, retaliation and attacker fainting, and no one-use KO chance is given for several hits; Uses to KO follows the hits one by one, with berries between them.`);
     }
-    if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome is treated as the first use, without a consecutive-use bonus.");
+    if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome counts this as the first use, without a consecutive-use bonus; Uses to KO adds the bonus for each later consecutive use.");
     if (conditions.attackerSide.charge && result.rawDesc.isCharge) assumptions.push("Charge doubles this Electric attack's power.");
     const tailwind = [conditions.attackerSide.tailwind && "the attacking Pokémon's side", conditions.defenderSide.tailwind && "the receiving Pokémon's side"].filter(Boolean);
     const speedSetsPower = SPEED_POWER_MOVES.has(metadata.id) && !MOVES_FIRST_POWER_MOVES.has(metadata.id);
@@ -1974,9 +2003,9 @@ function calculateMove(
     const spares = LEAVES_ONE_HP_MOVES.has(metadata.id);
     if (!spares && result.defender.curHP() === result.defender.maxHP()
       && (result.defender.hasItem("Focus Sash") || result.defender.hasAbility("Sturdy"))) {
-      assumptions.push("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed.");
+      assumptions.push("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed, and Uses to KO counts the next use from 1 HP.");
     }
-    if (!spares && result.defender.hasItem("Focus Band")) assumptions.push("Focus Band survival chance is not modeled; KO probability is unavailable.");
+    if (!spares && result.defender.hasItem("Focus Band")) assumptions.push("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
 
     const minPercent = min / result.defender.maxHP() * 100;
     const maxPercent = max / result.defender.maxHP() * 100;
@@ -2001,7 +2030,8 @@ function calculateMove(
         rolls: [...(doubledResult.damage as number[])],
       };
       koChance = koChance === null || altKO === null ? null : 0.7 * koChance + 0.3 * altKO;
-      assumptions.push(`Fickle Beam's power doubles 30% of the time: then ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}% of maximum HP). The KO chance weighs both cases.`);
+      trace.engine = undefined;
+      assumptions.push(`Fickle Beam's power doubles 30% of the time: then ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}% of maximum HP). The KO chance weighs both cases, and in Uses to KO each use rolls its own case.`);
       alternateText = `, or ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}%) when its power doubles (30% chance)`;
     }
     // No Shell Side Arm user has Parental Bond or another multi-hit source, so both hits are single roll sets
@@ -2021,8 +2051,8 @@ function calculateMove(
         const altKO = iceFace ? 0 : directKOChance(tiedPhysical, hitCount.hits);
         koChance = koChance === null || altKO === null ? null : 0.5 * koChance + 0.5 * altKO;
         assumptions.push(iceFace
-          ? `${tie}: these rolls are the special hit (50%), and the intact Ice Face blocks the physical hit (50%). The KO chance weighs both cases.`
-          : `${tie}: these rolls are the special hit (50%), and the physical hit (50%, which makes contact) deals ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}% of maximum HP). The KO chance weighs both cases.`);
+          ? `${tie}: these rolls are the special hit (50%), and the intact Ice Face blocks the physical hit (50%). The KO chance weighs both cases, and in Uses to KO each use rolls its own case.`
+          : `${tie}: these rolls are the special hit (50%), and the physical hit (50%, which makes contact) deals ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}% of maximum HP). The KO chance weighs both cases, and in Uses to KO each use rolls its own case.`);
         if (!iceFace && appliedEffects(tiedPhysical).join() !== appliedEffects(result).join()) physicalEffects = appliedEffects(tiedPhysical);
         alternateText = iceFace ? ", or no damage when it is physical and Ice Face blocks it (50% chance)"
           : `, or ${altMin}–${altMax} HP (${alternate.minPercent.toFixed(1)}–${alternate.maxPercent.toFixed(1)}%) when it is physical (50% chance)`;
@@ -2036,6 +2066,7 @@ function calculateMove(
       ? getMaxMoveName(generation, result.move.type, assigned.name, false) : getZMoveName(assigned.name, result.move.type);
     if (zName) assumptions.push(`${assigned.name} takes its ${result.move.type} type before ${result.move.name === "Max Strike" ? "Max" : "Z"} conversion, so it becomes ${zName}.`);
     const effectNames = appliedEffects(result);
+    trace.result = result;
     const applied = physicalEffects
       ? `${effectNames.length ? ` Applied to the special hit: ${effectNames.join(", ")}.` : ""}${physicalEffects.length ? ` Applied to the physical hit: ${physicalEffects.join(", ")}.` : ""}`
       : effectNames.length ? ` Applied: ${effectNames.join(", ")}.` : "";
@@ -2104,10 +2135,40 @@ export function calculateMatchup(
   if (suppressor) effective.field = { ...effective.field, defenderSide: { ...effective.field.defenderSide, friendGuard: false } };
   // A transformed Imposter user attacks with its target's moves; a form change keeps the Pokémon's own.
   const moveSpecies = effective.attacker.transformedFrom ? runtime.speciesById.get(effective.attacker.speciesId) ?? species : species;
+  // Uses to KO repeats each calculated row from the settled builds (uses-to-ko.ts); the entry effects
+  // settled above are not settled again for later uses.
+  const helpers: UsesHelpers = {
+    gassed: gassedAbility, klutz: klutzActive, spicySpray: spicySprayFirstBurnedHit, makeField, paradox: (speciesId) => PARADOX_SPECIES.has(speciesId),
+    hpForm: (build) => { const form = entryForm(build, runtime); return form && !form.kept ? form.speciesId : null; },
+  };
+  let uses: ReturnType<typeof prepareUses> | null = null;
+  try {
+    uses = prepareUses(effective.attacker, effective.defender, effective.field, runtime, helpers);
+  } catch {
+    // Every calculated row then says its uses could not be counted.
+  }
   const results = moveSpecies.moves.map((id) => {
     const move = runtime.movesById.get(id);
     if (!move) throw new Error(`${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} catalog has an unresolved move: ${id}.`);
-    const row = { ...calculateMove(move, effective.attacker, effective.defender, effective.field, contexts[id], runtime, suppressor), moveId: id };
+    const trace: CalcTrace = {};
+    const computed = calculateMove(move, effective.attacker, effective.defender, effective.field, contexts[id], runtime, suppressor, trace);
+    const row: MoveDamageResult = { ...computed, moveId: id };
+    if (row.kind === "calculated") {
+      // A count that cannot be worked out never takes the row's one-use result down with it.
+      try {
+        if (!uses) throw new Error("No uses to count");
+        row.usesToKO = estimateUsesToKO(uses, {
+          move, row: computed, trace, context: contexts[id],
+          rerun: (next) => {
+            const nextTrace: CalcTrace = {};
+            const nextRow = calculateMove(move, next.attacker, next.defender, next.conditions, next.context, runtime, suppressor, nextTrace, next.consecutive, true);
+            return { row: nextRow, trace: nextTrace };
+          },
+        });
+      } catch {
+        row.usesToKO = { kind: "not-estimated", reason: "The uses could not be counted" };
+      }
+    }
     return notes.length && row.kind === "calculated" ? { ...row, assumptions: [...row.assumptions, ...notes] } : row;
   });
   return { issues, results };

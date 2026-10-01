@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
@@ -15,6 +15,8 @@ import { RosterPicker } from "./LeagueMatchupPicker";
 import PokemonChooser from "./PokemonChooser";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "./hp-preview";
 import { formatRange, koChance } from "./result-format";
+import { KOText } from "./MoveResults";
+import { usesToKOText } from "./uses-format";
 import type { CalculatorRosterState } from "./roster-data";
 import { getMoveOwner, getRosterPanel, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
 import { describeMoveSlot } from "@/app/lib/battle/move-defaults";
@@ -108,7 +110,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
       <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
         <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-xl">{species?.name ?? "Choose Pokémon"}</h3>
         {megaOptions.length > 0 && (
-          <div role="group" aria-label={`${baseName} ${position} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} aria-describedby={`${id}-mega-help`} className="flex min-w-0 flex-wrap gap-1">
+          <div role="group" aria-label={`${baseName} ${position} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
               const active = slot.build.speciesId === option.formId;
               const form = runtime.speciesById.get(option.formId);
@@ -129,13 +131,12 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
           </div>
         )}
       </div>
-      {megaOptions.length > 0 && <p id={`${id}-mega-help`} className="sr-only">Change form, ability and required held item without resetting preparation. Click the active form again to return to its original base.</p>}
       <p className="mt-1 text-xs text-muted sm:hidden">{types?.join(" / ")}{teraType && ` · Tera ${teraType}`}</p>
       <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{types?.map((type) => <TypeBadge key={type} type={type} />)}{teraType && <span className="text-xs font-semibold text-accent-text">Tera {teraType}</span>}</div>
-      {teraType && <p className="mt-1 text-xs text-muted">{teraType === "Stellar" ? "Stellar retains original defensive typing" : `Original types: ${species?.types.join(" / ")}; Tera changes defensive typing`}. Original STAB is retained.</p>}
+      {teraType && teraType !== "Stellar" && <p className="mt-1 text-xs text-muted">Original types: {species?.types.join(" / ")}</p>}
       {mimicry && species && <p className="mt-1 text-xs text-muted">{mimicryNote(mimicry, species.types)}</p>}
       <MechanicControls build={slot.build} position={position} runtime={runtime} onToggle={onToggleMechanic ? (mechanic) => onToggleMechanic(owner, mechanic) : undefined} />
-      {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} compact /></div>}
+      {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} /></div>}
       <RetainedConfiguration build={slot.build} runtime={runtime} />
       {health ? (
         <>
@@ -159,7 +160,6 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
             <CurrentHPField
               ref={hpRef}
               id={`${id}-hp`}
-              compact
               build={slot.build}
               runtime={runtime}
               issues={issues}
@@ -178,7 +178,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
         )}
       </div>
       <div role="group" aria-label={`${species?.name ?? "Pokémon"} ${position} quick moves`} className="mt-2 border-t border-line pt-2">
-        <p className="mb-2 text-xs font-semibold text-muted">Quick moves <span className="font-normal">· click to calculate or replace</span></p>
+        <p className="mb-2 text-xs font-semibold text-muted">Quick moves</p>
         <div className={styles.quickMoves}>
           {slot.moves.map((prepared, index) => {
             const move = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
@@ -236,6 +236,8 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   const row = currentResult && selectedMoveId && selectedRow?.moveId === selectedMoveId && !blockedReason ? selectedRow : undefined;
   const moveName = row?.effectiveName ?? move?.name ?? selectedMoveId;
   const preview = previewRemainingHP(receiver.build, row, rollMode, runtime);
+  // Uses to KO covers every roll, so the roll choice above never changes it.
+  const usesToKO = row?.kind === "calculated" ? usesToKOText(row) : null;
   const rollDescription = `${rollLabels[rollMode]} ${rollMode === "average" ? "estimate" : "roll"}`;
   const converted = source?.build.mechanic === "dynamax" || source?.build.mechanic === "gigantamax" || !!(selectedMoveId && source?.contexts[selectedMoveId]?.useZ)
     || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
@@ -251,7 +253,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   return (
     <section data-calculator-summary aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
       <h2 id={`${id}-heading`} className="sr-only">Active Pokémon and HP</h2>
-      <fieldset aria-describedby={`${id}-roll-help`} className="min-w-0 border-b border-line px-3 py-1 sm:px-5">
+      <fieldset className="min-w-0 border-b border-line px-3 py-1 sm:px-5">
         <legend className="sr-only">Damage roll</legend>
         <div className="flex flex-wrap items-center gap-x-3">
           <span aria-hidden="true" className="text-xs font-semibold text-muted">Damage roll</span>
@@ -264,7 +266,6 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
             ))}
           </div>
         </div>
-        <p id={`${id}-roll-help`} className="sr-only">Low and High use minimum and maximum damage. Average uses the mean of all damage rolls, rounded to whole HP. Changes only the preview, not current HP.</p>
       </fieldset>
       <div className="grid grid-cols-2 divide-x divide-line">
         {(["attacker", "defender"] as const).map((side) => {
@@ -295,7 +296,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div aria-live="polite" aria-atomic="true" className="min-w-0 flex-1">
             {!selectedMoveId ? (
-              <p className="text-sm font-medium text-accent-text">Click either Pokémon’s quick move to calculate and edit that slot, or browse all moves below.</p>
+              <p className="text-sm font-medium text-accent-text">Click either Pokémon’s quick move, or browse all moves below.</p>
             ) : (
               <>
                 <p className="wrap-anywhere text-xs font-semibold text-muted">{sourceName ?? "Choose a Pokémon"} ({source === defender ? "right" : "left"}) → {receiverName} ({receiverPosition.toLowerCase()})</p>
@@ -305,6 +306,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
                   <>
                     {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage} damage</strong> · {rollDescription}</p>}
                     {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range{row.alternate ? `, or ${formatRange(row.alternate.min, row.alternate.max)} with ${row.alternate.label} (${Math.round(row.alternate.chance * 100)}% chance)` : ""} · One-use KO: {koChance(row)} (all rolls{row.alternate ? ", both cases" : ""})</p>}
+                    {usesToKO && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">Uses to KO: {row?.usesToKO ? <span className="font-semibold text-text"><KOText text={usesToKO.label} /></span> : usesToKO.label}{usesToKO.details.map((detail, index) => <Fragment key={index}> · <KOText text={detail} /></Fragment>)}</p>}
                     {preview.status === "ready" ? (
                       <>
                         <p className="mt-1 text-sm text-text">{receiverPosition} Pokémon HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
@@ -318,7 +320,6 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
           </div>
           {row && <Button size="sm" variant="secondary" aria-controls={movesControl} onClick={onShowMove}>{needsHits ? "Set hits" : needsParty ? "Set party" : needsTurnOrder ? "Set turn order" : "Show move"}</Button>}
         </div>
-        {preview.status === "ready" && <p className="mt-1 text-xs text-muted">{rollMode === "average" && "Average damage is the mean of all rolls, rounded to whole HP. "}Damage-only estimate if it connects. Current HP is unchanged; recoil, healing and later turns are not included.</p>}
       </div>
     </section>
   );

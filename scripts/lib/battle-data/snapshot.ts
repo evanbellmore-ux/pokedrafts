@@ -139,7 +139,7 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
         id: row.placeholderFor === "Hidden Power" ? toID(row.name) : row.id,
         name: row.name, gen: row.gen, exists: row.exists, isNonstandard: row.isNonstandard,
         placeholderFor: row.placeholderFor, type: row.type, category: row.category,
-        basePower: row.basePower, accuracy: row.accuracy, priority: row.priority, target: row.target,
+        basePower: row.basePower, accuracy: row.accuracy, pp: row.pp, noPPBoosts: row.noPPBoosts, priority: row.priority, target: row.target,
         multihit: row.multihit, ohko: row.ohko, description: describe(row),
         isZ: row.isZ, isMax: row.isMax, zMove: row.zMove, maxMove: row.maxMove,
       })),

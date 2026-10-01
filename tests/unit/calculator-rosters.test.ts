@@ -705,7 +705,7 @@ describe("calculator team sources", () => {
     }));
   }
 
-  it("associates each pane's one native selector with its own label and help", () => {
+  it("associates each pane's one native selector with its own label", () => {
     const state = loaded();
     const html = renderToStaticMarkup(createElement("div", null,
       createElement(MyTeamPicker, { state, onLeagueChange: () => undefined, onRefresh: () => undefined }),
@@ -716,10 +716,7 @@ describe("calculator team sources", () => {
     expect(labels.map(([, , label]) => label)).toEqual(["My team", "Opponent"]);
     const selects = html.match(/<select\b[^>]*>/g)!;
     expect(selects).toHaveLength(2);
-    labels.forEach(([, id], index) => {
-      expect(selects[index]).toContain(`id="${id}"`);
-      expect(selects[index]).toContain(`aria-describedby="${id}-help"`);
-    });
+    labels.forEach(([, id], index) => expect(selects[index]).toContain(`id="${id}"`));
   });
 
   it("shows own team and league labels while selecting only existing league IDs", () => {
@@ -894,7 +891,6 @@ describe("calculator team sources", () => {
       else state.teamsStatus = "loading";
       const html = sourceHtml(pane, state);
       expect(html).toContain(phase === "account" ? "Loading your leagues…" : "Loading current team rosters…");
-      expect(html).toContain("You can still edit the calculator.");
       expect(html.match(/<button\b[^>]*>/)![0]).toContain('disabled=""');
       expect(html.match(/<select\b[^>]*>/)![0].includes('disabled=""')).toBe(pane === "opponent" || phase === "account");
     }
@@ -910,7 +906,6 @@ describe("calculator team sources", () => {
       expect(html).toContain("League teams unavailable");
       expect(html).toContain(patch.message ?? patch.teamsMessage ?? "Could not load league teams.");
       expect(html).toContain("Retry teams");
-      expect(html).toContain("Your manual calculator remains available");
       expect(html.match(/<button\b[^>]*>/)![0]).not.toContain('disabled=""');
       assertLabels(html);
     }
@@ -922,7 +917,7 @@ describe("calculator team sources", () => {
     expect(signedOut).toContain("Sign in to see your leagues");
     expect(signedOut).toContain('href="/login?next=%2Fcalculator"');
     expect(signedOut).toContain("Log in again");
-    expect(signedOut).toContain("You can keep using manual Pokémon selection.");
+    expect(signedOut).toContain("Your session has ended.");
     expect(signedOut).not.toContain("No leagues yet");
     expect(signedOut.match(/<select\b[^>]*>/)![0]).toContain('disabled=""');
     const noLeagues = sourceHtml(pane, state);
@@ -933,13 +928,9 @@ describe("calculator team sources", () => {
     assertLabels(noLeagues);
   });
 
-  it.each(["own", "opponent"] as const)("keeps %s source caveats and refresh without duplicating roster pickers", (pane) => {
+  it.each(["own", "opponent"] as const)("keeps %s source refresh without duplicating roster pickers", (pane) => {
     const html = sourceHtml(pane);
     expect(html).toContain("Refresh teams");
-    expect(html).toContain("Rosters provide Pokémon names, not saved sets.");
-    expect(html).toContain("New selections use editable default builds");
-    expect(html).toContain("draft costs are not Stat Points");
-    expect(html).toContain("Build edits stay in this page session only and never change a league roster.");
     expect(html).not.toContain("data-calculator-roster");
     expect(html).not.toContain("data-roster-choice");
     expect(html).not.toContain("in Teams");

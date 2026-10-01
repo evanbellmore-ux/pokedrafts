@@ -209,7 +209,6 @@ describe("the Magic Room item switch", () => {
     }));
     const html = panel(amoonguss, "grassyseed");
     expect(html).toContain("Its Grassy Seed was used on Grassy Terrain before Magic Room was set");
-    expect(html).toContain("or Grassy Terrain started after the room");
     expect(html).toMatch(/id="[^"]*-room-item"[^>]*checked/);
     expect(panel(unused(amoonguss), "grassyseed")).not.toMatch(/id="[^"]*-room-item"[^>]*checked/);
     expect(panel(amoonguss, null)).not.toContain("before Magic Room was set");
@@ -217,7 +216,7 @@ describe("the Magic Room item switch", () => {
     const flutter = build(sv, "fluttermane", { ability: "protosynthesis", item: "boosterenergy" });
     const booster = panel(flutter, "boosterenergy");
     expect(booster).toContain("Its Booster Energy was used on entry, before Magic Room was set");
-    expect(booster).not.toContain("This sets the ability");
+    expect(booster).not.toMatch(/id="[^"]*-ability-active"/);
   });
 });
 

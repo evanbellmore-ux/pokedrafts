@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
-import PokemonChooser, { chosenBuild } from "@/app/(app)/calculator/PokemonChooser";
+import { chosenBuild } from "@/app/(app)/calculator/PokemonChooser";
 import {
   activateMoveSlot, applyTeamPaste, changeTeamSource, createMatchup, getMoveOwner, getRosterPanel, getTeamPanel, getTeamSourceOwner,
   reconcileRosters, replaceMatchupMove, selectRosterPokemon, toggleMatchupMega, updateMatchupBuild, type PreparedMatchup,
@@ -48,7 +48,7 @@ describe("Hidden Power IVs for USUM quick moves", () => {
     const magnezone = picked("magnezone");
     expect(magnezone.attacker.moves[3]).toMatchObject({ moveId: "hiddenpowerground", origin: "randomBattle" });
     expect(ivs(magnezone.attacker.build)).toEqual({ hp: 31, atk: 31, def: 31, spa: 30, spd: 30, spe: 31 });
-    expect(magnezone.notice).toBe("Left Pokémon Magnezone: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def), the IVs Showdown's team validator gives a level-50 set with that Hidden Power.");
+    expect(magnezone.notice).toBe("Left Pokémon Magnezone: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
     // Level 50 with no EVs: no stat changes.
     expect(getBuildStats(magnezone.attacker.build, us)).toEqual(getBuildStats(chosenBuild("magnezone", us, "Singles"), us));
     // Its usual Analytic (from its Random Battle sets) boosts: Magnezone is slower than both targets.
@@ -93,7 +93,7 @@ describe("Hidden Power IVs for USUM quick moves", () => {
     const [magnezone, garchomp] = getRosterPanel(state, "own", us).choices;
     let m = selectRosterPokemon(reconcileRosters(singles(createMatchup(0, us)), state), "attacker", magnezone);
     expect(ivs(m.attacker.build)).toMatchObject({ spa: 30, spd: 30 });
-    expect(m.notice).toContain("IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def), the IVs Showdown's team validator gives a level-50 set with that Hidden Power.");
+    expect(m.notice).toContain("Default build loaded. IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def). Field settings are unchanged");
     const build = m.attacker.build as NativeBuild;
     m = updateMatchupBuild(m, "attacker", { ...build, native: { ...build.native, ivs: { ...build.native.ivs, spa: 31, spd: 31 } } });
     m = selectRosterPokemon(m, "attacker", garchomp);
@@ -174,7 +174,7 @@ describe("Hidden Power IVs for USUM quick moves", () => {
   });
 });
 
-describe("The Hidden Power IV notice and help", () => {
+describe("The Hidden Power IV notice", () => {
   it("names the side on every species change and clears when the new Pokémon gets no IVs", () => {
     let m = picked("magnezone");
     expect(m.notice).toMatch(/^Left Pokémon Magnezone: IVs set/);
@@ -185,12 +185,6 @@ describe("The Hidden Power IV notice and help", () => {
     // An edit that keeps the species leaves the notice alone.
     m = updateMatchupBuild(m, "defender", { ...m.defender.build, nature: "Modest" });
     expect(m.notice).toBe("");
-  });
-
-  it("tells the chooser the IVs can follow a suggested typed Hidden Power in USUM only", () => {
-    const html = (runtime: BattleRuntime) => renderToStaticMarkup(createElement(PokemonChooser, { side: "attacker", build: createBuild("garchomp", runtime), open: true, onClose: () => {}, onChange: () => {}, runtime, gameType: "Singles" }));
-    expect(html(us)).toContain("IVs (31, or a suggested typed Hidden Power&#x27;s usual IVs)");
-    expect(html(championsRuntime)).not.toContain("typed Hidden Power");
   });
 });
 

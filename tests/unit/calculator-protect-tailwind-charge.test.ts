@@ -258,18 +258,4 @@ describe("Field conditions", () => {
     expect(row("tailwind", build("talonflame", "galewings"), incineroar, field()).reason).toContain("Tick Tailwind on the user's side");
     expect(row("charge", build("rotomwash", "levitate"), incineroar, field()).reason).toContain("Tick Charge on the user's side");
   });
-
-  it("describes Protect for each game's own mechanics", async () => {
-    const help = async (game?: "scarlet_violet" | "sword_shield" | "ultra_sun_ultra_moon") => {
-      const runtime = game ? await loadBattleRuntime(game) : championsRuntime;
-      const html = renderToStaticMarkup(createElement(BattleConditions, { value: field(), issues: [], onChange: () => undefined, runtime }));
-      return html.match(/Protecting means[^.]*\./)?.[0] ?? "";
-    };
-    expect(await help()).toContain("Unseen Fist and Piercing Drill let contact moves through for a quarter of the damage");
-    expect(await help("scarlet_violet")).toContain("Unseen Fist lets contact moves through");
-    const usum = await help("ultra_sun_ultra_moon");
-    expect(usum).toContain("Z-Moves break through for a quarter of the damage");
-    expect(usum).not.toContain("Unseen Fist");
-    expect(await help("sword_shield")).toContain("a Dynamaxed Pokémon protects with Max Guard, which is not modelled");
-  });
 });

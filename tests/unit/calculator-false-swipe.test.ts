@@ -97,7 +97,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const sturdy = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), pineco);
     expect(sturdy).toMatchObject({ min: 300, max: 354, ohkoChance: 0, leavesOneHP: true });
     expect(sturdy.survival).toBeUndefined();
-    expect(sturdy.assumptions).not.toContain("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed.");
+    expect(sturdy.assumptions).not.toContain("Damage is uncapped; full-HP Focus Sash/Sturdy prevents a single-hit KO unless bypassed, and Uses to KO counts the next use from 1 HP.");
     leavesOne("ultra_sun_ultra_moon", pineco, sturdy, 21, [300, 327, 354]);
     // Showdown: Pikachu 20/20 -> 1/20 and the Focus Sash is still held.
     const sash = build("sword_shield", "pikachu", { item: "focussash", level: 5 });
@@ -110,7 +110,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const banded = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), band);
     expect(banded).toMatchObject({ ohkoChance: 0, leavesOneHP: true });
     expect(banded.survival).toBeUndefined();
-    expect(banded.assumptions).not.toContain("Focus Band survival chance is not modeled; KO probability is unavailable.");
+    expect(banded.assumptions).not.toContain("Focus Band survival chance is not modeled; KO chances and Uses to KO are unavailable.");
     leavesOne("ultra_sun_ultra_moon", band, banded, 110, [76, 83, 90]);
     // Showdown: Ogerpon-Cornerstone 24/24 -> 1/24 (raw 117-138).
     const ogerpon = build("scarlet_violet", "ogerponcornerstone", { ability: "sturdy", item: "cornerstonemask", level: 5 });

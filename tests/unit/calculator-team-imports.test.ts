@@ -657,7 +657,7 @@ describe("team import state: stale actions, reconciliation, Swap and Reset", () 
 });
 
 describe("team import SSR: initial importer", () => {
-  it("renders both labelled, session-only forms without fetching, applying, removing or showing an unreviewed preview", () => {
+  it("renders both labelled forms without fetching, applying, removing or showing an unreviewed preview", () => {
     const current = bothPastes();
     const onApply = vi.fn();
     const onRemove = vi.fn();
@@ -669,10 +669,9 @@ describe("team import SSR: initial importer", () => {
     expect(html).toContain('data-paste-importer="opponent"');
     expect(html).toContain("My team · PokéPaste");
     expect(html).toContain("Opponent · PokéPaste");
-    expect(html).toContain("Session only; nothing is saved to your account or a league.");
     expect(html).toContain("Champions Stat Points");
     expect(html).toContain("Traditional EVs/IVs");
-    expect(html).toContain("Only https://pokepast.es links are fetched.");
+    expect([...html.matchAll(/>PokéPaste link<\/label>/g)]).toHaveLength(2);
     const actions = html.match(/<button\b[\s\S]*?<\/button>/g) ?? [];
     for (const label of ["Load link and preview", "Preview team text"]) {
       const buttons = actions.filter((button) => button.includes(label));
@@ -700,7 +699,6 @@ describe("team import SSR: initial importer", () => {
     expect(html).toContain(PASTE_URL);
     expect(html).toContain("1 selectable / 1 imported");
     expect(html).toContain("Remove imported team");
-    expect(html).toContain("keeps the active Pokémon as manual preparation");
     expect(html).not.toContain("data-paste-preview");
     expect(onApply).not.toHaveBeenCalled();
     expect(onRemove).not.toHaveBeenCalled();
@@ -722,7 +720,6 @@ describe("team import SSR: shared source panels and league context", () => {
     expect(html.match(/<select\b/g)).toHaveLength(2);
     expect(html).not.toContain("Opponent league");
     expect(html).toContain("Your team</dt>");
-    expect(html).toContain("Rosters provide Pokémon names, not saved sets.");
     const [own, opponent] = select.mock.calls.map(([props]) => props);
     expect(own.value).toBe("league-a");
     expect(opponent.value).toBe("member-away");
@@ -746,7 +743,6 @@ describe("team import SSR: shared source panels and league context", () => {
     expect(html.match(/<select\b/g)).toHaveLength(2);
     expect(html).toContain("Opponent league");
     expect(html).toContain("Your league membership</dt>");
-    expect(html).toContain("Your imported team stays unchanged.");
     expect(html).not.toContain('value="member-home"');
     expect(onLeagueChange).not.toHaveBeenCalled();
     expect(onOpponentChange).not.toHaveBeenCalled();

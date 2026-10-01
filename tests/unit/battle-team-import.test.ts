@@ -361,7 +361,6 @@ describe("runtime-aware importer draft interface", () => {
     expect(html).toContain(runtime.profile.label);
     expect(html).toContain('value="traditional" selected=""');
     expect(html).not.toContain('value="champions"');
-    expect(html).toContain("omitted level defaults to 100");
     expect(html).not.toContain("data-paste-preview");
     expect(onApply).not.toHaveBeenCalled();
   });
