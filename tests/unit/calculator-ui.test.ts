@@ -12,7 +12,7 @@ import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calcula
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
-import { activateMoveSlot, dismissMoveReplacement, getAttackView, getMoveOwner, replaceMatchupMove, selectMatchupMove, toggleMatchupMega, updateMatchupBuild, type BattleSide, type MoveOwner } from "@/app/(app)/calculator/roster-prep";
+import { activateMoveSlot, dismissMoveReplacement, getAttackView, getMoveOwner, replaceMatchupMove, selectMatchupMove, toggleMatchupMega, updateMatchupBuild, updateMatchupMoveContext, type BattleSide, type MoveOwner } from "@/app/(app)/calculator/roster-prep";
 import * as buttonControl from "@/app/components/ui/Button";
 import * as selectControl from "@/app/components/ui/Select";
 import { createBuild, createConditions, rankResults, SHARED_FIELD_EFFECTS, validateBuild, validateConditions, withUsualAbility } from "@/app/lib/battle/model";
@@ -542,10 +542,11 @@ describe("Champions calculator UI", () => {
   it.each([false, true])("renders one responsive move-selection branch (wide=%s) with unique labelled controls", (wide) => {
     viewport.wide = wide;
     const html = renderToStaticMarkup(createElement(MoveResults, {
-      rows: [row("flamethrower", "calculated"), row("bulletseed", "needs-context")],
+      rows: [row("flamethrower", "calculated"), { ...row("bulletseed", "needs-context"), reason: "Needs the hit count (2–5)." }],
       moveIds: ["flamethrower", "bulletseed"], ownerId: "0:0", sourcePosition: "left",
       selectedMoveId: "bulletseed", onSelectMove: () => undefined,
-      contexts: {}, onContextChange: () => undefined,
+      // A chosen count outside 2–5 waits for hits; a random count does not (calculator-hit-ranges-ui.test.ts).
+      contexts: { bulletseed: { hits: 6 } }, onContextChange: () => undefined,
       abilityId: "blaze", itemId: "",
       attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
     }));
@@ -619,14 +620,16 @@ describe("Champions calculator UI", () => {
   });
 
   it("keeps power, accuracy, reasons, rolls and the single hit editor in Details", () => {
+    // A stale chosen count (6 of 2–5) is the hit count a row still waits for.
     const render = (abilityId: string, itemId = "") => renderToStaticMarkup(createElement(MoveDetails, {
       moveId: "bulletseed", row: { ...row("bulletseed", "needs-context"), reason: "Needs the hit count (2–5)." },
-      id: "bulletseed-details", context: undefined, abilityId, itemId, onContextChange: () => undefined,
+      id: "bulletseed-details", context: { hits: 6 }, abilityId, itemId, onContextChange: () => undefined,
     }));
     const html = render("overgrow");
     expect([...html.matchAll(/<select\b/g)]).toHaveLength(1);
     expect(html).toContain('id="bulletseed-details-hits"');
     expect(html).toContain('for="bulletseed-details-hits"');
+    expect(html).toContain('<option value="">2–5 hits (random)</option><option value="6" disabled="" selected="">6 hits — choose again</option>');
     expect(html).toContain("Needs the hit count (2–5).");
     expect(html).toContain("Base power: 25");
     expect(html).toContain("Accuracy: 100%");
@@ -801,7 +804,8 @@ describe("quick-move replacement UI", () => {
         rows: [{ ...row("sludgebomb", "calculated"), min: 12345, max: 12345, rolls: 12345 }, row("surf", "calculated")],
         moveIds: ["protect", "sludgebomb", "bulletseed", "energyball", "sludgebomb", "unknownmove"],
         ownerId: "3:8", sourcePosition: "right", selectedMoveId: "sludgebomb", onSelectMove,
-        contexts: {}, onContextChange: vi.fn(), replacement: { slotIndex: 0, moves, onReplace, onDone: vi.fn() },
+        // Bullet Seed's chosen count is outside 2–5, so it still waits for hits while paused.
+        contexts: { bulletseed: { hits: 6 } }, onContextChange: vi.fn(), replacement: { slotIndex: 0, moves, onReplace, onDone: vi.fn() },
         abilityId: "overgrow", itemId: "", attackerName: "Venusaur", defenderName: "Blastoise", defenderHP: null, blocked: true,
       }));
       expect(html).toContain("Calculations are paused.");
@@ -1322,8 +1326,11 @@ describe("active matchup and selected-move summary", () => {
   });
 
   it("keeps the selected summary independent of filtering and offers one Set hits action", () => {
-    const matchup = selectMatchupMove(updateMatchupBuild(createMatchup(), "attacker", createBuild("venusaur")), "bulletseed");
-    const result = row("bulletseed", "needs-context");
+    const selected = selectMatchupMove(updateMatchupBuild(createMatchup(), "attacker", createBuild("venusaur")), "bulletseed");
+    // A chosen count outside 2–5 waits for hits.
+    const matchup = updateMatchupMoveContext(selected, getMoveOwner(selected.attacker), "bulletseed", { hits: 6 });
+    const result = { ...row("bulletseed", "needs-context"), reason: "Needs the hit count (2–5)." };
+    expect(summaryHTML(selected, result)).not.toContain(">Set hits</button>");
     expect(filterMoveResults([result], "surf", "all")).toEqual([]);
     const html = summaryHTML(matchup, result);
     expect(html).toContain("Bullet Seed");
@@ -1336,6 +1343,8 @@ describe("active matchup and selected-move summary", () => {
     let matchup = updateMatchupBuild(createMatchup(), "attacker", createBuild(moveId === "bulletseed" ? "venusaur" : "charizard"));
     matchup = activateMoveSlot(matchup, getMoveOwner(matchup.attacker), 0);
     matchup = selectMatchupMove(matchup, moveId);
+    // Bullet Seed's chosen count is outside 2–5, so it waits for hits.
+    if (moveId === "bulletseed") matchup = updateMatchupMoveContext(matchup, getMoveOwner(matchup.attacker), moveId, { hits: 6 });
     const before = matchup;
     const token = matchup.replacement!;
     const onShowMove = vi.fn(() => { matchup = dismissMoveReplacement(matchup, token); });

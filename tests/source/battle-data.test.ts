@@ -711,7 +711,8 @@ describe("Uses to KO tables against the pinned Dex", () => {
 
   it.each(NATIVE_GAMES)("triggers the $game abilities and items a hit sets off as their pinned handlers do", (profile) => {
     const fact = facts[profile.game];
-    // Gulp Missile's boost needs Cramorant's gulping form, which no calculated row has.
+    // Gulp Missile acts once, from Cramorant's Gulping form (its Defense drop) or Gorging form (paralysis), not on every hit:
+    // hit-loop.ts hitStep and uses-to-ko.ts afterHit model it, so it is not one of HIT_ABILITIES.
     const { gulpmissile, ...abilities } = fact.hitAbilities;
     expect(gulpmissile).toBeDefined();
     expect(Object.fromEntries(Object.entries(HIT_ABILITIES).map(([id, entry]) => [id, { stages: entry.stages, ...accepted(entry.when, "contact") }])))

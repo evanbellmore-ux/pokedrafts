@@ -471,7 +471,23 @@ function usesOrder(row: MoveDamageResult): number[] {
   }
 }
 
+/**
+ * The damage the minimum and maximum sorts compare: the row's min or max, except for a random hit count
+ * (hitChances), where it is that extreme's expected value over the counts, Σ chance × the sum of the
+ * count's first hits' lowest (or highest) rolls. A 2–5 hit move ranks by 35% × 2 hits + 35% × 3 + 15% × 4
+ * + 15% × 5 of its lowest (or highest) rolls, not by its fewest or most hits.
+ */
+function sortDamage(row: MoveDamageResult, extreme: "min" | "max"): number {
+  const value = row[extreme] ?? -1;
+  const { hitChances, rolls } = row;
+  if (!hitChances?.length || !Array.isArray(rolls) || !rolls.every((hit) => Array.isArray(hit) && hit.length > 0)) return value;
+  const perHit = (rolls as number[][]).map((hit) => extreme === "min" ? Math.min(...hit) : Math.max(...hit));
+  if (perHit.length < hitChances[hitChances.length - 1].hits) return value;
+  return hitChances.reduce((sum, { hits, chance }) => sum + chance * perHit.slice(0, hits).reduce((total, damage) => total + damage, 0), 0);
+}
+
 export function rankResults(results: MoveDamageResult[], sort: DamageSort = "minimum", runtime: BattleRuntime = championsRuntime): MoveDamageResult[] {
+  const damage = new Map(results.map((row) => [row, { min: sortDamage(row, "min"), max: sortDamage(row, "max") }]));
   return [...results].sort((a, b) => {
     const nameA = a.effectiveName ?? runtime.movesById.get(a.moveId)?.name ?? a.moveId;
     const nameB = b.effectiveName ?? runtime.movesById.get(b.moveId)?.name ?? b.moveId;
@@ -487,8 +503,9 @@ export function rankResults(results: MoveDamageResult[], sort: DamageSort = "min
     // Uses to KO ties fall back to the minimum damage order.
     const primary = sort === "maximum" ? "max" : "min";
     const secondary = sort === "maximum" ? "min" : "max";
-    return (b[primary] ?? -1) - (a[primary] ?? -1)
-      || (b[secondary] ?? -1) - (a[secondary] ?? -1)
+    const damageA = damage.get(a)!, damageB = damage.get(b)!;
+    return damageB[primary] - damageA[primary]
+      || damageB[secondary] - damageA[secondary]
       || nameA.localeCompare(nameB, "en");
   });
 }

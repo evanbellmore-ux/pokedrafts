@@ -5,7 +5,6 @@ import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
-import { hitCountRule } from "@/app/lib/battle/hit-count";
 import { mimicryNote, mimicryState, type MimicryState } from "@/app/lib/battle/mimicry";
 import { turnOrderQuestion } from "@/app/lib/battle/turn-order";
 import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
@@ -14,8 +13,8 @@ import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
 import PokemonChooser from "./PokemonChooser";
 import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "./hp-preview";
-import { formatRange, koChance } from "./result-format";
-import { KOText } from "./MoveResults";
+import { formatRange, hitRangeText, koChance } from "./result-format";
+import { KOText, rowHitRule, waitsForHits } from "./MoveResults";
 import { usesToKOText } from "./uses-format";
 import type { CalculatorRosterState } from "./roster-data";
 import { getMoveOwner, getRosterPanel, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
@@ -241,9 +240,10 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   const rollDescription = `${rollLabels[rollMode]} ${rollMode === "average" ? "estimate" : "roll"}`;
   const converted = source?.build.mechanic === "dynamax" || source?.build.mechanic === "gigantamax" || !!(selectedMoveId && source?.contexts[selectedMoveId]?.useZ)
     || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
-  const hitRule = move && source ? hitCountRule(move, source.build, runtime, { magicRoom, opponentAbilityId: receiver.build.abilityId }) : null;
-  const needsHits = !converted && row?.kind === "needs-context" && hitRule?.kind === "choose" && hitRule.defaultHits === null
-    && (!row.reason || /\bhits?\b/i.test(row.reason));
+  const hitRule = move && source ? rowHitRule(move, row, source.build, runtime, { magicRoom, opponentAbilityId: receiver.build.abilityId }) : null;
+  const needsHits = !converted && row?.kind === "needs-context" && waitsForHits(hitRule, selectedMoveId ? source?.contexts[selectedMoveId] : undefined, row);
+  const chosenHits = !converted && hitRule?.kind === "choose" && !!selectedMoveId && source?.contexts[selectedMoveId]?.hits !== undefined;
+  const hits = row?.kind === "calculated" ? hitRangeText(row, chosenHits) : null;
   // Beat Up's party is chosen in the move settings, which Show move focuses.
   const needsParty = !converted && row?.kind === "needs-context" && move?.id === "beatup";
   // Analytic and Bolt Beak ask for the turn order in the same move settings.
@@ -305,7 +305,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
                   <>
                     {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage} damage</strong> · {rollDescription}</p>}
-                    {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range{row.alternate ? `, or ${formatRange(row.alternate.min, row.alternate.max)} with ${row.alternate.label} (${Math.round(row.alternate.chance * 100)}% chance)` : ""} · One-use KO: {koChance(row)} (all rolls{row.alternate ? ", both cases" : ""})</p>}
+                    {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range{hits && `, ${hits}`}{row.alternate ? `, or ${formatRange(row.alternate.min, row.alternate.max)} with ${row.alternate.label} (${Math.round(row.alternate.chance * 100)}% chance)` : ""} · One-use KO: {koChance(row)} (all rolls{row.alternate ? ", both cases" : ""})</p>}
                     {usesToKO && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">Uses to KO: {row?.usesToKO ? <span className="font-semibold text-text"><KOText text={usesToKO.label} /></span> : usesToKO.label}{usesToKO.details.map((detail, index) => <Fragment key={index}> · <KOText text={detail} /></Fragment>)}</p>}
                     {preview.status === "ready" ? (
                       <>

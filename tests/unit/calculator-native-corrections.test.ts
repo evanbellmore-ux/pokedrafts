@@ -160,7 +160,9 @@ describe("native forms and restricted moves", () => {
     expect(ash).toMatchObject({ kind: "calculated", hits: 3, min: 54, max: 66, effectivePower: 20 });
     const bond = calculateMatchup(build(us, "greninjabond", { abilityId: "battlebond", evs: { spa: 252 } }), build(us, "snorlax"), { ...createConditions(), gameType: "Singles" }, {}, us)
       .results.find((result) => result.moveId === "watershuriken")!;
-    expect(bond.kind).toBe("needs-context");
+    // Greninja-Bond keeps the random 2-5 hits (pinned Showdown hitStepMoveHitLoop), shown as their range.
+    expect(bond).toMatchObject({ kind: "calculated", hits: 5, effectivePower: 15 });
+    expect(bond.hitChances?.map(({ hits }) => hits)).toEqual([2, 3, 4, 5]);
   });
 
   it("fails Hyperspace Fury and Aura Wheel for any other user", () => {

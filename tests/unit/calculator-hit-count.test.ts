@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
 import MoveResults, { MoveDetails } from "@/app/(app)/calculator/MoveResults";
-import { createMatchup, getAttackView, selectMatchupMove, updateMatchupBuild } from "@/app/(app)/calculator/roster-prep";
+import { createMatchup, getAttackView, getMoveOwner, selectMatchupMove, updateMatchupBuild, updateMatchupMoveContext } from "@/app/(app)/calculator/roster-prep";
 import * as selectControl from "@/app/components/ui/Select";
 import { calculateMatchup } from "@/app/lib/battle/calculate";
 import { checksAccuracyPerHit, hitCountRule } from "@/app/lib/battle/hit-count";
@@ -81,10 +81,14 @@ describe("moves that check accuracy for every hit", () => {
     expect(skillLink.assumptions).toContain("Skill Link: all 3 hits land.");
     const diceAxel = row("tripleaxel", build("weavile", "pressure", sv, { itemId: "loadeddice" }), svGarchomp, { hits: 1 }, sv);
     expect(diceAxel).toMatchObject({ kind: "calculated", hits: 3, min: 340, max: 412 });
-    // Loaded Dice makes Population Bomb hit 4-10 times at random, so a count must be chosen.
+    // Loaded Dice makes Population Bomb hit 4-10 times at random (1/7 each): with no count chosen the row runs
+    // from 4 hits at the lowest rolls to 10 at the highest (pinned Showdown: 60 and 180), and 3 is a stale count.
     const diceMaushold = build("maushold", "technician", sv, { itemId: "loadeddice" });
-    expect(row("populationbomb", diceMaushold, svGarchomp, undefined, sv)).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (4–10)." });
-    expect(row("populationbomb", diceMaushold, svGarchomp, { hits: 3 }, sv).kind).toBe("needs-context");
+    const range = row("populationbomb", diceMaushold, svGarchomp, undefined, sv);
+    expect(range).toMatchObject({ kind: "calculated", hits: 10, min: 60, max: 180 });
+    expect(range.hitChances).toEqual([4, 5, 6, 7, 8, 9, 10].map((hits) => ({ hits, chance: 1 / 7 })));
+    expect(range.assumptions).toContain("Population Bomb: 4–10 hits (Loaded Dice, 14.29% each).");
+    expect(row("populationbomb", diceMaushold, svGarchomp, { hits: 3 }, sv)).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (4–10)." });
     expect(row("populationbomb", diceMaushold, svGarchomp, { hits: 6 }, sv)).toMatchObject({ kind: "calculated", hits: 6, min: 90, max: 108 });
     expect(hitCountRule(sv.movesById.get("populationbomb")!, { abilityId: "skilllink", itemId: "loadeddice" }, sv)).toMatchObject({ kind: "choose", min: 4, max: 10 });
   });
@@ -141,8 +145,11 @@ describe("hit-count editor for these moves", () => {
     expect(skillLink).not.toContain("<select");
     expect(skillLink).toContain("Skill Link: all 3 hits land.");
     const dice = render("populationbomb", "technician", "loadeddice", undefined, sv);
-    expect(dice).toContain("Choose hit count");
-    expect(dice).toContain('<option value="4">4 hits</option>');
+    // The random count comes first and is the default; each exact count can still be chosen.
+    expect(dice).toContain('<option value="" selected="">4–10 hits (random)</option><option value="4">4 hits</option>');
+    expect(dice).not.toContain("Choose hit count");
+    expect(render("bulletseed", "technician", "", undefined, sv)).toContain('<option value="" selected="">2–5 hits (random)</option><option value="2">2 hits</option>');
+    expect(render("populationbomb", "technician", "loadeddice", { hits: 6 }, sv)).toContain('<option value="6" selected="">6 hits</option>');
     expect(dice).not.toContain('<option value="3">');
     expect(dice).toContain("Loaded Dice limits this choice to 4–10 hits.");
   });
@@ -178,18 +185,19 @@ describe("hit-count editor for these moves", () => {
 });
 
 describe("Set hits prompts", () => {
-  function results(runtime: BattleRuntime, attacker: BattleBuild, moveId: string, result: MoveDamageResult) {
+  function results(runtime: BattleRuntime, attacker: BattleBuild, moveId: string, result: MoveDamageResult, context?: MoveContext) {
     return renderToStaticMarkup(createElement(MoveResults, {
-      rows: [result], moveIds: [moveId], ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(), contexts: {},
+      rows: [result], moveIds: [moveId], ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(), contexts: context ? { [moveId]: context } : {},
       onContextChange: vi.fn(), abilityId: attacker.abilityId, itemId: attacker.itemId, attackerName: "Attacker", defenderName: "Defender",
       defenderHP: 100, runtime, sourceBuild: attacker,
     }));
   }
-  function summary(runtime: BattleRuntime, attacker: BattleBuild, defender: BattleBuild, moveId: string, result: MoveDamageResult) {
+  function summary(runtime: BattleRuntime, attacker: BattleBuild, defender: BattleBuild, moveId: string, result: MoveDamageResult, context?: MoveContext) {
     let matchup = createMatchup(0, runtime);
     matchup = updateMatchupBuild(matchup, "attacker", attacker);
     matchup = updateMatchupBuild(matchup, "defender", defender);
     matchup = selectMatchupMove(matchup, moveId);
+    if (context) matchup = updateMatchupMoveContext(matchup, getMoveOwner(matchup.attacker), moveId, context);
     const view = getAttackView(matchup);
     return renderToStaticMarkup(createElement(MatchupSummary, {
       attacker: matchup.attacker, defender: matchup.defender, attack: matchup.attack, replacement: matchup.replacement,
@@ -200,14 +208,38 @@ describe("Set hits prompts", () => {
     }));
   }
 
-  it("asks for hits for Loaded Dice Population Bomb", async () => {
+  it("shows Loaded Dice Population Bomb's random range without asking, and asks for a stale count", async () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const maushold = build("maushold", "technician", sv, { itemId: "loadeddice" });
     const garchompSV = build("garchomp", "sandveil", sv);
     const result = row("populationbomb", maushold, garchompSV, undefined, sv);
-    expect(result.kind).toBe("needs-context");
-    expect(results(sv, maushold, "populationbomb", result)).toContain("Set hits");
-    expect(summary(sv, maushold, garchompSV, "populationbomb", result)).toContain(">Set hits</button>");
+    expect(result).toMatchObject({ kind: "calculated", hits: 10 });
+    expect(result.hitChances?.map(({ hits }) => hits)).toEqual([4, 5, 6, 7, 8, 9, 10]);
+    expect(results(sv, maushold, "populationbomb", result)).not.toContain("Set hits");
+    expect(results(sv, maushold, "populationbomb", result)).toContain("4–10 hits");
+    const html = summary(sv, maushold, garchompSV, "populationbomb", result);
+    expect(html).not.toContain(">Set hits</button>");
+    expect(html).toContain(">Show move</button>");
+    // Loaded Dice keeps 4–10 hits, so a chosen 3 waits for a new count.
+    const stale = row("populationbomb", maushold, garchompSV, { hits: 3 }, sv);
+    expect(stale).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (4–10)." });
+    expect(results(sv, maushold, "populationbomb", stale, { hits: 3 })).toContain("Set hits");
+    expect(summary(sv, maushold, garchompSV, "populationbomb", stale, { hits: 3 })).toContain(">Set hits</button>");
+  });
+
+  it("shows a 2–5 hit move's random range without asking, and asks for a stale count", async () => {
+    const sv = await loadBattleRuntime("scarlet_violet");
+    const breloom = build("breloom", "technician", sv);
+    const garchompSV = build("garchomp", "sandveil", sv);
+    const result = row("bulletseed", breloom, garchompSV, undefined, sv);
+    expect(result).toMatchObject({ kind: "calculated", hits: 5, hitChances: [{ hits: 2, chance: 0.35 }, { hits: 3, chance: 0.35 }, { hits: 4, chance: 0.15 }, { hits: 5, chance: 0.15 }] });
+    expect(results(sv, breloom, "bulletseed", result)).not.toContain("Set hits");
+    expect(results(sv, breloom, "bulletseed", result)).toContain("2–5 hits");
+    expect(summary(sv, breloom, garchompSV, "bulletseed", result)).not.toContain(">Set hits</button>");
+    const stale = row("bulletseed", breloom, garchompSV, { hits: 6 }, sv);
+    expect(stale).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (2–5)." });
+    expect(results(sv, breloom, "bulletseed", stale, { hits: 6 })).toContain("Set hits");
+    expect(summary(sv, breloom, garchompSV, "bulletseed", stale, { hits: 6 })).toContain(">Set hits</button>");
   });
 
   it("does not ask for hits when a per-hit-accuracy move needs other context", () => {

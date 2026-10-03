@@ -17,13 +17,19 @@ import { mimicryState } from "./mimicry";
 import { FIXED_DAMAGE_MOVES, MOVES_FIRST_POWER_MOVES } from "./turn-order";
 import { imposterTransforms, movesSpeciesId, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
-import { hitCountRule, type HitCountBattle } from "./hit-count";
+import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
+import {
+  berryArithmetic, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, PINCH_STAT_BERRIES, PINCH_TYPES, walkHits,
+  type HitLoopInput, type HitState,
+} from "./hit-loop";
+import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
 import { ENTRY_ABILITIES, estimateUsesToKO, prepareUses, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
 import type {
   BattleBuild,
   BattleConditions,
   BuildIssue,
+  CombatStat,
   ChampionsMove,
   ChampionsSpecies,
   MoveContext,
@@ -558,10 +564,11 @@ function settleEntry(
  * Held-item states the battle has already settled before this attack, from the Pokémon's settled
  * abilities: a matching status berry (Lum, Rawst, Cheri, Pecha, Aspear, Chesto) cures its holder at
  * once and is used up, unless Magic Room, an active Klutz or the other battler's Unnerve / As One
- * stops it; a terrain Seed on its terrain is used up on entry. Unburden then activates, and it stays
- * off while an item is still held.
+ * stops it; for the attacker (`attacking`), an HP or pinch berry at or under its line is eaten; a
+ * terrain Seed on its terrain is used up on entry. Unburden then activates, and it stays off while an
+ * item is still held.
  */
-function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string): { build: BattleBuild; lines: string[] } {
+function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string, attacking = false): { build: BattleBuild; lines: string[] } {
   const lines: string[] = [];
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   let settled = build;
@@ -590,6 +597,27 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   const boostScale = (contrary ? -1 : 1) * (build.abilityId === "simple" && abilityOn ? 2 : 1);
   const stages = (amount: number, stat: (typeof COMBAT_STATS)[number]) =>
     `${amount > 0 ? "+" : ""}${amount} ${STAGE_NAMES[stat]}${contrary ? " (Contrary)" : boostScale === 2 ? " (Simple)" : ""}`;
+  // The attacker's HP or pinch berry at or under its line was eaten at the Update before it moves (pinned
+  // Showdown runs it after every action; data/items.ts onUpdate): Sitrus, Oran and Berry Juice at half HP or
+  // less, the Figy family and the stat berries at a quarter (half with Gluttony); Ripen doubles the heal and
+  // the rise, Cheek Pouch heals a third more, and boost() applies Contrary and Simple. Unnerve and As One stop
+  // a Berry, not Berry Juice (used, not eaten); Enigma Berry acts only when its holder is hit. In the HP as
+  // entered (before any Dynamax), as the berry was eaten when the HP fell there.
+  const maxHP = getBuildStats(build, runtime)?.hp ?? 0;
+  const pinchStat = PINCH_STAT_BERRIES[settled.itemId];
+  if (attacking && !usedUp && itemOn && build.currentHP !== null && maxHP && settled.itemId !== "enigmaberry"
+    && (HEALING_BERRIES.has(settled.itemId) || pinchStat) && (settled.itemId === "berryjuice" || !unnerved)) {
+    const ability = abilityOn ? build.abilityId : "";
+    const berry = berryArithmetic(settled.itemId, { maxHP, baseMaxHP: maxHP, ability }, runtime.profile.generation);
+    if (build.currentHP <= berry.line) {
+      const hp = eatBerry(berry, build.currentHP);
+      const rise = pinchStat ? boostScale * (ability === "ripen" ? 2 : 1) : 0;
+      const changes = [hp !== build.currentHP ? `${hp} HP` : "", rise ? stages(rise, pinchStat) : ""].filter(Boolean);
+      lines.push(`${cap(who)} ${name}'s ${itemName(settled.itemId)} was eaten at ${build.currentHP} HP${changes.length ? `: ${changes.join(", ")}` : ""}.`);
+      settled = { ...settled, itemId: "", currentHP: hp, ...(rise ? { boosts: { ...settled.boosts, [pinchStat]: clampStage((settled.boosts[pinchStat] ?? 0) + rise) } } : {}) };
+      usedUp = true;
+    }
+  }
   // An item Magic Room kept from acting: still unused under the room, and still held after it.
   const unused = conditions.magicRoom ? "is not used" : "is still held";
   if (seedUsed) lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} was used up on ${conditions.terrain} Terrain${conditions.magicRoom ? " before Magic Room" : ""}: ${stages(boostScale, seedStat)}.`);
@@ -1099,15 +1127,19 @@ function makeField(field: BattleConditions) {
   });
 }
 
-function resolveHits(move: ChampionsMove, build: BattleBuild, context: MoveContext | undefined, runtime: BattleRuntime, battle: HitCountBattle) {
+/**
+ * The hits the engine is asked for: the fixed count, the chosen one, or with none chosen every hit of a move
+ * that checks accuracy for each, or for a random count its largest, with the chances of each (`chances`). A
+ * chosen count outside the rule's range is asked for again.
+ */
+function resolveHits(move: ChampionsMove, build: BattleBuild, context: MoveContext | undefined, runtime: BattleRuntime, battle: HitCountBattle): { hits: number | null; reason: string | null; chances: HitChance[] | null } {
   const rule = hitCountRule(move, build, runtime, battle);
-  if (rule.kind === "fixed") return { hits: rule.hits, reason: null };
-  // Per-hit-accuracy moves default to every hit landing; 2–5 hit moves need a choice.
-  if (context?.hits === undefined && rule.defaultHits !== null) return { hits: rule.defaultHits, reason: null };
-  if (!Number.isInteger(context?.hits) || context!.hits! < rule.min || context!.hits! > rule.max) {
-    return { hits: null, reason: `Needs the hit count (${rule.min}–${rule.max}).` };
+  if (rule.kind === "fixed") return { hits: rule.hits, reason: null, chances: null };
+  if (context?.hits === undefined) return { hits: rule.defaultHits ?? rule.max, reason: null, chances: rule.defaultHits === null ? rule.chances : null };
+  if (!Number.isInteger(context.hits) || context.hits < rule.min || context.hits > rule.max) {
+    return { hits: null, reason: `Needs the hit count (${rule.min}–${rule.max}).`, chances: null };
   }
-  return { hits: context!.hits!, reason: null };
+  return { hits: context.hits, reason: null, chances: null };
 }
 
 /**
@@ -1171,6 +1203,73 @@ function copyRolls(damage: Result["damage"]): MoveDamageResult["rolls"] {
   if (typeof damage === "number") return damage;
   if (Array.isArray(damage[0])) return (damage as number[][]).map((rolls) => [...rolls]);
   return [...damage] as number[];
+}
+
+/** The engine result with other damage (its methods kept), for a KO chance of the hits that land. */
+function withDamage(result: Result, damage: number[]): Result {
+  return Object.assign(Object.create(Object.getPrototypeOf(result)), result, { damage }) as Result;
+}
+
+/**
+ * A random count's range with each count's chance (chanceText, as the rolls list states it), counts of equal
+ * chance together: "Bullet Seed: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).", "Population Bomb: 4–10
+ * hits (Loaded Dice, 14.29% each).".
+ */
+function hitRangeLine(name: string, chances: HitChance[], loadedDice: boolean): string {
+  const groups: HitChance[][] = [];
+  for (const entry of chances) {
+    const group = groups[groups.length - 1];
+    if (group && Math.abs(group[0].chance - entry.chance) < 1e-9) group.push(entry);
+    else groups.push([entry]);
+  }
+  const counts = (group: HitChance[]) => group.length === 1 ? `${group[0].hits}` : group.length === 2 ? `${group[0].hits} and ${group[1].hits}` : `${group[0].hits}–${group[group.length - 1].hits}`;
+  const each = (group: HitChance[]) => `${chanceText(group[0].chance)}${group.length > 1 ? " each" : ""}`;
+  const parts = groups.length === 1 ? each(groups[0]) : groups.map((group) => `${counts(group)}: ${each(group)}`).join(", ");
+  return `${name}: ${chances[0].hits}–${chances[chances.length - 1].hits} hits (${loadedDice ? `Loaded Dice${groups.length === 1 ? "," : ";"} ` : ""}${parts}).`;
+}
+
+/**
+ * Whether pinned Showdown keeps the attacker's ability from the target's Mummy, Lingering Aroma or Wandering
+ * Spirit (onDamagingHit; a Neutralizing Gas suppressing them counts as no replacer): the hit makes no contact
+ * (Long Reach, Protective Pads; the engine drops a Punching Glove's punch itself), the attacker's working
+ * Ability Shield blocks setAbility (abilityshield onSetAbility), its ability cannot be suppressed, or
+ * Wandering Spirit's skillSwap fails (failskillswap on either side, the target's Ability Shield
+ * or Dynamax). The engine's checkMultihitBoost replaces on the contact flag alone.
+ */
+function abilityReplacementBlocked(attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions): boolean {
+  const replacer = gassedAbility(defenderBuild, attackerBuild, conditions) ? "" : defenderBuild.abilityId;
+  if (!["mummy", "lingeringaroma", "wanderingspirit"].includes(replacer)) return false;
+  const own = gassedAbility(attackerBuild, defenderBuild, conditions) ? "" : attackerBuild.abilityId;
+  const item = conditions.magicRoom || klutzActive(attackerBuild, defenderBuild) ? "" : attackerBuild.itemId;
+  if (own === "longreach" || item === "protectivepads" || shieldsAbility(attackerBuild, conditions)) return true;
+  if (replacer === "wanderingspirit") return FAIL_SKILL_SWAP.has(own) || shieldsAbility(defenderBuild, conditions) || isMaxActive(defenderBuild);
+  return CANT_SUPPRESS.has(own);
+}
+
+/**
+ * What a row's hits read for the attacker's HP between them (hit-loop.ts): the settled builds' abilities after
+ * Neutralizing Gas (Mold Breaker suppresses none of those it reads: none is breakable), their items where they
+ * work (not under Magic Room or an active Klutz; an Ability Shield works through Klutz), the engine move's
+ * contact flag (a Punching Glove's punch and Shell Side Arm's physical hit already set) after Long Reach and
+ * Protective Pads (data/abilities.ts longreach, sim/battle.ts checkMoveMakesContact), its draining, and the
+ * target's Gulping or Gorging form (Gulp Missile is cantsuppress, and notransform: not a transformed copy's).
+ */
+function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, moveId: string): HitLoopInput {
+  const ability = (build: BattleBuild, other: BattleBuild) => gassedAbility(build, other, conditions) ? "" : build.abilityId;
+  const item = (build: BattleBuild, other: BattleBuild) => conditions.magicRoom || klutzActive(build, other) ? "" : build.itemId;
+  const attackerAbility = ability(attackerBuild, defenderBuild), attackerItem = item(attackerBuild, defenderBuild);
+  const flags = result.move.flags ?? {};
+  return {
+    hp: attacker.curHP(), maxHP: attacker.maxHP(), baseMaxHP: attacker.maxHP(true),
+    attackerAbility, attackerItem, targetAbility: ability(defenderBuild, attackerBuild), targetItem: item(defenderBuild, attackerBuild),
+    attackerShielded: shieldsAbility(attackerBuild, conditions), targetShielded: shieldsAbility(defenderBuild, conditions), targetDynamaxed: isMaxActive(defenderBuild),
+    contact: !!flags.contact && attackerAbility !== "longreach" && attackerItem !== "protectivepads" && !(attackerItem === "punchingglove" && !!flags.punch),
+    category: result.move.category === "Special" ? "Special" : "Physical",
+    drain: (result.move as Move & { drain?: [number, number] }).drain ?? null,
+    takesBerry: !result.move.isMax && !result.move.isZ && ["bugbite", "pluck", "incinerate"].includes(moveId),
+    targetGulping: gulpingTarget({ speciesId: defenderBuild.speciesId, abilityId: defenderBuild.abilityId, transformed: !!defenderBuild.transformedFrom }),
+    generation: runtime.profile.generation,
+  };
 }
 
 function zeroDamage(move: ChampionsMove, reason: string): MoveDamageResult {
@@ -1461,9 +1560,12 @@ function calculateMove(
   // A hit an intact face or disguise takes needs no hit count: one hit finds out whether it connects,
   // and the count is asked for after the engine run otherwise.
   const hitsReason = resolvedHits.hits === null ? resolvedHits.reason : null;
-  if (hitsReason && !intactFace(metadata.category)) return emptyRow(metadata, "needs-context", hitsReason);
-  let hitCount: { hits: number; reason: string | null } = resolvedHits.hits === null ? { hits: 1, reason: null } : { hits: resolvedHits.hits, reason: resolvedHits.reason };
+  // The rule the rows carry for the hit selector: the settled attacker's (a transformed Imposter user's copied ability counts).
   const hitRule = hitCountRule(metadata, attackerBuild, runtime, hitBattle);
+  if (hitsReason && !intactFace(metadata.category)) return { ...emptyRow(metadata, "needs-context", hitsReason), hitRule };
+  let hitCount: { hits: number; reason: string | null } = resolvedHits.hits === null ? { hits: 1, reason: null } : { hits: resolvedHits.hits, reason: resolvedHits.reason };
+  // A random count with none chosen: the engine deals its largest, and the row runs over every count.
+  const randomHits = resolvedHits.chances;
 
   const assumptions = ["One use, if it connects; damage is not capped at the target's HP.", ...resolved.assumptions, ...(shieldNote ? [shieldNote] : [])];
   if (protect && "line" in protect) assumptions.push(protect.line);
@@ -1513,10 +1615,14 @@ function calculateMove(
   } else if (resolved.transformed && LEAVES_ONE_HP_MOVES.has(assigned.id)) {
     assumptions.push(`${metadata.name} can knock the target out, unlike ${assigned.name}.`);
   }
+  // Where the hit count's line goes: the count's own, or for a random count its range once the hits that
+  // land are known (an attacker that faints on a hit cuts them short).
+  const countLine = assumptions.length;
   if (hitRule.kind === "fixed" && hitRule.reason) assumptions.push(hitRule.reason);
   if (hitRule.kind === "choose" && hitRule.perHitAccuracy) {
     assumptions.push(hitCount.hits === hitRule.max ? `${metadata.name}: all ${hitRule.max} hits land.` : `${metadata.name}: ${hitCount.hits} of ${hitRule.max} hits land.`);
   }
+  const ownCountLine = assumptions.length > countLine ? assumptions[countLine] : null;
   let attackingSpecies = attackerBuild.speciesId;
   if (attackingSpecies === "aegislash" && attackerBuild.abilityId === "stancechange") {
     attackingSpecies = "aegislashblade";
@@ -1564,6 +1670,10 @@ function calculateMove(
     // the engine's checkItem drops a Klutz holder's item before it applies the gas.
     if (attackerBuild.abilityId === "klutz" && !klutzActive(attackerBuild, defenderBuild)) attacker.ability = "Run Away" as AbilityName;
     if (defenderBuild.abilityId === "klutz" && !klutzActive(defenderBuild, attackerBuild)) defender.ability = "Run Away" as AbilityName;
+    // The engine's multi-hit loop gives the attacker the target's Mummy or Lingering Aroma, or swaps for Wandering
+    // Spirit, on the move's contact flag alone; where Showdown does not, the target's ability (with no damage
+    // effect of its own) is left out so the attacker keeps its own for every hit.
+    if (abilityReplacementBlocked(attackerBuild, defenderBuild, conditions)) defender.ability = "Run Away" as AbilityName;
     // An Iron Ball grounds its holder before Levitate or Eelevate count (pinned Showdown sim/pokemon.ts
     // isGrounded), so Ground moves hit; the Champions engine skips that check (gen789 has it). With the
     // Iron Ball working the ability changes no damage, and Run Away changes none in the engine.
@@ -1755,7 +1865,7 @@ function calculateMove(
     // Psychic Terrain) leaves it intact.
     const face = intactFace(result.move.category);
     if (face && result.range()[1] > 0) return emptyRow(metadata, "needs-context", face);
-    if (hitsReason) return emptyRow(metadata, "needs-context", hitsReason);
+    if (hitsReason) return { ...emptyRow(metadata, "needs-context", hitsReason), hitRule };
     const finalMods = Math.max(...[result, tiedPhysical].map((run) => run?.rawDesc.isFriendGuard ? finalModifierCount(run) : 0));
     if (finalMods >= 3) {
       return emptyRow(metadata, "unsupported", `Friend Guard with ${finalMods - 1} other damage modifiers: not calculated (their order can change the damage by 1 HP).`);
@@ -1802,6 +1912,9 @@ function calculateMove(
     }
     const firstHit = result;
     const firstBurnedHit = spicySprayFirstBurnedHit(firstHit, attackerBuild, conditions);
+    // What the splices below changed for later hits, which a rerun for the attacker's HP between hits keeps.
+    let burnedFrom: number | null = null;
+    let seededLater: { defender: Pokemon; conditions: BattleConditions } | null = null;
     // The engine's own multi-hit loop keeps the attacker's first-hit status for every hit.
     if (firstBurnedHit !== null && !beatUpHits && hitCount.hits > firstBurnedHit && Array.isArray(result.damage) && Array.isArray(result.damage[0])) {
       const burned = attacker.clone();
@@ -1811,6 +1924,7 @@ function calculateMove(
       result.damage = [...(result.damage as number[][]).slice(0, firstBurnedHit), ...later.slice(firstBurnedHit)];
       result.rawDesc.attackerAbility ??= laterResult.rawDesc.attackerAbility;
       trace.engine = undefined;
+      burnedFrom = firstBurnedHit;
     }
     // Seed Sower sets Grassy Terrain after the first hit, and a held Grassy Seed then raises Defense
     // at once (Showdown onTerrainChange); the engine's multi-hit loop never checks the Seed again.
@@ -1823,6 +1937,7 @@ function calculateMove(
       const later = calculate(generation, attacker, seeded, move, makeField({ ...conditions, terrain: "Grassy" })).damage as number[][];
       result.damage = [(result.damage as number[][])[0], ...later.slice(1)];
       trace.engine = undefined;
+      seededLater = { defender: seeded, conditions: { ...conditions, terrain: "Grassy" } };
     }
     if (parentalBond && !bondSkip && result.range()[1] > 0) {
       trace.engine = undefined;
@@ -1870,6 +1985,65 @@ function calculateMove(
     if (EXPLOSIVE_MOVES.has(metadata.id) && (result.attacker.hasAbility("Damp") || result.defender.hasAbility("Damp"))) {
       return zeroDamage(metadata, `Damp prevents ${metadata.name} from being used.`);
     }
+    // The attacker's HP from hit to hit (hit-loop.ts): what the target deals back on a hit (Rough Skin, Iron
+    // Barbs, Rocky Helmet, a Jaboca or Rowap Berry, Gulp Missile), its own draining and berry; once it faints
+    // no later hit lands. Without draining the hit it faints on hangs on no roll.
+    const dealtHits = Array.isArray(result.damage) && Array.isArray(result.damage[0]) ? (result.damage as number[][]).length : 1;
+    const loop = dealtHits > 1 ? hitLoopInput(result, attacker, attackerBuild, defenderBuild, conditions, runtime, metadata.id) : null;
+    const retaliated = !!loop && hitsCanFaint(loop);
+    const walk = retaliated && !loop!.drain ? walkHits(loop!, dealtHits) : null;
+    // Pinned Showdown reads the user's HP, stat stages and status for each hit's damage (Blaze and its kin at a
+    // third of its HP, Defeatist at half, an eaten pinch berry's stage, Guts once Gulp Missile paralyses it);
+    // the engine keeps the first hit's for every hit, so a later hit whose attacker differs comes from a rerun
+    // with that HP, stage and status (and the burn or Grassy Seed the splices above gave that hit). Beat Up's
+    // strikes and Parental Bond's second are their own calculations: a change there is stated instead.
+    const unspliced: string[] = [];
+    if (walk) {
+      const engineMove = result.move;
+      const offense: CombatStat = engineMove.category === "Special" ? "spa" : metadata.id === "bodypress" ? "def" : "atk";
+      const maxHP = attacker.maxHP();
+      // The Gorging form's Gulp Missile paralyses the attacker in the hit that spends it (data/abilities.ts
+      // gulpmissile trySetStatus: not an Electric type, a statused one or one on Misty Terrain on the ground; a
+      // Lum or Cheri Berry cures it at that hit's Update), so Guts boosts the hits after that one.
+      const ownTypes: readonly string[] = attacker.teraType && attacker.teraType !== "Stellar" ? [attacker.teraType] : attacker.types;
+      const paralysedFrom = defenderBuild.speciesId === "cramorantgorging" && loop!.targetGulping && !attacker.status && !ownTypes.includes("Electric")
+        && !(conditions.terrain === "Misty" && isGrounded(attacker, result.field)) && !["lumberry", "cheriberry"].includes(loop!.attackerItem)
+        ? walk.before.findIndex((state) => !state.gulping) : -1;
+      const modeOf = (state: HitState, index: number) => `${PINCH_TYPES[state.attackerAbility] === engineMove.type && state.hp <= maxHP / 3}|${state.attackerAbility === "defeatist" && state.hp <= maxHP / 2}`
+        + `|${state.stages[offense] ?? 0}|${paralysedFrom > 0 && index >= paralysedFrom && state.attackerAbility === "guts"}`;
+      const first = modeOf(walk.before[0], 0);
+      const changed = walk.before.findIndex((state, index) => modeOf(state, index) !== first);
+      if (changed > 0 && (beatUpHits || (parentalBond && !bondSkip))) {
+        const state = walk.before[changed], before = walk.before[changed - 1];
+        const what = (state.stages[offense] ?? 0) !== (before.stages[offense] ?? 0) ? `${runtime.itemsById.get(attackerBuild.itemId)?.name ?? attackerBuild.itemId} stat stage`
+          : changed === paralysedFrom && state.attackerAbility === "guts" ? "Guts once Gulp Missile paralyses it"
+            : `${runtime.abilitiesById.get(state.attackerAbility)?.name ?? state.attackerAbility} at its HP`;
+        unspliced.push(`Not included: the attacker's ${what} from hit ${changed + 1}.`);
+      } else if (changed > 0) {
+        const reruns = new Map<string, number[][]>();
+        result.damage = (result.damage as number[][]).map((rolls, index) => {
+          // The hits after the attacker faints never land (the cut below drops them).
+          const state = walk.before[index];
+          if (!state || modeOf(state, index) === first) return rolls;
+          const mode = modeOf(state, index);
+          const burned = burnedFrom !== null && index >= burnedFrom, seeded = !!seededLater && index >= 1;
+          const paralysed = paralysedFrom > 0 && index >= paralysedFrom;
+          const key = `${mode}|${burned}|${seeded}`;
+          let damage = reruns.get(key);
+          if (!damage) {
+            const striker = attacker.clone();
+            striker.originalCurHP = state.hp;
+            striker.boosts[offense] = Math.max(-6, Math.min(6, striker.boosts[offense] + (state.stages[offense] ?? 0)));
+            if (burned) striker.status = "brn";
+            else if (paralysed) striker.status = "par";
+            const rerun = calculate(generation, striker, seeded ? seededLater!.defender : defender, move, makeField(seeded ? seededLater!.conditions : conditions));
+            reruns.set(key, damage = rerun.damage as number[][]);
+          }
+          return [...damage[index]];
+        });
+        trace.engine = undefined;
+      }
+    }
     if (protect?.kind === "quarter") {
       trace.engine = undefined;
       const damage = result.damage;
@@ -1877,13 +2051,67 @@ function calculateMove(
       result.damage = typeof damage === "number" ? (damage === 0 ? 0 : Math.max(1, Math.ceil(damage / 4 - 0.5)))
         : Array.isArray(damage[0]) ? (damage as number[][]).map((hit) => hit.map(quarterDamage)) : (damage as number[]).map(quarterDamage);
     }
-    const [min, max] = result.range();
+    // The hits that land: every hit the engine dealt, cut where the attacker faints, and for a random count
+    // each count's chance, those it cuts short merged into the hit it faints on (types.ts hitChances). The
+    // engine result keeps every hit it dealt (trace.result), for a later use from other HP. With no per-hit
+    // damage (an immune target) no hit lands, so no count is rolled (pinned Showdown hitStepMoveHitLoop runs
+    // after hitStepTryHitEvent and hitStepTypeImmunity).
+    const engineHits = Array.isArray(result.damage) && Array.isArray(result.damage[0]) ? result.damage as number[][] : null;
+    let landedHits = engineHits;
+    let chances = engineHits ? randomHits : null;
+    let attackerFaintsOnHit: MoveDamageResult["attackerFaintsOnHit"];
+    let pathRange: { min: number; max: number } | null = null;
+    const countLines: string[] = [];
+    const attackerSpecies = attackerBuild.transformedFrom?.speciesId ?? attackerBuild.speciesId;
+    const attackerName = runtime.speciesById.get(attackerSpecies)?.name ?? attackerSpecies;
+    const cutAt = (hit: number, by: string[]) => {
+      landedHits = engineHits!.slice(0, hit);
+      attackerFaintsOnHit = { hit, of: engineHits!.length, by };
+      if (chances) {
+        const kept = chances.filter((entry) => entry.hits < hit);
+        const reaching = chances.filter((entry) => entry.hits >= hit);
+        const merged = [...kept, ...reaching.length ? [{ hits: hit, chance: reaching.reduce((total, entry) => total + entry.chance, 0) }] : []];
+        attackerFaintsOnHit.ofMin = reaching[0].hits;
+        countLines.push(`${attackerName} faints on hit ${hit} of ${hitCountsText(reaching[0].hits, reaching[reaching.length - 1].hits)} (${listNames(by)}).`);
+        chances = merged.length > 1 ? merged : null;
+      } else {
+        countLines.push(`${attackerName} faints on hit ${hit} of ${engineHits!.length} (${listNames(by)}).`);
+      }
+      trace.engine = undefined;
+    };
+    if (engineHits && walk?.faint && walk.faint.hit < engineHits.length) cutAt(walk.faint.hit, walk.faint.by);
+    if (engineHits && retaliated && loop!.drain) {
+      // Draining heals by what each hit dealt, so the hit the attacker faints on hangs on the rolls: the
+      // lowest damage stops at the earliest faint, the highest at the latest (hitPaths).
+      const paths = hitPaths(loop!, engineHits);
+      const early = paths.faints.slice(0, -1);
+      const sure = early.findIndex((mass) => mass > 1 - 1e-12);
+      const sources = (pick: (rolls: number[]) => number) => walkHits(loop!, engineHits.length, (hit) => pick(engineHits[hit - 1])).faint?.by ?? [];
+      const by = [...new Set([...sources((rolls) => Math.min(...rolls)), ...sources((rolls) => Math.max(...rolls))])];
+      if (sure >= 0) cutAt(sure + 1, by);
+      else if (early.some((mass) => mass > 0)) {
+        const stands = 1 - early.reduce((total, mass) => total + mass, 0);
+        const last = stands > 0 ? engineHits.length : early.findLastIndex((mass) => mass > 0) + 1;
+        landedHits = engineHits.slice(0, last);
+        pathRange = { min: paths.min, max: paths.max };
+        early.forEach((mass, index) => {
+          if (mass > 0) countLines.push(`${attackerName} faints on hit ${index + 1} of ${engineHits.length} (${listNames(by)}) on ${chanceText(mass)} of rolls.`);
+        });
+        trace.engine = undefined;
+      }
+    }
+    if (chances) countLines.unshift(hitRangeLine(metadata.name, chances, hitRule.kind === "choose" && hitRule.loadedDice));
+    // A count line that names hits the faint cuts short ("Population Bomb: all 10 hits land.") gives way to the faint's.
+    if (attackerFaintsOnHit && ownCountLine && (hitRule.kind === "choose" || / hits land\.$/.test(ownCountLine))) assumptions.splice(countLine, 1);
+    assumptions.splice(countLine, 0, ...countLines, ...unspliced);
+    const sum = (hits: number[][], count: number, pick: (rolls: number[]) => number) => hits.slice(0, count).reduce((total, rolls) => total + pick(rolls), 0);
+    const [min, max] = pathRange ? [pathRange.min, pathRange.max]
+      : landedHits ? [sum(landedHits, chances ? chances[0].hits : landedHits.length, (rolls) => Math.min(...rolls)), sum(landedHits, landedHits.length, (rolls) => Math.max(...rolls))]
+        : result.range();
     if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max) || min < 0 || max < min) {
       return emptyRow(metadata, "unsupported", "The engine returned an invalid damage range for this matchup.");
     }
-    if (hitCount.hits > 1 || (Array.isArray(result.damage) && Array.isArray(result.damage[0]))) {
-      assumptions.push(`Assumes all ${hitCount.hits > 1 ? hitCount.hits : 2} hits finish, without mid-move healing, retaliation or fainting; no one-use KO chance.`);
-    }
+    if (landedHits && landedHits.length > 1) assumptions.push("No one-use KO chance for multiple hits.");
     if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome: first use, no boost.");
     if (conditions.attackerSide.charge && result.rawDesc.isCharge) assumptions.push("Charge: 2x power.");
     const tailwind = [conditions.attackerSide.tailwind && "the attacker's side", conditions.defenderSide.tailwind && "the target's side"].filter(Boolean);
@@ -1917,7 +2145,7 @@ function calculateMove(
     }
     if (result.rawDesc.moveType && result.rawDesc.moveType !== metadata.type) assumptions.push(`Effective move type: ${result.rawDesc.moveType}.`);
     const escalating = ESCALATING_MOVES.has(metadata.id) && !resolved.transformed && Array.isArray(result.damage) && Array.isArray(result.damage[0]);
-    if (escalating) assumptions.push(`Power per hit: ${(result.damage as number[][]).map((_, index) => metadata.power * (index + 1)).join(", ")}.`);
+    if (escalating) assumptions.push(`Power per hit: ${(landedHits ?? []).map((_, index) => metadata.power * (index + 1)).join(", ")}.`);
     else if (result.rawDesc.moveBP !== undefined && pokeRound(result.rawDesc.moveBP) !== metadata.power) assumptions.push(`Move power: ${pokeRound(result.rawDesc.moveBP)}.`);
     // Mold Breaker is listed only when ignoring the target's ability changed the damage or the KO
     // chance (Sturdy), when it broke through an intact Disguise the calculator checks itself, or when
@@ -1984,7 +2212,8 @@ function calculateMove(
     let alternateText = "";
     // A tie's physical hit, when its effects differ from the special hit's (the description then names each).
     let physicalEffects: ReturnType<typeof appliedEffects> | null = null;
-    let koChance = directKOChance(result, hitCount.hits);
+    // One hit that lands (the attacker faints on the first) has the ordinary KO chance of its rolls.
+    let koChance = landedHits?.length === 1 ? directKOChance(withDamage(result, landedHits[0]), 1) : directKOChance(result, hitCount.hits);
     if (metadata.id === "ficklebeam" && !resolved.transformed && max > 0 && Array.isArray(result.damage) && !Array.isArray(result.damage[0])) {
       const doubled = resolveWith((overridePower ?? metadata.power) * 2);
       if (doubled.kind) return emptyRow(metadata, doubled.kind, doubled.reason);
@@ -2048,9 +2277,12 @@ function calculateMove(
         : metadata.id === "naturalgift" && result.attacker.item?.endsWith("Berry") ? getNaturalGift(generation, result.attacker.item).p
           : result.rawDesc.moveBP !== undefined ? pokeRound(result.rawDesc.moveBP) : result.move.bp, effectiveCategory: result.move.category,
       kind: "calculated", min, max, minPercent, maxPercent,
-      rolls: copyRolls(result.damage), ohkoChance: koChance,
+      rolls: landedHits ? (landedHits.length === 1 ? [...landedHits[0]] : landedHits.map((rolls) => [...rolls])) : copyRolls(result.damage), ohkoChance: koChance,
       description: `${zName ?? metadata.name}: ${min}–${max} HP (${minPercent.toFixed(1)}–${maxPercent.toFixed(1)}% of maximum HP)${alternateText}.${applied}`,
-      assumptions, reason: null, hits: hitCount.hits, ...survivalEffect(result, Math.max(max, alternate?.max ?? 0)),
+      // The hits that land (Parental Bond's two strikes included); none for a random count no hit reaches.
+      assumptions, reason: null, hits: landedHits ? landedHits.length : randomHits ? null : hitCount.hits, hitRule,
+      ...(chances ? { hitChances: chances } : {}), ...(attackerFaintsOnHit ? { attackerFaintsOnHit } : {}),
+      ...survivalEffect(result, Math.max(max, alternate?.max ?? 0)),
       ...(alternate ? { alternate } : {}),
     };
   } catch (error) {
@@ -2094,7 +2326,7 @@ export function calculateMatchup(
     return { issues, results: shownMoves.moves.flatMap((id) => { const move = runtime.movesById.get(id); return move ? [{ ...emptyRow(move, "unsupported", withheld), moveId: id }] : []; }) };
   }
   const entry = settleEntry(attackerAbility.build, defenderAbility.build, shown, effective.field, runtime);
-  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, "the attacker", names.attacker);
+  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, "the attacker", names.attacker, true);
   const defenderItems = settleItems(entry.defender, entry.attacker, effective.field, runtime, "the target", names.defender);
   effective.attacker = attackerItems.build;
   effective.defender = defenderItems.build;

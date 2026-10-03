@@ -151,11 +151,14 @@ describe("a hit the face or disguise takes needs no other context", () => {
   it("does not ask for a hit count or turn order first, but still asks when the hit cannot connect", () => {
     face(row(sv, "rockblast", build(sv, "dugtrio", { abilityId: "arenatrap" }), build(sv, "eiscue", { abilityId: "iceface" })), ICE_FACE);
     const fairy = build(sv, "eiscue", { abilityId: "iceface", tera: "Fairy" });
-    expect(row(sv, "scaleshot", build(sv, "garchomp"), fairy)).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (2–5)." });
+    // A random count is no question (its range is shown), so an immune target takes 0; a stale count still asks.
+    zero(row(sv, "scaleshot", build(sv, "garchomp"), fairy));
+    expect(row(sv, "scaleshot", build(sv, "garchomp"), fairy, {}, { hits: 6 })).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (2–5)." });
     zero(row(sv, "scaleshot", build(sv, "garchomp"), fairy, {}, { hits: 3 }));
     const mimikyu = build(championsRuntime, "mimikyu", { abilityId: "disguise" });
     face(row(championsRuntime, "bulletseed", build(championsRuntime, "meowscarada", { abilityId: "overgrow" }), mimikyu), DISGUISE);
-    expect(row(championsRuntime, "scaleshot", build(championsRuntime, "garchomp"), mimikyu)).toMatchObject({ kind: "needs-context", reason: expect.stringContaining("Needs the hit count") });
+    zero(row(championsRuntime, "scaleshot", build(championsRuntime, "garchomp"), mimikyu));
+    expect(row(championsRuntime, "scaleshot", build(championsRuntime, "garchomp"), mimikyu, {}, { hits: 1 })).toMatchObject({ kind: "needs-context", reason: "Needs the hit count (2–5)." });
     // 95 Speed each: a Speed tie, which Bolt Beak would otherwise ask about.
     face(row(ss, "boltbeak", build(ss, "dracozolt", { abilityId: "voltabsorb" }), build(ss, "eiscue", { abilityId: "iceface", evs: { spe: 200 } })), ICE_FACE);
     // Analytic in Doubles asks for the turn order only for a hit that can land and is not taken.

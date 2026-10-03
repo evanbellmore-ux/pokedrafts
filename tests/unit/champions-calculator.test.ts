@@ -153,16 +153,19 @@ describe("Champions calculation adapter", () => {
     expect(row("nightshade", attacker, createBuild("audino"))).toMatchObject({ min: 0, max: 0 });
   });
 
-  it("does not assume a hidden hit count or claim multi-hit KO probabilities", () => {
+  it("shows a random hit count as its range and claims no multi-hit KO probabilities", () => {
     const attacker = createBuild("chesnaught");
     const defender = createBuild("blastoise");
-    expect(row("bulletseed", attacker, defender).kind).toBe("needs-context");
     const two = row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits: 2 } });
     const five = row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits: 5 } });
     expect(two.kind).toBe("calculated");
     expect(five.min).toBeGreaterThan(two.max!);
     expect(five.ohkoChance).toBeNull();
     expect(five.rolls).not.toBeNull();
+    // No count chosen: 2 to 5 hits at pinned Showdown's 35/35/15/15, from 2 hits' lowest rolls to 5 hits' highest.
+    const random = row("bulletseed", attacker, defender);
+    expect(random).toMatchObject({ kind: "calculated", hits: 5, min: two.min, max: five.max, ohkoChance: null, rolls: five.rolls });
+    expect(random.hitChances).toEqual([{ hits: 2, chance: 7 / 20 }, { hits: 3, chance: 7 / 20 }, { hits: 4, chance: 3 / 20 }, { hits: 5, chance: 3 / 20 }]);
     for (const hits of [0, 1, 6, 2.5, Number.NaN]) {
       expect(row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits } }).kind).toBe("needs-context");
     }
