@@ -5,7 +5,7 @@ import TypeBadge from "@/app/components/TypeBadge";
 import { Button, EmptyState, Field, Input, Select, TableWrap, tableClassName, tdClassName, thClassName, theadClassName, trClassName } from "@/app/components/ui";
 import { EVENT_DOUBLING_MOVES } from "@/app/lib/battle/event-moves";
 import { turnOrderQuestion } from "@/app/lib/battle/turn-order";
-import { hitCountRule, type HitCountBattle } from "@/app/lib/battle/hit-count";
+import { hitCountRule, type HitCountBattle, type HitCountRule } from "@/app/lib/battle/hit-count";
 import { MAX_BEAT_UP_ALLIES, MAX_FAINTED_ALLIES, MAX_TIMES_HIT } from "@/app/lib/battle/count-moves";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { normalizeSearchText } from "@/app/lib/battle/species-search";
@@ -14,7 +14,7 @@ import { parseIntegerInput, rankResults, type DamageSort } from "@/app/lib/battl
 import type { MoveSlots } from "@/app/lib/battle/move-defaults";
 import type { BattleBuild, ChampionsMove, MoveContext, MoveDamageResult } from "@/app/lib/battle/types";
 import { useMinWidthMd } from "../leagues/[leagueId]/useMinWidthMd";
-import { damagePercent, formatRange, koChance } from "./result-format";
+import { chanceText, damagePercent, formatRange, hitCountRanges, hitCountText, hitRangeText, koChance } from "./result-format";
 import { bestRollsText, faintsFirstText, speakKO, usesToKOText } from "./uses-format";
 
 const PAGE_SIZE = 30;
@@ -72,12 +72,32 @@ function focusTarget(prefix: string, moveId: string) {
   return waiting ?? document.getElementById(`${prefix}-${moveId}-details-hits`) ?? document.getElementById(`${prefix}-${moveId}-details`);
 }
 
-function Damage({ row }: { row: MoveDamageResult | undefined }) {
+/**
+ * The hit count rule a move's row was calculated with (the settled attacker's: a transformed Imposter user's
+ * copied Skill Link counts), or, for a row without one, the shown build's.
+ */
+export function rowHitRule(move: ChampionsMove, row: MoveDamageResult | undefined, build: Parameters<typeof hitCountRule>[1], runtime: BattleRuntime, hitBattle?: HitCountBattle): HitCountRule {
+  return row?.hitRule ?? hitCountRule(move, build, runtime, hitBattle);
+}
+
+/**
+ * Whether the row waits for a hit count: only a chosen count outside the move's range does ("Needs the hit
+ * count (…)."). A random count gives its range, and a per-hit-accuracy move has every hit land.
+ */
+export function waitsForHits(rule: HitCountRule | null, context: MoveContext | undefined, row: MoveDamageResult | undefined) {
+  const hits = context?.hits;
+  if (rule?.kind !== "choose" || hits === undefined || (Number.isInteger(hits) && hits >= rule.min && hits <= rule.max)) return false;
+  return !row || row.kind === "needs-context" && (!row.reason || /\bhit count\b/i.test(row.reason));
+}
+
+/** `chosenHits`: the row is for a hit count chosen in the move details, which the damage line then names. */
+function Damage({ row, chosenHits = false }: { row: MoveDamageResult | undefined; chosenHits?: boolean }) {
   if (!row) return <p className="text-sm text-muted">Not calculated</p>;
   if (row.kind !== "calculated") return <p className="text-sm text-muted">Unranked · {kindLabels[row.kind]}</p>;
+  const hits = hitRangeText(row, chosenHits);
   return (
     <div className="tabular-nums">
-      <p className="font-semibold text-text">{formatRange(row.min, row.max)} HP</p>
+      <p className="font-semibold text-text">{formatRange(row.min, row.max)} HP{hits && <span className="text-xs font-normal text-muted"> · {hits}</span>}</p>
       <p className="mt-0.5 text-xs text-muted">{damagePercent(row)}</p>
       {row.alternate && <p className="mt-0.5 text-xs text-muted">{Math.round(row.alternate.chance * 100)}% chance of {row.alternate.label}: {formatRange(row.alternate.min, row.alternate.max)} HP ({damagePercent(row.alternate)})</p>}
     </div>
@@ -136,7 +156,18 @@ function UsesToKODetails({ row }: { row: MoveDamageResult }) {
   );
 }
 
-function Rolls({ rolls, alternate }: { rolls: MoveDamageResult["rolls"]; alternate?: MoveDamageResult["alternate"] }) {
+/** Consecutive hits with the same rolls share a line: "Hits 1–10, each: …". */
+function hitRollLines(rolls: number[][]) {
+  const lines: { first: number; last: number; rolls: number[] }[] = [];
+  rolls.forEach((hit, index) => {
+    const previous = lines[lines.length - 1];
+    if (previous && previous.rolls.join() === hit.join()) previous.last = index + 1;
+    else lines.push({ first: index + 1, last: index + 1, rolls: hit });
+  });
+  return lines.map(({ first, last, rolls: hit }) => `${first === last ? `Hit ${first}` : `Hits ${first}–${last}, each`}: ${hit.join(", ")}`);
+}
+
+function Rolls({ row: { rolls, alternate, hitChances } }: { row: Pick<MoveDamageResult, "rolls" | "alternate" | "hitChances"> }) {
   if (rolls === null) return <p className="text-muted">No damage rolls available.</p>;
   if (typeof rolls === "number") return <p className="tabular-nums">Fixed damage: {rolls} HP.</p>;
   if (!rolls.some(Array.isArray)) {
@@ -147,10 +178,19 @@ function Rolls({ rolls, alternate }: { rolls: MoveDamageResult["rolls"]; alterna
       </>
     ) : <p className="wrap-anywhere tabular-nums">Damage rolls: {rolls.join(", ")}</p>;
   }
+  // Damage rolls per hit; with a random count, first each count's chance and damage (the sum of its first hits).
+  const counts = hitCountRanges({ rolls, hitChances });
+  const lines = rolls.every(Array.isArray) ? hitRollLines(rolls as number[][])
+    : rolls.map((group, index) => `Hit ${index + 1}: ${Array.isArray(group) ? group.join(", ") : group}`);
   return (
-    <ol className="space-y-1">
-      {rolls.map((group, index) => <li key={index} className="wrap-anywhere tabular-nums">Group {index + 1}: {Array.isArray(group) ? `[${group.join(", ")}]` : group}</li>)}
-    </ol>
+    <div className="space-y-1">
+      {counts && <ul aria-label="Damage per hit count" className="space-y-1">
+        {counts.map((count) => <li key={count.hits} className="tabular-nums">{count.hits} {count.hits === 1 ? "hit" : "hits"} ({chanceText(count.chance)}): {formatRange(count.min, count.max)} HP</li>)}
+      </ul>}
+      <ol aria-label="Damage rolls per hit" className="space-y-1">
+        {lines.map((line, index) => <li key={index} className="wrap-anywhere tabular-nums">{line}</li>)}
+      </ol>
+    </div>
   );
 }
 
@@ -170,7 +210,7 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
   const move = runtime.movesById.get(moveId);
   const name = row?.effectiveName ?? move?.name ?? moveId;
   const converted = isConverted(move, row, context, sourceBuild);
-  const hitRule = !converted && move ? hitCountRule(move, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle) : null;
+  const hitRule = !converted && move ? rowHitRule(move, row, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle) : null;
   const choice = hitRule?.kind === "choose" ? hitRule : null;
   const staleHits = choice && context?.hits !== undefined && (context.hits < choice.min || context.hits > choice.max) ? context.hits : null;
   const hitLabel = (hits: number) => `${hits} ${hits === 1 ? "hit" : "hits"}`;
@@ -181,11 +221,11 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
       {choice && (
         <Field id={`${id}-hits`} label={`${move?.name ?? moveId}: hits this use`} help={choice.loadedDice ? `Loaded Dice limits this choice to ${choice.min}–${choice.max} hits.` : undefined} className="max-w-sm">
           <Select value={context?.hits ?? (choice.defaultHits ?? "")} onChange={(event) => {
-            // Picking the default keeps it implicit, so a later rule change (e.g. Loaded Dice) asks again.
+            // Picking the default (every hit, or the random count) keeps it implicit, so a later rule change (e.g. Loaded Dice) applies.
             const hits = parseIntegerInput(event.target.value) ?? undefined;
             onContextChange({ ...context, hits: hits === choice.defaultHits ? undefined : hits });
           }}>
-            {choice.defaultHits === null && <option value="">Choose hit count</option>}
+            {choice.defaultHits === null && <option value="">{choice.min}–{choice.max} hits (random)</option>}
             {staleHits !== null && <option value={staleHits} disabled>{hitLabel(staleHits)} — choose again</option>}
             {Array.from({ length: choice.max - choice.min + 1 }, (_, index) => choice.min + index).map((hits) => <option key={hits} value={hits}>{hitLabel(hits)}{hits === choice.defaultHits ? " (all)" : ""}</option>)}
           </Select>
@@ -197,7 +237,7 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
       {row?.description && <p>{row.description}</p>}
       <p className="text-xs text-muted">
         Target: {move?.target ?? "—"} · Priority: {move?.priority ?? "—"}
-        {row && row.hits !== null && ` · Hits: ${row.hits}`}
+        {row && row.hits !== null && ` · Hits: ${hitCountText(row)}`}
       </p>
       {row && row.assumptions.length > 0 && (
         <div>
@@ -206,7 +246,7 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
         </div>
       )}
       {row && <UsesToKODetails row={row} />}
-      {row ? <Rolls rolls={row.rolls} alternate={row.alternate} /> : <p className="text-muted">Damage is not available yet.</p>}
+      {row ? <Rolls row={row} /> : <p className="text-muted">Damage is not available yet.</p>}
     </div>
   );
 }
@@ -342,10 +382,14 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   }, [detailTarget, query, filter, limit, prefix, ownerId, onReveal, selectedMoveId]);
 
   function needsHits({ move, row }: Candidate) {
-    // Moves with a default count never wait for hits, even when their row needs other context.
-    const rule = hitCountRule(move, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle);
-    return !isConverted(move, row, contexts[move.id], sourceBuild) && rule.kind === "choose" && rule.defaultHits === null
-      && (!row || row.kind === "needs-context" && (!row.reason || /\bhits?\b/i.test(row.reason)));
+    const rule = rowHitRule(move, row, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle);
+    return !isConverted(move, row, contexts[move.id], sourceBuild) && waitsForHits(rule, contexts[move.id], row);
+  }
+
+  /** A hit count chosen in the move details, not the random or every-hit default. */
+  function chosenHits({ move, row }: Candidate) {
+    return contexts[move.id]?.hits !== undefined && !isConverted(move, row, contexts[move.id], sourceBuild)
+      && rowHitRule(move, row, { abilityId, itemId, speciesId: sourceBuild?.speciesId }, runtime, hitBattle).kind === "choose";
   }
 
   function choose(candidate: Candidate) {
@@ -543,7 +587,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
                         {selection(candidate)}
                         <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                       </th>
-                      <td id={`${prefix}-${move.id}-damage`} className={tdClassName}><Damage row={row} /></td>
+                      <td id={`${prefix}-${move.id}-damage`} className={tdClassName}><Damage row={row} chosenHits={chosenHits(candidate)} /></td>
                       <td id={`${prefix}-${move.id}-ko`} className={`${tdClassName} tabular-nums text-text`}>{row ? koChance(row) : "Not estimated"}</td>
                       <td id={`${prefix}-${move.id}-uses`} className={tdClassName}><UsesToKO row={row} /></td>
                       <td className={tdClassName}>{toggle(candidate)}</td>
@@ -566,7 +610,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
                   <div className="mt-1 flex flex-wrap items-center gap-2"><TypeBadge type={row?.effectiveType ?? move.type} /><span className="text-xs text-muted">{row?.effectiveCategory ?? move.category}</span></div>
                 </div>
                 <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div id={`${prefix}-${move.id}-damage`} className="min-w-0 text-sm"><Damage row={row} /><p className="mt-1 text-xs tabular-nums text-muted">One-use KO: {row ? koChance(row) : "Not estimated"}</p><UsesToKOLine row={row} /></div>
+                  <div id={`${prefix}-${move.id}-damage`} className="min-w-0 text-sm"><Damage row={row} chosenHits={chosenHits(candidate)} /><p className="mt-1 text-xs tabular-nums text-muted">One-use KO: {row ? koChance(row) : "Not estimated"}</p><UsesToKOLine row={row} /></div>
                   {toggle(candidate)}
                 </div>
                 {expanded === move.id && <div className="border-t border-line pt-3">{details(candidate)}</div>}

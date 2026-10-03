@@ -1,4 +1,8 @@
+import { chanceText } from "@/app/lib/battle/chance";
+import { hitCountsText } from "@/app/lib/battle/hit-count";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
+
+export { chanceText };
 
 const percent = new Intl.NumberFormat("en", { maximumFractionDigits: 2 });
 
@@ -11,15 +15,52 @@ export function damagePercent(row: Pick<MoveDamageResult, "minPercent" | "maxPer
     : `${percent.format(row.minPercent)}–${percent.format(row.maxPercent)}% of max HP`;
 }
 
-/** A 0–1 chance with up to 2 decimals; "<0.01%" and ">99.99%" never round to 0% or 100%. */
-export function chanceText(chance: number) {
-  const value = chance * 100;
-  if (value > 0 && value < 0.01) return "<0.01%";
-  if (value > 99.99 && value < 100) return ">99.99%";
-  return `${percent.format(value)}%`;
-}
-
 export function koChance(row: MoveDamageResult) {
   if (row.kind !== "calculated" || row.ohkoChance === null) return "Not estimated";
   return chanceText(row.ohkoChance);
+}
+
+type HitRow = Pick<MoveDamageResult, "hits" | "hitChances" | "attackerFaintsOnHit">;
+
+/**
+ * The hits that land: the random range ("2–5", after any faint), the hit the attacker faints on out of the
+ * count or counts it would make ("9 of 10", "1 of 4 or 5"), or the count. null: no count resolved.
+ */
+export function hitCountText(row: HitRow): string | null {
+  if (row.hits === null) return null;
+  const chances = row.hitChances;
+  if (chances && chances.length > 1) return `${chances[0].hits}–${chances[chances.length - 1].hits}`;
+  const faint = row.attackerFaintsOnHit;
+  if (faint) return `${row.hits} of ${hitCountsText(faint.ofMin ?? faint.of, faint.of)}`;
+  return String(row.hits);
+}
+
+/**
+ * The damage line's hit count, only for a random count, one the attacker's faint cuts short, or a `chosen`
+ * count of a move whose count can be chosen: "2–5 hits", "9 of 10 hits", "3 hits".
+ */
+export function hitRangeText(row: HitRow, chosen = false): string | null {
+  if (!row.hitChances?.length && !row.attackerFaintsOnHit && !chosen) return null;
+  const text = hitCountText(row);
+  return text && `${text} ${text === "1" ? "hit" : "hits"}`;
+}
+
+/**
+ * Each random hit count with its chance and damage range: a count deals the sum of its first hits, so its
+ * range runs from those hits' lowest rolls to their highest. null without hitChances or per-hit rolls for
+ * the largest count.
+ */
+export function hitCountRanges(row: Pick<MoveDamageResult, "hitChances" | "rolls">): { hits: number; chance: number; min: number; max: number }[] | null {
+  const { hitChances, rolls } = row;
+  if (!hitChances?.length || !Array.isArray(rolls) || !rolls.every((hit) => Array.isArray(hit) && hit.length > 0)) return null;
+  const perHit = rolls as number[][];
+  if (perHit.length < hitChances[hitChances.length - 1].hits) return null;
+  let landed = 0, min = 0, max = 0;
+  return hitChances.map(({ hits, chance }) => {
+    for (; landed < hits; landed++) {
+      min += Math.min(...perHit[landed]);
+      max += Math.max(...perHit[landed]);
+    }
+    return { hits, chance, min, max };
+  });
 }

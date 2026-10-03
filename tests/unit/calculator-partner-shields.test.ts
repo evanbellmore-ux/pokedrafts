@@ -122,11 +122,17 @@ describe("a partner's Queenly Majesty, Dazzling or Armor Tail", () => {
     expect(row("thunderclap", build("ragingbolt", "protosynthesis", sv), target, field(), sv)).toMatchObject({ min: 0, max: 0 });
     expect(row("upperhand", hawlucha, target, field(), sv)).toMatchObject({ min: 0, max: 0 });
     expect(row("upperhand", hawlucha, target, field({ shield: false }), sv)).toMatchObject({ min: 78, max: 92 });
-    // A stopped multi-hit move needs no hit count; one that is not stopped still asks.
+    // A stopped multi-hit move deals nothing; one that is not stopped shows its random 2-5 hits.
     const greninja = build("greninja", "torrent", sv);
     expect(row("watershuriken", greninja, target, field(), sv)).toMatchObject({ kind: "calculated", min: 0, max: 0 });
-    expect(row("watershuriken", greninja, target, field({ shield: false }), sv).kind).toBe("needs-context");
-    expect(row("watershuriken", greninja, build("weezing", "neutralizinggas", sv), field(), sv).kind).toBe("needs-context");
+    const random = [2, 3, 4, 5];
+    const through = row("watershuriken", greninja, target, field({ shield: false }), sv);
+    expect(through).toMatchObject({ kind: "calculated", hits: 5 });
+    expect(through.hitChances?.map(({ hits }) => hits)).toEqual(random);
+    expect(through.max).toBeGreaterThan(0);
+    const gassed = row("watershuriken", greninja, build("weezing", "neutralizinggas", sv), field(), sv);
+    expect(gassed).toMatchObject({ kind: "calculated", hits: 5 });
+    expect(gassed.hitChances?.map(({ hits }) => hits)).toEqual(random);
   });
 
   it("stops a Z-Move or Max Move only when Gale Wings gives it priority", async () => {

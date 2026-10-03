@@ -289,9 +289,15 @@ describe("what the count carries and assumes", () => {
     expect(counted(uses(S, "dragonclaw", build(S, "garchomp"), build(S, "snorlax", { status: "brn" }))).carried)
       .toEqual(["Its burn damages the target at the end of each turn."]);
   });
-  it("assumes a hit count only for the multi-hit move itself, not its Max Move", () => {
-    expect(counted(uses(W, "bulletseed", build(W, "rillaboom", { mechanic: "dynamax" }), build(W, "snorlax"))).notes).toEqual(["Assumes Dynamax started this turn."]);
+  it("a hit count only for the multi-hit move itself, not its Max Move: random once Dynamax ends, else the chosen count", () => {
+    // A random count is what the count follows (carried); a chosen one what it assumes for every use (notes).
+    const dynamaxed = counted(uses(W, "bulletseed", build(W, "rillaboom", { mechanic: "dynamax" }), build(W, "snorlax")));
+    expect(dynamaxed.notes).toEqual(["Assumes Dynamax started this turn."]);
+    expect(dynamaxed.carried).toContain("After Dynamax ends, each use has its own hit count (2–5).");
     expect(counted(row(W, "bulletseed", build(W, "rillaboom"), build(W, "snorlax"), {}, { hits: 5 }).usesToKO!).notes).toEqual(["Assumes 5 hits on every use."]);
+    const random = counted(uses(W, "bulletseed", build(W, "rillaboom"), build(W, "snorlax")));
+    expect(random.notes).toEqual([]);
+    expect(random.carried).toEqual(["Each use has its own hit count (2–5)."]);
   });
   it("Multiscale and Tera Shell only when they act", () => {
     const dragonite = build(S, "dragonite", { ability: "multiscale", evs: { hp: 252, def: 252 } });

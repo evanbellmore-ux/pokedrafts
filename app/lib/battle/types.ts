@@ -1,3 +1,5 @@
+import type { HitCountRule } from "./hit-count";
+
 export type BattleStat = "hp" | "atk" | "def" | "spa" | "spd" | "spe";
 export type CombatStat = Exclude<BattleStat, "hp">;
 export type StatTable<T = number> = Record<BattleStat, T>;
@@ -243,6 +245,8 @@ export type BattleConditions = {
 };
 
 /**
+ * hits: the chosen hit count; unset, a random count (2–5 hit moves, Loaded Dice Population Bomb) gives the
+ * row's `hitChances` range, and a move that checks accuracy for every hit has all of them land.
  * doubled: the event that doubles a move in EVENT_DOUBLING_MOVES happened (event-moves.ts).
  * fainted / timesHit / party: Last Respects, Rage Fist and Beat Up counts (count-moves.ts).
  */
@@ -275,7 +279,41 @@ export type MoveDamageResult = {
   description: string;
   assumptions: string[];
   reason: string | null;
+  /**
+   * The hits that land: the fixed or chosen count (Parental Bond's two strikes are 2), or with `hitChances`
+   * the largest count that can land, after `attackerFaintsOnHit`. null: no count resolved (a row with no
+   * damage result), or a random count into a target no hit reaches (an immune target: pinned Showdown
+   * rolls the count only in hitStepMoveHitLoop, after the immunity steps).
+   */
   hits: number | null;
+  /**
+   * The hit count rule the calculation used (hit-count.ts hitCountRule for the attacker it settled on, so a
+   * transformed Imposter user's copied Skill Link counts), for the move details' hit selector. Set on rows
+   * where the count was resolved: calculated rows and a stale chosen count's "Needs the hit count" row.
+   */
+  hitRule?: HitCountRule;
+  /**
+   * Set when the hit count is random and none is chosen (pinned Showdown hitStepMoveHitLoop): a 2–5 hit
+   * move (2 and 3 hits 35% each, 4 and 5 hits 15% each; with Loaded Dice 4 or 5 hits, 50% each) or
+   * Population Bomb with Loaded Dice (4–10 hits, 1/7 each). Each count of hits that land with its chance,
+   * ascending by hits, chances summing to 1, after `attackerFaintsOnHit` (the counts it cuts short merge
+   * into its hit). `hits` is the largest count and `rolls` holds that many hits (number[][], one roll set
+   * per hit in hit order), so a count's damage is the sum of its first hits; min/max and their percents run
+   * from the fewest hits at their lowest rolls to the most hits at their highest rolls.
+   */
+  hitChances?: { hits: number; chance: number }[];
+  /**
+   * The attacker faints on this hit from the damage the target deals back on a hit (Rough Skin, Iron Barbs,
+   * Rocky Helmet, a Jaboca or Rowap Berry, Gulp Missile), net of its own healing between hits, so no later
+   * hit lands (pinned Showdown hitStepMoveHitLoop stops once the user has fainted against one target). `of`
+   * is the count it would otherwise make (the fixed, chosen or largest random count), and for a random count
+   * `ofMin` the fewest of its counts that reach `hit` (the counts it cuts short run from `ofMin` to `of`);
+   * `by` names the sources in the order they hit. `hits`, `hitChances`, `rolls` and the damage already stop
+   * at `hit`. Unset when the hit it faints on hangs on the rolls (draining heals by what a hit dealt: Parental
+   * Bond's Drain Punch): `rolls` and `hits` then reach the latest hit that can land, min runs to the earliest
+   * faint at the lowest rolls and max to the latest at the highest, and an assumption states the faint's chance.
+   */
+  attackerFaintsOnHit?: { hit: number; of: number; ofMin?: number; by: string[] };
   /**
    * Set by the calculation when the target it settled on (a Sturdy copied by Trace or Imposter included,
    * after Mold Breaker, Neutralizing Gas, Magic Room and Klutz) keeps a survival effect that this hit's
@@ -300,8 +338,9 @@ export type MoveDamageResult = {
 /**
  * Repeated uses of one move by the same attacker into the same target, from the target's current HP,
  * with both staying in and the target doing nothing that changes it. Each use is conditional on hitting
- * (accuracy is not applied), with no critical hits unless the field's Critical hit is set, the row's hit
- * count on every use, and the field as set. The state each use leaves (stat stages, items used up,
+ * (accuracy is not applied), with no critical hits unless the field's Critical hit is set, the chosen or
+ * fixed hit count on every use (a random count rolls its own count each use, with the chances the
+ * attacker has then), and the field as set. The state each use leaves (stat stages, items used up,
  * abilities, forms, the attacker's HP, counters, end-of-turn healing and damage) carries into the next.
  */
 export type UsesToKO =
