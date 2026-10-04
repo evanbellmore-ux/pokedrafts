@@ -292,9 +292,11 @@ type Props = {
   turnOrderFromTurn?: boolean;
   /** The list's heading outside a replacement ("Moves" in 2v2); defaults to the 1v1 heading. */
   heading?: string;
+  /** 2v2: its side's fainted Pokémon, the least Last Respects counts (the turn raises a lower count to it). */
+  faintedAtLeast?: number;
 };
 
-export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading }: Props) {
+export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading, faintedAtLeast = 0 }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -512,8 +514,8 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
           </Select>
         </Field>}
         {countMove === "lastrespects" && <Field id={`${prefix}-fainted`} label="Party members that have fainted">
-          <Select value={selectedContext?.fainted ?? 0} onChange={(event) => onContextChange(countMove, { ...selectedContext, fainted: parseIntegerInput(event.target.value) ?? 0 })}>
-            {Array.from({ length: MAX_FAINTED_ALLIES + 1 }, (_, count) => <option key={count} value={count}>{count}</option>)}
+          <Select value={Math.max(selectedContext?.fainted ?? 0, faintedAtLeast)} onChange={(event) => onContextChange(countMove, { ...selectedContext, fainted: parseIntegerInput(event.target.value) ?? 0 })}>
+            {Array.from({ length: MAX_FAINTED_ALLIES + 1 }, (_, count) => <option key={count} value={count} disabled={count < faintedAtLeast}>{count}</option>)}
           </Select>
         </Field>}
         {countMove === "ragefist" && <Field id={`${prefix}-times-hit`}

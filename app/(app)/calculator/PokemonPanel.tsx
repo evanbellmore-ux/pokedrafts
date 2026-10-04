@@ -99,13 +99,15 @@ type Props = {
   abilityActivationFact?: string | null;
   /** The Trace select's option for no chosen ability; defaults to the other 1v1 Pokémon's ability. */
   tracedUnsetLabel?: string;
+  /** Current HP 0 is a fainted Pokémon (2v2), not an issue (CurrentHPField). */
+  allowFainted?: boolean;
 };
 
 /**
  * One Pokémon's build editor, in its Build settings under its summary card. That card already
  * shows the species, types, Mimicry, Tera type, retained configuration and Change Pokémon.
  */
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, position: positionLabel, intimidateLabel, abilityActivationFact, tracedUnsetLabel }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, position: positionLabel, intimidateLabel, abilityActivationFact, tracedUnsetLabel, allowFainted = false }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
   const position = positionLabel ?? (side === "attacker" ? "left" : "right");
@@ -134,7 +136,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       {roster}
 
       <div className={styles.fields}>
-        <CurrentHPField id={`${prefix}-hp`} build={build} issues={issues} text={hpInput} onTextChange={onHPChange} runtime={runtime} data-calculator-hp />
+        <CurrentHPField id={`${prefix}-hp`} build={build} issues={issues} text={hpInput} onTextChange={onHPChange} runtime={runtime} allowFainted={allowFainted} data-calculator-hp />
         <Field id={`${prefix}-nature`} label="Nature" error={errorFor("nature")}>
           <Select value={build.nature} onChange={(event) => onChange({ ...build, nature: event.target.value })}>
             {NATURES.map((nature) => (

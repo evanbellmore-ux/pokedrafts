@@ -76,11 +76,15 @@ export function slotsText(names: DoublesNames, actor: DoublesSlotId, slots: read
 /**
  * What a slot's move aims at under its target rule (doubles-types DoublesTargetRule): `{ arrow: true }` for Pokémon targets
  * ("Blastoise (left foe)", "both foes and Venusaur (ally)", "a random foe"), `{ arrow: false }` for a "none" rule ("Targets itself").
- * A "choose" rule without a target gives "No target".
+ * A "choose" rule without a target, or an "auto" rule that reaches no Pokémon (every one it could reach has fainted), gives
+ * "No target"; a random foe with one foe left names it.
  */
 export function actionTargets(names: DoublesNames, actor: DoublesSlotId, rule: DoublesTargetRule, target: DoublesSlotId | null): { arrow: boolean; text: string } {
   if (rule.kind === "none") return { arrow: false, text: NO_TARGET_FACTS[rule.scope] };
-  if (rule.kind === "auto") return { arrow: true, text: rule.random ? "a random foe" : slotsText(names, actor, rule.hits) };
+  if (rule.kind === "auto") {
+    if (!rule.hits.length) return { arrow: false, text: "No target" };
+    return { arrow: true, text: rule.random && rule.hits.length > 1 ? "a random foe" : slotsText(names, actor, rule.hits) };
+  }
   return target && rule.options.includes(target) ? { arrow: true, text: relativeName(names, actor, target) } : { arrow: false, text: "No target" };
 }
 
@@ -168,6 +172,9 @@ export function cardReached(turn: Extract<DoublesTurnResult, { status: "ready" }
 export function shownHP(hp: Pick<DoublesHP, "start" | "low" | "average" | "high">, mode: DamageRollMode) {
   return mode === "low" ? hp.low : mode === "high" ? hp.high : hp.start - Math.round(hp.start - hp.average);
 }
+
+/** A 2v2 Pokémon at 0 HP: it fainted before the turn and takes no part in it. */
+export const FAINTED = "Fainted";
 
 /** The card's HP label: "After the moves · Average estimate" for a turn result, else "Current HP" (the 1v1 Dynamax wording). */
 export function cardHPLabel(projected: boolean, mode: DamageRollMode, mechanic: BattleMechanic | undefined) {

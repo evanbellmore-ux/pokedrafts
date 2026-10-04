@@ -77,15 +77,21 @@ export type DoublesTurnInput = {
    * actions, and ignored here.
    */
   field: BattleConditions;
-  /** null: no Pokémon in that slot (the v1 UI always fills all four). */
+  /**
+   * null: no Pokémon in that slot, as when its Pokémon fainted with no replacement left (the 2v2 UI passes a Pokémon at 0 HP
+   * so). As pinned Showdown skips a fainted active Pokémon (sim/side.ts allies, sim/pokemon.ts isAdjacent, sim/battle.ts
+   * runEvent), it takes no action, is no target (a move aimed at it goes to the other foe), a spread move counts only the
+   * Pokémon in place, and its partner gets none of its effects; Last Respects counts it among its side's fainted
+   * (side.totalFainted). With both foe slots empty, a move that can reach a foe has no target and no step.
+   */
   pokemon: Record<DoublesSlotId, DoublesPokemonInput | null>;
 };
 
 /** Which targets the move a slot would use can take, as chosen in the game (doubles-targets.ts). */
 export type DoublesTargetRule =
-  /** The player picks one: present slots, in the order left foe, right foe, ally, itself. */
+  /** The player picks one: present slots, in the order left foe, right foe, ally, itself; none when both foe slots are empty and the move can reach a foe. */
   | { kind: "choose"; options: DoublesSlotId[] }
-  /** Showdown picks: every slot listed (foes screen-left first, then the ally), or one living foe at random. */
+  /** Showdown picks: every slot listed (foes screen-left first, then the ally), or one living foe at random; none when both foe slots are empty. */
   | { kind: "auto"; hits: DoublesSlotId[]; random?: true }
   /** No Pokémon target. */
   | { kind: "none"; scope: "self" | "self-and-ally" | "own-side" | "foe-side" | "field" | "own-team" | "last-attacker" };
@@ -171,7 +177,10 @@ export type DoublesTurnResult =
   | {
     status: "ready";
     start: DoublesStart;
-    /** Slots with a move only, by mean position (slot order on ties). Empty when no slot has a move. */
+    /**
+     * Slots with a move only, by mean position (slot order on ties). Empty when no slot has a move. A move with no target
+     * because both foe slots are empty has no step (the fact "No target: both foes have fainted.").
+     */
     steps: DoublesStep[];
     hp: Record<DoublesSlotId, DoublesHP | null>;
     startRows: DoublesStartRow[];

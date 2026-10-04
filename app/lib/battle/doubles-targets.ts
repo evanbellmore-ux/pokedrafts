@@ -16,25 +16,47 @@ const NO_TARGET: Record<string, Extract<DoublesTargetRule, { kind: "none" }>["sc
   self: "self", allies: "self-and-ally", allySide: "own-side", foeSide: "foe-side", all: "field", allyTeam: "own-team", scripted: "last-attacker",
 };
 
+/** The dex target types that can reach a foe: with both foes gone, a move of one of them has no target (doublesTargetRule). */
+const FOE_TARGETS: ReadonlySet<string> = new Set(["normal", "any", "adjacentFoe", "allAdjacentFoes", "allAdjacent", "randomNormal"]);
+
+/** The dex target type of the move `slot` would use for `moveId` (doublesTargetRule), or null with no Pokémon or no such move. */
+function targetType(input: DoublesTurnInput, slot: DoublesSlotId, moveId: string): string | null {
+  const entry = input.pokemon[slot];
+  const move = input.runtime.movesById.get(moveId);
+  if (!entry || !move) return null;
+  const dynamaxed = entry.build.mechanic === "dynamax" || entry.build.mechanic === "gigantamax";
+  const useZ = entry.contexts[moveId]?.useZ === true && move.category !== "Status";
+  const crystal = useZ ? input.runtime.itemsById.get(entry.build.itemId) : undefined;
+  const signature = crystal?.zMove && crystal.zMoveFrom === moveId ? input.runtime.movesById.get(crystal.zMove) : undefined;
+  return dynamaxed ? (move.category === "Status" ? "self" : "adjacentFoe") : useZ ? signature?.target ?? "normal" : move.target;
+}
+
+/**
+ * Whether `slot`'s move aims at the foes while both foe slots are empty (fainted with no replacement): the battle is
+ * over, so the turn gives it no target and no step (doubles-turn.ts).
+ */
+export function doublesNoFoeLeft(input: DoublesTurnInput, slot: DoublesSlotId, moveId: string): boolean {
+  const type = targetType(input, slot, moveId);
+  return type !== null && FOE_TARGETS.has(type) && foesOf(slot).every((foe) => input.pokemon[foe] === null);
+}
+
 /**
  * The target rule for `moveId` from `slot` (SPEC §3.3): the dex target, or the Z-Move's / Max Move's ("adjacentFoe"; a
  * status move is Max Guard, self). A damaging Z-Move has its own dex target (pinned Showdown getActiveZMove): a
  * signature Z-Crystal's Z-Move (zMoveFrom) its own, Clangorous Soulblaze's allAdjacentFoes (data/moves.ts
  * clangoroussoulblaze), and every type Z-Move normal; a Max Move targets one foe (getActiveMaxMove: adjacentFoe; Max
  * Guard, self). Expanding Force and Tera Starstorm ask for one target here, as in the game: they spread when they run.
+ * An empty slot (null: a Pokémon that fainted with no replacement) is never an option or a hit, as pinned Showdown's
+ * allies(), foes() and adjacency skip a fainted Pokémon (sim/side.ts allies, sim/pokemon.ts isAdjacent); with both foe
+ * slots empty, a move that can reach a foe has no target at all (doublesNoFoeLeft).
  */
 export function doublesTargetRule(input: DoublesTurnInput, slot: DoublesSlotId, moveId: string): DoublesTargetRule {
-  const entry = input.pokemon[slot];
-  const move = input.runtime.movesById.get(moveId);
-  if (!entry || !move) return { kind: "none", scope: "self" };
-  const dynamaxed = entry.build.mechanic === "dynamax" || entry.build.mechanic === "gigantamax";
-  const useZ = entry.contexts[moveId]?.useZ === true && move.category !== "Status";
-  const crystal = useZ ? input.runtime.itemsById.get(entry.build.itemId) : undefined;
-  const signature = crystal?.zMove && crystal.zMoveFrom === moveId ? input.runtime.movesById.get(crystal.zMove) : undefined;
-  const target = dynamaxed ? (move.category === "Status" ? "self" : "adjacentFoe") : useZ ? signature?.target ?? "normal" : move.target;
+  const target = targetType(input, slot, moveId);
+  if (target === null) return { kind: "none", scope: "self" };
   const [left, right] = foesOf(slot);
   const ally = allyOf(slot);
-  const present = (list: DoublesSlotId[]) => list.filter((each) => input.pokemon[each] !== null);
+  const noFoe = doublesNoFoeLeft(input, slot, moveId);
+  const present = (list: DoublesSlotId[]) => noFoe ? [] : list.filter((each) => input.pokemon[each] !== null);
   switch (target) {
     case "normal":
     case "any":

@@ -3,7 +3,7 @@
 import { useDeferredValue, useMemo } from "react";
 import type { MatchupResult } from "@/app/lib/battle/calculate";
 import { DOUBLES_SLOTS, type DoublesTurnInput, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
-import type { DoublesMatchup } from "./doubles-prep";
+import { doublesTurnInput, type DoublesMatchup } from "./doubles-prep";
 import { errorMessage } from "./useMatchupCalculation";
 
 export type DoublesEngine = typeof import("@/app/lib/battle/doubles-turn");
@@ -36,14 +36,12 @@ export function useDoublesCalculation(engine: DoublesEngine | null, doubles: Dou
   const [a, b, c, d] = [slots["own-left"], slots["own-right"], slots["opponent-left"], slots["opponent-right"]];
   const [actionA, actionB, actionC, actionD] = [actions["own-left"], actions["own-right"], actions["opponent-left"], actions["opponent-right"]];
   const [chargedA, chargedB, chargedC, chargedD] = [charged["own-left"], charged["own-right"], charged["opponent-left"], charged["opponent-right"]];
-  const input = useMemo((): DoublesTurnInput => ({
-    runtime, field,
-    pokemon: {
-      "own-left": { build: a.build, contexts: a.contexts, charged: chargedA, action: actionA },
-      "own-right": { build: b.build, contexts: b.contexts, charged: chargedB, action: actionB },
-      "opponent-left": { build: c.build, contexts: c.contexts, charged: chargedC, action: actionC },
-      "opponent-right": { build: d.build, contexts: d.contexts, charged: chargedD, action: actionD },
-    },
+  // A Pokémon at 0 HP has fainted before the turn: its slot is empty in the input (doubles-prep doublesTurnInput).
+  const input = useMemo((): DoublesTurnInput => doublesTurnInput(runtime, field, {
+    "own-left": { build: a.build, contexts: a.contexts, charged: chargedA, action: actionA },
+    "own-right": { build: b.build, contexts: b.contexts, charged: chargedB, action: actionB },
+    "opponent-left": { build: c.build, contexts: c.contexts, charged: chargedC, action: actionC },
+    "opponent-right": { build: d.build, contexts: d.contexts, charged: chargedD, action: actionD },
   }), [runtime, field, a.build, a.contexts, b.build, b.contexts, c.build, c.contexts, d.build, d.contexts,
     chargedA, chargedB, chargedC, chargedD, actionA, actionB, actionC, actionD]);
   const identity = doublesIdentity(doubles);

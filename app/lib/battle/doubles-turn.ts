@@ -26,7 +26,7 @@ import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, valid
 import type { BattleRuntime } from "./runtime";
 import { MAX_MOVE_EFFECTS, STATUS_MOVES, statMove } from "./stat-moves";
 import type { BattleBuild, BattleConditions, ChampionsMove, CombatStat, MoveContext, MoveDamageResult } from "./types";
-import { doublesTargetRule } from "./doubles-targets";
+import { doublesNoFoeLeft, doublesTargetRule } from "./doubles-targets";
 import {
   buildAt, createTurnSearch, prepareUses, uncertain, USES_REFERENCE, type CalcTrace, type Mode, type TurnSide, type TurnStepEntry, type TurnStepOutcome, type UsesSearch,
 } from "./uses-to-ko";
@@ -91,6 +91,8 @@ type Ctx = {
   faintsBefore: Map<DoublesSlotId, number>;
   /** Slots that faint on some branch other than by a hit a step counts (hitStats.ko): their own move, a fixed loss. */
   otherFaints: Set<DoublesSlotId>;
+  /** Slots whose move can reach only foes while both foe slots are empty (doublesNoFoeLeft): queued, but no step. */
+  targetless: Set<DoublesSlotId>;
 };
 
 const alive = (w: World, slot: DoublesSlotId) => !!w.mons[slot] && !w.mons[slot]!.fainted;
@@ -427,7 +429,7 @@ function presenceGuards(ctx: Ctx, w: World) {
       notEstimated(REASONS.notIn2v2(name));
     }
     const moveId = entry.action.moveId;
-    if (!moveId) continue;
+    if (!moveId || ctx.targetless.has(slot)) continue;
     const move = ctx.runtime.movesById.get(moveId)!;
     const context = entry.contexts[moveId];
     // A Dancer copies a dance move another Pokémon uses (sim/battle-actions.ts runMove).
@@ -541,6 +543,11 @@ function execute(ctx: Ctx, w: World, action: PendingAction): World[] {
   w.remaining = w.remaining.filter((entry) => entry !== action);
   const step = stepOf(ctx, action);
   const mon = w.mons[action.slot]!;
+  // Both foe slots empty: the action stays queued for the others' order reads and does nothing (no target, no step).
+  if (ctx.targetless.has(action.slot)) {
+    if (!mon.fainted) mon.moved = true;
+    return [w];
+  }
   if (action.moveId !== null) {
     w.executed++;
     if (step) { bump(step.order, w.executed, w.mass); step.positionSum += w.executed * w.mass; step.positionMass += w.mass; }
@@ -869,6 +876,14 @@ function statusMove(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMo
   const slot = action.slot;
   const mon = w.mons[slot]!;
   const name = ctx.names[slot];
+  // A move aimed at the ally (Helping Hand, Aromatic Mist, Coaching, Dragon Cheer, Hold Hands) with the ally fainted or
+  // its slot empty: sim/battle.ts getTarget keeps a fainted ally, sim/pokemon.ts getMoveTargets then has no target and
+  // sim/battle-actions.ts useMoveInner fails it (-fail, [notarget]) before any PrepareHit (Protean).
+  const partner = allyOf(slot);
+  if (move.target === "adjacentAlly" && !alive(w, partner)) {
+    stepFact(ctx, action, `${move.name} fails: ${w.mons[partner] ? ctx.names[partner] : "its ally"} has fainted.`, w.mass);
+    return [w];
+  }
   // A protecting move that fails stops in its own PrepareHit (data/moves.ts protect onPrepareHit), before Protean's:
   // it fails only with no action left, where nothing reads the type.
   proteanGuard(ctx, w, slot, move.id, () => move.type);
@@ -887,10 +902,10 @@ function statusMove(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMo
     return [w];
   }
   if (move.id === "helpinghand") {
-    const ally = allyOf(slot);
-    // onTryHit: the ally must still have a move queued (data/moves.ts:8584-8585 queue.willMove); a fainted ally is no target.
-    if (!alive(w, ally) || !w.remaining.some((entry) => entry.slot === ally)) {
-      stepFact(ctx, action, `Helping Hand fails: ${w.mons[ally] ? ctx.names[ally] : "its ally"} ${alive(w, ally) ? "has already moved" : "has fainted"}.`, w.mass);
+    const ally = partner;
+    // onTryHit: the ally must still have a move queued (data/moves.ts:8584-8585 queue.willMove).
+    if (!w.remaining.some((entry) => entry.slot === ally)) {
+      stepFact(ctx, action, `Helping Hand fails: ${ctx.names[ally]} has already moved.`, w.mass);
       return [w];
     }
     w.mons[ally]!.helpingHand += 1;
@@ -1169,7 +1184,8 @@ function contextFor(ctx: Ctx, w: World, action: PendingAction, target: DoublesSl
   }
   if (id === "avalanche" || id === "revenge") context.doubled = user.damagedBy.includes(target);
   if (id === "lashout") context.doubled = user.statsLowered || !!base?.doubled;
-  if (id === "lastrespects") context.fainted = (base?.fainted ?? 0) + w.sides[slotSide(attacker)].faintedThisTurn;
+  // Last Respects (data/moves.ts lastrespects: 50 + 50 per side.totalFainted): at least the side's empty slots, then this turn's faints.
+  if (id === "lastrespects") context.fainted = Math.max(base?.fainted ?? 0, emptySlots(ctx.input, slotSide(attacker))) + w.sides[slotSide(attacker)].faintedThisTurn;
   if (id === "ragefist") context.timesHit = Math.min(6, (base?.timesHit ?? 0) + user.timesAttacked);
   return Object.keys(context).length ? context : undefined;
 }
@@ -2174,11 +2190,35 @@ function createContext(input: DoublesTurnInput, settle: DoublesSettle, memo: Mem
     const values = build ? turnHP(build, runtime) : { maxHP: 0, baseMaxHP: 0 };
     return [slot, { maxHP: values.maxHP, baseMaxHP: values.baseMaxHP }];
   })) as Ctx["hp"];
-  const actions = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]).map((slot) => ({ slot, moveId: input.pokemon[slot]!.action.moveId, target: input.pokemon[slot]!.action.target }));
+  const actions = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]).map((slot) => ({ slot, moveId: input.pokemon[slot]!.action.moveId, target: aimedAt(input, slot) }));
   return {
     input, runtime, gen7: runtime.profile.generation === 7, champions: runtime.profile.id === "champions", names, hp, actions, mode, memo, stats,
-    heals: new Map(), faintsBefore: new Map(), otherFaints: new Set(),
+    heals: new Map(), faintsBefore: new Map(), otherFaints: new Set(), targetless: targetlessSlots(input),
   };
+}
+
+/**
+ * The slot a living Pokémon's chosen target stands for: a foe slot that is empty (its Pokémon fainted with no
+ * replacement) is the other foe, as pinned Showdown retargets a move at a fainted foe (sim/battle.ts getTarget,
+ * getRandomTarget: sim/side.ts randomFoe, the one foe in place); otherwise the chosen slot.
+ */
+function aimedAt(input: DoublesTurnInput, slot: DoublesSlotId): DoublesSlotId | null {
+  const target = input.pokemon[slot]?.action.target ?? null;
+  if (!target || input.pokemon[target] || !isFoe(slot, target)) return target;
+  return foesOf(slot).find((foe) => input.pokemon[foe]) ?? null;
+}
+
+/** The slots whose move has no target because both foe slots are empty (doublesNoFoeLeft). */
+function targetlessSlots(input: DoublesTurnInput): Set<DoublesSlotId> {
+  return new Set(DOUBLES_SLOTS.filter((slot) => {
+    const moveId = input.pokemon[slot]?.action.moveId;
+    return !!moveId && doublesNoFoeLeft(input, slot, moveId);
+  }));
+}
+
+/** The empty slots on a side: Pokémon that fainted with no replacement (Last Respects counts them: side.totalFainted). */
+function emptySlots(input: DoublesTurnInput, side: DoublesSideId): number {
+  return DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side && !input.pokemon[slot]).length;
 }
 
 function validate(input: DoublesTurnInput): DoublesTurnResult | null {
@@ -2196,8 +2236,12 @@ function validate(input: DoublesTurnInput): DoublesTurnResult | null {
     const known = runtime.movesById.get(moveId);
     if (!known || known.isZ || known.isMax || !species?.moves.includes(moveId)) { issues.actions.push({ slot, message: "This Pokémon does not learn that move." }); continue; }
     const rule = doublesTargetRule(input, slot, moveId);
+    // A foe slot that is empty stands for the other foe (aimedAt); with no foe left the move has no target.
+    const emptyFoe = target !== null && isFoe(slot, target) && !input.pokemon[target]
+      && ((rule.kind === "choose" && rule.options.some((option) => isFoe(slot, option))) || doublesNoFoeLeft(input, slot, moveId));
     const targetIssue = rule.kind !== "choose" ? (target !== null ? "This move takes no chosen target." : null)
-      : !target ? "No target is chosen for this move." : !rule.options.includes(target) ? "This move cannot target that Pokémon." : null;
+      : !target ? (rule.options.length ? "No target is chosen for this move." : null)
+      : !rule.options.includes(target) && !emptyFoe ? "This move cannot target that Pokémon." : null;
     if (targetIssue) issues.actions.push({ slot, message: targetIssue });
   }
   return Object.keys(issues.pokemon).length || issues.field.length || issues.actions.length ? { status: "issues", issues } : null;
@@ -2299,6 +2343,9 @@ function pairRows(input: DoublesTurnInput, settle: DoublesSettle, slot: DoublesS
     if (typeof order === "string") own[id] = { ...contexts[id], turnOrder: order };
     else if (analytic) ordered.set(id, order);
   }
+  // Last Respects counts the side's empty slots (side.totalFainted), the count given or more (contextFor).
+  const fallen = emptySlots(input, slotSide(slot));
+  if (moves.includes("lastrespects") && fallen > (own.lastrespects?.fainted ?? 0)) own.lastrespects = { ...own.lastrespects, fainted: fallen };
   // Moves whose calculation reads a different field are calculated apart: Flower Gift (an ignoreAbility move, Body
   // Press), a spread move's targets as the turn starts (doublesTargetRule: more than one in place), a one-target Z-Move.
   const fieldKey = (conditions: BattleConditions) => JSON.stringify([!!conditions.attackerSide.flowerGift, !!conditions.defenderSide.flowerGift, conditions.multipleTargets, !!conditions.oneTarget]);
@@ -2358,7 +2405,8 @@ function startRows(input: DoublesTurnInput, settle: DoublesSettle): DoublesStart
     const move = input.runtime.movesById.get(entry.action.moveId);
     if (!move || (move.category === "Status" && !entry.contexts[move.id]?.useZ)) continue;
     const rule = doublesTargetRule(input, slot, move.id);
-    const targets = rule.kind === "choose" ? (entry.action.target ? [entry.action.target] : []) : rule.kind === "auto" ? rule.hits : [];
+    const aimed = aimedAt(input, slot);
+    const targets = rule.kind === "choose" ? (aimed ? [aimed] : []) : rule.kind === "auto" ? rule.hits : [];
     for (const target of targets) {
       if (!settle.slots[target]) continue;
       const row = pairRows(input, settle, slot, target, [move.id], entry.contexts).results[0];
@@ -2372,7 +2420,9 @@ function turnFacts(input: DoublesTurnInput): string[] {
   const facts = [input.field.critical
     ? "Every move hits and every damaging hit is critical; added effects below 100% do not happen."
     : "Every move hits; no critical hits; added effects below 100% do not happen.", "End-of-turn effects are not applied."];
-  const moves = DOUBLES_SLOTS.map((slot) => input.pokemon[slot]?.action.moveId).filter((id): id is string => !!id);
+  const targetless = targetlessSlots(input);
+  if (targetless.size) facts.push("No target: both foes have fainted.");
+  const moves = DOUBLES_SLOTS.filter((slot) => !targetless.has(slot)).map((slot) => input.pokemon[slot]?.action.moveId).filter((id): id is string => !!id);
   // Only the stalling moves with a protect volatile read the last turn (data/moves.ts protect onPrepareHit StallMove);
   // Wide Guard and Quick Guard check queue.willAct() alone from generation 7 (their onTry).
   if (moves.some((id) => PROTECT_MOVES[id])) facts.push("Assumes no protecting move was used last turn.");
@@ -2456,7 +2506,7 @@ export function calculateDoublesTurn(input: DoublesTurnInput): DoublesTurnResult
     const koHits = new Map<DoublesSlotId, number>();
     for (const step of stats) for (const [slot, each] of step.hits) if (each.ko > 0) bump(koHits, slot, 1);
     const certain = (slot: DoublesSlotId) => hp[slot]?.koChance === 1 && koHits.get(slot) === 1 && !all.otherFaints.has(slot);
-    const steps = stats.filter((step) => step.moveId).map((step): DoublesStep & { mean: number } => {
+    const steps = stats.filter((step) => step.moveId && !all.targetless.has(step.slot)).map((step): DoublesStep & { mean: number } => {
       const fact = (map: Map<string, number>): DoublesFact[] => [...map].map(([text, chance]) => ({ text, chance: Math.min(1, chance) }));
       const hits = [...step.hits].map(([slot, stats]): DoublesHit => {
         const met = [...stats.met.values()];

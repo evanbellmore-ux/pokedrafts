@@ -14,7 +14,7 @@ import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
 import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import PokemonChooser from "./PokemonChooser";
-import { actionFact, ARROW, baseName, cardHPLabel, positionLabel, relativeLabel, rollDescription, shownHP, type DoublesNames } from "./doubles-format";
+import { actionFact, ARROW, baseName, cardHPLabel, FAINTED, positionLabel, relativeLabel, rollDescription, shownHP, type DoublesNames } from "./doubles-format";
 import { getBuildHealth, settledText, type DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type Combatant, type MoveOwner, type MoveReplacement, type RosterChoice, type RosterPanel } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -28,6 +28,8 @@ export type DoublesCardView = {
   hp: DoublesHP | null;
   /** Some step reaches it: the card shows its KO chance. */
   reached: boolean;
+  /** Its HP is 0: it fainted before the turn, so the card shows no move or target and the turn leaves it out. */
+  fainted?: boolean;
   issues: BuildIssue[]; mimicry: MimicryState | null;
   rosterPanel: RosterPanel; rosterDisabled: (choice: RosterChoice) => string | null;
 };
@@ -67,7 +69,7 @@ const linkButton = "min-h-11 rounded text-xs font-semibold text-accent-text unde
 /** A 2v2 card: the Pokémon, its HP after the turn's moves, its move and its target (data-doubles-slot). */
 export default function DoublesCard({ view, names, runtime, rollMode, replacement, movesControl, effective, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange }: Props) {
   const id = useId();
-  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled } = view;
+  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false } = view;
   const position = SLOT_POSITION[slotId];
   const owner = getMoveOwner(slot);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -79,6 +81,8 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
   const megaOptions = getMegaOptions(slot.build.speciesId, runtime, slot.megaBase?.speciesId);
   const megaBaseName = megaOptions.length ? runtime.speciesById.get(megaOptions[0].baseSpeciesId)?.name : undefined;
   const health = getBuildHealth(slot.build, runtime);
+  // A fainted Pokémon's maximum: the build's HP at full (current HP 0 is not valid in 1v1).
+  const faintedMaximum = fainted ? getBuildHealth({ ...slot.build, currentHP: null }, runtime)?.maximum ?? null : null;
   const teraType = runtime.profile.tera && slot.build.mechanic === "tera" ? slot.build.configuration?.teraType : undefined;
   const types = teraType && teraType !== "Stellar" ? [teraType] : mimicry?.type ? [mimicry.type] : species?.types;
   const maximum = hp?.maximum ?? health?.maximum ?? 0;
@@ -137,7 +141,17 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
       <MechanicControls build={slot.build} position={position} runtime={runtime} onToggle={(mechanic) => onToggleMechanic(owner, mechanic)} />
       {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} /></div>}
       <RetainedConfiguration build={slot.build} runtime={runtime} />
-      {hp || health ? (
+      {fainted ? (
+        <>
+          <p data-doubles-fainted={slotId} className="mt-1 text-xs font-semibold text-danger">{FAINTED}</p>
+          {faintedMaximum !== null ? (
+            <>
+              <p className="tabular-nums"><span className="text-xl font-bold text-text">0</span><span className="text-sm text-muted"> / {faintedMaximum} HP</span></p>
+              <div role="meter" aria-label={`${name} ${position} current HP`} aria-valuemin={0} aria-valuemax={faintedMaximum} aria-valuenow={0} aria-valuetext={`${FAINTED}: 0 of ${faintedMaximum} HP`} title={`${FAINTED}: 0 of ${faintedMaximum} HP`} className="mt-1 h-2 rounded-full bg-panel-hover" />
+            </>
+          ) : <p className="mt-1 wrap-anywhere text-sm font-semibold text-danger">{unavailable}</p>}
+        </>
+      ) : hp || health ? (
         <>
           <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(!!hp, rollMode, slot.build.mechanic)}</p>
           <p className="tabular-nums"><span className="text-xl font-bold text-text">{shown}</span><span className="text-sm text-muted"> / {maximum} HP</span></p>
@@ -165,6 +179,7 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
               issues={issues}
               text={slot.hpInput}
               onTextChange={(text) => onHPChange(slot.key, text)}
+              allowFainted
               data-doubles-hp={slotId}
               onKeyDown={(event) => {
                 if ((event.key === "Enter" || event.key === "Escape") && !event.nativeEvent.isComposing) {
@@ -177,7 +192,7 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
           </div>
         )}
       </div>
-      <div role="group" aria-label={`${name} ${position} move`} className="mt-auto border-t border-line pt-2">
+      {!fainted && <div role="group" aria-label={`${name} ${position} move`} className="mt-auto border-t border-line pt-2">
         <div className={styles.doublesQuickMoves}>
           {slot.moves.map((prepared, index) => {
             const quick = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
@@ -215,7 +230,8 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
         {offList && <p className="mt-1 flex min-w-0 flex-wrap items-center gap-1 text-xs text-text"><span className="wrap-anywhere font-semibold">Move: {moveName}</span>{move && <TypeBadge type={effective?.type ?? move.type} />}</p>}
         {action.moveId && rule && (
           <div data-doubles-target={slotId} className="mt-2 min-w-0">
-            {rule.kind === "choose" && (
+            {/* One option (the other foe has fainted) is picked as the game does: the fact names it. */}
+            {rule.kind === "choose" && rule.options.length > 1 && (
               <fieldset className="min-w-0">
                 <legend className="text-xs font-semibold text-muted">Target<span className="sr-only"> for {name} {position}</span></legend>
                 <div className={`${styles.targets} mt-1`}>
@@ -233,12 +249,12 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
                 </div>
               </fieldset>
             )}
-            <p data-doubles-action={slotId} aria-hidden={rule.kind === "choose" || undefined} className="mt-1 wrap-anywhere text-xs text-muted">
+            <p data-doubles-action={slotId} aria-hidden={(rule.kind === "choose" && rule.options.length > 1) || undefined} className="mt-1 wrap-anywhere text-xs text-muted">
               <PointedText text={actionFact(moveName, names, slotId, rule, action.target)} />
             </p>
           </div>
         )}
-      </div>
+      </div>}
       <PokemonChooser
         side="attacker"
         position={position}
