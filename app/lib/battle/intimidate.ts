@@ -190,22 +190,53 @@ export function intimidatedKey(build: BattleBuild, runtime: BattleRuntime): stri
 }
 
 export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle: IntimidateBattle, runtime: BattleRuntime): IntimidateResult {
+  const result = intimidateAll(source, [{ build: target, tailwind: battle.tailwind?.target ?? false, position: battle.positions?.target }], {
+    ...battle, sourceTailwind: battle.tailwind?.source ?? false, sourcePosition: battle.positions?.source,
+  }, runtime);
+  return { source: result.source, target: result.foes[0], lines: result.lines };
+}
+
+/**
+ * Intimidate from `source` into each foe in order (pinned Showdown data/abilities.ts intimidate onStart: for each of
+ * adjacentFoes(), position 0 then 1, boost({ atk: -1 })), the source updated after each (a Mirror Armor drop is
+ * reflected onto it, and its Defiant or Competitive reacts). The switch-in White Herb (priority -2) and Mirror Herb
+ * (-3) act once, after both drops; the rises the source's Mirror Herb stores come from every foe.
+ */
+export function applyIntimidateToFoes(
+  source: BattleBuild,
+  foes: readonly { build: BattleBuild; tailwind: boolean; position: string }[],
+  battle: Omit<IntimidateBattle, "tailwind" | "positions"> & { sourceTailwind: boolean; sourcePosition: string },
+  runtime: BattleRuntime,
+): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
+  return intimidateAll(source, foes, battle, runtime);
+}
+
+function intimidateAll(
+  source: BattleBuild,
+  foes: readonly { build: BattleBuild; tailwind: boolean; position: string | undefined }[],
+  battle: Omit<IntimidateBattle, "tailwind" | "positions"> & { sourceTailwind: boolean; sourcePosition: string | undefined },
+  runtime: BattleRuntime,
+): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
   const gen7 = runtime.profile.id === "ultra_sun_ultra_moon";
   const gen9 = runtime.profile.id === "champions" || runtime.profile.id === "scarlet_violet";
   const speciesName = (build: BattleBuild) => runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
-  const sameName = speciesName(source) === speciesName(target);
-  const name = (build: BattleBuild, position: string | undefined) => sameName && position ? `${speciesName(build)} (${position})` : speciesName(build);
+  // A Pokémon is named with its position when another one here shows the same species (index 0 is the source).
+  const builds = [source, ...foes.map((foe) => foe.build)];
+  const name = (index: number, position: string | undefined) => position && builds.some((other, at) => at !== index && speciesName(other) === speciesName(builds[index]))
+    ? `${speciesName(builds[index])} (${position})` : speciesName(builds[index]);
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   const lines: string[] = [];
-  const sourcePlain = entryBoosts(source, target, null, battle.tailwind?.source ?? false, battle, runtime);
-  const targetPlain = entryBoosts(target, source, null, battle.tailwind?.target ?? false, battle, runtime);
-  const mon = (build: BattleBuild, position: string | undefined, entry: EntryBoost[]): Mon => {
+  const first = foes[0]?.build ?? source;
+  const mon = (index: number, position: string | undefined, entry: EntryBoost[]): Mon => {
+    const build = builds[index];
     const boosts = Object.fromEntries(STATS.map((stat) => [stat,
       clampStage((build.boosts[stat] ?? 0) + entry.filter((boost) => boost.stat === stat).reduce((sum, boost) => sum + boost.amount, 0))])) as Record<CombatStat, number>;
-    return { build, item: build.itemId, name: name(build, position), herb: null, lowered: false, entry, boosts, start: { ...boosts } };
+    return { build, item: build.itemId, name: name(index, position), herb: null, lowered: false, entry, boosts, start: { ...boosts } };
   };
-  const src = mon(source, battle.positions?.source, entryBoosts(source, target, targetPlain, battle.tailwind?.source ?? false, battle, runtime));
-  const tgt = mon(target, battle.positions?.target, entryBoosts(target, source, sourcePlain, battle.tailwind?.target ?? false, battle, runtime));
+  const src = mon(0, battle.sourcePosition, entryBoosts(source, first, entryBoosts(first, source, null, foes[0]?.tailwind ?? false, battle, runtime), battle.sourceTailwind, battle, runtime));
+  const tgts = foes.map((foe, index) => mon(index + 1, foe.position, entryBoosts(foe.build, source, entryBoosts(source, foe.build, null, battle.sourceTailwind, battle, runtime), foe.tailwind, battle, runtime)));
+  // The foe whose drop is being resolved: a rise of the source is stored by its Mirror Herb; a target's rise by the source's.
+  let tgt = tgts[0];
   // Showdown ignores held items under Magic Room and for a Klutz holder.
   const holds = (m: Mon, id: string) => m.item === id && !battle.magicRoom && m.build.abilityId !== "klutz";
   const ability = (m: Mon) => m.build.abilityId;
@@ -290,7 +321,7 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
     }
     // The foe's Mirror Herb (Scarlet/Violet) stores this Pokémon's rises.
     if (effect !== "Mirror Herb") {
-      const foe = m === tgt ? src : tgt;
+      const foe = m === src ? tgt : src;
       if (gen9 && holds(foe, "mirrorherb")) {
         for (const stat of STATS) {
           if ((change[stat] ?? 0) > 0) foe.herb = { ...foe.herb, [stat]: (foe.herb?.[stat] ?? 0) + change[stat]! };
@@ -300,16 +331,19 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
   }
 
   lines.push(`${src.name}'s Intimidate:`);
-  // The target's Neutralizing Gas suppresses Intimidate unless Ability Shield (not under Magic Room)
-  // keeps it; the switch-in items below still act.
-  if (target.abilityId === "neutralizinggas" && !(source.itemId === "abilityshield" && !battle.magicRoom)) {
-    lines.push(`${tgt.name}'s Neutralizing Gas suppresses it.`);
-  } else {
-    boost(tgt, src, { atk: -1 }, "Intimidate");
+  for (const [index, foe] of foes.entries()) {
+    tgt = tgts[index];
+    // The target's Neutralizing Gas suppresses Intimidate unless Ability Shield (not under Magic Room)
+    // keeps it; the switch-in items below still act.
+    if (foe.build.abilityId === "neutralizinggas" && !(source.itemId === "abilityshield" && !battle.magicRoom)) {
+      lines.push(`${tgt.name}'s Neutralizing Gas suppresses it.`);
+    } else {
+      boost(tgt, src, { atk: -1 }, "Intimidate");
+    }
   }
   // Switch-in items: White Herb (priority -2), then Mirror Herb (-3). The Intimidate user's own
   // rises are never stored for the target's Mirror Herb (Intimidate raises nothing on its user).
-  for (const m of [tgt, src]) {
+  for (const m of [...tgts, src]) {
     if (holds(m, "whiteherb") && STATS.some((stat) => m.boosts[stat] < 0)) {
       for (const stat of STATS) if (m.boosts[stat] < 0) m.boosts[stat] = 0;
       consumeItem(m, "restores its lowered stats");
@@ -320,15 +354,17 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
     consumeItem(src, "copies the rises");
     boost(src, src, copied, "Mirror Herb");
   }
-  for (const m of [tgt, src]) {
+  for (const m of [...tgts, src]) {
     if (m.lowered && holds(m, "ejectpack")) lines.push(`${m.name}'s Eject Pack: assumes it stays in.`);
     if (m.item !== m.build.itemId && m.build.abilityId === "unburden") lines.push(`${m.name}'s Unburden activates.`);
   }
   // A Flower Veil partner (Doubles) guards a Grass-type Pokémon; there is no slot for it.
-  if (battle.gameType === "Doubles" && tgt.lowered && types(tgt).includes("Grass") && runtime.abilitiesById.has("flowerveil")) {
-    lines.push(`${tgt.name}: assumes no partner with Flower Veil.`);
+  for (const m of tgts) {
+    if (battle.gameType === "Doubles" && m.lowered && types(m).includes("Grass") && runtime.abilitiesById.has("flowerveil")) {
+      lines.push(`${m.name}: assumes no partner with Flower Veil.`);
+    }
   }
-  for (const m of [src, tgt]) {
+  for (const m of [src, ...tgts]) {
     if (!m.entry.length) continue;
     const list = m.entry.map((entry) => `${entry.cause} (${entry.amount > 0 ? "+" : ""}${entry.amount} ${STAT_NAMES[entry.stat]})`).join(" and ");
     lines.push(`${m.name}'s stored stages leave out its ${list} (added at calculation).`);
@@ -345,6 +381,6 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
       ...(consumed && m.build.abilityId === "unburden" ? { abilityActive: true } : {}),
     };
   };
-  if (lines.length === 1) lines.push(`${tgt.name} is unaffected.`);
-  return { source: finish(src), target: finish(tgt), lines };
+  if (lines.length === 1) lines.push(tgts.length === 1 ? `${tgts[0].name} is unaffected.` : `${tgts.map((m) => m.name).join(" and ")} are unaffected.`);
+  return { source: finish(src), foes: tgts.map(finish), lines };
 }

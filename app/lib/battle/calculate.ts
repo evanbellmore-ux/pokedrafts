@@ -15,7 +15,7 @@ import { EVENT_DOUBLING_MOVES, eventDoublingAssumption, isEventDoubled } from ".
 import { withDynamaxHealth } from "./health";
 import { mimicryState } from "./mimicry";
 import { FIXED_DAMAGE_MOVES, MOVES_FIRST_POWER_MOVES } from "./turn-order";
-import { imposterTransforms, movesSpeciesId, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
+import { imposterTransforms, movesSpeciesId, NO_TRACE_ABILITIES, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
 import {
@@ -24,7 +24,8 @@ import {
 } from "./hit-loop";
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
-import { ENTRY_ABILITIES, estimateUses, prepareUses, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
+import { ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
+import { DOUBLES_SLOTS, doublesNames, foesOf, SLOT_POSITION, slotSide, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
 import type {
   AfterUse,
   BattleBuild,
@@ -263,6 +264,8 @@ function makeSide(side: SideConditions) {
     isFriendGuard: side.friendGuard,
     isTailwind: side.tailwind,
     isCharge: side.charge,
+    // Doubles turn only (doubles-turn.ts flowerGift): unset in 1v1, the engine's default.
+    ...(side.flowerGift ? { isFlowerGift: true } : {}),
     // Protect is resolved by protectOutcome: the engine quarters before the final modifiers,
     // gives mainline Unseen Fist a quarter, and blocks Future Sight and Mighty Cleave.
   };
@@ -571,7 +574,7 @@ function settleEntry(
 }
 
 /** What settleItems leaves: the settled build, its lines, the HP an eaten item changed, and a Starf Berry's pending rise. */
-type SettledItems = {
+export type SettledItems = {
   build: BattleBuild; lines: string[]; settledHP?: SettledHP;
   /** A Starf Berry eaten before the move: +`amount` to one of `stats` at random (each equally likely), not yet in the build's stages. */
   starf?: { stats: CombatStat[]; amount: number };
@@ -1135,7 +1138,7 @@ const TARGET_ATTACK_MOVES = new Set(["suckerpunch", "thunderclap", "upperhand"])
 // shield. The partner's own Ability Shield, which keeps them through both, is not modelled.
 const ABILITY_IGNORERS = new Set(["moldbreaker", "teravolt", "turboblaze"]);
 
-function partnerAbilitySuppressor(attacker: BattleBuild, defender: BattleBuild, runtime: BattleRuntime): string | null {
+export function partnerAbilitySuppressor(attacker: BattleBuild, defender: BattleBuild, runtime: BattleRuntime): string | null {
   if ([attacker, defender].some((build) => build.abilityId === "neutralizinggas")) return "Neutralizing Gas";
   if (ABILITY_IGNORERS.has(attacker.abilityId)) return runtime.abilitiesById.get(attacker.abilityId)?.name ?? attacker.abilityId;
   return null;
@@ -1249,6 +1252,14 @@ function makeField(field: BattleConditions) {
     isWonderRoom: field.wonderRoom,
     isMagicRoom: field.magicRoom,
     isFairyAura: field.fairyAura,
+    // The doubles turn's Ruin abilities and auras on another active Pokémon (the engine applies a Ruin once,
+    // whether from the attacker or the field, gen789.js 1237-1247); 1v1 never sets them.
+    ...(field.ruin?.sword ? { isSwordOfRuin: true } : {}),
+    ...(field.ruin?.beads ? { isBeadsOfRuin: true } : {}),
+    ...(field.ruin?.tablets ? { isTabletsOfRuin: true } : {}),
+    ...(field.ruin?.vessel ? { isVesselOfRuin: true } : {}),
+    ...(field.darkAura ? { isDarkAura: true } : {}),
+    ...(field.auraBreak ? { isAuraBreak: true } : {}),
     // Trick Room is app-owned: the engine has no turn-order field for it.
     attackerSide: makeSide(field.attackerSide),
     defenderSide: makeSide(field.defenderSide),
@@ -1897,7 +1908,9 @@ function calculateMove(
     }
     // Set only when the engine retargets, i.e. a grounded user on Psychic Terrain.
     let retargeted = false;
-    let move = hitsOneFoe(metadata, conditions) ? withSingleTarget(resolved.move, () => { retargeted = true; }) : resolved.move;
+    // A doubles turn's one-target Z-Move with a spread target of its own (conditions.oneTarget) keeps one target too.
+    const oneZ = !!conditions.oneTarget && !!resolved.move.isZ && ["allAdjacent", "allAdjacentFoes"].includes(resolved.move.target);
+    let move = hitsOneFoe(metadata, conditions) || oneZ ? withSingleTarget(resolved.move, () => { retargeted = true; }) : resolved.move;
     move.hits = hitCount.hits;
     if (hitCount.hits > 1 && defender.item && AFTER_MOVE_ITEMS.has(defender.item)) defender.item = undefined;
     // The priority the move is used with, for turn order and the engine's priority shields.
@@ -2445,6 +2458,31 @@ export function calculateMatchup(
   contexts: Record<string, MoveContext> = {},
   runtime: BattleRuntime = championsRuntime,
 ): MatchupResult {
+  const settled = settleMatchup(attacker, defender, field, runtime);
+  return "results" in settled ? settled : matchupRows(settled, contexts, runtime);
+}
+
+/**
+ * What calculateMatchup settles before its rows: the two settled builds (abilities and forms, the entry effects
+ * between them, held items), the field with Singles' partners dropped and Friend Guard where it cannot apply, the
+ * moves the rows list, the settle lines (`notes`), and each side's settleItems outcome for the row loop
+ * (matchupRows: Starf outcomes, copies, Uses to KO, merges and facts).
+ */
+export type SettledMatchup = {
+  issues: MatchupResult["issues"];
+  attacker: BattleBuild; defender: BattleBuild; field: BattleConditions;
+  /** The moves the rows follow (a transformed Imposter user has its target's). */
+  moves: readonly string[];
+  notes: string[];
+  names: { attacker: string; defender: string };
+  attackerItems: SettledItems; defenderItems: SettledItems;
+  /** The ability that suppresses the receiving side's Friend Guard partner for every move. */
+  suppressor: string | null;
+  settledHP?: MatchupResult["settledHP"];
+};
+
+/** settleMatchup's settle for calculateMatchup, or the result itself when the builds have issues or an ability withholds every row. */
+export function settleMatchup(attacker: BattleBuild, defender: BattleBuild, field: BattleConditions, runtime: BattleRuntime = championsRuntime): MatchupResult | SettledMatchup {
   const issues = {
     attacker: validateBuild(attacker, runtime),
     defender: validateBuild(defender, runtime),
@@ -2482,12 +2520,27 @@ export function calculateMatchup(
   if (suppressor) effective.field = { ...effective.field, defenderSide: { ...effective.field.defenderSide, friendGuard: false } };
   // A transformed Imposter user attacks with its target's moves; a form change keeps the Pokémon's own.
   const moveSpecies = effective.attacker.transformedFrom ? runtime.speciesById.get(effective.attacker.speciesId) ?? species : species;
-  // Uses to KO repeats each calculated row from the settled builds (uses-to-ko.ts); the entry effects
-  // settled above are not settled again for later uses.
-  const helpers: UsesHelpers = {
+  return {
+    issues, attacker: effective.attacker, defender: effective.defender, field: effective.field, moves: moveSpecies.moves, notes, names,
+    attackerItems, defenderItems, suppressor, ...(settledHP ? { settledHP } : {}),
+  };
+}
+
+/** The helpers Uses to KO reads of calculate.ts (uses-to-ko.ts UsesHelpers). */
+export function usesHelpers(runtime: BattleRuntime): UsesHelpers {
+  return {
     gassed: gassedAbility, klutz: klutzActive, spicySpray: spicySprayFirstBurnedHit, makeField, paradox: (speciesId) => PARADOX_SPECIES.has(speciesId),
     hpForm: (build) => { const form = entryForm(build, runtime); return form && !form.kept ? form.speciesId : null; },
   };
+}
+
+/** calculateMatchup's rows from a settled matchup (settleMatchup, or the doubles start's calculateDoublesMoves). */
+export function matchupRows(settled: SettledMatchup, contexts: Record<string, MoveContext>, runtime: BattleRuntime): MatchupResult {
+  const { issues, notes, names, attackerItems, defenderItems, suppressor, settledHP } = settled;
+  const effective = { attacker: settled.attacker, defender: settled.defender, field: settled.field };
+  // Uses to KO repeats each calculated row from the settled builds (uses-to-ko.ts); the entry effects
+  // settled above are not settled again for later uses.
+  const helpers = usesHelpers(runtime);
   // A Starf Berry eaten before the move raised one stat at random: every outcome is its own pair of builds, each
   // equally likely on its side (starfOutcomes); without one there is a single outcome, the settled builds.
   const outcomes = starfOutcomes(effective.attacker, effective.defender, attackerItems.starf, defenderItems.starf);
@@ -2513,7 +2566,7 @@ export function calculateMatchup(
   // builds that apply them after the first use.
   const copiedOutcomes = new Map<StarfOutcome, StarfOutcome>();
   const pendingOutcomes = new Map<StarfOutcome, StarfOutcome>();
-  const results = moveSpecies.moves.map((id) => {
+  const results = settled.moves.map((id) => {
     const move = runtime.movesById.get(id);
     if (!move) throw new Error(`${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} catalog has an unresolved move: ${id}.`);
     const calculateFor = (outcome: StarfOutcome) => {
@@ -2769,4 +2822,293 @@ function mergeStarfOutcomes(runs: StarfRun[]): { row: MoveDamageResult; facts: s
       ...(koChance !== null ? ["The KO chance includes every Starf Berry outcome."] : []),
     ],
   };
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// The doubles turn (doubles-turn.ts): one pair's calculation within a turn, the order keys, and the start of the turn.
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * One damaging hit of a doubles turn from `attacker` into `defender` (SPEC §4.9): calculateMove with the Friend Guard
+ * suppressor as calculateMatchup applies it, on builds whose entry rises are already in their stages (settleDoublesStart's
+ * folded builds), so the engine's own entry boosts are off.
+ */
+export function calculateTurnMove(move: ChampionsMove, attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined,
+  runtime: BattleRuntime, trace: CalcTrace = {}): MoveDamageResult {
+  const suppressor = conditions.defenderSide.friendGuard ? partnerAbilitySuppressor(attacker, defender, runtime) : null;
+  const field = suppressor ? { ...conditions, defenderSide: { ...conditions.defenderSide, friendGuard: false } } : conditions;
+  return calculateMove(move, attacker, defender, field, context, runtime, suppressor, trace, 0, true);
+}
+
+/** What a doubles turn reads of the move a Pokémon uses (resolveTurnMove). */
+export type TurnMove =
+  | {
+    kind: "move";
+    /** The move used (a Z-Move's or Max Move's own: its id, name, type, category and target). */
+    effective: ChampionsMove;
+    /** A Z-Move or Max Move. */
+    transformed: boolean; isZ: boolean; isMax: boolean;
+    /** It makes contact with this user (its flag, after Long Reach, Protective Pads and a Punching Glove on a punch: sim/battle.ts checkMoveMakesContact). */
+    contact: boolean;
+    /** The engine move's flags (sound, wind, punch...). */
+    flags: Record<string, number | undefined>;
+    /** It drains (heals by the damage it deals), and it has secondaries (Sheer Force removes them). */
+    drain: boolean; secondaries: boolean;
+    /** Its user takes recoil from the damage it deals (the engine move's recoil). */
+    recoil: boolean;
+  }
+  | { kind: "unsupported" | "needs-context"; reason: string };
+
+/** The move `build` uses for `move` with `context` (resolve-move.ts resolveBattleMove: Z-Move and Max Move conversion). */
+export function resolveTurnMove(move: ChampionsMove, build: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined, runtime: BattleRuntime): TurnMove {
+  let resolved: ReturnType<typeof resolveBattleMove>;
+  try {
+    resolved = resolveBattleMove(move, build, makePokemon(build, runtime), context, runtime, { isCrit: conditions.critical });
+  } catch (error) {
+    return { kind: "unsupported", reason: `This matchup could not be calculated: ${error instanceof Error ? error.message : "Unknown engine error."}` };
+  }
+  if (resolved.kind) return { kind: resolved.kind, reason: resolved.reason };
+  const flags = (resolved.move.flags ?? {}) as Record<string, number | undefined>;
+  const item = conditions.magicRoom || klutzActive(build, build) ? "" : build.itemId;
+  const contact = !!flags.contact && build.abilityId !== "longreach" && item !== "protectivepads" && !(item === "punchingglove" && !!flags.punch);
+  return {
+    kind: "move", effective: resolved.effective, transformed: resolved.transformed, isZ: !!resolved.move.isZ, isMax: !!resolved.move.isMax, contact, flags,
+    drain: !!(resolved.move as Move & { drain?: unknown }).drain, secondaries: !!resolved.move.secondaries,
+    recoil: !!(resolved.move as Move & { recoil?: unknown }).recoil,
+  };
+}
+
+/**
+ * A damaging move into a Protecting Pokémon (protectOutcome): "blocked", or it gets through in full or at a quarter
+ * (Z-Moves and Max Moves, Unseen Fist, Champions Piercing Drill, moves without the protect flag). Null when the move
+ * cannot be resolved (its calculation then says why).
+ */
+export function turnProtectOutcome(move: ChampionsMove, attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined,
+  runtime: BattleRuntime): ProtectOutcome["kind"] | null {
+  let resolved: ReturnType<typeof resolveBattleMove>;
+  try {
+    resolved = resolveBattleMove(move, attacker, makePokemon(attacker, runtime), context, runtime, { isCrit: conditions.critical });
+  } catch {
+    return null;
+  }
+  if (resolved.kind) return null;
+  return protectOutcome(resolved.effective, resolved.move, attacker, defender, conditions, runtime).kind;
+}
+
+/**
+ * The priority `build` uses `move` with in a doubles turn (pinned Showdown sim/battle.ts getActionSpeed: the dex
+ * priority of the move used, a Z-Move's or Max Move's own, then ModifyPriority, set again at every sort from
+ * generation 8): for attacks usedPriority (Gale Wings at full HP, Triage on draining moves, Grassy Glide), the catalog
+ * keeping a negative priority the engine drops; for status moves the catalog priority, Prankster +1
+ * (data/abilities.ts prankster onModifyPriority) and Gale Wings +1 for a Flying move at full HP. Triage's status
+ * moves all change HP (the turn does not estimate them). The build's currentHP is the HP at that sort.
+ */
+export function turnPriority(move: ChampionsMove, build: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined, runtime: BattleRuntime): number | { reason: string } {
+  const pokemon = makePokemon(build, runtime);
+  if (move.category === "Status" && !context?.useZ) {
+    let priority = move.priority;
+    if (build.abilityId === "prankster") priority += 1;
+    if (build.abilityId === "galewings" && move.type === "Flying" && pokemon.curHP() === pokemon.maxHP()) priority += 1;
+    return priority;
+  }
+  let resolved: ReturnType<typeof resolveBattleMove>;
+  try {
+    resolved = resolveBattleMove(move, build, pokemon, context, runtime, { isCrit: conditions.critical });
+  } catch (error) {
+    return { reason: `This matchup could not be calculated: ${error instanceof Error ? error.message : "Unknown engine error."}` };
+  }
+  if (resolved.kind) return { reason: resolved.reason };
+  const { priority } = usedPriority(resolved.effective, move, resolved, pokemon, build, build, conditions);
+  return resolved.transformed || move.priority >= 0 ? priority : move.priority;
+}
+
+/**
+ * A Pokémon's action Speed in a doubles turn (pinned Showdown sim/pokemon.ts getActionSpeed): the engine's final Speed
+ * as calculateMove's turn order reads it (stages, Tailwind, paralysis, Choice Scarf (not while Dynamaxed), Iron Ball,
+ * Unburden, the weather and terrain abilities, Slow Start, Quick Feet, a Protosynthesis or Quark Drive Speed; held
+ * items off under Magic Room and for Klutz, as the engine's checkItem clears them; Utility Umbrella's sun and rain
+ * abilities off), capped at 10000; under Trick Room 10000 minus it; then trunc(·, 13) (sim/dex.ts trunc: modulo 8192,
+ * as the real formats keep it). Champions (data/mods/champions/scripts.ts:45-53 getActionSpeed) has no Trick Room
+ * wrap: minus the Speed; and its Speed is not the engine's generation-0 999 cap (mechanics/util.js getFinalSpeed caps
+ * at 999 for a generation number of 2 or less), only sim/pokemon.ts:637's 10000. `firstTurn`: generation 7's order
+ * from the Speed before the item used at the turn's first Update (settleItems firstTurnSpeed).
+ */
+export function turnSpeed(build: BattleBuild, tailwind: boolean, conditions: BattleConditions, runtime: BattleRuntime, firstTurn = false): number {
+  const champions = runtime.profile.id === "champions";
+  const engine = Generations.get(runtime.profile.generation);
+  // The Champions engine's stat rules are the modern ones (getModifiedStat, paralysis at 50%); generation 9 caps at 10000.
+  const generation = champions ? Object.create(engine, { num: { value: 9 } }) as typeof engine : engine;
+  const pokemon = makePokemon(build, runtime);
+  if (umbrellaBlocksAbility(build, build, conditions)) pokemon.ability = "Run Away" as AbilityName;
+  if (pokemon.item && (conditions.magicRoom || (klutzActive(build, build) && !ENGINE_KLUTZ_KEPT_ITEMS.has(build.itemId)))) pokemon.item = undefined;
+  if (pokemon.isDynamaxed && pokemon.hasItem("Choice Scarf")) pokemon.item = undefined;
+  const before = firstTurn ? build.firstTurnSpeed : undefined;
+  if (before) {
+    pokemon.boosts.spe = before.spe;
+    if (pokemon.hasAbility("Unburden")) pokemon.abilityOn = before.unburden;
+  }
+  const field = makeField(conditions);
+  const side = makeSide({ ...conditions.attackerSide, tailwind });
+  let speed = getFinalSpeed(generation, pokemon, field, side as unknown as Result["field"]["attackerSide"]);
+  if (champions) return conditions.trickRoom ? -speed : speed;
+  if (conditions.trickRoom) speed = 10000 - speed;
+  return (speed >>> 0) % 8192;
+}
+
+/** A build's HP as the engine holds it (Dynamax HP while Dynamaxed): its current HP, maximum and base maximum. */
+export function turnHP(build: BattleBuild, runtime: BattleRuntime): { hp: number; maxHP: number; baseMaxHP: number } {
+  const pokemon = makePokemon(build, runtime);
+  return { hp: pokemon.curHP(), maxHP: pokemon.maxHP(), baseMaxHP: pokemon.maxHP(true) };
+}
+
+/** One present slot's start of the doubles turn (settleDoublesStart). */
+export type DoublesStartSlot = {
+  /** Settled as calculateMatchup settles a side (abilities and forms, Download against both foes, items); the engine still adds its entry rises. */
+  build: BattleBuild;
+  /** `build` with its entry rises in the stages and a terrain Seed used up (entryStagesOf), for the turn's calculations (calculateTurnMove). */
+  folded: BattleBuild;
+  items: SettledItems;
+  /** The settle lines, as start facts. */
+  lines: string[];
+  /** The other Pokémon its settle read as "the other battler" (SPEC §4.2 step 2). */
+  representative: DoublesSlotId;
+};
+export type DoublesSettle = { slots: Record<DoublesSlotId, DoublesStartSlot | null>; reason: string | null };
+
+const UNNERVE_ABILITIES = new Set(["unnerve", "asoneglastrier", "asonespectrier"]);
+const WEATHER_NEGATORS = new Set(["cloudnine", "airlock"]);
+
+/**
+ * The start of a doubles turn (SPEC §4.2). The 1v1 settle reads "the other battler" for Unnerve and As One, Cloud Nine
+ * and Air Lock (Forecast, Ice Face, Protosynthesis), the paradox field setters and the Trace source; each slot takes as
+ * that other the one Pokémon that supplies all it needs, or the foe across when it needs nothing. Two different
+ * Pokémon acting on it as the turn starts, Trace with two different copyable foe abilities unchosen, Trace copying
+ * Intimidate, Download against a foe's entry boost to its defenses, a Starf Berry, a confused Pokémon with a move, and a
+ * copy of a Berry's rise give `reason`. Download reads both foes (pinned Showdown data/abilities.ts download: the sum
+ * of their Defense and Sp. Def at the lead, as settleEntry's atLead reads one foe) and is always settled into the
+ * stages, since the engine would read only the target.
+ */
+export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
+  const { runtime } = input;
+  const field: BattleConditions = { ...input.field, gameType: "Doubles" };
+  const present = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]);
+  const shown = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, input.pokemon[slot]?.build ?? null])) as Record<DoublesSlotId, BattleBuild | null>;
+  const names = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, shown[slot] ? runtime.speciesById.get(shown[slot]!.speciesId)?.name ?? shown[slot]!.speciesId : ""])) as Record<DoublesSlotId, string>;
+  const labels = doublesNames(input.pokemon, runtime);
+  const tailwind = (slot: DoublesSlotId) => (slotSide(slot) === "own" ? field.attackerSide : field.defenderSide).tailwind;
+  const empty = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, null])) as Record<DoublesSlotId, DoublesStartSlot | null>;
+  let reason: string | null = null;
+  const fail = (text: string) => { reason ??= text; };
+  for (const slot of present) {
+    if (shown[slot]!.abilityId === "neutralizinggas") fail("Neutralizing Gas is not modelled in 2v2.");
+    if (shown[slot]!.abilityId === "imposter") fail("Imposter is not modelled in 2v2.");
+  }
+  if (reason) return { slots: empty, reason };
+  const others = (slot: DoublesSlotId) => present.filter((other) => other !== slot);
+  const foes = (slot: DoublesSlotId) => present.filter((other) => slotSide(other) !== slotSide(slot));
+  // The foe across: the one on the same screen side (SHOWDOWN_POSITION mirrors the far side), else any other.
+  const across = (slot: DoublesSlotId): DoublesSlotId => {
+    const facing = (slot.endsWith("left") ? foesOf(slot)[0] : foesOf(slot)[1]);
+    return shown[facing] ? facing : foes(slot)[0] ?? others(slot)[0] ?? slot;
+  };
+  /** The one Pokémon that meets every need (each a list of Pokémon that would do), or the reason two act. */
+  const pick = (slot: DoublesSlotId, needs: DoublesSlotId[][]): DoublesSlotId | null => {
+    if (!needs.length) return across(slot);
+    const fits = others(slot).filter((other) => needs.every((need) => need.includes(other)));
+    if (fits.length) return fits.includes(across(slot)) ? across(slot) : fits[0];
+    const first = needs[0][0];
+    const second = needs.find((need) => !need.includes(first))![0];
+    fail(`${labels[first]} and ${labels[second]} both act on ${labels[slot]} as the turn starts.`);
+    return null;
+  };
+  // Phase 1: abilities and forms (Trace, Forecast and Ice Face read the other battler).
+  const needsA = Object.fromEntries(present.map((slot) => {
+    const build = shown[slot]!;
+    const needs: DoublesSlotId[][] = [];
+    const negators = others(slot).filter((other) => WEATHER_NEGATORS.has(shown[other]!.abilityId));
+    const readsWeather = (build.abilityId === "forecast" && build.speciesId.startsWith("castform"))
+      || (build.abilityId === "iceface" && build.speciesId === "eiscuenoice" && ["Snow", "Hail"].includes(field.weather));
+    if (readsWeather && negators.length) needs.push(negators);
+    if (build.abilityId === "trace" && !(build.itemId === "abilityshield" && !field.magicRoom)) {
+      const copyable = foes(slot).filter((foe) => !NO_TRACE_ABILITIES.has(shown[foe]!.abilityId));
+      const copied = build.tracedAbility ?? (new Set(copyable.map((foe) => shown[foe]!.abilityId)).size > 1 ? null : copyable.length ? shown[copyable[0]]!.abilityId : "");
+      if (copied === null) fail("Trace copies a random foe's ability.");
+      else if (copied === "intimidate") fail("Trace copying Intimidate is not modelled in 2v2.");
+      else if (copied && !build.tracedAbility) needs.push(copyable);
+    }
+    return [slot, needs];
+  })) as Record<DoublesSlotId, DoublesSlotId[][]>;
+  if (reason) return { slots: empty, reason };
+  const settleA = (slot: DoublesSlotId, rep: DoublesSlotId) => settleAbilities(shown[slot]!, shown[rep]!, field, runtime, SLOT_POSITION[slot], tailwind(rep));
+  const repA = Object.fromEntries(present.map((slot) => [slot, pick(slot, needsA[slot])])) as Record<DoublesSlotId, DoublesSlotId | null>;
+  if (reason) return { slots: empty, reason };
+  const abilities = Object.fromEntries(present.map((slot) => [slot, settleA(slot, repA[slot]!)])) as Record<DoublesSlotId, ReturnType<typeof settleAbilities>>;
+  for (const slot of present) if (abilities[slot].withheld) fail(abilities[slot].withheld!);
+  if (reason) return { slots: empty, reason };
+  // Phase 2: items (Unnerve and As One, Cloud Nine and Air Lock, the paradox field setters read the other battler).
+  const settledA = (slot: DoublesSlotId) => abilities[slot].build;
+  const reps = {} as Record<DoublesSlotId, DoublesSlotId>;
+  for (const slot of present) {
+    const build = settledA(slot);
+    const needs = [...needsA[slot]];
+    const unnervers = foes(slot).filter((foe) => UNNERVE_ABILITIES.has(settledA(foe).abilityId));
+    if (build.itemId.endsWith("berry") && unnervers.length) needs.push(unnervers);
+    const paradox = PARADOX_FIELDS[build.abilityId];
+    if (paradox === "sun" && field.weather === "Sun") {
+      const negators = others(slot).filter((other) => WEATHER_NEGATORS.has(settledA(other).abilityId));
+      if (negators.length) needs.push(negators);
+    }
+    const fieldOn = paradox === "sun" ? field.weather === "Sun" : paradox === "terrain" && field.terrain === "Electric";
+    const setters = paradox && fieldOn ? others(slot).filter((other) => PARADOX_FIELD_SETTERS[paradox].includes(settledA(other).abilityId)) : [];
+    if (setters.length) needs.push(setters);
+    const rep = pick(slot, needs);
+    if (!rep) return { slots: empty, reason };
+    reps[slot] = rep;
+    if (rep !== repA[slot]) abilities[slot] = settleA(slot, rep);
+  }
+  // Download against both foes, at the lead (settleEntry's atLead: their lead forms, no Defense or Sp. Def stage, no room).
+  const entered = Object.fromEntries(present.map((slot) => [slot, settledA(slot)])) as Record<DoublesSlotId, BattleBuild>;
+  const lines = Object.fromEntries(present.map((slot) => [slot, [...abilities[slot].lines]])) as Record<DoublesSlotId, string[]>;
+  for (const slot of present) {
+    const holder = entered[slot];
+    if (holder.abilityId !== "download") continue;
+    const battle: IntimidateBattle = { magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles" };
+    let def = 0, spd = 0;
+    for (const foe of foes(slot)) {
+      const build = abilities[foe].build;
+      const boosted = entryBoosts(build, holder, null, tailwind(foe), { ...battle, tailwind: { source: tailwind(foe), target: tailwind(slot) } }, runtime)
+        .some((entry) => entry.stat === "def" || entry.stat === "spd");
+      if (build.transformedFrom || boosted) { fail(`Download is not modelled with ${labels[foe]}'s entry boost.`); continue; }
+      const forms = unknownLeadForms(build, runtime)?.speciesIds ?? [atLead(build, battle, runtime).foe.speciesId];
+      const reads = forms.map((speciesId) => getBuildStats({ ...build, speciesId }, runtime));
+      if (reads.some((stats) => !stats || stats.def !== reads[0]!.def || stats.spd !== reads[0]!.spd)) { fail(`Download is not modelled with ${labels[foe]}'s entry boost.`); continue; }
+      def += reads[0]!.def; spd += reads[0]!.spd;
+    }
+    if (reason) return { slots: empty, reason };
+    // Pinned Showdown download onStart: Sp. Atk when the foes' Defense total is at least their Sp. Def total, else Attack.
+    const stat: CombatStat | null = def && def >= spd ? "spa" : spd ? "atk" : null;
+    if (!stat) continue;
+    entered[slot] = { ...holder, boosts: { ...holder.boosts, [stat]: clampStage((holder.boosts[stat] ?? 0) + 1) }, settledDownload: stat };
+    lines[slot].push(`${cap(SLOT_POSITION[slot])} ${names[slot]}'s Download raised its ${STAGE_NAMES[stat]}.`);
+  }
+  const slots = { ...empty };
+  for (const slot of present) {
+    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, SLOT_POSITION[slot], names[slot]);
+    if (items.starf) fail("Starf Berry raises a random stat");
+    if (items.confused && input.pokemon[slot]!.action.moveId !== null) fail("Confusion is not modelled in 2v2.");
+    if (items.raised) {
+      for (const foe of foes(slot)) {
+        const copier = entered[foe];
+        if (copier.abilityId === "opportunist") fail("Opportunist copying a stat rise is not modelled in 2v2.");
+        if (copier.itemId === "mirrorherb" && !field.magicRoom && !klutzActive(copier, copier)) fail("Mirror Herb copying a stat rise is not modelled in 2v2.");
+      }
+    }
+    const build = items.build;
+    const itemOn = !field.magicRoom && !klutzActive(build, build);
+    const entry = entryStagesOf(build, build.abilityId, itemOn, field.terrain, tailwind(slot), runtime);
+    const boosts = Object.fromEntries(COMBAT_STATS.map((stat) => [stat, clampStage((build.boosts[stat] ?? 0) + (entry.stages[stat] ?? 0))])) as BattleBuild["boosts"];
+    const folded: BattleBuild = { ...build, boosts, ...(entry.seed ? { itemId: "" } : {}) };
+    slots[slot] = { build, folded, items, lines: [...lines[slot], ...items.lines], representative: reps[slot] };
+  }
+  return { slots, reason };
 }

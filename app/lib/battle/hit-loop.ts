@@ -81,7 +81,21 @@ export type HitLoopInput = {
   targetGulping: boolean;
   /** The engine's generation (0 for Champions), for the Figy family's heal. */
   generation: number;
+  /** A doubles turn's Unnerve and As One (TurnUnnerve); unset, each side's own stops the other's Berries. */
+  unnerve?: TurnUnnerve;
 };
+
+/**
+ * A doubles turn's Unnerve and As One for one pair (data/abilities.ts unnerve, asoneglastrier onFoeTryEatItem: a foe
+ * still in): `foes` whether the two are foes (each one's own then stops the other's Berries), `target` and
+ * `attacker` whether another Pokémon's stops that one's Berries.
+ */
+export type TurnUnnerve = { foes: boolean; target: boolean; attacker: boolean };
+
+/** Whether a Berry of the target (`who` "target") or of the attacker is stopped, the other one's ability being `other`. */
+export function berryUnnerved(unnerve: TurnUnnerve | undefined, who: "target" | "attacker", other: string): boolean {
+  return (UNNERVES.has(other) && (unnerve?.foes ?? true)) || !!unnerve?.[who];
+}
 
 /**
  * The attacker and target between hits: the attacker's HP, the abilities and items as the hits left them, the
@@ -174,14 +188,14 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number): Hit
   }
   const retaliating = BERRY_NAMES[state.targetItem];
   if (retaliating && (state.targetItem === "jabocaberry" ? input.category === "Physical" : input.category === "Special")
-    && state.hp > 0 && state.attackerAbility !== "magicguard" && !UNNERVES.has(state.attackerAbility)) {
+    && state.hp > 0 && state.attackerAbility !== "magicguard" && !berryUnnerved(input.unnerve, "target", state.attackerAbility)) {
     state.targetItem = "";
     lose(retaliating, input.baseMaxHP / (state.targetAbility === "ripen" ? 4 : 8));
   }
   let ate: string | null = null;
   const item = state.attackerItem;
   if (state.hp > 0 && item && item !== "enigmaberry" && (HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item])
-    && (item === "berryjuice" || !UNNERVES.has(state.targetAbility))) {
+    && (item === "berryjuice" || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
     const berry = berryArithmetic(item, { maxHP: input.maxHP, baseMaxHP: input.baseMaxHP, ability: state.attackerAbility }, input.generation);
     if (state.hp <= berry.line) {
       state.hp = eatBerry(berry, state.hp);

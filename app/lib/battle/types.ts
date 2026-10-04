@@ -250,6 +250,11 @@ export type SideConditions = {
   tailwind: boolean;
   /** This side's Pokémon used Charge, doubling the power of its next Electric attack. */
   charge: boolean;
+  /**
+   * Doubles turn only: this side's Pokémon has a Cherrim partner whose Flower Gift raises its Attack and Sp. Def by
+   * 1.5x in the sun (pinned Showdown flowergift onAllyModifyAtk / onAllyModifySpD; doubles-turn.ts flowerGift).
+   */
+  flowerGift?: boolean;
 };
 
 export type BattleConditions = {
@@ -265,6 +270,17 @@ export type BattleConditions = {
   fairyAura: boolean;
   attackerSide: SideConditions;
   defenderSide: SideConditions;
+  /** Doubles turn only: a Ruin ability on an active Pokémon (calculate.ts makeField; the engine exempts holders). */
+  ruin?: { sword?: boolean; beads?: boolean; tablets?: boolean; vessel?: boolean };
+  /** Doubles turn only: Dark Aura and Aura Break on an active Pokémon. */
+  darkAura?: boolean;
+  auraBreak?: boolean;
+  /**
+   * Doubles turn only: the move has one target as it starts, so a Z-Move whose own target is a spread one (Clangorous
+   * Soulblaze) takes no spread modifier (pinned Showdown sim/battle-actions.ts trySpreadMoveHit sets spreadHit only for
+   * more than one target).
+   */
+  oneTarget?: boolean;
 };
 
 /**

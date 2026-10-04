@@ -46,7 +46,8 @@ export function TeraTypeField({ build, runtime = championsRuntime, id, issues = 
 }
 
 export default function MechanicControls({ build, runtime = championsRuntime, position, onToggle }: ConfigurationProps & {
-  position: "left" | "right";
+  /** The Pokémon's place in its labels: "left" / "right" in 1v1, "your left" and so on in 2v2. */
+  position: string;
   onToggle?: (mechanic: BattleMechanic) => void;
 }) {
   const id = useId();

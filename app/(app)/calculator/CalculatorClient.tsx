@@ -1,18 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type SetStateAction } from "react";
 import { ArrowLeftRight, RotateCcw } from "lucide-react";
-import { Alert, Button, EmptyState, Field, PageHeader, Select } from "@/app/components/ui";
+import { Button, Field, PageHeader, Select } from "@/app/components/ui";
 import { BATTLE_GAMES, BATTLE_PROFILES, isBattleGame } from "@/app/lib/battle/profiles";
 import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { fieldItemChoice, roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { DOUBLES_SLOTS, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { BattleBuild, BattleGame, BattleMechanic } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { linkClassName } from "@/app/lib/theme";
 import BattleConditions, { describeConditions } from "./BattleConditions";
 import CalculatorTabs, { calculatorTabIds, type CalculatorTab } from "./CalculatorTabs";
+import CalculatorModeSwitch, { type CalculatorMode } from "./CalculatorModeSwitch";
+import { createDoubles, followShared, resetDoubles, type CalculatorState } from "./doubles-prep";
+import { useDoublesView } from "./useDoublesView";
+import KeepWhileHidden from "./KeepWhileHidden";
+import ResultsFeedback, { hasResultsFeedback, previewBlockedReason } from "./results-feedback";
 import BuildSettingsSections, { type BuildSettings } from "./BuildSettings";
 import SettingsDisclosure from "./SettingsDisclosure";
 import MatchupSummary from "./MatchupSummary";
@@ -36,7 +42,8 @@ type EngineState =
   | { status: "ready"; calculate: CalculateMatchup }
   | { status: "error"; message: string };
 
-type RosterFocus = { pickerId: string; choiceKey: string; element: HTMLButtonElement };
+/** `slot`: a 2v2 shortcut, from its button (rail) or its picker (Build settings). */
+type RosterFocus = { pickerId: string; choiceKey: string; element: HTMLButtonElement; slot?: DoublesSlotId };
 /** A pending reveal, run once its tab (or, without one, the opened settings section) has rendered. */
 type NavigationRequest = { tab: CalculatorTab | null; reveal: () => void };
 type GameLoad = { request: number; status: "idle" | "loading" | "error"; target?: BattleGame; message?: string };
@@ -46,7 +53,7 @@ function rosterFocusTarget(picker: HTMLElement | null) {
     ?? picker?.querySelector<HTMLButtonElement>("[data-roster-choice]:not(:disabled)");
 }
 
-export default function CalculatorClient() {
+export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?: CalculatorMode }) {
   const prefix = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -59,13 +66,24 @@ export default function CalculatorClient() {
     if (!(element instanceof HTMLButtonElement) || !rootRef.current?.contains(element) || element.disabled) return;
     const picker = element.closest<HTMLElement>("[data-calculator-roster]");
     if (picker?.id && element.dataset.rosterChoice !== undefined) {
-      rosterFocusRef.current = { pickerId: picker.id, choiceKey: element.dataset.rosterChoice, element };
+      const slot = [element.dataset.rosterSlot, picker.dataset.calculatorRoster].find((value): value is DoublesSlotId => DOUBLES_SLOTS.includes(value as DoublesSlotId));
+      rosterFocusRef.current = { pickerId: picker.id, choiceKey: element.dataset.rosterChoice, element, ...(slot ? { slot } : {}) };
     }
   }, []);
   const desktopRosters = useDesktopRosterLayout(rememberRosterFocus);
   const [navigation, setNavigation] = useState<{ tab: CalculatorTab; request: number }>({ tab: "moves", request: 0 });
   const [sections, setSections] = useState(NO_SETTINGS_SECTIONS);
-  const [matchup, setMatchup] = useState(() => createMatchup());
+  const [calc, setCalc] = useState<CalculatorState>(() => ({ matchup: createMatchup(), doubles: createDoubles() }));
+  const matchup = calc.matchup;
+  // Every 1v1 update also keeps 2v2 consistent (doubles-prep followShared): game, account and team sources.
+  const setMatchup = useCallback((update: SetStateAction<PreparedMatchup>) => {
+    setCalc((current) => {
+      const after = typeof update === "function" ? update(current.matchup) : update;
+      return after === current.matchup ? current : { matchup: after, doubles: followShared(current.doubles, current.matchup, after) };
+    });
+  }, []);
+  const [mode, setMode] = useState<CalculatorMode>(initialMode);
+  const [doublesMounted, setDoublesMounted] = useState(initialMode === "2v2");
   const gameRequest = useRef(0);
   const [gameLoad, setGameLoad] = useState<GameLoad>({ request: 0, status: "idle" });
   const runtime = matchup.runtime;
@@ -84,7 +102,11 @@ export default function CalculatorClient() {
       }
       rosterAccount.current = { id: state.userId };
     }
-    setMatchup((current) => reconcileRosters(current, state));
+    setCalc((current) => {
+      const after = reconcileRosters(current.matchup, state);
+      const doubles = followShared(current.doubles, current.matchup, after, state);
+      return after === current.matchup && doubles === current.doubles ? current : { matchup: after, doubles };
+    });
   }, []);
   const rosters = useCalculatorRosters(receiveRosters);
   const attacker = matchup.attacker.build;
@@ -135,7 +157,7 @@ export default function CalculatorClient() {
     element.focus({ preventScroll: true });
     const navHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--app-nav-height")) || 0;
     const summary = summaryRef.current;
-    const stickyHeight = includeSummary && summary && !summary.contains(element) && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
+    const stickyHeight = includeSummary && summary && !summary.contains(element) && !summary.closest("[hidden]") && getComputedStyle(summary).position === "sticky" ? summary.getBoundingClientRect().height + 8 : 0;
     const bounds = element.getBoundingClientRect();
     // Already in view, such as a quick move in the pinned summary: scrolling would only move the page.
     if (bounds.top >= navHeight + stickyHeight && bounds.bottom <= window.innerHeight) return;
@@ -155,6 +177,14 @@ export default function CalculatorClient() {
     setNavigation((current) => ({ ...current, request: current.request + 1 }));
   }, []);
 
+  const cancelPending = useCallback(() => { pendingNavigation.current = null; }, []);
+
+  /** Runs `action` once the next render is done, without changing tabs (2v2's settings sections). */
+  const afterRender = useCallback((action: () => void) => {
+    pendingNavigation.current = { tab: null, reveal: action };
+    setNavigation((current) => ({ ...current, request: current.request + 1 }));
+  }, []);
+
   const toggleSection = useCallback((key: string) => {
     setSections((current) => setSectionOpen(current, key, !current.open[key]));
   }, []);
@@ -171,12 +201,23 @@ export default function CalculatorClient() {
     pending.reveal();
   }, [navigation]);
 
+  const rosterPanels = { own: getTeamPanel(matchup, rosters.state, "own"), opponent: getTeamPanel(matchup, rosters.state, "opponent") };
+  const doubles = useDoublesView({
+    prefix, calc, setCalc, active: mode === "2v2", mounted: doublesMounted, rosterPanels, desktopRosters, rollMode, onRollModeChange: setRollMode,
+    navigation: { cancelPending, visit, afterRender, reveal, selectTab },
+  });
+  const restoreDoublesRosterFocus = doubles.restoreRosterFocus;
+
   useEffect(() => {
     const focused = rosterFocusRef.current;
     rosterFocusRef.current = null;
     if (!focused) return;
     const canRestore = () => document.activeElement === document.body || document.activeElement === focused.element;
     if (!canRestore()) return;
+    if (focused.slot) {
+      restoreDoublesRosterFocus(focused.slot, focused.choiceKey, canRestore);
+      return;
+    }
     const restore = () => {
       if (!canRestore()) return;
       const picker = document.getElementById(focused.pickerId);
@@ -191,7 +232,7 @@ export default function CalculatorClient() {
       pendingNavigation.current = null;
       restore();
     } else visitSection(buildSectionKey(key), restore);
-  }, [desktopRosters, reveal, visitSection, prefix, attackerKey, defenderKey]);
+  }, [desktopRosters, reveal, visitSection, prefix, attackerKey, defenderKey, restoreDoublesRosterFocus]);
 
   const attackView = useMemo(() => getAttackView(matchup), [matchup]);
   // Keyed on the builds, field and contexts, so a row click or an import-draft edit reuses the result.
@@ -228,7 +269,6 @@ export default function CalculatorClient() {
   const currentTeams = rosters.state.teamsStatus === "ready" && rosters.state.data?.leagueId === league?.id ? rosters.state.data : null;
   const ownMember = currentTeams?.members.find((member) => member.id === league?.memberId);
   const opponent = currentTeams?.members.find((member) => member.id === rosters.state.opponentId);
-  const rosterPanels = { own: getTeamPanel(matchup, rosters.state, "own"), opponent: getTeamPanel(matchup, rosters.state, "opponent") };
   const usesLeague = matchup.teams.own.mode === "league" || matchup.teams.opponent.mode === "league";
   const onlyLeague = matchup.teams.own.mode === "league" && matchup.teams.opponent.mode === "league";
   const teamsLoading = usesLeague && (rosters.state.status === "loading" || rosters.state.teamsStatus === "loading");
@@ -239,9 +279,8 @@ export default function CalculatorClient() {
       : rosters.state.status === "signed-out" ? "Sign in to use league rosters."
         : league ? `${teamNameLabel(ownMember ? ownMember.team_name : league.teamName)} — ${league.name} · ${opponent ? `Facing ${teamNameLabel(opponent.team_name)}` : "Choose an opponent"}`
           : "Choose My team, or use manual Pokémon.";
-  const blockedReason = engine.status === "loading" ? "HP preview paused while the calculator loads."
-    : engine.status === "error" || calculation?.error ? "HP preview unavailable. Retry the calculator."
-      : invalid ? "HP preview paused. Fix the highlighted build or field settings." : undefined;
+  const results = { loading: engine.status === "loading", error: engine.status === "error" ? engine.message : calculation?.error || null, invalid };
+  const blockedReason = previewBlockedReason(results);
 
   function restoreGameSelectorFocus(control: HTMLElement | null) {
     if (control && document.activeElement === control) document.getElementById(`${prefix}-game`)?.focus({ preventScroll: true });
@@ -258,7 +297,7 @@ export default function CalculatorClient() {
       cancelGameLoad();
       return;
     }
-    if (!retryLoad && !window.confirm(`Switch both Pokémon to ${BATTLE_PROFILES[game].label}? Builds, field edits, active mechanics and preparation caches will reset. Team documents, drafts and league selections will be kept.`)) return;
+    if (!retryLoad && !window.confirm(`Switch both Pokémon to ${BATTLE_PROFILES[game].label}? Builds, field edits, active mechanics and preparation caches will reset. Team documents, drafts and league selections will be kept.${doublesMounted ? " The 2v2 Pokémon reset too." : ""}`)) return;
     const request = ++gameRequest.current;
     const revision = matchup.revision;
     const identity = runtime.identity;
@@ -276,6 +315,12 @@ export default function CalculatorClient() {
       restoreGameSelectorFocus(document.getElementById(`${prefix}-cancel-game-${request}`));
       setGameLoad({ request, status: "error", target: game, message: errorMessage(error) });
     });
+  }
+
+  function changeMode(next: CalculatorMode) {
+    pendingNavigation.current = null;
+    setMode(next);
+    if (next === "2v2") setDoublesMounted(true);
   }
 
   function retry() {
@@ -472,24 +517,7 @@ export default function CalculatorClient() {
     defender: { id: controls.defender, open: !!trackedSections.open[buildSectionKey(defenderKey)], onToggle: () => toggleSection(buildSectionKey(defenderKey)) },
   };
 
-  let feedback: ReactNode;
-  if (engine.status === "loading") {
-    feedback = <Alert variant="info" title={runtime.profile.id === "champions" ? "Loading the Champions engine" : "Loading the battle engine"} />;
-  } else if (engine.status === "error" || calculation?.error) {
-    feedback = (
-      <Alert variant="error" title="Calculator unavailable">
-        <p>{engine.status === "error" ? engine.message : calculation?.error}</p>
-        <Button variant="secondary" size="sm" className="mt-3" onClick={retry}>Retry calculator</Button>
-      </Alert>
-    );
-  } else if (invalid) {
-    feedback = (
-      <div>
-        <p role="status" className="sr-only">Results paused. Check the highlighted build or field settings.</p>
-        <EmptyState title="Check the highlighted settings" description="Fix the messages in Build settings or Field conditions to continue." action={<Button variant="secondary" onClick={fixSettings}>Fix settings</Button>} />
-      </div>
-    );
-  }
+  const feedback = hasResultsFeedback(results) ? <ResultsFeedback {...results} champions={runtime.profile.id === "champions"} onRetry={retry} onFixSettings={fixSettings} /> : null;
 
   return (
     <div ref={rootRef} data-calculator-layout={desktopRosters ? "desktop" : "compact"} className={`${styles.root} space-y-5`}>
@@ -498,11 +526,18 @@ export default function CalculatorClient() {
         title="Damage Calculator"
         actions={
           <>
-            <Button variant="secondary" onClick={() => { pendingNavigation.current = null; cancelGameLoad(); setMatchup(swapMatchup); }}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>
-            <Button variant="secondary" onClick={() => { selectTab("moves"); cancelGameLoad(); setMatchup(resetMatchup); setRollMode("average"); }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
+            {mode === "1v1" && <Button variant="secondary" onClick={() => { pendingNavigation.current = null; cancelGameLoad(); setMatchup(swapMatchup); }}><ArrowLeftRight className="h-4 w-4" aria-hidden="true" />Swap</Button>}
+            <Button variant="secondary" onClick={() => {
+              selectTab("moves");
+              cancelGameLoad();
+              if (mode === "1v1") setMatchup(resetMatchup);
+              else setCalc(resetDoubles);
+              setRollMode("average");
+            }}><RotateCcw className="h-4 w-4" aria-hidden="true" />Reset</Button>
           </>
         }
       />
+      <CalculatorModeSwitch mode={mode} onChange={changeMode} />
       <section aria-label="Battle game rules" className="rounded-xl border border-line bg-panel p-4">
         <Field id={`${prefix}-game`} label="Battle game">
           <Select value={runtime.profile.id} onChange={(event) => { if (isBattleGame(event.target.value)) chooseGame(event.target.value); }}>
@@ -530,95 +565,106 @@ export default function CalculatorClient() {
         </div>}
       </section>
       <CalculatorTabs prefix={prefix} activeTab={navigation.tab} onSelect={selectTab} />
-      <p role="status" className="sr-only">{matchup.notice}</p>
-      <div data-calculator-workspace className={desktopRosters ? styles.withRosters : undefined}>
+      {mode === "1v1" ? <p key="1v1" role="status" className="sr-only">{matchup.notice}</p> : doubles.notice}
+      <div data-calculator-workspace className={desktopRosters ? styles.withRosters : undefined} data-calculator-mode={mode}>
         <div data-calculator-center className={`${styles.center} space-y-5`}>
-          <div ref={summaryRef} className={styles.summary}>
-            <MatchupSummary
-              runtime={runtime}
-              onToggleMechanic={toggleMechanic}
-              attacker={matchup.attacker}
-              defender={matchup.defender}
-              attack={matchup.attack}
-              replacement={matchup.replacement}
-              resultIdentity={calculation?.identity}
-              selectedRow={selectedRow}
-              onActivateMove={activateQuickMove}
-              onToggleMega={toggleMega}
-              rollMode={rollMode}
-              onRollModeChange={setRollMode}
-              blockedReason={blockedReason}
-              issues={issues}
-              movesControl={controls.moves}
-              rosterPanels={rosterPanels}
-              onBuildChange={updateBuild}
-              onHPChange={updateHP}
-              onRosterSelect={chooseRosterPokemon}
-              onShowMove={showMove}
-              magicRoom={matchup.field.magicRoom}
-              terrain={matchup.field.terrain}
-              gameType={matchup.field.gameType}
-              settledHP={settledHP}
-            />
-          </div>
-          <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`}>
-            <BuildSettingsSections runtime={runtime} attacker={matchup.attacker} defender={matchup.defender} issues={issues} builds={builds} renderEditor={renderBuildEditor} />
-            <SettingsDisclosure
-              kind="field"
-              regionId={fieldId}
-              open={!!trackedSections.open[fieldKey]}
-              onToggle={() => toggleSection(fieldKey)}
-              issueCount={issues.field.length}
-              className={styles.fieldSection}
-              label={<>
-                <span>Field conditions</span>
-                <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeConditions(matchup.field)}</span>
-              </>}
-            >
-              <BattleConditions runtime={runtime} names={{ attackerSide: speciesById.get(attacker.speciesId)?.name, defenderSide: speciesById.get(defender.speciesId)?.name }} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
-            </SettingsDisclosure>
-          </div>
+          <KeepWhileHidden active={mode === "1v1"} render={() => (
+            <div ref={summaryRef} className={styles.summary} data-calculator-mode-only="1v1" hidden={mode !== "1v1"}>
+              <MatchupSummary
+                runtime={runtime}
+                onToggleMechanic={toggleMechanic}
+                attacker={matchup.attacker}
+                defender={matchup.defender}
+                attack={matchup.attack}
+                replacement={matchup.replacement}
+                resultIdentity={calculation?.identity}
+                selectedRow={selectedRow}
+                onActivateMove={activateQuickMove}
+                onToggleMega={toggleMega}
+                rollMode={rollMode}
+                onRollModeChange={setRollMode}
+                blockedReason={blockedReason}
+                issues={issues}
+                movesControl={controls.moves}
+                rosterPanels={rosterPanels}
+                onBuildChange={updateBuild}
+                onHPChange={updateHP}
+                onRosterSelect={chooseRosterPokemon}
+                onShowMove={showMove}
+                magicRoom={matchup.field.magicRoom}
+                terrain={matchup.field.terrain}
+                gameType={matchup.field.gameType}
+                settledHP={settledHP}
+              />
+            </div>
+          )} />
+          <KeepWhileHidden active={mode === "1v1"} render={() => (
+            <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`} data-calculator-mode-only="1v1" hidden={mode !== "1v1"}>
+              <BuildSettingsSections runtime={runtime} attacker={matchup.attacker} defender={matchup.defender} issues={issues} builds={builds} renderEditor={renderBuildEditor} />
+              <SettingsDisclosure
+                kind="field"
+                regionId={fieldId}
+                open={!!trackedSections.open[fieldKey]}
+                onToggle={() => toggleSection(fieldKey)}
+                issueCount={issues.field.length}
+                className={styles.fieldSection}
+                label={<>
+                  <span>Field conditions</span>
+                  <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeConditions(matchup.field)}</span>
+                </>}
+              >
+                <BattleConditions runtime={runtime} names={{ attackerSide: speciesById.get(attacker.speciesId)?.name, defenderSide: speciesById.get(defender.speciesId)?.name }} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
+              </SettingsDisclosure>
+            </div>
+          )} />
+          {doubles.summary}
+          {doubles.settings}
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
             <p role="status" className={`wrap-anywhere ${teamsFailed ? "text-danger" : ""}`}>{teamSummary}</p>
             {teamsFailed && <Button variant="secondary" size="sm" disabled={teamsLoading} onClick={rosters.refresh}>Retry teams</Button>}
           </div>
-          {feedback && <div data-calculator-feedback>{feedback}</div>}
+          {(mode === "1v1" ? feedback : doubles.feedback) && <div data-calculator-feedback>{mode === "1v1" ? feedback : doubles.feedback}</div>}
           <div>
             <div {...panelProps("team")}>
               {renderTeamSource("own")}
             </div>
             <div {...panelProps("moves")}>
-              <MoveResults
-                key={matchup.revision}
-                ref={movesRef}
-                runtime={runtime}
-                sourceBuild={attackView.source.build}
-                gameType={matchup.field.gameType}
-                id={controls.moves}
-                rows={rows}
-                moveIds={moveSpecies?.moves ?? []}
-                ownerId={`${attackView.owner.key}:${attackView.owner.epoch}`}
-                selectedMoveId={attackView.moveId}
-                onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId, attackView.owner))}
-                contexts={attackView.contexts}
-                onContextChange={(moveId, context) => setMatchup((current) => updateMatchupMoveContext(current, attackView.owner, moveId, context))}
-                replacement={replacement ? {
-                  slotIndex: replacement.slotIndex,
-                  moves: attackView.source.moves,
-                  onReplace: (moveId) => updateReplacement(replacement, moveId),
-                  onDone: () => updateReplacement(replacement),
-                } : undefined}
-                abilityId={attackView.source.build.abilityId}
-                itemId={attackView.source.build.itemId}
-                attackerName={sourceSpecies?.name ?? "Source Pokémon"}
-                defenderName={receiverSpecies?.name ?? "Receiving Pokémon"}
-                sourcePosition={attackView.sourceSide === "attacker" ? "left" : "right"}
-                defenderHP={currentHP}
-                blocked={resultsBlocked}
-                onReveal={reveal}
-                hitBattle={{ magicRoom: attackView.field.magicRoom, opponentAbilityId: attackView.receiver.build.abilityId }}
-                partyOptions={partyOptions}
-              />
+              <KeepWhileHidden active={mode === "1v1"} render={() => (
+                <div data-calculator-mode-only="1v1" hidden={mode !== "1v1"}>
+                  <MoveResults
+                    key={matchup.revision}
+                    ref={movesRef}
+                    runtime={runtime}
+                    sourceBuild={attackView.source.build}
+                    gameType={matchup.field.gameType}
+                    id={controls.moves}
+                    rows={rows}
+                    moveIds={moveSpecies?.moves ?? []}
+                    ownerId={`${attackView.owner.key}:${attackView.owner.epoch}`}
+                    selectedMoveId={attackView.moveId}
+                    onSelectMove={(moveId) => setMatchup((current) => selectMatchupMove(current, moveId, attackView.owner))}
+                    contexts={attackView.contexts}
+                    onContextChange={(moveId, context) => setMatchup((current) => updateMatchupMoveContext(current, attackView.owner, moveId, context))}
+                    replacement={replacement ? {
+                      slotIndex: replacement.slotIndex,
+                      moves: attackView.source.moves,
+                      onReplace: (moveId) => updateReplacement(replacement, moveId),
+                      onDone: () => updateReplacement(replacement),
+                    } : undefined}
+                    abilityId={attackView.source.build.abilityId}
+                    itemId={attackView.source.build.itemId}
+                    attackerName={sourceSpecies?.name ?? "Source Pokémon"}
+                    defenderName={receiverSpecies?.name ?? "Receiving Pokémon"}
+                    sourcePosition={attackView.sourceSide === "attacker" ? "left" : "right"}
+                    defenderHP={currentHP}
+                    blocked={resultsBlocked}
+                    onReveal={reveal}
+                    hitBattle={{ magicRoom: attackView.field.magicRoom, opponentAbilityId: attackView.receiver.build.abilityId }}
+                    partyOptions={partyOptions}
+                  />
+                </div>
+              )} />
+              {doubles.moves}
               <details className="rounded-xl border border-line bg-panel">
                 <summary className="cursor-pointer rounded-xl px-4 py-4 text-sm font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:px-5">Coverage and sources</summary>
                 <div className="space-y-4 px-4 pb-4 text-sm text-muted sm:px-5 sm:pb-5">
@@ -639,9 +685,14 @@ export default function CalculatorClient() {
             </div>
           </div>
         </div>
-        {desktopRosters && (["attacker", "defender"] as const).map((side) => (
+        {desktopRosters && mode === "1v1" && (["attacker", "defender"] as const).map((side) => (
           <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "attacker" ? "Left Pokémon" : "Right Pokémon"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
             {renderRoster(side, "rail")}
+          </aside>
+        ))}
+        {desktopRosters && mode === "2v2" && (["own", "opponent"] as const).map((side) => (
+          <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "own" ? "Your" : "Opponent's"} team shortcuts`} className={`${styles.rail} ${side === "own" ? styles.attackerRoster : styles.defenderRoster}`}>
+            {doubles.rails[side]}
           </aside>
         ))}
       </div>

@@ -39,6 +39,10 @@ type Props = {
   runtime?: BattleRuntime;
   /** Champions usage, or a native game's Random Battle sets, pick the usual ability per format. */
   gameType?: "Singles" | "Doubles";
+  /** The Pokémon's place in labels ("your left" in 2v2); defaults to the side's "left" / "right". */
+  position?: string;
+  /** Its name as a Pokémon ("Your left Pokémon" in 2v2); defaults to "Left Pokémon" / "Right Pokémon". */
+  label?: string;
 };
 
 /** A hand-picked Pokémon's fresh build, with its usual ability for the format (move-defaults usualAbility). */
@@ -46,10 +50,10 @@ export function chosenBuild(speciesId: string, runtime: BattleRuntime, gameType:
   return withUsualAbility(createBuild(speciesId, runtime), usualAbility(speciesId, gameType, runtime));
 }
 
-export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles" }: Props) {
+export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles", position: positionLabel, label: pokemonLabel }: Props) {
   const id = useId();
-  const position = side === "attacker" ? "left" : "right";
-  const label = side === "attacker" ? "Left Pokémon" : "Right Pokémon";
+  const position = positionLabel ?? (side === "attacker" ? "left" : "right");
+  const label = pokemonLabel ?? (side === "attacker" ? "Left Pokémon" : "Right Pokémon");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [teamMode, setTeamMode] = useState(false);

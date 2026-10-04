@@ -91,16 +91,24 @@ type Props = {
   magicRoom?: boolean;
   /** The form's required move and its current quick moves, to fix a prepared-move issue. */
   requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
+  /** The Pokémon's place in its labels ("your left" in 2v2); defaults to the side's "left" / "right". */
+  position?: string;
+  /** The Intimidate button's text; defaults to applying it to the other 1v1 Pokémon. */
+  intimidateLabel?: string;
+  /** A fact shown instead of the ability-condition checkbox (2v2 Plus / Minus, which the ally's ability decides). */
+  abilityActivationFact?: string | null;
+  /** The Trace select's option for no chosen ability; defaults to the other 1v1 Pokémon's ability. */
+  tracedUnsetLabel?: string;
 };
 
 /**
  * One Pokémon's build editor, in its Build settings under its summary card. That card already
  * shows the species, types, Mimicry, Tera type, retained configuration and Change Pokémon.
  */
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, position: positionLabel, intimidateLabel, abilityActivationFact, tracedUnsetLabel }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
-  const position = side === "attacker" ? "left" : "right";
+  const position = positionLabel ?? (side === "attacker" ? "left" : "right");
   const species = runtime.speciesById.get(build.speciesId);
   const stats = getBuildStats(build, runtime);
   const itemOptions = useMemo(() => [...runtime.catalog.items].sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
@@ -188,7 +196,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
         {build.abilityId === "trace" && (
           <Field id={`${prefix}-traced-ability`} label="Ability Trace copied" error={errorFor("tracedAbility")}>
             <Select value={build.tracedAbility ?? ""} onChange={(event) => onChange({ ...build, tracedAbility: event.target.value || undefined })}>
-              <option value="">The other Pokémon’s ability</option>
+              <option value="">{tracedUnsetLabel ?? "The other Pokémon’s ability"}</option>
               {traceOptions.map((ability) => <option key={ability.id} value={ability.id}>{ability.name}</option>)}
             </Select>
           </Field>
@@ -239,7 +247,9 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
         ) : <p className="text-sm text-danger">{errorFor("preparedMoves")}</p>
       )}
 
-      {activationLabel && (
+      {activationLabel && typeof abilityActivationFact === "string" ? (
+        <p data-ability-activation-fact className="text-xs text-muted">{abilityActivationFact}</p>
+      ) : activationLabel && (
         <div>
           <label htmlFor={`${prefix}-ability-active`} className="flex min-h-11 items-center gap-2 text-xs text-text">
             <input
@@ -262,7 +272,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       {build.abilityId === "intimidate" && onApplyIntimidate && (
         <div>
           <Button size="sm" variant="secondary" className="min-h-11" onClick={onApplyIntimidate}>
-            Apply Intimidate to the {side === "attacker" ? "right" : "left"} Pokémon
+            {intimidateLabel ?? <>Apply Intimidate to the {side === "attacker" ? "right" : "left"} Pokémon</>}
           </Button>
           <p role="status" className="mt-1 text-xs text-text">{intimidateResult}</p>
         </div>
@@ -284,7 +294,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
           </label>
         )}
         <TableWrap>
-          <table className={`${styles.statTable} w-full ${build.game === "champions" ? "min-w-[15rem]" : innateIVs ? "min-w-[19.5rem]" : "min-w-[18rem]"} text-left text-sm`} aria-label={`${side === "attacker" ? "Left" : "Right"} Pokémon stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
+          <table className={`${styles.statTable} w-full ${build.game === "champions" ? "min-w-[15rem]" : innateIVs ? "min-w-[19.5rem]" : "min-w-[18rem]"} text-left text-sm`} aria-label={`${position[0].toUpperCase()}${position.slice(1)} Pokémon stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
             <thead className="bg-panel-hover text-xs text-muted">
               <tr>
                 <th scope="col" className={cell}>Stat</th>

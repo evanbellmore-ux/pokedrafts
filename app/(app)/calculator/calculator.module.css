@@ -193,3 +193,79 @@
     top: calc(var(--app-nav-height, 0px) + 0.5rem);
   }
 }
+
+/* 1v1 and 2v2: an element only one view shows. Classes such as .settings would beat the browser's own [hidden] rule. */
+.root [data-calculator-mode-only][hidden] {
+  display: none;
+}
+
+/* The 1v1 | 2v2 switch: two equal buttons, then side by side at their own width from 40rem. */
+.modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+@media (min-width: 40rem) {
+  .modes {
+    display: flex;
+  }
+}
+
+/* One side's two 2v2 cards, side by side at every width, as the 1v1 cards are. */
+.doublesSide {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.doublesSide > * {
+  min-width: 0;
+}
+
+.doublesSide > * + * {
+  border-inline-start: 1px solid var(--color-line);
+}
+
+/* A 2v2 card's quick moves stay 2×2, and No move / All moves one row of two. */
+.doublesQuickMoves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+/* Wrapping pills: a move's targets, and the 2v2 Moves pane's Pokémon. */
+.targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* The four 2v2 Build settings, two per row when there is room, then Field conditions across the full width. */
+.doublesSettings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.doublesSettings > * {
+  min-width: 0;
+}
+
+.doublesSettings > * + * {
+  border-top: 1px solid var(--color-line);
+}
+
+@container calculator (min-width: 44rem) {
+  .doublesSettings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doublesSettings > :nth-child(2) {
+    border-top: 0;
+  }
+
+  .doublesSettings > :nth-child(even):not(.fieldSection) {
+    border-inline-start: 1px solid var(--color-line);
+  }
+}

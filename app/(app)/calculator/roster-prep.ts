@@ -144,7 +144,7 @@ export type Combatant = {
 export type MoveOwner = { key: number; epoch: number };
 export type MoveReplacement = { owner: MoveOwner; slotIndex: number; session: number };
 
-type RosterSelection = { leagueId: string; ownMemberId: string; opponentId: string };
+export type RosterSelection = { leagueId: string; ownMemberId: string; opponentId: string };
 export type PreparedMatchup = {
   runtime: BattleRuntime;
   drafts: Partial<Record<RosterRole, ImportDraft>>;
@@ -169,7 +169,7 @@ export type PreparedMatchup = {
   cache: Map<string, { source: RosterSource; build: BattleBuild; hpInput: string; moves: MoveSlots; megaBase: MegaBase | null }>;
 };
 
-function cacheCombatant(current: PreparedMatchup, slot: Combatant): PreparedMatchup["cache"] {
+export function cacheCombatant(current: PreparedMatchup, slot: Combatant): PreparedMatchup["cache"] {
   const { source, build, hpInput, moves, megaBase } = slot;
   return source ? new Map(current.cache).set(source.key, { source, build, hpInput, moves, megaBase }) : current.cache;
 }
@@ -215,7 +215,7 @@ export function getAttackView(current: PreparedMatchup) {
 
 export type AttackView = ReturnType<typeof getAttackView>;
 
-function withPreparedMoves(build: BattleBuild, moves: MoveSlots): BattleBuild {
+export function withPreparedMoves(build: BattleBuild, moves: MoveSlots): BattleBuild {
   return build.game === "champions" ? build : { ...build, preparedMoves: moves.flatMap((slot) => slot.moveId ? [slot.moveId] : []) };
 }
 
@@ -360,8 +360,11 @@ export function updateMatchupMoveContext(current: PreparedMatchup, owner: MoveOw
   return { ...current, [side]: { ...slot, contexts: { ...slot.contexts, [moveId]: { ...context } } } };
 }
 
-/** A Mega form is the same Pokémon, not a fresh build or another roster entry. */
-export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, formId: string): PreparedMatchup {
+/**
+ * A Mega form is the same Pokémon, not a fresh build or another roster entry. `storeCopiedIntimidate: false`
+ * (the 2v2 tab, where Trace copies a random foe's ability) skips storing the Intimidate the entry form copied.
+ */
+export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, formId: string, options: { storeCopiedIntimidate?: boolean } = {}): PreparedMatchup {
   const side = moveOwnerSide(current, owner);
   if (!side) return current;
   const slot = current[side];
@@ -392,7 +395,7 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
   let holder = slot.build;
   let otherBuild = current[otherSide].build;
   let stored = false;
-  if (!reverting && holder.abilityId === "trace" && settings.abilityId !== "trace" && holder.copiedIntimidateStored !== intimidatedKey(otherBuild, current.runtime)
+  if (options.storeCopiedIntimidate !== false && !reverting && holder.abilityId === "trace" && settings.abilityId !== "trace" && holder.copiedIntimidateStored !== intimidatedKey(otherBuild, current.runtime)
     && tracedAbility(holder, otherBuild, current.field.magicRoom).abilityId === "intimidate") {
     const sideOf = (entry: BattleSide) => entry === "attacker" ? current.field.attackerSide : current.field.defenderSide;
     const result = applyIntimidate({ ...holder, abilityId: "intimidate" }, otherBuild, {
@@ -541,7 +544,12 @@ export function removeTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner
   return { ...next, cache: prunePaste(current, owner.role), notice: "Imported team removed. Current Pokémon and their preparation kept as manual builds." };
 }
 
-function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, hpInput: string): PreparedMatchup {
+/** The Pokémon a notice names: "Left Pokémon" / "Right Pokémon", or the 2v2 slot's ("your left Pokémon"). */
+function sidePositionLabel(side: BattleSide, positionLabel?: string): string {
+  return positionLabel ?? `${side === "attacker" ? "Left" : "Right"} Pokémon`;
+}
+
+function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, hpInput: string, positionLabel?: string): PreparedMatchup {
   const slot = current[side];
   const changedSpecies = slot.build.speciesId !== build.speciesId;
   const source = changedSpecies ? null : slot.source;
@@ -556,16 +564,17 @@ function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBui
   // A species change replaces the notice: its Hidden Power IVs, named by side so a second identical pick is
   // announced too, or nothing, so an earlier Pokémon's sentence does not linger.
   const note = hiddenPowerIVsNote(build, fresh, moves);
-  const label = side === "attacker" ? "Left" : "Right";
-  const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot), ...(changedSpecies ? { notice: note ? `${label} Pokémon ${current.runtime.speciesById.get(build.speciesId)?.name}:${note}` : "" } : {}) };
+  const label = sidePositionLabel(side, positionLabel);
+  const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot), ...(changedSpecies ? { notice: note ? `${label.charAt(0).toUpperCase()}${label.slice(1)} ${current.runtime.speciesById.get(build.speciesId)?.name}:${note}` : "" } : {}) };
   return changedSpecies ? clearMoveInteractions(next) : next;
 }
 
-export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild): PreparedMatchup {
+/** `positionLabel` names the Pokémon in the notice (default "Left Pokémon" / "Right Pokémon"). */
+export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, positionLabel?: string): PreparedMatchup {
   if (build.game !== current.runtime.profile.id) return current;
   const slot = current[side];
   const sameHP = slot.build.speciesId === build.speciesId && Object.is(slot.build.currentHP, build.currentHP);
-  return storeBuild(current, side, build, sameHP ? slot.hpInput : formatHPInput(build.currentHP));
+  return storeBuild(current, side, build, sameHP ? slot.hpInput : formatHPInput(build.currentHP), positionLabel);
 }
 
 /**
@@ -605,9 +614,9 @@ export function intimidateResult(current: PreparedMatchup, side: BattleSide): st
   return `${last.count > 1 ? `Applied ${last.count} times in a row. ` : ""}${last.lines.join(" ")}`;
 }
 
-export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpInput: string): PreparedMatchup {
+export function updateMatchupHP(current: PreparedMatchup, side: BattleSide, hpInput: string, positionLabel?: string): PreparedMatchup {
   const build = { ...current[side].build, currentHP: parseBuildInput(hpInput, true) };
-  return storeBuild(current, side, build, hpInput);
+  return storeBuild(current, side, build, hpInput, positionLabel);
 }
 
 /**
@@ -622,7 +631,7 @@ function withRosterAbility(build: BattleBuild, source: RosterSource, gameType: B
   return withUsualAbility(build, usualAbility(build.speciesId, gameType, runtime));
 }
 
-export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice): PreparedMatchup {
+export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, choice: RosterChoice, positionLabel?: string): PreparedMatchup {
   const source = choice.source;
   const slot = current[side];
   if (!source || source.runtimeIdentity !== current.runtime.identity || !current.runtime.speciesById.has(source.speciesId)
@@ -648,24 +657,25 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     ...current,
     [side]: nextSlot,
     cache: cacheCombatant(current, nextSlot),
-    notice: `${choice.name} selected as ${side === "attacker" ? "Left" : "Right"} Pokémon. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : `Default build loaded.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
+    notice: `${choice.name} selected as ${sidePositionLabel(side, positionLabel)}. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : `Default build loaded.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
   });
 }
 
-/** Reconcile ownership only. A network response must never activate a combatant. */
-export function reconcileRosters(current: PreparedMatchup, state: CalculatorRosterState): PreparedMatchup {
-  const settledAccount = state.userId !== null || state.status !== "loading";
-  if (current.accountReady && settledAccount && current.accountId !== state.userId) {
-    current = { ...freshMatchup(current, championsRuntime), accountId: state.userId, accountReady: true };
-  } else if (!current.accountReady && settledAccount) {
-    current = { ...current, accountId: state.userId, accountReady: true };
-  }
+/**
+ * What a roster snapshot says about roster sources: the league and opponent it selects, whether its
+ * teams are loaded for that league (`checkedTeams`), every league source it still lists, and the
+ * matchup's cache without the league entries it no longer lists.
+ */
+export type RosterSourceCheck = {
+  selection: RosterSelection;
+  checkedTeams: boolean;
+  validSources: Map<string, RosterSource>;
+  cache: PreparedMatchup["cache"];
+};
+
+export function rosterSourceCheck(current: PreparedMatchup, state: CalculatorRosterState): RosterSourceCheck {
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
   const selection = { leagueId: state.selectedLeagueId, ownMemberId: league?.memberId ?? "", opponentId: state.opponentId };
-  const selectionChanged = Object.keys(selection).some((key) => selection[key as keyof RosterSelection] !== current.selection[key as keyof RosterSelection]);
-  const ownChanged = current.teams.own.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.ownMemberId !== current.selection.ownMemberId);
-  const opponentChanged = current.teams.opponent.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.opponentId !== current.selection.opponentId);
-  const navigationChanged = ownChanged || opponentChanged;
   const availableLeagues = new Set(state.leagues.map((entry) => entry.id));
   const checkedTeams = state.status === "ready" && state.teamsStatus === "ready" && state.data?.leagueId === league?.id;
   const validSources = new Map<string, RosterSource>();
@@ -689,23 +699,48 @@ export function reconcileRosters(current: PreparedMatchup, state: CalculatorRost
       cache.delete(key);
     }
   }
+  return { selection, checkedTeams, validSources, cache };
+}
+
+/**
+ * A Pokémon's roster source against its role's team source and the selection: the same slot while
+ * valid, the renamed source when the roster renamed it, or the slot without a source (detached).
+ * Without `checkedTeams`, league sources are checked against the selection only.
+ */
+export function reconcileRosterSlot(slot: Combatant, team: TeamSelection, selection: RosterSelection, check: Pick<RosterSourceCheck, "checkedTeams" | "validSources">): Combatant {
+  if (!slot.source) return slot;
+  if (slot.source.kind === "paste") {
+    if (team.mode === "paste" && slot.source.role === slot.role && team.paste?.id === slot.source.importId) return slot;
+    return { ...slot, source: null };
+  }
+  const memberId = slot.role === "own" ? selection.ownMemberId : selection.opponentId;
+  if (team.mode !== "league" || slot.source.leagueId !== selection.leagueId || slot.source.memberId !== memberId
+    || (check.checkedTeams && !check.validSources.has(slot.source.key))) {
+    return { ...slot, source: null };
+  }
+  const updated = check.validSources.get(slot.source.key);
+  return updated && updated.name !== slot.source.name ? { ...slot, source: updated } : slot;
+}
+
+/** Reconcile ownership only. A network response must never activate a combatant. */
+export function reconcileRosters(current: PreparedMatchup, state: CalculatorRosterState): PreparedMatchup {
+  const settledAccount = state.userId !== null || state.status !== "loading";
+  if (current.accountReady && settledAccount && current.accountId !== state.userId) {
+    current = { ...freshMatchup(current, championsRuntime), accountId: state.userId, accountReady: true };
+  } else if (!current.accountReady && settledAccount) {
+    current = { ...current, accountId: state.userId, accountReady: true };
+  }
+  const check = rosterSourceCheck(current, state);
+  const { selection, cache } = check;
+  const selectionChanged = Object.keys(selection).some((key) => selection[key as keyof RosterSelection] !== current.selection[key as keyof RosterSelection]);
+  const ownChanged = current.teams.own.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.ownMemberId !== current.selection.ownMemberId);
+  const opponentChanged = current.teams.opponent.mode === "league" && (selection.leagueId !== current.selection.leagueId || selection.opponentId !== current.selection.opponentId);
+  const navigationChanged = ownChanged || opponentChanged;
   let detached = false;
   const reconcileSlot = (slot: Combatant): Combatant => {
-    if (!slot.source) return slot;
-    const team = current.teams[slot.role];
-    if (slot.source.kind === "paste") {
-      if (team.mode === "paste" && slot.source.role === slot.role && team.paste?.id === slot.source.importId) return slot;
-      detached = true;
-      return { ...slot, source: null };
-    }
-    const memberId = slot.role === "own" ? selection.ownMemberId : selection.opponentId;
-    if (team.mode !== "league" || slot.source.leagueId !== selection.leagueId || slot.source.memberId !== memberId
-      || (checkedTeams && !validSources.has(slot.source.key))) {
-      detached = true;
-      return { ...slot, source: null };
-    }
-    const updated = validSources.get(slot.source.key);
-    return updated && updated.name !== slot.source.name ? { ...slot, source: updated } : slot;
+    const next = reconcileRosterSlot(slot, current.teams[slot.role], selection, check);
+    if (slot.source && !next.source) detached = true;
+    return next;
   };
   const attacker = reconcileSlot(current.attacker);
   const defender = reconcileSlot(current.defender);
