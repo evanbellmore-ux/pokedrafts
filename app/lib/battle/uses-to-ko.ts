@@ -9,8 +9,8 @@ import type { BattleRuntime } from "./runtime";
 import type { AfterUse, BattleBuild, BattleConditions, BattleGame, BattleStatus, ChampionsMove, CombatStat, MoveContext, MoveDamageResult, UsesToKO } from "./types";
 import { CHARGE_MOVES, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, STATUS_MOVES, statMove, type Stages as StageChanges } from "./stat-moves";
 import {
-  berryArithmetic, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, UNNERVES, walkHits,
-  type Berry, type HitLoopInput, type HitState, type HitWalk,
+  berryArithmetic, berryUnnerved, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, UNNERVES, walkHits,
+  type Berry, type HitLoopInput, type HitState, type HitWalk, type TurnUnnerve,
 } from "./hit-loop";
 import { hitCountRule, type HitChance } from "./hit-count";
 
@@ -53,6 +53,8 @@ export const USES_REFERENCE = { on: false };
 /** Target-HP states (summed over hits and uses) and damage calculations beyond the row's own that one exact count may use. */
 const STATE_BUDGET = 60_000;
 const RUN_BUDGET = 24;
+/** The rerun budget of one doubles-turn search (createTurnSearch), shared by its turn's steps. */
+const TURN_RUN_BUDGET = 48;
 /** How far one roll path is walked past the limit to find `needed` before its state settles. */
 const PATH_CAP = 128;
 
@@ -168,11 +170,11 @@ type Residuals = { ops: number[]; names: string[]; orders: number[] };
 type Node = {
   /** Its id, and while the attacker's HP is followed the id of its key but that HP (the same for states that differ only in it). */
   id: number; restId: number; state: State; key: string;
-  runs: Map<number, Run>; hits: Map<number, Node>; turns: Map<number, Node>;
+  runs: Map<number, Run>; hits: Map<number | string, Node>; turns: Map<number, Node>;
   rest?: string;
 
   /** Cheek Pouch's heal after a use's hits, by the outcome key of `hits` (none when absent). */
-  heals?: Map<number, number>;
+  heals?: Map<number | string, number>;
   /** The hits of a case from its state (hitsWalk), from the attacker's HP [0] or an HP no loss reaches [1]. */
   walks?: Map<UseCase, [HitWalk?, HitWalk?]>;
   /** The attacker's hit modes from its state when they change within a use (midKey). */
@@ -194,7 +196,7 @@ type Shared = {
   /** Likewise after an end of turn (afterTurnNode). */
   turnVariants?: Map<number, { base: State; rest: number; byHP: Map<number, Node> }>;
 };
-type Group = { node: Node; dist: Dist };
+type Group = { node: Node; dist: Dist; landed?: number };
 /** One walk of the first use (UsesSearch.firstUse): the HP left, the mass knocked out and whether any was, and the HP regained by source. */
 type OneUseWalk = { dist: Dist; out: number; seen: boolean; heals: Map<string, [number, number]> };
 /** The target's end of turn from one state: its HP steps, the berry checked at each Update, its form line, Dynamax ending. */
@@ -316,12 +318,23 @@ const maxActive = (side: Side) => side.mechanic === "dynamax" || side.mechanic =
 // any damage dealt, Anger Shell's line crossed (each time it is), a survival effect that saved the target
 // this use; at the end of a turn, a berry eaten and the low side of a form's HP line.
 const SASH_USED = 1, BERRY_EATEN = 2, DAMAGED = 4, ANGER_SHELL = 8, SAVED = 16, FORM_LOW = 32;
+/** A doubles-turn hit knocked the target out (turnStep): its node keeps the attacker's state after that hit. */
+const KNOCKED = 64;
 /** In a residual plan, where berries are checked (pinned Showdown's Update after the weather and after the residuals). */
 const UPDATE = 0;
 
+/**
+ * The doubles turn's environment for one pair (doubles-turn.ts): `turn` switches the search to one use within a turn
+ * (createTurnSearch), `unnerved` whether the target's foes' Unnerve or As One stops its Berries, `unnerve` the turn's
+ * Unnerve and As One for both Pokémon's Berries (hit-loop.ts TurnUnnerve: whether the two are foes, and another
+ * Pokémon's), and `fieldSettled` the abilities and items of the other two Pokémon that a weather or terrain change
+ * would change.
+ */
+export type UsesEnv = { turn?: true; unnerved?: boolean; unnerve?: TurnUnnerve; fieldSettled?: readonly string[] };
+
 /** Facts about the two settled Pokémon that hold for every row of a matchup. */
 export type UsesMatchup = ReturnType<typeof prepareUses>;
-export function prepareUses(attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, helpers: UsesHelpers) {
+export function prepareUses(attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, helpers: UsesHelpers, env?: UsesEnv) {
   const attAbility = helpers.gassed(attacker, defender, conditions) ? "" : attacker.abilityId;
   const defAbility = helpers.gassed(defender, attacker, conditions) ? "" : defender.abilityId;
   const attItemOn = !conditions.magicRoom && !helpers.klutz(attacker, defender);
@@ -340,7 +353,9 @@ export function prepareUses(attacker: BattleBuild, defender: BattleBuild, condit
   if (attacker.status === "par") notes.push("Assumes the paralysed attacker is never fully paralysed.");
   return {
     attacker, defender, conditions, runtime, helpers, gen: Generations.get(runtime.profile.generation),
-    attAbility, defAbility, attItemOn, defItemOn, unnerved: UNNERVES.has(attAbility), dynamax, notes, timed,
+    attAbility, defAbility, attItemOn, defItemOn, dynamax, notes, timed,
+    unnerved: env?.unnerve ? berryUnnerved(env.unnerve, "target", attAbility) : env?.unnerved ?? UNNERVES.has(attAbility), unnerve: env?.unnerve,
+    turn: !!env?.turn, fieldSettled: env?.fieldSettled ?? [],
     hpForms: [attacker, defender].some((build) => HP_FORM_ABILITIES.has(build.abilityId)),
     attackerItem: attItemOn ? attacker.itemId : "", defenderItem: defItemOn ? defender.itemId : "",
     /** Cloud Nine or Air Lock on either Pokémon stops every weather residual (pinned Showdown suppressingWeather). */
@@ -619,12 +634,13 @@ function massOf(dist: Dist): number {
 
 /** Collects masses into groups by state, adding equal states. */
 class Collector {
-  private readonly byNode = new Map<number, Group>();
+  private readonly byNode = new Map<number | string, Group>();
   constructor(private readonly size: number) {}
-  /** The distribution collecting a node's mass. */
-  to(node: Node): Dist {
-    let group = this.byNode.get(node.id);
-    if (!group) this.byNode.set(node.id, group = { node, dist: borrow(this.size) });
+  /** The distribution collecting a node's mass (a doubles turn's step keeps the hits that landed apart: `landed`). */
+  to(node: Node, landed?: number): Dist {
+    const key = landed === undefined ? node.id : `${node.id}|${landed}`;
+    let group = this.byNode.get(key);
+    if (!group) this.byNode.set(key, group = { node, dist: borrow(this.size), ...(landed === undefined ? {} : { landed }) });
     return group.dist;
   }
   groups(): Group[] {
@@ -726,7 +742,7 @@ function hitsAfter(walk: HitWalk, landed: number): HitState {
 }
 
 /** One row's search: its runs (memoised calculations), interned states with memoised transitions, and budget. */
-class UsesSearch {
+export class UsesSearch {
   readonly m: UsesMatchup;
   readonly input: UsesRow;
   readonly result: Result;
@@ -791,10 +807,20 @@ class UsesSearch {
   private oneUse: { dist: Dist; heals: Map<string, [number, number]>; sum: boolean } | null = null;
   /** A build holds first-turn-only state (firstTurnOnly), so the first use's calculations are not shared with later ones. */
   private readonly firstTurn: boolean;
+  /** One use within a doubles turn (UsesEnv.turn, createTurnSearch): no end of turn, stages kept, every outcome a node. */
+  private readonly turnMode: boolean;
+  /** While a turn's step runs (turnStep): the knocked-out outcomes, the HP the target regains by source, and the first calculation that failed. */
+  private knockedOut: Collector | null = null;
+  private turnHeals: Map<string, [number, number]> | null = null;
+  /** A doubles turn's step: the least and the most HP the followed attacker regained from each source (its HP Berry, Shell Bell). */
+  private turnAttackerHeals: Map<string, [number, number]> | null = null;
+  private turnRows: Map<MoveDamageResult, number> | null = null;
+  private turnFailure: string | null = null;
   constructor(m: UsesMatchup, input: UsesRow, result: Result) {
     this.m = m;
     this.input = input;
     this.result = result;
+    this.turnMode = m.turn;
     this.firstTurn = firstTurnOnly(m.attacker) || firstTurnOnly(m.defender);
     const { attacker, defender } = m;
     this.hpModes = hpSensitivity(m, input.move, result);
@@ -822,7 +848,7 @@ class UsesSearch {
     const def = this.hpModes.def;
     this.readsHP = USES_REFERENCE.on || def.exact || def.full || def.half || def.third;
     this.balloonNeutral = !m.conditions.terrain && result.move.type !== "Ground";
-    this.sources = changeSources(m, input, result, this.hpModes, this.relevance, this.residualsAt(this.initial).att.ops.length > 0, this.initial,
+    this.sources = this.turnMode ? [] : changeSources(m, input, result, this.hpModes, this.relevance, this.residualsAt(this.initial).att.ops.length > 0, this.initial,
       this.gorgingParalyses(this.initial));
     this.sturdy = result.defender.hasAbility("Sturdy");
     this.first = this.prepare({ row: input.row, trace: input.trace }, this.initial);
@@ -846,17 +872,10 @@ class UsesSearch {
    */
   private entryStages(build: BattleBuild, who: "att" | "def"): { stages: Partial<Stages>; seed: boolean } {
     const { m } = this;
-    const stages: Partial<Stages> = {};
-    const ability = who === "att" ? m.attAbility : m.defAbility;
-    const seed = SEEDS[build.itemId];
-    const used = !!seed && seed.terrain === m.conditions.terrain && (who === "att" ? m.attItemOn : m.defItemOn) && build.itemUsedBeforeRoom !== false;
-    if (used) stages[seed.stat] = (ability === "contrary" ? -1 : 1) * (ability === "simple" ? 2 : 1);
-    const game = m.runtime.profile.id;
-    const stat = game === "champions" ? undefined : ENTRY_ABILITIES[ability];
-    const tailwind = (who === "att" ? m.conditions.attackerSide : m.conditions.defenderSide).tailwind;
-    const on = ability === "windrider" ? tailwind : ability.startsWith("embodyaspect") ? game === "scarlet_violet" : game === "sword_shield" || build.abilityActive;
-    if (stat && on) stages[stat] = (stages[stat] ?? 0) + 1;
-    return { stages, seed: used };
+    // The doubles turn's builds already hold them (calculate.ts settleDoublesStart folds them in).
+    if (m.turn) return { stages: {}, seed: false };
+    return entryStagesOf(build, who === "att" ? m.attAbility : m.defAbility, who === "att" ? m.attItemOn : m.defItemOn,
+      m.conditions.terrain, (who === "att" ? m.conditions.attackerSide : m.conditions.defenderSide).tailwind, m.runtime);
   }
 
   /**
@@ -966,6 +985,93 @@ class UsesSearch {
     };
   }
 
+  /** Whether a doubles turn's step follows the attacker's HP: the damage reads it, or the use can change it (draining and Shell Bell heal it). */
+  needsAttackerHP(): boolean {
+    if (this.trackAttacker) return true;
+    const engineMove = this.result.move as Move & { drain?: unknown };
+    if (engineMove.drain || (this.m.attItemOn && this.m.attacker.itemId === "shellbell")) return true;
+    return this.attackerLosesHP();
+  }
+
+  /** A fixed-HP row with the damage it deals at one HP (turnStep's rows met), one per damage. */
+  private readonly fixedRows = new Map<MoveDamageResult, Map<number, MoveDamageResult>>();
+  private fixedRow(row: MoveDamageResult, damage: number): MoveDamageResult {
+    let byDamage = this.fixedRows.get(row);
+    if (!byDamage) this.fixedRows.set(row, byDamage = new Map());
+    let known = byDamage.get(damage);
+    if (!known) byDamage.set(damage, known = { ...row, min: damage, max: damage, rolls: damage });
+    return known;
+  }
+
+  /** Whether the damage reads the attacker's HP (Eruption, Blaze at a third, Gale Wings at full...): a spread move's steps then take it per class. */
+  readsAttackerHP(): boolean {
+    return this.trackAttacker;
+  }
+
+  /** The part of the attacker's HP range the damage reads (hpKey), for a spread move's steps. */
+  attackerHPClass(hp: number): string {
+    return hpKey(this.hpModes.att, hp, this.initial.att.maxHP);
+  }
+
+  /** createTurnSearch: whether the turn's steps follow the attacker's HP (fixed for the search, as its nodes are keyed by it). */
+  followAttacker(follow: boolean) {
+    this.follow = follow;
+  }
+
+  /**
+   * One use of the row's move within a doubles turn (doubles-turn.ts), its hits as hits() walks them in `mode` from
+   * the first state with each entry's attacker HP (followed when `follow`) and its distribution over the target's HP.
+   * Every outcome is a node: the state the use leaves, the hits that landed, the target's HP distribution, and the
+   * knocked-out mass apart at 0 HP with the attacker's state after the hit that knocked out. No end of turn. A state
+   * that cannot be calculated or a budget passed gives the reason instead.
+   */
+  turnStep(entries: TurnStepEntry[], mode: Mode, follow: boolean): TurnStepResult {
+    if (follow !== this.follow) throw new Error("A turn search follows the attacker's HP or not for all its steps.");
+    this.states = 0; this.exceeded = false; this.stop = null; this.turnFailure = null;
+    release([this.start(mode)]);
+    const groups: Group[] = [];
+    for (const entry of entries) {
+      const state = follow && entry.attackerHP !== this.initial.att.hp ? { ...this.initial, att: { ...this.initial.att, hp: entry.attackerHP } } : this.initial;
+      const node = this.node(state, mode);
+      const dist = borrow(this.size);
+      for (const [hp, mass] of entry.target) dist.add(hp, mass);
+      groups.push({ node, dist });
+    }
+    const knocked = new Collector(this.size);
+    const heals = new Map<string, [number, number]>();
+    const attackerHeals = new Map<string, [number, number]>();
+    const rows = new Map<MoveDamageResult, number>();
+    this.knockedOut = knocked; this.turnHeals = heals; this.turnRows = rows; this.turnAttackerHeals = follow ? attackerHeals : null;
+    let out: Group[];
+    try {
+      out = this.hits(groups, mode, () => {});
+    } finally {
+      this.knockedOut = null; this.turnHeals = null; this.turnRows = null; this.turnAttackerHeals = null;
+    }
+    const outcomes: TurnStepOutcome[] = [];
+    for (const [list, ko] of [[out, false], [knocked.groups(), true]] as const) {
+      for (const group of list) {
+        const dist = new Map<number, number>();
+        for (let index = 0; index < group.dist.size; index++) { const hp = group.dist.hp[index]; dist.set(hp, group.dist.p[hp]); }
+        group.dist.release();
+        const state = group.node.state;
+        outcomes.push({ attacker: state.att, attackerFainted: state.attackerFainted, target: state.def, knocked: ko, conditions: state.conditions, landed: group.landed ?? 0, dist });
+      }
+    }
+    if (this.exceeded || this.stop) return { failed: this.turnFailure ?? this.stop ?? TURN_TOO_MANY };
+    return { outcomes, heals, attackerHeals, rows };
+  }
+
+  /**
+   * The HP the target's DamagingHit handlers take from the attacker in one hit of the row's first case, from the first
+   * state (hit-loop.ts hitStep at an HP no loss reaches): Rough Skin, Iron Barbs, Rocky Helmet, a Jaboca or Rowap Berry,
+   * Gulp Missile. A doubles turn's spread move adds each target's (doubles-turn.ts spreadStep).
+   */
+  retaliation(): number {
+    const loop = this.loopInput(this.initial, this.first, this.first.cases[0], UNTRACKED);
+    return UNTRACKED - walkHits(loop, 1).after.hp;
+  }
+
   /**
    * The target's HP after one use (types.ts AfterUse), from its HP when the move starts: the use's hits as hits()
    * walks them (every roll of every hit, each count of a random hit count with its chance, no hit once the target
@@ -1063,7 +1169,7 @@ class UsesSearch {
     const reads = random ? STATS.some((each) => this.relevance.def.includes(each) && initial.def.boosts[each] < 6) : !!stat && this.relevance.def.includes(stat);
     const pouch = (random || item === "lansatberry") && this.ability(initial, "def") === "cheekpouch";
     if (!reads && !pouch) return false;
-    if (UNNERVES.has(this.ability(initial, "att")) && !this.replacesAbility(initial)) return false;
+    if (this.targetUnnerved(initial, true)) return false;
     // The line berryArithmetic gives every pinch Berry: a quarter, half with Gluttony.
     const line = this.berryFor(initial, "def", item).line;
     // No hit lands after the one the attacker faints on (MoveDamageResult.attackerFaintsOnHit, set only when that hit is certain).
@@ -1090,7 +1196,8 @@ class UsesSearch {
 
   /** On a walk of the first use: `amount` HP the target regained from `source`. */
   private noteHeal(source: string, amount: number) {
-    const use = this.oneUse;
+    // A doubles turn's step notes the least and the most of each source (turnStep).
+    const use = this.oneUse ?? (this.turnHeals ? { heals: this.turnHeals, sum: false } : null);
     if (!use || amount <= 0) return;
     const known = use.heals.get(source);
     if (!known) use.heals.set(source, [amount, amount]);
@@ -1100,7 +1207,7 @@ class UsesSearch {
 
   /** noteHeal for the target's HP berry `item` eaten at `hp`: eatBerry's two parts, the berry's heal, then Cheek Pouch's. */
   private noteBerry(item: string, berry: Berry, hp: number) {
-    if (!this.oneUse) return;
+    if (!this.oneUse && !this.turnHeals) return;
     const healed = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
     this.noteHeal(this.m.runtime.itemsById.get(item)?.name ?? item, healed - hp);
     if (berry.pouch) this.noteHeal("Cheek Pouch", Math.min(berry.max, healed + berry.pouch) - healed);
@@ -1289,7 +1396,7 @@ class UsesSearch {
     // once (not past the attacker's Unnerve); Liquid Ooze turns draining into damage (hit-loop.ts hitStep).
     if (contact && m.defAbility === "wanderingspirit" && ["roughskin", "ironbarbs"].includes(m.attAbility)) return true;
     const answered = this.first.cases.some((useCase) => RETALIATION_BERRIES[m.defenderItem] === (useCase.physical ? "Physical" : "Special"));
-    if (answered && !UNNERVES.has(m.attAbility)) return true;
+    if (answered && !berryUnnerved(m.unnerve, "target", m.attAbility)) return true;
     // The Gulping or Gorging form's Gulp Missile hits back on the first damaging hit (hit-loop.ts hitStep).
     if (this.gulping(this.initial)) return true;
     const drains = (engineMove: unknown) => !!(engineMove as { drain?: unknown } | undefined)?.drain;
@@ -1758,6 +1865,7 @@ class UsesSearch {
       targetAbility: targetAbility === "stickyhold" && moldBreaks(m, state) ? "" : targetAbility,
       targetItem: m.defItemOn ? state.def.itemId : "",
       attackerShielded: state.att.itemId === "abilityshield" && !room, targetShielded: state.def.itemId === "abilityshield" && !room,
+      ...(m.unnerve ? { unnerve: m.unnerve } : {}),
       targetDynamaxed: maxActive(state.def), contact: useCase.contact, category: useCase.physical ? "Physical" : "Special",
       drain: engineMove.drain ?? null, takesBerry: !engineMove.isMax && !engineMove.isZ && BERRY_STEALERS.has(this.input.move.id),
       targetGulping: this.gulping(state),
@@ -1777,7 +1885,7 @@ class UsesSearch {
    */
   private gorgingParalyses(state: State): boolean {
     if (!this.gulping(state) || state.def.speciesId !== "cramorantgorging" || !this.canStatus(state, "att", "par", true)) return false;
-    return !(this.m.attItemOn && STATUS_CURES[state.att.itemId]?.includes("par"));
+    return !(this.m.attItemOn && STATUS_CURES[state.att.itemId]?.includes("par") && !berryUnnerved(this.m.unnerve, "attacker", this.ability(state, "def")));
   }
 
   /**
@@ -2199,7 +2307,7 @@ class UsesSearch {
         if (mode === "all" && this.hpModes.def.exact && !USES_REFERENCE.on) {
           let unknown = 0;
           for (let index = 0; index < dist.size; index++) if (!node.runs.has(this.hpCode(dist.hp[index], state.def.maxHP))) unknown++;
-          if (this.reruns + unknown > RUN_BUDGET) { this.exceeded = true; return []; }
+          if (this.reruns + unknown > (this.turnMode ? TURN_RUN_BUDGET : RUN_BUDGET)) { this.exceeded = true; return []; }
         }
         for (let index = 0; index < dist.size; index++) {
           const hp = dist.hp[index];
@@ -2223,6 +2331,18 @@ class UsesSearch {
         const engineMove = run.trace.result!.move;
         // Super Fang's family and Endeavor follow the HP (per calculation: a Max Move's row is its own move once Dynamax ends); False Swipe and Hold Back leave 1 HP.
         const fixed = !!run.trace.fixedHP, endeavor = fixed && this.input.move.id === "endeavor", spares = !!run.row.leavesOneHP;
+        // A doubles turn's step reports the calculations it meets: a fixed-HP move's is its damage at each HP.
+        if (this.turnRows) {
+          if (!fixed) this.turnRows.set(run.row, (this.turnRows.get(run.row) ?? 0) + massOf(from));
+          else {
+            for (let index = 0; index < from.size; index++) {
+              const hp = from.hp[index];
+              const damage = endeavor ? endeavorDamage(hp, state) : Math.max(1, Math.floor(Math.ceil(hp * state.def.baseMaxHP / maxHP) / 2));
+              const row = this.fixedRow(run.row, damage);
+              this.turnRows.set(row, (this.turnRows.get(row) ?? 0) + from.p[hp]);
+            }
+          }
+        }
         // Anger Shell (pinned Showdown): not after a Sheer Force move (no AfterMoveSecondary), and after one hit
         // it holds an HP berry until its own check, on the HP before the berry.
         const sheerForce = this.ability(state, "att") === "sheerforce" && !!engineMove.secondaries;
@@ -2235,7 +2355,8 @@ class UsesSearch {
         // its first faint stops hits (a roll path follows it on past that faint as if it stood).
         const walking = this.oneUse !== null;
         const followed = mode !== "all" || this.follow || walking;
-        const tracked = (!!faint && this.follow) || ((mode !== "all" || walking) && !state.attackerFainted);
+        // A doubles turn's step stops the hits once a followed attacker faints, as the first use's walk does.
+        const tracked = (!!faint && this.follow) || ((mode !== "all" || walking || (this.turnMode && this.follow)) && !state.attackerFainted);
         for (let start = 0; start < cases.length;) {
           // The counts of a random hit count share their hits (each case is the first hits of the next): one
           // convolution carries their mass together, `reach[hit]` the share of it that deals that hit.
@@ -2279,7 +2400,7 @@ class UsesSearch {
               for (const [layerKey, layerDist] of layer) {
                 if (steps.states[Math.floor(layerKey / 1048576)].hp > 0) continue;
                 cut = true;
-                if (walking && mode === "all") { (ended ??= new Map()).set(layerKey, layerDist); layer.delete(layerKey); continue; }
+                if ((walking || this.turnMode) && mode === "all") { (ended ??= new Map()).set(layerKey, layerDist); layer.delete(layerKey); continue; }
                 if (!faint) break;
                 faint(massOf(layerDist) * (reach ? reach[hit] : 1));
                 if (layerDist !== from) layerDist.release();
@@ -2324,15 +2445,24 @@ class UsesSearch {
                       const after = this.attackerAfterUse(state, run.trace.result!, dealt + taken, hitEnd(group, at, hit + 1, dealt + taken, taken));
                       if (after.hp <= 0 || this.endsTurn(node, after.hp, 0, !!after.berry) <= 0) this.koFaint = true;
                     }
+                    // A doubles turn's step keeps the knocked-out mass as a node at 0 HP: the attacker's state after the
+                    // hit that knocked out (recoil, Life Orb, its own drops and Berries) still matters to the turn.
+                    if (this.knockedOut) {
+                      const running = done < stop ? done : stop - 1;
+                      const useCase = cases[running];
+                      const after = this.afterHitNode(node, code, run, useCase.at ?? running, useCase, bits | DAMAGED | KNOCKED, tracksDealt ? dealt + taken : 0, mode,
+                        hit + 1, hitEnd(group, at, hit + 1, dealt + taken, taken), steps ? steps.to(at, taken) + 1 : 0);
+                      this.knockedOut.to(after, hit + 1).add(0, weight * (reach ? reach[hit] : 1));
+                    }
                     continue;
                   }
                   const stepped = steps ? steps.to(at, taken) : 0;
                   if (pouch && (steps ? !!steps.states[at].targetItem && !steps.states[stepped].targetItem : eatenOn === hit + 1)) {
-                    if (walking) this.noteHeal("Cheek Pouch", Math.min(maxHP, left + pouch) - left);
+                    if (walking || this.turnHeals) this.noteHeal("Cheek Pouch", Math.min(maxHP, left + pouch) - left);
                     left = Math.min(maxHP, left + pouch);
                   }
                   if (eats && (berry!.enigma || left <= berry!.line)) {
-                    if (walking) this.noteBerry(state.def.itemId, berry!, left);
+                    if (walking || this.turnHeals) this.noteBerry(state.def.itemId, berry!, left);
                     left = eatBerry(berry!, left);
                     bits |= BERRY_EATEN;
                   }
@@ -2395,7 +2525,7 @@ class UsesSearch {
           if (this.oneUse) targets.set(bits, next = { dist: this.oneUse.dist, heal: this.oneUseHeal(node, run, useCase, bits, dealt, mode, landed, end) });
           else {
             const after = this.afterHitNode(node, code, run, useCase.at ?? caseIndex, useCase, bits, dealt, mode, landed, end, steps ? at + 1 : 0);
-            targets.set(bits, next = { dist: out.to(after), heal: this.hitHeal });
+            targets.set(bits, next = { dist: out.to(after, this.turnMode ? landed : undefined), heal: this.hitHeal });
           }
         }
         const healed = next.heal ? Math.min(maxHP, hp + next.heal) : hp;
@@ -2412,7 +2542,8 @@ class UsesSearch {
    */
   private afterHitNode(node: Node, code: number, run: Run, caseIndex: number, useCase: UseCase, mask: number, dealt: number, mode: Mode,
     landed: number, end: HitState, endKey: number): Node {
-    const key = (((code * 16 + caseIndex) * 64 + mask) * 4096 + dealt) * 65536 + endKey;
+    // A doubles turn's step keeps apart the hits that landed and the knocked-out target (KNOCKED is past the mask's 64).
+    const key: number | string = this.turnMode ? `${code},${caseIndex},${mask},${dealt},${endKey},${landed}` : (((code * 16 + caseIndex) * 64 + mask) * 4096 + dealt) * 65536 + endKey;
     let next = node.hits.get(key);
     if (next) { this.hitHeal = node.heals?.get(key) ?? 0; return next; }
     // The attacker's HP berry can hang on the dealt damage (recoil), so its state is made for each.
@@ -2644,8 +2775,21 @@ class UsesSearch {
     if (state.terrainTurns !== null && --state.terrainTurns === 0) { conditions = { ...conditions, terrain: "" }; state.terrainTurns = null; }
     this.itemsLost(prev, state);
     if (conditions === prev.conditions) return this.normalized(state);
-    if ([m.attacker, m.defender].some((build) => FIELD_SETTLED_ABILITIES.has(build.abilityId))) { this.stop ??= "A field change would change an ability"; this.exceeded = true; }
+    const stale = this.staleField();
+    if (stale) { this.stop ??= stale; this.exceeded = true; }
     return this.normalized({ ...state, conditions, fieldKey: this.fieldKey(conditions) });
+  }
+
+  /**
+   * Why a weather or terrain change cannot be followed, or null: the two Pokémon's abilities the battle settles from
+   * the field (FIELD_SETTLED_ABILITIES), and in a doubles turn the other two Pokémon's (UsesEnv.fieldSettled).
+   */
+  private staleField(): string | null {
+    const { m } = this;
+    const own = [m.attacker, m.defender].filter((build) => FIELD_SETTLED_ABILITIES.has(build.abilityId));
+    if (!m.turn) return own.length ? "A field change would change an ability" : null;
+    const names = [...own.map((build) => m.runtime.abilitiesById.get(build.abilityId)?.name ?? build.abilityId), ...m.fieldSettled];
+    return names.length ? `A weather or terrain change this turn would change ${names[0]}.` : null;
   }
 
   /** A field state's key: "" for the field as set, else a short id for its JSON. */
@@ -2702,7 +2846,8 @@ class UsesSearch {
    * drop, or the target's Opportunist or Mirror Herb copies the attacker's rises.
    */
   private normalized(state: State): State {
-    if (USES_REFERENCE.on) return state;
+    // A doubles turn keeps every stage: the turn's other moves read them.
+    if (USES_REFERENCE.on || this.turnMode) return state;
     for (const who of ["att", "def"] as const) {
       const side = state[who];
       if (side.itemId === "whiteherb" || (who === "att" && (this.ability(state, "def") === "opportunist" || state.def.itemId === "mirrorherb"))) continue;
@@ -2722,7 +2867,7 @@ class UsesSearch {
   private afterHit(prev: State, run: Run, useCase: UseCase, mask: number, dealt: number, mode: Mode, landed = useCase.hits.length, end?: HitState): State {
     const state = cloneState(prev);
     const { m, input } = this;
-    const { attacker, defender, runtime, helpers } = m;
+    const { attacker, runtime, helpers } = m;
     const result = run.trace.result!;
     let conditions = state.conditions;
     const field = () => conditions === prev.conditions ? (conditions = { ...conditions, attackerSide: { ...conditions.attackerSide }, defenderSide: { ...conditions.defenderSide } }) : conditions;
@@ -2828,7 +2973,7 @@ class UsesSearch {
       if (loop.targetGulping && !end.gulping) {
         if (def.speciesId === "cramorantgulping") boost(m, state, "att", { def: -1 }, true, true);
         else if (this.canStatus(state, "att", "par", true)) {
-          if (m.attItemOn && STATUS_CURES[att.itemId]?.includes("par")) att.itemId = "";
+          if (m.attItemOn && STATUS_CURES[att.itemId]?.includes("par") && !berryUnnerved(m.unnerve, "attacker", this.ability(state, "def"))) att.itemId = "";
           else { att.status = "par"; att.toxic = 0; }
         }
         def.speciesId = "cramorant";
@@ -2849,19 +2994,22 @@ class UsesSearch {
     //    Kee and Maranga Berry (Unnerve, now, stops them; Cheek Pouch heals), Pickpocket, Anger Shell.
     const secondaries = !(this.ability(state, "att") === "sheerforce" && !!engineMove.secondaries);
     const berry = HIT_ITEMS[def.itemId];
-    if (secondaries && berry?.berry && m.defItemOn && damaged && !UNNERVES.has(this.ability(state, "att")) && berry.when(type, physical, run.superEffective)) {
+    if (secondaries && berry?.berry && m.defItemOn && damaged && !this.targetUnnerved(state) && berry.when(type, physical, run.superEffective)) {
       const ripen = defAbility === "ripen" ? 2 : 1;
       boost(m, state, "def", Object.fromEntries(Object.entries(berry.stages).map(([stat, amount]) => [stat, amount! * ripen])), false, true);
       def.itemId = "";
       this.hitHeal += pouch;
     }
-    if (secondaries && this.ability(state, "def") === "pickpocket" && contact && damaged && !def.itemId && att.itemId && this.ability(state, "att") !== "stickyhold"
+    // A knocked-out target has fainted before AfterMoveSecondary (pinned Showdown hitStepMoveHitLoop runs faintMessages
+    // first): its handlers are skipped and takeItem fails on it.
+    const knocked = !!(mask & KNOCKED);
+    if (secondaries && !knocked && this.ability(state, "def") === "pickpocket" && contact && damaged && !def.itemId && att.itemId && this.ability(state, "att") !== "stickyhold"
       && takeable(m, att.itemId, this.baseSpecies(state, "att"), this.baseSpecies(state, "def"), false)) { def.itemId = att.itemId; att.itemId = ""; }
     if (mask & ANGER_SHELL) boost(m, state, "def", { atk: 1, spa: 1, spe: 1, def: -1, spd: -1 }, false, true);
 
     // 7. AfterMoveSecondarySelf (skipped likewise): Throat Spray, then Magician (an item-less attacker; not on the use that spends a Gem).
     if (secondaries && m.attItemOn && att.itemId === "throatspray" && engineMove.flags?.sound) { boost(m, state, "att", { spa: 1 }, false); att.itemId = ""; }
-    if (secondaries && this.ability(state, "att") === "magician" && damaged && def.itemId && !att.itemId && !gem && (!stickyHold || def.itemId === "stickybarb")
+    if (secondaries && !knocked && this.ability(state, "att") === "magician" && damaged && def.itemId && !att.itemId && !gem && (!stickyHold || def.itemId === "stickybarb")
       && takeable(m, def.itemId, this.baseSpecies(state, "def"), this.baseSpecies(state, "att"), false)) { att.itemId = def.itemId; def.itemId = ""; }
 
     // 8. AfterMove: White Herb restores lowered stages; after the first use, the rise a side's Opportunist or Mirror
@@ -2874,7 +3022,7 @@ class UsesSearch {
         side.itemId = "";
       }
     }
-    if (prev.first) {
+    if (prev.first && !this.turnMode) {
       for (const [who, build] of [["att", m.attacker], ["def", m.defender]] as const) {
         const copy = build.pendingCopy;
         if (!copy) continue;
@@ -2904,9 +3052,8 @@ class UsesSearch {
     state.streak = 2;
     state.charged = false;
     if (conditions === prev.conditions) return this.normalized(state);
-    const stale = (conditions.weather !== prev.conditions.weather || conditions.terrain !== prev.conditions.terrain)
-      && [attacker, defender].some((build) => FIELD_SETTLED_ABILITIES.has(build.abilityId));
-    if (stale) { this.stop ??= "A field change would change an ability"; this.exceeded = true; }
+    const stale = conditions.weather !== prev.conditions.weather || conditions.terrain !== prev.conditions.terrain ? this.staleField() : null;
+    if (stale) { this.stop ??= stale; this.exceeded = true; }
     return this.normalized({ ...state, conditions, fieldKey: this.fieldKey(conditions) });
   }
 
@@ -2922,7 +3069,7 @@ class UsesSearch {
 
   /** Whether the target's status Berry cures `status` as it lands (pinned Showdown onAfterSetStatus / onUpdate; the attacker's Unnerve stops it). */
   private curesAtOnce(prev: State, status: BattleStatus): boolean {
-    return !!STATUS_CURES[prev.def.itemId]?.includes(status) && this.m.defItemOn && !UNNERVES.has(this.ability(prev, "att"));
+    return !!STATUS_CURES[prev.def.itemId]?.includes(status) && this.m.defItemOn && !this.targetUnnerved(prev);
   }
 
   /** The target's Mummy, Lingering Aroma or Wandering Spirit replaces the attacker's ability on a contact hit (replacesAbility). */
@@ -2981,7 +3128,11 @@ class UsesSearch {
     let berry = eaten ? null : own ?? (!att.itemId && after.att.itemId ? this.attackerBerry(after) : null);
     // Each Update eats the berry at or under its line (none once eaten).
     const update = () => {
-      if (berry && hp > 0 && hp <= berry.line) { hp = eatBerry(berry, hp); eaten = own ? att.itemId : after.att.itemId; berry = null; }
+      if (berry && hp > 0 && hp <= berry.line) {
+        eaten = own ? att.itemId : after.att.itemId;
+        this.noteAttackerBerry(eaten, berry, hp);
+        hp = eatBerry(berry, hp); berry = null;
+      }
     };
     // The last hit's Update, for a berry Thief or Covet took in it.
     update();
@@ -2991,11 +3142,32 @@ class UsesSearch {
     // AfterMoveSecondary: the target's Pickpocket takes an uneaten berry.
     if (own && after.att.itemId !== att.itemId) berry = null;
     if (hp > 0) hp -= rest;
-    if (hp > 0 && m.attItemOn && after.att.itemId === "shellbell" && !this.sheerForced(after, result)) hp = Math.min(att.maxHP, hp + Math.max(1, Math.floor(healed / 8)));
+    if (hp > 0 && m.attItemOn && after.att.itemId === "shellbell" && !this.sheerForced(after, result)) {
+      const bell = Math.min(att.maxHP, hp + Math.max(1, Math.floor(healed / 8)));
+      this.noteAttackerHeal(m.runtime.itemsById.get("shellbell")?.name ?? "Shell Bell", bell - hp);
+      hp = bell;
+    }
     // The Update after the move, with what Magician took.
     if (!eaten && !att.itemId && !after.att.itemId && final.att.itemId) berry = this.attackerBerry(final);
-    if (!eaten && berry && hp > 0 && hp <= berry.line) { hp = eatBerry(berry, hp); eaten = final.att.itemId; }
+    if (!eaten && berry && hp > 0 && hp <= berry.line) { this.noteAttackerBerry(final.att.itemId, berry, hp); hp = eatBerry(berry, hp); eaten = final.att.itemId; }
     return { hp, berry: eaten };
+  }
+
+  /** On a doubles turn's step that follows the attacker: `amount` HP it regained from `source` (turnStep's attackerHeals). */
+  private noteAttackerHeal(source: string, amount: number) {
+    const heals = this.turnAttackerHeals;
+    if (!heals || amount <= 0) return;
+    const known = heals.get(source);
+    if (!known) heals.set(source, [amount, amount]);
+    else { if (amount < known[0]) known[0] = amount; if (amount > known[1]) known[1] = amount; }
+  }
+
+  /** noteAttackerHeal for the attacker's HP berry `item` eaten at `hp`: eatBerry's two parts, the berry's heal, then Cheek Pouch's. */
+  private noteAttackerBerry(item: string, berry: Berry, hp: number) {
+    if (!this.turnAttackerHeals) return;
+    const healed = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
+    this.noteAttackerHeal(this.m.runtime.itemsById.get(item)?.name ?? item, healed - hp);
+    if (berry.pouch) this.noteAttackerHeal("Cheek Pouch", Math.min(berry.max, healed + berry.pouch) - healed);
   }
 
   /**
@@ -3184,7 +3356,19 @@ class UsesSearch {
   private berryOf(state: State, replaced = false): string | null {
     const item = state.def.itemId;
     if (!item || !this.m.defItemOn || !(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item])) return null;
-    return item === "berryjuice" || !UNNERVES.has(this.ability(state, "att")) || (replaced && this.replacesAbility(state)) ? item : null;
+    return item === "berryjuice" || !this.targetUnnerved(state, replaced) ? item : null;
+  }
+
+  /**
+   * Whether the target's Berries are stopped (pinned Showdown onFoeTryEatItem): by the attacker's Unnerve or As One,
+   * unless the target's Mummy, Lingering Aroma or Wandering Spirit has replaced it (`replaced`: at an Update after a
+   * contact hit), or in a doubles turn by another Pokémon's (UsesEnv.unnerve).
+   */
+  private targetUnnerved(state: State, replaced = false): boolean {
+    const unnerve = this.m.unnerve;
+    if (unnerve?.target) return true;
+    if (unnerve?.foes === false || !UNNERVES.has(this.ability(state, "att"))) return false;
+    return !(replaced && this.replacesAbility(state));
   }
 
   /**
@@ -3234,7 +3418,7 @@ class UsesSearch {
   private attackerBerry(state: State): Berry | null {
     const item = state.att.itemId;
     if (!item || !this.m.attItemOn || item === "enigmaberry" || !(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item])) return null;
-    if (item !== "berryjuice" && UNNERVES.has(this.ability(state, "def"))) return null;
+    if (item !== "berryjuice" && berryUnnerved(this.m.unnerve, "attacker", this.ability(state, "def"))) return null;
     return this.berryFor(state, "att", item);
   }
 
@@ -3323,14 +3507,15 @@ class UsesSearch {
     const key = `${code}|${this.damageRest(node)}`;
     const shared = this.runs.get(key);
     if (shared) { node.runs.set(code, shared); return shared; }
-    if (mode === "all" && ++this.reruns > RUN_BUDGET && !USES_REFERENCE.on) { this.exceeded = true; return null; }
+    if (mode === "all" && ++this.reruns > (this.turnMode ? TURN_RUN_BUDGET : RUN_BUDGET) && !USES_REFERENCE.on) { this.exceeded = true; return null; }
     const { state } = node;
     const def = { ...state.def, hp };
     this.download ??= this.m.attacker.abilityId === "download" && !this.m.attacker.settledDownload && this.m.attAbility === "download"
       ? (["atk", "spa"] as const).find((stat) => this.result.attacker.boosts[stat] > clamp(this.m.attacker.boosts[stat] ?? 0)) ?? null : null;
     const anchorKey = USES_REFERENCE.on ? "" : this.anchorKey(state);
     // An engine-only rerun gives every hit the first hit's damage: a use whose later hits differ (midKey) is calculated whole.
-    const anchor = this.midKeyOf(node) ? undefined : this.anchors.get(anchorKey);
+    // A doubles turn shows the rows it meets, so each is a full calculation (no engine-only rerun).
+    const anchor = this.turnMode || this.midKeyOf(node) ? undefined : this.anchors.get(anchorKey);
 
     const run = anchor ? this.engineRun(state, def, anchor) : this.input.rerun({
       attacker: toBuild(this.m.attacker, state.att, this.download, state.att.slowStart !== null, state.first), defender: toBuild(this.m.defender, def, null, this.m.defender.abilityActive, state.first),
@@ -3339,6 +3524,8 @@ class UsesSearch {
     });
 
     if (run.row.kind !== "calculated" || run.row.max === null || !run.trace.result) {
+      // A doubles turn's step reports the calculation's own reason (a hit an intact Disguise takes, a needed count...).
+      if (this.turnMode) this.turnFailure ??= run.row.reason;
       if (mode === "all") this.exceeded = true;
       else this.stop ??= "A later use cannot be calculated";
       return null;
@@ -3451,6 +3638,57 @@ class UsesSearch {
     const row = { kind: "calculated", min, max, rolls, hits: anchor.row.hits, leavesOneHP: anchor.row.leavesOneHP } as MoveDamageResult;
     return { row, trace: { result, engine } };
   }
+}
+
+/** A doubles turn's reason when a step passes its budget. */
+export const TURN_TOO_MANY = "Too many cases to follow.";
+/** One Pokémon's side of a turn's step (the search's Side): HP, item, stages, ability, form, status and their counters. */
+export type TurnSide = Side;
+/** One entry of a turn's step: the attacker's HP (read when followed) and the mass on each target HP (engine HP). */
+export type TurnStepEntry = { attackerHP: number; target: Map<number, number> };
+/** One outcome of a turn's step; attacker.hp is meaningful only when the step follows the attacker's HP. */
+export type TurnStepOutcome = {
+  attacker: TurnSide; attackerFainted: boolean;
+  target: TurnSide; knocked: boolean;
+  conditions: BattleConditions; landed: number;
+  dist: Map<number, number>;
+};
+export type TurnStepResult = {
+  outcomes: TurnStepOutcome[]; heals: Map<string, [number, number]>; rows: Map<MoveDamageResult, number>;
+  /** What a followed attacker regained (its HP Berry, Shell Bell), the least and the most from each source. */
+  attackerHeals: Map<string, [number, number]>;
+} | { failed: string };
+export type { Mode };
+
+/**
+ * A doubles turn's search for one row (prepareUses with UsesEnv.turn): its steps follow the attacker's HP when
+ * needsAttackerHP, unless `follow` is false (a spread move's target steps, whose attacker HP the turn changes once).
+ */
+export function createTurnSearch(m: UsesMatchup, row: UsesRow, follow?: false): UsesSearch {
+  if (!m.turn || !row.trace.result) throw new Error("A turn search needs a turn matchup and a calculated row.");
+  const search = new UsesSearch(m, row, row.trace.result);
+  search.followAttacker(follow ?? search.needsAttackerHP());
+  return search;
+}
+
+export { uncertain, boost, toBuild as buildAt };
+
+/**
+ * The stages the engine adds on every calculation for entry effects it models (UsesSearch.entryStages), for a build
+ * whose ability in effect is `ability` (after Neutralizing Gas) and whose item works (`itemOn`): a terrain Seed used
+ * on entry (`seed`), Dauntless Shield and Intrepid Sword (Sword/Shield, or while active), Embody Aspect
+ * (Scarlet/Violet), Wind Rider in its side's Tailwind.
+ */
+export function entryStagesOf(build: BattleBuild, ability: string, itemOn: boolean, terrain: BattleConditions["terrain"], tailwind: boolean, runtime: BattleRuntime): { stages: Partial<Record<CombatStat, number>>; seed: boolean } {
+  const stages: Partial<Stages> = {};
+  const seed = SEEDS[build.itemId];
+  const used = !!seed && seed.terrain === terrain && itemOn && build.itemUsedBeforeRoom !== false;
+  if (used) stages[seed.stat] = (ability === "contrary" ? -1 : 1) * (ability === "simple" ? 2 : 1);
+  const game = runtime.profile.id;
+  const stat = game === "champions" ? undefined : ENTRY_ABILITIES[ability];
+  const on = ability === "windrider" ? tailwind : ability.startsWith("embodyaspect") ? game === "scarlet_violet" : game === "sword_shield" || build.abilityActive;
+  if (stat && on) stages[stat] = (stages[stat] ?? 0) + 1;
+  return { stages, seed: used };
 }
 
 /** The end-of-turn effects as sentences (a status's own name is lowercase, so only the first is capitalised). */

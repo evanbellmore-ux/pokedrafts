@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { Field, Select } from "@/app/components/ui";
+import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { priorityShieldNames, SHARED_FIELD_EFFECTS } from "@/app/lib/battle/model";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { unmodelledBattleStates } from "@/app/lib/battle/unmodelled-states";
@@ -20,7 +21,19 @@ const sideOptions: { key: keyof SideConditions; label: string | ((runtime: Battl
   { key: "charge", label: "Charge" },
 ];
 
+/**
+ * 2v2 sets these from the four Pokémon and their moves (doubles-types DoublesTurnInput field), so its editor leaves them out:
+ * the format, the spread modifier, the extra Fairy Aura, and each side's Helping Hand, partner abilities, Protect and Charge.
+ */
+const DOUBLES_DERIVED = new Set<string>(["fairyAura", "helpingHand", "friendGuard", "priorityShield", "protect", "charge"]);
+const DOUBLES_SIDE_KEYS = sideOptions.filter((option) => !DOUBLES_DERIVED.has(option.key)).map((option) => option.key);
+
 const checkboxClassName = "h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
+
+type Side = "attackerSide" | "defenderSide";
+
+/** One 2v2 Pokémon's Charge from an earlier turn, shown in its side's fieldset. */
+export type ChargeToggle = { slot: DoublesSlotId; side: Side; name: string; checked: boolean; onChange: (checked: boolean) => void };
 
 type Props = {
   value: Conditions;
@@ -28,7 +41,13 @@ type Props = {
   onChange: (value: Conditions) => void;
   runtime?: BattleRuntime;
   /** Each side's Pokémon, which names its side. */
-  names?: Partial<Record<"attackerSide" | "defenderSide", string>>;
+  names?: Partial<Record<Side, string>>;
+  /** "doubles": the 2v2 field, without the controls its Pokémon and moves decide (DOUBLES_DERIVED). */
+  variant?: "matchup" | "doubles";
+  /** The side fieldsets' legends ("Your side", "Opponent's side"), in place of the Pokémon names. */
+  sideLegends?: Record<Side, string>;
+  /** 2v2: one Charge checkbox per Pokémon, inside its side's fieldset. */
+  charge?: readonly ChargeToggle[];
 };
 
 /** Settings that need an ally; Singles ignores them. */
@@ -43,13 +62,24 @@ export function describeConditions(value: Conditions) {
   return `${value.gameType} · ${value.weather || "No weather"} · ${value.terrain ? `${value.terrain} terrain` : "No terrain"} · ${activeConditions} toggles on`;
 }
 
+/** The 2v2 Field conditions summary: "Doubles · No weather · No terrain · 2 toggles on", counting only the toggles its editor shows. */
+export function describeDoublesConditions(value: Conditions, charged: Readonly<Partial<Record<DoublesSlotId, boolean>>>) {
+  const activeConditions = Number(value.critical)
+    + SHARED_FIELD_EFFECTS.filter(({ key }) => !DOUBLES_DERIVED.has(key) && value[key] === true).length
+    + (["attackerSide", "defenderSide"] as const).reduce((sum, side) => sum + DOUBLES_SIDE_KEYS.filter((key) => value[side][key]).length, 0)
+    + Object.values(charged).filter(Boolean).length;
+  return `Doubles · ${value.weather || "No weather"} · ${value.terrain ? `${value.terrain} terrain` : "No terrain"} · ${activeConditions} toggles on`;
+}
+
 /** The field editor, in its collapsible Field conditions section (CalculatorClient). */
-export default function BattleConditions({ value, issues, onChange, runtime = championsRuntime, names = {} }: Props) {
+export default function BattleConditions({ value, issues, onChange, runtime = championsRuntime, names = {}, variant = "matchup", sideLegends, charge = [] }: Props) {
   const prefix = useId();
   const errorFor = (field: string) => issues.filter((issue) => issue.field === field).map((issue) => issue.message).join(" ");
   const singles = value.gameType === "Singles";
+  const doubles = variant === "doubles";
   // Named after its Pokémon; the position is shown only to tell two of the same species apart.
-  const sideLegend = (side: "attackerSide" | "defenderSide") => {
+  const sideLegend = (side: Side) => {
+    if (sideLegends) return sideLegends[side];
     const position = side === "attackerSide" ? "left" : "right";
     const name = names[side];
     if (!name) return `${side === "attackerSide" ? "Left" : "Right"} Pokémon’s side`;
@@ -59,14 +89,14 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
   return (
     <div data-calculator-field className={styles.editor}>
       <fieldset className="min-w-0">
-        <legend className="sr-only">Battle format, weather and terrain</legend>
+        <legend className="sr-only">{doubles ? "Weather and terrain" : "Battle format, weather and terrain"}</legend>
         <div className={styles.fields}>
-          <Field id={`${prefix}-game-type`} label="Battle format" error={errorFor("gameType")}>
+          {!doubles && <Field id={`${prefix}-game-type`} label="Battle format" error={errorFor("gameType")}>
             <Select value={value.gameType} onChange={(event) => onChange({ ...value, gameType: event.target.value as Conditions["gameType"] })}>
               <option value="Singles">Singles</option>
               <option value="Doubles">Doubles</option>
             </Select>
-          </Field>
+          </Field>}
           <Field id={`${prefix}-weather`} label="Weather" error={errorFor("weather")}>
             <Select value={value.weather} onChange={(event) => onChange({ ...value, weather: event.target.value as Conditions["weather"] })}>
               {!runtime.profile.weather.includes(value.weather) && <option value={value.weather} disabled>{value.weather} — unavailable in this game</option>}
@@ -89,15 +119,15 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
           <input id={`${prefix}-critical`} type="checkbox" checked={value.critical} onChange={(event) => onChange({ ...value, critical: event.target.checked })} className={checkboxClassName} />
           Critical hit
         </label>
-        <label htmlFor={`${prefix}-spread`} className="flex min-h-11 items-center gap-2 text-text">
+        {!doubles && <label htmlFor={`${prefix}-spread`} className="flex min-h-11 items-center gap-2 text-text">
           <input id={`${prefix}-spread`} type="checkbox" checked={value.multipleTargets} disabled={value.gameType === "Singles"} onChange={(event) => onChange({ ...value, multipleTargets: event.target.checked })} className={`${checkboxClassName} disabled:opacity-50`} />
           Multiple targets hit
-        </label>
+        </label>}
       </div>
       <fieldset className="min-w-0 rounded-lg border border-line px-2 pb-1">
         <legend className="px-1 text-xs font-semibold text-text">Shared field effects</legend>
         <div className={styles.toggles}>
-          {SHARED_FIELD_EFFECTS.map((effect) => {
+          {SHARED_FIELD_EFFECTS.filter((effect) => !doubles || !DOUBLES_DERIVED.has(effect.key)).map((effect) => {
             const id = `${prefix}-${effect.key}`;
             const error = errorFor(effect.key);
             const ignored = singles && doublesOnly(effect.key);
@@ -128,7 +158,7 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
           <fieldset key={side} className="min-w-0 rounded-lg border border-line px-2 pb-1">
             <legend className="px-1 text-xs font-semibold text-text">{sideLegend(side)}</legend>
             <div className="grid grid-cols-2 gap-x-2">
-              {sideOptions.map((option) => (
+              {sideOptions.filter((option) => !doubles || !DOUBLES_DERIVED.has(option.key)).map((option) => (
                 <label key={option.key} htmlFor={`${prefix}-${side}-${option.key}`} className="flex min-h-11 min-w-0 items-center gap-2 wrap-anywhere text-text">
                   <input
                     id={`${prefix}-${side}-${option.key}`}
@@ -139,6 +169,12 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
                     className={doublesOnly(option.key) ? `${checkboxClassName} disabled:opacity-50` : checkboxClassName}
                   />
                   {typeof option.label === "function" ? option.label(runtime) : option.label}
+                </label>
+              ))}
+              {charge.filter((entry) => entry.side === side).map((entry) => (
+                <label key={entry.slot} htmlFor={`${prefix}-charged-${entry.slot}`} className="flex min-h-11 min-w-0 items-center gap-2 wrap-anywhere text-text">
+                  <input id={`${prefix}-charged-${entry.slot}`} type="checkbox" data-doubles-charge={entry.slot} checked={entry.checked} onChange={(event) => entry.onChange(event.target.checked)} className={checkboxClassName} />
+                  Charge: {entry.name}
                 </label>
               ))}
             </div>

@@ -52,7 +52,8 @@ export function filterMoveResults(rows: MoveDamageResult[], query: string, filte
   });
 }
 
-function isConverted(move: ChampionsMove | undefined, row?: MoveDamageResult, context?: MoveContext, sourceBuild?: BattleBuild) {
+/** The row is for a converted move (Z-Move, Max Move, or a one-hit form of the move), whose hit count is not chosen. */
+export function isConverted(move: ChampionsMove | undefined, row?: MoveDamageResult, context?: MoveContext, sourceBuild?: BattleBuild) {
   return context?.useZ === true || sourceBuild?.mechanic === "dynamax" || sourceBuild?.mechanic === "gigantamax"
     || !!(row?.effectiveName && move && row.effectiveName !== move.name && row.hits === 1);
 }
@@ -285,9 +286,15 @@ type Props = {
   partyOptions?: readonly { speciesId: string; name: string }[];
   /** Doubles cannot work out Analytic's turn order, so it always asks. */
   gameType?: "Singles" | "Doubles";
+  /** The heading's places for the two Pokémon ("your left", "left foe" in 2v2); default: sourcePosition and the other side. */
+  positions?: { source: string; receiver: string };
+  /** 2v2: the turn decides the order, so the move settings have no turn-order choice. */
+  turnOrderFromTurn?: boolean;
+  /** The list's heading outside a replacement ("Moves" in 2v2); defaults to the 1v1 heading. */
+  heading?: string;
 };
 
-export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles" }: Props) {
+export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -333,7 +340,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
   const countMove = selectedMove && !isConverted(selectedMove, selectedResult, selectedContext, sourceBuild)
     && ["lastrespects", "ragefist", "beatup"].includes(selectedMove.id) ? selectedMove.id : null;
   // Analytic's boost or Bolt Beak's doubling depends on the turn order (turn-order.ts).
-  const turnQuestion = selectedMove && sourceBuild ? turnOrderQuestion(selectedMove, sourceBuild, isConverted(selectedMove, selectedResult, selectedContext, sourceBuild), { ...hitBattle, gameType }) : null;
+  const turnQuestion = selectedMove && sourceBuild && !turnOrderFromTurn ? turnOrderQuestion(selectedMove, sourceBuild, isConverted(selectedMove, selectedResult, selectedContext, sourceBuild), { ...hitBattle, gameType }) : null;
   const showMoveContext = !!selectedMove && (runtime.profile.zMoves || stellarActive || !!eventRule || !!countMove || !!turnQuestion);
   const party = selectedContext?.party;
   const setParty = (next: readonly string[] | undefined) => selectedMove && onContextChange(selectedMove.id, { ...selectedContext, party: next });
@@ -404,7 +411,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
       pendingFocus.current = { ownerId, moveId: candidate.move.id };
       setDetailTarget({ ownerId, moveId: candidate.move.id });
     } else if (candidate.row?.kind === "needs-context" && (candidate.move.id === "beatup" && !isConverted(candidate.move, candidate.row, contexts[candidate.move.id], sourceBuild)
-      || (sourceBuild && turnOrderQuestion(candidate.move, sourceBuild, isConverted(candidate.move, candidate.row, contexts[candidate.move.id], sourceBuild), { ...hitBattle, gameType }) && /turn order/.test(candidate.row.reason ?? "")))) {
+      || (sourceBuild && !turnOrderFromTurn && turnOrderQuestion(candidate.move, sourceBuild, isConverted(candidate.move, candidate.row, contexts[candidate.move.id], sourceBuild), { ...hitBattle, gameType }) && /turn order/.test(candidate.row.reason ?? "")))) {
       // Beat Up waits for its party and a turn-order move for its order, chosen in the move settings above the list.
       pendingFocus.current = { ownerId, moveId: candidate.move.id };
     }
@@ -463,8 +470,8 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
     }}>
       <div className={`flex flex-wrap items-start justify-between gap-3 ${replacement ? "rounded-xl border border-accent-border bg-accent-soft p-4" : ""}`}>
         <div className="min-w-0 flex-1">
-          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : "Choose a move"}</h2>
-          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({sourcePosition}) → {defenderName} ({sourcePosition === "left" ? "right" : "left"}){defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
+          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : heading ?? "Choose a move"}</h2>
+          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({positions?.source ?? sourcePosition}) → {defenderName} ({positions?.receiver ?? (sourcePosition === "left" ? "right" : "left")}){defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>
