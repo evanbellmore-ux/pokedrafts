@@ -6,7 +6,7 @@ import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
 import { allyOf, DOUBLES_SLOTS, doublesNames, foesOf, relativePosition, SLOT_POSITION, slotSide, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { mimicryState } from "@/app/lib/battle/mimicry";
-import { fieldItemChoice, roomItemChoice, validateBuild, validateConditions } from "@/app/lib/battle/model";
+import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleConditions, BattleMechanic } from "@/app/lib/battle/types";
 import type { BuildSettings } from "./BuildSettings";
 import type { CalculatorTab } from "./CalculatorTabs";
@@ -15,12 +15,12 @@ import DoublesMoves from "./DoublesMoves";
 import DoublesSettings from "./DoublesSettings";
 import DoublesSummary from "./DoublesSummary";
 import {
-  activateDoublesMoveSlot, applyDoublesIntimidate, chooseDoublesMove, dismissDoublesReplacement, doublesIntimidateResult, doublesRosterDisabled,
-  equipDoublesRequiredMove, focusDoublesMoves, getDoublesTurnInput, replaceDoublesMove, selectDoublesRoster, setDoublesCharged, setDoublesField,
-  setDoublesMovesInto, setDoublesTarget, toggleDoublesMechanic, toggleDoublesMega, updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext,
-  type CalculatorState, type DoublesMatchup,
+  activateDoublesMoveSlot, applyDoublesIntimidate, chooseDoublesMove, dismissDoublesReplacement, doublesBuildIssues, doublesFainted, doublesIntimidateResult,
+  doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove, focusDoublesMoves, getDoublesTurnInput, intimidateFoes, replaceDoublesMove,
+  selectDoublesRoster, setDoublesCharged, setDoublesField, setDoublesMovesInto, setDoublesTarget, toggleDoublesMechanic, toggleDoublesMega,
+  updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
 } from "./doubles-prep";
-import { cardReached } from "./doubles-format";
+import { cardReached, relativeName } from "./doubles-format";
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import KeepWhileHidden from "./KeepWhileHidden";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -78,9 +78,14 @@ const NONE: Omit<DoublesView, "restoreRosterFocus"> = { summary: null, settings:
 
 const perSlot = <T,>(value: (slot: DoublesSlotId) => T) => Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, value(slot)])) as Record<DoublesSlotId, T>;
 
-/** The foe straight across (data/abilities.ts imposter: foe.active[length - 1 - position]): your left faces the opponent's left. */
-function acrossFrom(slot: DoublesSlotId): DoublesSlotId {
-  return foesOf(slot)[slot.endsWith("left") ? 0 : 1];
+/**
+ * The foe straight across (data/abilities.ts imposter: foe.active[length - 1 - position]): your left faces the opponent's
+ * left. When that one has fainted, the other foe if it has not.
+ */
+function acrossFrom(slot: DoublesSlotId, fainted: Record<DoublesSlotId, boolean>): DoublesSlotId {
+  const [left, right] = foesOf(slot);
+  const [across, other] = slot.endsWith("left") ? [left, right] : [right, left];
+  return fainted[across] && !fainted[other] ? other : across;
 }
 
 function slotOf(doubles: DoublesMatchup, owner: MoveOwner): DoublesSlotId | null {
@@ -151,8 +156,8 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
   }, [cancelPending, desktopRosters, prefix, reveal, slotKeys, visitSection]);
 
   const input = useMemo(() => getDoublesTurnInput(doubles), [doubles]);
-  // Nothing is validated before 2v2 is first shown, so 1v1 does no extra work.
-  const issues = useMemo(() => perSlot((slot) => mounted ? validateBuild(doubles.slots[slot].build, runtime) : []), [mounted, doubles.slots, runtime]);
+  // Nothing is validated before 2v2 is first shown, so 1v1 does no extra work. HP 0 is a fainted Pokémon here, not an issue.
+  const issues = useMemo(() => perSlot((slot) => mounted ? doublesBuildIssues(doubles.slots[slot].build, runtime) : []), [mounted, doubles.slots, runtime]);
   const fieldIssues = useMemo(() => mounted ? validateConditions(field, runtime) : [], [mounted, field, runtime]);
   // Adjusted while rendering, like 1v1's, so a new problem is never shown collapsed.
   const tracked = mounted ? trackSectionIssues(sections, [
@@ -168,6 +173,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     setCalc(transition);
   };
   const names = doublesNames(doubles.slots, runtime);
+  const fainted = doublesFainted(doubles.slots);
   const speciesName = (slot: DoublesSlotId) => runtime.speciesById.get(doubles.slots[slot].build.speciesId)?.name ?? "Pokémon";
   // The Pokémon the 1v1 helpers read as "the other" (room and field items, Mimicry, Imposter's moves): the engine's
   // representative, else (before it loads, or when two act on the slot) the foe across. Read only by the regions that
@@ -179,7 +185,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     } catch {
       other = null;
     }
-    return doubles.slots[other ?? acrossFrom(slot)].build;
+    return doubles.slots[other ?? acrossFrom(slot, fainted)].build;
   };
 
   const invalid = DOUBLES_SLOTS.some((slot) => issues[slot].length > 0) || fieldIssues.length > 0;
@@ -268,11 +274,12 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     };
   }
 
-  /** Plus and Minus read the ally's ability in 2v2, so the editor states it instead of asking. */
+  /** Plus and Minus read the ally's ability in 2v2, so the editor states it instead of asking (a fainted ally counts for nothing). */
   function plusMinusFact(slot: DoublesSlotId): string | null | undefined {
     const ability = doubles.slots[slot].build.abilityId;
     if (ability !== "plus" && ability !== "minus") return undefined;
     const ally = allyOf(slot);
+    if (fainted[ally]) return `Ally ${names[ally]} has fainted.`;
     const allyAbility = doubles.slots[ally].build.abilityId;
     return allyAbility === "plus" || allyAbility === "minus"
       ? `Ally ${names[ally]} has ${runtime.abilitiesById.get(allyAbility)?.name ?? allyAbility}.` : "Its ally has no Plus or Minus.";
@@ -289,9 +296,16 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     );
   }
 
+  /** "Apply Intimidate to both foes", or to the one foe left; none from a fainted Pokémon or with both foes fainted. */
+  function intimidateLabel(slot: DoublesSlotId): string | null {
+    const foes = intimidateFoes(doubles, slot);
+    return foes.length === 2 ? "Apply Intimidate to both foes" : foes.length === 1 ? `Apply Intimidate to ${relativeName(names, slot, foes[0])}` : null;
+  }
+
   function renderEditor(slot: DoublesSlotId) {
     const combatant = doubles.slots[slot];
     const other = otherBuild(slot);
+    const intimidate = intimidateLabel(slot);
     return (
       <PokemonPanel
         runtime={runtime}
@@ -306,13 +320,14 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
         issues={issues[slot]}
         editorRevision={combatant.editorRevision}
         onChange={(build) => update((state) => updateDoublesBuild(state, combatant.key, build))}
-        onApplyIntimidate={() => update((state) => applyDoublesIntimidate(state, combatant.key))}
-        intimidateLabel="Apply Intimidate to both foes"
+        onApplyIntimidate={intimidate ? () => update((state) => applyDoublesIntimidate(state, combatant.key)) : undefined}
+        intimidateLabel={intimidate ?? undefined}
         intimidateResult={doublesIntimidateResult(doubles, slot)}
         abilityActivationFact={plusMinusFact(slot)}
         tracedUnsetLabel="Not chosen"
         hpInput={combatant.hpInput}
         onHPChange={(text) => update((state) => updateDoublesHP(state, combatant.key, text))}
+        allowFainted
         roster={desktopRosters ? undefined : renderRoster(slot)}
       />
     );
@@ -322,12 +337,14 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     const ready = turn?.status === "ready" ? turn : null;
     return perSlot((slot): DoublesCardView => {
       const combatant = doubles.slots[slot];
-      const action = doubles.actions[slot];
+      // The action the turn uses: none for a fainted Pokémon (its own is kept for when its HP comes back).
+      const action = doublesTurnAction(input, slot);
       return {
         id: slot, slot: combatant, action,
         rule: action.moveId ? doublesTargetRule(input, slot, action.moveId) : null,
-        hp: ready?.hp[slot] ?? null,
-        reached: cardReached(ready, slot),
+        hp: fainted[slot] ? null : ready?.hp[slot] ?? null,
+        reached: !fainted[slot] && cardReached(ready, slot),
+        fainted: fainted[slot],
         issues: issues[slot],
         mimicry: mimicryState(combatant.build, otherBuild(slot), { terrain: field.terrain, magicRoom: field.magicRoom }),
         rosterPanel: rosterPanels[combatant.role],
@@ -414,6 +431,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
           names={names}
           focus={paneSlot}
           into={into}
+          fainted={fainted}
           onFocusChange={(slot: DoublesSlotId) => update((state) => focusDoublesMoves(state, slot))}
           onIntoChange={(next: DoublesSlotId) => update((state) => setDoublesMovesInto(state, next))}
         >
@@ -450,6 +468,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             onReveal={reveal}
             hitBattle={{ magicRoom: field.magicRoom, opponentAbilityId: receiver.build.abilityId }}
             partyOptions={partyOptions}
+            faintedAtLeast={DOUBLES_SLOTS.filter((slot) => fainted[slot] && slotSide(slot) === slotSide(paneSlot)).length}
           />
         </DoublesMoves>
       </div>

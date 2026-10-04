@@ -1,10 +1,13 @@
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { defaultDoublesTarget, doublesTargetRule } from "@/app/lib/battle/doubles-targets";
-import { allyOf, DOUBLES_SLOTS, foesOf, relativePosition, SHOWDOWN_POSITION, SLOT_POSITION, slotSide, type DoublesAction, type DoublesSlotId, type DoublesTurnInput } from "@/app/lib/battle/doubles-types";
+import {
+  allyOf, DOUBLES_SLOTS, foesOf, relativePosition, SHOWDOWN_POSITION, SLOT_POSITION, slotSide,
+  type DoublesAction, type DoublesPokemonInput, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
+} from "@/app/lib/battle/doubles-types";
 import { applyIntimidateToFoes } from "@/app/lib/battle/intimidate";
-import { createBuild, createConditions, withUsualAbility } from "@/app/lib/battle/model";
+import { createBuild, createConditions, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { createMoveSlots, usualAbility, withHiddenPowerIVs } from "@/app/lib/battle/move-defaults";
-import type { BattleBuild, BattleConditions, BattleMechanic, MoveContext } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveContext } from "@/app/lib/battle/types";
 import type { CalculatorRosterState } from "./roster-data";
 import {
   activateMoveSlot, dismissMoveReplacement, equipRequiredMove, getMoveOwner, orientField, reconcileRosterSlot, replaceMatchupMove,
@@ -80,15 +83,75 @@ function freshDoubles(doubles: DoublesMatchup, runtime = doubles.runtime): Doubl
   };
 }
 
-export function getDoublesTurnInput(doubles: DoublesMatchup): DoublesTurnInput {
+/**
+ * In 2v2, current HP 0 is a Pokémon that fainted before the turn with no replacement left (pinned Showdown keeps it in
+ * side.active with fainted set, and getAllActive, adjacency and targeting skip it). 1v1 still asks for 1 or more.
+ */
+export function isFaintedBuild(build: BattleBuild): boolean {
+  return build.currentHP === 0;
+}
+
+/** The slots whose Pokémon has fainted before the turn. */
+export function doublesFainted(slots: Record<DoublesSlotId, { build: BattleBuild }>): Record<DoublesSlotId, boolean> {
+  return perSlot((slot) => isFaintedBuild(slots[slot].build));
+}
+
+/** The 2v2 build issues: validateBuild, where current HP 0 (fainted) is allowed. */
+export function doublesBuildIssues(build: BattleBuild, runtime: BattleRuntime): BuildIssue[] {
+  return validateBuild(isFaintedBuild(build) ? { ...build, currentHP: null } : build, runtime);
+}
+
+/**
+ * The target a "choose" rule gives `slot`: `chosen` while the rule offers it, else `preferred`, else the first foe it
+ * offers, else its first option. A move that can aim at a foe (`full`, the rule with every slot filled) is never
+ * turned on its ally or itself when no foe is left: it has no target unless that was chosen. Null for "auto" and
+ * "none". With all four slots filled this is defaultDoublesTarget.
+ */
+function pickTarget(rule: DoublesTargetRule, full: DoublesTargetRule, slot: DoublesSlotId, chosen: DoublesSlotId | null, preferred: DoublesSlotId | null): DoublesSlotId | null {
+  if (rule.kind !== "choose") return null;
+  if (chosen && rule.options.includes(chosen)) return chosen;
+  const foe = (options: DoublesSlotId[]) => options.find((option) => slotSide(option) !== slotSide(slot));
+  const living = foe(rule.options);
+  if (!living && full.kind === "choose" && foe(full.options)) return null;
+  if (preferred && rule.options.includes(preferred)) return preferred;
+  return living ?? rule.options[0] ?? null;
+}
+
+/**
+ * The turn's input from the four slots: a fainted slot is null (doubles-types: no Pokémon there), so it does not act,
+ * is not a target and gives its partner nothing. Each other slot keeps its action; a target that has fainted is
+ * replaced as the game does (pickTarget: the other foe), and the chosen one comes back when that Pokémon's HP does.
+ */
+export function doublesTurnInput(runtime: BattleRuntime, field: BattleConditions, pokemon: Record<DoublesSlotId, DoublesPokemonInput>): DoublesTurnInput {
+  if (!DOUBLES_SLOTS.some((slot) => isFaintedBuild(pokemon[slot].build))) return { runtime, field, pokemon };
+  const full: DoublesTurnInput = { runtime, field, pokemon };
+  const living: DoublesTurnInput = { runtime, field, pokemon: perSlot((slot) => isFaintedBuild(pokemon[slot].build) ? null : pokemon[slot]) };
   return {
-    runtime: doubles.runtime,
-    field: doubles.field,
+    runtime, field,
     pokemon: perSlot((slot) => {
-      const { build, contexts } = doubles.slots[slot];
-      return { build, contexts, charged: doubles.charged[slot], action: doubles.actions[slot] };
+      const entry = living.pokemon[slot];
+      const { moveId, target } = entry?.action ?? NO_ACTION;
+      if (!entry || moveId === null) return entry;
+      const next = pickTarget(doublesTargetRule(living, slot, moveId), doublesTargetRule(full, slot, moveId), slot, target, null);
+      return next === target ? entry : { ...entry, action: { moveId, target: next } };
     }),
   };
+}
+
+function slotInputs(doubles: DoublesMatchup): Record<DoublesSlotId, DoublesPokemonInput> {
+  return perSlot((slot) => {
+    const { build, contexts } = doubles.slots[slot];
+    return { build, contexts, charged: doubles.charged[slot], action: doubles.actions[slot] };
+  });
+}
+
+export function getDoublesTurnInput(doubles: DoublesMatchup): DoublesTurnInput {
+  return doublesTurnInput(doubles.runtime, doubles.field, slotInputs(doubles));
+}
+
+/** The slot's action in the turn (doublesTurnInput); No move for a fainted slot. */
+export function doublesTurnAction(input: DoublesTurnInput, slot: DoublesSlotId): DoublesAction {
+  return input.pokemon[slot]?.action ?? NO_ACTION;
 }
 
 function slotByKey(doubles: DoublesMatchup, key: number): DoublesSlotId | null {
@@ -104,12 +167,48 @@ function preferredTarget(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesS
   return doubles.moves.slot === slot ? doubles.moves.into : foesOf(slot)[0];
 }
 
-/** The slot's target for its move's rule: the current one while it is an option (doubles-targets defaultDoublesTarget). */
+/**
+ * The slot's target for its move's rule: the current one while it is an option (doubles-targets defaultDoublesTarget).
+ * A fainted slot keeps its action, and a target that has fainted is kept while the move could aim at it, so both come
+ * back with that Pokémon's HP; the turn aims elsewhere meanwhile (doublesTurnInput).
+ */
 function retarget(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesMatchup {
   const action = doubles.actions[slot];
-  const target = action.moveId === null ? null
-    : defaultDoublesTarget(doublesTargetRule(getDoublesTurnInput(doubles), slot, action.moveId), action.target, preferredTarget(doubles, slot));
+  const fainted = doublesFainted(doubles.slots);
+  if (fainted[slot]) return doubles;
+  let target: DoublesSlotId | null = null;
+  if (action.moveId !== null) {
+    const full: DoublesTurnInput = { runtime: doubles.runtime, field: doubles.field, pokemon: slotInputs(doubles) };
+    const fullRule = doublesTargetRule(full, slot, action.moveId);
+    const kept = action.target !== null && fainted[action.target] && fullRule.kind === "choose" && fullRule.options.includes(action.target);
+    target = !DOUBLES_SLOTS.some((entry) => fainted[entry]) ? defaultDoublesTarget(fullRule, action.target, preferredTarget(doubles, slot))
+      : kept ? action.target
+      : pickTarget(doublesTargetRule(getDoublesTurnInput(doubles), slot, action.moveId), fullRule, slot, action.target, preferredTarget(doubles, slot));
+  }
   return target === action.target ? doubles : { ...doubles, actions: { ...doubles.actions, [slot]: { ...action, target } } };
+}
+
+/** `into` while it is another slot whose Pokémon has not fainted, else the first such slot of left foe, right foe, ally; else `into`. */
+function livingInto(fainted: Record<DoublesSlotId, boolean>, slot: DoublesSlotId, into: DoublesSlotId): DoublesSlotId {
+  if (into !== slot && !fainted[into]) return into;
+  return [...foesOf(slot), allyOf(slot)].find((entry) => !fainted[entry]) ?? into;
+}
+
+/**
+ * The Moves pane leaves fainted Pokémon: a fainted pane slot gives way to the first living one (its own side first,
+ * pointed at its target as focusPane does), a fainted receiver to a living one (livingInto).
+ */
+function livingPane(doubles: DoublesMatchup): DoublesMatchup {
+  const fainted = doublesFainted(doubles.slots);
+  const { moves } = doubles;
+  if (!fainted[moves.slot] && !fainted[moves.into]) return doubles;
+  if (!fainted[moves.slot]) {
+    const into = livingInto(fainted, moves.slot, moves.into);
+    return into === moves.into ? doubles : { ...doubles, moves: { slot: moves.slot, into } };
+  }
+  const side = slotSide(moves.slot);
+  const next = [...DOUBLES_SLOTS.filter((entry) => slotSide(entry) === side), ...DOUBLES_SLOTS.filter((entry) => slotSide(entry) !== side)].find((entry) => !fainted[entry]);
+  return next ? focusPane(doubles, next) : doubles;
 }
 
 function withDoubles(state: CalculatorState, doubles: DoublesMatchup): CalculatorState {
@@ -155,7 +254,7 @@ function onSlot(state: CalculatorState, slot: DoublesSlotId, run: (pair: Prepare
   };
   return {
     matchup: next.cache === matchup.cache ? matchup : { ...matchup, cache: next.cache },
-    doubles: retarget(updated, slot),
+    doubles: livingPane(retarget(updated, slot)),
   };
 }
 
@@ -211,10 +310,15 @@ export function equipDoublesRequiredMove(state: CalculatorState, key: number, sl
   return slot ? onSlot(state, slot, (pair) => equipRequiredMove(pair, key, slotIndex)) : state;
 }
 
-/** Points the Moves pane at `slot`: into its target, else the current receiver when it is another slot, else its left foe. */
+/**
+ * Points the Moves pane at `slot`: into its target, else the current receiver when it is another slot, else its left foe;
+ * a living one (livingInto). Not at a fainted slot.
+ */
 function focusPane(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesMatchup {
-  const target = doubles.actions[slot].target;
-  const into = target !== null && target !== slot ? target : doubles.moves.into !== slot ? doubles.moves.into : foesOf(slot)[0];
+  const fainted = doublesFainted(doubles.slots);
+  if (fainted[slot]) return doubles;
+  const target = doublesTurnAction(getDoublesTurnInput(doubles), slot).target;
+  const into = livingInto(fainted, slot, target !== null && target !== slot ? target : doubles.moves.into !== slot ? doubles.moves.into : foesOf(slot)[0]);
   // Replacement mode edits the pane's Pokémon, so another slot's ends.
   const replacement = doubles.replacement && doubles.replacement.owner.key !== doubles.slots[slot].key ? null : doubles.replacement;
   if (doubles.moves.slot === slot && doubles.moves.into === into && replacement === doubles.replacement) return doubles;
@@ -270,11 +374,11 @@ export function focusDoublesMoves(state: CalculatorState, slot: DoublesSlotId): 
   return withDoubles(state, focusPane(state.doubles, slot));
 }
 
-/** The pane's receiver (never its own slot); the slot's target follows when its rule offers it. */
+/** The pane's receiver (never its own slot nor a fainted Pokémon); the slot's target follows when its rule offers it. */
 export function setDoublesMovesInto(state: CalculatorState, into: DoublesSlotId): CalculatorState {
   const { doubles } = state;
   const slot = doubles.moves.slot;
-  if (into === slot || into === doubles.moves.into) return state;
+  if (into === slot || into === doubles.moves.into || isFaintedBuild(doubles.slots[into].build)) return state;
   const action = doubles.actions[slot];
   const rule = action.moveId ? doublesTargetRule(getDoublesTurnInput(doubles), slot, action.moveId) : null;
   const follows = rule?.kind === "choose" && rule.options.includes(into) && action.target !== into;
@@ -307,17 +411,28 @@ function isIntimidateCurrent(doubles: DoublesMatchup, intimidate: NonNullable<Do
 }
 
 /**
+ * The foes the slot's Intimidate reaches, in Showdown's adjacentFoes() order (foe position 0, then 1): the living ones,
+ * and none from a fainted Pokémon (sim/pokemon.ts adjacentFoes skips fainted Pokémon).
+ */
+export function intimidateFoes(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesSlotId[] {
+  if (isFaintedBuild(doubles.slots[slot].build)) return [];
+  return [...foesOf(slot)].filter((foe) => !isFaintedBuild(doubles.slots[foe].build)).sort((a, b) => SHOWDOWN_POSITION[a].position - SHOWDOWN_POSITION[b].position);
+}
+
+/**
  * The slot's Pokémon uses Intimidate (on entry, or on Mega Evolution into an Intimidate form) against both foes, in
  * Showdown's adjacentFoes() order: foe position 0, then 1 (sim/pokemon.ts:732-735, sim/side.ts:397-403), so the
- * opponent's right (p2a) first for your Pokémon and your left (p1a) first for theirs. All three builds keep the result.
+ * opponent's right (p2a) first for your Pokémon and your left (p1a) first for theirs. Every build it reads keeps the
+ * result. A fainted foe is skipped, and a fainted Pokémon intimidates no one (intimidateFoes).
  */
 export function applyDoublesIntimidate(state: CalculatorState, key: number): CalculatorState {
   const { doubles } = state;
   const slot = slotByKey(doubles, key);
   if (!slot || doubles.slots[slot].build.abilityId !== "intimidate") return state;
+  const foes = intimidateFoes(doubles, slot);
+  if (!foes.length) return state;
   const { field } = doubles;
   const tailwind = (entry: DoublesSlotId) => (slotSide(entry) === "own" ? field.attackerSide : field.defenderSide).tailwind;
-  const foes = [...foesOf(slot)].sort((a, b) => SHOWDOWN_POSITION[a].position - SHOWDOWN_POSITION[b].position);
   const result = applyIntimidateToFoes(doubles.slots[slot].build, foes.map((foe) => ({
     build: doubles.slots[foe].build, tailwind: tailwind(foe), position: relativePosition(slot, foe).replace("-", " "),
   })), {

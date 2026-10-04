@@ -79,7 +79,8 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
   } else if (turn?.status === "ready") {
     body = (
       <div className="space-y-2">
-        <ol aria-label="Actions in turn order" className="space-y-2">
+        {/* No step: every Pokémon with a move has fainted or has no target (the facts say which). */}
+        {turn.steps.length > 0 && <ol aria-label="Actions in turn order" className="space-y-2">
           {turn.steps.map((step, index) => {
             const view = cards[step.slot];
             const move = stepMoveName(step, runtime);
@@ -107,8 +108,8 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
               </li>
             );
           })}
-        </ol>
-        {turn.facts.length > 0 && <ul aria-label="Turn facts" className="space-y-1 border-t border-line pt-2 text-xs text-muted">{turn.facts.map((fact, index) => <li key={index} className="wrap-anywhere">{fact}</li>)}</ul>}
+        </ol>}
+        {turn.facts.length > 0 && <ul aria-label="Turn facts" className={`space-y-1 text-xs text-muted ${turn.steps.length ? "border-t border-line pt-2" : ""}`}>{turn.facts.map((fact, index) => <li key={index} className="wrap-anywhere">{fact}</li>)}</ul>}
       </div>
     );
   }
