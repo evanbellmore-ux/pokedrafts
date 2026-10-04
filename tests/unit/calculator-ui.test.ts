@@ -1149,11 +1149,12 @@ describe("active matchup and selected-move summary", () => {
     expect(meterHTML(html, "defender")).toContain('aria-label="Blastoise right current HP"');
     expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
     expect(html).toContain("Blastoise (right) → Charizard (left)");
-    expect(html).toContain("Left Pokémon HP remaining:");
+    expect(html).toContain("Charizard HP remaining:");
     expect(html).toContain(`${remaining} / 153</strong>`);
     expect(html).toContain(`${damage} damage</strong>`);
     expect(html).toContain("Current HP: 100 / 153");
-    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("Pokémon HP remaining:");
     expect({ matchup, result }).toEqual(before);
   });
 
@@ -1208,7 +1209,8 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain('aria-valuenow="153"');
     expect(html).toContain('aria-valuemax="154"');
     expect(html).toContain("Click either Pokémon’s quick move, or browse all moves below.");
-    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
     for (const side of ["attacker", "defender"] as const) {
       expect(html).toContain(`aria-label="Change ${position(side)} Pokémon" aria-haspopup="dialog"`);
       expect(html).toContain(`aria-label="Edit ${position(side)} HP" aria-expanded="false"`);
@@ -1268,7 +1270,8 @@ describe("active matchup and selected-move summary", () => {
     const matchup = selectMatchupMove(createMatchup(), "flamethrower");
     const result = { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 };
     for (const html of [summaryHTML(createMatchup(), result), summaryHTML(matchup, { ...result, moveId: "surf" }), summaryHTML(matchup)]) {
-      expect(html).not.toContain("Right Pokémon HP remaining:");
+      expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
       expect(html).not.toContain("50 damage");
       expect(meterHTML(html, "defender")).toContain("right current HP");
       expect(meterHTML(html, "defender")).toContain('aria-valuenow="154"');
@@ -1281,7 +1284,8 @@ describe("active matchup and selected-move summary", () => {
       const html = summaryHTML(matchup, { ...row("flamethrower", "calculated"), min: 50, max: 50, rolls: 50 }, reason, mode);
       expect(html).toContain("Flamethrower");
       expect(html).toContain(reason);
-      expect(html).not.toContain("Right Pokémon HP remaining:");
+      expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
       expect(html).not.toContain("50 damage");
       expect(html).not.toContain("One-use KO:");
       expect(html).not.toContain(">Show move</button>");
@@ -1295,7 +1299,8 @@ describe("active matchup and selected-move summary", () => {
     const html = summaryHTML(matchup, undefined, "Fix invalid settings.");
     expect([...html.matchAll(/role="meter"/g)]).toHaveLength(1);
     expect(html).toContain("Edit HP to fix the current value");
-    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
     expect(html).not.toContain('aria-valuenow="154"');
   });
 
@@ -1307,9 +1312,10 @@ describe("active matchup and selected-move summary", () => {
     for (const kind of ["status", "needs-context", "unsupported"] as const) {
       const html = summaryHTML(matchup, row("flamethrower", kind));
       expect(html).not.toContain("0 damage");
-      expect(html).not.toContain("Right Pokémon HP remaining:");
+      expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
     }
-    expect(summaryHTML(matchup)).not.toContain("Right Pokémon HP remaining:");
+    expect(summaryHTML(matchup)).not.toContain("HP remaining: <strong");
   });
 
   it("retains raw damage and supplied KO while withholding survival-sensitive HP", () => {
@@ -1322,7 +1328,8 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain("138–164 damage");
     expect(html).toContain("One-use KO: 0%");
     expect(html).toContain("Remaining HP is withheld for Focus Sash");
-    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
   });
 
   it("keeps the selected summary independent of filtering and offers one Set hits action", () => {
@@ -1336,7 +1343,8 @@ describe("active matchup and selected-move summary", () => {
     expect(html).toContain("Bullet Seed");
     expect(html).toContain(">Set hits</button>");
     expect(html).not.toMatch(/<select\b/);
-    expect(html).not.toContain("Right Pokémon HP remaining:");
+    expect(html).not.toContain("Blastoise HP remaining:");
+    expect(html).not.toContain("HP remaining: <strong");
   });
 
   it.each([["flamethrower", "calculated", "Show move"], ["bulletseed", "needs-context", "Set hits"]] as const)("keeps %s (%s) selected when the summary forwards its reveal action out of replacement editing", (moveId, kind, label) => {

@@ -8,8 +8,9 @@ import type { BattleBuild, BattleConditions, BattleGame, StatTable } from "@/app
 
 /**
  * A Sturdy (or Focus Sash) the calculation settles on for the receiving Pokémon: copied by Trace (from
- * the other Pokémon, or chosen in Build settings) or by Imposter. The remaining-HP preview withholds on
- * the row's settled survival as it does for a selected one. Level 50, 31 IVs, Serious unless stated,
+ * the other Pokémon, or chosen in Build settings) or by Imposter. The remaining-HP preview shows the HP the
+ * row's exact first use (afterUse) leaves, and withholds on the survival effect where the row has none (an
+ * alternate case, a Focus Band). Level 50, 31 IVs, Serious unless stated,
  * Singles. Every number is from a real pinned Showdown c23d2e94 battle with that roll (audit
  * oos/sturdy-copied/cases.ts, cases2.ts and cases3.ts): the hit leaves 1 HP where the preview used to show 0.
  */
@@ -43,68 +44,76 @@ function row(game: BattleGame, moveId: string, attacker: BattleBuild, defender: 
 const modes: DamageRollMode[] = ["low", "average", "high"];
 const specsMagnezone = (game: BattleGame = "scarlet_violet") => build(game, "magnezone", { ability: "sturdy", item: "choicespecs", nature: "Modest", evs: { spa: 252 } });
 const bandAggron = (game: BattleGame) => build(game, "aggron", { ability: "sturdy", item: "choiceband", nature: "Adamant", evs: { atk: 252 } });
+/** Every roll leaves `left` HP: 1 where the survival effect holds, 0 where it does not; the damage is the HP taken off. */
+const leaves = (game: BattleGame, defender: BattleBuild, hit: ReturnType<typeof row>, left: number) => {
+  for (const mode of modes) {
+    const preview = previewRemainingHP(defender, hit, mode, runtimes[game]);
+    expect(preview).toMatchObject({ status: "ready", min: left, max: left, remaining: left });
+    if (preview.status === "ready") expect(preview.damage).toBe(preview.current - left);
+  }
+};
 const withheld = (game: BattleGame, defender: BattleBuild, hit: ReturnType<typeof row>, effect = "Sturdy") => {
   for (const mode of modes) expect(previewRemainingHP(defender, hit, mode, runtimes[game])).toEqual({ status: "unavailable", reason: `Remaining HP is withheld for ${effect}.` });
 };
 
 describe("remaining-HP preview with a Sturdy the calculation settled on", () => {
-  it("withholds for a Sturdy that Trace copied from the attacker (Showdown leaves 1 HP)", () => {
+  it("previews 1 HP for a Sturdy that Trace copied from the attacker (Showdown leaves 1 HP)", () => {
     const gardevoir = build("scarlet_violet", "gardevoir", { ability: "trace" });
     const hit = row("scarlet_violet", "flashcannon", specsMagnezone(), gardevoir);
     expect(hit).toMatchObject({ min: 204, max: 240, ohkoChance: 0, survival: "Sturdy" });
     expect(hit.assumptions).toContain("Trace: the target Gardevoir copied Sturdy from Magnezone.");
-    withheld("scarlet_violet", gardevoir, hit); // Showdown: 143/143 -> 1/143 on the lowest and highest roll
+    leaves("scarlet_violet", gardevoir, hit, 1); // Showdown: 143/143 -> 1/143 on the lowest and highest roll
     const porygon2 = build("scarlet_violet", "porygon2", { ability: "trace", level: 5 });
     const low = row("scarlet_violet", "flashcannon", { ...specsMagnezone(), itemId: "" }, porygon2);
     expect(low).toMatchObject({ min: 562, max: 663, ohkoChance: 0, survival: "Sturdy" });
-    withheld("scarlet_violet", porygon2, low); // Showdown: 25/25 -> 1/25
+    leaves("scarlet_violet", porygon2, low, 1); // Showdown: 25/25 -> 1/25
   });
 
-  it("withholds for a Sturdy chosen as Trace's copy in Build settings", () => {
+  it("previews 1 HP for a Sturdy chosen as Trace's copy in Build settings", () => {
     // Showdown (Doubles, the foe's partner Magnezone traced): 143/143 -> 1/143.
     const gardevoir = build("scarlet_violet", "gardevoir", { ability: "trace", traced: "sturdy" });
     const treads = build("scarlet_violet", "irontreads", { ability: "quarkdrive", item: "choiceband", nature: "Adamant", evs: { atk: 252 } });
     const hit = row("scarlet_violet", "ironhead", treads, gardevoir, { gameType: "Doubles" });
     expect(hit).toMatchObject({ min: 288, max: 338, ohkoChance: 0, survival: "Sturdy" });
-    withheld("scarlet_violet", gardevoir, hit);
+    leaves("scarlet_violet", gardevoir, hit, 1);
   });
 
-  it.each(["sword_shield", "ultra_sun_ultra_moon"] as const)("withholds for a Sturdy that Imposter copied (%s)", (game) => {
+  it.each(["sword_shield", "ultra_sun_ultra_moon"] as const)("previews 1 HP for a Sturdy that Imposter copied (%s)", (game) => {
     const ditto = build(game, "ditto", { ability: "imposter" });
     const hit = row(game, "earthquake", bandAggron(game), ditto);
     expect(hit).toMatchObject({ min: 204, max: 240, ohkoChance: 0, survival: "Sturdy" });
-    withheld(game, ditto, hit); // Showdown: 123/123 -> 1/123
+    leaves(game, ditto, hit, 1); // Showdown: 123/123 -> 1/123
   });
 
-  it("withholds in Champions for Trace and Imposter", () => {
+  it("previews 1 HP in Champions for Trace and Imposter", () => {
     const gardevoir = build("champions", "gardevoir", { ability: "trace" });
     const smash = row("champions", "headsmash", build("champions", "aggron", { ability: "sturdy", item: "metalcoat", nature: "Adamant", evs: { atk: 32 } }), gardevoir);
     expect(smash).toMatchObject({ min: 178, max: 210, ohkoChance: 0, survival: "Sturdy" });
-    withheld("champions", gardevoir, smash); // Showdown: 143/143 -> 1/143
+    leaves("champions", gardevoir, smash, 1); // Showdown: 143/143 -> 1/143
     const ditto = build("champions", "ditto", { ability: "imposter" });
     const quake = row("champions", "earthquake", build("champions", "aggron", { ability: "sturdy", item: "softsand", nature: "Adamant", evs: { atk: 32 } }), ditto);
     expect(quake).toMatchObject({ min: 160, max: 192, ohkoChance: 0, survival: "Sturdy" });
-    withheld("champions", ditto, quake); // Showdown: 123/123 -> 1/123
+    leaves("champions", ditto, quake, 1); // Showdown: 123/123 -> 1/123
   });
 
-  it("withholds for fixed damage, Dynamax HP, a spread hit and Fickle Beam's doubled case", () => {
+  it("previews 1 HP for fixed damage, Dynamax HP and a spread hit, and withholds for Fickle Beam's doubled case", () => {
     const porygon2 = (game: BattleGame, spec: Spec = {}) => build(game, "porygon2", { ability: "trace", level: 5, ...spec });
     const toss = row("sword_shield", "seismictoss", build("sword_shield", "aggron", { ability: "sturdy" }), porygon2("sword_shield"));
     expect(toss).toMatchObject({ min: 50, max: 50, survival: "Sturdy" });
-    withheld("sword_shield", porygon2("sword_shield"), toss); // Showdown: 25/25 -> 1/25
+    leaves("sword_shield", porygon2("sword_shield"), toss, 1); // Showdown: 25/25 -> 1/25
     const boom = row("ultra_sun_ultra_moon", "sonicboom", build("ultra_sun_ultra_moon", "magnezone", { ability: "sturdy" }), porygon2("ultra_sun_ultra_moon", { level: 3 }));
     expect(boom).toMatchObject({ min: 20, max: 20, survival: "Sturdy" });
-    withheld("ultra_sun_ultra_moon", porygon2("ultra_sun_ultra_moon", { level: 3 }), boom); // Showdown: 19/19 -> 1/19
+    leaves("ultra_sun_ultra_moon", porygon2("ultra_sun_ultra_moon", { level: 3 }), boom, 1); // Showdown: 19/19 -> 1/19
     const gambit = row("sword_shield", "finalgambit", build("sword_shield", "shuckle", { ability: "sturdy" }), porygon2("sword_shield"));
     expect(gambit).toMatchObject({ min: 95, max: 95, survival: "Sturdy" });
-    withheld("sword_shield", porygon2("sword_shield"), gambit); // Showdown: 25/25 -> 1/25
+    leaves("sword_shield", porygon2("sword_shield"), gambit, 1); // Showdown: 25/25 -> 1/25
     const giant = porygon2("sword_shield", { dynamax: true });
     const max = row("sword_shield", "flashcannon", specsMagnezone("sword_shield"), giant);
     expect(max).toMatchObject({ min: 843, max: 993, ohkoChance: 0, survival: "Sturdy" });
-    withheld("sword_shield", giant, max); // Showdown: 50/50 Dynamax HP -> 1/50
+    leaves("sword_shield", giant, max, 1); // Showdown: 50/50 Dynamax HP -> 1/50
     const spread = row("scarlet_violet", "discharge", specsMagnezone(), porygon2("scarlet_violet"), { gameType: "Doubles" });
     expect(spread).toMatchObject({ min: 631, max: 744, survival: "Sturdy" });
-    withheld("scarlet_violet", porygon2("scarlet_violet"), spread); // Showdown: 25/25 -> 1/25
+    leaves("scarlet_violet", porygon2("scarlet_violet"), spread, 1); // Showdown: 25/25 -> 1/25
     // Only the doubled Fickle Beam reaches its 121 HP: Showdown leaves 3 (plain) or 1 (doubled).
     const target = build("scarlet_violet", "porygon2", { ability: "trace", level: 37, traced: "sturdy" });
     const beam = row("scarlet_violet", "ficklebeam", build("scarlet_violet", "hydrapple", { ability: "regenerator", nature: "Modest", evs: { spa: 252 } }), target);
@@ -154,18 +163,18 @@ describe("remaining-HP preview with a Sturdy the calculation settled on", () => 
     expect(previewRemainingHP(gassed, row("scarlet_violet", "fireblast", weezing, gassed), "high", runtimes.scarlet_violet)).toMatchObject({ status: "ready", remaining: 61 }); // Showdown 61/143
   });
 
-  it("sets survival from the settled, effective target and keeps the shown selections conservative", () => {
-    // Showdown faints each of these; the row has no survival, but a selected Sturdy or Sash still withholds.
+  it("sets survival from the settled, effective target, and previews the knockouts the shown selections cannot stop", () => {
+    // Showdown faints each of these; the row has no survival, and its exact first use knocks the target out.
     const aggron = build("sword_shield", "aggron", { ability: "sturdy" });
     const breaker = row("sword_shield", "earthquake", build("sword_shield", "excadrill", { ability: "moldbreaker", item: "choiceband", nature: "Adamant", evs: { atk: 252 } }), aggron);
     expect(breaker).toMatchObject({ min: 348, max: 412, ohkoChance: 1 });
     expect(breaker.survival).toBeUndefined();
-    withheld("sword_shield", aggron, breaker);
+    leaves("sword_shield", aggron, breaker, 0);
     const sash = build("scarlet_violet", "gardevoir", { ability: "trace", item: "focussash" });
     const klutz = row("scarlet_violet", "heavyslam", build("scarlet_violet", "golurk", { ability: "klutz", nature: "Adamant", evs: { atk: 252 } }), sash);
     expect(klutz).toMatchObject({ min: 204, max: 242, ohkoChance: 1 });
     expect(klutz.survival).toBeUndefined();
-    withheld("scarlet_violet", sash, klutz, "Focus Sash");
+    leaves("scarlet_violet", sash, klutz, 0);
     // A Sturdy kept by Ability Shield through Mold Breaker, a Tera'd Ogerpon-Cornerstone and a Sash with a copied Sturdy.
     const magnezone = build("scarlet_violet", "magnezone", { ability: "sturdy", item: "abilityshield" });
     const kept = row("scarlet_violet", "earthquake", build("scarlet_violet", "excadrill", { ability: "moldbreaker", item: "choiceband", nature: "Adamant", evs: { atk: 252 } }), magnezone);
@@ -180,19 +189,19 @@ describe("remaining-HP preview with a Sturdy the calculation settled on", () => 
     // Sturdy acts first and the Sash is kept (Showdown: -ability Sturdy, 1/143, no -enditem).
     const first = row("scarlet_violet", "flashcannon", specsMagnezone(), both);
     expect(first).toMatchObject({ ohkoChance: 0, survival: "Sturdy" });
-    withheld("scarlet_violet", both, first);
+    leaves("scarlet_violet", both, first, 1);
   });
-  it("withholds for a Sturdy copied by a Terastallized Trace user, by Imposter into Ogerpon-Cornerstone, and over a Focus Band", () => {
+  it("previews 1 HP for a Sturdy copied by a Terastallized Trace user and by Imposter into Ogerpon-Cornerstone, and withholds over a Focus Band", () => {
     // Showdown: 143/143 -> 1/143 (Tera Fairy Gardevoir traced Sturdy).
     const tera = build("scarlet_violet", "gardevoir", { ability: "trace", tera: "Fairy" });
     const cannon = row("scarlet_violet", "flashcannon", specsMagnezone(), tera);
     expect(cannon).toMatchObject({ min: 204, max: 240, ohkoChance: 0, survival: "Sturdy" });
-    withheld("scarlet_violet", tera, cannon);
+    leaves("scarlet_violet", tera, cannon, 1);
     // Showdown: Ditto becomes Ogerpon-Cornerstone with Sturdy, 123/123 -> 1/123.
     const ditto = build("scarlet_violet", "ditto", { ability: "imposter" });
     const cudgel = row("scarlet_violet", "ivycudgel", build("scarlet_violet", "ogerponcornerstone", { ability: "sturdy", item: "cornerstonemask", nature: "Adamant", evs: { atk: 252 } }), ditto);
     expect(cudgel).toMatchObject({ min: 123, max: 145, ohkoChance: 0, survival: "Sturdy" });
-    withheld("scarlet_violet", ditto, cudgel);
+    leaves("scarlet_violet", ditto, cudgel, 1);
     // Sturdy acts before Focus Band (Showdown: -ability Sturdy, 1/143); the Band leaves the KO chance unestimated.
     const band = build("scarlet_violet", "gardevoir", { ability: "trace", item: "focusband" });
     const banded = row("scarlet_violet", "flashcannon", specsMagnezone(), band);
@@ -200,12 +209,12 @@ describe("remaining-HP preview with a Sturdy the calculation settled on", () => 
     withheld("scarlet_violet", band, banded);
   });
 
-  it("leaves Sturdy out of the row when the move ignores abilities, and still withholds a selected one", () => {
+  it("leaves Sturdy out of the row when the move ignores abilities, and previews the knockout", () => {
     // Showdown: Sunsteel Strike ignores Sturdy, Sudowoodo faints (145/145 -> 0).
     const sudowoodo = build("scarlet_violet", "sudowoodo", { ability: "sturdy" });
     const strike = row("scarlet_violet", "sunsteelstrike", build("scarlet_violet", "solgaleo", { ability: "fullmetalbody", item: "choiceband", nature: "Adamant", evs: { atk: 252 } }), sudowoodo);
     expect(strike).toMatchObject({ min: 260, max: 308, ohkoChance: 1 });
     expect(strike.survival).toBeUndefined();
-    withheld("scarlet_violet", sudowoodo, strike);
+    leaves("scarlet_violet", sudowoodo, strike, 0);
   });
 });

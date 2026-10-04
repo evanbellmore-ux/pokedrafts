@@ -31,12 +31,12 @@ describe("Rough Skin, Iron Barbs and Rocky Helmet stop the hits once the attacke
     for (const runtime of [championsRuntime, sv]) {
       for (const gameType of ["Singles", "Doubles"] as const) {
         const bomb = row(runtime, "populationbomb", build(runtime, "maushold", { abilityId: "technician" }), build(runtime, "garchomp", { abilityId: "roughskin" }), { gameType });
-        // Showdown: 9 x 15 at the lowest roll, 9 x 18 at the highest, Maushold at 0 HP.
-        expect(bomb, `${runtime.profile.id} ${gameType}`).toMatchObject({ kind: "calculated", hits: 9, min: 135, max: 162, attackerFaintsOnHit: { hit: 9, of: 10, by: ["Rough Skin"] }, ohkoChance: null });
+        // Showdown: 9 x 15 at the lowest roll, 9 x 18 at the highest, Maushold at 0 HP; the 183 HP target stays in.
+        expect(bomb, `${runtime.profile.id} ${gameType}`).toMatchObject({ kind: "calculated", hits: 9, min: 135, max: 162, attackerFaintsOnHit: { hit: 9, of: 10, by: ["Rough Skin"] }, ohkoChance: 0 });
         expect(bomb.rolls).toEqual(perHit(9, BOMB_HIT));
         expect(bomb.hitChances).toBeUndefined();
         expect(bomb.assumptions).toContain("Maushold faints on hit 9 of 10 (Rough Skin).");
-        expect(bomb.assumptions).toContain("No one-use KO chance for multiple hits.");
+        expect(bomb.assumptions).not.toContain("No one-use KO chance for multiple hits.");
         expect(bomb.assumptions.some((line) => /all 10 hits land|Assumes all|retaliation/.test(line))).toBe(false);
       }
     }

@@ -15,9 +15,16 @@ export function damagePercent(row: Pick<MoveDamageResult, "minPercent" | "maxPer
     : `${percent.format(row.minPercent)}–${percent.format(row.maxPercent)}% of max HP`;
 }
 
+/** The exact chance one use knocks the target out (MoveDamageResult.afterUse), or null. */
+export function afterUseKOChance(row: Pick<MoveDamageResult, "afterUse">): number | null {
+  const chance = row.afterUse?.koChance;
+  return typeof chance === "number" && Number.isFinite(chance) && chance >= 0 && chance <= 1 ? chance : null;
+}
+
+/** The row's one-use KO chance, or its first use's exact one (afterUse) when the row has none. */
 export function koChance(row: MoveDamageResult) {
-  if (row.kind !== "calculated" || row.ohkoChance === null) return "Not estimated";
-  return chanceText(row.ohkoChance);
+  const chance = row.kind !== "calculated" ? null : row.ohkoChance ?? afterUseKOChance(row);
+  return chance === null ? "Not estimated" : chanceText(chance);
 }
 
 type HitRow = Pick<MoveDamageResult, "hits" | "hitChances" | "attackerFaintsOnHit">;

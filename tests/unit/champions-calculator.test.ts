@@ -153,18 +153,20 @@ describe("Champions calculation adapter", () => {
     expect(row("nightshade", attacker, createBuild("audino"))).toMatchObject({ min: 0, max: 0 });
   });
 
-  it("shows a random hit count as its range and claims no multi-hit KO probabilities", () => {
+  it("shows a random hit count as its range with the one use's exact KO chance", () => {
     const attacker = createBuild("chesnaught");
     const defender = createBuild("blastoise");
     const two = row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits: 2 } });
     const five = row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits: 5 } });
     expect(two.kind).toBe("calculated");
     expect(five.min).toBeGreaterThan(two.max!);
-    expect(five.ohkoChance).toBeNull();
+    // Blastoise has 154 HP: 5 hits (160–190) always knock it out, 4 hits (at most 152) never do.
+    expect(five.ohkoChance).toBe(1);
     expect(five.rolls).not.toBeNull();
-    // No count chosen: 2 to 5 hits at pinned Showdown's 35/35/15/15, from 2 hits' lowest rolls to 5 hits' highest.
+    // No count chosen: 2 to 5 hits at pinned Showdown's 35/35/15/15, from 2 hits' lowest rolls to 5 hits' highest;
+    // only the 5-hit count (15%) knocks out.
     const random = row("bulletseed", attacker, defender);
-    expect(random).toMatchObject({ kind: "calculated", hits: 5, min: two.min, max: five.max, ohkoChance: null, rolls: five.rolls });
+    expect(random).toMatchObject({ kind: "calculated", hits: 5, min: two.min, max: five.max, ohkoChance: 0.15, rolls: five.rolls });
     expect(random.hitChances).toEqual([{ hits: 2, chance: 7 / 20 }, { hits: 3, chance: 7 / 20 }, { hits: 4, chance: 3 / 20 }, { hits: 5, chance: 3 / 20 }]);
     for (const hits of [0, 1, 6, 2.5, Number.NaN]) {
       expect(row("bulletseed", attacker, defender, createConditions(), { bulletseed: { hits } }).kind).toBe("needs-context");
@@ -178,7 +180,8 @@ describe("Champions calculation adapter", () => {
 
   it("uses Skill Link's fixed maximum hit count", () => {
     const attacker = createBuild("heracrossmega");
-    expect(row("bulletseed", attacker)).toMatchObject({ kind: "calculated", hits: 5, ohkoChance: null });
+    // 5 hits (170–200) always knock the 154 HP Blastoise out.
+    expect(row("bulletseed", attacker)).toMatchObject({ kind: "calculated", hits: 5, ohkoChance: 1 });
   });
 
   it("uses the named ability activation rather than disabling the whole ability", () => {

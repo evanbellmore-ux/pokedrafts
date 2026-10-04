@@ -23,7 +23,7 @@ import { MyTeamPicker, OpponentPicker, RosterPicker } from "./LeagueMatchupPicke
 import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./useMatchupCalculation";
-import { getBuildHealth, type DamageRollMode } from "./hp-preview";
+import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "./settings-sections";
 import type { CalculatorRosterState } from "./roster-data";
 import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
@@ -219,8 +219,10 @@ export default function CalculatorClient() {
   const receiverSpecies = speciesById.get(attackView.receiver.build.speciesId);
   const currentBatch = calculation && sameMoveOwner(calculation.identity.source, attackView.owner) && sameMoveOwner(calculation.identity.receiver, attackView.receiverOwner);
   const rows = !resultsBlocked && currentBatch ? calculation.result?.results ?? [] : [];
+  const settledHP = !resultsBlocked && currentBatch ? calculation.result?.settledHP : undefined;
   const selectedRow = rows.find((row) => row.moveId === attackView.moveId);
-  const currentHP = getBuildHealth(attackView.receiver.build, runtime)?.current ?? null;
+  // The rows start from the receiver's HP when the move starts (after a berry it ate before the move).
+  const currentHP = (getSettledHealth(attackView.receiver.build, settledHP?.defender, runtime) ?? getBuildHealth(attackView.receiver.build, runtime))?.current ?? null;
   const replacement = matchup.replacement;
   const league = rosters.state.leagues.find((entry) => entry.id === rosters.state.selectedLeagueId);
   const currentTeams = rosters.state.teamsStatus === "ready" && rosters.state.data?.leagueId === league?.id ? rosters.state.data : null;
@@ -556,6 +558,7 @@ export default function CalculatorClient() {
               magicRoom={matchup.field.magicRoom}
               terrain={matchup.field.terrain}
               gameType={matchup.field.gameType}
+              settledHP={settledHP}
             />
           </div>
           <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`}>

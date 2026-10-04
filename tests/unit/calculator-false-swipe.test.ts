@@ -44,10 +44,10 @@ function row(game: BattleGame, moveId: string, attacker: BattleBuild, defender: 
 }
 const modes: DamageRollMode[] = ["low", "average", "high"];
 const NOTE = (name: string) => `${name} leaves the target at least 1 HP.`;
-/** Every roll leaves exactly 1 HP; the damage shown stays the raw roll. */
-function leavesOne(game: BattleGame, defender: BattleBuild, hit: MoveDamageResult, maximum: number, damage: [number, number, number]) {
-  for (const [index, mode] of modes.entries()) {
-    expect(previewRemainingHP(defender, hit, mode, runtimes[game])).toMatchObject({ status: "ready", maximum, min: 1, max: 1, damage: damage[index], remaining: 1 });
+/** Every roll leaves exactly 1 HP from `current`; the damage shown is the HP the hit takes off, not the raw roll. */
+function leavesOne(game: BattleGame, defender: BattleBuild, hit: MoveDamageResult, maximum: number, current: number) {
+  for (const mode of modes) {
+    expect(previewRemainingHP(defender, hit, mode, runtimes[game])).toEqual({ status: "ready", current, maximum, min: 1, max: 1, damage: current - 1, remaining: 1 });
   }
 }
 const scizor = (game: BattleGame, spec: Spec = {}) => build(game, "scizor", { ability: "technician", nature: "Adamant", evs: { atk: 252 }, ...spec });
@@ -61,7 +61,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     expect(hit.survival).toBeUndefined();
     expect((hit.rolls as number[])[0]).toBe(76); // raw rolls stay before the HP cap
     expect(hit.assumptions).toContain(NOTE("False Swipe"));
-    leavesOne(game, pikachu, hit, 110, [76, 83, 90]);
+    leavesOne(game, pikachu, hit, 110, 20);
   });
 
   it("covers Hold Back in Ultra Sun/Ultra Moon and Sword/Shield", () => {
@@ -71,7 +71,7 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const pikachu = build("sword_shield", "pikachu", { hp: 20 });
     const swsh = row("sword_shield", "holdback", build("sword_shield", "snorlax", { nature: "Adamant", evs: { atk: 252 } }), pikachu);
     expect(swsh).toMatchObject({ min: 67, max: 81, ohkoChance: 0, leavesOneHP: true }); // Showdown 1/110
-    leavesOne("sword_shield", pikachu, swsh, 110, [67, 74, 81]);
+    leavesOne("sword_shield", pikachu, swsh, 110, 20);
   });
 
   it("keeps the effect through Pixilate, Scrappy, Tera and a Dynamaxed target", () => {
@@ -81,14 +81,14 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     const gengar = build("sword_shield", "gengar", { hp: 20 });
     const scrappy = row("sword_shield", "falseswipe", build("sword_shield", "pangoro", { ability: "scrappy", nature: "Adamant", evs: { atk: 252 } }), gengar);
     expect(scrappy).toMatchObject({ min: 37, max: 44, ohkoChance: 0, leavesOneHP: true }); // Showdown 1/135
-    leavesOne("sword_shield", gengar, scrappy, 135, [37, 40, 44]);
+    leavesOne("sword_shield", gengar, scrappy, 135, 20);
     const tera = row("scarlet_violet", "falseswipe", scizor("scarlet_violet", { mechanic: "tera", tera: "Normal" }), build("scarlet_violet", "pikachu", { hp: 20 }));
     expect(tera).toMatchObject({ min: 114, max: 135, ohkoChance: 0, leavesOneHP: true }); // Showdown 1/110 (Tera 60-power floor)
     // Showdown: a level 5 Snorlax at 30 base HP Dynamaxes to 60/64 and False Swipe leaves 1/64.
     const giant = build("sword_shield", "snorlax", { level: 5, hp: 30, mechanic: "dynamax" });
     const max = row("sword_shield", "falseswipe", scizor("sword_shield", { evs: { atk: 252, spe: 252 } }), giant);
     expect(max).toMatchObject({ min: 346, max: 408, ohkoChance: 0, leavesOneHP: true });
-    leavesOne("sword_shield", giant, max, 64, [346, 377, 408]);
+    leavesOne("sword_shield", giant, max, 64, 60);
   });
 
   it("previews instead of withholding for Sturdy, Focus Sash and Focus Band, which never activate", () => {
@@ -98,25 +98,29 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     expect(sturdy).toMatchObject({ min: 300, max: 354, ohkoChance: 0, leavesOneHP: true });
     expect(sturdy.survival).toBeUndefined();
     expect(sturdy.assumptions).not.toContain("Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed.");
-    leavesOne("ultra_sun_ultra_moon", pineco, sturdy, 21, [300, 327, 354]);
+    leavesOne("ultra_sun_ultra_moon", pineco, sturdy, 21, 21);
     // Showdown: Pikachu 20/20 -> 1/20 and the Focus Sash is still held.
     const sash = build("sword_shield", "pikachu", { item: "focussash", level: 5 });
     const sashed = row("sword_shield", "falseswipe", scizor("sword_shield"), sash);
     expect(sashed).toMatchObject({ min: 450, max: 530, ohkoChance: 0, leavesOneHP: true });
     expect(sashed.survival).toBeUndefined();
-    leavesOne("sword_shield", sash, sashed, 20, [450, 490, 530]);
+    leavesOne("sword_shield", sash, sashed, 20, 20);
     // Showdown: 20/110 -> 1/110 with a Focus Band; the KO chance is no longer unestimated.
     const band = build("ultra_sun_ultra_moon", "pikachu", { item: "focusband", hp: 20 });
     const banded = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), band);
     expect(banded).toMatchObject({ ohkoChance: 0, leavesOneHP: true });
     expect(banded.survival).toBeUndefined();
     expect(banded.assumptions).not.toContain("Focus Band is not modelled: no KO chance or Uses to KO.");
-    leavesOne("ultra_sun_ultra_moon", band, banded, 110, [76, 83, 90]);
+    // A Focus Band holder's row has no exact first use (afterUse), so the per-roll preview shows the raw roll.
+    expect(banded.afterUse).toBeUndefined();
+    for (const [index, mode] of modes.entries()) {
+      expect(previewRemainingHP(band, banded, mode, runtimes.ultra_sun_ultra_moon)).toEqual({ status: "ready", current: 20, maximum: 110, min: 1, max: 1, damage: [76, 83, 90][index], remaining: 1 });
+    }
     // Showdown: Ogerpon-Cornerstone 24/24 -> 1/24 (raw 117-138).
     const ogerpon = build("scarlet_violet", "ogerponcornerstone", { ability: "sturdy", item: "cornerstonemask", level: 5 });
     const cornerstone = row("scarlet_violet", "falseswipe", build("scarlet_violet", "haxorus", { ability: "unnerve", nature: "Adamant", evs: { atk: 252 } }), ogerpon);
     expect(cornerstone).toMatchObject({ min: 117, max: 138, ohkoChance: 0, leavesOneHP: true });
-    leavesOne("scarlet_violet", ogerpon, cornerstone, 24, [117, 127, 138]);
+    leavesOne("scarlet_violet", ogerpon, cornerstone, 24, 24);
   });
 
   it("gives Mold Breaker nothing to break: the target still keeps 1 HP", () => {
@@ -127,18 +131,18 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
     expect(broken).toMatchObject({ min: 218, max: 257, ohkoChance: 0, leavesOneHP: true });
     expect(broken.description).not.toContain("Mold Breaker");
     expect(broken.assumptions).not.toContain("Mold Breaker ignores the target's Sturdy.");
-    leavesOne("ultra_sun_ultra_moon", pineco, broken, 21, [218, 237, 257]);
+    leavesOne("ultra_sun_ultra_moon", pineco, broken, 21, 21);
     const sash = build("scarlet_violet", "pikachu", { item: "focussash", level: 5 });
     const sashed = row("scarlet_violet", "falseswipe", haxorus("scarlet_violet"), sash);
     expect(sashed).toMatchObject({ min: 327, max: 385, ohkoChance: 0, leavesOneHP: true });
-    leavesOne("scarlet_violet", sash, sashed, 20, [327, 356, 385]);
+    leavesOne("scarlet_violet", sash, sashed, 20, 20);
   });
 
   it("keeps a target at 1 HP there, and leaves hits that cannot reach the HP and immune targets alone", () => {
     const one = build("ultra_sun_ultra_moon", "pikachu", { hp: 1 });
     const hit = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), one);
     expect(hit).toMatchObject({ min: 76, max: 90, ohkoChance: 0 }); // Showdown: 0 damage, 1/110
-    leavesOne("ultra_sun_ultra_moon", one, hit, 110, [76, 83, 90]);
+    leavesOne("ultra_sun_ultra_moon", one, hit, 110, 1);
     const blissey = build("ultra_sun_ultra_moon", "blissey");
     const weak = row("ultra_sun_ultra_moon", "falseswipe", scizor("ultra_sun_ultra_moon"), blissey);
     expect(weak).toMatchObject({ min: 151, max: 178, ohkoChance: 0, leavesOneHP: true });
@@ -192,6 +196,6 @@ describe("False Swipe and Hold Back leave the target 1 HP", () => {
       onRollModeChange: vi.fn(), onActivateMove: vi.fn(), onToggleMega: vi.fn(), runtime: usum,
     })).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
     expect(html).toContain("76–90 damage range · One-use KO: 0% (all rolls)");
-    expect(html).toContain("Right Pokémon HP remaining: 1 / 110");
+    expect(html).toContain("Pikachu HP remaining: 1 / 110");
   });
 });

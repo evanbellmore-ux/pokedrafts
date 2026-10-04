@@ -149,7 +149,11 @@ describe("review follow-ups for Paradox holders, Tera forms and entry boosts", (
   it("previews remaining HP for a Tera'd Ogerpon-Cornerstone, whose Embody Aspect replaces Sturdy", () => {
     const garchomp = build(sv, "garchomp", { evs: { atk: 252 } });
     const plain = build(sv, "ogerponcornerstone", { item: "cornerstonemask" });
-    expect(previewRemainingHP(plain, row(sv, "earthquake", garchomp, plain), "average", sv)).toMatchObject({ status: "unavailable" });
+    // 100–118 cannot knock out its 155 HP, so its Sturdy never acts; the exact first use previews it.
+    const plainHit = row(sv, "earthquake", garchomp, plain);
+    expect(range(plainHit)).toBe("100-118");
+    expect(previewRemainingHP(plain, plainHit, "average", sv)).toMatchObject({ status: "ready", min: 37, max: 55, remaining: 46 });
+    expect(previewRemainingHP(plain, { ...plainHit, afterUse: undefined }, "average", sv)).toMatchObject({ status: "unavailable" });
     const tera = build(sv, "ogerponcornerstone", { item: "cornerstonemask", tera: "Rock" });
     const hit = row(sv, "earthquake", garchomp, tera);
     expect(range(hit)).toBe("134-158");

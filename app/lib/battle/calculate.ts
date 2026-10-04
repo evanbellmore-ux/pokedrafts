@@ -8,7 +8,7 @@ import { getBerryResistType, getNaturalGift } from "@smogon/calc/dist/items";
 import { getMaxMoveName, getZMoveName } from "@smogon/calc/dist/move";
 import { championsRuntime, type BattleRuntime } from "./runtime";
 import "./engine-corrections.cjs";
-import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
+import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
 import { getBuildGender, isMaxActive, specialTeraForm } from "./mechanics";
 import { resolveBattleMove, STELLAR_FIRST_USE_REASON, withResolvedPriority } from "./resolve-move";
 import { EVENT_DOUBLING_MOVES, eventDoublingAssumption, isEventDoubled } from "./event-moves";
@@ -24,8 +24,9 @@ import {
 } from "./hit-loop";
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
-import { ENTRY_ABILITIES, estimateUsesToKO, prepareUses, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
+import { ENTRY_ABILITIES, estimateUses, prepareUses, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
 import type {
+  AfterUse,
   BattleBuild,
   BattleConditions,
   BuildIssue,
@@ -34,12 +35,16 @@ import type {
   ChampionsSpecies,
   MoveContext,
   MoveDamageResult,
+  SettledHP,
   SideConditions,
+  UsesToKO,
 } from "./types";
 
 export type MatchupResult = {
   issues: { attacker: BuildIssue[]; defender: BuildIssue[]; field: BuildIssue[] };
   results: MoveDamageResult[];
+  /** Each side's HP when the move starts, when an item changed it before the move (settleItems). */
+  settledHP?: { attacker?: SettledHP; defender?: SettledHP };
 };
 
 /** These need information that a two-build snapshot does not contain. */
@@ -305,6 +310,11 @@ const STATUS_BERRIES: Record<string, readonly string[]> = {
   pechaberry: ["psn", "tox"], aspearberry: ["frz"], chestoberry: ["slp"],
 };
 const STATUS_NAMES: Record<string, string> = { brn: "burn", par: "paralysis", psn: "poison", tox: "bad poison", slp: "sleep", frz: "freeze" };
+/**
+ * Held items, besides the stat berries (PINCH_STAT_BERRIES), that a Pokémon at or under their line uses before
+ * either Pokémon moves (settleItems): the HP berries and Berry Juice but Enigma Berry, Lansat, Starf and Custap.
+ */
+const PRE_MOVE_ITEMS = new Set([...[...HEALING_BERRIES].filter((item) => item !== "enigmaberry"), "lansatberry", "starfberry", "custapberry"]);
 const SEED_TERRAINS: Record<string, BattleConditions["terrain"]> = { grassyseed: "Grassy", electricseed: "Electric", psychicseed: "Psychic", mistyseed: "Misty" };
 const CASTFORM_FORMS: Record<string, string> = { Sun: "castformsunny", "Harsh Sunshine": "castformsunny", Rain: "castformrainy", "Heavy Rain": "castformrainy", Snow: "castformsnowy", Hail: "castformsnowy" };
 
@@ -560,18 +570,43 @@ function settleEntry(
   return { ...builds, lines };
 }
 
+/** What settleItems leaves: the settled build, its lines, the HP an eaten item changed, and a Starf Berry's pending rise. */
+type SettledItems = {
+  build: BattleBuild; lines: string[]; settledHP?: SettledHP;
+  /** A Starf Berry eaten before the move: +`amount` to one of `stats` at random (each equally likely), not yet in the build's stages. */
+  starf?: { stats: CombatStat[]; amount: number };
+  /** The HP, pinch, Lansat, Starf or Custap Berry eaten before the move (not Berry Juice, which is not a Berry). */
+  eaten?: string;
+  /** The stages a pinch stat Berry eaten before the move raised (after Contrary, Simple and the +6 cap), for a foe's Mirror Herb or Opportunist. */
+  raised?: Partial<Record<CombatStat, number>>;
+  /** A Figy-family Berry it eats before the move confused it. */
+  confused?: true;
+};
+
+/** The Figy family (pinned Showdown data/items.ts onEat): the stat whose lowering Nature makes the holder confused. */
+const DISLIKED_BERRIES: Record<string, CombatStat> = { figyberry: "atk", wikiberry: "spa", magoberry: "spe", aguavberry: "spd", iapapaberry: "def" };
+
 /**
  * Held-item states the battle has already settled before this attack, from the Pokémon's settled
- * abilities: a matching status berry (Lum, Rawst, Cheri, Pecha, Aspear, Chesto) cures its holder at
- * once and is used up, unless Magic Room, an active Klutz or the other battler's Unnerve / As One
- * stops it; for the attacker (`attacking`), an HP or pinch berry at or under its line is eaten; a
- * terrain Seed on its terrain is used up on entry. Unburden then activates, and it stays off while an
- * item is still held.
+ * abilities, as pinned Showdown runs a turn from the state set at its start (both sides alike): its Custap
+ * Berry at its line is eaten when its move is chosen, then at the turn's first Update a matching status
+ * berry (Lum, Rawst, Cheri, Pecha, Aspear, Chesto) cures its holder and an HP or pinch berry at or under its
+ * line is eaten, unless Magic Room, an active Klutz or the other battler's Unnerve / As One stops it (Cheek
+ * Pouch heals a third as any Berry is eaten); a terrain Seed on its terrain is used up on entry. Unburden then
+ * activates, and it stays off while an item is still held.
  */
-function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string, attacking = false): { build: BattleBuild; lines: string[] } {
+function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string): SettledItems {
   const lines: string[] = [];
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   let settled = build;
+  let settledHP: SettledHP | undefined;
+  let starf: SettledItems["starf"];
+  let eaten: string | undefined;
+  let raised: SettledItems["raised"];
+  let confused = false;
+  /** The item used at this turn's first Update (a status, HP or pinch Berry, Berry Juice), and the Speed stages its Salac Berry changed, for generation 7's turn order. */
+  let usedAtUpdate: string | null = null;
+  let berrySpe = 0;
   const klutz = klutzActive(build, other);
   const itemOn = !conditions.magicRoom && !klutz;
   // A Booster Energy or Seed used before Magic Room was set stays used (the panel's choice, unset
@@ -580,12 +615,21 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   // The holder's own Neutralizing Gas suppresses Unnerve, but not As One or an Ability Shield holder's.
   const unnerved = ["unnerve", "asoneglastrier", "asonespectrier"].includes(other.abilityId) && !gassedAbility(other, build, conditions);
   const abilityOn = !gassedAbility(build, other, conditions);
+  // A transformed Imposter user keeps its own maximum HP (pinned Showdown transformInto copies every stat but HP).
+  const maxHP = getBuildStats(build.transformedFrom ? { ...build, speciesId: build.transformedFrom.speciesId } : build, runtime)?.hp ?? 0;
+  // Cheek Pouch (data/abilities.ts onEatItem) heals a third of the base maximum HP as any Berry is eaten, Berry Juice
+  // aside (it is used, not eaten); battle.heal rounds down, at least 1, and caps at the maximum.
+  const pouch = abilityOn && build.abilityId === "cheekpouch" ? Math.max(1, Math.floor(maxHP / 3)) : 0;
   const berry = STATUS_BERRIES[build.itemId];
   let usedUp = false;
   if (berry && build.status && berry.includes(build.status) && itemOn && !unnerved) {
-    lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} cured its ${STATUS_NAMES[build.status] ?? build.status} (used up).`);
-    settled = { ...settled, status: "", itemId: "" };
+    const healed = pouch && build.currentHP !== null && maxHP ? Math.min(maxHP, build.currentHP + pouch) : null;
+    const heal = healed !== null && healed !== build.currentHP ? `, then Cheek Pouch: ${healed} HP` : "";
+    lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} cured its ${STATUS_NAMES[build.status] ?? build.status} (used up)${heal}.`);
+    settled = { ...settled, status: "", itemId: "", ...(heal ? { currentHP: healed } : {}) };
+    if (heal) settledHP = { hp: healed!, entered: build.currentHP!, maxHP, item: itemName(build.itemId) };
     usedUp = true;
+    usedAtUpdate = build.itemId;
   }
   const onSeedTerrain = !!SEED_TERRAINS[build.itemId] && SEED_TERRAINS[build.itemId] === conditions.terrain;
   // An item Magic Room held back stays held after the room ends (Seeds and Room Service react only to
@@ -595,27 +639,55 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   const contrary = build.abilityId === "contrary" && abilityOn;
   // Item stat changes go through Showdown's boost(): Contrary inverts them and Simple doubles them.
   const boostScale = (contrary ? -1 : 1) * (build.abilityId === "simple" && abilityOn ? 2 : 1);
-  const stages = (amount: number, stat: (typeof COMBAT_STATS)[number]) =>
-    `${amount > 0 ? "+" : ""}${amount} ${STAGE_NAMES[stat]}${contrary ? " (Contrary)" : boostScale === 2 ? " (Simple)" : ""}`;
-  // The attacker's HP or pinch berry at or under its line was eaten at the Update before it moves (pinned
-  // Showdown runs it after every action; data/items.ts onUpdate): Sitrus, Oran and Berry Juice at half HP or
-  // less, the Figy family and the stat berries at a quarter (half with Gluttony); Ripen doubles the heal and
-  // the rise, Cheek Pouch heals a third more, and boost() applies Contrary and Simple. Unnerve and As One stop
-  // a Berry, not Berry Juice (used, not eaten); Enigma Berry acts only when its holder is hit. In the HP as
-  // entered (before any Dynamax), as the berry was eaten when the HP fell there.
-  const maxHP = getBuildStats(build, runtime)?.hp ?? 0;
-  const pinchStat = PINCH_STAT_BERRIES[settled.itemId];
-  if (attacking && !usedUp && itemOn && build.currentHP !== null && maxHP && settled.itemId !== "enigmaberry"
-    && (HEALING_BERRIES.has(settled.itemId) || pinchStat) && (settled.itemId === "berryjuice" || !unnerved)) {
+  const boostNote = contrary ? " (Contrary)" : boostScale === 2 ? " (Simple)" : "";
+  const stages = (amount: number, stat: (typeof COMBAT_STATS)[number]) => `${amount > 0 ? "+" : ""}${amount} ${STAGE_NAMES[stat]}${boostNote}`;
+  // An HP or pinch berry at or under its line was eaten at the turn's first Update, before either Pokémon moves
+  // (pinned Showdown sim/battle.ts runAction ends the beforeTurn action with eachEvent('Update'); data/items.ts
+  // onUpdate): Sitrus, Oran and Berry Juice at half HP or less, the Figy family, the stat berries, Lansat and Starf
+  // at a quarter (half with Gluttony); Ripen doubles the heal and the rise (onTryHeal, onChangeBoost), Cheek Pouch
+  // heals a third more, and boost() applies Contrary and Simple. A Custap Berry at that line was eaten before that,
+  // when its move was chosen (sim/battle-queue.ts resolveAction runs FractionalPriority with 0, so for any move).
+  // Unnerve and As One stop a Berry, not Berry Juice (used, not eaten); Enigma Berry acts only when its holder is
+  // hit, and a Micle Berry only at the end of a turn (onResidual). In the HP as entered, before any Dynamax (the
+  // runDynamax action comes after the beforeTurn one).
+  const held = settled.itemId;
+  const pinchStat = PINCH_STAT_BERRIES[held];
+  // Protosynthesis and Quark Drive picked their stat when they activated, before this Update's berry (below).
+  const stagesBeforeBerry = settled.boosts;
+  if (!usedUp && itemOn && build.currentHP !== null && maxHP && (PRE_MOVE_ITEMS.has(held) || pinchStat) && (held === "berryjuice" || !unnerved)) {
     const ability = abilityOn ? build.abilityId : "";
-    const berry = berryArithmetic(settled.itemId, { maxHP, baseMaxHP: maxHP, ability }, runtime.profile.generation);
+    const berry = berryArithmetic(held, { maxHP, baseMaxHP: maxHP, ability }, runtime.profile.generation);
     if (build.currentHP <= berry.line) {
       const hp = eatBerry(berry, build.currentHP);
-      const rise = pinchStat ? boostScale * (ability === "ripen" ? 2 : 1) : 0;
-      const changes = [hp !== build.currentHP ? `${hp} HP` : "", rise ? stages(rise, pinchStat) : ""].filter(Boolean);
-      lines.push(`${cap(who)} ${name}'s ${itemName(settled.itemId)} was eaten at ${build.currentHP} HP${changes.length ? `: ${changes.join(", ")}` : ""}.`);
-      settled = { ...settled, itemId: "", currentHP: hp, ...(rise ? { boosts: { ...settled.boosts, [pinchStat]: clampStage((settled.boosts[pinchStat] ?? 0) + rise) } } : {}) };
+      const amount = (pinchStat ? 1 : held === "starfberry" ? 2 : 0) * boostScale * (ability === "ripen" ? 2 : 1);
+      // Starf Berry (onEat) raises one stat at random, of those below +6 (accuracy and evasion aside).
+      const open = held === "starfberry" ? COMBAT_STATS.filter((stat) => (settled.boosts[stat] ?? 0) < 6) : [];
+      const effect = pinchStat ? stages(amount, pinchStat)
+        : open.length ? `${amount > 0 ? "+" : ""}${amount} to ${open.length === COMBAT_STATS.length ? "a random stat" : `one of ${orList(open.map((stat) => STAGE_NAMES[stat]))} at random`}${boostNote}`
+          : held === "lansatberry" ? "+2 critical-hit ratio" : "";
+      // A Figy-family Berry (onEat) confuses a holder whose Nature lowers its stat, unless Own Tempo
+      // (data/abilities.ts owntempo onTryAddVolatile) or Misty Terrain under a grounded holder (data/moves.ts
+      // mistyterrain onTryAddVolatile) stops it.
+      const disliked = DISLIKED_BERRIES[held];
+      confused = !!disliked && NATURES.find((nature) => nature.name === build.nature)?.minus === disliked && !(abilityOn && build.abilityId === "owntempo")
+        && !(conditions.terrain === "Misty" && isGrounded(ignoringItem(makePokemon(settled, runtime), settled, other, conditions), makeField(conditions)));
+      const changes = [hp !== build.currentHP ? `${hp} HP` : "", effect, confused ? "confused" : ""].filter(Boolean);
+      lines.push(`${cap(who)} ${name}'s ${itemName(held)} was ${held === "berryjuice" ? "used" : "eaten"} at ${build.currentHP} HP${changes.length ? `: ${changes.join(", ")}` : ""}.`);
+      settled = {
+        ...settled, itemId: "", currentHP: hp, ...(pinchStat ? { boosts: { ...settled.boosts, [pinchStat]: clampStage((settled.boosts[pinchStat] ?? 0) + amount) } } : {}),
+        ...(held === "custapberry" ? { settledCustap: true as const } : {}),
+        ...(held === "lansatberry" ? { settledFocusEnergy: true as const } : {}),
+      };
+      // boost() passes the stages it actually raised to the foe's onFoeAfterBoost (Mirror Herb, Opportunist).
+      const rise = pinchStat ? (settled.boosts[pinchStat] ?? 0) - (stagesBeforeBerry[pinchStat] ?? 0) : 0;
+      if (rise > 0) raised = { [pinchStat]: rise };
+      if (pinchStat === "spe") berrySpe = rise;
+      if (open.length) starf = { stats: open, amount };
+      if (held !== "berryjuice") eaten = held;
+      if (hp !== build.currentHP) settledHP = { hp, entered: build.currentHP, maxHP, item: itemName(held) };
       usedUp = true;
+      // A Custap Berry is eaten as the move is chosen, before the turn order is set.
+      if (held !== "custapberry") usedAtUpdate = held;
     }
   }
   // An item Magic Room kept from acting: still unused under the room, and still held after it.
@@ -682,9 +754,10 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
         : `${cap(who)} ${name}'s Booster Energy is still held (assumes ${fieldName} has been up since it entered).`);
     }
     if (!burned && (fieldOn || booster)) {
-      const spedDown = { ...settled, boosts: { ...settled.boosts, spe: clampStage((settled.boosts.spe ?? 0) - boostScale) } };
+      const activated = { ...settled, boosts: stagesBeforeBerry };
+      const spedDown = { ...activated, boosts: { ...activated.boosts, spe: clampStage((activated.boosts.spe ?? 0) - boostScale) } };
       // A Seed or Room Service used first is counted in the pick; one used after the field activated it is not.
-      const pick = (first: boolean) => paradoxStat(first && roomServiceUsed ? spedDown : settled, other, conditions, runtime, !first);
+      const pick = (first: boolean) => paradoxStat(first && roomServiceUsed ? spedDown : activated, other, conditions, runtime, !first);
       const stat = pick(booster || itemFirst);
       const otherOrder = !booster && (seedUsed || roomServiceUsed) ? pick(!itemFirst) : stat;
       settled = { ...settled, settledBoostedStat: stat, ...(booster ? { itemId: "" } : {}) };
@@ -719,7 +792,20 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   if (roomServiceUsed) {
     settled = { ...settled, itemId: "", boosts: { ...settled.boosts, spe: clampStage((settled.boosts.spe ?? 0) - boostScale) } };
   }
-  return { build: settled, lines };
+  // Generation 7 keeps the order the turn's actions were sorted in before its first Update (pinned Showdown
+  // sim/battle.ts runAction sorts the queue again after an action only from generation 8): the Speed stage and
+  // Unburden from before the item used there (a Seed or Room Service used on entry had activated it).
+  if (usedAtUpdate && runtime.profile.generation === 7) {
+    const unburden = build.abilityId === "unburden" && abilityOn;
+    const unburdenBefore = unburden && (seedUsed || roomServiceUsed);
+    if (berrySpe !== 0 || (unburden && settled.abilityActive && !unburdenBefore)) {
+      settled = { ...settled, firstTurnSpeed: { spe: (settled.boosts.spe ?? 0) - berrySpe, unburden: unburdenBefore, item: itemName(usedAtUpdate) } };
+    }
+  }
+  return {
+    build: settled, lines, ...(settledHP ? { settledHP } : {}), ...(starf ? { starf } : {}), ...(eaten ? { eaten } : {}),
+    ...(raised ? { raised } : {}), ...(confused ? { confused: true as const } : {}),
+  };
 }
 
 const PARADOX_FIELDS: Record<string, "sun" | "terrain"> = { protosynthesis: "sun", quarkdrive: "terrain" };
@@ -985,13 +1071,14 @@ function turnOrderAgainstTarget(probe: Result, priority: number, attackerBuild: 
   if (priority !== 0) return { order: priority > 0 ? "first" : "last", reason: `${priority > 0 ? "+" : ""}${priority} priority`, bySpeed: false, notes };
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   // Fractional priority: Lagging Tail, Full Incense and Stall make the holder move last in its
-  // bracket; an eaten Custap Berry (at 1/4 HP, or 1/2 with Gluttony) makes it move first.
+  // bracket; an eaten Custap Berry (at 1/4 HP, or 1/2 with Gluttony) makes it move first. settleItems
+  // eats one held at its line before the move (settledCustap).
   const fraction = (build: BattleBuild, other: BattleBuild, pokemon: Pokemon, who: string) => {
     const itemOn = !conditions.magicRoom && !(build.abilityId === "klutz" && other.abilityId !== "neutralizinggas");
     const abilityOn = !(other.abilityId === "neutralizinggas" && !shieldsAbility(build, conditions));
     const unnerved = ["unnerve", "asoneglastrier", "asonespectrier"].includes(other.abilityId) && !gassedAbility(other, build, conditions);
     const hp = pokemon.curHP(), max = pokemon.maxHP();
-    if (itemOn && build.itemId === "custapberry" && !unnerved && (hp <= max / 4 || (hp <= max / 2 && abilityOn && build.abilityId === "gluttony"))) {
+    if (build.settledCustap || (itemOn && build.itemId === "custapberry" && !unnerved && (hp <= max / 4 || (hp <= max / 2 && abilityOn && build.abilityId === "gluttony")))) {
       return { value: 0.1, why: `${who} Custap Berry` };
     }
     // Quick Claw and Quick Draw run after the constant -0.1 handlers and can still return 0.1.
@@ -1006,13 +1093,22 @@ function turnOrderAgainstTarget(probe: Result, priority: number, attackerBuild: 
   if (own.value !== theirs.value) {
     return { order: own.value > theirs.value ? "first" : "last", reason: [own.why, theirs.why].filter(Boolean).join(" and "), bySpeed: false, notes };
   }
-  const speed = (pokemon: Pokemon, side: Result["field"]["attackerSide"]) => {
-    if (!pokemon.isDynamaxed || !pokemon.hasItem("Choice Scarf")) return pokemon.stats.spe;
-    const scarfless = pokemon.clone();
-    scarfless.item = undefined;
-    return getFinalSpeed(probe.gen, scarfless, probe.field, side);
+  // Generation 7 orders the turn from the Speed before the item used at its first Update (settleItems firstTurnSpeed).
+  const speed = (pokemon: Pokemon, build: BattleBuild, side: Result["field"]["attackerSide"], who: string) => {
+    const before = build.firstTurnSpeed;
+    if (!before && (!pokemon.isDynamaxed || !pokemon.hasItem("Choice Scarf"))) return pokemon.stats.spe;
+    const copy = pokemon.clone();
+    if (pokemon.isDynamaxed && pokemon.hasItem("Choice Scarf")) copy.item = undefined;
+    if (before) {
+      copy.boosts.spe = before.spe;
+      if (copy.hasAbility("Unburden")) copy.abilityOn = before.unburden;
+      const set = getFinalSpeed(probe.gen, copy, probe.field, side);
+      if (set !== getFinalSpeed(probe.gen, pokemon, probe.field, side)) notes.push(`The turn order was set before ${who} ${before.item} was used (generation 7).`);
+      return set;
+    }
+    return getFinalSpeed(probe.gen, copy, probe.field, side);
   };
-  const mine = speed(probe.attacker, probe.field.attackerSide), target = speed(probe.defender, probe.field.defenderSide);
+  const mine = speed(probe.attacker, attackerBuild, probe.field.attackerSide, "the attacker's"), target = speed(probe.defender, defenderBuild, probe.field.defenderSide, "the target's");
   if (mine === target) return { order: "tie", reason: `Speed tie at ${mine}`, bySpeed: true, notes };
   const first = conditions.trickRoom ? mine < target : mine > target;
   return {
@@ -1061,6 +1157,38 @@ const ENGINE_BYPASSED_ABILITIES = new Set([
   "Tangled Feet", "Telepathy", "Tera Shell", "Thermal Exchange", "Thick Fat", "Unaware", "Vital Spirit", "Volt Absorb", "Water Absorb",
   "Water Bubble", "Water Veil", "Well-Baked Body", "White Smoke", "Wind Rider", "Wonder Guard", "Wonder Skin",
 ]);
+
+/** Moves with a critical-hit ratio above the default 1 (pinned Showdown data/moves.ts critRatio). */
+const CRIT_RATIO_MOVES: Record<string, number> = Object.fromEntries([
+  ...["aeroblast", "aircutter", "aquacutter", "attackorder", "blazekick", "crabhammer", "crosschop", "crosspoison", "drillrun", "esperwing", "ivycudgel",
+    "karatechop", "leafblade", "nightslash", "poisontail", "psychocut", "razorleaf", "razorwind", "shadowclaw", "skyattack", "slash", "snipeshot",
+    "spacialrend", "stoneedge", "triplearrows"].map((id) => [id, 2]),
+  ["10000000voltthunderbolt", 3],
+]);
+
+/**
+ * The attacker's critical-hit ratio, when it makes every hit critical (pinned Showdown battle-actions.ts getDamage:
+ * the used move's critRatio, then ModifyCritRatio: a Lansat Berry's focusenergy +2, Super Luck +1, Scope Lens and
+ * Razor Claw +1, Leek +2 for Farfetch'd and Sirfetch'd and Lucky Punch +2 for Chansey by their own species;
+ * from generation 6 a ratio of 4 or more, capped at 4, crits at critMult[4] = 1): the stages over the default 1
+ * and what gave them, or null. A Z-Move or Max Move has its own ratio (only 10,000,000 Volt Thunderbolt's is raised).
+ */
+function certainCrit(moveId: string, build: BattleBuild, other: BattleBuild, context: MoveContext | undefined, conditions: BattleConditions, runtime: BattleRuntime): { stages: number; sources: string[] } | null {
+  if (runtime.profile.generation < 6) return null;
+  const sources: string[] = [];
+  let ratio = 1;
+  const used = context?.useZ ? (build.itemId === "pikashuniumz" && moveId === "thunderbolt" ? "10000000voltthunderbolt" : "") : isMaxActive(build) ? "" : moveId;
+  const raised = CRIT_RATIO_MOVES[used];
+  if (raised) { ratio = raised; sources.push(runtime.movesById.get(used)?.name ?? (used === "10000000voltthunderbolt" ? "10,000,000 Volt Thunderbolt" : used)); }
+  if (build.settledFocusEnergy) { ratio += 2; sources.push("the Lansat Berry"); }
+  if (build.abilityId === "superluck" && !gassedAbility(build, other, conditions)) { ratio += 1; sources.push("Super Luck"); }
+  const own = runtime.speciesById.get(build.transformedFrom?.speciesId ?? build.speciesId)?.baseSpecies;
+  const item = !conditions.magicRoom && !klutzActive(build, other) ? build.itemId : "";
+  const itemBoost = item === "scopelens" || item === "razorclaw" ? 1 : item === "leek" && (own === "farfetchd" || own === "sirfetchd") ? 2
+    : item === "luckypunch" && own === "chansey" ? 2 : 0;
+  if (itemBoost) { ratio += itemBoost; sources.push(runtime.itemsById.get(item)?.name ?? item); }
+  return ratio >= 4 ? { stages: ratio - 1, sources } : null;
+}
 
 /** Moves with pinned Showdown's ignoreAbility (data/moves.ts): they bypass breakable abilities. */
 const IGNORE_ABILITY_MOVES = new Set([
@@ -1365,6 +1493,9 @@ function calculateMove(
   settledEntry = false,
 ): MoveDamageResult {
   let conditions = battleConditions;
+  // A critical-hit ratio that makes every hit critical counts as the field's Critical hit.
+  const ratioCrit = conditions.critical ? null : certainCrit(assigned.id, attackerBuild, defenderBuild, context, conditions, runtime);
+  if (ratioCrit) conditions = { ...conditions, critical: true };
   // Event-doubling moves (event-moves.ts): pass the chosen case's power as an override,
   // which survives the engine's internal move clone. A Z/Max conversion takes its own
   // power from zMove/maxMove data, so this does not leak into a transformed attack.
@@ -1771,6 +1902,8 @@ function calculateMove(
     if (hitCount.hits > 1 && defender.item && AFTER_MOVE_ITEMS.has(defender.item)) defender.item = undefined;
     // The priority the move is used with, for turn order and the engine's priority shields.
     const { priority, grassyGlide } = usedPriority(metadata, assigned, resolved, attacker, attackerBuild, defenderBuild, conditions);
+    // For the turn order (calculateMatchup's Mirror Herb and Opportunist): the engine drops negative priority, the catalog keeps it.
+    trace.priority = resolved.transformed || assigned.priority >= 0 ? priority : assigned.priority;
     if (grassyGlide) assumptions.push("Grassy Glide: +1 priority.");
     // The engine reads move.priority both for its priority shields (Queenly Majesty, Dazzling, Armor Tail,
     // Psychic Terrain) and for the Tera/Stellar 60-power floor, where pinned Showdown's floor reads the
@@ -2111,7 +2244,7 @@ function calculateMove(
     if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max) || min < 0 || max < min) {
       return emptyRow(metadata, "unsupported", "The engine returned an invalid damage range for this matchup.");
     }
-    if (landedHits && landedHits.length > 1) assumptions.push("No one-use KO chance for multiple hits.");
+    if (landedHits && landedHits.length > 1) assumptions.push(MULTI_HIT_NOTE);
     if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome: first use, no boost.");
     if (conditions.attackerSide.charge && result.rawDesc.isCharge) assumptions.push("Charge: 2x power.");
     const tailwind = [conditions.attackerSide.tailwind && "the attacker's side", conditions.defenderSide.tailwind && "the target's side"].filter(Boolean);
@@ -2137,6 +2270,8 @@ function calculateMove(
     }
     if (conditions.critical && result.defender.hasAbility("Shell Armor", "Battle Armor") && result.range()[1] > 0) {
       assumptions.push(`The target's ${result.defender.ability} prevents the critical hit.`);
+    } else if (ratioCrit && result.range()[1] > 0) {
+      assumptions.push(`Every hit is a critical hit (critical-hit ratio +${ratioCrit.stages}: ${listNames(ratioCrit.sources)}).`);
     }
     const screens = result.move.category === "Physical" ? [conditions.defenderSide.reflect && "Reflect", conditions.defenderSide.auroraVeil && "Aurora Veil"]
       : [conditions.defenderSide.lightScreen && "Light Screen", conditions.defenderSide.auroraVeil && "Aurora Veil"];
@@ -2295,6 +2430,14 @@ function listNames(names: string[]) {
   return names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
+function orList(names: string[]) {
+  return names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
+}
+
+/** A row with several hits until calculateMatchup gives it its first use's exact outcome (MoveDamageResult.afterUse). */
+const MULTI_HIT_NOTE = "No one-use KO chance for multiple hits.";
+const CONFUSED_NOTE = "Assumes the confused attacker does not hit itself.";
+
 export function calculateMatchup(
   attacker: BattleBuild,
   defender: BattleBuild,
@@ -2326,11 +2469,14 @@ export function calculateMatchup(
     return { issues, results: shownMoves.moves.flatMap((id) => { const move = runtime.movesById.get(id); return move ? [{ ...emptyRow(move, "unsupported", withheld), moveId: id }] : []; }) };
   }
   const entry = settleEntry(attackerAbility.build, defenderAbility.build, shown, effective.field, runtime);
-  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, "the attacker", names.attacker, true);
+  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, "the attacker", names.attacker);
   const defenderItems = settleItems(entry.defender, entry.attacker, effective.field, runtime, "the target", names.defender);
   effective.attacker = attackerItems.build;
   effective.defender = defenderItems.build;
   notes.push(...attackerAbility.lines, ...defenderAbility.lines, ...entry.lines, ...attackerItems.lines, ...defenderItems.lines);
+  const settledHP = attackerItems.settledHP || defenderItems.settledHP
+    ? { ...(attackerItems.settledHP ? { attacker: attackerItems.settledHP } : {}), ...(defenderItems.settledHP ? { defender: defenderItems.settledHP } : {}) }
+    : undefined;
   // Friend Guard protects the receiving side only; drop it where it cannot apply (per move in calculateMove).
   const suppressor = effective.field.defenderSide.friendGuard ? partnerAbilitySuppressor(effective.attacker, effective.defender, runtime) : null;
   if (suppressor) effective.field = { ...effective.field, defenderSide: { ...effective.field.defenderSide, friendGuard: false } };
@@ -2342,23 +2488,64 @@ export function calculateMatchup(
     gassed: gassedAbility, klutz: klutzActive, spicySpray: spicySprayFirstBurnedHit, makeField, paradox: (speciesId) => PARADOX_SPECIES.has(speciesId),
     hpForm: (build) => { const form = entryForm(build, runtime); return form && !form.kept ? form.speciesId : null; },
   };
-  let uses: ReturnType<typeof prepareUses> | null = null;
-  try {
-    uses = prepareUses(effective.attacker, effective.defender, effective.field, runtime, helpers);
-  } catch {
-    // Every calculated row then says its uses could not be counted.
-  }
+  // A Starf Berry eaten before the move raised one stat at random: every outcome is its own pair of builds, each
+  // equally likely on its side (starfOutcomes); without one there is a single outcome, the settled builds.
+  const outcomes = starfOutcomes(effective.attacker, effective.defender, attackerItems.starf, defenderItems.starf);
+  const prepared = new Map<StarfOutcome, ReturnType<typeof prepareUses> | null>();
+  const usesFor = (outcome: StarfOutcome) => {
+    if (!prepared.has(outcome)) {
+      let uses: ReturnType<typeof prepareUses> | null = null;
+      try {
+        uses = prepareUses(outcome.attacker, outcome.defender, effective.field, runtime, helpers);
+      } catch {
+        // Every calculated row then says its uses could not be counted.
+      }
+      prepared.set(outcome, uses);
+    }
+    return prepared.get(outcome)!;
+  };
+  // Harvest may regrow a Berry either Pokémon ate before the move, and Cud Chew eats it again, at the end of a later
+  // turn (pinned Showdown data/abilities.ts harvest and cudchew onResidual); the uses do not follow either.
+  const regrowth = (items: SettledItems, build: BattleBuild, other: BattleBuild, whose: string) => items.eaten && !gassedAbility(build, other, effective.field)
+    ? ({ harvest: `${whose}Harvest may regrow its Berry`, cudchew: `${whose}Cud Chew eats its Berry again` } as Record<string, string>)[build.abilityId] : undefined;
+  const regrown = regrowth(defenderItems, effective.defender, effective.attacker, "") ?? regrowth(attackerItems, effective.attacker, effective.defender, "The attacker's ");
+  // Per Starf outcome, shared by the rows (and their prepared uses): the builds with the copies applied, and the
+  // builds that apply them after the first use.
+  const copiedOutcomes = new Map<StarfOutcome, StarfOutcome>();
+  const pendingOutcomes = new Map<StarfOutcome, StarfOutcome>();
   const results = moveSpecies.moves.map((id) => {
     const move = runtime.movesById.get(id);
     if (!move) throw new Error(`${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} catalog has an unresolved move: ${id}.`);
-    const trace: CalcTrace = {};
-    const computed = calculateMove(move, effective.attacker, effective.defender, effective.field, contexts[id], runtime, suppressor, trace);
-    const row: MoveDamageResult = { ...computed, moveId: id };
-    if (row.kind === "calculated") {
+    const calculateFor = (outcome: StarfOutcome) => {
+      const trace: CalcTrace = {};
+      const computed = calculateMove(move, outcome.attacker, outcome.defender, effective.field, contexts[id], runtime, suppressor, trace);
+      return { outcome, computed, trace };
+    };
+    // A rise a foe's Mirror Herb or Opportunist copies (copiesOf) is applied at the turn's first AfterMove: before this
+    // move when the target moves first in Singles, after it when the attacker does (the uses from the second on carry
+    // it: pendingCopy), and otherwise either.
+    const one = (outcome: StarfOutcome): ReturnType<typeof calculateFor> & { copy: { when: CopyTiming; facts: string[]; reason: string } | null } => {
+      const plain = calculateFor(outcome);
+      const copies = copiesOf(outcome, effective, attackerItems, defenderItems);
+      if (!copies.length || plain.computed.kind !== "calculated" || plain.computed.max === 0) return { ...plain, copy: null };
+      const order = effective.field.gameType === "Doubles" || !plain.trace.result ? null
+        : turnOrderAgainstTarget(plain.trace.result, plain.trace.priority ?? move.priority, outcome.attacker, outcome.defender, effective.field, runtime);
+      const when: CopyTiming = order?.order === "last" ? "before" : order?.order === "first" ? "after" : "either";
+      const facts = [...(order?.notes ?? []), ...copies.map((copy) => copyLine(copy, when, order?.reason ?? "", names))];
+      const reason = `${copies[0].by[0]} copies the ${copies[0].who === "attacker" ? "target" : "attacker"}'s rise`;
+      if (when === "either") return { ...plain, copy: { when, facts, reason } };
+      const map = when === "before" ? copiedOutcomes : pendingOutcomes;
+      if (!map.has(outcome)) map.set(outcome, when === "before" ? withCopies(outcome, copies, effective.field) : withPendingCopies(outcome, copies));
+      // The row before this move's copy is the plain one; its uses carry the copy from the second on.
+      return when === "before" ? { ...calculateFor(map.get(outcome)!), copy: { when, facts, reason } } : { ...plain, outcome: map.get(outcome)!, copy: { when, facts, reason } };
+    };
+    // Uses to KO and the first use's exact outcome (uses-to-ko.ts estimateUses).
+    const count = ({ outcome, computed, trace, copy }: ReturnType<typeof one>): { usesToKO: UsesToKO; afterUse: AfterUse | null } => {
       // A count that cannot be worked out never takes the row's one-use result down with it.
       try {
+        const uses = usesFor(outcome);
         if (!uses) throw new Error("No uses to count");
-        row.usesToKO = estimateUsesToKO(uses, {
+        const { usesToKO, afterUse } = estimateUses(uses, {
           move, row: computed, trace, context: contexts[id],
           rerun: (next) => {
             const nextTrace: CalcTrace = {};
@@ -2366,11 +2553,220 @@ export function calculateMatchup(
             return { row: nextRow, trace: nextTrace };
           },
         });
+        // The Berry comes back only at the end of a turn: a count every sequence finishes in its first use stands, and
+        // so does the first use's outcome. A copy that may come before or after this move leaves neither.
+        if (copy?.when === "either") return { usesToKO: { kind: "not-estimated", reason: copy.reason }, afterUse: null };
+        return { usesToKO: regrown && usesToKO.kind === "uses" && usesToKO.guaranteed !== 1 ? { kind: "not-estimated", reason: regrown } : usesToKO, afterUse };
       } catch {
-        row.usesToKO = { kind: "not-estimated", reason: "The uses could not be counted" };
+        return { usesToKO: { kind: "not-estimated", reason: UNCOUNTED }, afterUse: null };
+      }
+    };
+    const runs = outcomes.map(one);
+    const merged = runs.length === 1 ? { row: runs[0].computed, facts: [] } : mergeStarfOutcomes(runs);
+    let row: MoveDamageResult = { ...merged.row, moveId: id };
+    if (row.kind === "calculated") {
+      let afterUse: AfterUse | null;
+      if (runs.length === 1) {
+        const estimated = count(runs[0]);
+        row.usesToKO = estimated.usesToKO;
+        afterUse = estimated.afterUse;
+      } else {
+        // The uses carry the stat a Starf Berry raised: they are counted only when every outcome counts the same,
+        // and the first use's outcome is kept only when every outcome's is the same.
+        const counts = sameStarfDamage(runs) ? runs.map(count) : null;
+        const same = (pick: (entry: ReturnType<typeof count>) => unknown) => !!counts && counts.every((entry) => JSON.stringify(pick(entry)) === JSON.stringify(pick(counts[0])));
+        row.usesToKO = same((entry) => entry.usesToKO) ? counts![0].usesToKO : { kind: "not-estimated", reason: "Starf Berry raises a random stat" };
+        afterUse = same((entry) => entry.afterUse) ? counts![0].afterUse : null;
+      }
+      if (afterUse) {
+        // Several hits take their one-use KO chance from the first use's walk (each hit's rolls, the hits stopping
+        // once the target faints, survival effects and berries between hits); one hit keeps its own, which the walk
+        // gives too, unless it has none.
+        const several = (row.hits ?? 0) > 1;
+        row = {
+          ...row, afterUse,
+          ...(several || row.ohkoChance === null ? { ohkoChance: afterUse.koChance } : {}),
+          ...(several ? { assumptions: row.assumptions.filter((line) => line !== MULTI_HIT_NOTE) } : {}),
+        };
+      }
+      // A copy that may come before or after this move leaves its KO chance to the turn order.
+      if (runs.some((run) => run.copy?.when === "either")) row = { ...row, ohkoChance: null };
+      // A confused attacker (its Figy-family Berry) hits itself instead of moving 33% of the time (pinned Showdown
+      // data/conditions.ts confusion onBeforeMove: randomChance(33, 100)). As with full paralysis, the counts
+      // follow the move being used and say so.
+      if (attackerItems.confused && (row.max ?? 0) > 0 && row.usesToKO?.kind === "uses") {
+        row = { ...row, usesToKO: { ...row.usesToKO, notes: [...row.usesToKO.notes, CONFUSED_NOTE] } };
       }
     }
-    return notes.length && row.kind === "calculated" ? { ...row, assumptions: [...row.assumptions, ...notes] } : row;
+    // The Starf Berry's outcomes and the copies follow the line saying the berry was eaten.
+    const copyFacts = [...new Set(runs.flatMap((run) => run.copy?.facts ?? []))].filter((line) => !row.assumptions.includes(line));
+    const confusedFact = attackerItems.confused && (row.max ?? 0) > 0 ? [CONFUSED_NOTE] : [];
+    const facts = [...notes, ...merged.facts, ...copyFacts, ...confusedFact];
+    return facts.length && row.kind === "calculated" ? { ...row, assumptions: [...row.assumptions, ...facts] } : row;
   });
-  return { issues, results };
+  return { issues, results, ...(settledHP ? { settledHP } : {}) };
+}
+
+/** When the turn's first AfterMove applies a copied rise: before this move, after it, or either (Doubles, a Speed tie). */
+type CopyTiming = "before" | "after" | "either";
+/** The stages a foe's Berry raised before the move, stored by `who`'s Mirror Herb or Opportunist (`by`). */
+type Copy = { who: "attacker" | "target"; by: string[]; stages: Partial<Record<CombatStat, number>> };
+
+/**
+ * The rises each side's Opportunist or Mirror Herb copies from the other's Berry eaten before the move (pinned
+ * Showdown data/abilities.ts opportunist and data/items.ts mirrorherb onFoeAfterBoost: the stages boost() raised,
+ * with a Starf Berry's in this outcome), to be applied at the turn's first onAnyAfterMove. Neutralizing Gas stops
+ * the ability, Magic Room or an active Klutz the herb.
+ */
+function copiesOf(outcome: StarfOutcome, settled: { attacker: BattleBuild; defender: BattleBuild; field: BattleConditions }, attackerItems: SettledItems, defenderItems: SettledItems): Copy[] {
+  const copies: Copy[] = [];
+  const sides = [
+    { who: "attacker" as const, holder: outcome.attacker, foe: outcome.defender, foeSettled: settled.defender, raised: defenderItems.raised },
+    { who: "target" as const, holder: outcome.defender, foe: outcome.attacker, foeSettled: settled.attacker, raised: attackerItems.raised },
+  ];
+  for (const { who, holder, foe, foeSettled, raised } of sides) {
+    const by = [
+      ...(holder.abilityId === "opportunist" && !gassedAbility(holder, foe, settled.field) ? ["Opportunist"] : []),
+      ...(holder.itemId === "mirrorherb" && !settled.field.magicRoom && !klutzActive(holder, foe) ? ["Mirror Herb"] : []),
+    ];
+    if (!by.length) continue;
+    const stages: Partial<Record<CombatStat, number>> = { ...raised };
+    // The foe's Starf Berry rise in this outcome.
+    for (const stat of COMBAT_STATS) {
+      const rise = (foe.boosts[stat] ?? 0) - (foeSettled.boosts[stat] ?? 0);
+      if (rise > 0) stages[stat] = (stages[stat] ?? 0) + rise;
+    }
+    if (Object.keys(stages).length) copies.push({ who, by, stages });
+  }
+  return copies;
+}
+
+/** The outcome with each copy applied through boost() (Contrary, Simple, the ±6 cap), once for each copier, a used Mirror Herb gone (Unburden activates). */
+function withCopies(outcome: StarfOutcome, copies: Copy[], field: BattleConditions): StarfOutcome {
+  let { attacker, defender } = outcome;
+  for (const copy of copies) {
+    const build = copy.who === "attacker" ? attacker : defender, foe = copy.who === "attacker" ? defender : attacker;
+    const abilityOn = !gassedAbility(build, foe, field);
+    const scale = (abilityOn && build.abilityId === "contrary" ? -1 : 1) * (abilityOn && build.abilityId === "simple" ? 2 : 1);
+    const boosts = { ...build.boosts };
+    for (let time = 0; time < copy.by.length; time++) {
+      for (const [stat, amount] of Object.entries(copy.stages) as [CombatStat, number][]) boosts[stat] = clampStage((boosts[stat] ?? 0) + amount * scale);
+    }
+    const herb = copy.by.includes("Mirror Herb");
+    const next: BattleBuild = { ...build, boosts, ...(herb ? { itemId: "", ...(build.abilityId === "unburden" && abilityOn ? { abilityActive: true } : {}) } : {}) };
+    if (copy.who === "attacker") attacker = next;
+    else defender = next;
+  }
+  return { ...outcome, attacker, defender };
+}
+
+/** The outcome whose copiers apply their copies after the attacker's first use (types.ts pendingCopy, uses-to-ko.ts afterHit). */
+function withPendingCopies(outcome: StarfOutcome, copies: Copy[]): StarfOutcome {
+  let { attacker, defender } = outcome;
+  for (const { who, by, stages } of copies) {
+    if (who === "attacker") attacker = { ...attacker, pendingCopy: { stages, by } };
+    else defender = { ...defender, pendingCopy: { stages, by } };
+  }
+  return { ...outcome, attacker, defender };
+}
+
+/** "The attacker Garchomp's Mirror Herb copies the target's +1 Attack before this move (the target moves first: 100 Speed against 142)." */
+function copyLine(copy: Copy, when: CopyTiming, reason: string, names: { attacker: string; defender: string }): string {
+  const holder = copy.who === "attacker" ? `The attacker ${names.attacker}` : `The target ${names.defender}`;
+  const stages = (Object.entries(copy.stages) as [CombatStat, number][]).map(([stat, amount]) => `+${amount} ${STAGE_NAMES[stat]}`);
+  const timing = when === "before" ? ` before this move (the target moves first${reason ? `: ${reason}` : ""})`
+    : when === "after" ? ` after this move (the attacker moves first${reason ? `: ${reason}` : ""})`
+      : ` after the turn's first move, before or after this one${reason ? ` (${reason})` : ""}`;
+  return `${holder}'s ${listNames(copy.by)} copies the ${copy.who === "attacker" ? "target" : "attacker"}'s ${listNames(stages)}${timing}.`;
+}
+
+/** One outcome of the Starf Berries eaten before the move: both builds with the stat each raised, and its chance. */
+type StarfOutcome = { attacker: BattleBuild; defender: BattleBuild; chance: number; rises: { who: "attacker" | "target"; stat: CombatStat; amount: number }[] };
+
+/** Every outcome of the sides' pending Starf rises (settleItems `starf`): each stat on a side equally likely, the sides independent. */
+function starfOutcomes(attacker: BattleBuild, defender: BattleBuild, ...pending: [SettledItems["starf"], SettledItems["starf"]]): StarfOutcome[] {
+  let outcomes: StarfOutcome[] = [{ attacker, defender, chance: 1, rises: [] }];
+  pending.forEach((starf, index) => {
+    if (!starf) return;
+    const key = index === 0 ? "attacker" : "defender";
+    outcomes = outcomes.flatMap((outcome) => starf.stats.map((stat) => {
+      const build = outcome[key];
+      return {
+        ...outcome, [key]: { ...build, boosts: { ...build.boosts, [stat]: clampStage((build.boosts[stat] ?? 0) + starf.amount) } },
+        chance: outcome.chance / starf.stats.length, rises: [...outcome.rises, { who: index === 0 ? "attacker" : "target", stat, amount: starf.amount }],
+      };
+    }));
+  });
+  return outcomes;
+}
+
+type StarfRun = { outcome: StarfOutcome; computed: MoveDamageResult };
+/** What a Starf outcome's row says about the damage, to compare outcomes by. */
+const starfDamageKey = ({ computed: row }: StarfRun) => JSON.stringify([row.kind, row.reason, row.min, row.max, row.rolls, row.hits, row.hitChances, row.ohkoChance,
+  row.alternate, row.survival, row.leavesOneHP, row.attackerFaintsOnHit, row.effectivePower, row.effectiveType, row.effectiveCategory]);
+const sameStarfDamage = (runs: StarfRun[]) => runs.every((run) => starfDamageKey(run) === starfDamageKey(runs[0]));
+
+/**
+ * One row over the Starf outcomes, and the facts that follow the line saying the berry was eaten. When every
+ * outcome deals the same, it is the first outcome's. Otherwise the outcomes are grouped by their damage: the most
+ * likely group's row is the usual case, a single-hit row with one other group gets it as its alternate (the KO
+ * chance weighs both), and any other row states each other group's range as a fact, its KO chance weighing every
+ * group when each has one. A group whose row is not calculated (a turn order it needs, a move that fails) gives
+ * the row.
+ */
+function mergeStarfOutcomes(runs: StarfRun[]): { row: MoveDamageResult; facts: string[] } {
+  if (sameStarfDamage(runs)) return { row: runs[0].computed, facts: [] };
+  const groups: { runs: StarfRun[]; chance: number }[] = [];
+  for (const run of runs) {
+    const group = groups.find((entry) => starfDamageKey(entry.runs[0]) === starfDamageKey(run));
+    if (group) { group.runs.push(run); group.chance += run.outcome.chance; } else groups.push({ runs: [run], chance: run.outcome.chance });
+  }
+  const failed = groups.find((group) => group.runs[0].computed.kind !== "calculated");
+  if (failed) return { row: failed.runs[0].computed, facts: [] };
+  const usual = groups.reduce((best, group) => group.chance > best.chance ? group : best);
+  const others = groups.filter((group) => group !== usual);
+  const base = usual.runs[0].computed;
+  const sign = (amount: number) => `${amount > 0 ? "+" : ""}${amount}`;
+  const rise = ({ who, stat, amount }: StarfOutcome["rises"][number]) => `the ${who}'s ${sign(amount)} ${STAGE_NAMES[stat]}`;
+  // "the target's +2 Attack, Sp. Atk or Speed" for one side's Starf Berry; each outcome in full for both sides'.
+  const label = ({ runs: group }: (typeof groups)[number]) => {
+    const [first] = group[0].outcome.rises;
+    return group.every(({ outcome: { rises } }) => rises.length === 1 && rises[0].who === first.who && rises[0].amount === first.amount)
+      ? `the ${first.who}'s ${sign(first.amount)} ${orList(group.map(({ outcome }) => STAGE_NAMES[outcome.rises[0].stat]))}`
+      : orList(group.map((run) => run.outcome.rises.map(rise).join(" and ")));
+  };
+  // The groups' float chances sum to 1 within rounding, so the weighed chance is kept at 1 or below.
+  const koChance = groups.every((group) => group.runs[0].computed.ohkoChance !== null)
+    ? Math.min(1, groups.reduce((total, group) => total + group.chance * group.runs[0].computed.ohkoChance!, 0)) : null;
+  const other = others[0].runs[0].computed;
+  // Focus Sash or Sturdy keeps the target in on the outcomes whose rolls reach its HP (survivalEffect).
+  const survival = groups.map((group) => group.runs[0].computed.survival).find(Boolean);
+  const kept = survival ? { survival } : {};
+  const single = others.length === 1 && !base.alternate && !other.alternate && base.hits === 1 && other.hits === 1
+    && Array.isArray(base.rolls) && typeof base.rolls[0] === "number" && Array.isArray(other.rolls) && typeof other.rolls[0] === "number";
+  if (single && other.min !== null && other.max !== null && other.minPercent !== null && other.maxPercent !== null) {
+    const [min, max] = [other.min, other.max];
+    return {
+      row: {
+        ...base, ...kept, ohkoChance: koChance,
+        alternate: {
+          chance: others[0].chance, label: `${label(others[0])} (Starf Berry)`, usualLabel: label(usual), min, max,
+          minPercent: other.minPercent, maxPercent: other.maxPercent, rolls: [...(other.rolls as number[])],
+        },
+        description: base.description.replace(/\.( Applied: .*)?$/, `, or ${min}–${max} HP (${other.minPercent.toFixed(1)}–${other.maxPercent.toFixed(1)}%) with ${label(others[0])} (${chanceText(others[0].chance)} chance).$1`),
+      },
+      facts: [`Starf Berry: ${label(others[0])} (${chanceText(others[0].chance)} chance) gives ${min}–${max} HP (${other.minPercent.toFixed(1)}–${other.maxPercent.toFixed(1)}%). The KO chance includes both cases.`],
+    };
+  }
+  return {
+    row: { ...base, ...kept, ohkoChance: koChance },
+    facts: [
+      `Starf Berry: these rolls are for ${label(usual)} (${chanceText(usual.chance)} chance).`,
+      ...others.map((group) => {
+        const row = group.runs[0].computed;
+        return `Starf Berry: ${label(group)} (${chanceText(group.chance)} chance) gives ${row.min}–${row.max} HP (${row.minPercent!.toFixed(1)}–${row.maxPercent!.toFixed(1)}%).`;
+      }),
+      ...(koChance !== null ? ["The KO chance includes every Starf Berry outcome."] : []),
+    ],
+  };
 }

@@ -292,7 +292,7 @@ describe("selected-move summary for random and cut-short hit counts", () => {
     expect(summary(sv, breloom, "bulletseed", staleSeed)).not.toContain(">Set hits</button>");
   });
 
-  it("keeps the HP preview unavailable for multi-hit rows", () => {
+  it("keeps the HP preview unavailable for multi-hit rows without afterUse", () => {
     const garchomp = build("garchomp", "roughskin", sv);
     for (const row of [randomSeed, cutBomb, randomCutBomb]) expect(previewRemainingHP(garchomp, row, "average", sv).status).toBe("unavailable");
   });
