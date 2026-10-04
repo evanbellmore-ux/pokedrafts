@@ -189,6 +189,29 @@ type BuildBase = {
   copiedIntimidateStored?: string;
   /** Set only by the calculation: the stat an active Protosynthesis or Quark Drive boosts. */
   settledBoostedStat?: CombatStat;
+  /**
+   * Set only by the calculation: its Custap Berry was eaten when its move was chosen this turn (pinned
+   * Showdown battle-queue.ts resolveAction runs FractionalPriority then), so it is gone and the Pokémon
+   * moves first in its priority bracket this turn.
+   */
+  settledCustap?: true;
+  /**
+   * Set only by the calculation: it ate a Lansat Berry before the move (pinned Showdown lansatberry onEat adds
+   * the focusenergy volatile, +2 critical-hit ratio while it stays in).
+   */
+  settledFocusEnergy?: true;
+  /**
+   * Set only by the calculation, in generation 7: the Speed stage and Unburden state this turn's order was set
+   * with, before the item it used at the turn's first Update changed them (pinned Showdown sim/battle.ts runAction
+   * sorts the queue again after an action only from generation 8), and that item's name.
+   */
+  firstTurnSpeed?: { spe: number; unburden: boolean; item: string };
+  /**
+   * Set only by the calculation, for the uses after the first: the stages its Opportunist or Mirror Herb (`by`)
+   * stored from a foe's Berry eaten before the move, which it applies after the attacker's first use when the
+   * attacker moves first (pinned Showdown onFoeAfterBoost, then onAnyAfterMove).
+   */
+  pendingCopy?: { stages: Partial<Record<CombatStat, number>>; by: string[] };
 };
 
 export type ChampionsBuild = BuildBase & {
@@ -333,12 +356,62 @@ export type MoveDamageResult = {
   alternate?: { chance: number; label: string; usualLabel: string; min: number; max: number; minPercent: number; maxPercent: number; rolls: number[] };
   /** How many uses of this move in a row knock the target out (app/lib/battle/uses-to-ko.ts); set on calculated rows. */
   usesToKO?: UsesToKO;
+  /**
+   * One use from the target's HP when the move starts (after any berry it ate before the move), its hits
+   * walked as pinned Showdown does: the hits stop once the target faints, Focus Sash or Sturdy at full HP
+   * leaves 1 HP on the first hit only, and the target's HP berries eat at its line between hits and after
+   * the last. Set on calculated rows when the result is exact; the HP preview and, for rows with more than
+   * one hit, ohkoChance come from it.
+   */
+  afterUse?: AfterUse;
+};
+
+/** The target's HP after one use (MoveDamageResult.afterUse); HP values are whole HP except `average`. */
+export type AfterUse = {
+  /** The target's HP when the move starts. */
+  start: number;
+  /** HP left with every hit at its lowest roll and the fewest hits. */
+  low: number;
+  /** HP left with every hit at its highest roll and the most hits. */
+  high: number;
+  /** Expected HP left over every hit count and roll sequence (exact, not rounded). */
+  average: number;
+  /** The least and the most HP left over every hit count and roll sequence. */
+  min: number;
+  max: number;
+  /**
+   * Chance (0–1) the use knocks the target out, before the end of the turn. With a confused attacker it
+   * includes the chance the attacker hits itself instead (the HP values above are for the move being used).
+   */
+  koChance: number;
+  /** HP the target regains during or right after the hits on some sequence, as facts ("Sitrus Berry: +45 HP."). */
+  heals: string[];
+  /** The one sequence each of `low` and `high` is (AfterUsePath), where it was walked; added to the contract for the HP preview's damage. */
+  paths?: { low: AfterUsePath; high: AfterUsePath };
+};
+
+/** One roll path of AfterUse: the HP its hits took off (the HP lost plus the HP regained) and the healing on it. */
+export type AfterUsePath = { dealt: number; heals: string[] };
+
+/**
+ * A side's HP when the move starts, set when it ate an HP berry or drank Berry Juice before the move (or Cheek
+ * Pouch healed it as it ate another Berry there). HP values are base (pre-Dynamax) HP, as BattleBuild.currentHP.
+ */
+export type SettledHP = {
+  /** HP when the move starts, after the item. */
+  hp: number;
+  /** The HP as entered. */
+  entered: number;
+  maxHP: number;
+  /** The item's name ("Sitrus Berry"). */
+  item: string;
 };
 
 /**
  * Repeated uses of one move by the same attacker into the same target, from the target's current HP,
  * with both staying in and the target doing nothing that changes it. Each use is conditional on hitting
- * (accuracy is not applied), with no critical hits unless the field's Critical hit is set, the chosen or
+ * (accuracy is not applied), with no critical hits unless the field's Critical hit is set or the
+ * attacker's critical-hit ratio makes every hit critical (calculate.ts critRatioStage), the chosen or
  * fixed hit count on every use (a random count rolls its own count each use, with the chances the
  * attacker has then), and the field as set. The state each use leaves (stat stages, items used up,
  * abilities, forms, the attacker's HP, counters, end-of-turn healing and damage) carries into the next.

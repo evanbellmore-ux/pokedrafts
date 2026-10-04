@@ -167,7 +167,7 @@ describe("Shell Side Arm ties", () => {
       onRollModeChange: vi.fn(), onActivateMove: vi.fn(), onToggleMega: vi.fn(), runtime: championsRuntime,
     })));
     expect(summary).toContain("55–66 damage range, or 27–33 with a physical hit (50% chance) · One-use KO: 0% (all rolls, both cases)");
-    expect(summary).toContain("Right Pokémon HP remaining: 112 / 167 With a physical hit (50% chance, same Low roll): 27 damage, 140 / 167 HP remaining.");
+    expect(summary).toContain("Hydreigon HP remaining: 112 / 167 With a physical hit (50% chance, same Low roll): 27 damage, 140 / 167 HP remaining.");
     expect(previewRemainingHP(hydreigon, tie, "low")).toMatchObject({ damage: 55, remaining: 112, alternate: { chance: 0.5, damage: 27, remaining: 140 } });
   });
 });

@@ -36,7 +36,7 @@ describe("an attacker at or under its berry's line eats it before it moves", () 
     // Lycanroc 30/150: Sitrus to 67, then 18 + 25 a hit, so it faints on hit 2 (Showdown 22–28, 2 hits).
     const lycanroc = row(championsRuntime, "tailslap", build(championsRuntime, "lycanroc", { abilityId: "keeneye", itemId: "sitrusberry", currentHP: 30 }),
       build(championsRuntime, "garchomp", { abilityId: "roughskin", itemId: "rockyhelmet" }));
-    expect(lycanroc).toMatchObject({ hits: 2, min: 22, max: 28, ohkoChance: null, attackerFaintsOnHit: { hit: 2, of: 5, ofMin: 2, by: ["Rough Skin", "Rocky Helmet"] } });
+    expect(lycanroc).toMatchObject({ hits: 2, min: 22, max: 28, ohkoChance: 0, attackerFaintsOnHit: { hit: 2, of: 5, ofMin: 2, by: ["Rough Skin", "Rocky Helmet"] } });
     expect(lycanroc.assumptions).toContain("The attacker Lycanroc's Sitrus Berry was eaten at 30 HP: 67 HP.");
     expect(lycanroc.assumptions).toContain("Lycanroc faints on hit 2 of 2–5 (Rough Skin and Rocky Helmet).");
     // Cinccino 15/150: Oran to 25, then 18 a hit into Rough Skin (Showdown 44–54, 2 hits).
@@ -186,6 +186,8 @@ describe("rows with no hit, and Parental Bond's two strikes", () => {
     const ooze = row(championsRuntime, "drainpunch", kangaskhan, build(championsRuntime, "swalot", { abilityId: "liquidooze" }));
     expect(ooze.hits).toBe(2);
     expect((ooze.rolls as number[][]).length).toBe(2);
-    expect(ooze.assumptions).toContain("No one-use KO chance for multiple hits.");
+    // Both strikes' one use is exact (MoveDamageResult.afterUse), so the row has its one-use KO chance.
+    expect(ooze.ohkoChance).toBe(ooze.afterUse!.koChance);
+    expect(ooze.assumptions).not.toContain("No one-use KO chance for multiple hits.");
   });
 });

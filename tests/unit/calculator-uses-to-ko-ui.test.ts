@@ -282,19 +282,19 @@ describe("Uses to KO in the summary", () => {
 
   it("adds a line under the damage range, inside the announced result", () => {
     const html = summary(thunderFang);
-    expect(visible(html)).toContain("34–41 damage range · One-use KO: 0% (all rolls) Uses to KO: Guaranteed 5HKO · 0.53% chance to 4HKO Right Pokémon HP remaining");
+    expect(visible(html)).toContain("34–41 damage range · One-use KO: 0% (all rolls) Uses to KO: Guaranteed 5HKO · 0.53% chance to 4HKO Incineroar HP remaining");
     expect(spoken(html)).toContain("Uses to KO: Guaranteed KO in 5 uses · 0.53% chance to KO in 4 uses");
     const live = html.match(/aria-live="polite"[^>]*>([\s\S]*?)<\/div><button/)![1];
     expect(live).toContain("Uses to KO: ");
-    expect(visible(summary({ ...thunderFang, usesToKO: undefined }))).toContain("Uses to KO: Not estimated Right Pokémon");
+    expect(visible(summary({ ...thunderFang, usesToKO: undefined }))).toContain("Uses to KO: Not estimated Incineroar HP remaining");
     expect(summary(thunderFang, "Loading the calculator.")).not.toContain("Uses to KO:");
     expect(summary(undefined)).not.toContain("Uses to KO:");
   });
 
   it("gives the summary the same lines for a chance with no guarantee", () => {
     const recoil = row("thunderfang", 34, 41, 0, counted({ guaranteed: null, fewest: 5, chance: 0.4, faintsFirst: true, attackerFaints: { highest: 4 } }));
-    expect(visible(summary(recoil))).toContain("Uses to KO: No guaranteed KO · 40% chance before the user faints · High rolls: user faints after use 4 Right Pokémon HP remaining");
+    expect(visible(summary(recoil))).toContain("Uses to KO: No guaranteed KO · 40% chance before the user faints · High rolls: user faints after use 4 Incineroar HP remaining");
     const pp = row("thunderfang", 34, 41, 0, counted({ guaranteed: null, fewest: 7, chance: 0.3125, limit: 8, needed: 9 }));
-    expect(visible(summary(pp))).toContain("Uses to KO: Runs out of PP · 31.25% chance within 8 uses · Needs 9 uses, has 8 PP Right Pokémon HP remaining");
+    expect(visible(summary(pp))).toContain("Uses to KO: Runs out of PP · 31.25% chance within 8 uses · Needs 9 uses, has 8 PP Incineroar HP remaining");
   });
 });

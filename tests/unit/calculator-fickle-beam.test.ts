@@ -67,7 +67,7 @@ describe("Fickle Beam", () => {
       onRollModeChange: vi.fn(), onActivateMove: vi.fn(), onToggleMega: vi.fn(), runtime: championsRuntime,
     })).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
     expect(html).toContain("120–144 damage range, or 240–284 with doubled power (30% chance) · One-use KO: 30% (all rolls, both cases)");
-    expect(html).toMatch(/Right Pokémon HP remaining: 63 \/ 183 With doubled power \(30% chance, same Low roll\): 240 damage, 0 \/ 183 HP remaining\./);
+    expect(html).toMatch(/Garchomp HP remaining: 63 \/ 183 With doubled power \(30% chance, same Low roll\): 240 damage, 0 \/ 183 HP remaining\./);
   });
 
   it("matches Showdown in Scarlet/Violet, Tera included", async () => {

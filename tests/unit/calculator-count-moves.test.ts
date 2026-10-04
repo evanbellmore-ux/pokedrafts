@@ -95,7 +95,8 @@ describe("Beat Up", () => {
 
   it("hits once per chosen party member at that member's power", () => {
     const result = row("beatup", maushold, snorlax, { party: ["garchomp", "incineroar", "kingambit"] });
-    expect(result).toMatchObject({ kind: "calculated", min: 43, max: 53, hits: 4, ohkoChance: null });
+    // Four strikes at most 53 never reach Snorlax's HP: the one use's exact KO chance (afterUse) is 0.
+    expect(result).toMatchObject({ kind: "calculated", min: 43, max: 53, hits: 4, ohkoChance: 0 });
     expect(strikes(result)).toEqual(["8-10", "12-15", "11-13", "12-15"]);
     expect(result.assumptions).toContain("Beat Up: 4 hits (Maushold-Four 12, Garchomp 18, Incineroar 16, Kingambit 18 power).");
     expect(row("beatup", maushold, snorlax, { party: [] })).toMatchObject({ kind: "calculated", min: 8, max: 10, hits: 1 });

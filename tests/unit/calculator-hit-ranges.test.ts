@@ -51,11 +51,11 @@ describe("random hit counts as a range", () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     // Showdown: 28 + 28 at the lowest roll, 5 x 34 at the highest.
     const seed = row(sv, "bulletseed", build(sv, "breloom", { abilityId: "technician" }), build(sv, "garchomp", { abilityId: "sandveil" }));
-    expect(seed).toMatchObject({ kind: "calculated", reason: null, hits: 5, min: 56, max: 170, hitChances: twoToFive, ohkoChance: null });
+    expect(seed).toMatchObject({ kind: "calculated", reason: null, hits: 5, min: 56, max: 170, hitChances: twoToFive, ohkoChance: 0 });
     expect(seed.rolls).toEqual(perHit(5, [28, 28, 30, 30, 30, 30, 30, 31, 31, 31, 31, 33, 33, 33, 33, 34]));
     expect(seed.attackerFaintsOnHit).toBeUndefined();
     expect(seed.assumptions).toContain("Bullet Seed: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).");
-    expect(seed.assumptions).toContain("No one-use KO chance for multiple hits.");
+    expect(seed.assumptions).not.toContain("No one-use KO chance for multiple hits.");
     expect(seed.assumptions.some((line) => /Needs the hit count|Assumes all/.test(line))).toBe(false);
     expect(seed.description).toBe("Bullet Seed: 56–170 HP (30.6–92.9% of maximum HP). Applied: Technician.");
   });

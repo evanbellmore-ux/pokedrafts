@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 // A Uses to KO count that throws must leave the row's one-use result standing.
 vi.mock("@/app/lib/battle/uses-to-ko", async (original) => ({
   ...await original<typeof import("@/app/lib/battle/uses-to-ko")>(),
-  estimateUsesToKO: () => { throw new Error("count failed"); },
+  estimateUses: () => { throw new Error("count failed"); },
 }));
 
 describe("Uses to KO guard", () => {
@@ -14,5 +14,7 @@ describe("Uses to KO guard", () => {
     const row = out.results.find((entry) => entry.moveId === "earthquake")!;
     expect(row).toMatchObject({ kind: "calculated", usesToKO: { kind: "not-estimated", reason: "The uses could not be counted" } });
     expect(row.min).toBeGreaterThan(0);
+    expect(row.afterUse).toBeUndefined();
+    expect(row.ohkoChance).not.toBeNull();
   });
 });

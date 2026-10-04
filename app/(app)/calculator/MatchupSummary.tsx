@@ -7,12 +7,12 @@ import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { getMegaOptions } from "@/app/lib/battle/mega-forms";
 import { mimicryNote, mimicryState, type MimicryState } from "@/app/lib/battle/mimicry";
 import { turnOrderQuestion } from "@/app/lib/battle/turn-order";
-import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveDamageResult } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveDamageResult, SettledHP } from "@/app/lib/battle/types";
 import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
 import PokemonChooser from "./PokemonChooser";
-import { getBuildHealth, previewRemainingHP, type DamageRollMode } from "./hp-preview";
+import { getBuildHealth, getSettledHealth, previewRemainingHP, settledText, type DamageRollMode } from "./hp-preview";
 import { formatRange, hitRangeText, koChance } from "./result-format";
 import { KOText, rowHitRule, waitsForHits } from "./MoveResults";
 import { usesToKOText } from "./uses-format";
@@ -57,6 +57,8 @@ type Props = EditProps & QuickMoveProps & {
   terrain?: BattleConditions["terrain"];
   /** Picks the usual ability for a Pokémon chosen here. */
   gameType?: BattleConditions["gameType"];
+  /** The result's HP when the move starts for a side that ate or drank an item before it (calculate.ts MatchupResult settledHP). */
+  settledHP?: { attacker?: SettledHP; defender?: SettledHP };
 };
 
 type CombatantProps = EditProps & QuickMoveProps & {
@@ -69,9 +71,11 @@ type CombatantProps = EditProps & QuickMoveProps & {
   selectedResult?: MoveDamageResult;
   mimicry?: MimicryState | null;
   gameType?: BattleConditions["gameType"];
+  /** This side's HP when the move starts, after the item it ate or drank before the move. */
+  settled?: SettledHP;
 };
 
-function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, selectedResult, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, attack, replacement, movesControl, onActivateMove, mimicry, gameType, runtime = championsRuntime }: CombatantProps) {
+function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescription, selectedResult, settled, rosterState, rosterPanels, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, attack, replacement, movesControl, onActivateMove, mimicry, gameType, runtime = championsRuntime }: CombatantProps) {
   const id = useId();
   const position = side === "attacker" ? "left" : "right";
   const owner = getMoveOwner(slot);
@@ -83,14 +87,18 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   const megaOptions = getMegaOptions(slot.build.speciesId, runtime, slot.megaBase?.speciesId);
   const baseName = megaOptions.length ? runtime.speciesById.get(megaOptions[0].baseSpeciesId)?.name : undefined;
   const health = getBuildHealth(slot.build, runtime);
+  // The bar starts from the HP the move starts with; the HP editor keeps the entered value.
+  const settledHealth = health && getSettledHealth(slot.build, settled, runtime);
+  const settledFact = settledHealth && settled ? settledText(settled) : null;
   const teraType = runtime.profile.tera && slot.build.mechanic === "tera" ? slot.build.configuration?.teraType : undefined;
   const maxActive = slot.build.mechanic === "dynamax" || slot.build.mechanic === "gigantamax";
   const types = teraType && teraType !== "Stellar" ? [teraType] : mimicry?.type ? [mimicry.type] : species?.types;
-  const displayedHP = projected?.remaining ?? health?.current ?? 0;
+  const displayedHP = projected?.remaining ?? settledHealth?.current ?? health?.current ?? 0;
   const ownership = slot.role === "own" ? "Your team" : "Opponent's team";
   const fraction = health ? displayedHP / health.maximum : 0;
   const hpLabel = projected ? `After ${moveName} · ${rollDescription}` : maxActive ? `Current HP (${slot.build.mechanic === "gigantamax" ? "Gigantamax" : "Dynamax"})` : "Current HP";
-  const hpText = health ? `${displayedHP} of ${health.maximum} HP${projected ? ` after ${moveName}, ${rollDescription}. Current HP: ${health.current}.` : ""}` : "";
+  const range = projected && projected.min !== projected.max ? ` (${projected.min}–${projected.max})` : "";
+  const hpText = health ? `${displayedHP} of ${health.maximum} HP${projected ? ` after ${moveName}, ${rollDescription}${range}. Current HP: ${health.current}.` : settledFact ? "." : ""}${settledFact ? ` ${settledFact}.` : ""}` : "";
   const rosterPanel = rosterPanels?.[slot.role] ?? (rosterState ? getRosterPanel(rosterState, slot.role, runtime) : undefined);
   const hasRoster = rosterPanel?.choices.some((choice) => choice.source);
 
@@ -141,10 +149,13 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
         <>
           <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
           <p className="tabular-nums"><span className="text-xl font-bold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
-          <div role="meter" aria-label={`${species?.name ?? side} ${position} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className="mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
+          <div role="meter" aria-label={`${species?.name ?? side} ${position} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
+            {/* The least to the most HP left, over the selected roll's fill. */}
+            {projected && range && <div data-hp-range aria-hidden="true" className="absolute inset-y-0 bg-text/25" style={{ left: `${projected.min / health.maximum * 100}%`, width: `${(projected.max - projected.min) / health.maximum * 100}%` }} />}
           </div>
-          {projected && <p className="mt-1 text-xs tabular-nums text-muted">Current HP: {health.current} / {health.maximum}</p>}
+          {settledFact ? <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{settledFact}</p>
+            : projected && <p className="mt-1 text-xs tabular-nums text-muted">Current HP: {health.current} / {health.maximum}</p>}
         </>
       ) : <p className="mt-2 text-sm font-semibold text-danger">{issues.some((issue) => issue.field === "currentHP") ? "Edit HP to fix the current value"
         : issues.length === 1 && issues[0].field === "preparedMoves" ? issues[0].message.replace(/ A learnset is not proof.*$/, "")
@@ -222,7 +233,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
   );
 }
 
-export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, runtime = championsRuntime, magicRoom = false, terrain = "", gameType, ...editProps }: Props) {
+export default function MatchupSummary({ attacker, defender, issues, attack, replacement, resultIdentity, selectedRow, rollMode, onRollModeChange, blockedReason, movesControl, onActivateMove, onShowMove, runtime = championsRuntime, magicRoom = false, terrain = "", gameType, settledHP, ...editProps }: Props) {
   const id = useId();
   const selectedMoveId = attack.moveId;
   const source = sameMoveOwner(attack.owner, getMoveOwner(attacker)) ? attacker : sameMoveOwner(attack.owner, getMoveOwner(defender)) ? defender : null;
@@ -234,7 +245,9 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   const currentResult = source && resultIdentity && sameMoveOwner(resultIdentity.source, getMoveOwner(source)) && sameMoveOwner(resultIdentity.receiver, getMoveOwner(receiver));
   const row = currentResult && selectedMoveId && selectedRow?.moveId === selectedMoveId && !blockedReason ? selectedRow : undefined;
   const moveName = row?.effectiveName ?? move?.name ?? selectedMoveId;
-  const preview = previewRemainingHP(receiver.build, row, rollMode, runtime);
+  // The result's sides are the move's user and its target.
+  const settled = currentResult && !blockedReason ? settledHP : undefined;
+  const preview = previewRemainingHP(receiver.build, row, rollMode, runtime, settled?.defender);
   // Uses to KO covers every roll, so the roll choice above never changes it.
   const usesToKO = row?.kind === "calculated" ? usesToKOText(row) : null;
   const rollDescription = `${rollLabels[rollMode]} ${rollMode === "average" ? "estimate" : "roll"}`;
@@ -279,6 +292,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
               projected={slot === receiver && preview.status === "ready" ? preview : null}
               moveName={moveName}
               selectedResult={slot === source ? row : undefined}
+              settled={slot === source ? settled?.attacker : slot === receiver ? settled?.defender : undefined}
               runtime={runtime}
               rollDescription={rollDescription}
               attack={attack}
@@ -304,12 +318,13 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
                 {row?.effectiveName && move && row.effectiveName !== move.name && <p className="mt-1 wrap-anywhere text-xs text-muted">From {move.name} · {row.effectiveType} · {row.effectiveCategory} · Power {row.effectivePower ?? "—"}</p>}
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
                   <>
-                    {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage} damage</strong> · {rollDescription}</p>}
+                    {preview.status === "ready" && <p className="mt-1 text-sm tabular-nums text-text"><strong>{preview.damage === null ? `${preview.current} → ${preview.remaining} HP` : `${preview.damage} damage`}</strong> · {rollDescription}</p>}
                     {row?.kind === "calculated" && <p className="mt-1 text-xs tabular-nums text-muted">{formatRange(row.min, row.max)} damage range{hits && `, ${hits}`}{row.alternate ? `, or ${formatRange(row.alternate.min, row.alternate.max)} with ${row.alternate.label} (${Math.round(row.alternate.chance * 100)}% chance)` : ""} · One-use KO: {koChance(row)} (all rolls{row.alternate ? ", both cases" : ""})</p>}
                     {usesToKO && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">Uses to KO: {row?.usesToKO ? <span className="font-semibold text-text"><KOText text={usesToKO.label} /></span> : usesToKO.label}{usesToKO.details.map((detail, index) => <Fragment key={index}> · <KOText text={detail} /></Fragment>)}</p>}
                     {preview.status === "ready" ? (
                       <>
-                        <p className="mt-1 text-sm text-text">{receiverPosition} Pokémon HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
+                        <p className="mt-1 text-sm text-text">{receiverName ?? `${receiverPosition} Pokémon`} HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
+                        {preview.heals && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{preview.heals.join(" ")}</p>}
                         {preview.alternate && <p className="mt-1 text-xs tabular-nums text-muted">With {preview.alternate.label} ({Math.round(preview.alternate.chance * 100)}% chance, same {rollDescription}): {preview.alternate.damage} damage, {preview.alternate.remaining} / {preview.maximum} HP remaining.</p>}
                       </>
                     ) : <p className="mt-1 text-sm text-muted">{preview.reason}</p>}

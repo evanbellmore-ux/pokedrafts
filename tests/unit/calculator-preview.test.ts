@@ -106,7 +106,7 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
     expect(average).not.toBe(Math.round((20 + max) / 2));
   });
 
-  it("subtracts chosen damage before clamping rather than averaging clamped HP outcomes", () => {
+  it("without a one-use outcome, subtracts the chosen damage before clamping rather than averaging clamped HP outcomes", () => {
     const row = damage({ min: 20, max: 92, rolls: [...Array(15).fill(20), 92] });
     const selectedDamage = mode === "low" ? 20 : mode === "high" ? 92 : 25;
     expect(preview({ ...createBuild("venusaur"), currentHP: 30 }, row)).toMatchObject({
@@ -192,7 +192,7 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
     expect(preview(createBuild(), damage({ ohkoChance })).status).toBe("unavailable");
   });
 
-  it("keeps Champions raw damage and KO separate from a survival-limited preview", () => {
+  it("previews Champions damage from the row's exact use, the full-HP Focus Sash included, and withholds for Focus Band", () => {
     const attacker = createBuild("charizard");
     attacker.nature = "Timid";
     attacker.points = { hp: 2, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };
@@ -204,30 +204,37 @@ describe.each(modes)("remaining HP preview (%s roll)", (mode) => {
       return result.results.find((row) => row.moveId === "flamethrower")!;
     };
     const raw = calculate(defender);
-    const selectedDamage = mode === "low" ? 138 : mode === "high" ? 164 : 151;
-    expect(raw).toMatchObject({ min: 138, max: 164, ohkoChance: 6 / 16 });
-    expect(preview(defender, raw)).toEqual({ status: "ready", min: 0, max: 17, current: 155, maximum: 155, damage: selectedDamage, remaining: Math.max(0, 155 - selectedDamage) });
+    // HP left on the rolls 138–164 from 155 HP: 17, 15, 15, 11, 11, 9, 5, 5, 3, 3 and six knockouts (94 / 16 = 5.875).
+    expect(raw).toMatchObject({ min: 138, max: 164, ohkoChance: 6 / 16, afterUse: { start: 155, low: 17, high: 0, average: 5.875, min: 0, max: 17, koChance: 6 / 16, heals: [] } });
+    const remaining = mode === "low" ? 17 : mode === "high" ? 0 : 6;
+    // The damage is the HP the hit takes off, so the highest roll's overkill is not counted.
+    expect(preview(defender, raw)).toEqual({ status: "ready", min: 0, max: 17, current: 155, maximum: 155, damage: 155 - remaining, remaining });
     const sash = { ...defender, itemId: "focussash" };
     const protectedRow = calculate(sash);
-    expect(protectedRow).toMatchObject({ min: 138, max: 164, ohkoChance: 0 });
+    // The six knockout rolls leave 1 HP instead ((94 + 6) / 16 = 6.25).
+    expect(protectedRow).toMatchObject({ min: 138, max: 164, ohkoChance: 0, afterUse: { low: 17, high: 1, average: 6.25, min: 1, max: 17, koChance: 0 } });
     const before = structuredClone({ sash, protectedRow });
-    expect(preview(sash, protectedRow).status).toBe("unavailable");
+    const sashLeft = mode === "high" ? 1 : remaining;
+    expect(preview(sash, protectedRow)).toEqual({ status: "ready", min: 1, max: 17, current: 155, maximum: 155, damage: 155 - sashLeft, remaining: sashLeft });
     expect({ sash, protectedRow }).toEqual(before);
     const band = { ...defender, itemId: "focusband" };
     const bandRow = calculate(band);
     expect(bandRow.ohkoChance).toBeNull();
-    expect(preview(band, bandRow).status).toBe("unavailable");
+    expect(bandRow.afterUse).toBeUndefined();
+    expect(preview(band, bandRow)).toEqual({ status: "unavailable", reason: "Remaining HP is withheld for Focus Band." });
   });
 
-  it("previews an actual immunity but withholds actual multi-hit damage", () => {
+  it("previews an actual immunity and actual multi-hit damage", () => {
     const defender = createBuild("audino");
     const immune = calculateMatchup(createBuild("gengar"), defender, createConditions()).results.find((row) => row.moveId === "shadowball");
     expect(immune).toMatchObject({ kind: "calculated", min: 0, max: 0 });
     const health = getBuildHealth(defender)!;
     expect(preview(defender, immune)).toEqual({ status: "ready", ...health, min: health.current, max: health.current, damage: 0, remaining: health.current });
     const multi = calculateMatchup(createBuild("heracrossmega"), defender, createConditions()).results.find((row) => row.moveId === "bulletseed");
-    expect(multi).toMatchObject({ kind: "calculated", hits: 5, ohkoChance: null });
-    expect(preview(defender, multi).status).toBe("unavailable");
+    expect(multi).toMatchObject({ kind: "calculated", hits: 5, ohkoChance: 0, afterUse: { start: 178, low: 83, high: 63, average: 73.9375, min: 63, max: 83, koChance: 0, heals: [] } });
+    const remaining = mode === "low" ? 83 : mode === "high" ? 63 : 74;
+    expect(preview(defender, multi)).toEqual({ status: "ready", min: 63, max: 83, current: 178, maximum: 178, damage: 178 - remaining, remaining });
+    expect(preview(defender, { ...multi!, afterUse: undefined }).status).toBe("unavailable");
   });
 });
 

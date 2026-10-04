@@ -65,7 +65,10 @@ describe("moves that check accuracy for every hit", () => {
     const one = row("tripleaxel", weavile, garchomp, { hits: 1 });
     expect(one.assumptions).toContain("Triple Axel: 1 of 3 hits land.");
     expect(one.ohkoChance).toBe(0);
-    expect(row("tripleaxel", weavile, garchomp).ohkoChance).toBeNull();
+    // All 3 hits (340–412) always knock the 183 HP Garchomp out: the one use's exact KO chance (afterUse).
+    const all = row("tripleaxel", weavile, garchomp);
+    expect(all.ohkoChance).toBe(1);
+    expect(all.ohkoChance).toBe(all.afterUse!.koChance);
   });
 
   it("asks again for a count outside 1 to the maximum", () => {
