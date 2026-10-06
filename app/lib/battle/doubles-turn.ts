@@ -21,7 +21,10 @@ import {
 } from "./doubles-world";
 import { getBerryResistType } from "@smogon/calc/dist/items";
 import { getMoveEffectiveness } from "@smogon/calc/dist/mechanics/util";
-import { berryArithmetic, berryUnnerved, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, PINCH_STAT_BERRIES, stolenEat, UNNERVES, type TurnUnnerve } from "./hit-loop";
+import {
+  berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_STAT_BERRIES, stolenEat, UNNERVES,
+  type Berry, type TurnUnnerve,
+} from "./hit-loop";
 import { isMaxActive } from "./mechanics";
 import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
 import type { BattleRuntime } from "./runtime";
@@ -599,7 +602,7 @@ function execute(ctx: Ctx, w: World, action: PendingAction): World[] {
     out.push(stopped);
     w.mass *= 1 - chance;
   }
-  if (action.moveId === "focuspunch" && mon.focusLost) {
+  if (mon.focusLost && focuses(ctx, w, action.slot, action.moveId)) {
     if (step) bump(step.skipped, "Loses its focus (Focus Punch).", w.mass);
     out.push(w);
     return out;
@@ -803,7 +806,28 @@ function giveStatus(ctx: Ctx, w: World, slot: DoublesSlotId, status: GivenStatus
   const item = mon.build.itemId;
   const cures = item === "lumberry" || (status === "psn" && item === "pechaberry") || (status === "brn" && item === "rawstberry") || (status === "par" && item === "cheriberry");
   const unnerved = DOUBLES_SLOTS.some((other) => alive(w, other) && other !== w.ghost && isFoe(other, slot) && UNNERVES.has(w.mons[other]!.build.abilityId));
-  if (cures && itemWorks(w, mon.build) && !unnerved) mon.build = { ...mon.build, itemId: "", status: "" };
+  if (cures && itemWorks(w, mon.build) && !unnerved) {
+    mon.build = { ...mon.build, itemId: "", status: "" };
+    pouchHeal(ctx, w, slot);
+  }
+}
+
+/**
+ * Cheek Pouch's heal as `slot` eats a Berry that heals nothing itself, a status Berry (data/abilities.ts cheekpouch
+ * onEatItem: a third of its base maximum HP, capped at the maximum; none once fainted), applied to `w` in place.
+ */
+function pouchHeal(ctx: Ctx, w: World, slot: DoublesSlotId) {
+  if (w.mons[slot]!.build.abilityId !== "cheekpouch") return;
+  const { maxHP, baseMaxHP } = ctx.hp[slot];
+  const pouch = Math.max(1, Math.floor(baseMaxHP / 3));
+  const [only] = mapHP(w, slot, (hp) => {
+    if (hp <= 0) return { hp, tag: "" };
+    const healed = Math.min(maxHP, hp + pouch);
+    noteHeal(ctx, slot, "Cheek Pouch", healed - hp);
+    return { hp: healed, tag: "" };
+  });
+  // One tag: the same world, its HP moved.
+  w.factors = only.world.factors;
 }
 
 /**
@@ -1029,8 +1053,8 @@ function stanceChange(ctx: Ctx, w: World, slot: DoublesSlotId, blade: boolean) {
 // Damaging moves (SPEC §4.4 steps 4-8, §4.5)
 // ------------------------------------------------------------------------------------------------------------------
 
-/** The type the move has when it is used against `target` (after ModifyType: an -ate ability, Weather Ball...), from its calculation. */
-function usedType(ctx: Ctx, w: World, attacker: DoublesSlotId, moveId: string, target: DoublesSlotId, info: Extract<TurnMove, { kind: "move" }>, context: MoveContext | undefined): string {
+/** The move's calculation against `target` as it is used (after ModifyType: an -ate ability, Weather Ball...), memoised. */
+function usedRow(ctx: Ctx, w: World, attacker: DoublesSlotId, moveId: string, target: DoublesSlotId, context: MoveContext | undefined): MoveDamageResult {
   const conditions = conditionsFor(ctx, w, attacker, target, false);
   const key = JSON.stringify(["type", moveId, calcBuild(w, attacker), calcBuild(w, target), conditions, context]);
   let row = ctx.memo.rows.get(key);
@@ -1038,7 +1062,23 @@ function usedType(ctx: Ctx, w: World, attacker: DoublesSlotId, moveId: string, t
     countCalculation(ctx);
     ctx.memo.rows.set(key, row = calculateTurnMove(ctx.runtime.movesById.get(moveId)!, calcBuild(w, attacker), calcBuild(w, target), { ...conditions, defenderSide: { ...conditions.defenderSide, protect: false, priorityShield: false } }, context, ctx.runtime));
   }
-  return row.effectiveType ?? info.effective.type;
+  return row;
+}
+
+/** The type the move has when it is used against `target` (after ModifyType: an -ate ability, Weather Ball...), from its calculation. */
+function usedType(ctx: Ctx, w: World, attacker: DoublesSlotId, moveId: string, target: DoublesSlotId, info: Extract<TurnMove, { kind: "move" }>, context: MoveContext | undefined): string {
+  return usedRow(ctx, w, attacker, moveId, target, context).effectiveType ?? info.effective.type;
+}
+
+/**
+ * The Z-Move or Max Move a converted move is when used against `target`: the type it takes first (Weather Ball,
+ * Terrain Pulse, Revelation Dance, Multi-Attack, a Max Move's -ate ability) picks it (hit-loop.ts usedMoveName), which
+ * resolveTurnMove, before the calculation types the move, names Breakneck Blitz or Max Strike. Its own effects follow it.
+ */
+function usedMove(ctx: Ctx, w: World, attacker: DoublesSlotId, moveId: string, target: DoublesSlotId, info: Extract<TurnMove, { kind: "move" }>): { name: string; type: string } {
+  if (!info.transformed || !["Breakneck Blitz", "Max Strike"].includes(info.effective.name)) return { name: info.effective.name, type: info.effective.type };
+  const row = usedRow(ctx, w, attacker, moveId, target, ctx.input.pokemon[attacker]!.contexts[moveId]);
+  return { name: row.effectiveName ?? info.effective.name, type: row.effectiveType ?? info.effective.type };
 }
 
 /** The attacker's breaker ignores the target's breakable ability (Mold Breaker and its kin, ignoreAbility moves), unless an Ability Shield keeps it. */
@@ -1151,7 +1191,9 @@ function resolveTargets(ctx: Ctx, w: World, action: PendingAction, info: Extract
     else picks = [{ world: w, target: living[0], facts: [`${ctx.names[chosen]} fainted: ${move.name} hits ${ctx.names[living[0]]}.`] }];
   }
   if (!picks.length) return [{ world: w, targets: [], spread: false, facts: [] }];
-  const tracks = TRACKS_TARGET_MOVES.has(move.id) || TRACKING_ABILITIES.has(w.mons[attacker]!.build.abilityId);
+  // Snipe Shot's tracksTarget is its own, not its Max Move's (sim/pokemon.ts getMoveTargets reads the move used); Stalwart and
+  // Propeller Tail set it on any move (their onModifyMove).
+  const tracks = (TRACKS_TARGET_MOVES.has(move.id) && !info.transformed) || TRACKING_ABILITIES.has(w.mons[attacker]!.build.abilityId);
   const darts = move.id === "dragondarts" && !info.transformed;
   return picks.flatMap(({ world, target, facts }) => {
     const taken = tracks ? null : redirect(ctx, world, attacker, target, info, move.id, context);
@@ -1273,6 +1315,16 @@ function absorbEffect(ctx: Ctx, w: World, slot: DoublesSlotId, ability: string, 
   });
 }
 
+/**
+ * noteHeal for `slot`'s HP or pinch Berry `item` eaten at `hp`: the Berry's heal and Cheek Pouch's as their own lines
+ * (hit-loop.ts berryHeals), as the turn's steps list them (uses-to-ko.ts noteBerry, noteAttackerBerry).
+ */
+function noteBerry(ctx: Ctx, slot: DoublesSlotId, item: string, berry: Berry, hp: number) {
+  const { heal, pouch } = berryHeals(berry, hp);
+  noteHeal(ctx, slot, itemName(ctx, item), heal);
+  noteHeal(ctx, slot, "Cheek Pouch", pouch);
+}
+
 function noteHeal(ctx: Ctx, slot: DoublesSlotId, source: string, amount: number) {
   if (ctx.mode !== "all" || amount <= 0) return;
   let heals = ctx.heals.get(slot);
@@ -1319,7 +1371,7 @@ function afterLoss(ctx: Ctx, w: World, slot: DoublesSlotId, ...losses: (number |
     for (const group of losses) {
       if (hp <= 0) break;
       for (const loss of typeof group === "number" ? [group] : group) hp = Math.max(0, hp - loss);
-      if (berry && !ate && hp > 0 && hp <= berry.line) { const healed = eatBerry(berry, hp); noteHeal(ctx, slot, itemName(ctx, item), healed - hp); hp = healed; ate = true; }
+      if (berry && !ate && hp > 0 && hp <= berry.line) { noteBerry(ctx, slot, item, berry, hp); hp = eatBerry(berry, hp); ate = true; }
     }
     return { hp, tag: `${hp <= 0 ? "fainted" : "in"}|${ate ? "ate" : ""}` };
   });
@@ -1371,16 +1423,15 @@ function berryDue(ctx: Ctx, w: World, slot: DoublesSlotId): World[] {
   if (!item || !itemWorks(w, mon.build)) return [w];
   // data/items.ts lumberry, cheriberry, chestoberry, pechaberry, rawstberry, aspearberry onUpdate.
   const cures = item === "lumberry" ? !!status : { cheriberry: ["par"], chestoberry: ["slp"], pechaberry: ["psn", "tox"], rawstberry: ["brn"], aspearberry: ["frz"] }[item]?.includes(status) ?? false;
-  if (cures) { mon.build = { ...mon.build, itemId: "", status: "" }; return [w]; }
+  if (cures) { mon.build = { ...mon.build, itemId: "", status: "" }; pouchHeal(ctx, w, slot); return [w]; }
   if (!(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item]) || item === "enigmaberry") return [w];
   const { maxHP, baseMaxHP } = ctx.hp[slot];
   const berry = berryArithmetic(item, { maxHP, baseMaxHP, ability: mon.build.abilityId }, ctx.runtime.profile.generation);
   if (![...marginal(w, slot).keys()].some((hp) => hp > 0 && hp <= berry.line)) return [w];
   return mapHP(w, slot, (hp) => {
     if (hp <= 0 || hp > berry.line) return { hp, tag: "" };
-    const healed = eatBerry(berry, hp);
-    noteHeal(ctx, slot, itemName(ctx, item), healed - hp);
-    return { hp: healed, tag: "ate" };
+    noteBerry(ctx, slot, item, berry, hp);
+    return { hp: eatBerry(berry, hp), tag: "ate" };
   }).map(({ world, tag }) => {
     if (tag === "ate") ateBerry(ctx, world, slot, item);
     return world;
@@ -1420,6 +1471,7 @@ function damagingMove(ctx: Ctx, w: World, action: PendingAction, move: Champions
     }
     // TryMove and Try (SPEC §4.4 step 5): TryMove reads the last target (sim/battle-actions.ts useMoveInner).
     const last = resolution.targets[resolution.targets.length - 1];
+    if (step && info.transformed) { const used = usedMove(ctx, world, attacker, move.id, last, info); step.effectiveName = used.name; step.effectiveType = used.type; }
     const failure = moveFailure(ctx, world, action, move, last, priority, info);
     if (failure) { stepFact(ctx, action, failure, world.mass); out.push(world); continue; }
     // PrepareHit (sim/battle-actions.ts trySpreadMoveHit): Protean and Libero; an exploding user has already fainted.
@@ -1491,11 +1543,13 @@ function chargeTurn(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMo
 function moveFailure(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove, target: DoublesSlotId, priority: number, info?: Extract<TurnMove, { kind: "move" }>): string | null {
   const queued = w.remaining.find((entry) => entry.slot === target && alive(w, target));
   const queuedMove = queued?.moveId ? ctx.runtime.movesById.get(queued.moveId) : undefined;
-  // Sucker Punch and Thunderclap pass a target about to use Me First (data/moves.ts suckerpunch, thunderclap onTry).
-  if (TARGET_ATTACK_MOVES.has(move.id) && (!queuedMove || (queuedMove.category === "Status" && queuedMove.id !== "mefirst"))) {
+  // Sucker Punch and Thunderclap pass a target about to use Me First (data/moves.ts suckerpunch, thunderclap onTry); their
+  // Z-Move or Max Move has no onTry (hit-loop.ts ownMoveId), nor Upper Hand's.
+  const own = info?.transformed ? "" : move.id;
+  if (TARGET_ATTACK_MOVES.has(own) && (!queuedMove || (queuedMove.category === "Status" && queuedMove.id !== "mefirst"))) {
     return `${move.name} fails: ${ctx.names[target]} has no attacking move.`;
   }
-  if (move.id === "upperhand" && (!queuedMove || queuedMove.category === "Status" || priorityOf(ctx, w, queued!) <= 0.1)) return `Upper Hand fails: ${ctx.names[target]} has no priority attack.`;
+  if (own === "upperhand" && (!queuedMove || queuedMove.category === "Status" || priorityOf(ctx, w, queued!) <= 0.1)) return `Upper Hand fails: ${ctx.names[target]} has no priority attack.`;
   // Damp (data/abilities.ts damp onAnyTryMove): any active holder stops the explosions in TryMove; breakable, so the
   // user's Mold Breaker passes another's (not an Ability Shield holder's).
   if (DAMP_MOVES.has(move.id) && info && !info.transformed) {
@@ -1710,12 +1764,12 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
 /**
  * The target's Berry Bug Bite, Pluck or Incinerate took in a step (data/moves.ts bugbite, pluck, incinerate onHit), or null:
  * the Berry it held before the step and no longer holds, unless the step's damage ate it (a resist Berry) or its unbroken
- * Sticky Hold kept it and it ate it itself (Sticky Hold lets go only once its holder has fainted).
+ * Sticky Hold kept it and it ate it itself (Sticky Hold lets go only once its holder has fainted). Their Z-Move or Max Move
+ * takes nothing (hit-loop.ts ownMoveId).
  */
 function stolenInStep(w: World, action: PendingAction, target: DoublesSlotId, entry: SearchEntry, info: Extract<TurnMove, { kind: "move" }>,
   before: { user: BattleBuild; receiver: BattleBuild }, after: BattleBuild, knocked: boolean): string | null {
-  const id = action.moveId!;
-  if (info.transformed || (id !== "bugbite" && id !== "pluck" && id !== "incinerate")) return null;
+  if (!BERRY_STEALERS.has(ownMoveId(action.moveId!, info))) return null;
   const held = before.receiver.itemId;
   if (!held.endsWith("berry") || after.itemId === held) return null;
   const resisted = entry.trace?.result?.rawDesc.defenderItem;
@@ -1890,8 +1944,20 @@ function flinchCheck(ctx: Ctx, w: World, action: PendingAction, target: DoublesS
   const broken = breaks(w, action.slot, target, info);
   const blocked = user.build.abilityId === "sheerforce" || (ability === "shielddust" && !broken) || (ability === "innerfocus" && !broken)
     || (receiver.build.itemId === "covertcloak" && itemWorks(w, receiver.build)) || isMaxActive(receiver.build)
-    || w.remaining.some((entry) => entry.slot === target && entry.moveId === "focuspunch");
+    || w.remaining.some((entry) => entry.slot === target && focuses(ctx, w, target, entry.moveId));
   if (!blocked) receiver.flinched = moveName(ctx, action.moveId!);
+}
+
+/**
+ * Whether `slot`'s move this turn is a focusing Focus Punch (data/moves.ts focuspunch: its priorityChargeCallback adds the
+ * focus volatile as the turn starts, which a damaging hit breaks (beforeMoveCallback) and which resists a flinch); its
+ * Z-Move and Max Move do not focus (sim/battle-queue.ts: no priorityChargeCallback with action.zmove or action.maxMove;
+ * runMove calls the converted move's beforeMoveCallback: hit-loop.ts ownMoveId).
+ */
+function focuses(ctx: Ctx, w: World, slot: DoublesSlotId, moveId: string | null): boolean {
+  if (moveId !== "focuspunch") return false;
+  const info = moveInfo(ctx, w, slot, moveId, ctx.input.pokemon[slot]!.contexts[moveId]);
+  return info.kind === "move" && !info.transformed;
 }
 
 /**
@@ -2198,7 +2264,7 @@ function neutralRow(ctx: Ctx, w: World, attacker: DoublesSlotId, target: Doubles
  */
 function maxEffects(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMove, { kind: "move" }>, target: DoublesSlotId) {
   const attacker = action.slot;
-  const name = info.effective.name;
+  const name = usedMove(ctx, w, attacker, action.moveId!, target, info).name;
   const effect = MAX_MOVE_EFFECTS[name];
   const partner = allyOf(attacker);
   const foes = [...foesOf(attacker)].sort((a, b) => SHOWDOWN_POSITION[a].position - SHOWDOWN_POSITION[b].position).filter((slot) => alive(w, slot));
@@ -2474,7 +2540,12 @@ function turnFacts(input: DoublesTurnInput): string[] {
   // Only the stalling moves with a protect volatile read the last turn (data/moves.ts protect onPrepareHit StallMove);
   // Wide Guard and Quick Guard check queue.willAct() alone from generation 7 (their onTry).
   if (moves.some((id) => PROTECT_MOVES[id])) facts.push("Assumes no protecting move was used last turn.");
-  if (moves.some((id) => FIRST_TURN_MOVES.has(id))) facts.push("Assumes the attacker's first turn in battle.");
+  // Fake Out's and First Impression's own onTry (not their Z-Move's or Max Move's: hit-loop.ts ownMoveId).
+  const firstTurn = DOUBLES_SLOTS.some((slot) => {
+    const entry = input.pokemon[slot], id = entry?.action.moveId;
+    return !!entry && !!id && !targetless.has(slot) && FIRST_TURN_MOVES.has(ownMoveId(id, { isZ: !!entry.contexts[id]?.useZ, isMax: isMaxActive(entry.build) }));
+  });
+  if (firstTurn) facts.push("Assumes the attacker's first turn in battle.");
   if (input.field.trickRoom || moves.includes("trickroom")) facts.push("Trick Room: slower Pokémon move first.");
   return facts;
 }

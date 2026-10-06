@@ -7,10 +7,10 @@ import { calculateSMSSSV } from "@smogon/calc/dist/mechanics/gen789";
 import { getMoveEffectiveness } from "@smogon/calc/dist/mechanics/util";
 import type { BattleRuntime } from "./runtime";
 import type { AfterUse, BattleBuild, BattleConditions, BattleGame, BattleStatus, ChampionsMove, CombatStat, MoveContext, MoveDamageResult, UsesToKO } from "./types";
-import { CHARGE_MOVES, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, STATUS_MOVES, statMove, type Stages as StageChanges } from "./stat-moves";
+import { CHARGE_MOVES, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type Stages as StageChanges } from "./stat-moves";
 import {
-  berryArithmetic, berryUnnerved, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, KLUTZ_IGNORED_ITEMS, PINCH_HEAL_BERRIES,
-  PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, walkHits,
+  berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, ITEM_MOVES,
+  KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, usedMoveName, walkHits,
   type Berry, type HitLoopInput, type HitState, type HitWalk, type StolenEat, type TurnUnnerve,
 } from "./hit-loop";
 import { hitCountRule, type HitChance } from "./hit-count";
@@ -92,6 +92,11 @@ export type UsesHelpers = {
   /** The first hit (0-based) whose user is burned by Spicy Spray, or null. */
   spicySpray: (result: Result, attacker: BattleBuild, conditions: BattleConditions) => number | null;
   makeField: (conditions: BattleConditions) => Field;
+  /**
+   * The critical-hit ratio (1 by default; calculate.ts certainCrit) `build` uses `moveId` with: a Dynamaxed build's
+   * Max Move has the default, before the attacker's own raises; 0 before generation 6 (no certain ratio there).
+   */
+  critRatio: (moveId: string, build: BattleBuild, other: BattleBuild, context: MoveContext | undefined, conditions: BattleConditions) => number;
 };
 
 type Stages = Record<CombatStat, number>;
@@ -226,14 +231,12 @@ const STATUS_READS: Record<string, readonly BattleStatus[] | "any"> = {
 const SEMI_INVULNERABLE_MOVES = new Set(["bounce", "dig", "dive", "fly", "phantomforce", "shadowforce", "skydrop"]);
 /** The largest double below 1: a chance that is not certain is never reported as 1. */
 const BELOW_ONE = 1 - Number.EPSILON / 2;
-const BERRY_STEALERS = new Set(["bugbite", "pluck", "incinerate"]);
 /** Why a count or a turn is not estimated when a Starf Berry is eaten: it raises a stat chosen at random (data/items.ts starfberry this.sample). */
 export const STARF_REASON = "Starf Berry raises a random stat";
 /** Target Berries that hit back once (pinned Showdown jabocaberry and rowapberry onDamagingHit): the category each answers. */
 const RETALIATION_BERRIES: Record<string, "Physical" | "Special"> = { jabocaberry: "Physical", rowapberry: "Special" };
 /** An attacker HP no loss in one use reaches: a walk of the hits from it neither faints nor heals (what the hits do but that HP). */
 const UNTRACKED = 2 ** 40;
-const ITEM_MOVES = new Set(["knockoff", "poltergeist", "acrobatics", "covet", "thief", "bugbite", "pluck", "incinerate"]);
 /** Held items whose loss changes no damage (what they do that does is carried as stages, HP or residuals). */
 const NEUTRAL_ITEMS = new Set([...HEALING_BERRIES, ...Object.keys(PINCH_STAT_BERRIES), "lumberry", "rawstberry", "cheriberry", "pechaberry", "aspearberry", "chestoberry", "persimberry",
   "keeberry", "marangaberry", "luminousmoss", "absorbbulb", "cellbattery", "snowball", "weaknesspolicy", "throatspray", "focussash", "focusband",
@@ -456,7 +459,8 @@ function countUses(m: UsesMatchup, input: UsesRow, searchOf: () => UsesSearch): 
   if (!result || row.min === null || row.max === null || row.hits === null) return { kind: "not-estimated", reason: "No damage result to repeat" };
   if (conditions.defenderSide.protect) return { kind: "not-estimated", reason: "The target may not protect again" };
   if (result.defender.hasItem("Focus Band")) return { kind: "not-estimated", reason: "Focus Band: 10% to survive each KO hit" };
-  const engineId = id(result.move.name);
+  // The Z-Move or Max Move the use is (hit-loop.ts usedMoveName: a Weather Ball in hail is Max Hailstorm).
+  const engineId = id(usedMoveName(move.name, result.move));
   // A Dynamaxed attacker's row is its Max Move while Dynamax lasts, and the row's own move after it.
   const maxed = !!result.move.isMax;
   const unmodelled = unmodelledReason(m, move, result, engineId);
@@ -466,8 +470,9 @@ function countUses(m: UsesMatchup, input: UsesRow, searchOf: () => UsesSearch): 
   if (m.attAbility === "powerconstruct" && attacker.speciesId.startsWith("zygarde") && attacker.speciesId !== "zygardecomplete" && !attacker.transformedFrom && search.attackerCanHalve()) {
     return { kind: "not-estimated", reason: "Power Construct changes its form" };
   }
-  // False Swipe and Hold Back leave 1 HP, and Endeavor stops at the user's HP: only the target's end of turn can then knock it out.
-  const spares = row.leavesOneHP ? `${row.effectiveName ?? move.name} leaves at least 1 HP` : move.id === "endeavor" && !maxed ? "Can't lower HP below the user's" : null;
+  // False Swipe and Hold Back leave 1 HP, and Endeavor stops at the user's HP (not as a Z-Move or Max Move: hit-loop.ts
+  // ownMoveId): only the target's end of turn can then knock it out.
+  const spares = row.leavesOneHP ? `${row.effectiveName ?? move.name} leaves at least 1 HP` : ownMoveId(move.id, result.move) === "endeavor" ? "Can't lower HP below the user's" : null;
   if (spares && !search.endOfTurnDamage()) return { kind: "never", reason: spares };
   // One use at most: the user faints, the move fails after its first turn out, a Z-Move, or the move cannot work again.
   const once = result.move.isZ ? "Z-Moves are once per battle" : maxed ? null : onceReason(m, move);
@@ -478,7 +483,7 @@ function countUses(m: UsesMatchup, input: UsesRow, searchOf: () => UsesSearch): 
     const koChance = counted.guaranteed === 1 ? 1 : uncertain(counted.ko[0] ?? 0, counted.fewest === 1);
     return { kind: "single-use", reason: once, koChance };
   }
-  const caps = [maxed ? dynamaxCap(m, move) : null, search.perishCap()].filter((cap): cap is UsesCap => cap !== null);
+  const caps = [maxed ? dynamaxCap(m, move) : null, maxed ? chiStrikeCap(m, move, input.context, engineId) : null, search.perishCap()].filter((cap): cap is UsesCap => cap !== null);
   return search.usesToKO(caps.length ? caps.reduce((a, b) => b.uses < a.uses ? b : a) : null);
 }
 
@@ -506,6 +511,25 @@ function dynamaxCap(m: UsesMatchup, move: ChampionsMove): UsesCap | null {
   return once ? { uses: maxUses + 1, reason: once } : null;
 }
 
+/**
+ * G-Max Chi Strike (pinned Showdown data/moves.ts gmaxchistrike: the gmaxchistrike volatile, +1 critical-hit ratio per
+ * use up to 3 layers, onModifyCritRatio, kept once Dynamax ends) makes a later use's hits critical once its ratio
+ * reaches the certain one (4, calculate.ts certainCrit), where the count reads no critical hit below it. A count that
+ * is certain by that use is the same with its critical hits (they only add damage), so the count stops there. Null when
+ * no use within reach becomes certain, or the first already is.
+ */
+function chiStrikeCap(m: UsesMatchup, move: ChampionsMove, context: MoveContext | undefined, engineId: string): UsesCap | null {
+  if (engineId !== "gmaxchistrike" || m.conditions.critical) return null;
+  const maxUses = m.attAbility === "truant" ? 2 : 3;
+  const dynamaxed = m.helpers.critRatio(move.id, m.attacker, m.defender, context, m.conditions);
+  const own = m.helpers.critRatio(move.id, { ...m.attacker, mechanic: undefined }, m.defender, context, m.conditions);
+  if (!dynamaxed || dynamaxed >= 4) return null;
+  for (let use = 2; use <= maxUses + 4; use++) {
+    if ((use <= maxUses ? dynamaxed : own) + Math.min(use - 1, 3) >= 4) return { uses: use, reason: "G-Max Chi Strike raises the critical-hit ratio" };
+  }
+  return null;
+}
+
 /** A chance that is not certain: below 1 however its float sum rounds, and above 0 when some sequence does it. */
 function uncertain(chance: number, possible: boolean): number {
   return Math.min(BELOW_ONE, chance > 0 || !possible ? chance : Number.MIN_VALUE);
@@ -516,16 +540,19 @@ function unmodelledReason(m: UsesMatchup, move: ChampionsMove, result: Result, e
   const { attacker, defender, attAbility, defAbility } = m;
   // A Max Move from them repeats; dynamaxCap stops the uses before the row's own move would land or trap.
   const maxed = !!result.move.isMax;
-  if (!maxed && (move.id === "futuresight" || move.id === "doomdesire")) return "Lands two turns later, one at a time";
-  if ((TRAPPING_MOVES.has(move.id) && !maxed) || TRAPPING_MOVES.has(engineId)) return "Its trap lasts 4 or 5 turns at random";
-  if (GMAX_RESIDUAL_MOVES.has(engineId)) return `${result.move.name} damages it each turn`;
+  // The move whose own effects the row's uses can run (hit-loop.ts ownMoveId): none for a Z-Move's row, whose one use is
+  // the Z-Move (no delay, trap, random target, form change...); a Max Move's row's own move once Dynamax ends.
+  const own = ownMoveId(move.id, { isZ: result.move.isZ });
+  if (!maxed && (own === "futuresight" || own === "doomdesire")) return "Lands two turns later, one at a time";
+  if ((TRAPPING_MOVES.has(own) && !maxed) || TRAPPING_MOVES.has(engineId)) return "Its trap lasts 4 or 5 turns at random";
+  if (GMAX_RESIDUAL_MOVES.has(engineId)) return `${usedMoveName(move.name, result.move)} damages it each turn`;
   if (RANDOM_STATUS_MOVES.has(engineId)) return "It inflicts a random status";
   // Pinned Showdown battle.ts getTarget picks a random foe for these on every use, the locked turns included.
-  if (move.target === "randomNormal" && !maxed && m.conditions.gameType === "Doubles" && m.conditions.multipleTargets) return "Hits a random foe each turn";
-  if (move.id === "relicsong" && attacker.speciesId.startsWith("meloetta")) return "Relic Song changes Meloetta's form";
-  if (move.id === "aurawheel" && attAbility === "hungerswitch") return "Hunger Switch flips Aura Wheel's type";
-  if (move.id === "spectralthief" && STATS.some((stat) => (defender.boosts[stat] ?? 0) > 0)) return "Spectral Thief steals its boosts";
-  if (move.id === "coreenforcer" && defAbility) return "Core Enforcer can suppress its ability";
+  if (own && move.target === "randomNormal" && !maxed && m.conditions.gameType === "Doubles" && m.conditions.multipleTargets) return "Hits a random foe each turn";
+  if (own === "relicsong" && attacker.speciesId.startsWith("meloetta")) return "Relic Song changes Meloetta's form";
+  if (own === "aurawheel" && attAbility === "hungerswitch") return "Hunger Switch flips Aura Wheel's type";
+  if (own === "spectralthief" && STATS.some((stat) => (defender.boosts[stat] ?? 0) > 0)) return "Spectral Thief steals its boosts";
+  if (own === "coreenforcer" && defAbility) return "Core Enforcer can suppress its ability";
   // Pinned Showdown powerconstruct onResidual: a Zygarde at half HP or less becomes Zygarde-Complete (which has no other form).
   if (defAbility === "powerconstruct" && defender.speciesId !== "zygardecomplete") return "Power Construct changes its form";
   if (defAbility === "colorchange") return "Color Change changes the target's type";
@@ -539,20 +566,22 @@ function unmodelledReason(m: UsesMatchup, move: ChampionsMove, result: Result, e
   if (attacker.status === "slp") return "Sleep wears off at random";
   if (attacker.status === "frz") return "Freeze thaws at random";
   // A sleeping or frozen target wakes or thaws at random: that matters when the damage reads the status, or Bad Dreams damages it while it sleeps.
-  const reads = STATUS_READS[move.id];
+  const reads = STATUS_READS[own];
   const read = (status: BattleStatus) => reads === "any" || !!reads?.includes(status) || defAbility === "marvelscale";
-  if ((defender.status === "slp" || defender.status === "frz") && read(defender.status) && !(move.id === "wakeupslap" && defender.status === "slp")) {
+  if ((defender.status === "slp" || defender.status === "frz") && read(defender.status) && !(own === "wakeupslap" && defender.status === "slp")) {
     return defender.status === "slp" ? "Sleep wears off at random" : "Freeze thaws at random";
   }
   if (defender.status === "slp" && attAbility === "baddreams" && defAbility !== "comatose") return "Sleep wears off at random";
   // Pinned Showdown shedskin onResidual: a 1 in 3 chance each turn to cure the holder's status.
   if (attAbility === "shedskin" && attacker.status) return "Shed Skin may cure its status";
-  const inflicted = !defender.status && (STATUS_MOVES[engineId] ?? (maxed ? undefined : STATUS_MOVES[move.id]))?.status;
+  const inflicted = !defender.status && (STATUS_MOVES[engineId] ?? (maxed ? undefined : STATUS_MOVES[own]))?.status;
   const orb = m.defItemOn && !defender.status && (defender.itemId === "flameorb" || defender.itemId === "toxicorb");
-  if (defAbility === "shedskin" && ((defender.status && (["brn", "psn", "tox"].includes(defender.status) || read(defender.status))) || (inflicted && inflicted !== "par") || orb)) {
+  // An inflicted paralysis matters where the damage reads the target's Speed (G-Max Volt Crash, then Electro Ball).
+  const readsInflicted = !!inflicted && (inflicted !== "par" || SPEED_MOVES.has(own));
+  if (defAbility === "shedskin" && ((defender.status && (["brn", "psn", "tox"].includes(defender.status) || read(defender.status))) || readsInflicted || orb)) {
     return "Shed Skin may cure its status";
   }
-  if (move.id === "psychicnoise" && (["leftovers", "blacksludge"].includes(m.defenderItem) || HEALING_BERRIES.has(m.defenderItem)
+  if (own === "psychicnoise" && (["leftovers", "blacksludge"].includes(m.defenderItem) || HEALING_BERRIES.has(m.defenderItem)
     || m.conditions.terrain === "Grassy" || ["raindish", "dryskin", "icebody", "poisonheal"].includes(defAbility))) return "Psychic Noise blocks healing at times";
   return null;
 }
@@ -829,10 +858,16 @@ export class UsesSearch {
   private turnAttackerAte: Map<string, [number, number]> | null = null;
   private turnRows: Map<MoveDamageResult, number> | null = null;
   private turnFailure: string | null = null;
+  /**
+   * The move whose own effects and handlers the row's uses can run (hit-loop.ts ownMoveId): none for a Z-Move's row (its one
+   * use is the Z-Move), the row's own move otherwise, a Max Move's row's once Dynamax ends. Per use: useMoveId.
+   */
+  private readonly ownMove: string;
   constructor(m: UsesMatchup, input: UsesRow, result: Result) {
     this.m = m;
     this.input = input;
     this.result = result;
+    this.ownMove = ownMoveId(input.move.id, { isZ: result.move.isZ });
     this.turnMode = m.turn;
     this.firstTurn = firstTurnOnly(m.attacker) || firstTurnOnly(m.defender);
     const { attacker, defender } = m;
@@ -929,7 +964,7 @@ export class UsesSearch {
     // stage). The closed form leaves it out.
     const own = losesHP ? this.attackerBerry(this.initial) : null;
     const stage = PINCH_STAT_BERRIES[this.initial.att.itemId];
-    if (own && (move.id === "acrobatics" || (stage && this.relevance.att.includes(stage)))) this.follow = true;
+    if (own && (this.ownMove === "acrobatics" || (stage && this.relevance.att.includes(stage)))) this.follow = true;
     const plain = own ? null : this.closedTerms();
     const walk = (mode: "lowest" | "highest") => plain ? this.closedPath(plain, mode, limit) : this.path(mode, limit);
     // Damage that reads the target's exact HP (Crush Grip, Wring Out, Hard Press) needs a calculation for
@@ -1065,8 +1100,8 @@ export class UsesSearch {
    */
   private leppaUses(pressure: boolean): number {
     const { initial, m, result } = this;
-    const moveId = this.input.move.id;
-    if ((moveId !== "bugbite" && moveId !== "pluck") || result.move.isZ || initial.def.itemId !== "leppaberry") return 0;
+    const moveId = this.ownMove;
+    if ((moveId !== "bugbite" && moveId !== "pluck") || initial.def.itemId !== "leppaberry") return 0;
     if (this.ability(initial, "def") === "stickyhold" && !moldBreaks(m, initial)) return 0;
     const eat = stolenEat("leppaberry", { baseMaxHP: initial.att.baseMaxHP, ability: this.ability(initial, "att"), ignoresItem: this.ignoresOwnItems(initial) }, m.runtime.profile.generation);
     if (!eat.leppa) return 0;
@@ -1308,9 +1343,9 @@ export class UsesSearch {
   /** noteHeal for the target's HP berry `item` eaten at `hp`: eatBerry's two parts, the berry's heal, then Cheek Pouch's. */
   private noteBerry(item: string, berry: Berry, hp: number) {
     if (!this.oneUse && !this.turnHeals) return;
-    const healed = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
-    this.noteHeal(this.m.runtime.itemsById.get(item)?.name ?? item, healed - hp);
-    if (berry.pouch) this.noteHeal("Cheek Pouch", Math.min(berry.max, healed + berry.pouch) - healed);
+    const { heal, pouch } = berryHeals(berry, hp);
+    this.noteHeal(this.m.runtime.itemsById.get(item)?.name ?? item, heal);
+    if (pouch) this.noteHeal("Cheek Pouch", pouch);
   }
 
   /**
@@ -1342,7 +1377,7 @@ export class UsesSearch {
     if (this.readsHP || this.trackAttacker || m.hpForms || this.attackerBerry(initial)) return false;
     // `berry`: but for the target's HP berry where its loss changes no damage nor its holder's Speed, nor gives the attacker a berry.
     const held = this.berryOf(initial, true);
-    if (held && !(berry && HEALING_BERRIES.has(held) && !ITEM_MOVES.has(this.input.move.id) && this.ability(initial, "att") !== "magician"
+    if (held && !(berry && HEALING_BERRIES.has(held) && !ITEM_MOVES.has(this.ownMove) && this.ability(initial, "att") !== "magician"
       && !(this.relevance.att.includes("spe") && this.ability(initial, "def") === "unburden"))) return false;
     if (initial.def.hp >= initial.def.maxHP && (this.sturdy || (m.defItemOn && initial.def.itemId === "focussash"))) return false;
     if (this.ability(initial, "def") === "angershell" || first.cases.length > 1 || ["ficklebeam", "shellsidearm"].includes(this.input.move.id)) return false;
@@ -1380,7 +1415,7 @@ export class UsesSearch {
   /** "Assumes the weather and the terrain last through every use.", without a field effect the row's own move ends. */
   private timedNote(): string | null {
     const { move } = this.input;
-    const maxEffect = MAX_MOVE_EFFECTS[this.result.move.name];
+    const maxEffect = MAX_MOVE_EFFECTS[usedMoveName(move.name, this.result.move)];
     const own = !this.result.move.isMax;
     const breaks = (own && ["brickbreak", "psychicfangs", "ragingbull"].includes(move.id)) || !!maxEffect?.clearsScreens;
     const ends = (own && ["icespinner", "steelroller"].includes(move.id)) || !!maxEffect?.clearsTerrain;
@@ -1475,8 +1510,8 @@ export class UsesSearch {
   private turnsText(): string | undefined {
     if (this.charges(this.initial, true)) return "Charges for a turn before each use";
     if (!this.afterTurns(this.initial)) return undefined;
-    const id = this.input.move.id, own = !maxActive(this.initial.att);
-    return own && RECHARGE_MOVES.has(id) ? "Recharges after each use" : own && NOT_TWICE_MOVES.has(id) ? "Can't be used twice in a row" : "Truant: one use every other turn";
+    const id = this.useMoveId(this.initial);
+    return RECHARGE_MOVES.has(id) ? "Recharges after each use" : NOT_TWICE_MOVES.has(id) ? "Can't be used twice in a row" : "Truant: one use every other turn";
   }
 
   /** Whether the attacker can lose HP over the uses (so the roll paths say when it faints, and the count checks it stands). */
@@ -1486,7 +1521,7 @@ export class UsesSearch {
     const contact = this.first.cases.some((useCase) => useCase.contact) || !!this.ownAfterMax()?.contact;
     // Mummy, Lingering Aroma and Wandering Spirit replace Magic Guard on contact.
     const guarded = m.attAbility === "magicguard" && !(contact && ["mummy", "lingeringaroma", "wanderingspirit"].includes(m.defAbility));
-    if (SELF_COST_MOVES.has(input.move.id)) return !guarded;
+    if (SELF_COST_MOVES.has(this.ownMove)) return !guarded;
     if (guarded) return false;
     if ((result.move as Move & { recoil?: unknown }).recoil || m.attackerItem === "lifeorb") return true;
     // A Max Move's row uses its own move once Dynamax ends, with that move's recoil.
@@ -1504,7 +1539,7 @@ export class UsesSearch {
     if (result.defender.hasAbility("Spicy Spray") || m.defAbility === "synchronize" || m.defenderItem === "stickybarb") return true;
     // An item taken from the target that hurts its new holder: by an attacker that holds nothing, or whose item goes (a Gem's next use takes).
     const itemless = !m.attacker.itemId || CONSUMED.has(m.attacker.itemId) || m.attacker.itemId.endsWith("gem");
-    const takes = (input.move.id === "covet" || input.move.id === "thief" || m.attAbility === "magician") && itemless;
+    const takes = (this.ownMove === "covet" || this.ownMove === "thief" || m.attAbility === "magician") && itemless;
     if (takes && ["lifeorb", "blacksludge", "stickybarb", "flameorb", "toxicorb"].includes(m.defender.itemId)) return true;
     // The target's Pickpocket takes the attacker's Rocky Helmet on a contact hit (once its own item is gone), which then hurts each contact hit.
     if (contact && m.defAbility === "pickpocket" && m.attacker.itemId === "rockyhelmet" && m.defItemOn && m.attAbility !== "stickyhold") return true;
@@ -1516,7 +1551,7 @@ export class UsesSearch {
 
   /** The weather a use sets: the target's Sand Spit on a hit, or the Max Move's (pinned Showdown: not over a strong weather). */
   private weatherSet(): BattleConditions["weather"] | null {
-    const sets = (this.m.defAbility === "sandspit" ? "Sand" : MAX_MOVE_EFFECTS[this.result.move.name]?.weather) as BattleConditions["weather"] | undefined;
+    const sets = (this.m.defAbility === "sandspit" ? "Sand" : MAX_MOVE_EFFECTS[usedMoveName(this.input.move.name, this.result.move)]?.weather) as BattleConditions["weather"] | undefined;
     return sets && !STRONG_WEATHERS.includes(this.m.conditions.weather) && sets !== this.m.conditions.weather ? sets : null;
   }
 
@@ -1963,7 +1998,7 @@ export class UsesSearch {
     const engineMove = run.trace.result!.move as Move & { drain?: [number, number] };
     const room = state.conditions.magicRoom;
     const targetAbility = this.ability(state, "def");
-    const takesBerry = !engineMove.isMax && !engineMove.isZ && BERRY_STEALERS.has(this.input.move.id);
+    const takesBerry = BERRY_STEALERS.has(ownMoveId(this.input.move.id, engineMove));
     const held = state.def.itemId;
     return {
       ...(takesBerry ? { targetBerry: held.endsWith("berry") && !(run.resistBerry && run.resistBerry === held) ? held : "" } : {}),
@@ -1997,9 +2032,8 @@ export class UsesSearch {
    * Null for another move, or no Berry. Sticky Hold keeps it unless the use knocks its holder out (hit-loop.ts hitStep).
    */
   private stolen(state: State, run: Run = this.first): { item: string; eat: StolenEat } | null {
-    const moveId = this.input.move.id;
-    const engineMove = run.trace.result!.move;
-    if ((moveId !== "bugbite" && moveId !== "pluck") || engineMove.isMax || engineMove.isZ) return null;
+    const moveId = ownMoveId(this.input.move.id, run.trace.result!.move);
+    if (moveId !== "bugbite" && moveId !== "pluck") return null;
     const item = state.def.itemId;
     if (!item.endsWith("berry") || (run.resistBerry && run.resistBerry === item)) return null;
     const eat = stolenEat(item, { baseMaxHP: state.att.baseMaxHP, ability: this.ability(state, "att"), ignoresItem: this.ignoresOwnItems(state) }, this.m.runtime.profile.generation);
@@ -2364,7 +2398,7 @@ export class UsesSearch {
     if (USES_REFERENCE.on) return false;
     const att = this.hpModes.att;
     if (att.exact ? a.att.hp !== b.att.hp : (att.full || att.half || att.third) && hpKey(att, a.att.hp, a.att.maxHP) !== hpKey(att, b.att.hp, b.att.maxHP)) return false;
-    const item = (x: string, y: string) => x === y || (!ITEM_MOVES.has(this.input.move.id) && (!x || this.neutral(x)) && (!y || this.neutral(y)));
+    const item = (x: string, y: string) => x === y || (!ITEM_MOVES.has(this.ownMove) && (!x || this.neutral(x)) && (!y || this.neutral(y)));
     for (const stat of this.relevance.att) if (a.att.boosts[stat] !== b.att.boosts[stat]) return false;
     for (const stat of this.relevance.def) if (a.def.boosts[stat] !== b.def.boosts[stat]) return false;
     if (this.relevance.att.includes("spe") && (unburdened(a.att) !== unburdened(b.att) || unburdened(a.def) !== unburdened(b.def))) return false;
@@ -2386,10 +2420,13 @@ export class UsesSearch {
    * exact search), the states in which the attacker has fainted with the target still in leave after each.
    */
   private use(groups: Group[], mode: Mode, knock: Knock, afterHits?: (groups: Group[]) => void, faint?: Knock): Group[] {
+    // A recharge follows the move this use is, read before its turn's end, where Dynamax can end: the last Max Move
+    // (Max Overgrowth from Frenzy Plant) has no recharge. Truant's loaf reads the ability the use left.
+    const rests = groups.length > 0 && this.restsAfter(groups[0].node.state);
     let current = this.standing(this.hits(groups, mode, knock, faint), faint);
     afterHits?.(current);
     current = this.standing(this.endOfTurn(current, mode, knock, 0), faint);
-    if (current.length && this.afterTurns(current[0].node.state)) current = this.standing(this.endOfTurn(current, mode, knock, 1), faint);
+    if (current.length && (rests || this.ability(current[0].node.state, "att") === "truant")) current = this.standing(this.endOfTurn(current, mode, knock, 1), faint);
     return this.charging(current, mode, knock, faint);
   }
 
@@ -2700,7 +2737,7 @@ export class UsesSearch {
     let entry = variants.get(baseKey);
     if (!entry) {
       const base = this.afterHit(node.state, run, useCase, mask, dealt, mode, landed, end);
-      const gains = !node.state.att.itemId && (this.input.move.id === "thief" || this.input.move.id === "covet" || this.ability(node.state, "att") === "magician");
+      const gains = !node.state.att.itemId && (this.ownMove === "thief" || this.ownMove === "covet" || this.ability(node.state, "att") === "magician");
       variants.set(baseKey, entry = { base, rest: this.restIndex(base), byHP: new Map(), heal: this.hitHeal, direct: gains });
     }
     this.hitHeal = entry.heal;
@@ -3029,9 +3066,9 @@ export class UsesSearch {
     const att = state.att, def = state.def;
     const attAbility = this.ability(state, "att"), defAbility = this.ability(state, "def");
     const engineMove = result.move;
-    const moveId = input.move.id;
-    // The row's own move, not the Max Move it is while Dynamax lasts: only it has its own effects.
-    const own = !engineMove.isMax;
+    // The move whose own effects and handlers the use runs: the row's own move, not its Z-Move nor the Max Move it is
+    // while Dynamax lasts (hit-loop.ts ownMoveId: "" then); those have only their own (Z_MOVE_EFFECTS, MAX_MOVE_EFFECTS).
+    const own = ownMoveId(input.move.id, engineMove);
     // Sheer Force removes the move's secondaries (onModifyMove).
     const sheerForce = attAbility === "sheerforce" && !!engineMove.secondaries;
     const { contact, physical } = useCase;
@@ -3060,28 +3097,28 @@ export class UsesSearch {
     //    Then the target's Hit handlers: its Sticky Barb moves to an item-less attacker it hits with contact
     //    (Enigma Berry is the hits' BERRY_EATEN).
     const knocked = !!(mask & KNOCKED);
-    if (own && !engineMove.isZ && BERRY_STEALERS.has(moveId) && damaged && def.itemId.endsWith("berry") && (!stickyHold || knocked)) {
+    if (BERRY_STEALERS.has(own) && damaged && def.itemId.endsWith("berry") && (!stickyHold || knocked)) {
       // Bug Bite and Pluck (data/moves.ts bugbite, pluck onHit): the user eats it (hit-loop.ts stolenEat; its HP is the hits').
       const stolen = this.stolen(prev, run);
       if (stolen) this.ateStolen(state, stolen.eat);
       def.itemId = "";
     }
-    if (own && !engineMove.isZ && moveId === "incinerate" && damaged && def.itemId.endsWith("gem")) def.itemId = "";
+    if (own === "incinerate" && damaged && def.itemId.endsWith("gem")) def.itemId = "";
     if (def.itemId === "stickybarb" && m.defItemOn && contact && damaged && !att.itemId) { att.itemId = "stickybarb"; def.itemId = ""; }
 
-    // 3. The move's own effects and secondaries: stat stages, Clear Smog, a Max Move's, statuses (a status
-    //    Berry cures at once; Synchronize passes burn or poison back), Smelling Salts and Wake-Up Slap curing
+    // 3. The move's own effects and secondaries: stat stages, Clear Smog, a Max Move's or a Z-Move's, statuses (a
+    //    status Berry cures at once; Synchronize passes burn or poison back), Smelling Salts and Wake-Up Slap curing
     //    theirs, Salt Cure, Spicy Spray's burn.
-    const table = own ? statMove(moveId, runtime.profile.id) : undefined;
+    const table = own ? statMove(own, runtime.profile.id) : undefined;
     if (table) {
       if (table.self) boost(m, state, "att", table.self, false);
       if (table.preHit) boost(m, state, "att", table.preHit, false);
       if (table.userSecondary && !sheerForce) for (let i = 0; i < Math.max(1, landed); i++) boost(m, state, "att", table.userSecondary, false);
       if (table.target && !sheerForce && !shielded && damaged) boost(m, state, "def", table.target, true, true);
     }
-    if (moveId === "terablast" && result.attacker.teraType === "Stellar") boost(m, state, "att", { atk: -1, spa: -1 }, false);
-    if (own && moveId === "clearsmog" && damaged) def.boosts = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-    const maxEffect = MAX_MOVE_EFFECTS[engineMove.name];
+    if (own === "terablast" && result.attacker.teraType === "Stellar") boost(m, state, "att", { atk: -1, spa: -1 }, false);
+    if (own === "clearsmog" && damaged) def.boosts = { atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+    const maxEffect = MAX_MOVE_EFFECTS[usedMoveName(input.move.name, engineMove)];
     if (maxEffect && damaged) {
       if (maxEffect.user) boost(m, state, "att", maxEffect.user, false);
       if (maxEffect.foe) boost(m, state, "def", maxEffect.foe, true, true);
@@ -3095,6 +3132,15 @@ export class UsesSearch {
       // G-Max Sweetness cures the user's status in its self.onHit, before the end of the turn.
       if (maxEffect.curesUserStatus && att.status) { att.status = ""; att.toxic = 0; }
     }
+    // A signature Z-Move's own field change (Z_MOVE_EFFECTS): Splintered Stormshards' onHit ends the terrain, then Genesis
+    // Supernova's secondary sets Psychic Terrain (pinned Showdown spreadMoveHit: runMoveEffects, then secondaries; Sheer
+    // Force removes the secondary). Clangorous Soulblaze's selfBoost comes after the move (8.).
+    const zEffect = engineMove.isZ ? Z_MOVE_EFFECTS[engineMove.name] : undefined;
+    if (zEffect?.clearsTerrain && damaged && conditions.terrain) { field().terrain = ""; state.terrainTurns = null; }
+    if (zEffect?.terrain && damaged && !sheerForce && conditions.terrain !== zEffect.terrain) {
+      field().terrain = zEffect.terrain as BattleConditions["terrain"];
+      state.terrainTurns = this.fieldTurns(state, "att", "terrain");
+    }
     const status = damaged ? this.statusLands(prev, run, sheerForce, shielded) : null;
     if (status) {
       if (this.curesAtOnce(prev, status)) { def.itemId = ""; this.hitHeal += pouch; } else {
@@ -3102,7 +3148,7 @@ export class UsesSearch {
         if (defAbility === "synchronize" && status !== "par" && this.canStatus(state, "att", status, false)) { att.status = status; att.toxic = 0; }
       }
     }
-    if (own && ((moveId === "smellingsalts" && def.status === "par") || (moveId === "wakeupslap" && def.status === "slp")) && damaged) def.status = "";
+    if (((own === "smellingsalts" && def.status === "par") || (own === "wakeupslap" && def.status === "slp")) && damaged) def.status = "";
     if (this.saltCures(prev, run) && damaged && !sheerForce && !shielded) def.saltCure = true;
     if (!att.status && result.defender.hasAbility("Spicy Spray") && helpers.spicySpray(result, { ...attacker, status: att.status }, conditions) !== null) {
       if (att.itemId === "lumberry" || att.itemId === "rawstberry") { if (landed >= 2) att.status = "brn"; att.itemId = ""; }
@@ -3143,9 +3189,10 @@ export class UsesSearch {
       def.itemId = "";
     }
 
-    // 5. AfterHit: Knock Off, Thief and Covet (an item-less attacker; not on the use that spends a Gem), never through Sticky Hold.
-    if (own && moveId === "knockoff" && damaged && def.itemId && !stickyHold && knockOffBoosted(result)) def.itemId = "";
-    if (own && (moveId === "covet" || moveId === "thief") && damaged && def.itemId && !att.itemId && !gem && (!stickyHold || def.itemId === "stickybarb")
+    // 5. AfterHit: Knock Off, Thief and Covet (an item-less attacker; not on the use that spends a Gem), never through Sticky Hold;
+    //    not as a Z-Move or Max Move.
+    if (own === "knockoff" && damaged && def.itemId && !stickyHold && knockOffBoosted(result)) def.itemId = "";
+    if ((own === "covet" || own === "thief") && damaged && def.itemId && !att.itemId && !gem && (!stickyHold || def.itemId === "stickybarb")
       && takeable(m, def.itemId, this.baseSpecies(state, "def"), this.baseSpecies(state, "att"), true)) { att.itemId = def.itemId; def.itemId = ""; }
 
     // 6. AfterMoveSecondary, skipped after a Sheer Force move (the attacker's ability as the hits left it):
@@ -3169,10 +3216,12 @@ export class UsesSearch {
     if (secondaries && !knocked && this.ability(state, "att") === "magician" && damaged && def.itemId && !att.itemId && !gem && (!stickyHold || def.itemId === "stickybarb")
       && takeable(m, def.itemId, this.baseSpecies(state, "def"), this.baseSpecies(state, "att"), false)) { att.itemId = def.itemId; def.itemId = ""; }
 
-    // 8. AfterMove: White Herb restores lowered stages; after the first use, the rise a side's Opportunist or Mirror
-    //    Herb stored from the other's Berry eaten before the move (calculate.ts pendingCopy; pinned Showdown
+    // 8. Clangorous Soulblaze's selfBoost once the move has hit (pinned Showdown useMoveInner, after the hits; Sheer Force
+    //    removes it). AfterMove: White Herb restores lowered stages; after the first use, the rise a side's Opportunist
+    //    or Mirror Herb stored from the other's Berry eaten before the move (calculate.ts pendingCopy; pinned Showdown
     //    onAnyAfterMove), through boost() but not copied back, the herb used up. One its holder no longer has (taken,
     //    already used, its ability replaced) is not followed.
+    if (zEffect?.user && damaged && !sheerForce) boost(m, state, "att", zEffect.user, false);
     for (const [side, on] of [[att, m.attItemOn], [def, m.defItemOn]] as const) {
       if (on && side.itemId === "whiteherb" && STATS.some((stat) => side.boosts[stat] < 0)) {
         for (const stat of STATS) if (side.boosts[stat] < 0) side.boosts[stat] = 0;
@@ -3200,8 +3249,8 @@ export class UsesSearch {
     // 10. Field: Charge is used up; Ice Spinner and Steel Roller end the terrain; Smack Down and Thousand Arrows
     //     ground the target; a terrain a use set uses up a Seed held for it (onTerrainChange).
     if (type === "Electric" && conditions.attackerSide.charge) field().attackerSide.charge = false;
-    if (own && (moveId === "icespinner" || moveId === "steelroller") && damaged && conditions.terrain) { field().terrain = ""; state.terrainTurns = null; }
-    if (own && (moveId === "smackdown" || moveId === "thousandarrows") && damaged && !this.grounded({ ...state, conditions }, "def")) def.smackedDown = true;
+    if ((own === "icespinner" || own === "steelroller") && damaged && conditions.terrain) { field().terrain = ""; state.terrainTurns = null; }
+    if ((own === "smackdown" || own === "thousandarrows") && damaged && !this.grounded({ ...state, conditions }, "def")) def.smackedDown = true;
     if (conditions.terrain && conditions.terrain !== prev.conditions.terrain) this.useSeeds(state, conditions.terrain, true);
     this.itemsLost(prev, state);
     state.first = false;
@@ -3286,6 +3335,11 @@ export class UsesSearch {
       if (end.stolen.heal) noteRange(this.turnAttackerAte, end.stolen.item, end.stolen.heal);
       if (end.stolen.pouch) this.noteAttackerHeal("Cheek Pouch", end.stolen.pouch);
     }
+    // Its own HP or pinch Berry it ate at a hit's Update (after Rough Skin, Rocky Helmet, a Jaboca Berry...): likewise held by the hits.
+    if (end.ate) {
+      this.noteAttackerHeal(m.runtime.itemsById.get(end.ate.item)?.name ?? end.ate.item, end.ate.heal);
+      this.noteAttackerHeal("Cheek Pouch", end.ate.pouch);
+    }
     if (hp <= 0) return { hp, berry: eaten };
     let berry = eaten ? null : own ?? (!att.itemId && after.att.itemId ? this.attackerBerry(after) : null);
     // Each Update eats the berry at or under its line (none once eaten).
@@ -3323,9 +3377,9 @@ export class UsesSearch {
   /** noteAttackerHeal for the attacker's HP berry `item` eaten at `hp`: eatBerry's two parts, the berry's heal, then Cheek Pouch's. */
   private noteAttackerBerry(item: string, berry: Berry, hp: number) {
     if (!this.turnAttackerHeals) return;
-    const healed = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
-    this.noteAttackerHeal(this.m.runtime.itemsById.get(item)?.name ?? item, healed - hp);
-    if (berry.pouch) this.noteAttackerHeal("Cheek Pouch", Math.min(berry.max, healed + berry.pouch) - healed);
+    const { heal, pouch } = berryHeals(berry, hp);
+    this.noteAttackerHeal(this.m.runtime.itemsById.get(item)?.name ?? item, heal);
+    this.noteAttackerHeal("Cheek Pouch", pouch);
   }
 
   /**
@@ -3334,7 +3388,7 @@ export class UsesSearch {
    * onAfterMoveSecondary), but without an item Magician takes in the same onAfterMoveSecondarySelf.
    */
   private afterMove(prev: State, after: State): State {
-    const moveId = this.input.move.id;
+    const moveId = this.useMoveId(prev);
     const magician = moveId !== "covet" && moveId !== "thief" && !prev.att.itemId && !!after.att.itemId && this.ability(prev, "att") === "magician";
     return magician ? { ...after, att: { ...after.att, itemId: prev.att.itemId } } : after;
   }
@@ -3347,7 +3401,7 @@ export class UsesSearch {
 
   /**
    * The attacker's HP lost after a use's hits: recoil on what it dealt (none with Rock Head), then Life Orb
-   * (none with Sheer Force on a move it boosts) and Steel Beam's family (not as a Max Move).
+   * (none with Sheer Force on a move it boosts) and Steel Beam's family (not as a Z-Move or Max Move: hit-loop.ts ownMoveId).
    */
   private afterHitsLosses(state: State, result: Result, dealt: number): { recoil: number; rest: number } {
     const attAbility = this.ability(state, "att");
@@ -3355,7 +3409,7 @@ export class UsesSearch {
     const engineMove = result.move as Move & { recoil?: [number, number] };
     const recoil = engineMove.recoil && attAbility !== "rockhead" ? Math.max(1, Math.round(dealt * engineMove.recoil[0] / engineMove.recoil[1])) : 0;
     let rest = 0;
-    if (SELF_COST_MOVES.has(this.input.move.id) && !engineMove.isMax) rest += Math.max(1, Math.round(state.att.maxHP / 2));
+    if (SELF_COST_MOVES.has(ownMoveId(this.input.move.id, engineMove))) rest += Math.max(1, Math.round(state.att.maxHP / 2));
     if (this.m.attItemOn && state.att.itemId === "lifeorb" && !this.sheerForced(state, result)) rest += Math.max(1, Math.floor(state.att.baseMaxHP / 10));
     return { recoil, rest };
   }
@@ -3384,7 +3438,7 @@ export class UsesSearch {
   }
 
   private saltCures(state: State, run: Run): boolean {
-    return this.input.move.id === "saltcure" && !run.trace.result!.move.isMax && !state.def.saltCure;
+    return ownMoveId(this.input.move.id, run.trace.result!.move) === "saltcure" && !state.def.saltCure;
   }
 
   /** Whether Hydration cures a side's status at the end of this turn (pinned Showdown hydration: order 5.3, in rain unless it holds Utility Umbrella). */
@@ -3546,14 +3600,19 @@ export class UsesSearch {
   /**
    * Whether a use takes the target's Berry before the hit's Update: Bug Bite, Pluck and Incinerate in their
    * onHit (before Enigma Berry's own, in the target's Hit), Knock Off in its AfterHit, and Thief or Covet from
-   * an attacker holding nothing; not their Max Moves, nor through Sticky Hold. Nor Bug Bite's, Pluck's and
-   * Incinerate's Z-Moves (Savage Spin-Out, Supersonic Skystrike, Inferno Overdrive: no onHit of theirs).
+   * an attacker holding nothing; never through Sticky Hold. Not as a Z-Move or Max Move (Black Hole Eclipse, Max
+   * Darkness, Savage Spin-Out...: hit-loop.ts ownMoveId), after which the target eats its Berry at that Update.
    */
   private takenInHit(state: State, item: string): boolean {
-    const moveId = this.input.move.id;
-    if (maxActive(state.att) || (this.ability(state, "def") === "stickyhold" && !moldBreaks(this.m, state))) return false;
-    if (BERRY_STEALERS.has(moveId)) return !this.result.move.isZ;
+    const moveId = this.useMoveId(state);
+    if (!moveId || (this.ability(state, "def") === "stickyhold" && !moldBreaks(this.m, state))) return false;
+    if (BERRY_STEALERS.has(moveId)) return true;
     return item !== "enigmaberry" && (moveId === "knockoff" || ((moveId === "thief" || moveId === "covet") && !state.att.itemId));
+  }
+
+  /** The move whose own handlers a use from `state` runs (hit-loop.ts ownMoveId): none for a Z-Move, nor while Dynamax lasts. */
+  private useMoveId(state: State): string {
+    return ownMoveId(this.input.move.id, { isZ: this.result.move.isZ, isMax: maxActive(state.att) });
   }
 
   /** The berry the target can eat at a hit's Update from a node, memoised (`contact`: Mummy and its kin may have replaced the attacker's Unnerve by then). */
@@ -3608,11 +3667,11 @@ export class UsesSearch {
   /**
    * Whether a use from this state needs a charge turn first: sun skips Solar Beam's and Solar Blade's, and a
    * Mega Sol user's moves are always in sun (pinned Showdown effectiveWeather, before Utility Umbrella),
-   * rain Electro Shot's, and Power Herb any one unless ignored; a Max Move never charges.
+   * rain Electro Shot's, and Power Herb any one unless ignored; a Z-Move or Max Move never charges (useMoveId).
    */
   private charges(state: State, ignoreHerb = false): boolean {
-    const id = this.input.move.id;
-    if (!CHARGE_MOVES.has(id) || maxActive(state.att)) return false;
+    const id = this.useMoveId(state);
+    if (!CHARGE_MOVES.has(id)) return false;
     const solar = id === "solarbeam" || id === "solarblade";
     if (solar && this.ability(state, "att") === "megasol") return false;
     const weather = this.weather(state.conditions);
@@ -3624,11 +3683,16 @@ export class UsesSearch {
 
   /**
    * Whether a use is followed by a turn that is not a use: a recharge or another move between Gigaton Hammer
-   * uses (not after a Max Move), or a Truant loaf (Max Moves too: pinned Showdown truant onBeforeMove).
+   * uses (not after a Z-Move or Max Move: useMoveId), or a Truant loaf (Max Moves too: pinned Showdown truant onBeforeMove).
    */
   private afterTurns(state: State): boolean {
-    const id = this.input.move.id;
-    return (!maxActive(state.att) && (RECHARGE_MOVES.has(id) || NOT_TWICE_MOVES.has(id))) || this.ability(state, "att") === "truant";
+    return this.restsAfter(state) || this.ability(state, "att") === "truant";
+  }
+
+  /** A recharge, or another move between Gigaton Hammer uses, after a use from `state` (not a Z-Move's nor a Max Move's: useMoveId). */
+  private restsAfter(state: State): boolean {
+    const id = this.useMoveId(state);
+    return RECHARGE_MOVES.has(id) || NOT_TWICE_MOVES.has(id);
   }
 
   /**
@@ -3651,7 +3715,7 @@ export class UsesSearch {
     const { state } = node;
     const { att, def } = state;
     if (USES_REFERENCE.on) return node.rest = `${att.hp}|${JSON.stringify(state)}`;
-    const itemKey = (itemId: string) => ITEM_MOVES.has(this.input.move.id) || (itemId && !this.neutral(itemId)) ? itemId : "~";
+    const itemKey = (itemId: string) => ITEM_MOVES.has(this.ownMove) || (itemId && !this.neutral(itemId)) ? itemId : "~";
     let rest = `${hpKey(this.hpModes.att, att.hp, att.maxHP)}|${itemKey(def.itemId)}|${itemKey(att.itemId)}|${def.abilityId}|${att.abilityId}|${def.speciesId}|${att.speciesId}`
       + `|${def.mechanic ?? ""}|${att.mechanic ?? ""}|${att.status}|${def.status}|${att.slowStart !== null}|${att.focusEnergy}|${state.fieldKey}|${this.metronome(state)}|${(!!this.input.context?.stellarFirstUse || this.firstTurn) && state.first}`;
     for (const stat of this.relevance.att) rest += `|${att.boosts[stat]}`;
@@ -3759,7 +3823,9 @@ export class UsesSearch {
     }
     const superEffective = ["enigmaberry", "weaknesspolicy"].includes(this.m.defenderItem) && effectiveness(this.m.gen, result) > 1;
     const { defenderItem, attackerItem } = result.rawDesc;
-    const entry = STATUS_MOVES[id(engineMove.name)] ?? (engineMove.isMax ? undefined : STATUS_MOVES[this.input.move.id]);
+    // The engine move's own status (Stoked Sparksurfer, G-Max Malodor), else the row's own move's when the use is it: a
+    // Z-Move or Max Move gives none of its base move's (hit-loop.ts ownMoveId: Inferno Overdrive burns nothing).
+    const entry = STATUS_MOVES[id(usedMoveName(this.input.move.name, engineMove))] ?? STATUS_MOVES[ownMoveId(this.input.move.id, engineMove)];
     return {
       row, trace, cases, superEffective, resistBerry: defenderItem && getBerryResistType(defenderItem) ? id(defenderItem) : "",
       gem: attackerItem?.endsWith(" Gem") ? id(attackerItem) : "", status: entry?.status ?? null, statusSecondary: !!entry?.secondary,
@@ -4126,9 +4192,12 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   if (hp.def.full && result.defender.curHP() === result.defender.maxHP()) add(`${result.defender.ability} weakens only the first use.`);
   // A rise a side's Opportunist or Mirror Herb copies after the first use (afterHit, pendingCopy), where the damage reads
   // it, or the herb's loss (an item move).
+  // The move whose own effects and handlers the uses run (hit-loop.ts ownMoveId): none for a Z-Move; a Max Move's row's own
+  // move once Dynamax ends.
+  const ownMove = ownMoveId(move.id, { isZ: engineMove.isZ });
   for (const [build, whose, who] of [[attacker, "attacker's", "att"], [defender, "target's", "def"]] as const) {
     const copy = build.pendingCopy;
-    if (copy && (relevant(copy.stages, who) || (copy.by.includes("Mirror Herb") && ITEM_MOVES.has(move.id)))) add(`The ${whose} ${listNames(copy.by)} copies a rise after the first use.`);
+    if (copy && (relevant(copy.stages, who) || (copy.by.includes("Mirror Herb") && ITEM_MOVES.has(ownMove)))) add(`The ${whose} ${listNames(copy.by)} copies a rise after the first use.`);
   }
   // The first turn's order alone (firstTurnOnly), where the damage reads the order or Speed.
   if (relevance.att.includes("spe")) {
@@ -4140,13 +4209,13 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   if (hp.def.half) add("Brine doubles once the target is at half HP or less.");
   if (hp.def.exact) add(`${name}'s power falls with the target's HP.`);
   const attHPSensitive = hp.att.exact || hp.att.full || hp.att.half || hp.att.third;
-  const recoil = !!(engineMove as Move & { recoil?: unknown }).recoil || SELF_COST_MOVES.has(move.id);
+  const recoil = !!(engineMove as Move & { recoil?: unknown }).recoil || SELF_COST_MOVES.has(ownMove);
   const punished = contact && ((defItem === "rockyhelmet") || ["roughskin", "ironbarbs"].includes(defAbility));
   const heals = !!(engineMove as Move & { drain?: unknown }).drain || attItem === "shellbell";
   if (attHPSensitive && ((attAbility !== "magicguard" && (recoil || punished || attItem === "lifeorb")) || heals || attackerResiduals)) {
     add(`${name}'s damage follows the attacker's HP.`);
   }
-  const table = statMove(move.id, runtime.profile.id);
+  const table = statMove(ownMove, runtime.profile.id);
   if (relevant(table?.self, "att")) own(`${move.name} ${direction(table!.self!, attAbility)} the attacker's ${changed(table!.self!, "att")} after each use.`);
   const rise = table?.preHit ?? (sheerForce ? undefined : table?.userSecondary);
   if (relevant(rise, "att")) own(`${move.name} ${direction(rise!, attAbility)} the attacker's ${changed(rise!, "att")} each use.`);
@@ -4154,12 +4223,13 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   const landed = target ? lands(target) : null;
   if (landed === "def") own(`${move.name} ${direction(target!, targetAbility)} the target's ${changed(target!, "def")} each use.`);
   if (landed === "att") own(`The target's Mirror Armor turns ${move.name}'s drop back on the attacker.`);
-  if (move.id === "terablast" && result.attacker.teraType === "Stellar") add("Stellar Tera Blast lowers the attacker's Attack and Sp. Atk each use.");
-  if (move.id === "clearsmog" && STATS.some((stat) => relevance.def.includes(stat) && initial.def.boosts[stat] !== 0)) own("Clear Smog resets the target's stat changes.");
-  const maxEffect = MAX_MOVE_EFFECTS[engineMove.name];
-  if (maxEffect && (relevant(maxEffect.user, "att") || (maxEffect.foe && lands(maxEffect.foe)))) add(`${engineMove.name} changes a stat each use.`);
-  if (maxEffect && (maxEffect.weather || maxEffect.terrain || maxEffect.clearsScreens || maxEffect.clearsTerrain)) add(`${engineMove.name} changes the field.`);
-  if (maxEffect?.curesUserStatus && attacker.status) add(`${engineMove.name} cures the attacker's status.`);
+  if (ownMove === "terablast" && result.attacker.teraType === "Stellar") add("Stellar Tera Blast lowers the attacker's Attack and Sp. Atk each use.");
+  if (ownMove === "clearsmog" && STATS.some((stat) => relevance.def.includes(stat) && initial.def.boosts[stat] !== 0)) own("Clear Smog resets the target's stat changes.");
+  const usedName = usedMoveName(move.name, engineMove);
+  const maxEffect = MAX_MOVE_EFFECTS[usedName];
+  if (maxEffect && (relevant(maxEffect.user, "att") || (maxEffect.foe && lands(maxEffect.foe)))) add(`${usedName} changes a stat each use.`);
+  if (maxEffect && (maxEffect.weather || maxEffect.terrain || maxEffect.clearsScreens || maxEffect.clearsTerrain)) add(`${usedName} changes the field.`);
+  if (maxEffect?.curesUserStatus && attacker.status) add(`${usedName} cures the attacker's status.`);
   const hit = HIT_ABILITIES[defAbility];
   if (hit && hit.when(type, physical, contact) && !(defAbility === "thermalexchange" && broken)) {
     // Gooey and its kin lower the attacker's Speed: not past its Clear Amulet or a guard of every stat; its Mirror Armor turns it on the target.
@@ -4192,9 +4262,8 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   const stuck = defAbility === "stickyhold" && !broken && defHeld !== "stickybarb";
   // A Berry the use takes before its holder can eat it (pinned Showdown: Bug Bite, Pluck and Incinerate in onHit, Knock Off, Thief and Covet in AfterHit).
   const itemless = !attHeld || gem;
-  // Bug Bite's, Pluck's and Incinerate's Z-Moves take nothing (their onHit is the base move's).
-  const steals = BERRY_STEALERS.has(move.id) && !engineMove.isZ;
-  const takenFirst = !maxed && !stuck && (steals || move.id === "knockoff" || ((move.id === "thief" || move.id === "covet") && !attHeld));
+  const steals = BERRY_STEALERS.has(ownMove);
+  const takenFirst = !maxed && !stuck && (steals || ownMove === "knockoff" || ((ownMove === "thief" || ownMove === "covet") && !attHeld));
   // The attacker's Unnerve, unless the target's Mummy and its kin replace it in the first hit.
   const unnerved = m.unnerved && !replaced;
   const used = HIT_ITEMS[defItem];
@@ -4204,10 +4273,10 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   }
   const berry = defItem && !unnerved && !takenFirst ? PINCH_STAT_BERRIES[defItem] : undefined;
   if (berry && relevance.def.includes(berry)) add(`The target's ${itemName(defItem)} raises its ${STAT_LABELS[berry]} at a quarter of its HP.`);
-  if (defItem === "airballoon" && ITEM_MOVES.has(move.id)) add("The first hit pops the target's Air Balloon.");
+  if (defItem === "airballoon" && ITEM_MOVES.has(ownMove)) add("The first hit pops the target's Air Balloon.");
   if (defItem === "whiteherb" && target && landed === "def" && !(targetAbility === "contrary")) add("The target's White Herb restores its stats once.");
   const selfDrops = !!table?.self && (Object.keys(table.self) as CombatStat[]).some((stat) => relevance.att.includes(stat) && (table.self![stat]! < 0) !== (attAbility === "contrary"));
-  if (attItem === "whiteherb" && (selfDrops || (move.id === "terablast" && result.attacker.teraType === "Stellar"))) add("The attacker's White Herb restores its stats once.");
+  if (attItem === "whiteherb" && (selfDrops || (ownMove === "terablast" && result.attacker.teraType === "Stellar"))) add("The attacker's White Herb restores its stats once.");
   if (attItem === "throatspray" && engineMove.flags?.sound && !sheerForce) add("The attacker's Throat Spray raises its Sp. Atk once.");
   if (attItem === "metronome") add("The attacker's Metronome boosts each consecutive use.");
   // An item the uses take: Knock Off one it can remove, Thief and Covet (or Magician) when the attacker holds none
@@ -4218,36 +4287,36 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   // past the attacker's Magic Guard or Unnerve, nor once Bug Bite and its kin have taken it).
   const retaliationEaten = !!defItem && RETALIATION_BERRIES[defItem] === engineMove.category && (attAbility !== "magicguard" || replaced) && !unnerved
     && !(steals && !maxed && !stuck);
-  if (retaliationEaten && move.id === "knockoff") add(`The target's ${itemName(defItem)} is eaten by the first use.`);
+  if (retaliationEaten && ownMove === "knockoff") add(`The target's ${itemName(defItem)} is eaten by the first use.`);
   const spentInHit = defItem === "airballoon" || !!(result.rawDesc.defenderItem && getBerryResistType(result.rawDesc.defenderItem))
     || (!!used && !used.berry && used.when(type, physical, superEffective)) || retaliationEaten;
   const spentInMove = spentInHit || (!!used?.berry && used.when(type, physical, superEffective) && !sheerForce && !unnerved && !takenFirst);
   if (defHeld && !stuck && !barbMoves) {
-    if (move.id === "knockoff" && !spentInHit && (maxed ? takeable(m, defHeld, species("def"), species("def"), false) : knockOffBoosted(result))) own(`${move.name} takes the target's item.`);
-    else if ((move.id === "covet" || move.id === "thief") && itemless && !spentInHit && takeable(m, defHeld, species("def"), species("att"), true)) own(`${move.name} takes the target's item.`);
+    if (ownMove === "knockoff" && !spentInHit && (maxed ? takeable(m, defHeld, species("def"), species("def"), false) : knockOffBoosted(result))) own(`${move.name} takes the target's item.`);
+    else if ((ownMove === "covet" || ownMove === "thief") && itemless && !spentInHit && takeable(m, defHeld, species("def"), species("att"), true)) own(`${move.name} takes the target's item.`);
     else if (attAbility === "magician" && (itemless || CONSUMED.has(attHeld)) && !spentInMove && takeable(m, defHeld, species("def"), species("att"), false)) add("The attacker's Magician takes the target's item.");
-    else if (steals && (defHeld.endsWith("berry") || (move.id === "incinerate" && defHeld.endsWith("gem")))) own(`${move.name} takes the target's item.`);
+    else if (steals && (defHeld.endsWith("berry") || (ownMove === "incinerate" && defHeld.endsWith("gem")))) own(`${move.name} takes the target's item.`);
   }
   // Once the target's own item is gone (used up, or taken by the use).
-  const emptied = !defHeld || CONSUMED.has(defHeld) || retaliationEaten || ITEM_MOVES.has(move.id) || attAbility === "magician";
+  const emptied = !defHeld || CONSUMED.has(defHeld) || retaliationEaten || ITEM_MOVES.has(ownMove) || attAbility === "magician";
   if (defAbility === "pickpocket" && contact && attHeld && emptied && !sheerForce && attAbility !== "stickyhold" && takeable(m, attHeld, species("att"), species("def"), false)) {
     add("The target's Pickpocket takes the attacker's item.");
   }
   // Poltergeist fails once the target's item is gone, and Acrobatics doubles once the attacker's is.
-  if (move.id === "poltergeist" && (CONSUMED.has(defItem) || retaliationEaten)) own("Poltergeist fails once the target's item is used up.");
-  if (move.id === "acrobatics" && CONSUMED.has(attItem)) own("Acrobatics doubles once the attacker's item is used up.");
+  if (ownMove === "poltergeist" && (CONSUMED.has(defItem) || retaliationEaten)) own("Poltergeist fails once the target's item is used up.");
+  if (ownMove === "acrobatics" && CONSUMED.has(attItem)) own("Acrobatics doubles once the attacker's item is used up.");
   // Unburden doubles Speed once its holder's item is gone (pinned Showdown onAfterUseItem, onTakeItem).
   if (relevance.att.includes("spe")) {
-    const goes = (held: string) => CONSUMED.has(held) || held.endsWith("gem") || ITEM_MOVES.has(move.id) || attAbility === "magician" || defAbility === "pickpocket";
+    const goes = (held: string) => CONSUMED.has(held) || held.endsWith("gem") || ITEM_MOVES.has(ownMove) || attAbility === "magician" || defAbility === "pickpocket";
     if (attAbility === "unburden" && attHeld && goes(attHeld)) add("The attacker's Unburden doubles its Speed once its item is gone.");
     if (defAbility === "unburden" && defHeld && (goes(defHeld) || retaliationEaten)) add("The target's Unburden doubles its Speed once its item is gone.");
   }
   if (conditions.attackerSide.charge && type === "Electric") add("Charge is used up by the first Electric move.");
-  if (["icespinner", "steelroller"].includes(move.id) && conditions.terrain) own(`${move.name} ends the terrain.`);
+  if (["icespinner", "steelroller"].includes(ownMove) && conditions.terrain) own(`${move.name} ends the terrain.`);
   // Smack Down grounds a Flying, Levitate or Eelevate target for Grassy Terrain's heal.
   const types = result.defender.teraType && result.defender.teraType !== "Stellar" ? [result.defender.teraType] : result.defender.types;
   const airborne = (types.includes("Flying") || ["levitate", "eelevate"].includes(defAbility)) && !conditions.gravity && !(defItem === "ironball");
-  if ((move.id === "smackdown" || move.id === "thousandarrows") && airborne && conditions.terrain === "Grassy") own(`${move.name} grounds the target after the first use.`);
+  if ((ownMove === "smackdown" || ownMove === "thousandarrows") && airborne && conditions.terrain === "Grassy") own(`${move.name} grounds the target after the first use.`);
   if (result.defender.hasAbility("Spicy Spray") && !attacker.status) add("Spicy Spray burns the attacker.");
   if (context?.stellarFirstUse) add("Stellar boosts only the first use of the type.");
   if ((attAbility === "speedboost" || defAbility === "speedboost") && relevance.att.includes("spe")) add("Speed Boost raises Speed at the end of each turn.");
@@ -4258,8 +4327,8 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   for (const [who, build, ability, held] of [["attacker", attacker, attAbility, attItem], ["target", defender, defAbility, defItem]] as const) {
     if (ability === "hydration" && build.status && rain && held !== "utilityumbrella") add(`The ${who}'s Hydration cures its status at the end of the first turn.`);
   }
-  if (STATUS_MOVES[move.id] && !defender.status && (move.id in STATUS_READS || defAbility === "marvelscale" || defAbility === "synchronize")) own(`${move.name} gives the target a status.`);
-  if ((move.id === "smellingsalts" && defender.status === "par") || (move.id === "wakeupslap" && defender.status === "slp")) own(`${move.name} cures the target's status after the first use.`);
+  if (STATUS_MOVES[ownMove] && !defender.status && (ownMove in STATUS_READS || defAbility === "marvelscale" || defAbility === "synchronize")) own(`${move.name} gives the target a status.`);
+  if ((ownMove === "smellingsalts" && defender.status === "par") || (ownMove === "wakeupslap" && defender.status === "slp")) own(`${move.name} cures the target's status after the first use.`);
   return sources;
 }
 
@@ -4287,10 +4356,15 @@ function relevantStats(move: ChampionsMove, attacker: BattleBuild, result: Resul
 }
 
 type HPModes = { exact: boolean; full: boolean; half: boolean; third: boolean };
-/** Which HP lines can change this row's damage: the engine and the calculation read current HP only in these places. */
+/**
+ * Which HP lines can change this row's damage: the engine and the calculation read current HP only in these places.
+ * Guardian of Alola, the Z-Move of Nature's Madness with Tapunium Z, deals 3/4 of the target's current HP (pinned
+ * Showdown data/moves.ts guardianofalola damageCallback: target.getUndynamaxedHP()), which the engine reads.
+ */
 function hpSensitivity(m: UsesMatchup, move: ChampionsMove, result: Result): { att: HPModes; def: HPModes } {
+  const exact = ["wringout", "crushgrip", "hardpress"].includes(move.id) || result.move.name === "Guardian of Alola";
   return {
-    def: { exact: ["wringout", "crushgrip", "hardpress"].includes(move.id), full: result.defender.hasAbility("Multiscale", "Shadow Shield", "Tera Shell"), half: move.id === "brine", third: false },
+    def: { exact, full: result.defender.hasAbility("Multiscale", "Shadow Shield", "Tera Shell"), half: move.id === "brine", third: false },
     att: {
       exact: ["eruption", "waterspout", "dragonenergy", "flail", "reversal"].includes(move.id),
       full: m.attAbility === "galewings" && result.move.type === "Flying", half: m.attAbility === "defeatist",

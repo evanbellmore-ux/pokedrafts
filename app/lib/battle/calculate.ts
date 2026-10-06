@@ -5,7 +5,6 @@ import { calculateBPModsChampions } from "@smogon/calc/dist/mechanics/champions"
 import { calculateBPModsSMSSSV } from "@smogon/calc/dist/mechanics/gen789";
 import { checkMultihitBoost, checkSeedBoost, getFinalSpeed, isGrounded } from "@smogon/calc/dist/mechanics/util";
 import { getBerryResistType, getNaturalGift } from "@smogon/calc/dist/items";
-import { getMaxMoveName, getZMoveName } from "@smogon/calc/dist/move";
 import { championsRuntime, type BattleRuntime } from "./runtime";
 import "./engine-corrections.cjs";
 import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
@@ -19,7 +18,8 @@ import { imposterTransforms, movesSpeciesId, NO_TRACE_ABILITIES, NO_TRANSFORM_AB
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
 import {
-  berryArithmetic, CANT_SUPPRESS, CONFUSING_BERRIES, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, KLUTZ_IGNORED_ITEMS, PINCH_STAT_BERRIES, PINCH_TYPES, walkHits,
+  berryArithmetic, BERRY_STEALERS, CANT_SUPPRESS, CONFUSING_BERRIES, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, KLUTZ_IGNORED_ITEMS, ownMoveId,
+  PINCH_STAT_BERRIES, PINCH_TYPES, usedMoveName, walkHits,
   type HitLoopInput, type HitState,
 } from "./hit-loop";
 import { chanceText } from "./chance";
@@ -1173,6 +1173,12 @@ const CRIT_RATIO_MOVES: Record<string, number> = Object.fromEntries([
  */
 function certainCrit(moveId: string, build: BattleBuild, other: BattleBuild, context: MoveContext | undefined, conditions: BattleConditions, runtime: BattleRuntime): { stages: number; sources: string[] } | null {
   if (runtime.profile.generation < 6) return null;
+  const { ratio, sources } = critRatio(moveId, build, other, context, conditions, runtime);
+  return ratio >= 4 ? { stages: ratio - 1, sources } : null;
+}
+
+/** certainCrit's ratio (1 by default) and what raised it, whether or not it makes every hit critical. */
+function critRatio(moveId: string, build: BattleBuild, other: BattleBuild, context: MoveContext | undefined, conditions: BattleConditions, runtime: BattleRuntime): { ratio: number; sources: string[] } {
   const sources: string[] = [];
   let ratio = 1;
   const used = context?.useZ ? (build.itemId === "pikashuniumz" && moveId === "thunderbolt" ? "10000000voltthunderbolt" : "") : isMaxActive(build) ? "" : moveId;
@@ -1185,7 +1191,7 @@ function certainCrit(moveId: string, build: BattleBuild, other: BattleBuild, con
   const itemBoost = item === "scopelens" || item === "razorclaw" ? 1 : item === "leek" && (own === "farfetchd" || own === "sirfetchd") ? 2
     : item === "luckypunch" && own === "chansey" ? 2 : 0;
   if (itemBoost) { ratio += itemBoost; sources.push(runtime.itemsById.get(item)?.name ?? item); }
-  return ratio >= 4 ? { stages: ratio - 1, sources } : null;
+  return { ratio, sources };
 }
 
 /** Moves with pinned Showdown's ignoreAbility (data/moves.ts): they bypass breakable abilities. */
@@ -1395,7 +1401,8 @@ function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBu
   const item = (build: BattleBuild, other: BattleBuild) => conditions.magicRoom || klutzActive(build, other) ? "" : build.itemId;
   const attackerAbility = ability(attackerBuild, defenderBuild), attackerItem = item(attackerBuild, defenderBuild);
   const flags = result.move.flags ?? {};
-  const steals = !result.move.isMax && !result.move.isZ && ["bugbite", "pluck", "incinerate"].includes(moveId);
+  // Not their Z-Move or Max Move, which runs none of their handlers (hit-loop.ts ownMoveId).
+  const steals = BERRY_STEALERS.has(ownMoveId(moveId, result.move));
   return {
     hp: attacker.curHP(), maxHP: attacker.maxHP(), baseMaxHP: attacker.maxHP(true),
     attackerAbility, attackerItem, targetAbility: ability(defenderBuild, attackerBuild), targetItem: item(defenderBuild, attackerBuild),
@@ -1598,6 +1605,13 @@ function calculateMove(
   const metadata = resolved.effective;
   if (metadata.unsupported.length) return emptyRow(metadata, "unsupported", metadata.unsupported.join(" "));
   if (metadata.category === "Status") return emptyRow(metadata, "status", "No direct damage; its effects are not simulated.");
+  // Bide is the one damaging move that targets its user (pinned Showdown data/moves.ts bide: target "self"). In Singles
+  // no target is chosen, so sim/battle-queue.ts resolveAction aims its Z-Move at the user too (getRandomTarget for a
+  // "self" move), and sim/battle.ts getTarget gives Breakneck Blitz none at its user's own position: it fails
+  // ([notarget]). In Doubles the Z-Move needs a foe as its target (sim/side.ts chooseMove), which it hits.
+  if (resolved.transformed && resolved.move.isZ && assigned.id === "bide" && conditions.gameType === "Singles") {
+    return zeroDamage(metadata, `${metadata.name} fails: in Singles, Z-Bide is aimed at its user.`);
+  }
   if (conditions.gravity && GRAVITY_BLOCKED_MOVES.has(metadata.id)) {
     return zeroDamage(metadata, `Gravity prevents ${metadata.name} from being used.`);
   }
@@ -2409,9 +2423,9 @@ function calculateMove(
     // Weather Ball, Terrain Pulse, Multi-Attack and Techno Blast take their own type before Z or Max
     // conversion (pinned Showdown useMove / getActiveMaxMove), so the Z-Move or Max Move is that
     // type's; the engine types the result so but keeps the Normal Breakneck Blitz or Max Strike name.
-    const retyped = resolved.transformed && result.move.type !== "Normal" && ["Breakneck Blitz", "Max Strike"].includes(result.move.name);
-    const zName = !retyped ? null : result.move.name === "Max Strike"
-      ? getMaxMoveName(generation, result.move.type, assigned.name, false) : getZMoveName(assigned.name, result.move.type);
+    // (hit-loop.ts usedMoveName, which Uses to KO and the doubles turn read its own effects by.)
+    const used = resolved.transformed ? usedMoveName(assigned.name, result.move) : result.move.name;
+    const zName = used !== result.move.name ? used : null;
     if (zName) assumptions.push(`${assigned.name} is ${result.move.type} type, so it becomes ${zName}.`);
     const effectNames = appliedEffects(result);
     trace.result = result;
@@ -2531,6 +2545,7 @@ export function settleMatchup(attacker: BattleBuild, defender: BattleBuild, fiel
 export function usesHelpers(runtime: BattleRuntime): UsesHelpers {
   return {
     gassed: gassedAbility, klutz: klutzActive, spicySpray: spicySprayFirstBurnedHit, makeField, paradox: (speciesId) => PARADOX_SPECIES.has(speciesId),
+    critRatio: (moveId, build, other, context, conditions) => runtime.profile.generation < 6 ? 0 : critRatio(moveId, build, other, context, conditions, runtime).ratio,
     hpForm: (build) => { const form = entryForm(build, runtime); return form && !form.kept ? form.speciesId : null; },
   };
 }
