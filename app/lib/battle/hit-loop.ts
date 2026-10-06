@@ -1,3 +1,6 @@
+import { Generations } from "@smogon/calc";
+import type { TypeName } from "@smogon/calc/dist/data/interface";
+import { getMaxMoveName, getZMoveName } from "@smogon/calc/dist/move";
 import type { CombatStat } from "./types";
 
 /**
@@ -27,6 +30,43 @@ export const FAIL_SKILL_SWAP = new Set([...CANT_SUPPRESS, "commander", "embodyas
 
 /** Items Klutz never suppresses (pinned Showdown data/items.ts ignoreKlutz; sim/pokemon.ts ignoringItem). */
 export const KLUTZ_IGNORED_ITEMS: ReadonlySet<string> = new Set(["abilityshield", "machobrace", "poweranklet", "powerband", "powerbelt", "powerbracer", "powerlens", "powerweight"]);
+
+/** The moves whose onHit takes the target's Berry (pinned Showdown data/moves.ts bugbite, pluck, incinerate); Bug Bite's and Pluck's user eats it. */
+export const BERRY_STEALERS: ReadonlySet<string> = new Set(["bugbite", "pluck", "incinerate"]);
+/**
+ * The moves whose own handlers read, take or use up a held item (pinned Showdown data/moves.ts): Knock Off (onBasePower,
+ * onAfterHit), Thief and Covet (onAfterHit), Poltergeist (onTry), Acrobatics (basePowerCallback) and the Berry stealers.
+ */
+export const ITEM_MOVES: ReadonlySet<string> = new Set(["knockoff", "poltergeist", "acrobatics", "covet", "thief", ...BERRY_STEALERS]);
+
+/**
+ * The move whose own effects and handlers a use runs: `moveId`, or "" when the use is its Z-Move or Max Move (`used`, the
+ * move the engine calculated). Pinned Showdown sim/battle-actions.ts getActiveZMove and getActiveMaxMove make a damaging
+ * move's Z-Move or Max Move the generic one of its type (Inferno Overdrive, Max Flare...) with only the base move's zMove
+ * or maxMove power, its category and its priority, or a signature Z-Move (zMoveFrom) with its own data, so nothing of the
+ * base move's own runs: its secondaries and guaranteed status (Inferno's burn, Nuzzle's paralysis), self stages (Close
+ * Combat), recoil and self cost (Flare Blitz, Mind Blown), drain, flags (contact, sound, punch), charge turn, trap, Focus
+ * Punch's focus, Smack Down's grounding, and handlers: Knock Off's onBasePower and onAfterHit, Thief's and Covet's
+ * onAfterHit, Bug Bite's, Pluck's and Incinerate's onHit, Poltergeist's onTry, Acrobatics' basePowerCallback, Fling's
+ * onPrepareHit. The engine move carries the Z-Move's or Max Move's own fields (flags, secondaries, recoil, drain), and
+ * stat-moves.ts their own effects. (A status move's Z-Move keeps its handlers; the engine converts only damaging moves,
+ * so `isZ` is unset there.)
+ */
+export function ownMoveId(moveId: string, used: { isZ?: boolean; isMax?: boolean }): string {
+  return used.isZ || used.isMax ? "" : moveId;
+}
+
+/**
+ * The name of the Z-Move or Max Move a use of `baseName` is (`used`, the move the engine calculated), for its own
+ * effects (stat-moves.ts MAX_MOVE_EFFECTS...) and the name shown. Pinned Showdown types Weather Ball, Terrain Pulse,
+ * Revelation Dance, Multi-Attack and a Max Move's -ate ability before the conversion (sim/battle-actions.ts useMove
+ * ModifyType, then getActiveZMove / getActiveMaxMove), so a Weather Ball in hail is Max Hailstorm and sets hail; the
+ * engine converts by the data type and types the result, keeping the Normal Breakneck Blitz or Max Strike name.
+ */
+export function usedMoveName(baseName: string, used: { name: string; type: string; isZ?: boolean; isMax?: boolean }): string {
+  if (used.type === "Normal" || !((used.isMax && used.name === "Max Strike") || (used.isZ && used.name === "Breakneck Blitz"))) return used.name;
+  return used.isMax ? getMaxMoveName(Generations.get(8), used.type as TypeName, baseName, false) : getZMoveName(baseName, used.type as TypeName);
+}
 
 /** The Berries whose onEat (pinned Showdown data/items.ts) heals: Sitrus a quarter of the base maximum HP, Oran 10, the Figy family a third (a half in generation 7). */
 const EATEN_HEALS = new Set(["sitrusberry", "oranberry", ...PINCH_HEAL_BERRIES]);
@@ -101,6 +141,15 @@ export function eatBerry(berry: Berry, hp: number): number {
   let left = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
   if (berry.pouch) left = Math.min(berry.max, left + berry.pouch);
   return left;
+}
+
+/**
+ * eatBerry's two parts at `hp`, as the heals lists show them: the HP the Berry's onEat heals and the HP Cheek Pouch's
+ * onEatItem heals after it (pinned Showdown data/items.ts, data/abilities.ts cheekpouch: two heal calls, each capped).
+ */
+export function berryHeals(berry: Berry, hp: number): { heal: number; pouch: number } {
+  const healed = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
+  return { heal: healed - hp, pouch: eatBerry(berry, hp) - healed };
 }
 
 /**
@@ -184,6 +233,8 @@ export type HitState = {
   stages: Partial<Record<CombatStat, number>>; gulping: boolean;
   /** The Berry Bug Bite, Pluck or Incinerate took (once), and the HP its eating gave the user: the Berry's heal and Cheek Pouch's. */
   stolen?: { item: string; heal: number; pouch: number };
+  /** The attacker's own HP or pinch Berry it ate at a hit's Update (once), and the HP that gave it: the Berry's heal and Cheek Pouch's. */
+  ate?: { item: string; heal: number; pouch: number };
 };
 
 /** The HP one source took from the attacker in a hit. */
@@ -306,6 +357,7 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knoc
     && (item === "berryjuice" || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
     const berry = berryArithmetic(item, { maxHP: input.maxHP, baseMaxHP: input.baseMaxHP, ability: state.attackerAbility }, input.generation);
     if (state.hp <= berry.line) {
+      state.ate = { item, ...berryHeals(berry, state.hp) };
       state.hp = eatBerry(berry, state.hp);
       state.attackerItem = "";
       ate = item;

@@ -46,12 +46,14 @@ export function statMove(moveId: string, game: BattleGame): StatMove | undefined
 
 /**
  * Damaging moves whose every use gives the target a non-volatile status (pinned Showdown: a 100%
- * secondary, which Sheer Force removes and Shield Dust or Covert Cloak stop, or G-Max Malodor's
- * self.onHit, which they do not). Burn and poison then damage it at the end of each turn.
+ * secondary, which Sheer Force removes and Shield Dust or Covert Cloak stop, or G-Max Malodor's and
+ * G-Max Volt Crash's self.onHit, which they do not). Burn and poison then damage it at the end of each
+ * turn; paralysis halves its Speed (Electro Ball's power reads it).
  */
 export const STATUS_MOVES: Record<string, { status: BattleStatus; secondary: boolean }> = {
   inferno: { status: "brn", secondary: true }, mortalspin: { status: "psn", secondary: true }, nuzzle: { status: "par", secondary: true },
   stokedsparksurfer: { status: "par", secondary: true }, zapcannon: { status: "par", secondary: true }, gmaxmalodor: { status: "psn", secondary: false },
+  gmaxvoltcrash: { status: "par", secondary: false },
 };
 
 /**
@@ -65,6 +67,19 @@ export const MAX_MOVE_EFFECTS: Record<string, { user?: Stages; foe?: Stages; wea
   "Max Flare": { weather: "Sun" }, "Max Geyser": { weather: "Rain" }, "Max Hailstorm": { weather: "Hail" }, "Max Rockfall": { weather: "Sand" },
   "Max Lightning": { terrain: "Electric" }, "Max Overgrowth": { terrain: "Grassy" }, "Max Mindstorm": { terrain: "Psychic" }, "Max Starfall": { terrain: "Misty" },
   "G-Max Wind Rage": { clearsScreens: true, clearsTerrain: true }, "G-Max Sweetness": { curesUserStatus: true },
+};
+
+/**
+ * Signature Z-Moves' own effects on a hit (pinned Showdown data/moves.ts; tests/source checks this table against the
+ * pinned Dex): Clangorous Soulblaze's selfBoost (+1 to every stat once the move has hit, sim/battle-actions.ts useMoveInner;
+ * Sheer Force removes it, data/abilities.ts sheerforce), Genesis Supernova's Psychic Terrain (a 100% secondary's
+ * self.onHit: Sheer Force would remove it, Shield Dust and Covert Cloak keep self effects), Splintered Stormshards ending
+ * the terrain (onHit). Stoked Sparksurfer's paralysis is in STATUS_MOVES; a generic Z-Move has no effect of its own.
+ */
+export const Z_MOVE_EFFECTS: Record<string, { user?: Stages; terrain?: string; clearsTerrain?: boolean }> = {
+  "Clangorous Soulblaze": { user: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+  "Genesis Supernova": { terrain: "Psychic" },
+  "Splintered Stormshards": { clearsTerrain: true },
 };
 
 /** Two-turn moves (pinned Showdown flags.charge): a charge turn before each use, unless skipped. */

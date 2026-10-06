@@ -13,7 +13,7 @@ import { canonical, compact, loadModule, readVerifiedArchive, sha256, sorted, wi
 import { engineSpeciesID, nativeSpecies, transformNativeCatalog } from "../../scripts/lib/battle-data/transform";
 import { NATIVE_GAMES, type NativeGame } from "../../scripts/lib/battle-data/types";
 import { randomBattleCatalog } from "../../scripts/lib/battle-data/random-battle";
-import { CHARGE_MOVES, NOT_TWICE_MOVES, RECHARGE_MOVES, STAT_MOVES, STATUS_MOVES, statMove, type StatMove } from "../../app/lib/battle/stat-moves";
+import { CHARGE_MOVES, NOT_TWICE_MOVES, RECHARGE_MOVES, STAT_MOVES, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type StatMove } from "../../app/lib/battle/stat-moves";
 import { HIT_ABILITIES, HIT_ITEMS, itemOwner, OWNED_ITEMS, STAT_GUARDS, UNBREAKABLE } from "../../app/lib/battle/uses-to-ko";
 
 vi.mock("node:child_process", async (importOriginal) => {
@@ -503,10 +503,10 @@ describe("native exact-engine coverage diagnostics", () => {
 
 type DexStages = Partial<Record<string, number>>;
 type DexMove = {
-  id: string; category: string; pp: number; noPPBoosts?: boolean; isZ?: unknown; isMax?: unknown; flags: Record<string, number | undefined>;
+  id: string; name: string; category: string; pp: number; noPPBoosts?: boolean; isZ?: unknown; isMax?: unknown; flags: Record<string, number | undefined>;
   self?: { boosts?: DexStages; chance?: number; volatileStatus?: string; onHit?: unknown }; selfBoost?: { boosts?: DexStages };
-  secondaries?: { chance?: number; boosts?: DexStages; self?: { boosts?: DexStages }; status?: string }[] | null;
-  onTryMove?: unknown; condition?: DexResidual;
+  secondaries?: { chance?: number; boosts?: DexStages; self?: { boosts?: DexStages; onHit?: unknown }; status?: string }[] | null;
+  onTryMove?: unknown; onHit?: unknown; condition?: DexResidual;
 };
 type DexResidual = { onResidualOrder?: number; onResidualSubOrder?: number; onFieldResidualOrder?: number; onResidualPriority?: number; duration?: number; durationCallback?: unknown };
 type DexHandlers = DexResidual & {
@@ -534,7 +534,11 @@ function guarded(handler: unknown): "all" | string[] | "bounces" | null {
 type Trigger = { stages: DexStages; types: string[]; physical: boolean; special: boolean; contact: boolean; superEffective: boolean };
 type UsesFacts = {
   moves: Record<string, Pick<DexMove, "pp" | "noPPBoosts">>;
-  stats: Record<string, StatMove>; statuses: Record<string, string>; zStatuses: Record<string, string>; maxStatuses: string[];
+  stats: Record<string, StatMove>; statuses: Record<string, string>; zStatuses: Record<string, string>;
+  /** Each Max Move's own status on every foe (self.onHit trySetStatus, not a random one), by id. */
+  maxStatuses: Record<string, string>;
+  /** Each damaging Z-Move's own stages and field change, by name (stat-moves.ts Z_MOVE_EFFECTS). */
+  zEffects: Record<string, { user?: DexStages; terrain?: string; clearsTerrain?: boolean }>;
   charge: string[]; recharge: string[]; notTwice: string[];
   hitAbilities: Record<string, Trigger>; hitItems: Record<string, Trigger>; residuals: Record<string, DexResidual>; residualHandlers: string[];
   /** Every ability and item with an onResidual handler. */
@@ -588,7 +592,7 @@ describe("Uses to KO tables against the pinned Dex", () => {
         // Everything is read here: Dex loads its data lazily, and the compiled runtime is removed afterwards.
         const dex = Dex.mod(profile.mod);
         const fact: UsesFacts = {
-          moves: {}, stats: {}, statuses: {}, zStatuses: {}, maxStatuses: [], charge: [], recharge: [], notTwice: [],
+          moves: {}, stats: {}, statuses: {}, zStatuses: {}, zEffects: {}, maxStatuses: {}, charge: [], recharge: [], notTwice: [],
           hitAbilities: {}, hitItems: {}, residuals: {}, residualHandlers: [], endOfTurn: { abilities: [], items: [] }, durations: {},
           guards: { abilities: {}, items: {}, breakable: {} }, afterMove: [], takeItems: {}, families: {},
         };
@@ -600,11 +604,19 @@ describe("Uses to KO tables against the pinned Dex", () => {
           const status = sure.find((secondary) => secondary.status)?.status;
           if (dexMove.isZ) {
             if (status) fact.zStatuses[row.id] = status;
+            // Its selfBoost, a 100% secondary's self.onHit terrain (Genesis Supernova), an onHit that ends the terrain.
+            const terrain = /setTerrain\(['"](\w+)terrain['"]\)/.exec(String(sure.find((secondary) => secondary.self?.onHit)?.self?.onHit))?.[1];
+            const effect = Object.fromEntries(Object.entries({
+              user: combatStages(dexMove.selfBoost?.boosts), terrain: terrain && terrain[0].toUpperCase() + terrain.slice(1),
+              clearsTerrain: /clearTerrain\(\)/.test(String(dexMove.onHit)) || undefined,
+            }).filter(([, value]) => value));
+            if (Object.keys(effect).length) fact.zEffects[dexMove.name] = effect;
             continue;
           }
           if (dexMove.isMax) {
             const onHit = String(dexMove.self?.onHit);
-            if (/trySetStatus\('psn'/.test(onHit) && !/random/.test(onHit)) fact.maxStatuses.push(row.id);
+            const maxStatus = /trySetStatus\('(\w+)'/.exec(onHit)?.[1];
+            if (maxStatus && !/random/.test(onHit)) fact.maxStatuses[row.id] = maxStatus;
             continue;
           }
           const stat = Object.fromEntries(Object.entries({
@@ -702,11 +714,16 @@ describe("Uses to KO tables against the pinned Dex", () => {
     const ids = new Set(data(profile.game).catalog.moves.map((row) => row.id));
     const inGame = (table: Iterable<string>) => [...table].filter((id) => ids.has(id)).sort();
     expect(Object.fromEntries(inGame(Object.keys(STATUS_MOVES)).map((id) => [id, STATUS_MOVES[id].status])))
-      .toEqual({ ...fact.statuses, ...fact.zStatuses, ...Object.fromEntries(fact.maxStatuses.map((id) => [id, "psn"])) });
-    expect(inGame(Object.keys(STATUS_MOVES)).filter((id) => !STATUS_MOVES[id].secondary)).toEqual(fact.maxStatuses);
+      .toEqual({ ...fact.statuses, ...fact.zStatuses, ...fact.maxStatuses });
+    expect(inGame(Object.keys(STATUS_MOVES)).filter((id) => !STATUS_MOVES[id].secondary)).toEqual(Object.keys(fact.maxStatuses).sort());
     expect(inGame(CHARGE_MOVES)).toEqual(fact.charge.sort());
     expect(inGame(RECHARGE_MOVES)).toEqual(fact.recharge.sort());
     expect(inGame(NOT_TWICE_MOVES)).toEqual(fact.notTwice.sort());
+  });
+
+  it("lists every Ultra Sun / Ultra Moon Z-Move's own stages and field change (a generic Z-Move has none)", () => {
+    expect(facts.ultra_sun_ultra_moon.zEffects).toEqual(Z_MOVE_EFFECTS);
+    expect(Object.keys(facts.ultra_sun_ultra_moon.zEffects).sort()).toEqual(["Clangorous Soulblaze", "Genesis Supernova", "Splintered Stormshards"]);
   });
 
   it.each(NATIVE_GAMES)("triggers the $game abilities and items a hit sets off as their pinned handlers do", (profile) => {

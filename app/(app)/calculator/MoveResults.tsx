@@ -234,7 +234,8 @@ export function MoveDetails({ moveId, row, id, context, abilityId, itemId, onCon
       )}
       {row?.effectiveName && <p className="flex flex-wrap items-center gap-2 font-semibold">{row.effectiveName}<TypeBadge type={row.effectiveType ?? move?.type ?? "Unknown"} /><span className="text-xs font-normal text-muted">Power: {row.effectivePower ?? "—"} · {row.effectiveCategory ?? move?.category}</span></p>}
       <p className="text-xs text-muted">{converted ? `Assigned move: ${move?.name ?? moveId} · Catalog base power` : "Base power"}: {basePower(move)} · Accuracy: {move?.accuracy != null ? `${move.accuracy}%` : "—"} · Category: {move?.category ?? "—"}</p>
-      {move?.description && <p className="text-muted">{move.description}</p>}
+      {/* A Z-Move or Max Move runs none of its assigned move's effects (hit-loop.ts ownMoveId): the description is that move's. */}
+      {move?.description && <p className="text-muted">{converted ? `${move.name}: ${move.description}` : move.description}</p>}
       {row?.description && <p>{row.description}</p>}
       <p className="text-xs text-muted">
         Target: {move?.target ?? "—"} · Priority: {move?.priority ?? "—"}
