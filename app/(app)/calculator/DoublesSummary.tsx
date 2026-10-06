@@ -28,13 +28,17 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
 const SIDES: { id: DoublesSideId; label: string }[] = [{ id: "own", label: "Your side" }, { id: "opponent", label: "Opponent's side" }];
 
-/** The move the turn used for a slot's action when it differs (Z-Move, Max Move), from the turn or its start rows. */
+/**
+ * The move the turn used for a slot's action when it differs (Z-Move, Max Move), from the turn or its start rows, and the
+ * type its calculation gave it (Judgment's Plate, Multi-Attack's Memory, Weather Ball's weather...): the step's, else that
+ * of a hit it calculated, else its start row's.
+ */
 function effectiveMove(turn: DoublesTurnResult | null, view: DoublesCardView) {
   const moveId = view.action.moveId;
   if (!moveId || !turn || turn.status === "issues") return undefined;
   const step = turn.status === "ready" ? turn.steps.find((entry) => entry.slot === view.id && entry.moveId === moveId) : undefined;
-  if (step) return { name: step.effectiveName, type: step.effectiveType };
   const row = turn.startRows.find((entry) => entry.slot === view.id && entry.row.moveId === moveId)?.row;
+  if (step) return { name: step.effectiveName, type: step.effectiveType ?? step.hits.find((hit) => hit.row)?.row?.effectiveType ?? row?.effectiveType };
   return row && { name: row.effectiveName, type: row.effectiveType };
 }
 

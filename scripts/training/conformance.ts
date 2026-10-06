@@ -89,19 +89,29 @@ function preResidualHP(json: string, seed: string, choices: Record<SideID, strin
   const flinchedByChance = (line: string) => !fakeOutHit.has((line.split("|")[2] ?? "").replace(/^(p[12])[ab]?:/, "$1:").trim());
   // A status from a contact ability (Flame Body, Static, Poison Point: 30%, PS/data/abilities.ts) is a chance effect too.
   // A stat change from a chance secondary (Shadow Ball's 20% Sp. Def drop, Psychic's 10%, Moonblast's 10% Sp. Atk drop) is an
-  // added effect below 100%, which the engine does not model (app/lib/battle/doubles-turn.ts:2419-2422): not a clean sample.
+  // added effect below 100%, which the engine does not model (app/lib/battle/doubles-turn.ts turnFacts): not a clean sample.
+  // The user's Serene Grace doubles the chance (PS/data/abilities.ts serenegrace): one it doubles to 100% happens, and the
+  // engine models it (app/lib/battle/stat-moves.ts SERENE_GRACE_MOVES); the user is read as it stands after the turn.
   // A multiaccuracy move (Triple Axel, Population Bomb) checks accuracy per hit and stops at a miss without a -miss line
   // (pinned sim/battle-actions.ts hitStepMoveHitLoop): fewer hits than its multihit is a miss, also not clean.
   let moveId = "";
+  let graced = false;
   const chanceBoost = lines.some((line) => {
-    if (line.startsWith("|move|")) { moveId = toID(line.split("|")[3] ?? ""); return false; }
+    if (line.startsWith("|move|")) {
+      const parts = line.split("|");
+      moveId = toID(parts[3] ?? "");
+      const at = /^(p[12])([ab]): (.*)$/.exec(parts[2] ?? "");
+      const user = at ? battle[at[1] as SideID].active[at[2] === "a" ? 0 : 1] : null;
+      graced = !!at && user?.name === at[3] && user.ability === "serenegrace";
+      return false;
+    }
     if (line.startsWith("|-hitcount|") && moveId) {
       const move = battle.dex.moves.get(moveId) as { multihit?: number | number[]; multiaccuracy?: boolean };
       return !!move.multiaccuracy && typeof move.multihit === "number" && Number(line.split("|")[3]) < move.multihit;
     }
     if (!/^\|-(un)?boost\|/.test(line) || line.includes("[from]") || !moveId) return false;
     const move = battle.dex.moves.get(moveId) as { secondaries?: readonly { chance?: number; boosts?: object; self?: { boosts?: object } }[] | null };
-    return (move.secondaries ?? []).some((each) => (each.chance ?? 100) < 100 && (!!each.boosts || !!each.self?.boosts));
+    return (move.secondaries ?? []).some((each) => (each.chance ?? 100) * (graced ? 2 : 1) < 100 && (!!each.boosts || !!each.self?.boosts));
   });
   const dirty = chanceBoost || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
     || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|switch|") || line.startsWith("|-mega|"));

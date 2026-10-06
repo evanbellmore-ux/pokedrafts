@@ -3,7 +3,7 @@
 // switches and Mega Evolution exactly as Showdown does: the new form's types, ability and Speed before any move, A1.5),
 // E2 per world, the residual pass and the field clock added, plus a first-order accuracy correction. Rollout path:
 // simulator samples on the belief worlds with common random numbers. Engine paths assume no crits and no chance effects
-// below 100% (doubles-turn.ts:2419-2422); rollouts sample them. Documented, not corrected.
+// below 100% (doubles-turn.ts turnFacts; one Serene Grace doubles to 100% happens); rollouts sample them. Documented, not corrected.
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
 import {
   DOUBLES_SLOTS, foesOf, slotSide, type DoublesOutcome, type DoublesOutcomesResult, type DoublesSideId, type DoublesSlotId,

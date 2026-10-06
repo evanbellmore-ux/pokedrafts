@@ -7,7 +7,7 @@ import { calculateSMSSSV } from "@smogon/calc/dist/mechanics/gen789";
 import { getMoveEffectiveness } from "@smogon/calc/dist/mechanics/util";
 import type { BattleRuntime } from "./runtime";
 import type { AfterUse, BattleBuild, BattleConditions, BattleGame, BattleStatus, ChampionsMove, CombatStat, MoveContext, MoveDamageResult, UsesToKO } from "./types";
-import { CHARGE_MOVES, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type Stages as StageChanges } from "./stat-moves";
+import { CHARGE_MOVES, everyUseStatus, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, SERENE_GRACE_RANDOM_STATUS, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type Stages as StageChanges } from "./stat-moves";
 import {
   berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, ITEM_MOVES,
   KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, usedMoveName, walkHits,
@@ -507,6 +507,7 @@ function dynamaxCap(m: UsesMatchup, move: ChampionsMove): UsesCap | null {
   if (move.id === "futuresight" || move.id === "doomdesire") return { uses: maxUses, reason: "Lands two turns later, one at a time" };
   if (TRAPPING_MOVES.has(move.id)) return { uses: maxUses, reason: "Its trap lasts 4 or 5 turns at random" };
   if (move.id === "steelroller" && !m.conditions.terrain) return { uses: maxUses, reason: "Steel Roller fails without a terrain" };
+  if (SERENE_GRACE_RANDOM_STATUS.has(move.id) && m.attAbility === "serenegrace" && !m.defender.status) return { uses: maxUses, reason: "It inflicts a random status" };
   const once = onceReason(m, move);
   return once ? { uses: maxUses + 1, reason: once } : null;
 }
@@ -547,6 +548,8 @@ function unmodelledReason(m: UsesMatchup, move: ChampionsMove, result: Result, e
   if ((TRAPPING_MOVES.has(own) && !maxed) || TRAPPING_MOVES.has(engineId)) return "Its trap lasts 4 or 5 turns at random";
   if (GMAX_RESIDUAL_MOVES.has(engineId)) return `${usedMoveName(move.name, result.move)} damages it each turn`;
   if (RANDOM_STATUS_MOVES.has(engineId)) return "It inflicts a random status";
+  // Serene Grace makes Dire Claw's 50% random status certain (stat-moves.ts SERENE_GRACE_RANDOM_STATUS).
+  if (SERENE_GRACE_RANDOM_STATUS.has(own) && !maxed && attAbility === "serenegrace" && !defender.status) return "It inflicts a random status";
   // Pinned Showdown battle.ts getTarget picks a random foe for these on every use, the locked turns included.
   if (own && move.target === "randomNormal" && !maxed && m.conditions.gameType === "Doubles" && m.conditions.multipleTargets) return "Hits a random foe each turn";
   if (own === "relicsong" && attacker.speciesId.startsWith("meloetta")) return "Relic Song changes Meloetta's form";
@@ -574,7 +577,7 @@ function unmodelledReason(m: UsesMatchup, move: ChampionsMove, result: Result, e
   if (defender.status === "slp" && attAbility === "baddreams" && defAbility !== "comatose") return "Sleep wears off at random";
   // Pinned Showdown shedskin onResidual: a 1 in 3 chance each turn to cure the holder's status.
   if (attAbility === "shedskin" && attacker.status) return "Shed Skin may cure its status";
-  const inflicted = !defender.status && (STATUS_MOVES[engineId] ?? (maxed ? undefined : STATUS_MOVES[own]))?.status;
+  const inflicted = !defender.status && (STATUS_MOVES[engineId] ?? (maxed ? undefined : everyUseStatus(own, attAbility === "serenegrace")))?.status;
   const orb = m.defItemOn && !defender.status && (defender.itemId === "flameorb" || defender.itemId === "toxicorb");
   // An inflicted paralysis matters where the damage reads the target's Speed (G-Max Volt Crash, then Electro Ball).
   const readsInflicted = !!inflicted && (inflicted !== "par" || SPEED_MOVES.has(own));
@@ -3109,7 +3112,8 @@ export class UsesSearch {
     // 3. The move's own effects and secondaries: stat stages, Clear Smog, a Max Move's or a Z-Move's, statuses (a
     //    status Berry cures at once; Synchronize passes burn or poison back), Smelling Salts and Wake-Up Slap curing
     //    theirs, Salt Cure, Spicy Spray's burn.
-    const table = own ? statMove(own, runtime.profile.id) : undefined;
+    // The attacker's Serene Grace as the use starts makes its 50% and 70% added effects certain (stat-moves.ts SERENE_GRACE_MOVES).
+    const table = own ? statMove(own, runtime.profile.id, attAbility === "serenegrace") : undefined;
     if (table) {
       if (table.self) boost(m, state, "att", table.self, false);
       if (table.preHit) boost(m, state, "att", table.preHit, false);
@@ -3825,7 +3829,8 @@ export class UsesSearch {
     const { defenderItem, attackerItem } = result.rawDesc;
     // The engine move's own status (Stoked Sparksurfer, G-Max Malodor), else the row's own move's when the use is it: a
     // Z-Move or Max Move gives none of its base move's (hit-loop.ts ownMoveId: Inferno Overdrive burns nothing).
-    const entry = STATUS_MOVES[id(usedMoveName(this.input.move.name, engineMove))] ?? STATUS_MOVES[ownMoveId(this.input.move.id, engineMove)];
+    // With the attacker's Serene Grace as the use starts, also a 50% secondary status (stat-moves.ts everyUseStatus).
+    const entry = STATUS_MOVES[id(usedMoveName(this.input.move.name, engineMove))] ?? everyUseStatus(ownMoveId(this.input.move.id, engineMove), this.ability(state, "att") === "serenegrace");
     return {
       row, trace, cases, superEffective, resistBerry: defenderItem && getBerryResistType(defenderItem) ? id(defenderItem) : "",
       gem: attackerItem?.endsWith(" Gem") ? id(attackerItem) : "", status: entry?.status ?? null, statusSecondary: !!entry?.secondary,
@@ -4215,7 +4220,8 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   if (attHPSensitive && ((attAbility !== "magicguard" && (recoil || punished || attItem === "lifeorb")) || heals || attackerResiduals)) {
     add(`${name}'s damage follows the attacker's HP.`);
   }
-  const table = statMove(ownMove, runtime.profile.id);
+  const sereneGrace = attAbility === "serenegrace";
+  const table = statMove(ownMove, runtime.profile.id, sereneGrace);
   if (relevant(table?.self, "att")) own(`${move.name} ${direction(table!.self!, attAbility)} the attacker's ${changed(table!.self!, "att")} after each use.`);
   const rise = table?.preHit ?? (sheerForce ? undefined : table?.userSecondary);
   if (relevant(rise, "att")) own(`${move.name} ${direction(rise!, attAbility)} the attacker's ${changed(rise!, "att")} each use.`);
@@ -4327,7 +4333,7 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   for (const [who, build, ability, held] of [["attacker", attacker, attAbility, attItem], ["target", defender, defAbility, defItem]] as const) {
     if (ability === "hydration" && build.status && rain && held !== "utilityumbrella") add(`The ${who}'s Hydration cures its status at the end of the first turn.`);
   }
-  if (STATUS_MOVES[ownMove] && !defender.status && (ownMove in STATUS_READS || defAbility === "marvelscale" || defAbility === "synchronize")) own(`${move.name} gives the target a status.`);
+  if (everyUseStatus(ownMove, sereneGrace) && !defender.status && (ownMove in STATUS_READS || defAbility === "marvelscale" || defAbility === "synchronize")) own(`${move.name} gives the target a status.`);
   if ((ownMove === "smellingsalts" && defender.status === "par") || (ownMove === "wakeupslap" && defender.status === "slp")) own(`${move.name} cures the target's status after the first use.`);
   return sources;
 }

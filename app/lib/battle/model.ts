@@ -1,6 +1,6 @@
 import { championsRuntime, type BattleRuntime } from "./runtime";
-import { CROWNED_FORMS, specialTeraForm, validateMechanic } from "./mechanics";
-export { CROWNED_FORMS } from "./mechanics";
+import { heldItemForm, specialTeraForm, validateMechanic } from "./mechanics";
+export { CROWNED_FORMS, heldItemForm } from "./mechanics";
 import { imposterTransforms, NO_TRACE_ABILITIES, tracedAbility } from "./imposter";
 import type {
   BattleBuild,
@@ -404,10 +404,12 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
     else for (const reason of item.unsupported) issues.push({ field: "itemId", message: reason });
   }
   const requiredItems = species.requiredItems?.length ? species.requiredItems : species.requiredItem ? [species.requiredItem] : [];
-  const crowned = CROWNED_FORMS[build.speciesId];
-  if (crowned && build.itemId === crowned.item && runtime.speciesById.has(crowned.form)) {
-    const form = runtime.speciesById.get(crowned.form)!.name;
-    issues.push({ field: "itemId", message: `${species.name} holding ${runtime.itemsById.get(crowned.item)?.name ?? crowned.item} battles as ${form}.` });
+  // Zacian or Zamazenta holding its Rusted item, Arceus holding a Plate (or a type's Z-Crystal) and Silvally holding a
+  // Memory battle as that item's form (mechanics.ts heldItemForm): that form is the one to select.
+  const heldForm = heldItemForm(build.speciesId, build.itemId, runtime);
+  if (heldForm) {
+    const form = runtime.speciesById.get(heldForm)!.name;
+    issues.push({ field: "itemId", message: `${species.name} holding ${runtime.itemsById.get(build.itemId)?.name ?? build.itemId} battles as ${form}.` });
   }
   if (requiredItems.length && !requiredItems.includes(build.itemId)) {
     issues.push({ field: "itemId", message: `${species.name} requires ${requiredItems.map((id) => runtime.itemsById.get(id)?.name ?? id).join(" or ")}.` });
