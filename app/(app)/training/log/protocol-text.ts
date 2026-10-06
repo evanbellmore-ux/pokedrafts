@@ -19,14 +19,14 @@ export type LogFormatterOptions = {
 };
 
 /** Engine slot of a Showdown position for the page (you are p1): p2a stands across from your right (SHOWDOWN_POSITION). */
-const SLOT_OF: Record<string, DoublesSlotId> = { p1a: "own-left", p1b: "own-right", p2a: "opponent-right", p2b: "opponent-left" };
-const POSITION_WORDS: Record<DoublesSlotId, string> = {
+export const SLOT_OF: Record<string, DoublesSlotId> = { p1a: "own-left", p1b: "own-right", p2a: "opponent-right", p2b: "opponent-left" };
+export const POSITION_WORDS: Record<DoublesSlotId, string> = {
   "own-left": "your left", "own-right": "your right", "opponent-left": "opponent's left", "opponent-right": "opponent's right",
 };
-const STAT_NAMES: Record<string, string> = {
+export const STAT_NAMES: Record<string, string> = {
   atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed", accuracy: "Accuracy", evasion: "Evasion",
 };
-const WEATHER_NAMES: Record<string, string> = {
+export const WEATHER_NAMES: Record<string, string> = {
   sunnyday: "Sun", raindance: "Rain", sandstorm: "Sandstorm", snowscape: "Snow", snow: "Snow", hail: "Hail",
   desolateland: "Harsh sunshine", primordialsea: "Heavy rain", deltastream: "Strong winds",
 };
@@ -42,7 +42,7 @@ const CANT_REASONS: Record<string, string> = {
   nopp: "has no PP left", ally: "is commanding",
 };
 /** Lines that carry no battle fact for the log (protocol bookkeeping, animations, team preview). */
-const IGNORED = new Set([
+export const IGNORED = new Set([
   "", "t:", "upkeep", "split", "request", "uhtml", "uhtmlchange", "gametype", "player", "teamsize", "gen", "tier", "rule",
   "clearpoke", "poke", "teampreview", "start", "raw", "-center", "debug", "j", "c", "l", "n", "inactive", "inactiveoff",
   "timer", "-anim", "seed", "rated", "title", "join", "leave", "chat", "html", "badge", "bigerror", "sentchoice", "error",
@@ -52,29 +52,29 @@ type Mon = { side: SideID; name: string; slot: DoublesSlotId | null };
 type HP = { current: number; maximum: number; exact: boolean };
 
 /** "Life Orb" from "[from] item: Life Orb"; null without that tag. */
-function tag(args: readonly string[], name: "from" | "of"): string | null {
+export function tag(args: readonly string[], name: "from" | "of"): string | null {
   const prefix = `[${name}]`;
   const found = args.find((arg) => arg.startsWith(prefix));
   return found ? found.slice(prefix.length).trim() : null;
 }
-function hasTag(args: readonly string[], name: string) {
+export function hasTag(args: readonly string[], name: string) {
   return args.some((arg) => arg === `[${name}]` || arg.startsWith(`[${name}]`));
 }
 /** "move: Protect", "ability: Intimidate", "item: Sitrus Berry" → the effect's name. */
-function effectName(effect: string): string {
+export function effectName(effect: string): string {
   return effect.replace(/^(move|ability|item|pokemon):\s*/i, "").trim();
 }
-function effectKind(effect: string): "move" | "ability" | "item" | null {
+export function effectKind(effect: string): "move" | "ability" | "item" | null {
   const match = /^(move|ability|item):/i.exec(effect.trim());
   return match ? (match[1].toLowerCase() as "move" | "ability" | "item") : null;
 }
 /** Moves that protect their user this turn (stallingMove; PS/data/moves.ts protect, detect, kingsshield, spikyshield, banefulbunker, silktrap, burningbulwark, obstruct, maxguard, endure). */
-const PROTECTING_MOVES: ReadonlySet<string> = new Set(["protect", "detect", "kingsshield", "spikyshield", "banefulbunker", "silktrap", "burningbulwark", "obstruct", "maxguard", "endure"]);
+export const PROTECTING_MOVES: ReadonlySet<string> = new Set(["protect", "detect", "kingsshield", "spikyshield", "banefulbunker", "silktrap", "burningbulwark", "obstruct", "maxguard", "endure"]);
 
-function idOf(text: string) {
+export function idOf(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
-function parseHP(token: string | undefined): { current: number; maximum: number } | null {
+export function parseHP(token: string | undefined): { current: number; maximum: number } | null {
   if (!token) return null;
   const first = token.trim().split(" ")[0];
   if (first === "0" || token.includes("fnt")) {

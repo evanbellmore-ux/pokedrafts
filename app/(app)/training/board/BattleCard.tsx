@@ -4,6 +4,8 @@ import { SLOT_POSITION, type DoublesSlotId } from "@/app/lib/battle/doubles-type
 import type { PokemonView } from "../model/view-types";
 import { pointsText } from "../setup/team-export";
 import { boostLabel, boostText, capitalize, hpFraction, hpText, hpTone, hpValueText, itemText, statusLabel } from "./board-format";
+import { HP_ANIMATION_MS } from "./playback";
+import styles from "./board.module.css";
 
 // One active Pokémon as you can see it: yours exactly; the AI's per "You see" and what the battle showed (BoardView).
 
@@ -21,11 +23,23 @@ export type CardTarget = {
   onPick(): void;
 };
 
+/** The card during a turn's playback step (board/useTurnPlayback.ts). */
+export type CardPlay = {
+  /** "target": framed and tinted in the step's colour (its resolve beat); "actor": the move's user, a dashed frame; null: neither. */
+  role: "target" | "actor" | null;
+  /** The move's type colour (getPokemonTypeColours), or the theme accent. */
+  colour: string;
+  /** Its results floating under the HP bar in the resolve beat: "Burned", "Attack +2", "Protected", "Fainted". */
+  labels: string[];
+  /** The HP bar slides (not under prefers-reduced-motion). */
+  animate: boolean;
+};
+
 export function abilityText(mon: PokemonView) {
   return mon.ability ? `Ability: ${mon.ability.name}` : "Ability: not shown";
 }
 
-export default function BattleCard({ mon, slot, target }: { mon: PokemonView | null; slot: DoublesSlotId; target?: CardTarget | null }) {
+export default function BattleCard({ mon, slot, target, play }: { mon: PokemonView | null; slot: DoublesSlotId; target?: CardTarget | null; play?: CardPlay | null }) {
   const id = useId();
   const position = capitalize(SLOT_POSITION[slot]);
   if (!mon) {
@@ -46,9 +60,13 @@ export default function BattleCard({ mon, slot, target }: { mon: PokemonView | n
   const pickable = !!target?.eligible && !mon.fainted;
   const frame = pickable ? (target!.selected ? "bg-accent-soft outline-2 -outline-offset-4 outline-accent" : "outline-2 outline-dashed -outline-offset-4 outline-accent hover:bg-panel-hover")
     : target?.chips.length ? "bg-accent-soft/60" : "";
+  // A playback step: its targets framed and tinted in the move's type colour, its user framed with a dashed line.
+  const playStyle = play?.role === "target"
+    ? { outline: `3px solid ${play.colour}`, outlineOffset: "-3px", backgroundColor: `color-mix(in srgb, ${play.colour} 18%, transparent)` }
+    : play?.role === "actor" ? { outline: `2px dashed ${play.colour}`, outlineOffset: "-3px" } : undefined;
   return (
     <article data-training-card={slot} data-training-card-target={pickable ? (target!.selected ? "selected" : "eligible") : undefined} aria-labelledby={`${id}-name`}
-      className={`relative min-w-0 p-2 sm:p-3 ${frame}`}>
+      data-training-step-role={play?.role ?? undefined} className={`relative min-w-0 p-2 sm:p-3 ${frame}`} style={playStyle}>
       {/* The whole frame is the click target; the card's own content sits above it and lets clicks through, except Set. */}
       {pickable && (
         <button type="button" data-training-card-pick={slot} aria-label={target!.label} aria-pressed={target!.selected} onClick={target!.onPick}
@@ -68,9 +86,20 @@ export default function BattleCard({ mon, slot, target }: { mon: PokemonView | n
       ) : (
         <p className="mt-1 tabular-nums text-sm text-text">{hpText(mon.hp)}</p>
       )}
-      <div role="meter" aria-label={`${mon.name} (${SLOT_POSITION[slot]}) HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={value}
-        aria-valuetext={mon.fainted ? "Fainted" : hpValueText(mon.hp)} className="mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
-        <div className={`h-full rounded-full ${TONE_CLASS[tone]}`} style={{ width: `${fraction * 100}%` }} />
+      <div className="relative">
+        <div role="meter" aria-label={`${mon.name} (${SLOT_POSITION[slot]}) HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={value}
+          aria-valuetext={mon.fainted ? "Fainted" : hpValueText(mon.hp)} className="mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
+          <div data-training-hp-bar className={`h-full rounded-full ${TONE_CLASS[tone]}`}
+            style={{ width: `${fraction * 100}%`, ...(play?.animate ? { transition: `width ${HP_ANIMATION_MS}ms ease-out` } : {}) }} />
+        </div>
+        {/* The step's results float over the lines below the bar (the live region reads them). */}
+        {!!play?.labels.length && (
+          <div data-training-step-labels aria-hidden="true" className={styles.labels}>
+            {play.labels.map((label) => (
+              <span key={label} data-training-step-label className={styles.label} style={{ borderColor: play.colour, color: label === "Fainted" ? "var(--color-danger)" : undefined }}>{label}</span>
+            ))}
+          </div>
+        )}
       </div>
       {!mon.fainted && !!facts.length && <p className="mt-1 wrap-anywhere text-xs text-text">{facts.join(" · ")}</p>}
       {!mon.fainted && boosts && <p className="mt-1 wrap-anywhere text-xs text-text" aria-label={boostLabel(mon.boosts)}>{boosts}</p>}

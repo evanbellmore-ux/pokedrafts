@@ -73,10 +73,11 @@ function valueClosure(entry: string): Set<string> {
 const names = (set: Set<string>) => [...set].map((entry) => entry === PACKAGE ? PACKAGE : rel(entry));
 
 const WORKER_SIDE_DIRS = ["model/", "sim/", "worker/", "ai/", "usage/"];
-/** The page bundle: everything in the route folder that is not worker-side (protocol-text.ts runs in the worker). */
+/** The page bundle: everything in the route folder that is not worker-side (the log's protocol readers run in the worker). */
+const WORKER_LOG_FILES = ["log/protocol-text.ts", "log/protocol-steps.ts"];
 const pageFiles = trainingFiles.filter((file) => {
   const path = rel(file).slice(T.length);
-  return !WORKER_SIDE_DIRS.some((dir) => path.startsWith(dir)) && path !== "log/protocol-text.ts";
+  return !WORKER_SIDE_DIRS.some((dir) => path.startsWith(dir)) && !WORKER_LOG_FILES.includes(path);
 });
 const inDir = (dir: string) => trainingFiles.filter((file) => rel(file).startsWith(`${T}${dir}`));
 
@@ -85,7 +86,7 @@ function pageForbidden(path: string): boolean {
   if (path === PACKAGE) return true;
   if (path === "app/lib/battle/doubles-turn.ts" || path === "app/lib/battle/calculate.ts") return true;
   if (path === "data/champions/training-usage.json" || path === `${T}usage/training-usage.ts`) return true;
-  if (path === `${T}log/protocol-text.ts`) return true;
+  if (WORKER_LOG_FILES.some((file) => path === `${T}${file}`)) return true;
   if (!path.startsWith(T)) return false;
   const local = path.slice(T.length);
   if (local === "worker/worker-transport.ts") return false;

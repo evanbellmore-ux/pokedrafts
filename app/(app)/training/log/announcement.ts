@@ -29,10 +29,15 @@ function turnTitle(turn: number) {
   return turn === 0 ? "Start" : `Turn ${turn}`;
 }
 
-export function announcement(battle: TrainingBattle): string {
+/**
+ * `heard`: the turn whose steps the board's playback just read one at a time (board/useTurnPlayback.ts), or null. Then no
+ * turn's lines are read again, only the AI's read of that turn (new once it resolved) and what comes next.
+ */
+export function announcement(battle: TrainingBattle, { heard = null }: { heard?: number | null } = {}): string {
   const phase = battle.phase;
   const last = latestResolved(battle);
-  const recap = last ? [`${turnTitle(last.turn)}.`, ...last.lines.map((line) => line.text), ...(last.read?.reason ? [`AI's read: ${last.read.reason}`] : [])].join(" ") : "";
+  const read = last?.read?.reason && (heard === null || heard === last.turn) ? [`AI's read: ${last.read.reason}`] : [];
+  const recap = last ? [...(heard === null ? [`${turnTitle(last.turn)}.`, ...last.lines.map((line) => line.text)] : []), ...read].join(" ") : "";
   const join = (...parts: string[]) => parts.filter(Boolean).join(" ");
   switch (phase.kind) {
     case "starting": return "Starting battle…";
