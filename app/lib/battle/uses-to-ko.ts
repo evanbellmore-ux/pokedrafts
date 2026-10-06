@@ -9,10 +9,12 @@ import type { BattleRuntime } from "./runtime";
 import type { AfterUse, BattleBuild, BattleConditions, BattleGame, BattleStatus, ChampionsMove, CombatStat, MoveContext, MoveDamageResult, UsesToKO } from "./types";
 import { CHARGE_MOVES, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, STATUS_MOVES, statMove, type Stages as StageChanges } from "./stat-moves";
 import {
-  berryArithmetic, berryUnnerved, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, UNNERVES, walkHits,
-  type Berry, type HitLoopInput, type HitState, type HitWalk, type TurnUnnerve,
+  berryArithmetic, berryUnnerved, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, KLUTZ_IGNORED_ITEMS, PINCH_HEAL_BERRIES,
+  PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, walkHits,
+  type Berry, type HitLoopInput, type HitState, type HitWalk, type StolenEat, type TurnUnnerve,
 } from "./hit-loop";
 import { hitCountRule, type HitChance } from "./hit-count";
+import { NATURES } from "./model";
 
 /**
  * Uses to KO (types.ts UsesToKO): how many uses of a row's move, one a turn by an attacker that uses it
@@ -104,6 +106,8 @@ type Side = {
   smackedDown: boolean;
   /** Its Unburden has activated (pinned Showdown unburden volatile: an item used up or taken); it doubles Speed while it holds nothing. */
   unburden: boolean;
+  /** It has the focusenergy volatile from a Lansat Berry (+2 critical-hit ratio; BattleBuild.settledFocusEnergy). */
+  focusEnergy: boolean;
 };
 /**
  * Everything a use reads, with no use number in it, so that a state met again is the same state: `first`
@@ -223,6 +227,8 @@ const SEMI_INVULNERABLE_MOVES = new Set(["bounce", "dig", "dive", "fly", "phanto
 /** The largest double below 1: a chance that is not certain is never reported as 1. */
 const BELOW_ONE = 1 - Number.EPSILON / 2;
 const BERRY_STEALERS = new Set(["bugbite", "pluck", "incinerate"]);
+/** Why a count or a turn is not estimated when a Starf Berry is eaten: it raises a stat chosen at random (data/items.ts starfberry this.sample). */
+export const STARF_REASON = "Starf Berry raises a random stat";
 /** Target Berries that hit back once (pinned Showdown jabocaberry and rowapberry onDamagingHit): the category each answers. */
 const RETALIATION_BERRIES: Record<string, "Physical" | "Special"> = { jabocaberry: "Physical", rowapberry: "Special" };
 /** An attacker HP no loss in one use reaches: a walk of the hits from it neither faints nor heals (what the hits do but that HP). */
@@ -310,6 +316,11 @@ const CONSUMED = new Set([...HEALING_BERRIES, ...Object.keys(PINCH_STAT_BERRIES)
 const STRONG_WEATHERS = ["Harsh Sunshine", "Heavy Rain", "Strong Winds"];
 const STATS: CombatStat[] = ["atk", "def", "spa", "spd", "spe"];
 const STAT_LABELS: Record<CombatStat, string> = { atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed" };
+const STATUS_NAMES: Record<string, string> = { brn: "burn", par: "paralysis", psn: "poison", tox: "bad poison", slp: "sleep", frz: "freeze" };
+/** The stat each Nature lowers (model.ts NATURES), for a Figy-family Berry's confusion. */
+const NATURE_MINUS: Record<string, CombatStat | null> = Object.fromEntries(NATURES.map((nature) => [nature.name, nature.minus]));
+/** A confused attacker's note (calculate.ts adds it for one confused before the move): the count follows the move being used. */
+export const CONFUSED_NOTE = "Assumes the confused attacker does not hit itself.";
 const clamp = (stage: number) => Math.max(-6, Math.min(6, stage));
 const listNames = (names: string[]) => names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 const maxActive = (side: Side) => side.mechanic === "dynamax" || side.mechanic === "gigantamax";
@@ -524,7 +535,7 @@ function unmodelledReason(m: UsesMatchup, move: ChampionsMove, result: Result, e
   const retaliates = m.defItemOn && RETALIATION_BERRIES[defender.itemId] === (result.move.category === "Special" ? "Special" : "Physical");
   if (defAbility === "harvest" && (berry || retaliates)) return "Harvest may regrow its Berry";
   if (defAbility === "cudchew" && berry) return "Cud Chew eats its Berry twice";
-  if (m.defenderItem === "starfberry") return "Starf Berry raises a random stat";
+  if (m.defenderItem === "starfberry") return STARF_REASON;
   if (attacker.status === "slp") return "Sleep wears off at random";
   if (attacker.status === "frz") return "Freeze thaws at random";
   // A sleeping or frozen target wakes or thaws at random: that matters when the damage reads the status, or Bad Dreams damages it while it sleeps.
@@ -814,6 +825,8 @@ export class UsesSearch {
   private turnHeals: Map<string, [number, number]> | null = null;
   /** A doubles turn's step: the least and the most HP the followed attacker regained from each source (its HP Berry, Shell Bell). */
   private turnAttackerHeals: Map<string, [number, number]> | null = null;
+  /** A doubles turn's step that follows the attacker: the least and the most HP the target's Berry it ate with Bug Bite or Pluck healed, by the Berry. */
+  private turnAttackerAte: Map<string, [number, number]> | null = null;
   private turnRows: Map<MoveDamageResult, number> | null = null;
   private turnFailure: string | null = null;
   constructor(m: UsesMatchup, input: UsesRow, result: Result) {
@@ -834,6 +847,7 @@ export class UsesSearch {
         dynamaxTurns: build.mechanic === "dynamax" || build.mechanic === "gigantamax" ? 3 : null,
         toxic: 0, slowStart: null, saltCure: false, smackedDown: false,
         unburden: (who === "att" ? m.attAbility : m.defAbility) === "unburden" && build.abilityActive,
+        focusEnergy: !!build.settledFocusEnergy,
       };
     };
     this.initial = {
@@ -896,12 +910,20 @@ export class UsesSearch {
     const leppa = pp !== null && m.attackerItem === "leppaberry" && !UNNERVES.has(m.defAbility) ? Math.min(m.attAbility === "ripen" ? 20 : 10, pp) : 0;
     const turns = (points: number) => pressure ? Math.ceil(points / 2) : points;
     const perPP = result.move.isMax ? 1 : LOCK_IN_MOVES.has(move.id) ? 2 : move.id === "uproar" ? 3 : 1;
-    let limit = pp === null ? USES_CAP : (turns(pp) + turns(leppa)) * perPP;
+    // Bug Bite and Pluck eat the target's Berry (stolenEat): a Leppa Berry gives back PP the uses took (leppaUses).
+    const stolen = this.firstStolen();
+    const regained = pp === null ? 0 : this.leppaUses(pressure);
+    let limit = pp === null ? USES_CAP : (turns(pp) + turns(leppa)) * perPP + regained;
     let limitReason: "pp" | "pressure" | "self-cost" | "cap" = pp === null || perPP > 1 ? "cap" : pressure ? "pressure" : "pp";
     if (leppa) carried.push(`The attacker's Leppa Berry restores ${leppa} PP.`);
     if (perPP > 1) notes.push(`${move.name}: ${perPP} uses per PP.`);
     if (cap && cap.uses < limit) { limit = cap.uses; limitReason = "cap"; }
     const losesHP = this.attackerLosesHP();
+    if (stolen) {
+      const texts = this.stolenTexts(stolen, losesHP || this.trackAttacker, regained);
+      carried.push(...texts.carried);
+      notes.push(...texts.notes);
+    } else if (regained) carried.push(`After Dynamax ends, ${move.name} eats the target's ${this.itemName("leppaberry")}: the PP of ${regained} uses comes back.`);
     // The attacker's own berry acts where its HP is followed: the roll paths, and the exact search once a bound
     // without the heal fails; from the start when eating it changes the damage (Acrobatics, a pinch berry's
     // stage). The closed form leaves it out.
@@ -969,6 +991,12 @@ export class UsesSearch {
       ...(lowFaint !== undefined && lowFaint <= (guaranteed ?? limit) ? { lowest: lowFaint } : {}),
       ...(highFaint !== undefined && highFaint <= (fewest ?? limit) ? { highest: highFaint } : {}),
     };
+    // A Lansat Berry eaten on the first use gives focusenergy (+2 critical-hit ratio): where that makes every hit critical
+    // (calculate.ts certainCrit), the later uses' calculations are.
+    if (stolen?.eat.focusEnergy && !this.initial.att.focusEnergy && !this.first.trace.result!.move.isCrit
+      && [...this.runs.values()].some((run) => run.trace.result?.move.isCrit)) {
+      carried.push(`${input.row.effectiveName ?? move.name} eats the target's ${this.itemName(stolen.item)} on the first use: every later hit is critical.`);
+    }
     const turnsText = this.turnsText();
     const timed = this.timedNote();
     // Focus Sash or Sturdy stopped a KO only when no sequence is out within the first use (its end of turn can finish the 1 HP left).
@@ -985,11 +1013,83 @@ export class UsesSearch {
     };
   }
 
-  /** Whether a doubles turn's step follows the attacker's HP: the damage reads it, or the use can change it (draining and Shell Bell heal it). */
+  /**
+   * The target's Berry Bug Bite or Pluck takes on the first use and what the attacker gets eating it (stolen), or null: no
+   * Berry, or one the target's Sticky Hold keeps (it lets go only as its holder faints, which ends the count).
+   */
+  private firstStolen(): { item: string; eat: StolenEat } | null {
+    const { initial, m } = this;
+    if (this.ability(initial, "def") === "stickyhold" && !moldBreaks(m, initial)) return null;
+    return this.stolen(initial);
+  }
+
+  /**
+   * The first use's eaten Berry (firstStolen) as what the count carries, where it follows it: the HP it gives the attacker
+   * (`hp`: the count follows that HP) at the first use's HP, the stages the damage reads (and the target's Opportunist
+   * copying one), the status it cures, the PP a Leppa Berry gives back (`leppa`); and, as a note, the confusion a
+   * Figy-family Berry gives an attacker whose Nature lowers its stat (not through Own Tempo or Misty Terrain under a
+   * grounded attacker: data/conditions.ts confusion, data/moves.ts mistyterrain onTryAddVolatile), as for its own.
+   */
+  private stolenTexts(stolen: { item: string; eat: StolenEat }, hp: boolean, leppa: number): { carried: string[]; notes: string[] } {
+    const { initial, m, input } = this;
+    const { eat } = stolen;
+    const eats = `${input.row.effectiveName ?? input.move.name} eats the target's ${this.itemName(stolen.item)} on the first use`;
+    const carried: string[] = [], notes: string[] = [];
+    if (hp) {
+      const loop = this.loopInput(initial, this.first, this.first.cases[0]);
+      const took = hitStep(loop, startHits(loop), 0).state.stolen;
+      const gained = (took?.heal ?? 0) + (took?.pouch ?? 0);
+      if (gained > 0) carried.push(`${eats}: the attacker regains ${gained} HP${took!.pouch ? " (Cheek Pouch included)" : ""}.`);
+    }
+    const ability = this.ability(initial, "att");
+    const copier = this.ability(initial, "def") === "opportunist";
+    // The rise boost() makes from the first use's stage: Contrary, Simple, the ±6 cap.
+    const changes = (Object.entries(eat.stages) as [CombatStat, number][]).filter(([stat]) => this.relevance.att.includes(stat) || (copier && this.relevance.def.includes(stat)))
+      .map(([stat, amount]) => [stat, clamp(initial.att.boosts[stat] + amount * (ability === "contrary" ? -1 : 1) * (ability === "simple" ? 2 : 1)) - initial.att.boosts[stat]] as const)
+      .filter(([, by]) => by !== 0).map(([stat, by]) => `${by > 0 ? "+" : ""}${by} ${STAT_LABELS[stat]}`);
+    if (changes.length) carried.push(`${eats}: ${listNames(changes)}${copier ? ", which the target's Opportunist copies" : ""}.`);
+    const status = initial.att.status;
+    if (status && eat.cures.includes(status)) carried.push(`${eats}: it cures the attacker's ${STATUS_NAMES[status]}.`);
+    if (leppa) carried.push(`${eats}: the PP that use took comes back.`);
+    const nature = m.attacker.nature;
+    const dislikes = !!eat.confuses && NATURE_MINUS[nature] === eat.confuses;
+    if (dislikes && ability !== "owntempo" && !(initial.conditions.terrain === "Misty" && this.grounded(initial, "att"))) notes.push(CONFUSED_NOTE);
+    return { carried, notes };
+  }
+
+  /**
+   * The uses a target's Leppa Berry gives back when Bug Bite or Pluck makes the attacker eat it (data/items.ts leppaberry
+   * onEat: up to 10 PP, 20 with Ripen, to the first move with none left, else the first one short of its maximum, which is
+   * this one): the PP its uses took by then, on the first use, or on the first of the row's own move once a Dynamaxed
+   * attacker's Max Moves end (dynamaxCap: 3, 2 with Truant). None through Sticky Hold, or with the attacker's items ignored.
+   */
+  private leppaUses(pressure: boolean): number {
+    const { initial, m, result } = this;
+    const moveId = this.input.move.id;
+    if ((moveId !== "bugbite" && moveId !== "pluck") || result.move.isZ || initial.def.itemId !== "leppaberry") return 0;
+    if (this.ability(initial, "def") === "stickyhold" && !moldBreaks(m, initial)) return 0;
+    const eat = stolenEat("leppaberry", { baseMaxHP: initial.att.baseMaxHP, ability: this.ability(initial, "att"), ignoresItem: this.ignoresOwnItems(initial) }, m.runtime.profile.generation);
+    if (!eat.leppa) return 0;
+    const at = result.move.isMax ? (m.attAbility === "truant" ? 2 : 3) + 1 : 1;
+    const perUse = pressure ? 2 : 1;
+    return Math.floor(Math.min(eat.leppa, at * perUse) / perUse);
+  }
+
+  /** An item's name. */
+  private itemName(item: string): string {
+    return this.m.runtime.itemsById.get(item)?.name ?? item;
+  }
+
+  /**
+   * Whether a doubles turn's step follows the attacker's HP: the damage reads it, or the use can change it (draining and
+   * Shell Bell heal it, and so can the target's Berry Bug Bite or Pluck makes it eat, with Cheek Pouch's heal).
+   */
   needsAttackerHP(): boolean {
     if (this.trackAttacker) return true;
     const engineMove = this.result.move as Move & { drain?: unknown };
     if (engineMove.drain || (this.m.attItemOn && this.m.attacker.itemId === "shellbell")) return true;
+    const stolen = this.stolen(this.initial);
+    if (stolen && (stolen.eat.heal > 0 || stolen.eat.pouch > 0)) return true;
     return this.attackerLosesHP();
   }
 
@@ -1039,14 +1139,14 @@ export class UsesSearch {
     }
     const knocked = new Collector(this.size);
     const heals = new Map<string, [number, number]>();
-    const attackerHeals = new Map<string, [number, number]>();
+    const attackerHeals = new Map<string, [number, number]>(), attackerAte = new Map<string, [number, number]>();
     const rows = new Map<MoveDamageResult, number>();
-    this.knockedOut = knocked; this.turnHeals = heals; this.turnRows = rows; this.turnAttackerHeals = follow ? attackerHeals : null;
+    this.knockedOut = knocked; this.turnHeals = heals; this.turnRows = rows; this.turnAttackerHeals = follow ? attackerHeals : null; this.turnAttackerAte = follow ? attackerAte : null;
     let out: Group[];
     try {
       out = this.hits(groups, mode, () => {});
     } finally {
-      this.knockedOut = null; this.turnHeals = null; this.turnRows = null; this.turnAttackerHeals = null;
+      this.knockedOut = null; this.turnHeals = null; this.turnRows = null; this.turnAttackerHeals = null; this.turnAttackerAte = null;
     }
     const outcomes: TurnStepOutcome[] = [];
     for (const [list, ko] of [[out, false], [knocked.groups(), true]] as const) {
@@ -1059,7 +1159,7 @@ export class UsesSearch {
       }
     }
     if (this.exceeded || this.stop) return { failed: this.turnFailure ?? this.stop ?? TURN_TOO_MANY };
-    return { outcomes, heals, attackerHeals, rows };
+    return { outcomes, heals, attackerHeals, attackerAte, rows };
   }
 
   /**
@@ -1498,6 +1598,11 @@ export class UsesSearch {
     const { initial } = this;
     if (USES_REFERENCE.on || this.sources.length) return null;
     if (initial.def.hp >= initial.def.maxHP && (this.sturdy || this.result.defender.hasItem("Focus Sash"))) return null;
+    // Bug Bite and Pluck take a Sticky Hold holder's Berry on the use that knocks it out (data/abilities.ts stickyhold
+    // onTakeItem `!pokemon.hp`), and the attacker eats it before that turn ends: its heal or cure changes whether the
+    // attacker faints then, which the roll paths follow (koEnd, koTurnEnd) and the closed form does not.
+    const stolen = this.ability(initial, "def") === "stickyhold" ? this.stolen(initial) : null;
+    if (stolen && (stolen.eat.heal || stolen.eat.pouch || (initial.att.status && stolen.eat.cures.includes(initial.att.status)))) return null;
     return this.terms(initial, this.first, this.residualsAt(initial).def.ops);
   }
 
@@ -1858,7 +1963,11 @@ export class UsesSearch {
     const engineMove = run.trace.result!.move as Move & { drain?: [number, number] };
     const room = state.conditions.magicRoom;
     const targetAbility = this.ability(state, "def");
+    const takesBerry = !engineMove.isMax && !engineMove.isZ && BERRY_STEALERS.has(this.input.move.id);
+    const held = state.def.itemId;
     return {
+      ...(takesBerry ? { targetBerry: held.endsWith("berry") && !(run.resistBerry && run.resistBerry === held) ? held : "" } : {}),
+      ...(takesBerry && this.input.move.id !== "incinerate" ? { eats: { ignoresItem: this.ignoresOwnItems(state) } } : {}),
       hp, maxHP: state.att.maxHP, baseMaxHP: state.att.baseMaxHP,
       attackerAbility: this.ability(state, "att"), attackerItem: m.attItemOn ? state.att.itemId : "",
       // Bug Bite and Pluck take a Berry through Sticky Hold when Mold Breaker ignores it; nothing else the hits read is breakable.
@@ -1867,10 +1976,34 @@ export class UsesSearch {
       attackerShielded: state.att.itemId === "abilityshield" && !room, targetShielded: state.def.itemId === "abilityshield" && !room,
       ...(m.unnerve ? { unnerve: m.unnerve } : {}),
       targetDynamaxed: maxActive(state.def), contact: useCase.contact, category: useCase.physical ? "Physical" : "Special",
-      drain: engineMove.drain ?? null, takesBerry: !engineMove.isMax && !engineMove.isZ && BERRY_STEALERS.has(this.input.move.id),
+      drain: engineMove.drain ?? null, takesBerry,
       targetGulping: this.gulping(state),
       generation: m.runtime.profile.generation,
     };
+  }
+
+  /**
+   * Whether the attacker ignores its own items (pinned Showdown sim/pokemon.ts ignoringItem, which singleEvent reads for an
+   * item's handlers): under Magic Room, or with its Klutz in effect unless the item it holds has ignoreKlutz. Embargo is
+   * not modelled.
+   */
+  private ignoresOwnItems(state: State): boolean {
+    return state.conditions.magicRoom || (this.ability(state, "att") === "klutz" && !KLUTZ_IGNORED_ITEMS.has(state.att.itemId));
+  }
+
+  /**
+   * What the use from `state` takes and eats when it is Bug Bite or Pluck (not as a Z-Move or Max Move): the target's held
+   * Berry, unless the use's damage ate it (a resist Berry), and what eating it gives the attacker (hit-loop.ts stolenEat).
+   * Null for another move, or no Berry. Sticky Hold keeps it unless the use knocks its holder out (hit-loop.ts hitStep).
+   */
+  private stolen(state: State, run: Run = this.first): { item: string; eat: StolenEat } | null {
+    const moveId = this.input.move.id;
+    const engineMove = run.trace.result!.move;
+    if ((moveId !== "bugbite" && moveId !== "pluck") || engineMove.isMax || engineMove.isZ) return null;
+    const item = state.def.itemId;
+    if (!item.endsWith("berry") || (run.resistBerry && run.resistBerry === item)) return null;
+    const eat = stolenEat(item, { baseMaxHP: state.att.baseMaxHP, ability: this.ability(state, "att"), ignoresItem: this.ignoresOwnItems(state) }, this.m.runtime.profile.generation);
+    return { item, eat };
   }
 
   /** The target is Cramorant in its Gulping or Gorging form with its own Gulp Missile (hit-loop.ts gulpingTarget). */
@@ -2237,7 +2370,7 @@ export class UsesSearch {
     if (this.relevance.att.includes("spe") && (unburdened(a.att) !== unburdened(b.att) || unburdened(a.def) !== unburdened(b.def))) return false;
     return item(a.def.itemId, b.def.itemId) && item(a.att.itemId, b.att.itemId) && a.def.abilityId === b.def.abilityId && a.att.abilityId === b.att.abilityId
       && a.def.speciesId === b.def.speciesId && a.att.speciesId === b.att.speciesId && a.def.mechanic === b.def.mechanic && a.att.mechanic === b.att.mechanic
-      && a.att.status === b.att.status && a.def.status === b.def.status && (a.att.slowStart !== null) === (b.att.slowStart !== null) && a.fieldKey === b.fieldKey
+      && a.att.status === b.att.status && a.def.status === b.def.status && (a.att.slowStart !== null) === (b.att.slowStart !== null) && a.att.focusEnergy === b.att.focusEnergy && a.fieldKey === b.fieldKey
       && a.def.maxHP === b.def.maxHP && this.metronome(a) === this.metronome(b) && (a.first === b.first || (!this.input.context?.stellarFirstUse && !this.firstTurn))
       && (!this.midMoves || this.midKey(a) === this.midKey(b));
   }
@@ -2381,6 +2514,14 @@ export class UsesSearch {
           const pouch = this.m.defItemOn && !loop.takesBerry && RETALIATION_BERRIES[loop.targetItem] && this.ability(state, "def") === "cheekpouch"
             ? Math.max(1, Math.floor(state.def.baseMaxHP / 3)) : 0;
           const eatenOn = pouch && walk ? retaliationEaten(walk) : 0;
+          // The attacker after a hit that knocks the target out: as the hits leave it, but a Sticky Hold whose holder has
+          // fainted lets Bug Bite and its kin take its Berry (hit-loop.ts hitStep `knocked`).
+          const letsGo = loop.takesBerry && loop.targetAbility === "stickyhold";
+          const koEnd = (at: number, hit: number, dealt: number, taken: number): HitState => {
+            if (!letsGo) return hitEnd(group, at, hit + 1, dealt, taken);
+            const before = steps ? steps.states[at] : group.drained ? group.drained.states[0] : hitsAfter(walk!, hit);
+            return hitStep(loop, before, taken, true).state;
+          };
           let done = start, landed = 0;
           for (let hit = 0; hit < longest.hits.length; hit++) {
             // The attacker fainted on an earlier hit: in the exact search the mass still in leaves to `faint`, and a
@@ -2442,8 +2583,8 @@ export class UsesSearch {
                     lost += weight; gone = true;
                     // On a roll path, whether the attacker also faints on the use that knocks out, or at the end of that turn.
                     if (mode !== "all") {
-                      const after = this.attackerAfterUse(state, run.trace.result!, dealt + taken, hitEnd(group, at, hit + 1, dealt + taken, taken));
-                      if (after.hp <= 0 || this.endsTurn(node, after.hp, 0, !!after.berry) <= 0) this.koFaint = true;
+                      const after = this.attackerAfterUse(state, run.trace.result!, dealt + taken, koEnd(at, hit, dealt + taken, taken));
+                      if (after.hp <= 0 || this.koTurnEnd(node, run, after.hp, !!after.berry) <= 0) this.koFaint = true;
                     }
                     // A doubles turn's step keeps the knocked-out mass as a node at 0 HP: the attacker's state after the
                     // hit that knocked out (recoil, Life Orb, its own drops and Berries) still matters to the turn.
@@ -2451,7 +2592,7 @@ export class UsesSearch {
                       const running = done < stop ? done : stop - 1;
                       const useCase = cases[running];
                       const after = this.afterHitNode(node, code, run, useCase.at ?? running, useCase, bits | DAMAGED | KNOCKED, tracksDealt ? dealt + taken : 0, mode,
-                        hit + 1, hitEnd(group, at, hit + 1, dealt + taken, taken), steps ? steps.to(at, taken) + 1 : 0);
+                        hit + 1, koEnd(at, hit, dealt + taken, taken), steps ? steps.to(at, taken) + 1 : 0);
                       this.knockedOut.to(after, hit + 1).add(0, weight * (reach ? reach[hit] : 1));
                     }
                     continue;
@@ -2690,6 +2831,20 @@ export class UsesSearch {
   }
 
   /**
+   * endsTurn for the turn of a use that knocks the target out: the target's Berry Bug Bite or Pluck took in that hit
+   * (through Sticky Hold too, its holder having fainted) cured the attacker's status before the end of turn, so its
+   * burn or poison does not hurt it then (pinned Showdown data/moves.ts bugbite onHit: the Eat runs in the hit).
+   */
+  private koTurnEnd(node: Node, run: Run, hp: number, ate: boolean): number {
+    const { state } = node;
+    const stolen = state.att.status && state.def.itemId.endsWith("berry") ? this.stolen(state, run) : null;
+    if (!stolen || !stolen.eat.cures.includes(state.att.status)) return this.endsTurn(node, hp, 0, ate);
+    const cured = cloneState(state);
+    cured.att.status = ""; cured.att.toxic = 0;
+    return this.attackerTurn(cured, this.residuals(cured, "att"), hp, ate).hp;
+  }
+
+  /**
    * The attacker's own end of turn from `hp`: its residuals in order, with its HP berry eaten at an Update
    * (unless `ate`), the HP it ends with (at most 0 once it faints), the residual order it faints at
    * (Infinity if it stands), and whether it ate the berry.
@@ -2900,15 +3055,18 @@ export class UsesSearch {
     if (gem) att.itemId = "";
     if (m.attItemOn && att.itemId === "powerherb" && this.charges(prev, true)) att.itemId = "";
 
-    // 2. The move's onHit: Bug Bite and Pluck eat a Berry for the user, Incinerate burns a Berry or a Gem.
+    // 2. The move's onHit: Bug Bite and Pluck take a Berry and their user eats it, Incinerate burns a Berry or a Gem; not
+    //    through Sticky Hold unless the hit knocked its holder out (data/abilities.ts stickyhold onTakeItem `!pokemon.hp`).
     //    Then the target's Hit handlers: its Sticky Barb moves to an item-less attacker it hits with contact
     //    (Enigma Berry is the hits' BERRY_EATEN).
-    if (own && BERRY_STEALERS.has(moveId) && damaged && def.itemId.endsWith("berry") && !stickyHold) {
-      // Bug Bite and Pluck eat it for the user (pinned Showdown: the user gets its effect); Incinerate burns it.
-      if (moveId !== "incinerate" && PINCH_STAT_BERRIES[def.itemId]) boost(m, state, "att", { [PINCH_STAT_BERRIES[def.itemId]]: 1 }, false);
+    const knocked = !!(mask & KNOCKED);
+    if (own && !engineMove.isZ && BERRY_STEALERS.has(moveId) && damaged && def.itemId.endsWith("berry") && (!stickyHold || knocked)) {
+      // Bug Bite and Pluck (data/moves.ts bugbite, pluck onHit): the user eats it (hit-loop.ts stolenEat; its HP is the hits').
+      const stolen = this.stolen(prev, run);
+      if (stolen) this.ateStolen(state, stolen.eat);
       def.itemId = "";
     }
-    if (own && moveId === "incinerate" && damaged && def.itemId.endsWith("gem")) def.itemId = "";
+    if (own && !engineMove.isZ && moveId === "incinerate" && damaged && def.itemId.endsWith("gem")) def.itemId = "";
     if (def.itemId === "stickybarb" && m.defItemOn && contact && damaged && !att.itemId) { att.itemId = "stickybarb"; def.itemId = ""; }
 
     // 3. The move's own effects and secondaries: stat stages, Clear Smog, a Max Move's, statuses (a status
@@ -3002,7 +3160,6 @@ export class UsesSearch {
     }
     // A knocked-out target has fainted before AfterMoveSecondary (pinned Showdown hitStepMoveHitLoop runs faintMessages
     // first): its handlers are skipped and takeItem fails on it.
-    const knocked = !!(mask & KNOCKED);
     if (secondaries && !knocked && this.ability(state, "def") === "pickpocket" && contact && damaged && !def.itemId && att.itemId && this.ability(state, "att") !== "stickyhold"
       && takeable(m, att.itemId, this.baseSpecies(state, "att"), this.baseSpecies(state, "def"), false)) { def.itemId = att.itemId; att.itemId = ""; }
     if (mask & ANGER_SHELL) boost(m, state, "def", { atk: 1, spa: 1, spe: 1, def: -1, spd: -1 }, false, true);
@@ -3124,6 +3281,11 @@ export class UsesSearch {
     const own = this.attackerBerry(prev);
     let eaten: string | null = own && !end.attackerItem ? att.itemId : null;
     let hp = end.hp;
+    // The target's Berry it ate in a hit (Bug Bite, Pluck): its heal and Cheek Pouch's, which the hits already hold.
+    if (end.stolen && this.turnAttackerAte) {
+      if (end.stolen.heal) noteRange(this.turnAttackerAte, end.stolen.item, end.stolen.heal);
+      if (end.stolen.pouch) this.noteAttackerHeal("Cheek Pouch", end.stolen.pouch);
+    }
     if (hp <= 0) return { hp, berry: eaten };
     let berry = eaten ? null : own ?? (!att.itemId && after.att.itemId ? this.attackerBerry(after) : null);
     // Each Update eats the berry at or under its line (none once eaten).
@@ -3155,11 +3317,7 @@ export class UsesSearch {
 
   /** On a doubles turn's step that follows the attacker: `amount` HP it regained from `source` (turnStep's attackerHeals). */
   private noteAttackerHeal(source: string, amount: number) {
-    const heals = this.turnAttackerHeals;
-    if (!heals || amount <= 0) return;
-    const known = heals.get(source);
-    if (!known) heals.set(source, [amount, amount]);
-    else { if (amount < known[0]) known[0] = amount; if (amount > known[1]) known[1] = amount; }
+    if (this.turnAttackerHeals) noteRange(this.turnAttackerHeals, source, amount);
   }
 
   /** noteAttackerHeal for the attacker's HP berry `item` eaten at `hp`: eatBerry's two parts, the berry's heal, then Cheek Pouch's. */
@@ -3388,12 +3546,13 @@ export class UsesSearch {
   /**
    * Whether a use takes the target's Berry before the hit's Update: Bug Bite, Pluck and Incinerate in their
    * onHit (before Enigma Berry's own, in the target's Hit), Knock Off in its AfterHit, and Thief or Covet from
-   * an attacker holding nothing; not their Max Moves, nor through Sticky Hold.
+   * an attacker holding nothing; not their Max Moves, nor through Sticky Hold. Nor Bug Bite's, Pluck's and
+   * Incinerate's Z-Moves (Savage Spin-Out, Supersonic Skystrike, Inferno Overdrive: no onHit of theirs).
    */
   private takenInHit(state: State, item: string): boolean {
     const moveId = this.input.move.id;
     if (maxActive(state.att) || (this.ability(state, "def") === "stickyhold" && !moldBreaks(this.m, state))) return false;
-    if (BERRY_STEALERS.has(moveId)) return true;
+    if (BERRY_STEALERS.has(moveId)) return !this.result.move.isZ;
     return item !== "enigmaberry" && (moveId === "knockoff" || ((moveId === "thief" || moveId === "covet") && !state.att.itemId));
   }
 
@@ -3426,6 +3585,18 @@ export class UsesSearch {
   private attackerAte(state: State, item: string) {
     if (PINCH_STAT_BERRIES[item]) boost(this.m, state, "att", { [PINCH_STAT_BERRIES[item]]: this.ability(state, "att") === "ripen" ? 2 : 1 }, false);
     state.att.itemId = "";
+  }
+
+  /**
+   * The state side of the target's Berry that Bug Bite or Pluck made its user eat (hit-loop.ts stolenEat; its HP is the
+   * hits'): its stages through boost() (Contrary, Simple, the ±6 cap, the target's Opportunist copying a rise), the status
+   * it cures, a Lansat Berry's focusenergy, and a Starf Berry's stat chosen at random, which the search does not follow.
+   */
+  private ateStolen(state: State, eat: StolenEat) {
+    if (Object.keys(eat.stages).length) boost(this.m, state, "att", eat.stages, false);
+    if (state.att.status && eat.cures.includes(state.att.status)) { state.att.status = ""; state.att.toxic = 0; }
+    if (eat.focusEnergy) state.att.focusEnergy = true;
+    if (eat.starf) { this.stop ??= STARF_REASON; this.exceeded = true; }
   }
 
   /** The state side of an eaten berry: gone, and a pinch berry's stage (`inMove`: at a hit's Update, during the attacker's move). */
@@ -3482,7 +3653,7 @@ export class UsesSearch {
     if (USES_REFERENCE.on) return node.rest = `${att.hp}|${JSON.stringify(state)}`;
     const itemKey = (itemId: string) => ITEM_MOVES.has(this.input.move.id) || (itemId && !this.neutral(itemId)) ? itemId : "~";
     let rest = `${hpKey(this.hpModes.att, att.hp, att.maxHP)}|${itemKey(def.itemId)}|${itemKey(att.itemId)}|${def.abilityId}|${att.abilityId}|${def.speciesId}|${att.speciesId}`
-      + `|${def.mechanic ?? ""}|${att.mechanic ?? ""}|${att.status}|${def.status}|${att.slowStart !== null}|${state.fieldKey}|${this.metronome(state)}|${(!!this.input.context?.stellarFirstUse || this.firstTurn) && state.first}`;
+      + `|${def.mechanic ?? ""}|${att.mechanic ?? ""}|${att.status}|${def.status}|${att.slowStart !== null}|${att.focusEnergy}|${state.fieldKey}|${this.metronome(state)}|${(!!this.input.context?.stellarFirstUse || this.firstTurn) && state.first}`;
     for (const stat of this.relevance.att) rest += `|${att.boosts[stat]}`;
     for (const stat of this.relevance.def) rest += `|${def.boosts[stat]}`;
     // Unburden's doubled Speed.
@@ -3495,7 +3666,7 @@ export class UsesSearch {
   /** A state's key: everything in it but the target's HP and the attacker's HP (node() puts the attacker's in front when it is followed). */
   private restKey(state: State): string {
     const { att, def } = state;
-    const side = (s: Side) => `${s.maxHP}|${s.itemId}|${s.boosts.atk},${s.boosts.def},${s.boosts.spa},${s.boosts.spd},${s.boosts.spe}|${s.abilityId}|${s.speciesId}|${s.status}|${s.mechanic ?? ""}|${s.dynamaxTurns}|${s.toxic}|${s.slowStart}|${s.saltCure}|${s.smackedDown}|${s.unburden}`;
+    const side = (s: Side) => `${s.maxHP}|${s.itemId}|${s.boosts.atk},${s.boosts.def},${s.boosts.spa},${s.boosts.spd},${s.boosts.spe}|${s.abilityId}|${s.speciesId}|${s.status}|${s.mechanic ?? ""}|${s.dynamaxTurns}|${s.toxic}|${s.slowStart}|${s.saltCure}|${s.smackedDown}|${s.unburden}|${s.focusEnergy}`;
     const counter = att.itemId === "metronome" && this.m.attItemOn ? `${state.consecutive},${state.streak},${state.charged}` : "";
     return `|${side(att)}|${side(def)}|${state.fieldKey}|${state.weatherTurns},${state.terrainTurns}|${state.first}|${counter}`;
   }
@@ -3550,7 +3721,7 @@ export class UsesSearch {
       return `${abilityId},${speciesId},${mechanic},${status},${this.relevance[who].includes("spe") ? `${boosts.spe}${unburdened(state[who]) ? "U" : ""}` : ""}`;
     };
     const stellar = !state.first && !!this.input.context?.stellarFirstUse;
-    return `${state.fieldKey}|${side("att")}|${side("def")}|${state.att.slowStart}|${stellar}|${this.hpModes.att.full ? state.att.hp : ""}|${this.firstTurn && state.first}`;
+    return `${state.fieldKey}|${side("att")}|${side("def")}|${state.att.slowStart}|${state.att.focusEnergy}|${stellar}|${this.hpModes.att.full ? state.att.hp : ""}|${this.firstTurn && state.first}`;
   }
 
   /**
@@ -3640,6 +3811,14 @@ export class UsesSearch {
   }
 }
 
+/** Notes `amount` HP regained from `source` into its least and most (none for no HP). */
+function noteRange(heals: Map<string, [number, number]>, source: string, amount: number) {
+  if (amount <= 0) return;
+  const known = heals.get(source);
+  if (!known) heals.set(source, [amount, amount]);
+  else { if (amount < known[0]) known[0] = amount; if (amount > known[1]) known[1] = amount; }
+}
+
 /** A doubles turn's reason when a step passes its budget. */
 export const TURN_TOO_MANY = "Too many cases to follow.";
 /** One Pokémon's side of a turn's step (the search's Side): HP, item, stages, ability, form, status and their counters. */
@@ -3655,8 +3834,10 @@ export type TurnStepOutcome = {
 };
 export type TurnStepResult = {
   outcomes: TurnStepOutcome[]; heals: Map<string, [number, number]>; rows: Map<MoveDamageResult, number>;
-  /** What a followed attacker regained (its HP Berry, Shell Bell), the least and the most from each source. */
+  /** What a followed attacker regained (its HP Berry, Shell Bell, Cheek Pouch), the least and the most from each source. */
   attackerHeals: Map<string, [number, number]>;
+  /** What the target's Berry a followed attacker ate with Bug Bite or Pluck healed, the least and the most, by the Berry's id. */
+  attackerAte: Map<string, [number, number]>;
 } | { failed: string };
 export type { Mode };
 
@@ -3893,7 +4074,7 @@ const sameBoosts = (a: Stages, b: Stages) => a.atk === b.atk && a.def === b.def 
 /** Two sides agree in everything but HP (what a node key reads of a side). */
 const sameSide = (a: Side, b: Side) => a.maxHP === b.maxHP && a.itemId === b.itemId && sameBoosts(a.boosts, b.boosts) && a.abilityId === b.abilityId
   && a.speciesId === b.speciesId && a.status === b.status && a.mechanic === b.mechanic && a.dynamaxTurns === b.dynamaxTurns && a.toxic === b.toxic
-  && a.slowStart === b.slowStart && a.saltCure === b.saltCure && a.smackedDown === b.smackedDown && a.unburden === b.unburden;
+  && a.slowStart === b.slowStart && a.saltCure === b.saltCure && a.smackedDown === b.smackedDown && a.unburden === b.unburden && a.focusEnergy === b.focusEnergy;
 
 function cloneState(state: State): State {
   return { ...state, att: { ...state.att, boosts: { ...state.att.boosts } }, def: { ...state.def, boosts: { ...state.def.boosts } } };
@@ -4011,7 +4192,9 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   const stuck = defAbility === "stickyhold" && !broken && defHeld !== "stickybarb";
   // A Berry the use takes before its holder can eat it (pinned Showdown: Bug Bite, Pluck and Incinerate in onHit, Knock Off, Thief and Covet in AfterHit).
   const itemless = !attHeld || gem;
-  const takenFirst = !maxed && !stuck && (BERRY_STEALERS.has(move.id) || move.id === "knockoff" || ((move.id === "thief" || move.id === "covet") && !attHeld));
+  // Bug Bite's, Pluck's and Incinerate's Z-Moves take nothing (their onHit is the base move's).
+  const steals = BERRY_STEALERS.has(move.id) && !engineMove.isZ;
+  const takenFirst = !maxed && !stuck && (steals || move.id === "knockoff" || ((move.id === "thief" || move.id === "covet") && !attHeld));
   // The attacker's Unnerve, unless the target's Mummy and its kin replace it in the first hit.
   const unnerved = m.unnerved && !replaced;
   const used = HIT_ITEMS[defItem];
@@ -4034,7 +4217,7 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
   // A Jaboca or Rowap Berry the first hit eats as it hits back (hit-loop.ts hitStep: after Mummy and its kin, not
   // past the attacker's Magic Guard or Unnerve, nor once Bug Bite and its kin have taken it).
   const retaliationEaten = !!defItem && RETALIATION_BERRIES[defItem] === engineMove.category && (attAbility !== "magicguard" || replaced) && !unnerved
-    && !(BERRY_STEALERS.has(move.id) && !maxed && !stuck);
+    && !(steals && !maxed && !stuck);
   if (retaliationEaten && move.id === "knockoff") add(`The target's ${itemName(defItem)} is eaten by the first use.`);
   const spentInHit = defItem === "airballoon" || !!(result.rawDesc.defenderItem && getBerryResistType(result.rawDesc.defenderItem))
     || (!!used && !used.berry && used.when(type, physical, superEffective)) || retaliationEaten;
@@ -4043,7 +4226,7 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
     if (move.id === "knockoff" && !spentInHit && (maxed ? takeable(m, defHeld, species("def"), species("def"), false) : knockOffBoosted(result))) own(`${move.name} takes the target's item.`);
     else if ((move.id === "covet" || move.id === "thief") && itemless && !spentInHit && takeable(m, defHeld, species("def"), species("att"), true)) own(`${move.name} takes the target's item.`);
     else if (attAbility === "magician" && (itemless || CONSUMED.has(attHeld)) && !spentInMove && takeable(m, defHeld, species("def"), species("att"), false)) add("The attacker's Magician takes the target's item.");
-    else if (BERRY_STEALERS.has(move.id) && (defHeld.endsWith("berry") || (move.id === "incinerate" && defHeld.endsWith("gem")))) own(`${move.name} takes the target's item.`);
+    else if (steals && (defHeld.endsWith("berry") || (move.id === "incinerate" && defHeld.endsWith("gem")))) own(`${move.name} takes the target's item.`);
   }
   // Once the target's own item is gone (used up, or taken by the use).
   const emptied = !defHeld || CONSUMED.has(defHeld) || retaliationEaten || ITEM_MOVES.has(move.id) || attAbility === "magician";
@@ -4134,7 +4317,7 @@ function toBuild(base: BattleBuild, side: Side, download: CombatStat | null, abi
   return {
     ...base, currentHP: currentHP >= side.baseMaxHP ? null : currentHP, itemId: side.itemId, boosts, abilityId: side.abilityId,
     speciesId: side.speciesId, status: side.status, mechanic: side.mechanic, abilityActive: active,
-    ...(download ? { settledDownload: download } : {}),
+    ...(download ? { settledDownload: download } : {}), ...(side.focusEnergy ? { settledFocusEnergy: true as const } : {}),
     ...(first ? {} : { settledCustap: undefined, firstTurnSpeed: undefined, pendingCopy: undefined }),
   };
 }

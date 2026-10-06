@@ -35,7 +35,6 @@ const ROOMS: ReadonlySet<string> = new Set(["trickroom", "gravity", "wonderroom"
 const NOT_MODELLED_ABILITIES: ReadonlySet<string> = new Set([...Object.keys(ENTRY_ABILITIES), "download", "protosynthesis", "quarkdrive"]);
 const FIRST_TURN_ONLY: ReadonlySet<string> = new Set(["fakeout", "firstimpression"]);
 const FIRST_IN_A_SWITCHED_SLOT: ReadonlySet<string> = new Set(["boltbeak", "fishiousrend"]);
-const BERRY_EATERS: ReadonlySet<string> = new Set(["bugbite", "pluck"]);
 
 export const monKey = (side: SideID, aiSide: SideID, memberKey: string): MonKey => `${side === aiSide ? "opponent" : "own"}:${memberKey}`;
 export function keyOfPokemon(pokemon: Pokemon, aiSide: SideID, keys: MemberKeys): MonKey {
@@ -183,13 +182,6 @@ export function bridgeTurn(battle: ClonedBattle, cell: CellActions, ctx: { runti
         } else {
           doubles = { moveId, target: chosen.target };
           if (moveId === "payback" && chosen.target && switched.has(chosen.target)) reasons.add("Payback into a Pokémon that switched in.");
-          // Bug Bite and Pluck eat the target's Berry for the user (PS/data/moves.ts:1920-1928 bugbite onHit, pluck the same: Eat on the
-          // source); the 2v2 engine takes the Berry from the target but gives the user nothing (a Sitrus Berry's heal).
-          if (BERRY_EATERS.has(moveId) && chosen.target) {
-            const aimed = showdownPosition(chosen.target, aiSide);
-            const target = battle[aimed.side].active[aimed.position] as Pokemon | null;
-            if (target && !target.fainted && target.item && battle.dex.items.get(target.item).isBerry) reasons.add(`${mon.name}: ${runtime.movesById.get(moveId)?.name ?? moveId} eats ${target.name}'s Berry.`);
-          }
           if (mon.ability === "analytic" && anySwitch) reasons.add("Analytic with a switch this turn.");
         }
       }

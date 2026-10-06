@@ -1,4 +1,5 @@
 import type { ProtectKind } from "./doubles-world";
+export { CONFUSING_BERRIES, RESIST_BERRIES } from "./hit-loop";
 
 // The doubles turn's move and ability tables and its "not estimated" reasons (SPEC §2.2, §4.4). Data from pinned
 // Showdown c23d2e94 (data/moves.ts, data/abilities.ts, data/items.ts, data/mods/champions); tests/source checks the
@@ -78,10 +79,6 @@ export const DAMP_MOVES: ReadonlySet<string> = new Set(["explosion", "mindblown"
 export const VOLATILE_SECONDARY_MOVES: ReadonlySet<string> = new Set(["psychicnoise", "coreenforcer", "burningjealousy", "alluringvoice", "spectralthief"]);
 /** Damaging moves whose 100% secondary confuses (data/moves.ts dynamicpunch, chatter: chance 100, volatileStatus confusion). */
 export const CONFUSING_MOVES: ReadonlySet<string> = new Set(["dynamicpunch", "chatter"]);
-/** The Figy family (data/items.ts figyberry and its kin onEat): the stat whose lowering Nature makes the eater confused. */
-export const CONFUSING_BERRIES: Readonly<Record<string, "atk" | "def" | "spa" | "spd" | "spe">> = {
-  figyberry: "atk", wikiberry: "spa", magoberry: "spe", aguavberry: "spd", iapapaberry: "def",
-};
 /** The moves with callsMove (data/moves.ts: they use a move picked from the battle or at random), and Instruct (its target uses its move again). */
 export const CALLING_MOVES: ReadonlySet<string> = new Set(["assist", "copycat", "mefirst", "metronome", "mirrormove", "naturepower", "sleeptalk", "instruct"]);
 /** The Pledge moves (data/moves.ts firepledge, grasspledge, waterpledge onPrepareHit: two different ones from partners combine). */
@@ -92,11 +89,6 @@ export const TYPE_LOSS_MOVES: ReadonlySet<string> = new Set(["burnup", "doublesh
 export const DRAG_MOVES: ReadonlySet<string> = new Set(["dragontail", "circlethrow"]);
 /** Abilities that keep their holder in against a forced switch (data/abilities.ts suctioncups, guarddog onDragOut). */
 export const ANCHORING_ABILITIES: ReadonlySet<string> = new Set(["suctioncups", "guarddog"]);
-/** The resist Berries (data/items.ts onSourceModifyDamage with eatItem), which the engine's calculation reads. */
-export const RESIST_BERRIES: ReadonlySet<string> = new Set([
-  "babiriberry", "chartiberry", "chilanberry", "chopleberry", "cobaberry", "colburberry", "habanberry", "kasibberry", "kebiaberry", "occaberry",
-  "passhoberry", "payapaberry", "rindoberry", "roseliberry", "shucaberry", "tangaberry", "wacanberry", "yacheberry",
-]);
 /** The busted form an intact Disguise or Ice Face takes on after the hit it takes (data/abilities.ts disguise, iceface onUpdate). */
 export const BUSTED_FORMS: Readonly<Record<string, string>> = { mimikyu: "mimikyubusted", mimikyutotem: "mimikyubustedtotem", eiscue: "eiscuenoice" };
 /**
