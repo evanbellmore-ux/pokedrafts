@@ -36,12 +36,51 @@ export const STAT_MOVES: Record<string, StatMove & { games?: Partial<Record<Batt
   meteorbeam: { preHit: { spa: 1 } }, electroshot: { preHit: { spa: 1 } }, skullbash: { preHit: { def: 1 } },
 };
 
-/** This game's stat changes for the move, or undefined. */
-export function statMove(moveId: string, game: BattleGame): StatMove | undefined {
+/**
+ * The damaging moves whose added effects Serene Grace makes certain: it doubles each secondary's chance and a self
+ * chance (pinned Showdown data/abilities.ts serenegrace onModifyMove: secondary.chance *= 2, move.self.chance *= 2),
+ * and an effect happens when random(100) is below its chance (sim/battle-actions.ts secondaries, and self boosts in
+ * moveHit), so every 50% and 70% one happens on each use (tests/source checks this table against each game's Dex).
+ * `userSecondary` and `target` are secondaries as in STAT_MOVES (Sheer Force would remove them; Shield Dust and
+ * Covert Cloak stop those on the target); Diamond Storm's `self` is its move.self, like STAT_MOVES' self; `status` is
+ * a secondary status. Accuracy drops (Leaf Tornado, Octazooka) are left out: every use is assumed to hit. Dire Claw's
+ * certain effect is a random status (SERENE_GRACE_RANDOM_STATUS).
+ */
+export const SERENE_GRACE_MOVES: Record<string, StatMove & { status?: BattleStatus }> = {
+  barbbarrage: { status: "psn" }, chargebeam: { userSecondary: { spa: 1 } }, crushclaw: { target: { def: -1 } },
+  diamondstorm: { self: { def: 2 } }, fierydance: { userSecondary: { spa: 1 } }, lusterpurge: { target: { spd: -1 } },
+  malignantchain: { status: "tox" }, mistball: { target: { spa: -1 } }, poisonfang: { status: "tox" },
+  razorshell: { target: { def: -1 } }, rocksmash: { target: { def: -1 } }, sacredfire: { status: "brn" },
+  triplearrows: { target: { def: -1 } },
+};
+/** Dire Claw's 50% secondary poisons, paralyses or puts its target to sleep at random (data/moves.ts direclaw onHit this.sample). */
+export const SERENE_GRACE_RANDOM_STATUS: ReadonlySet<string> = new Set(["direclaw"]);
+
+/** Adds two stage changes, or undefined when neither has one. */
+function addStages(a: Stages | undefined, b: Stages | undefined): Stages | undefined {
+  if (!a || !b) return a ?? b;
+  const sum: Stages = { ...a };
+  for (const [stat, amount] of Object.entries(b) as [CombatStat, number][]) sum[stat] = (sum[stat] ?? 0) + amount;
+  return sum;
+}
+
+/** This game's stat changes for the move, or undefined; with the user's Serene Grace, also those it makes certain (SERENE_GRACE_MOVES). */
+export function statMove(moveId: string, game: BattleGame, sereneGrace = false): StatMove | undefined {
   const entry = STAT_MOVES[moveId];
-  if (!entry) return undefined;
-  const replaced = entry.games?.[game];
-  return replaced === null ? undefined : replaced ?? entry;
+  const replaced = entry?.games?.[game];
+  const own = replaced === null ? undefined : replaced ?? entry;
+  const doubled = sereneGrace ? SERENE_GRACE_MOVES[moveId] : undefined;
+  if (!doubled || !(doubled.self || doubled.userSecondary || doubled.target)) return own;
+  return Object.fromEntries(Object.entries({
+    self: addStages(own?.self, doubled.self), userSecondary: addStages(own?.userSecondary, doubled.userSecondary),
+    target: addStages(own?.target, doubled.target), preHit: own?.preHit,
+  }).filter(([, stages]) => stages)) as StatMove;
+}
+
+/** The status the move gives its target on every use (STATUS_MOVES), with the user's Serene Grace also a secondary one it makes certain. */
+export function everyUseStatus(moveId: string, sereneGrace = false): { status: BattleStatus; secondary: boolean } | undefined {
+  const doubled = sereneGrace ? SERENE_GRACE_MOVES[moveId]?.status : undefined;
+  return STATUS_MOVES[moveId] ?? (doubled ? { status: doubled, secondary: true } : undefined);
 }
 
 /**

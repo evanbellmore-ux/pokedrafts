@@ -28,7 +28,7 @@ import {
 import { isMaxActive } from "./mechanics";
 import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
 import type { BattleRuntime } from "./runtime";
-import { MAX_MOVE_EFFECTS, STATUS_MOVES, statMove } from "./stat-moves";
+import { everyUseStatus, MAX_MOVE_EFFECTS, statMove } from "./stat-moves";
 import type { BattleBuild, BattleConditions, ChampionsMove, CombatStat, MoveContext, MoveDamageResult } from "./types";
 import { doublesNoFoeLeft, doublesTargetRule } from "./doubles-targets";
 import {
@@ -775,7 +775,8 @@ function foeDrop(ctx: Ctx, w: World, slot: DoublesSlotId, changes: Partial<Recor
   }
 }
 
-type GivenStatus = "psn" | "brn" | "par";
+/** Bad poison only from a Serene Grace user's Poison Fang or Malignant Chain (stat-moves.ts SERENE_GRACE_MOVES). */
+type GivenStatus = "psn" | "tox" | "brn" | "par";
 
 /** Whether a status lands (sim/pokemon.ts setStatus: runStatusImmunity and the immunities the builds show). */
 function statusLands(ctx: Ctx, w: World, slot: DoublesSlotId, status: GivenStatus, source: DoublesSlotId): boolean {
@@ -804,7 +805,7 @@ function giveStatus(ctx: Ctx, w: World, slot: DoublesSlotId, status: GivenStatus
   mon.build = { ...mon.build, status };
   if (mon.build.abilityId === "synchronize" && source !== slot && alive(w, source)) giveStatus(ctx, w, source, status, slot);
   const item = mon.build.itemId;
-  const cures = item === "lumberry" || (status === "psn" && item === "pechaberry") || (status === "brn" && item === "rawstberry") || (status === "par" && item === "cheriberry");
+  const cures = item === "lumberry" || ((status === "psn" || status === "tox") && item === "pechaberry") || (status === "brn" && item === "rawstberry") || (status === "par" && item === "cheriberry");
   const unnerved = DOUBLES_SLOTS.some((other) => alive(w, other) && other !== w.ghost && isFoe(other, slot) && UNNERVES.has(w.mons[other]!.build.abilityId));
   if (cures && itemWorks(w, mon.build) && !unnerved) {
     mon.build = { ...mon.build, itemId: "", status: "" };
@@ -2180,11 +2181,13 @@ function faceHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMo
   receiver.timesAttacked += 1;
   receiver.focusLost = true;
   const sheerForce = user.build.abilityId === "sheerforce";
+  // Serene Grace makes the move's 50% and 70% added effects certain (stat-moves.ts SERENE_GRACE_MOVES).
+  const sereneGrace = user.build.abilityId === "serenegrace";
   const cloak = receiver.build.itemId === "covertcloak" && itemWorks(world, receiver.build);
-  const stages = info.transformed ? undefined : statMove(move.id, ctx.runtime.profile.id)?.target;
+  const stages = info.transformed ? undefined : statMove(move.id, ctx.runtime.profile.id, sereneGrace)?.target;
   if (stages && !sheerForce && !cloak) foeDrop(ctx, world, target, stages, attacker, breaks(world, attacker, target, info));
-  const status = info.transformed ? undefined : STATUS_MOVES[move.id];
-  if (status && (status.status === "psn" || status.status === "brn" || status.status === "par") && !(status.secondary && (sheerForce || cloak))) {
+  const status = info.transformed ? undefined : everyUseStatus(move.id, sereneGrace);
+  if (status && (status.status === "psn" || status.status === "tox" || status.status === "brn" || status.status === "par") && !(status.secondary && (sheerForce || cloak))) {
     giveStatus(ctx, world, target, status.status, attacker);
   }
   flinchCheck(ctx, world, action, target, info);

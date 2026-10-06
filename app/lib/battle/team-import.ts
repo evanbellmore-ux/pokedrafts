@@ -1,5 +1,5 @@
 import {
-  createBuild, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, parseIntegerInput, STATS, validateBuild,
+  createBuild, CROWNED_FORMS, defaultAbilityActive, getBuildStats, heldItemForm, NATURES, parseIntegerInput, STATS, validateBuild,
 } from "./model";
 import { usualAbility, type MoveSlots } from "./move-defaults";
 import { TERA_TYPES } from "./profiles";
@@ -325,11 +325,12 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
     if (!fields.has("gigantamax")) fields.set("gigantamax", first.line);
   }
   const resolvedId = header.resolution.status === "resolved" ? header.resolution.speciesId : null;
-  // Zacian or Zamazenta holding its Rusted item battles as its Crowned form, whose Iron Head becomes
-  // Behemoth Blade / Bash (pinned Showdown onBattleStart), so the import takes that form.
-  const crowned = resolvedId && item !== null ? CROWNED_FORMS[resolvedId] : undefined;
-  const crownedBy = crowned && catalogId(item!) === crowned.item && speciesById.has(crowned.form) ? crowned : null;
-  const speciesId = crownedBy ? crownedBy.form : resolvedId;
+  // Zacian or Zamazenta holding its Rusted item battles as its Crowned form, whose Iron Head becomes Behemoth Blade /
+  // Bash (pinned Showdown onBattleStart), and Arceus holding a Plate (or a type's Z-Crystal) and Silvally holding a
+  // Memory as that type's form (mechanics.ts heldItemForm), so the import takes that form.
+  const heldForm = resolvedId && item !== null ? heldItemForm(resolvedId, catalogId(item), runtime) : null;
+  const crownedBy = heldForm && CROWNED_FORMS[resolvedId!]?.form === heldForm ? CROWNED_FORMS[resolvedId!] : null;
+  const speciesId = heldForm ?? resolvedId;
   const species = speciesId ? speciesById.get(speciesId)! : null;
   // A Crowned form's Iron Head is its Behemoth move too, whether the paste names the Hero or the Crowned form.
   const behemoth = crownedBy ?? Object.values(CROWNED_FORMS).find((entry) => entry.form === speciesId) ?? null;
@@ -339,9 +340,11 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
     const behemothName = movesById.get(behemoth.move)?.name ?? behemoth.move;
     report(crownedBy ? fields.get("item") ?? first.line : ironHead!.line, "info", `${crownedBy ? `${speciesById.get(resolvedId!)!.name} holding ${itemsById.get(crownedBy.item)?.name ?? item} battles as ${species!.name}${ironHead ? `, and its Iron Head becomes ${behemothName}` : ""}` : `${species!.name}'s Iron Head becomes ${behemothName}`}.`);
     if (ironHead && parsed.moveLines.has(behemoth.move)) report(ironHead.line, "error", `Duplicate move "${behemothName}" (Iron Head becomes ${behemothName}).`);
+  } else if (heldForm) {
+    report(fields.get("item") ?? first.line, "info", `${speciesById.get(resolvedId!)!.name} holding ${itemsById.get(catalogId(item!))?.name ?? item} battles as ${species!.name}.`);
   }
   // Moves are checked against the form pasted: a Hero Zacian cannot know Behemoth Blade.
-  const learner = crownedBy ? speciesById.get(resolvedId!)! : species;
+  const learner = heldForm ? speciesById.get(resolvedId!)! : species;
   const build = speciesId ? createBuild(speciesId, runtime) : null;
   const configuration = { ...source.configuration };
   // Match the pinned Showdown import default, but do not pretend it was explicit.

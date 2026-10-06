@@ -13,7 +13,7 @@ import { canonical, compact, loadModule, readVerifiedArchive, sha256, sorted, wi
 import { engineSpeciesID, nativeSpecies, transformNativeCatalog } from "../../scripts/lib/battle-data/transform";
 import { NATIVE_GAMES, type NativeGame } from "../../scripts/lib/battle-data/types";
 import { randomBattleCatalog } from "../../scripts/lib/battle-data/random-battle";
-import { CHARGE_MOVES, NOT_TWICE_MOVES, RECHARGE_MOVES, STAT_MOVES, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type StatMove } from "../../app/lib/battle/stat-moves";
+import { CHARGE_MOVES, everyUseStatus, NOT_TWICE_MOVES, RECHARGE_MOVES, SERENE_GRACE_MOVES, SERENE_GRACE_RANDOM_STATUS, STAT_MOVES, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type StatMove } from "../../app/lib/battle/stat-moves";
 import { HIT_ABILITIES, HIT_ITEMS, itemOwner, OWNED_ITEMS, STAT_GUARDS, UNBREAKABLE } from "../../app/lib/battle/uses-to-ko";
 
 vi.mock("node:child_process", async (importOriginal) => {
@@ -505,7 +505,7 @@ type DexStages = Partial<Record<string, number>>;
 type DexMove = {
   id: string; name: string; category: string; pp: number; noPPBoosts?: boolean; isZ?: unknown; isMax?: unknown; flags: Record<string, number | undefined>;
   self?: { boosts?: DexStages; chance?: number; volatileStatus?: string; onHit?: unknown }; selfBoost?: { boosts?: DexStages };
-  secondaries?: { chance?: number; boosts?: DexStages; self?: { boosts?: DexStages; onHit?: unknown }; status?: string }[] | null;
+  secondaries?: ({ chance?: number; boosts?: DexStages; self?: { boosts?: DexStages; onHit?: unknown }; status?: string; onHit?: unknown } & Record<string, unknown>)[] | null;
   onTryMove?: unknown; onHit?: unknown; condition?: DexResidual;
 };
 type DexResidual = { onResidualOrder?: number; onResidualSubOrder?: number; onFieldResidualOrder?: number; onResidualPriority?: number; duration?: number; durationCallback?: unknown };
@@ -516,7 +516,7 @@ type DexHandlers = DexResidual & {
 };
 type UsesDex = {
   moves: { get(id: string): DexMove };
-  abilities: { all(): DexHandlers[]; get(id: string): DexHandlers };
+  abilities: { all(): DexHandlers[]; get(id: string): DexHandlers & { onModifyMove?: unknown } };
   items: { all(): DexHandlers[]; get(id: string): DexHandlers };
   conditions: { get(id: string): DexResidual };
   species: { get(id: string): { num: number; name: string } };
@@ -535,6 +535,12 @@ type Trigger = { stages: DexStages; types: string[]; physical: boolean; special:
 type UsesFacts = {
   moves: Record<string, Pick<DexMove, "pp" | "noPPBoosts">>;
   stats: Record<string, StatMove>; statuses: Record<string, string>; zStatuses: Record<string, string>;
+  /**
+   * What Serene Grace makes certain (its doubled chance reaches 100: a secondary's, or move.self's), by id: the stages
+   * and status (stat-moves.ts SERENE_GRACE_MOVES), the random-status onHit moves, any other effect kind (none expected),
+   * and Serene Grace's own onModifyMove.
+   */
+  sereneGrace: Record<string, StatMove & { status?: string }>; sereneGraceRandom: string[]; sereneGraceOther: string[]; sereneGraceHandler: string;
   /** Each Max Move's own status on every foe (self.onHit trySetStatus, not a random one), by id. */
   maxStatuses: Record<string, string>;
   /** Each damaging Z-Move's own stages and field change, by name (stat-moves.ts Z_MOVE_EFFECTS). */
@@ -593,6 +599,7 @@ describe("Uses to KO tables against the pinned Dex", () => {
         const dex = Dex.mod(profile.mod);
         const fact: UsesFacts = {
           moves: {}, stats: {}, statuses: {}, zStatuses: {}, zEffects: {}, maxStatuses: {}, charge: [], recharge: [], notTwice: [],
+          sereneGrace: {}, sereneGraceRandom: [], sereneGraceOther: [], sereneGraceHandler: String(dex.abilities.get("serenegrace").onModifyMove),
           hitAbilities: {}, hitItems: {}, residuals: {}, residualHandlers: [], endOfTurn: { abilities: [], items: [] }, durations: {},
           guards: { abilities: {}, items: {}, breakable: {} }, afterMove: [], takeItems: {}, families: {},
         };
@@ -627,6 +634,20 @@ describe("Uses to KO tables against the pinned Dex", () => {
           }).filter(([, stages]) => stages)) as StatMove;
           if (Object.keys(stat).length) fact.stats[row.id] = stat;
           if (status) fact.statuses[row.id] = status;
+          // Serene Grace doubles a chance below 100 (data/abilities.ts serenegrace): those reaching 100 happen on every use.
+          const doubled = (dexMove.secondaries ?? []).filter((secondary) => secondary.chance !== undefined && secondary.chance < 100 && secondary.chance * 2 >= 100);
+          const doubledSelf = dexMove.self?.chance && dexMove.self.chance < 100 && dexMove.self.chance * 2 >= 100 ? dexMove.self : undefined;
+          const graced = Object.fromEntries(Object.entries({
+            self: combatStages(doubledSelf?.boosts), userSecondary: combatStages(doubled.find((secondary) => secondary.self?.boosts)?.self?.boosts),
+            target: combatStages(doubled.find((secondary) => secondary.boosts)?.boosts), status: doubled.find((secondary) => secondary.status)?.status,
+          }).filter(([, value]) => value)) as StatMove & { status?: string };
+          if (Object.keys(graced).length) fact.sereneGrace[row.id] = graced;
+          for (const secondary of doubled) {
+            const kinds = Object.keys(secondary).filter((key) => key !== "chance");
+            if (kinds.length === 1 && kinds[0] === "onHit" && /this\.sample\(/.test(String(secondary.onHit)) && /trySetStatus/.test(String(secondary.onHit))) fact.sereneGraceRandom.push(row.id);
+            else if (!kinds.every((key) => key === "boosts" || key === "status" || (key === "self" && Object.keys(secondary.self!).every((part) => part === "boosts")))) fact.sereneGraceOther.push(row.id);
+          }
+          if (doubledSelf && Object.keys(doubledSelf).some((key) => key !== "chance" && key !== "boosts")) fact.sereneGraceOther.push(row.id);
           if (dexMove.flags.charge) fact.charge.push(row.id);
           if (dexMove.self?.volatileStatus === "mustrecharge") fact.recharge.push(row.id);
           if (dexMove.flags.cantusetwice) fact.notTwice.push(row.id);
@@ -703,6 +724,29 @@ describe("Uses to KO tables against the pinned Dex", () => {
       return [[row.id, Object.fromEntries(Object.entries({ self, userSecondary, target, preHit }).filter(([, stages]) => stages))]];
     }));
     expect(table).toEqual(facts[profile.game].stats);
+  });
+
+  it.each(NATIVE_GAMES)("lists every damaging $game move whose added effect Serene Grace makes certain", (profile) => {
+    const fact = facts[profile.game];
+    // Every secondary chance and a self chance doubled, as stat-moves.ts reads it.
+    expect(fact.sereneGraceHandler).toMatch(/secondary\.chance \*= 2/);
+    expect(fact.sereneGraceHandler).toMatch(/move\.self\?\.chance\)\s+move\.self\.chance \*= 2/);
+    const ids = new Set(data(profile.game).catalog.moves.map((row) => row.id));
+    expect(Object.fromEntries(Object.entries(SERENE_GRACE_MOVES).filter(([id]) => ids.has(id)))).toEqual(fact.sereneGrace);
+    expect([...SERENE_GRACE_RANDOM_STATUS].filter((id) => ids.has(id))).toEqual(fact.sereneGraceRandom);
+    expect(fact.sereneGraceOther).toEqual([]);
+    // statMove and everyUseStatus add them to the every-use changes only with Serene Grace.
+    for (const [id, entry] of Object.entries(fact.sereneGrace)) {
+      expect(statMove(id, profile.game)?.target).toBeUndefined();
+      expect(everyUseStatus(id)).toBeUndefined();
+      const graced = statMove(id, profile.game, true);
+      expect([graced?.self, graced?.userSecondary, graced?.target]).toEqual([entry.self, entry.userSecondary, entry.target]);
+      expect(everyUseStatus(id, true)).toEqual(entry.status ? { status: entry.status, secondary: true } : undefined);
+    }
+  });
+
+  it("keeps no Serene Grace move that no native game has", () => {
+    expect(Object.keys(SERENE_GRACE_MOVES).filter((id) => !NATIVE_GAMES.some(({ game }) => facts[game].sereneGrace[id]))).toEqual([]);
   });
 
   it("keeps no stat move that no native game has (Make It Rain's Champions -2 is checked in a Champions battle)", () => {
