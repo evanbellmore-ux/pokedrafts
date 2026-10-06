@@ -10,11 +10,13 @@ import {
 } from "../model/decision";
 import { slotAt } from "../model/positions";
 import type { ObservedAction } from "../model/public-state";
+import type { SideID } from "../model/showdown-types";
 import { createRandom, seedHex } from "../model/random";
 import { redactSheet, type SheetView } from "../model/sheet";
 import type { TrainingUsageData, SetLegality } from "../model/usage";
 import { jointActionKey, type DecisionReport, type JointAction, type LogTurn, type PlayerChoice, type TrainingSetup } from "../model/view-types";
 import type { FromWorker, ToWorker } from "../model/worker-protocol";
+import { createStepBuilder, type StepBuilder } from "../log/protocol-steps";
 import { createLogFormatter, type LogFormatter } from "../log/protocol-text";
 import { BattleHost } from "../sim/battle-host";
 import { buildBoard } from "../sim/board";
@@ -28,6 +30,7 @@ import { createTracker, type PublicTracker } from "../sim/tracker";
 import { editorMoveOptions } from "../usage/move-options";
 import { suggestTrainingSets } from "../usage/suggested-sets";
 import { loadTrainingUsage } from "../usage/training-usage";
+import { createMoveType } from "./move-type";
 import { redactJoint, redactReport, type RedactContext } from "./redact-report";
 
 export type WorkerDeps = {
@@ -55,7 +58,7 @@ type Pending = {
 type BattleState = {
   battleId: number; setup: TrainingSetup; host: BattleHost; adapted: { own: AdaptedTeam; opponent: AdaptedTeam }; keys: MemberKeys;
   trackers: { p1: PublicTracker; p2: PublicTracker }; sheets: { forAI: SheetView; forYou: SheetView };
-  provider: DecisionProvider; aiBase: string; formatter: LogFormatter;
+  provider: DecisionProvider; aiBase: string; formatter: LogFormatter; steps: StepBuilder;
   log: Map<number, LogTurn>; dirty: Set<number>; snapshots: Map<number, string>;
   ai: AiJob | null; held: { requestId: number; choice: string; action: JointAction | null } | null;
   /** The AI's turn decision waiting for its turn to resolve (keyed by the turn number). */
@@ -125,6 +128,15 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     const names = new Map<string, string>();
     // Log names are the species each set battles as (a Mega form is sent as its base holding the stone, sim/showdown-set.ts).
     for (const [side, team] of [["p1", adapted.own], ["p2", adapted.opponent]] as const) for (const { key, set } of team.sets) names.set(`${side}:${key}`, set.name);
+    const display = (side: SideID, name: string) => names.get(`${side}:${keys.keyOf(side, name)}`) ?? name;
+    const forYou = redactSheet(sheetFromSets(adapted.opponent), setup.info.youSee);
+    // A move's type for the playback's colours, with its user's ability where you know it (your sets; the AI's as "You see" opens).
+    const moveType = createMoveType((user) => {
+      const key = keys.keyOf(user.side, user.name);
+      if (user.side === "p1") return adapted.own.sets.find((entry) => entry.key === key)?.set.ability ?? null;
+      const id = forYou.members.find((member) => member.key === key)?.abilityId;
+      return id ? Dex.forFormat(FORMAT).abilities.get(id).name : null;
+    });
     try {
       const host = new BattleHost({
         formatid: FORMAT, seed: null,
@@ -136,10 +148,12 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
         trackers: { p1: createTracker("p1", keys.keyOf), p2: createTracker("p2", keys.keyOf) },
         sheets: {
           forAI: redactSheet(sheetFromSets(adapted.own), setup.info.aiKnows),
-          forYou: redactSheet(sheetFromSets(adapted.opponent), setup.info.youSee),
+          forYou,
         },
         provider: deps.createProvider(habits), aiBase: deps.randomHex(),
-        formatter: createLogFormatter({ names: (side, name) => names.get(`${side}:${keys.keyOf(side, name)}`) ?? name }),
+        formatter: createLogFormatter({ names: display }),
+        // The board replays each turn from these steps (the same p1 channel as the log).
+        steps: createStepBuilder({ names: display, keyOf: keys.keyOf, moveType }),
         log: new Map(), dirty: new Set(), snapshots: new Map(), ai: null, held: null, pending: new Map(), ownActions: new Map(),
         lastTurn: 0, habitsChanged: false, ended: false, forfeited: false,
       };
@@ -165,7 +179,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
 
   function logTurn(s: BattleState, turn: number): LogTurn {
     let entry = s.log.get(turn);
-    if (!entry) { entry = { turn, lines: [], actions: null, read: null }; s.log.set(turn, entry); }
+    if (!entry) { entry = { turn, lines: [], steps: [], actions: null, read: null }; s.log.set(turn, entry); }
     return entry;
   }
 
@@ -217,12 +231,15 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     // 1. Drain both channels.
     const drain = s.host.drain();
     s.formatter.push(drain.channel.p1);
+    s.steps.push(drain.channel.p1);
     s.trackers.p1.push(drain.channel.p1);
     s.trackers.p2.push(drain.channel.p2);
     const groups = s.formatter.turns();
+    const stepGroups = s.steps.turns();
     groups.forEach((lines, turn) => {
       const entry = logTurn(s, turn);
-      if (entry.lines.length !== lines.length) { entry.lines = lines; s.dirty.add(turn); }
+      const steps = stepGroups[turn] ?? [];
+      if (entry.lines.length !== lines.length || entry.steps?.length !== steps.length) { entry.lines = lines; entry.steps = steps; s.dirty.add(turn); }
     });
     // 2. Turns that resolved since the last drain (a new |turn| line, or the end).
     const turnNow = drain.turn;

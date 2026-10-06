@@ -90,6 +90,10 @@ describe("battle log", () => {
     expect(announcement(battle({ phase: { kind: "waiting", reason: "simulating" } }))).toBe("Simulating turn 3…");
     expect(announcement(battle({ phase: { kind: "ended", result: "loss", forfeited: false } }))).toMatch(/The AI won\.$/);
     expect(announcement(battle({ phase: { kind: "preview", request: { kind: "team-preview", id: 1, maxChosenTeamSize: 4, side: [] } }, log: [] }))).toBe("Team preview. Bring 4.");
+    // After the board's playback read turn 2 step by step: its AI's read (new) and the next request, not its lines again.
+    expect(announcement(battle(), { heard: 2 })).toBe("AI's read: Predicted Rock Slide into Absol (45%), so it switched to Annihilape. Turn 3.");
+    // A mid-turn replacement after part of turn 3 played: turn 2's read was read after turn 2 played.
+    expect(announcement(battle({ phase: { kind: "switch", request: switchRequest([false, true]) } }), { heard: 3 })).toBe("Replace Gyarados (your right).");
   });
 
   it("copies the log as plain text", () => {

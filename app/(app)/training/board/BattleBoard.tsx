@@ -1,33 +1,50 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type { BoardView } from "../model/view-types";
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
-import BattleCard, { type CardTarget } from "./BattleCard";
+import BattleCard, { type CardPlay, type CardTarget } from "./BattleCard";
 import FieldBar from "./FieldBar";
 import styles from "./board.module.css";
 
 export type BattleBoardProps = {
   board: BoardView;
-  /** Your two slots' controls, placed under your cards. */
+  /** The board with its popup layer (BattleScreen scrolls it into view when a turn starts playing). */
+  ref?: Ref<HTMLDivElement>;
+  /** Your controls under each of your Pokémon; omitted when the battle ended. */
   renderControls?: (slot: "own-left" | "own-right") => ReactNode;
   /** Card frames that pick the target of the move being chosen. */
   cardTarget?: (slot: DoublesSlotId) => CardTarget | null;
+  /** A turn playback step on each card (highlight, labels, sliding HP bar). */
+  cardPlay?: (slot: DoublesSlotId) => CardPlay | null;
+  /** The playback step's popup, floating over the board above every other element. */
+  popup?: ReactNode;
+  /** In place of your controls while a turn plays (its progress and Skip). */
+  playbackBar?: ReactNode;
 };
 
 /** The opponent's row on top and yours below, as the game shows them (SPEC D2). */
-export default function BattleBoard({ board, renderControls, cardTarget }: BattleBoardProps) {
+export default function BattleBoard({ board, ref, renderControls, cardTarget, cardPlay, popup, playbackBar }: BattleBoardProps) {
+  // Keyed by the Pokémon: one that comes in gets a fresh card (its HP bar does not slide from the one it replaced).
+  const card = (slot: DoublesSlotId) => (
+    <BattleCard key={`${slot}:${board.active[slot]?.key ?? ""}`} mon={board.active[slot]} slot={slot} target={cardTarget?.(slot)} play={cardPlay?.(slot)} />
+  );
   return (
-    <div data-training-board className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel">
-      <div role="group" aria-label="Opponent's side" className={styles.side}>
-        <BattleCard mon={board.active["opponent-left"]} slot="opponent-left" target={cardTarget?.("opponent-left")} />
-        <BattleCard mon={board.active["opponent-right"]} slot="opponent-right" target={cardTarget?.("opponent-right")} />
+    <div ref={ref} className={styles.boardWrap}>
+      <div data-training-board className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel">
+        <div role="group" aria-label="Opponent's side" className={styles.side}>
+          {card("opponent-left")}
+          {card("opponent-right")}
+        </div>
+        <FieldBar field={board.field} />
+        <div role="group" aria-label="Your side" className={styles.own}>
+          <div className={styles.left}>{card("own-left")}</div>
+          <div className={styles.right}>{card("own-right")}</div>
+          {playbackBar && <div className={styles.playback}>{playbackBar}</div>}
+          {renderControls && <div data-training-controls="own-left" className={styles.controlsLeft}>{renderControls("own-left")}</div>}
+          {renderControls && <div data-training-controls="own-right" className={styles.controlsRight}>{renderControls("own-right")}</div>}
+        </div>
       </div>
-      <FieldBar field={board.field} />
-      <div role="group" aria-label="Your side" className={styles.own}>
-        <div className={styles.left}><BattleCard mon={board.active["own-left"]} slot="own-left" target={cardTarget?.("own-left")} /></div>
-        <div className={styles.right}><BattleCard mon={board.active["own-right"]} slot="own-right" target={cardTarget?.("own-right")} /></div>
-        {renderControls && <div data-training-controls="own-left" className={styles.controlsLeft}>{renderControls("own-left")}</div>}
-        {renderControls && <div data-training-controls="own-right" className={styles.controlsRight}>{renderControls("own-right")}</div>}
-      </div>
+      {/* Outside the board's clipped frame, so the popup can float over everything around it. */}
+      {popup && <div data-training-popup-layer className={styles.popupLayer}>{popup}</div>}
     </div>
   );
 }

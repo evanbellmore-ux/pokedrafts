@@ -44,14 +44,14 @@ describe("Training page shell", () => {
     const pageFiles = ["page.tsx", "TrainingClient.tsx", "BattleScreen.tsx", "training-session.ts", "useTrainingSession.ts"].map((file) => join(training, file));
     for (const folder of ["setup", "preview", "board", "actions", "end", "log"]) {
       for (const entry of readdirSync(join(training, folder))) {
-        // log/protocol-text.ts is worker-only (the worker formats the p1 channel); the page never imports it.
-        if (/.tsx?$/.test(entry) && entry !== "protocol-text.ts") pageFiles.push(join(training, folder, entry));
+        // log/protocol-text.ts and log/protocol-steps.ts are worker-only (the worker reads the p1 channel); the page never imports them.
+        if (/.tsx?$/.test(entry) && entry !== "protocol-text.ts" && entry !== "protocol-steps.ts") pageFiles.push(join(training, folder, entry));
       }
     }
     for (const file of pageFiles) {
       const source = readFileSync(file, "utf8");
       expect(source, file).not.toMatch(/console\.log/);
-      expect(source, file).not.toMatch(/from "[^"]*(showdown-sim|doubles-turn|\/calculate|\/sim\/|\/ai\/|protocol-text)[^"]*"/);
+      expect(source, file).not.toMatch(/from "[^"]*(showdown-sim|doubles-turn|\/calculate|\/sim\/|\/ai\/|protocol-text|protocol-steps)[^"]*"/);
     }
   });
 });

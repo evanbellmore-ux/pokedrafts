@@ -218,10 +218,51 @@ export type DecisionReport = {
   evaluated: { yours: number; its: number };
   preview?: { predictedLeads: { keys: string[]; chance: number }[] };
 };
+// ---------- Turn playback: the board replays each resolved turn one action at a time ----------
+/** One Pokémon's change in a step, from the p1 channel (your HP exact, the AI's as the percentage it shows). */
+export type StepSlot = {
+  slot: DoublesSlotId;
+  /** The member in that slot after the step (TrainingMember.key) and its log name. */
+  key: string;
+  name: string;
+  /** It came into this slot during the step (a switch, a replacement, a drag, Ally Switch): its HP then is hp.from. */
+  entered?: true;
+  /** HP before and after the step (both always present when HP changed or it entered); `low` when it dipped below both
+   * in the step (a hit, then its Sitrus Berry). */
+  hp?: { from: HPView; to: HPView; low?: HPView };
+  fainted?: true;
+  /** Its status after the step, when the step changed it ("" when cured). */
+  status?: BattleStatus;
+  /** Its stat stages after the step, when the step changed them (stages at 0 left out). */
+  boosts?: PokemonView["boosts"];
+  /** It Mega Evolved. */
+  mega?: true;
+  /** Facts for its card during the step: "Burned", "Attack +2", "Protected", "Missed", "No effect", "Super effective", "Life Orb". */
+  facts: string[];
+};
+export type TurnStep = {
+  kind: "move" | "switch" | "cant" | "mega" | "end" | "effect";
+  /** "Rock Slide", "Dragonite switches for Blastoise", "U-turn: Staraptor switches for Venusaur", "Charizard Mega Evolves", "End of turn". */
+  title: string;
+  /** The move's user when the highlighted cards do not show who acted (a move on another Pokémon); else null. */
+  by: string | null;
+  /** Results not tied to one card: "Failed", "No target", "Missed", "Hit 3 times"; at the end of turn "Snow ended". */
+  results: string[];
+  /** The move's type ("Rock") for the highlight colour; null for switches, Mega Evolution, the end of turn and the rest. */
+  type: string | null;
+  /** The cards to highlight: the move's targets (its user for a move on itself), the Pokémon that came in, the ones that changed at the end of turn. */
+  targets: DoublesSlotId[];
+  /** The move's user, when the step is a move. */
+  actor: DoublesSlotId | null;
+  slots: StepSlot[];
+};
+
 /** turn 0 = "Start" (leads, entry abilities). */
 export type LogTurn = {
   turn: number;
   lines: LogLine[];
+  /** The turn's actions as steps for the board's playback, in protocol order (log/protocol-steps.ts); absent before the worker sends any. */
+  steps?: TurnStep[];
   /** Both sides' actions, once the turn resolved; the AI's with hidden slot actions removed (section 9.7). */
   actions: { own: JointAction; opponent: JointAction } | null;
   /** Only once the turn resolved (the store also strips an early one). */
