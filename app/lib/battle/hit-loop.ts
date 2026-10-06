@@ -25,6 +25,77 @@ export const CANT_SUPPRESS = new Set(["asoneglastrier", "asonespectrier", "battl
 export const FAIL_SKILL_SWAP = new Set([...CANT_SUPPRESS, "commander", "embodyaspectcornerstone", "embodyaspecthearthflame", "embodyaspectteal", "embodyaspectwellspring",
   "hungerswitch", "illusion", "neutralizinggas", "poisonpuppeteer", "protosynthesis", "quarkdrive", "teraformzero", "terashell", "wonderguard"]);
 
+/** Items Klutz never suppresses (pinned Showdown data/items.ts ignoreKlutz; sim/pokemon.ts ignoringItem). */
+export const KLUTZ_IGNORED_ITEMS: ReadonlySet<string> = new Set(["abilityshield", "machobrace", "poweranklet", "powerband", "powerbelt", "powerbracer", "powerlens", "powerweight"]);
+
+/** The Berries whose onEat (pinned Showdown data/items.ts) heals: Sitrus a quarter of the base maximum HP, Oran 10, the Figy family a third (a half in generation 7). */
+const EATEN_HEALS = new Set(["sitrusberry", "oranberry", ...PINCH_HEAL_BERRIES]);
+/** The Berries whose onEat raises a stat by 1 (this.boost): the pinch Berries, Kee (Defense) and Maranga (Sp. Def). */
+const EATEN_STAGES: Readonly<Record<string, CombatStat>> = { ...PINCH_STAT_BERRIES, keeberry: "def", marangaberry: "spd" };
+/** The Berries whose onEat cures a status (cureStatus) and the statuses each cures; Lum cures any. */
+const EATEN_CURES: Readonly<Record<string, readonly string[]>> = {
+  lumberry: ["brn", "par", "psn", "tox", "slp", "frz"], cheriberry: ["par"], chestoberry: ["slp"], pechaberry: ["psn", "tox"], rawstberry: ["brn"], aspearberry: ["frz"],
+};
+/** The resist Berries (data/items.ts onSourceModifyDamage with eatItem, onEat() {}): Ripen records one eaten (onEatItem berryWeaken). */
+export const RESIST_BERRIES: ReadonlySet<string> = new Set(["babiriberry", "chartiberry", "chilanberry", "chopleberry", "cobaberry", "colburberry", "habanberry", "kasibberry",
+  "kebiaberry", "occaberry", "passhoberry", "payapaberry", "rindoberry", "roseliberry", "shucaberry", "tangaberry", "wacanberry", "yacheberry"]);
+/** The Berries whose onEat does nothing (onEat() {}): the resist Berries, Custap, Enigma, Jaboca, Rowap. Micle Berry's onEat gives a volatile for accuracy, which no count reads. */
+const EATEN_EMPTY = new Set([...RESIST_BERRIES, "custapberry", "enigmaberry", "jabocaberry", "rowapberry", "micleberry"]);
+/** The Berries with onEat: false (Pomeg and its kin, the Past flavour Berries): singleEvent('Eat') returns false, so no EatItem runs. */
+export const UNEATEN_BERRIES: ReadonlySet<string> = new Set(["pomegberry", "kelpsyberry", "qualotberry", "hondewberry", "grepaberry", "tamatoberry", "razzberry", "blukberry",
+  "nanabberry", "wepearberry", "pinapberry", "cornnberry", "magostberry", "rabutaberry", "nomelberry", "spelonberry", "pamtreberry", "watmelberry", "durinberry", "belueberry"]);
+
+/**
+ * What Bug Bite's or Pluck's user gets from the target's Berry it takes (pinned Showdown data/moves.ts bugbite and pluck
+ * onHit: `if (source.hp && item.isBerry && target.takeItem(source))`, then singleEvent('Eat', item, ..., source) and, when
+ * that returns truthy, runEvent('EatItem', source)). The Eat runs no TryEatItem, so neither an HP line nor the target's
+ * Unnerve or As One applies. sim/battle.ts singleEvent suppresses it when the user ignores its own items (`ignoresItem`:
+ * Magic Room, or Klutz but for an ignoreKlutz item it holds) and returns true, so the EatItem still runs; a Berry with
+ * onEat: false (UNEATEN_BERRIES) returns false and runs none.
+ * - heal: Sitrus a quarter of the base maximum HP (at least 1), Oran 10, the Figy family a third (a half in generation 7,
+ *   data/mods/gen7/items.ts), doubled by Ripen (onTryHeal chainModify(2) on a Berry); battle.heal heals none at full HP.
+ * - pouch: Cheek Pouch's third of the base maximum HP (onEatItem; not a Berry's heal, so not doubled).
+ * - stages: the pinch Berries, Kee (Defense) and Maranga (Sp. Def) +1, Ripen doubling (onChangeBoost); Contrary, Simple
+ *   and the ±6 cap are boost()'s. `starf`: Starf Berry's +2 to a stat below +6 at random (this.sample), +4 with Ripen.
+ * - cures: the statuses its cureStatus clears (Lum any, Cheri paralysis, Chesto sleep, Pecha poison, Rawst burn, Aspear
+ *   freeze); `curesConfusion`: Lum and Persim (removeVolatile('confusion')).
+ * - confuses: the stat whose lowering Nature makes a Figy-family Berry confuse its eater (addVolatile('confusion')).
+ * - focusEnergy: Lansat Berry (addVolatile('focusenergy'): +2 critical-hit ratio); leppa: the PP Leppa Berry restores
+ *   (10, 20 with Ripen) to the first move with none left, else the first one short of its maximum.
+ * - weakens: Ripen's onEatItem marks a resist Berry (berryWeaken): the next damage its holder takes from a move is halved.
+ */
+export type StolenEat = {
+  heal: number; pouch: number; stages: Partial<Record<CombatStat, number>>; cures: readonly string[]; curesConfusion: boolean;
+  confuses?: CombatStat; focusEnergy?: true; starf?: number; leppa?: number; weakens?: true;
+};
+
+/** The Figy family (data/items.ts figyberry and its kin onEat): the stat whose lowering Nature confuses the eater. */
+export const CONFUSING_BERRIES: Readonly<Record<string, CombatStat>> = { figyberry: "atk", wikiberry: "spa", magoberry: "spe", aguavberry: "spd", iapapaberry: "def" };
+
+/** stolenEat's Berry `item` eaten by a user with base maximum HP `baseMaxHP` and ability `ability` (in effect). */
+export function stolenEat(item: string, eater: { baseMaxHP: number; ability: string; ignoresItem: boolean }, generation: number): StolenEat {
+  const { baseMaxHP, ability, ignoresItem } = eater;
+  const ripen = ability === "ripen" ? 2 : 1;
+  const runs = ignoresItem || !UNEATEN_BERRIES.has(item);
+  const pouch = ability === "cheekpouch" && runs ? Math.max(1, Math.floor(baseMaxHP / 3)) : 0;
+  const weakens = ability === "ripen" && RESIST_BERRIES.has(item) ? { weakens: true as const } : {};
+  const none: StolenEat = { heal: 0, pouch, stages: {}, cures: [], curesConfusion: false, ...weakens };
+  if (ignoresItem) return none;
+  const heal = EATEN_HEALS.has(item) ? berryArithmetic(item, { maxHP: baseMaxHP, baseMaxHP, ability }, generation).heal : 0;
+  const stat = EATEN_STAGES[item];
+  return {
+    ...none, heal, stages: stat ? { [stat]: ripen } : {}, cures: EATEN_CURES[item] ?? [], curesConfusion: item === "lumberry" || item === "persimberry",
+    ...(CONFUSING_BERRIES[item] ? { confuses: CONFUSING_BERRIES[item] } : {}), ...(item === "lansatberry" ? { focusEnergy: true as const } : {}),
+    ...(item === "starfberry" ? { starf: 2 * ripen } : {}), ...(item === "leppaberry" ? { leppa: 10 * ripen } : {}),
+  };
+}
+
+/** Whether stolenEat knows `item` (every Berry of the catalogs; tests/source/stolen-berries.test.ts checks them against pinned Showdown). */
+export function knownStolenBerry(item: string): boolean {
+  return EATEN_HEALS.has(item) || !!EATEN_STAGES[item] || !!EATEN_CURES[item] || EATEN_EMPTY.has(item) || UNEATEN_BERRIES.has(item)
+    || ["lansatberry", "starfberry", "leppaberry", "persimberry"].includes(item);
+}
+
 /** The HP after eating a berry: its heal, then Cheek Pouch's, each capped at the maximum. */
 export function eatBerry(berry: Berry, hp: number): number {
   let left = berry.heal ? Math.min(berry.max, hp + berry.heal) : hp;
@@ -75,6 +146,13 @@ export type HitLoopInput = {
   /** Bug Bite, Pluck and Incinerate take the target's Berry in their onHit, before its DamagingHit handlers. */
   takesBerry: boolean;
   /**
+   * The Berry their onHit finds (target.getItem()): the target's held one whether or not it works for its holder (takeItem
+   * reads no Klutz or Magic Room), none once the hit's damage ate it (a resist Berry). Unset: `targetItem`.
+   */
+  targetBerry?: string;
+  /** Bug Bite and Pluck: their user eats the Berry they take (stolenEat), its own items ignored (`ignoresItem`) under Magic Room or Klutz. */
+  eats?: { ignoresItem: boolean };
+  /**
    * The target is Cramorant in its Gulping or Gorging form with its own Gulp Missile (gulpingTarget;
    * cantsuppress, so Neutralizing Gas does not stop it; notransform, so a transformed copy's does nothing).
    */
@@ -104,6 +182,8 @@ export function berryUnnerved(unnerve: TurnUnnerve | undefined, who: "target" | 
 export type HitState = {
   hp: number; attackerAbility: string; attackerItem: string; targetAbility: string; targetItem: string;
   stages: Partial<Record<CombatStat, number>>; gulping: boolean;
+  /** The Berry Bug Bite, Pluck or Incinerate took (once), and the HP its eating gave the user: the Berry's heal and Cheek Pouch's. */
+  stolen?: { item: string; heal: number; pouch: number };
 };
 
 /** The HP one source took from the attacker in a hit. */
@@ -138,7 +218,10 @@ function modify(value: number, numerator: number, denominator: number): number {
  * Showdown's order:
  * 1. spreadDamage: draining heals Math.round(dealt x the fraction), at least 1, then Big Root (onTryHeal
  *    5324/4096); the target's Liquid Ooze (onSourceTryHeal) deals that unboosted amount instead, even at full HP.
- * 2. runMoveEffects: Bug Bite, Pluck and Incinerate take the target's Berry.
+ * 2. runMoveEffects: Bug Bite, Pluck and Incinerate take the target's Berry (not through Sticky Hold, which lets go once its
+ *    holder has fainted: `knocked`, this hit knocked the target out; data/abilities.ts stickyhold onTakeItem `!pokemon.hp`),
+ *    and Bug Bite's and Pluck's living user eats it (stolenEat): its heal and Cheek Pouch's, each at most to the maximum
+ *    and none at full HP (battle.heal), and its stages (Contrary reverses, Simple doubles), before the DamagingHit.
  * 3. DamagingHit, by handler order: Rough Skin and Iron Barbs (order 1, 1/8 of base max HP on contact), Rocky
  *    Helmet (order 2, 1/6 on contact), then abilities (subOrder 7: Mummy and Lingering Aroma replace the
  *    attacker's ability on contact, Wandering Spirit swaps them; Gulp Missile in the Gulping or Gorging form
@@ -151,7 +234,7 @@ function modify(value: number, numerator: number, denominator: number): number {
  *    Berry Juice); a pinch berry raises its stat (Ripen doubles, Contrary reverses, Simple doubles).
  * Pickpocket (onAfterMoveSecondary) and Shell Bell, recoil and Life Orb act only after the hits.
  */
-export function hitStep(input: HitLoopInput, prev: HitState, dealt: number): HitOutcome {
+export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knocked = false): HitOutcome {
   const state: HitState = { ...prev, stages: { ...prev.stages } };
   const losses: HitLoss[] = [];
   const lose = (source: string, amount: number) => {
@@ -170,8 +253,33 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number): Hit
       state.hp = Math.min(input.maxHP, state.hp + amount);
     }
   }
-  // Their takeItem fails through Sticky Hold; the one attacker that can hit twice with them (Parental Bond) has no Mold Breaker.
-  if (input.takesBerry && state.targetItem.endsWith("berry") && state.targetAbility !== "stickyhold") state.targetItem = "";
+  // Their takeItem fails through Sticky Hold while its holder stands; the one attacker that can hit twice with them (Parental
+  // Bond) has no Mold Breaker. A Berry the target's own item effects hold (`targetItem`) is still there; one that does not work
+  // for it (`targetBerry`) stays until taken.
+  if (input.takesBerry && !state.stolen) {
+    const berry = input.targetBerry ?? state.targetItem;
+    const there = berry.endsWith("berry") && (input.targetItem !== berry || state.targetItem === berry);
+    if (there && (state.targetAbility !== "stickyhold" || knocked)) {
+      if (state.targetItem === berry) state.targetItem = "";
+      let heal = 0, pouch = 0;
+      if (input.eats && state.hp > 0) {
+        const eat = stolenEat(berry, { baseMaxHP: input.baseMaxHP, ability: state.attackerAbility, ignoresItem: input.eats.ignoresItem }, input.generation);
+        const gain = (amount: number) => {
+          if (!amount || state.hp >= input.maxHP) return 0;
+          const before = state.hp;
+          state.hp = Math.min(input.maxHP, state.hp + amount);
+          return state.hp - before;
+        };
+        heal = gain(eat.heal);
+        pouch = gain(eat.pouch);
+        const ability = state.attackerAbility;
+        for (const [stat, amount] of Object.entries(eat.stages) as [CombatStat, number][]) {
+          state.stages[stat] = (state.stages[stat] ?? 0) + amount * (ability === "contrary" ? -1 : 1) * (ability === "simple" ? 2 : 1);
+        }
+      }
+      state.stolen = { item: berry, heal, pouch };
+    }
+  }
   const rough = ROUGH_SKIN[state.targetAbility];
   if (input.contact && rough) lose(rough, input.baseMaxHP / 8);
   if (input.contact && state.targetItem === "rockyhelmet") lose("Rocky Helmet", input.baseMaxHP / 6);

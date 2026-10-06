@@ -19,12 +19,12 @@ import { imposterTransforms, movesSpeciesId, NO_TRACE_ABILITIES, NO_TRANSFORM_AB
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
 import {
-  berryArithmetic, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, PINCH_STAT_BERRIES, PINCH_TYPES, walkHits,
+  berryArithmetic, CANT_SUPPRESS, CONFUSING_BERRIES, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, KLUTZ_IGNORED_ITEMS, PINCH_STAT_BERRIES, PINCH_TYPES, walkHits,
   type HitLoopInput, type HitState,
 } from "./hit-loop";
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
-import { ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
+import { CONFUSED_NOTE, ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, STARF_REASON, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
 import { DOUBLES_SLOTS, doublesNames, foesOf, SLOT_POSITION, slotSide, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
 import type {
   AfterUse,
@@ -586,9 +586,6 @@ export type SettledItems = {
   confused?: true;
 };
 
-/** The Figy family (pinned Showdown data/items.ts onEat): the stat whose lowering Nature makes the holder confused. */
-const DISLIKED_BERRIES: Record<string, CombatStat> = { figyberry: "atk", wikiberry: "spa", magoberry: "spe", aguavberry: "spd", iapapaberry: "def" };
-
 /**
  * Held-item states the battle has already settled before this attack, from the Pokémon's settled
  * abilities, as pinned Showdown runs a turn from the state set at its start (both sides alike): its Custap
@@ -671,7 +668,7 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
       // A Figy-family Berry (onEat) confuses a holder whose Nature lowers its stat, unless Own Tempo
       // (data/abilities.ts owntempo onTryAddVolatile) or Misty Terrain under a grounded holder (data/moves.ts
       // mistyterrain onTryAddVolatile) stops it.
-      const disliked = DISLIKED_BERRIES[held];
+      const disliked = CONFUSING_BERRIES[held];
       confused = !!disliked && NATURES.find((nature) => nature.name === build.nature)?.minus === disliked && !(abilityOn && build.abilityId === "owntempo")
         && !(conditions.terrain === "Misty" && isGrounded(ignoringItem(makePokemon(settled, runtime), settled, other, conditions), makeField(conditions)));
       const changes = [hp !== build.currentHP ? `${hp} HP` : "", effect, confused ? "confused" : ""].filter(Boolean);
@@ -891,8 +888,6 @@ const ESCALATING_MOVES = new Set(["tripleaxel", "triplekick"]);
 /** Ability conditions that matter for a Pokémon receiving an attack: its Speed, typing or Defense. */
 const RECEIVER_CONDITIONS = new Set(["unburden", "slowstart", "protean", "libero", "imposter", "dauntlessshield"]);
 
-/** Items Klutz never suppresses (pinned Showdown data/items.ts ignoreKlutz). */
-const KLUTZ_IGNORED_ITEMS = new Set(["abilityshield", "machobrace", "poweranklet", "powerband", "powerbelt", "powerbracer", "powerlens", "powerweight"]);
 /** Items the engine's checkItem keeps for a Klutz holder (util.js EV_ITEMS). */
 const ENGINE_KLUTZ_KEPT_ITEMS = new Set(["machobrace", "poweranklet", "powerband", "powerbelt", "powerbracer", "powerlens", "powerweight"]);
 
@@ -1390,14 +1385,17 @@ function abilityReplacementBlocked(attackerBuild: BattleBuild, defenderBuild: Ba
  * Neutralizing Gas (Mold Breaker suppresses none of those it reads: none is breakable), their items where they
  * work (not under Magic Room or an active Klutz; an Ability Shield works through Klutz), the engine move's
  * contact flag (a Punching Glove's punch and Shell Side Arm's physical hit already set) after Long Reach and
- * Protective Pads (data/abilities.ts longreach, sim/battle.ts checkMoveMakesContact), its draining, and the
- * target's Gulping or Gorging form (Gulp Missile is cantsuppress, and notransform: not a transformed copy's).
+ * Protective Pads (data/abilities.ts longreach, sim/battle.ts checkMoveMakesContact), its draining, the Berry Bug Bite,
+ * Pluck and Incinerate find (held, whether or not it works for the target, unless the hit's damage ate it as a resist
+ * Berry) and Bug Bite's and Pluck's user eating it (its own items ignored under Magic Room or Klutz but for an ignoreKlutz
+ * item), and the target's Gulping or Gorging form (Gulp Missile is cantsuppress, and notransform: not a transformed copy's).
  */
 function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, moveId: string): HitLoopInput {
   const ability = (build: BattleBuild, other: BattleBuild) => gassedAbility(build, other, conditions) ? "" : build.abilityId;
   const item = (build: BattleBuild, other: BattleBuild) => conditions.magicRoom || klutzActive(build, other) ? "" : build.itemId;
   const attackerAbility = ability(attackerBuild, defenderBuild), attackerItem = item(attackerBuild, defenderBuild);
   const flags = result.move.flags ?? {};
+  const steals = !result.move.isMax && !result.move.isZ && ["bugbite", "pluck", "incinerate"].includes(moveId);
   return {
     hp: attacker.curHP(), maxHP: attacker.maxHP(), baseMaxHP: attacker.maxHP(true),
     attackerAbility, attackerItem, targetAbility: ability(defenderBuild, attackerBuild), targetItem: item(defenderBuild, attackerBuild),
@@ -1405,7 +1403,10 @@ function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBu
     contact: !!flags.contact && attackerAbility !== "longreach" && attackerItem !== "protectivepads" && !(attackerItem === "punchingglove" && !!flags.punch),
     category: result.move.category === "Special" ? "Special" : "Physical",
     drain: (result.move as Move & { drain?: [number, number] }).drain ?? null,
-    takesBerry: !result.move.isMax && !result.move.isZ && ["bugbite", "pluck", "incinerate"].includes(moveId),
+    takesBerry: steals,
+    ...(steals ? { targetBerry: defenderBuild.itemId.endsWith("berry") && !(result.rawDesc.defenderItem && getBerryResistType(result.rawDesc.defenderItem)) ? defenderBuild.itemId : "" } : {}),
+    ...(steals && moveId !== "incinerate"
+      ? { eats: { ignoresItem: conditions.magicRoom || (attackerAbility === "klutz" && !KLUTZ_IGNORED_ITEMS.has(attackerBuild.itemId)) } } : {}),
     targetGulping: gulpingTarget({ speciesId: defenderBuild.speciesId, abilityId: defenderBuild.abilityId, transformed: !!defenderBuild.transformedFrom }),
     generation: runtime.profile.generation,
   };
@@ -2161,7 +2162,8 @@ function calculateMove(
       const changed = walk.before.findIndex((state, index) => modeOf(state, index) !== first);
       if (changed > 0 && (beatUpHits || (parentalBond && !bondSkip))) {
         const state = walk.before[changed], before = walk.before[changed - 1];
-        const what = (state.stages[offense] ?? 0) !== (before.stages[offense] ?? 0) ? `${runtime.itemsById.get(attackerBuild.itemId)?.name ?? attackerBuild.itemId} stat stage`
+        const raiser = state.stolen && !before.stolen ? state.stolen.item : attackerBuild.itemId;
+        const what = (state.stages[offense] ?? 0) !== (before.stages[offense] ?? 0) ? `${runtime.itemsById.get(raiser)?.name ?? raiser} stat stage`
           : changed === paralysedFrom && state.attackerAbility === "guts" ? "Guts once Gulp Missile paralyses it"
             : `${runtime.abilitiesById.get(state.attackerAbility)?.name ?? state.attackerAbility} at its HP`;
         unspliced.push(`Not included: the attacker's ${what} from hit ${changed + 1}.`);
@@ -2449,7 +2451,6 @@ function orList(names: string[]) {
 
 /** A row with several hits until calculateMatchup gives it its first use's exact outcome (MoveDamageResult.afterUse). */
 const MULTI_HIT_NOTE = "No one-use KO chance for multiple hits.";
-const CONFUSED_NOTE = "Assumes the confused attacker does not hit itself.";
 
 export function calculateMatchup(
   attacker: BattleBuild,
@@ -2628,7 +2629,7 @@ export function matchupRows(settled: SettledMatchup, contexts: Record<string, Mo
         // and the first use's outcome is kept only when every outcome's is the same.
         const counts = sameStarfDamage(runs) ? runs.map(count) : null;
         const same = (pick: (entry: ReturnType<typeof count>) => unknown) => !!counts && counts.every((entry) => JSON.stringify(pick(entry)) === JSON.stringify(pick(counts[0])));
-        row.usesToKO = same((entry) => entry.usesToKO) ? counts![0].usesToKO : { kind: "not-estimated", reason: "Starf Berry raises a random stat" };
+        row.usesToKO = same((entry) => entry.usesToKO) ? counts![0].usesToKO : { kind: "not-estimated", reason: STARF_REASON };
         afterUse = same((entry) => entry.afterUse) ? counts![0].afterUse : null;
       }
       if (afterUse) {
@@ -2647,7 +2648,7 @@ export function matchupRows(settled: SettledMatchup, contexts: Record<string, Mo
       // A confused attacker (its Figy-family Berry) hits itself instead of moving 33% of the time (pinned Showdown
       // data/conditions.ts confusion onBeforeMove: randomChance(33, 100)). As with full paralysis, the counts
       // follow the move being used and say so.
-      if (attackerItems.confused && (row.max ?? 0) > 0 && row.usesToKO?.kind === "uses") {
+      if (attackerItems.confused && (row.max ?? 0) > 0 && row.usesToKO?.kind === "uses" && !row.usesToKO.notes.includes(CONFUSED_NOTE)) {
         row = { ...row, usesToKO: { ...row.usesToKO, notes: [...row.usesToKO.notes, CONFUSED_NOTE] } };
       }
     }
@@ -3094,7 +3095,7 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
   const slots = { ...empty };
   for (const slot of present) {
     const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, SLOT_POSITION[slot], names[slot]);
-    if (items.starf) fail("Starf Berry raises a random stat");
+    if (items.starf) fail(STARF_REASON);
     if (items.confused && input.pokemon[slot]!.action.moveId !== null) fail("Confusion is not modelled in 2v2.");
     if (items.raised) {
       for (const foe of foes(slot)) {

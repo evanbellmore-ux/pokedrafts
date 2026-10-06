@@ -21,7 +21,7 @@ import {
 } from "./doubles-world";
 import { getBerryResistType } from "@smogon/calc/dist/items";
 import { getMoveEffectiveness } from "@smogon/calc/dist/mechanics/util";
-import { berryArithmetic, berryUnnerved, eatBerry, HEALING_BERRIES, PINCH_STAT_BERRIES, UNNERVES, type TurnUnnerve } from "./hit-loop";
+import { berryArithmetic, berryUnnerved, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, PINCH_STAT_BERRIES, stolenEat, UNNERVES, type TurnUnnerve } from "./hit-loop";
 import { isMaxActive } from "./mechanics";
 import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
 import type { BattleRuntime } from "./runtime";
@@ -1615,8 +1615,13 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
     const result = entry.search!.turnStep(follow ? entries : [{ attackerHP: 0, target: mergeDists(entries) }], ctx.mode, follow);
     if ("failed" in result) notEstimated(result.failed);
     for (const [source, [least, most]] of result.heals) { noteHeal(ctx, target, source, least); noteHeal(ctx, target, source, most); }
-    // A followed attacker's own HP Berry and Shell Bell (data/items.ts shellbell onAfterMoveSecondarySelf).
+    // A followed attacker's own HP Berry and Shell Bell (data/items.ts shellbell onAfterMoveSecondarySelf), and Cheek Pouch.
     for (const [source, [least, most]] of result.attackerHeals) { noteHeal(ctx, attacker, source, least); noteHeal(ctx, attacker, source, most); }
+    // The target's Berry it ate with Bug Bite or Pluck (data/moves.ts bugbite, pluck onHit: the Eat on the user).
+    for (const [item, [least, most]] of result.attackerAte) {
+      const source = `${ctx.names[attacker]} eats ${ctx.names[target]}'s ${itemName(ctx, item)}`;
+      noteHeal(ctx, attacker, source, least); noteHeal(ctx, attacker, source, most);
+    }
     if (step) for (const [row, mass] of result.rows) note(hitStats(step, target).met, damageKey(row), row, mass * world.mass);
     for (const outcome of result.outcomes) {
       const signature = JSON.stringify([sideKey(outcome.attacker), follow && outcome.attackerFainted, sideKey(outcome.target), outcome.knocked, outcome.landed,
@@ -1663,8 +1668,10 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
         if (outcome.attackerFainted || outcome.attacker.hp <= line) notEstimated(REASONS.notIn2v2(abilityName(ctx, before.receiver.abilityId)));
       }
     }
-    // A Figy-family Berry gone from the target in the step (eaten; or taken, which the guard treats alike).
-    if (before.receiver.itemId && !receiver.build.itemId) berryConfusion(ctx, next, target, before.receiver.itemId);
+    // A Figy-family Berry gone from the target in the step: eaten (a Berry Bug Bite, Pluck or Incinerate took is not).
+    const taken = stolenInStep(w, action, target, entry, info, before, receiver.build, outcome.knocked);
+    if (before.receiver.itemId && !receiver.build.itemId && !taken) berryConfusion(ctx, next, target, before.receiver.itemId);
+    if (taken && (action.moveId === "bugbite" || action.moveId === "pluck")) stolenFacts(ctx, next, action, target, taken, before.user);
     // The field the step left: a weather or terrain it set or ended, Charge used up, screens a Max Move cleared.
     next.field = { ...next.field, weather: outcome.conditions.weather === "" && conditionsFor(ctx, w, attacker, target, false).weather === "" ? next.field.weather : outcome.conditions.weather, terrain: outcome.conditions.terrain };
     if (!outcome.conditions.attackerSide.charge) user.charged = false;
@@ -1699,6 +1706,46 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
   }
   return out;
 }
+
+/**
+ * The target's Berry Bug Bite, Pluck or Incinerate took in a step (data/moves.ts bugbite, pluck, incinerate onHit), or null:
+ * the Berry it held before the step and no longer holds, unless the step's damage ate it (a resist Berry) or its unbroken
+ * Sticky Hold kept it and it ate it itself (Sticky Hold lets go only once its holder has fainted).
+ */
+function stolenInStep(w: World, action: PendingAction, target: DoublesSlotId, entry: SearchEntry, info: Extract<TurnMove, { kind: "move" }>,
+  before: { user: BattleBuild; receiver: BattleBuild }, after: BattleBuild, knocked: boolean): string | null {
+  const id = action.moveId!;
+  if (info.transformed || (id !== "bugbite" && id !== "pluck" && id !== "incinerate")) return null;
+  const held = before.receiver.itemId;
+  if (!held.endsWith("berry") || after.itemId === held) return null;
+  const resisted = entry.trace?.result?.rawDesc.defenderItem;
+  if (resisted && getBerryResistType(resisted)) return null;
+  if (before.receiver.abilityId === "stickyhold" && !breaks(w, action.slot, target, info) && !knocked) return null;
+  return held;
+}
+
+/**
+ * What the user got from the target's Berry it ate with Bug Bite or Pluck (hit-loop.ts stolenEat), which the step applied:
+ * its stages and the status it cured as the hit's facts (its HP is the user's heals). Ripen's mark of an eaten resist Berry
+ * halves the next damage its holder takes (data/abilities.ts ripen onSourceModifyDamage berryWeaken): not followed while a
+ * later move can hit it.
+ */
+function stolenFacts(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId, item: string, user: BattleBuild) {
+  const attacker = action.slot;
+  const ignoresItem = w.field.magicRoom || (user.abilityId === "klutz" && !KLUTZ_IGNORED_ITEMS.has(user.itemId));
+  const eat = stolenEat(item, { baseMaxHP: ctx.hp[attacker].baseMaxHP, ability: user.abilityId, ignoresItem }, ctx.runtime.profile.generation);
+  if (eat.weakens && alive(w, attacker) && laterDamaging(ctx, w)) notEstimated(REASONS.notIn2v2(abilityName(ctx, "ripen")));
+  const effects: string[] = [];
+  for (const [stat, amount] of Object.entries(eat.stages) as [CombatStat, number][]) {
+    // The rise as boost() makes it from the stage the user had: Contrary, Simple, the ±6 cap.
+    const from = user.boosts[stat] ?? 0;
+    const by = Math.max(-6, Math.min(6, from + amount * (user.abilityId === "contrary" ? -1 : 1) * (user.abilityId === "simple" ? 2 : 1))) - from;
+    if (by) effects.push(`${by > 0 ? "+" : ""}${by} ${STAT_NAMES[stat]}`);
+  }
+  if (user.status && eat.cures.includes(user.status)) effects.push(`its ${STATUS_WORDS[user.status]} is cured`);
+  if (effects.length) hitFact(ctx, action, target, `${ctx.names[attacker]} eats ${ctx.names[target]}'s ${itemName(ctx, item)}: ${effects.join(", ")}.`, w.mass);
+}
+const STATUS_WORDS: Record<string, string> = { brn: "burn", par: "paralysis", psn: "poison", tox: "bad poison", slp: "sleep", frz: "freeze" };
 
 /**
  * Reactions to a damaging hit the turn does not follow (SPEC §2.2): Cotton Down lowering every other Pokémon's Speed
