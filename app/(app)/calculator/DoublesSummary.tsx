@@ -1,13 +1,14 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import { DOUBLES_SLOTS, slotSide, type DoublesSideId, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleConditions } from "@/app/lib/battle/types";
-import DoublesCard, { type DoublesCardHandlers, type DoublesCardView } from "./DoublesCard";
+import DoublesCard, { type DoublesCardHandlers, type DoublesCardTarget, type DoublesCardView } from "./DoublesCard";
+import { baseName, relativeLabel } from "./doubles-format";
 import DoublesTurn from "./DoublesTurn";
 import type { DamageRollMode } from "./hp-preview";
-import type { MoveOwner, MoveReplacement } from "./roster-prep";
+import { getMoveOwner, type MoveOwner, type MoveReplacement } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export type { DoublesCardView };
@@ -20,6 +21,8 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
   /** The field's Magic Room and terrain (the cards' Mimicry comes with their views). */
   magicRoom: boolean; terrain: BattleConditions["terrain"];
   onShowStep: (owner: MoveOwner, moveId: string) => void; onFixSettings: () => void;
+  /** The slot whose move the card frames aim at first (tests); afterwards the last slot given a move or a target. */
+  defaultAiming?: DoublesSlotId | null;
 };
 
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
@@ -43,7 +46,31 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
   // The cards show the turn's HP only for a ready turn with a move; otherwise their current HP.
   const projected = !blockedReason && !noMoves && turn?.status === "ready";
   const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange } = props;
-  const cardHandlers: DoublesCardHandlers = { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange };
+  // The card frames aim the move of the slot last given a move, a Moves pane or a target.
+  const [aiming, setAiming] = useState<DoublesSlotId | null>(props.defaultAiming ?? null);
+  const aim = (owner: MoveOwner) => setAiming(DOUBLES_SLOTS.find((slot) => cards[slot].slot.key === owner.key) ?? null);
+  const cardHandlers: DoublesCardHandlers = {
+    onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic,
+    onActivateMove: (owner, index) => { aim(owner); onActivateMove(owner, index); },
+    onChooseMove: (owner, moveId) => { aim(owner); onChooseMove(owner, moveId); },
+    onShowMoves: (owner) => { aim(owner); onShowMoves(owner); },
+    onTargetChange: (owner, target) => { aim(owner); onTargetChange(owner, target); },
+  };
+  const aimer = aiming ? cards[aiming] : null;
+  // The same rule as the card's Target radios: a move with two or more Pokémon to pick from.
+  const aimRule = aimer && !aimer.fainted && aimer.action.moveId && aimer.rule?.kind === "choose" && aimer.rule.options.length > 1 ? aimer.rule : null;
+  const aimMove = aimer?.action.moveId
+    ? (blockedReason ? undefined : effectiveMove(turn, aimer)?.name) ?? runtime.movesById.get(aimer.action.moveId)?.name ?? aimer.action.moveId : "";
+  const cardTarget = (slot: DoublesSlotId): DoublesCardTarget | null => {
+    if (!aimer || !aimRule || !aimRule.options.includes(slot)) return null;
+    const selected = aimer.action.target === slot;
+    const actor = baseName(names, aimer.id);
+    return {
+      selected, label: `Target ${baseName(names, slot)} (${relativeLabel(aimer.id, slot).toLowerCase()}) with ${actor}'s ${aimMove}`,
+      chip: selected ? `Target of ${actor}'s ${aimMove}` : null,
+      onPick: () => onTargetChange(getMoveOwner(aimer.slot), slot),
+    };
+  };
 
   return (
     <section data-doubles-summary aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
@@ -78,6 +105,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
                   replacement={replacement}
                   movesControl={movesControl}
                   effective={blockedReason ? undefined : effectiveMove(turn, view)}
+                  target={cardTarget(slot)}
                   {...cardHandlers}
                 />
               );

@@ -227,6 +227,15 @@
   border-inline-start: 1px solid var(--color-line);
 }
 
+/* A 2v2 card that is a target frame: clicks fall through to the frame's button except on the card's own controls. */
+.cardTargetContent {
+  pointer-events: none;
+}
+
+.cardTargetContent :is(a, button, input, label, select, textarea, summary, dialog, [role="dialog"]) {
+  pointer-events: auto;
+}
+
 /* A 2v2 card's quick moves stay 2×2, and No move / All moves one row of two. */
 .doublesQuickMoves {
   display: grid;
