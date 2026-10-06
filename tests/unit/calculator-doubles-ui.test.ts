@@ -401,6 +401,27 @@ describe("2v2 summary callbacks", () => {
     expect(props.onRollModeChange).toHaveBeenCalledWith("high");
   });
 
+  it("lets the cards the aimed move can hit pick its target", () => {
+    const view = doubleTarget();
+    // Nothing aimed yet: no frames, the cards as before.
+    expect(summary(view)).not.toContain("data-doubles-card-pick");
+    const props = summaryProps(view, { defaultAiming: "own-left" });
+    const { html, buttons } = capture(() => renderToStaticMarkup(createElement(DoublesSummary, props)));
+    const picks = buttons.filter((button) => button["data-doubles-card-pick"]);
+    // Weather Ball from your left: both foes and the ally; the picked one is the left foe.
+    expect(picks.map((button) => button["data-doubles-card-pick"])).toEqual(["own-right", "opponent-left", "opponent-right"]);
+    const left = picks.find((button) => button["data-doubles-card-pick"] === "opponent-left")!;
+    expect(left["aria-pressed"]).toBe(true);
+    expect(left["aria-label"]).toBe(`Target ${baseName(view.names, "opponent-left")} (left foe) with ${baseName(view.names, "own-left")}'s Weather Ball`);
+    expect(html).toContain(`data-doubles-card-chip="true" class="wrap-anywhere text-xs font-semibold text-accent-text">Target of ${baseName(view.names, "own-left")}&#x27;s Weather Ball</p>`);
+    expect(html.match(/data-doubles-card-target="eligible"/g)).toHaveLength(2);
+    click(picks.find((button) => button["data-doubles-card-pick"] === "opponent-right")!);
+    expect(props.onTargetChange).toHaveBeenCalledWith(getMoveOwner(view.cards["own-left"].slot), "opponent-right");
+    // A move with its own targets (the opponent's left Water Spout) gives no frames.
+    expect(summary(view, { defaultAiming: "opponent-left" })).not.toContain("data-doubles-card-pick");
+    expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a/);
+  });
+
   it("states facts only", () => {
     const tutorial = /Click|Choose a|to see|browse|Select a/;
     for (const view of [fixture(), doubleTarget(), uncertain(), notEstimated()]) {

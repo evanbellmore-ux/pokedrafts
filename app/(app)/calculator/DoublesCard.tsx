@@ -55,6 +55,8 @@ type Props = DoublesCardHandlers & {
   movesControl: string;
   /** The move the turn used for the action when it differs (Z-Move, Max Move): its name and type. */
   effective?: { name?: string; type?: string };
+  /** Set when the move being aimed (DoublesSummary) can hit this Pokémon. */
+  target?: DoublesCardTarget | null;
 };
 
 /** Text with a " → " between a move and its targets: the arrow is hidden from screen readers, which hear " targets ". */
@@ -66,8 +68,18 @@ export function PointedText({ text }: { text: string }) {
 
 const linkButton = "min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
+/** The move being aimed can hit this card's Pokémon: clicking the card picks it (the Target radios stay for the keyboard). */
+export type DoublesCardTarget = {
+  selected: boolean;
+  /** "Target Blastoise (left foe) with Charizard's Heat Wave". */
+  label: string;
+  /** "Target of Charizard's Ancient Power" on the picked card. */
+  chip: string | null;
+  onPick(): void;
+};
+
 /** A 2v2 card: the Pokémon, its HP after the turn's moves, its move and its target (data-doubles-slot). */
-export default function DoublesCard({ view, names, runtime, rollMode, replacement, movesControl, effective, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange }: Props) {
+export default function DoublesCard({ view, names, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange }: Props) {
   const id = useId();
   const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false } = view;
   const position = SLOT_POSITION[slotId];
@@ -107,8 +119,8 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
     editRef.current?.focus();
   }
 
-  return (
-    <div data-doubles-slot={slotId} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">
+  const body = (
+    <>
       <p className="wrap-anywhere text-xs font-semibold text-muted">{positionLabel(slotId)}{slot.source && slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
         <h4 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg">{name}</h4>
@@ -267,6 +279,19 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
         onChange={(build) => onBuildChange(slot.key, build)}
         roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={slotId} position={position} label={`${positionLabel(slotId)} Pokémon`} isDisabled={rosterDisabled} activeSource={slot.source} runtime={runtime} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
       />
+    </>
+  );
+  if (!target) return <div data-doubles-slot={slotId} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">{body}</div>;
+  // The whole card is the click target for the move being aimed; its own controls sit above it and keep their clicks.
+  const frame = target.selected ? "bg-accent-soft outline-2 -outline-offset-4 outline-accent" : "outline-2 outline-dashed -outline-offset-4 outline-accent hover:bg-panel-hover";
+  return (
+    <div data-doubles-slot={slotId} data-doubles-card-target={target.selected ? "selected" : "eligible"} className={`relative flex min-w-0 flex-col px-3 py-2 sm:px-4 ${frame}`}>
+      <button type="button" data-doubles-card-pick={slotId} aria-label={target.label} aria-pressed={target.selected} onClick={target.onPick}
+        className="absolute inset-0 z-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus" />
+      <div className={`${styles.cardTargetContent} relative z-10 flex min-w-0 flex-col`}>
+        {target.chip && <p data-doubles-card-chip className="wrap-anywhere text-xs font-semibold text-accent-text">{target.chip}</p>}
+        {body}
+      </div>
     </div>
   );
 }
