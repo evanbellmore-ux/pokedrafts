@@ -11,6 +11,7 @@ const MAX_ARCHIVE_BYTES = 8 * 1024 * 1024;
 const MAX_OUTPUT_BYTES = 32 * 1024 * 1024;
 const DOWNLOAD_TIMEOUT_MS = 120_000;
 const OUTPUT = join(ROOT, "data/champions/move-usage.json");
+const TRAINING_OUTPUT = join(ROOT, "data/champions/training-usage.json");
 const compact = (value) => `${JSON.stringify(value)}\n`;
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const compareIds = (a, b) => a < b ? -1 : a > b ? 1 : 0;
@@ -214,6 +215,177 @@ export function buildMoveUsageSnapshot(catalogJSON, inputs) {
   };
 }
 
+// ---------- Training usage (SPEC addendum A1.1): data/champions/training-usage.json ----------
+// The same hash-checked Doubles archive and catalog identities as above, keeping what Training needs and move-usage.json
+// drops: moves of every category, items, spreads and abilities, each as a share of the species' weighted sets.
+
+/** Moves: the top 24, or more while above 0.5% of the species' sets; items and spreads: the top 12. */
+export const TRAINING_USAGE_LIMITS = Object.freeze({ moves: 24, moveShare: 0.005, items: 12, spreads: 12 });
+const STAT_IDS = ["hp", "atk", "def", "spa", "spd", "spe"];
+/** The 25 natures as Showdown spells them (PS/data/natures.ts). */
+const NATURES = new Set([
+  "Adamant", "Bashful", "Bold", "Brave", "Calm", "Careful", "Docile", "Gentle", "Hardy", "Hasty", "Impish", "Jolly", "Lax",
+  "Lonely", "Mild", "Modest", "Naive", "Naughty", "Quiet", "Quirky", "Rash", "Relaxed", "Sassy", "Serious", "Timid",
+]);
+/** Champions Stat Points (PS/sim/team-validator.ts:1306-1311 per stat; PS/sim/dex-formats.ts:343-345 evLimit 66, enforced at team-validator.ts:1350-1355). */
+const MAX_STAT_POINTS = 32;
+const STAT_POINT_LIMIT = 66;
+const positiveWeight = (weight) => typeof weight === "number" && Number.isFinite(weight) && weight > 0;
+/** A share of the species' weighted sets, to four significant digits (stays > 0). */
+const share = (weight, total) => Number((weight / total).toPrecision(4));
+const sortedEntries = (value) => (isRecord(value) ? Object.entries(value) : []).sort(([a], [b]) => compareIds(a, b));
+
+/**
+ * A Smogon `Spreads` key `Nature:hp/atk/def/spa/spd/spe` (Stat Points in Champions) the Champions validator accepts:
+ * integers 0-32 each, at most 66 in total, and not Serious with 0 points (PS/sim/team-validator.ts:1332-1335). Else null.
+ */
+export function parseTrainingSpread(key) {
+  const match = typeof key === "string" ? /^([A-Za-z]+):(\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+)$/.exec(key) : null;
+  if (!match || !NATURES.has(match[1])) return null;
+  const values = match.slice(2).map(Number);
+  const total = values.reduce((sum, value) => sum + value, 0);
+  if (values.some((value) => !Number.isSafeInteger(value) || value > MAX_STAT_POINTS) || total > STAT_POINT_LIMIT) return null;
+  if (match[1] === "Serious" && total === 0) return null;
+  return { nature: match[1], points: Object.fromEntries(STAT_IDS.map((stat, index) => [stat, values[index]])) };
+}
+
+/** Per exact-matched catalog species: moves, items, spreads and abilities with weights (shares of the species' sets). */
+export function deriveTrainingUsage(catalog, payload, source) {
+  validatePayload(payload, source);
+  const { moves, species, identities } = indexCatalog(catalog);
+  if (!Array.isArray(catalog.items) || !catalog.items.length ||
+      catalog.items.some((row) => !isRecord(row) || typeof row.id !== "string" || !/^[a-z0-9]+$/.test(row.id))) {
+    throw new Error("Invalid Champions catalog items.");
+  }
+  const items = new Set(catalog.items.map((row) => row.id));
+  if (items.size !== catalog.items.length) throw new Error("Duplicate catalog item identity.");
+  const rows = new Map();
+  const unmatchedSpecies = [];
+  const withoutSets = [];
+  const filtered = {
+    moves: { emptyId: 0, invalidWeight: 0, unknownId: 0, illegal: 0 },
+    items: { invalidWeight: 0, unknownId: 0 },
+    spreads: { invalidWeight: 0, invalid: 0 },
+    abilities: { invalidWeight: 0, illegal: 0 },
+  };
+  const truncated = { moves: 0, items: 0, spreads: 0 };
+  // Sorting input identities and IDs also stabilizes floating-point summation.
+  for (const name of Object.keys(payload.data).sort(compareIds)) {
+    const row = identities.get(name);
+    if (!row) {
+      unmatchedSpecies.push(name);
+      continue;
+    }
+    if (rows.has(row.id) || withoutSets.includes(row.id)) throw new Error(`Multiple usage rows resolve to catalog species: ${row.id}.`);
+    const data = payload.data[name];
+    // Every set has exactly one ability, so the summed ability weight is the species' weighted set count.
+    const abilityEntries = sortedEntries(data.Abilities);
+    let total = 0;
+    for (const [, weight] of abilityEntries) if (positiveWeight(weight)) total += weight;
+    if (!Number.isFinite(total)) throw new Error(`Usage set weight overflow: ${row.id}.`);
+    if (!(total > 0)) {
+      withoutSets.push(row.id);
+      continue;
+    }
+    const legalMoves = new Set(row.moves);
+    const weightedMoves = [];
+    for (const [id, weight] of sortedEntries(data.Moves)) {
+      if (!id) { filtered.moves.emptyId++; continue; }
+      if (!positiveWeight(weight)) { filtered.moves.invalidWeight++; continue; }
+      if (!moves.has(id)) { filtered.moves.unknownId++; continue; }
+      if (!legalMoves.has(id)) { filtered.moves.illegal++; continue; }
+      weightedMoves.push([id, weight]);
+    }
+    const rankedMoves = rank(weightedMoves);
+    const keptMoves = rankedMoves.filter(([, weight], index) => index < TRAINING_USAGE_LIMITS.moves || weight / total > TRAINING_USAGE_LIMITS.moveShare);
+    truncated.moves += rankedMoves.length - keptMoves.length;
+    const weightedItems = [];
+    for (const [key, weight] of sortedEntries(data.Items)) {
+      if (!positiveWeight(weight)) { filtered.items.invalidWeight++; continue; }
+      // The archive's "nothing" is no item, written "" as BattleBuild.itemId.
+      const id = key === "nothing" ? "" : key;
+      if ((!id && key !== "nothing") || (id && !items.has(id))) { filtered.items.unknownId++; continue; }
+      weightedItems.push([id, weight]);
+    }
+    const rankedItems = rank(weightedItems);
+    truncated.items += Math.max(0, rankedItems.length - TRAINING_USAGE_LIMITS.items);
+    const weightedSpreads = [];
+    for (const [key, weight] of sortedEntries(data.Spreads)) {
+      if (!positiveWeight(weight)) { filtered.spreads.invalidWeight++; continue; }
+      if (!parseTrainingSpread(key)) { filtered.spreads.invalid++; continue; }
+      weightedSpreads.push([key, weight]);
+    }
+    const rankedSpreads = rank(weightedSpreads);
+    truncated.spreads += Math.max(0, rankedSpreads.length - TRAINING_USAGE_LIMITS.spreads);
+    const legalAbilities = new Set(Array.isArray(row.abilities) ? row.abilities : []);
+    const weightedAbilities = [];
+    for (const [id, weight] of abilityEntries) {
+      if (!positiveWeight(weight)) { filtered.abilities.invalidWeight++; continue; }
+      if (!legalAbilities.has(id)) { filtered.abilities.illegal++; continue; }
+      weightedAbilities.push([id, weight]);
+    }
+    rows.set(row.id, {
+      // The species' weighted set count, so a reader can mix rows (a base form and its Megas) by how often each was used.
+      sets: Number(total.toPrecision(6)),
+      moves: keptMoves.map(([id, weight]) => ({ id, weight: share(weight, total) })),
+      items: rankedItems.slice(0, TRAINING_USAGE_LIMITS.items).map(([id, weight]) => ({ id, weight: share(weight, total) })),
+      spreads: rankedSpreads.slice(0, TRAINING_USAGE_LIMITS.spreads).map(([key, weight]) => ({ ...parseTrainingSpread(key), weight: share(weight, total) })),
+      abilities: rank(weightedAbilities).map(([id, weight]) => ({ id, weight: share(weight, total) })),
+    });
+  }
+  const count = (key) => [...rows.values()].filter((row) => row[key].length > 0).length;
+  return {
+    source: {
+      url: source.url, format: source.format, month: source.month, cutoff: source.cutoff,
+      battles: source.battles, archiveBytes: source.archiveBytes, archiveSha256: source.sha256,
+    },
+    coverage: {
+      sourceSpeciesRows: source.speciesRows,
+      matchedSpecies: rows.size + withoutSets.length,
+      unmatchedSpecies,
+      speciesWithoutSets: withoutSets.sort(compareIds),
+      catalogSpecies: species.size,
+      species: rows.size,
+      speciesWithMoves: count("moves"),
+      speciesWithItems: count("items"),
+      speciesWithSpreads: count("spreads"),
+      speciesWithAbilities: count("abilities"),
+      filtered,
+      truncated,
+    },
+    species: Object.fromEntries([...rows].sort(([a], [b]) => compareIds(a, b))),
+  };
+}
+
+/** Pure transformation of the Doubles input (the CLI alone performs I/O). Key order is TrainingUsageData's. */
+export function buildTrainingUsageSnapshot(catalogJSON, input) {
+  if (!isRecord(input) || !isRecord(input.source) || input.source.gameType !== "Doubles") {
+    throw new Error("Training usage requires the Doubles source.");
+  }
+  const { source, coverage, species } = deriveTrainingUsage(JSON.parse(catalogJSON), input.payload, input.source);
+  return {
+    version: 1,
+    game: "champions",
+    catalogSha256: sha256(catalogJSON),
+    attribution: {
+      name: "Smogon usage statistics / Pokemon Showdown",
+      url: STATS_URL,
+      note: "Community battle usage, not an official Pokemon Champions recommendation. Weights are shares of the species' weighted sets: raw weight divided by the species' summed ability weight.",
+    },
+    policy: {
+      identities: "As move-usage.json: exact catalog id/name take precedence over calcName; otherwise only unique engine aliases resolve. Ambiguous aliases and duplicate resolved rows fail. No fuzzy matches or base-form usage inheritance in the snapshot; the app reads a cosmetic form's family row and Maushold-Four's Maushold row.",
+      weights: "Raw archive weight divided by the sum of the species' positive finite Abilities weights (every set has one ability), to four significant digits; that sum, to six, is the row's sets. Lists are in descending raw weight; canonical ID (spread key) breaks ties.",
+      moves: "Moves of every category in the exact proven Champions learnset with positive finite raw weights: the top 24, and every further move above 0.5% of the species' sets.",
+      items: "Catalog (Reg M-C legal) items with positive finite raw weights, the top 12; the archive's \"nothing\" is the item \"\".",
+      spreads: "Nature:hp/atk/def/spa/spd/spe Stat Point spreads the Champions validator accepts (a Showdown nature; integers 0-32; at most 66 in total; not Serious with 0), the top 12.",
+      abilities: "Every ability the exact catalog form can have with a positive finite raw weight.",
+    },
+    source,
+    coverage,
+    species,
+  };
+}
+
 async function readBoundedArchive(path) {
   const handle = await open(path, "r");
   try {
@@ -292,6 +464,19 @@ export async function importChampionsMoveUsage(check = false) {
     console.log(`${gameType} ${source.month}: ${coverage.matchedSpecies}/${coverage.sourceSpeciesRows} source species matched; ${coverage.speciesWithRankedMoves}/${coverage.catalogSpecies} catalog species with ranked moves.`);
     console.log(`Unmatched ${gameType} species: ${coverage.unmatchedSpecies.join(", ") || "none"}.`);
   }
+  // Training (SPEC addendum A1.1) reads the same parsed, hash-checked Doubles archive.
+  const training = buildTrainingUsageSnapshot(catalogJSON, inputs.find((input) => input.source.gameType === "Doubles"));
+  const trainingContents = compact(training);
+  if (check) {
+    const current = await readFile(TRAINING_OUTPUT, "utf8").catch((error) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    });
+    if (current !== trainingContents) throw new Error("training-usage.json is stale; run npm run data:champions:move-usage.");
+  } else {
+    await writeFile(TRAINING_OUTPUT, trainingContents);
+  }
+  console.log(`${check ? "Verified" : "Generated"} Champions training usage (${Buffer.byteLength(trainingContents)} bytes): ${training.coverage.species}/${training.coverage.sourceSpeciesRows} Doubles species with sets.`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,0 +1,166 @@
+{
+  "package": "@pokedrafts/showdown-sim",
+  "version": "0.11.11-champions.c23d2e94.1",
+  "upstreamVersion": "0.11.11",
+  "source": "https://github.com/smogon/pokemon-showdown/tree/c23d2e942c9c0daadb13a7162a385bf78e3c9353",
+  "revision": "c23d2e942c9c0daadb13a7162a385bf78e3c9353",
+  "sourceArchiveSha256": "640e41b11a4906d27ec435674ce2c667231d89de879f2a9cd7f81a7a280b41e2",
+  "format": "gen9championsvgc2026regmc",
+  "bundler": "esbuild@0.28.1",
+  "options": {
+    "bundle": true,
+    "format": "esm",
+    "platform": "browser",
+    "target": "es2020",
+    "minify": true,
+    "keepNames": true,
+    "legalComments": "eof",
+    "tsconfigRaw": {
+      "compilerOptions": {
+        "useDefineForClassFields": false,
+        "target": "es2020"
+      }
+    },
+    "define": {
+      "global": "globalThis"
+    },
+    "entry": "sim/battle.ts Battle + extractChannelMessages, sim/dex.ts Dex + toID, sim/state.ts State, sim/teams.ts Teams, sim/team-validator.ts TeamValidator, sim/prng.ts PRNG"
+  },
+  "dependencies": {
+    "ts-chacha20": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/ts-chacha20/-/ts-chacha20-1.2.0.tgz",
+      "integrity": "sha512-PTyPoWYHc2we8P2NTn5hpYG211popWbkjiw+k63xqjeMrx9pPtXSclz9F3fu0Tpr+vfR1xxcQFwsEkh1cXMLqw==",
+      "license": "MIT"
+    }
+  },
+  "patches": [
+    {
+      "file": "sim/dex.ts",
+      "from": "import * as fs from 'fs';\n",
+      "to": ""
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "import * as path from 'path';\n",
+      "to": ""
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "const DATA_DIR = path.resolve(__dirname, '../data');",
+      "to": "const DATA_DIR = 'data';"
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "const MODS_DIR = path.resolve(DATA_DIR, './mods');",
+      "to": "const MODS_DIR = 'data/mods';"
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "const dataObject = require(filePath);",
+      "to": "const dataObject = __psRequire(filePath);"
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "for (const mod of fs.readdirSync(MODS_DIR)) {",
+      "to": "for (const mod of __PS_MODS__) {"
+    },
+    {
+      "file": "sim/dex.ts",
+      "from": "const exported = require(path.resolve(DATA_DIR, 'aliases'));",
+      "to": "const exported = __psRequire('data/aliases');"
+    },
+    {
+      "file": "sim/dex-formats.ts",
+      "from": "customFormats = require(`${__dirname}/../config/custom-formats`).Formats;",
+      "to": "customFormats = __psRequire('config/custom-formats').Formats;"
+    },
+    {
+      "file": "sim/dex-formats.ts",
+      "from": "let Formats: AnyObject[] = require(`${__dirname}/../config/formats`).Formats;",
+      "to": "let Formats: AnyObject[] = __psRequire('config/formats').Formats;"
+    },
+    {
+      "file": "sim/dex-text.ts",
+      "from": "import * as path from 'path';\n",
+      "to": ""
+    },
+    {
+      "file": "sim/dex-text.ts",
+      "from": "const TEXT_DIR = path.resolve(__dirname, '../data/text');",
+      "to": "const TEXT_DIR = 'data/text';"
+    },
+    {
+      "file": "sim/dex-text.ts",
+      "from": "require.resolve(filePath);",
+      "to": "__psRequire.resolve(filePath);"
+    },
+    {
+      "file": "sim/dex-text.ts",
+      "from": "return require(filePath)[exportName];",
+      "to": "return __psRequire(filePath)[exportName];"
+    },
+    {
+      "file": "sim/prng.ts",
+      "from": "if (typeof crypto === 'undefined') globalThis.crypto = require('node:crypto');",
+      "to": "if (typeof crypto === 'undefined') throw new Error('Web Crypto is required.');"
+    },
+    {
+      "file": "sim/teams.ts",
+      "from": "/\\t\\tif \\(mod === 'gen9ssb'\\) \\{[\\s\\S]*?\\n\\t\\t\\}\\n\\n\\t\\treturn new TeamGenerator\\(format, seed\\);/",
+      "to": "\t\tthrow new Error('Random team generators are not bundled.');"
+    }
+  ],
+  "data": "lite: data/learnsets.ts replaced by {} (Reg M-C validation and battles proven identical by the gate); every other base data file, data/mods/champions and config/formats; other mods are names only",
+  "gate": {
+    "validations": 17364,
+    "validationSpecies": 293,
+    "validationDiffer": 0,
+    "battles": 20,
+    "battlesIdentical": 20,
+    "cloneReplays": 80,
+    "beliefRebuild": {
+      "decisions": 251,
+      "identical": 251,
+      "requestsEqual": 251
+    },
+    "fixture": "scripts/lib/showdown-sim/fixtures.mjs: seeds [k + 1, 2, 3, 4], k = 0..19; sha256 of the log without |t:| lines, 16 hex digits",
+    "logHashes": [
+      "504c7128cc093cc2",
+      "5a4517ee0ed45a5e",
+      "18a3afd10254010b",
+      "cfb7cb47caef744f",
+      "6bfc48e6cda6258f",
+      "d32efb4ea3bada09",
+      "6e9d29d80d5ab625",
+      "c72c7f7f505f44a9",
+      "18ceb89113f90937",
+      "f6dedbbe8722be9b",
+      "7e71325d54eb5ab1",
+      "0ea2eac8c167b2db",
+      "ff1dc5fc90731b7e",
+      "a606ee60edf08b3d",
+      "1d11d6c3d9218e8a",
+      "67df3af3dc45e806",
+      "182f6bdce7aed932",
+      "aa8332ce3f544baa",
+      "cefafa63fa14a5e6",
+      "fc20ffc16257e263"
+    ]
+  },
+  "bundles": {
+    "full": {
+      "bytes": 5156295,
+      "sha256": "702a4b419133f0c3a0c5757a9c7d6b757086347b0714183a31dc615204ef9a08"
+    },
+    "lite": {
+      "bytes": 2173399,
+      "sha256": "00cca7bfdd2ec5ee669a0745da1e1cfbf014eeccdc6946ada9d392f6c1abd517"
+    }
+  },
+  "distSha256": "00cca7bfdd2ec5ee669a0745da1e1cfbf014eeccdc6946ada9d392f6c1abd517",
+  "build": "npm run prepare:showdown-sim",
+  "notes": "Node module loading only is patched (no battle logic); dex text tables and random-team generators are not bundled.",
+  "archive": "pokedrafts-showdown-sim-0.11.11-champions.c23d2e94.1.tgz",
+  "sha256": "aa2889a1b0d27f275111f588f7fca09e25865b600901694a07b83b903be2a423"
+}

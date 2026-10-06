@@ -24,6 +24,10 @@ type Props = {
   runtime?: BattleRuntime;
   draft?: ImportDraft;
   onDraftChange?: (draft: ImportDraft) => void;
+  /** The section heading; defaults to "My team · PokéPaste" / "Opponent · PokéPaste". */
+  heading?: string;
+  /** The remove dialog's description; defaults to the calculator's. */
+  removeDescription?: string;
 };
 
 function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: BattleRuntime }) {
@@ -63,7 +67,7 @@ function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: B
   );
 }
 
-export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange }: Props) {
+export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon stay as manual builds." }: Props) {
   const id = useId();
   const [localDraft, setLocalDraft] = useState<ImportDraft>(() => ({
     url: applied?.url ?? "", text: applied?.text ?? "", title: applied?.title ?? "",
@@ -167,7 +171,7 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
 
   return (
     <section data-paste-importer={role} aria-labelledby={`${id}-heading`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
-      <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{ownership} · PokéPaste</h2>
+      <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading ?? `${ownership} · PokéPaste`}</h2>
       <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}</p>
       {applied && (
         <div className="space-y-2 rounded-lg border border-line bg-bg p-3">
@@ -215,7 +219,7 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
           {!canApply && <p className="text-sm text-danger">Correct the reported issues in the text, then preview again. At least one selectable set is required.</p>}
         </div>
       )}
-      <Dialog open={removeFor === scope} onReturnFocus={onReveal} onClose={() => setRemoveFor(null)} title="Remove imported team?" description="This removes the team and its cached set edits from this session. Active Pokémon stay as manual builds." confirmLabel="Remove team" danger onConfirm={() => { setRemoveFor(null); onRemove(owner); }} />
+      <Dialog open={removeFor === scope} onReturnFocus={onReveal} onClose={() => setRemoveFor(null)} title="Remove imported team?" description={removeDescription} confirmLabel="Remove team" danger onConfirm={() => { setRemoveFor(null); onRemove(owner); }} />
     </section>
   );
 }

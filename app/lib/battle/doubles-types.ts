@@ -187,3 +187,30 @@ export type DoublesTurnResult =
     /** §2.3. */
     facts: string[];
   };
+
+// ---------- The turn as finished worlds (calculateDoublesOutcomes; Training AI, SPEC E2) ----------
+
+/** One Pokémon at the end of the moves in one outcome (no end of turn). */
+export type DoublesOutcomeMon = {
+  /** HP distribution (chances sum to 1) from the world's marginal (doubles-world.ts marginal), ascending by HP. */
+  hp: { hp: number; chance: number }[];
+  /** The world's MonState.build: stages, status, item, ability, form (currentHP unused). */
+  build: BattleBuild;
+  /** A protecting move of its succeeded this turn (MonState.protect). */
+  protected: boolean;
+  /** Its action was picked this turn (MonState.moved). */
+  moved: boolean;
+};
+export type DoublesOutcome = {
+  /** The world's mass; outcomes' chances sum to 1. */
+  chance: number;
+  mons: Partial<Record<DoublesSlotId, DoublesOutcomeMon>>;
+  sides: Record<DoublesSideId, { reflect: boolean; lightScreen: boolean; auroraVeil: boolean; tailwind: boolean; faintedThisTurn: number }>;
+  field: Pick<BattleConditions, "weather" | "terrain" | "gravity" | "trickRoom" | "wonderRoom" | "magicRoom">;
+  /** Within this outcome, the chance every present Pokémon of the side is at 0 HP (from the joint factors); 1 with none present. */
+  allFainted: Record<DoublesSideId, number>;
+};
+export type DoublesOutcomesResult =
+  | { status: "issues"; issues: DoublesIssues }
+  | { status: "not-estimated"; reason: string }
+  | { status: "ready"; start: DoublesStart; outcomes: DoublesOutcome[] };

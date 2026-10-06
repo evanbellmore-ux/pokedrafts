@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Calculator, Hammer, LayoutDashboard, LoaderCircle, LogOut } from "lucide-react";
+import { Calculator, Hammer, LayoutDashboard, LoaderCircle, LogOut, Swords } from "lucide-react";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import Alert from "@/app/components/ui/Alert";
 import Button from "@/app/components/ui/Button";
 import { signOutLocally } from "@/app/lib/auth/sign-out";
 import { friendlyError } from "@/app/lib/errors";
 import { createClient } from "@/app/lib/supabase/client";
+import { TRAINING_LABEL } from "@/app/(app)/training/model/format-facts";
 
 type NavItem = {
   href: string;
@@ -21,6 +22,7 @@ const items: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/builder", label: "Pool Builder", icon: Hammer },
   { href: "/calculator", label: "Calculator", icon: Calculator },
+  { href: "/training", label: TRAINING_LABEL, icon: Swords },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -88,7 +90,7 @@ export default function AppNav() {
       >
         Skip to content
       </a>
-      {/* Give the five controls their own row on phones; both rows can wrap. */}
+      {/* Give the six controls their own row on phones; both rows can wrap. */}
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6 lg:px-8">
         <Link
           href="/dashboard"

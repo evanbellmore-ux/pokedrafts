@@ -20,9 +20,15 @@
     "prepare:champions-engine": "node scripts/prepare-champions-engine.mjs",
     "data:champions": "tsx scripts/build-champions-data.ts",
     "data:battle": "tsx scripts/build-battle-data.ts",
-    "data:champions:move-usage": "node scripts/import-champions-move-usage.mjs"
+    "data:champions:move-usage": "node scripts/import-champions-move-usage.mjs",
+    "prepare:showdown-sim": "node scripts/prepare-showdown-sim.mjs",
+    "eval:training": "tsx scripts/training/eval-ai.ts",
+    "conformance:training": "tsx scripts/training/conformance.ts",
+    "leak:training": "tsx scripts/training/leak.ts",
+    "belief:training": "tsx scripts/training/belief-eval.ts"
   },
   "dependencies": {
+    "@pokedrafts/showdown-sim": "file:vendor/pokedrafts-showdown-sim-0.11.11-champions.c23d2e94.1.tgz",
     "@smogon/calc": "file:vendor/smogon-calc-0.11.0-champions.e7fd7e59.1.tgz",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
@@ -39,6 +45,7 @@
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "embedded-postgres": "^18.4.0-beta.17",
+    "esbuild": "0.28.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "pg": "^8.23.0",

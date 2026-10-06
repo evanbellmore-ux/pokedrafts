@@ -48,11 +48,12 @@ app/
     update-password/page.tsx      reached from the recovery email
   invite/[code]/page.tsx          server wrapper + InviteClient. Viewable logged out (preview via get_invite_preview); Join requires auth and carries ?next.
   (app)/
-    layout.tsx                    server: AppNav shell (brand link, Dashboard, Pool Builder, Calculator, theme, sign out), max-w-6xl container
+    layout.tsx                    server: AppNav shell (brand link, Dashboard, Pool Builder, Calculator, Training, theme, sign out), max-w-6xl container
     loading.tsx
     dashboard/page.tsx            + DashboardClient.tsx
     builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), RuleBuilder.tsx (the "Build from rules" card, section 13.7), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
     calculator/page.tsx           Champions-only: CalculatorClient.tsx, PokemonPanel.tsx, BattleConditions.tsx, MoveResults.tsx; local engine/catalog, no database dependency (docs/champions-calculator.md)
+    training/page.tsx             TrainingClient.tsx + BattleScreen.tsx, training-session.ts (module store), setup/, preview/, board/, actions/, log/, end/; the battle, simulator and AI run in one module worker (worker/, sim/, ai/, usage/); no database dependency (docs/training.md)
     leagues/new/page.tsx          + NewLeagueClient.tsx
     leagues/not-found.tsx         catches notFound() thrown by the league layout (a segment's own not-found.tsx only wraps its page, so the parent segment renders this)
     leagues/[leagueId]/
