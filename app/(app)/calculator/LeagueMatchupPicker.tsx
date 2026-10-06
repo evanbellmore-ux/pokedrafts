@@ -16,6 +16,8 @@ import { getRosterPanel, type BattleSide, type RosterChoice, type RosterPanel, t
 type SourcePickerProps = {
   state: CalculatorRosterState;
   onRefresh: () => void;
+  /** Where "Log in again" returns to; defaults to the calculator. */
+  loginNext?: string;
 };
 
 function RefreshTeamsButton({ state, onRefresh }: SourcePickerProps) {
@@ -28,7 +30,7 @@ function RefreshTeamsButton({ state, onRefresh }: SourcePickerProps) {
   );
 }
 
-function SourceFeedback({ state }: { state: CalculatorRosterState }) {
+function SourceFeedback({ state, loginNext = "/calculator" }: { state: CalculatorRosterState; loginNext?: string }) {
   const loading = state.status === "loading" || state.teamsStatus === "loading";
   const failed = state.status === "error" || state.teamsStatus === "error";
   return (
@@ -42,7 +44,7 @@ function SourceFeedback({ state }: { state: CalculatorRosterState }) {
       {state.status === "signed-out" && (
         <Alert variant="info" title="Sign in to see your leagues">
           <p>Your session has ended.</p>
-          <ButtonLink href="/login?next=%2Fcalculator" variant="secondary" size="sm" className="mt-3">Log in again</ButtonLink>
+          <ButtonLink href={`/login?next=${encodeURIComponent(loginNext)}`} variant="secondary" size="sm" className="mt-3">Log in again</ButtonLink>
         </Alert>
       )}
       {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues yet. Join or create a league from your dashboard.</p>}
@@ -71,8 +73,12 @@ function LeagueSelector({ state, onLeagueChange, opponent = false }: {
   );
 }
 
-export function MyTeamPicker({ state, onLeagueChange, onRefresh }: SourcePickerProps & {
+export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, heading = "My team", leagueHint = "Choose your team above to load its league roster." }: SourcePickerProps & {
   onLeagueChange: (id: string) => void;
+  /** The section heading; defaults to the calculator's. */
+  heading?: string;
+  /** The fact shown while no league team is chosen; defaults to the calculator's wording. */
+  leagueHint?: string;
 }) {
   const id = useId();
   const ready = state.status === "ready";
@@ -80,19 +86,21 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh }: SourcePickerP
   return (
     <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">My team</h2>
+        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading}</h2>
         <RefreshTeamsButton state={state} onRefresh={onRefresh} />
       </div>
       <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">Choose your team above to load its league roster.</p>}
-      <SourceFeedback state={state} />
+      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{leagueHint}</p>}
+      <SourceFeedback state={state} loginNext={loginNext} />
     </section>
   );
 }
 
-export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange }: SourcePickerProps & {
+export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext, ownTeamHint = "Choose your team in the My team tab to see opponents from that league." }: SourcePickerProps & {
   onOpponentChange: (id: string) => void;
   onLeagueChange?: (id: string) => void;
+  /** The fact shown while your own team is not chosen; defaults to the calculator's tab wording. */
+  ownTeamHint?: string;
 }) {
   const id = useId();
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
@@ -123,9 +131,9 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
           })}
         </Select>
       </Field>
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{onLeagueChange ? "Choose a league above to see its opponents." : "Choose your team in the My team tab to see opponents from that league."}</p>}
+      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{onLeagueChange ? "Choose a league above to see its opponents." : ownTeamHint}</p>}
       {teamsReady && !opponents.length && <p role="status" className="text-sm text-muted">There are no other members in this league yet.</p>}
-      <SourceFeedback state={state} />
+      <SourceFeedback state={state} loginNext={loginNext} />
     </section>
   );
 }

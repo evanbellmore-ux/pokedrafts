@@ -65,6 +65,7 @@ describe("route map (docs section 3)", () => {
         "/leagues/new",
         "/login",
         "/signup",
+        "/training",
         "/update-password",
       ].sort()
     );

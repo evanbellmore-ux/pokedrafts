@@ -1,0 +1,62 @@
+/* The board: two cards per side at every width (calculator .doublesSide); your controls under your cards, stacked below
+   40rem and one column each from 40rem (UI design 8.4). */
+.side {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.side > * {
+  min-width: 0;
+}
+
+.side > * + * {
+  border-inline-start: 1px solid var(--color-line);
+}
+
+.own {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "left right"
+    "controlsLeft controlsLeft"
+    "controlsRight controlsRight";
+  border-top: 1px solid var(--color-line);
+}
+
+.own > * {
+  min-width: 0;
+}
+
+.left { grid-area: left; }
+
+.right {
+  grid-area: right;
+  border-inline-start: 1px solid var(--color-line);
+}
+
+.controlsLeft {
+  grid-area: controlsLeft;
+  border-top: 1px solid var(--color-line);
+}
+
+.controlsRight {
+  grid-area: controlsRight;
+  border-top: 1px solid var(--color-line);
+}
+
+.controlsLeft:empty,
+.controlsRight:empty {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .own {
+    grid-template-areas:
+      "left right"
+      "controlsLeft controlsRight";
+  }
+
+  .controlsRight {
+    border-inline-start: 1px solid var(--color-line);
+  }
+}

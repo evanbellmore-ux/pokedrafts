@@ -13,6 +13,7 @@ import {
 import {
   allyOf, DOUBLES_SLOTS, doublesNames, foesOf, SHOWDOWN_POSITION, slotSide, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
   type DoublesSlotId, type DoublesStart, type DoublesStartRow, type DoublesStep, type DoublesTurnInput, type DoublesTurnResult,
+  type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult,
 } from "./doubles-types";
 import {
   cloneWorld, condition, entryCount, hpIn, join, mapHP, marginal, mergeWorlds, pointFactor, RADIX, splitFactor,
@@ -2543,3 +2544,115 @@ export function calculateDoublesTurn(input: DoublesTurnInput): DoublesTurnResult
   }
 }
 
+
+// ------------------------------------------------------------------------------------------------------------------
+// The turn as finished worlds (Training AI, SPEC E2): one "all" walk; no lowest and highest walks, no steps, no start rows
+// ------------------------------------------------------------------------------------------------------------------
+
+/** The chance, in one world, that every present Pokémon of `side` is at 0 HP: the factors are independent, so the product over them. */
+function sideFaintedChance(world: World, side: DoublesSideId): number {
+  let chance = 1;
+  for (const factor of world.factors) {
+    const slots = factor.slots.filter((slot) => slotSide(slot) === side);
+    if (!slots.length) continue;
+    let mass = 0, total = 0;
+    for (const [key, entry] of factor.table) {
+      total += entry;
+      if (slots.every((slot) => hpIn(factor, key, slot) <= 0)) mass += entry;
+    }
+    chance *= total > 0 ? mass / total : 0;
+  }
+  return chance;
+}
+
+/** One finished world as an outcome (its mass not yet normalised). */
+function outcomeOf(world: World): DoublesOutcome {
+  const mons: DoublesOutcome["mons"] = {};
+  for (const slot of DOUBLES_SLOTS) {
+    const mon = world.mons[slot];
+    if (!mon) continue;
+    const dist = marginal(world, slot);
+    let total = 0;
+    for (const mass of dist.values()) total += mass;
+    const hp = [...dist].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: total > 0 ? mass / total : 0 }));
+    const entry: DoublesOutcomeMon = { hp, build: mon.build, protected: mon.protect !== null, moved: mon.moved };
+    mons[slot] = entry;
+  }
+  const side = (state: SideState) => ({ reflect: state.reflect, lightScreen: state.lightScreen, auroraVeil: state.auroraVeil, tailwind: state.tailwind, faintedThisTurn: state.faintedThisTurn });
+  return {
+    chance: world.mass, mons, sides: { own: side(world.sides.own), opponent: side(world.sides.opponent) }, field: { ...world.field },
+    allFainted: { own: sideFaintedChance(world, "own"), opponent: sideFaintedChance(world, "opponent") },
+  };
+}
+
+/**
+ * Outcomes whose builds, protect and moved flags, sides and field are equal, merged: the chances add, and the HP
+ * distributions and allFainted become their chance-weighted mixtures (exact for the marginals and for allFainted).
+ */
+function mergeOutcomes(outcomes: DoublesOutcome[]): DoublesOutcome[] {
+  const byKey = new Map<string, { outcome: DoublesOutcome; hp: Map<DoublesSlotId, Map<number, number>>; fainted: Record<DoublesSideId, number> }>();
+  for (const outcome of outcomes) {
+    const key = JSON.stringify([
+      DOUBLES_SLOTS.map((slot) => { const mon = outcome.mons[slot]; return mon ? [mon.build, mon.protected, mon.moved] : null; }), outcome.sides, outcome.field,
+    ]);
+    let entry = byKey.get(key);
+    if (!entry) byKey.set(key, entry = { outcome: { ...outcome, chance: 0 }, hp: new Map(), fainted: { own: 0, opponent: 0 } });
+    entry.outcome.chance += outcome.chance;
+    for (const slot of DOUBLES_SLOTS) {
+      const mon = outcome.mons[slot];
+      if (!mon) continue;
+      let dist = entry.hp.get(slot);
+      if (!dist) entry.hp.set(slot, dist = new Map());
+      for (const { hp, chance } of mon.hp) dist.set(hp, (dist.get(hp) ?? 0) + chance * outcome.chance);
+    }
+    entry.fainted.own += outcome.allFainted.own * outcome.chance;
+    entry.fainted.opponent += outcome.allFainted.opponent * outcome.chance;
+  }
+  return [...byKey.values()].map(({ outcome, hp, fainted }) => {
+    const share = (mass: number) => outcome.chance > 0 ? mass / outcome.chance : 0;
+    const mons: DoublesOutcome["mons"] = {};
+    for (const slot of DOUBLES_SLOTS) {
+      const mon = outcome.mons[slot];
+      const dist = hp.get(slot);
+      if (!mon || !dist) continue;
+      mons[slot] = { ...mon, hp: [...dist].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: share(mass) })) };
+    }
+    return { ...outcome, mons, allFainted: { own: share(fainted.own), opponent: share(fainted.opponent) } };
+  });
+}
+
+/**
+ * calculateDoublesTurn's validate → settle → guards → one "all" walk, returned as finished worlds (no low/high walks, no
+ * steps, no start rows). Its status is calculateDoublesTurn's on the same input, except that a turn whose lowest or highest
+ * walk alone runs over the calculation budget (BUDGET.calculations, shared by the three walks there) is ready here. The
+ * outcomes' HP mixture of each slot is calculateDoublesTurn's HP distribution of that slot.
+ */
+export function calculateDoublesOutcomes(input: DoublesTurnInput): DoublesOutcomesResult {
+  const invalid = validate(input);
+  if (invalid?.status === "issues") return { status: "issues", issues: invalid.issues };
+  const settle = settleOf(input);
+  if (settle.reason) return { status: "not-estimated", reason: settle.reason };
+  const start = Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
+    const entry = settle.slots[slot];
+    if (!entry) return [slot, null];
+    const hp = turnHP(entry.folded, input.runtime);
+    return [slot, { hp: hp.hp, maximum: hp.maxHP, ...(entry.items.settledHP ? { settled: entry.items.settledHP } : {}) }];
+  })) as DoublesStart;
+  const usesReference = USES_REFERENCE.on;
+  if (DOUBLES_REFERENCE.on) USES_REFERENCE.on = true;
+  try {
+    const memo: Memo = { searches: new Map(), priorities: new Map(), speeds: new Map(), moves: new Map(), rows: new Map(), calculations: 0 };
+    const all = createContext(input, settle, memo, "all", null);
+    presenceGuards(all, startWorld(all, settle));
+    const finished = walk(all, settle);
+    let total = 0;
+    for (const world of finished) total += world.mass;
+    const outcomes = mergeOutcomes(finished.map(outcomeOf)).map((outcome) => ({ ...outcome, chance: total > 0 ? outcome.chance / total : 0 }));
+    return { status: "ready", start, outcomes };
+  } catch (error) {
+    if (error instanceof NotEstimated) return { status: "not-estimated", reason: error.reason };
+    throw error;
+  } finally {
+    USES_REFERENCE.on = usesReference;
+  }
+}

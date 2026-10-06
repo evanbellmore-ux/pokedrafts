@@ -10,8 +10,9 @@ vi.mock("react", async (importOriginal) => ({
   useRef: vi.fn(),
 }));
 vi.mock("next/link", () => ({ default: "a" }));
+const navigation = vi.hoisted(() => ({ pathname: "/calculator" }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/calculator",
+  usePathname: () => navigation.pathname,
   useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
 }));
 vi.mock("@/app/components/ThemeToggle", () => ({ default: () => null }));
@@ -25,6 +26,7 @@ let resize: () => void;
 
 beforeEach(() => {
   vi.clearAllMocks();
+  navigation.pathname = "/calculator";
   header.getBoundingClientRect.mockReturnValue({ height: 93 });
   vi.mocked(useRef).mockReturnValue({ current: header });
   vi.stubGlobal("document", { documentElement: { style: { setProperty, removeProperty } } });
@@ -44,6 +46,17 @@ describe("wrapping app navigation", () => {
     expect(html).toContain('aria-label="Primary"');
     expect(html).toContain("flex w-full max-w-full flex-wrap");
     expect(html).toContain("Skip to content");
+  });
+
+  it("links Training after Calculator and marks it active on /training", () => {
+    const html = renderToStaticMarkup(createElement(AppNav));
+    expect(html).toMatch(/<a href="\/training" aria-label="Training" title="Training"/);
+    expect(html.indexOf('href="/calculator"')).toBeLessThan(html.indexOf('href="/training"'));
+    expect(html).toContain("lucide-swords");
+    navigation.pathname = "/training";
+    const active = renderToStaticMarkup(createElement(AppNav));
+    expect(active).toMatch(/<a href="\/training" aria-current="page" aria-label="Training"/);
+    expect(active).not.toMatch(/<a href="\/calculator" aria-current="page"/);
   });
 
   it("measures the header, follows resizes and removes its observer on unmount", () => {

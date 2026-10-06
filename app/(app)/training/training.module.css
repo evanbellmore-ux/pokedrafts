@@ -1,0 +1,43 @@
+/* Training page layout (SPEC 12.6; UI design 8.4). Board sides are two columns at every width (board.module.css). */
+.root {
+  min-width: 0;
+}
+
+.battle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.main {
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.logColumn {
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .battle {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+  }
+
+  .lastTurn { display: none; }
+
+  .logColumn {
+    position: sticky;
+    top: calc(var(--app-nav-height, 0px) + 1rem);
+    max-height: calc(100dvh - var(--app-nav-height, 0px) - 2rem);
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 80rem) {
+  :global(#main-content):has(.root) {
+    max-width: 100rem;
+  }
+}
