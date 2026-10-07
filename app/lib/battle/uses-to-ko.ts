@@ -66,7 +66,7 @@ const RUN_BUDGET = 24;
 const HP_POWER_RUN_BUDGET = 600;
 /** The rerun budget of one doubles-turn search (createTurnSearch), shared by its turn's steps. */
 const TURN_RUN_BUDGET = 48;
-/** How far one roll path is walked past the limit to find `needed` before its state settles. */
+/** How far `needed` is counted past the limit (neededUses): the exact search's uses, and a roll path's before its state settles. */
 const PATH_CAP = 128;
 
 /**
@@ -1044,13 +1044,6 @@ export class UsesSearch {
     if (cap && limit === cap.uses && guaranteed === null) return { kind: "not-estimated", reason: cap.reason };
     // Steel Beam's family faints the attacker on its last use by design: that is the limit, not a faint first.
     const faintsFirst = guaranteed === null && fell !== null && !(limitReason === "self-cost" && fell >= limit);
-    let needed: number | undefined;
-    if (guaranteed === null) {
-      // The lowest roll path already walked gives it when it knocks out within the uses it walked.
-      // On from where the lowest roll path walked to the limit stopped, when it did.
-      const walked = closed ? closed.needed : lowest && lowest.uses !== null ? lowest.uses : this.path("lowest", PATH_CAP, true, lowest?.resume).uses;
-      if (walked !== null && walked > limit) needed = walked;
-    }
     // Explosion's family once Dynamax ends faints the user on the use that knocks out.
     const lastFaints = cap?.faints && limit === cap.uses ? cap.uses : undefined;
     const lowFaint = lowest?.faints ?? (guaranteed === lastFaints ? lastFaints : undefined), highFaint = highest?.faints ?? (fewest === lastFaints ? lastFaints : undefined);
@@ -1068,16 +1061,54 @@ export class UsesSearch {
     const timed = this.timedNote();
     // Focus Sash or Sturdy stopped a KO only when no sequence is out within the first use (its end of turn can finish the 1 HP left).
     const survival = this.survivalSaved && (fewest === null || fewest >= 2) && (input.row.survival === "Focus Sash" || input.row.survival === "Sturdy") ? input.row.survival : undefined;
+    // In the closed form the first use changes nothing an end of turn reads, so its sentences are the first state's.
+    const carriedAll = [...this.sources, ...carried, ...this.berryTexts(losesHP), ...(closed ? this.sharedFirst!.texts ??= texts(this.residualsAt(this.initial)) : this.residualTexts())];
+    // Last, as it can search on past the limit: the count with the limit lifted, when the limit alone stops the guarantee.
+    const needed = guaranteed === null && fell === null && limitReason !== "self-cost" ? this.neededUses(limit, losesHP, plain, closed, counted, lowest) : undefined;
     return {
       kind: "uses", guaranteed, fewest, ...(fasterChance !== undefined ? { fasterChance } : {}),
       ...(chance !== undefined ? { chance } : {}), ...(faintsFirst ? { faintsFirst: true as const } : {}), ...(endOfTurn ? { endOfTurn: true as const } : {}),
       limit, limitReason, ...(needed !== undefined ? { needed } : {}),
-      // In the closed form the first use changes nothing an end of turn reads, so its sentences are the first state's.
-      carried: [...this.sources, ...carried, ...this.berryTexts(losesHP), ...(closed ? this.sharedFirst!.texts ??= texts(this.residualsAt(this.initial)) : this.residualTexts())],
+      carried: carriedAll,
       notes: [...(timed ? [timed] : []), ...notes],
       ...(survival ? { survival } : {}),
       ...(Object.keys(faints).length ? { attackerFaints: faints } : {}), ...(turnsText ? { turns: turnsText } : {}),
     };
+  }
+
+  /**
+   * `needed` (types.ts UsesToKO): the guaranteed count with the uses' limit lifted (the move's PP, Pressure's half, the
+   * calculation cap), defined as `guaranteed` is: the first use after which no roll sequence is left, none having fainted
+   * the attacker first. Called only when the limit alone stops the guarantee (no sequence faints the attacker within it);
+   * Steel Beam's family has a limit its own cost sets, which nothing lifts. The closed form counts it by arithmetic (an
+   * attacker that loses HP must stand until then on every sequence). The lowest roll path is the worst sequence where
+   * every sequence meets the same states but for the target's HP, more damage leaves no more HP and the attacker's HP never
+   * changes (monotone, or the budget's fallback where the paths bound every sequence): it walks on to PATH_CAP uses.
+   * Otherwise (Crush Grip, Wring Out and Hard Press, whose power falls with the target's HP; an HP line a Berry, Anger
+   * Shell or a form acts at; an attacker that can faint) the exact search runs on past the limit to PATH_CAP uses within
+   * its budget. Undefined where none of these knows it: the row then says only that more uses than the limit are needed.
+   * The search's state the first use's outcome reads afterwards (firstUse) is put back.
+   */
+  private neededUses(limit: number, losesHP: boolean, plain: Terms | null, closed: (Count & { needed: number | null }) | null, counted: Count, lowest: Walked | null): number | undefined {
+    const saved = { follow: this.follow, starts: [...this.starts], states: this.states, reruns: this.reruns, exceeded: this.exceeded, stop: this.stop, diverged: this.diverged, turnKO: this.turnKO };
+    const beyond = (uses: number | null | undefined) => uses !== null && uses !== undefined && uses > limit ? uses : undefined;
+    try {
+      if (closed && plain) {
+        if (!losesHP) return beyond(closed.needed);
+        if (closed.needed === null || closed.needed <= limit) return undefined;
+        const lifted = this.closedForm(plain, closed.needed, true, true);
+        if (lifted) return lifted.fell === null ? beyond(lifted.guaranteed) : undefined;
+      } else if (!losesHP && !this.hpPower && (counted.fallback || this.monotone(true))) {
+        // On from where the lowest roll path walked to the limit stopped, when it did.
+        return beyond(lowest && lowest.uses !== null ? lowest.uses : this.path("lowest", PATH_CAP, true, lowest?.resume).uses);
+      }
+      if (counted.fallback) return undefined;
+      const lifted = this.exactCount(PATH_CAP, losesHP, undefined, true);
+      return lifted.fallback || lifted.fell !== null ? undefined : beyond(lifted.guaranteed);
+    } finally {
+      this.follow = saved.follow; this.starts.length = 0; this.starts.push(...saved.starts); this.states = saved.states; this.reruns = saved.reruns;
+      this.exceeded = saved.exceeded; this.stop = saved.stop; this.diverged = saved.diverged; this.turnKO = saved.turnKO;
+    }
   }
 
   /**
@@ -1839,9 +1870,10 @@ export class UsesSearch {
    * lowest-roll count however far it goes. An attacker that loses HP must stand until the target is out:
    * when it falls the same way on every sequence the uses stop on the use it faints (by that use's hits
    * alone, HP - (n - 1)c, when it faints before its end of turn), and otherwise a bound over every sequence
-   * must show it stands. Null: neither holds, so the exact search follows its HP.
+   * must show it stands. Null: neither holds, so the exact search follows its HP. `countOnly`: the counts alone
+   * (no chances, no end-of-turn flag), for `needed` (neededUses).
    */
-  private closedForm(terms: Terms, limit: number, losesHP: boolean): Count & { needed: number | null } | null {
+  private closedForm(terms: Terms, limit: number, losesHP: boolean, countOnly = false): Count & { needed: number | null } | null {
     const { initial, first } = this;
     const { heal, chip, lowest, highest } = terms;
     const hp = initial.def.hp;
@@ -1871,6 +1903,7 @@ export class UsesSearch {
       return count !== null && (count < last || (count === last && damage * count >= reach(count))) ? count : null;
     };
     const guaranteed = within(lowest), fewest = within(highest);
+    if (countOnly) return { guaranteed, fewest, ko: [], chance: 0, fell: guaranteed === null ? fell : null, needed, fallback: false };
     const faster = guaranteed !== null ? guaranteed - 1 : 0;
     const ko: number[] = [];
     let chance = guaranteed !== null ? 1 : 0;
@@ -1888,20 +1921,20 @@ export class UsesSearch {
    * lowest roll path, when walked, can show first that the bound fails: no sequence needs fewer uses than
    * it, and the states it reached are some of the count's.
    */
-  exactCount(limit: number, losesHP = this.attackerLosesHP(), lowest?: Walked | null): Count {
+  exactCount(limit: number, losesHP = this.attackerLosesHP(), lowest?: Walked | null, untilFall = false): Count {
     if (losesHP && !this.follow && USES_REFERENCE.on) this.follow = true;
     if (losesHP && !this.follow && lowest && !lowest.stop) {
       const beyond = lowest.uses === null || lowest.uses > limit;
       if (!this.attackerStands(beyond ? limit : lowest.uses!, beyond)) this.follow = true;
     }
-    if (!losesHP || this.follow) return this.count(limit);
-    const counted = this.count(limit);
+    if (!losesHP || this.follow) return this.count(limit, untilFall);
+    const counted = this.count(limit, untilFall);
     if (counted.fallback || this.attackerStands(counted.guaranteed ?? limit, counted.guaranteed === null)) return counted;
     // The states with the attacker's HP are new ones; the calculations carry over.
     this.follow = true;
     this.starts[0] = undefined;
     this.states = 0;
-    return this.count(limit);
+    return this.count(limit, untilFall);
   }
 
   /**
@@ -2133,9 +2166,10 @@ export class UsesSearch {
   /**
    * The exact search up to `limit` uses. A state in which the attacker has fainted with the target still in
    * is dropped (that sequence never knocks it out, and nothing is guaranteed); guaranteed is the first use
-   * after which no state is left, if none was dropped, and fewest the first with a KO.
+   * after which no state is left, if none was dropped, and fewest the first with a KO. `untilFall` (neededUses): it stops at
+   * the first use a sequence faints the attacker on with the target in, as nothing is guaranteed from then on.
    */
-  count(limit: number): Count {
+  count(limit: number, untilFall = false): Count {
     const ko: number[] = [];
     let guaranteed: number | null = null, fewest: number | null = null, out = 0, seen = false, fell: number | null = null, use = 0;
     const knock: Knock = (mass) => { out += mass; seen = true; };
@@ -2149,6 +2183,7 @@ export class UsesSearch {
       if (groups.length > 1) this.diverged = true;
       ko[use - 1] = Math.min(1, out);
       if (seen) fewest ??= use;
+      if (untilFall && fell !== null) { release(groups); return { guaranteed: null, fewest, ko, chance: Math.min(1, out), fell, fallback: false }; }
       if (!groups.length) {
         if (fell === null) { guaranteed = use; ko[use - 1] = 1; }
         break;

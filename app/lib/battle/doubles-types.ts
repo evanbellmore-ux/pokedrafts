@@ -163,7 +163,12 @@ export type DoublesStep = {
 };
 
 /** A move's damage into one Pokémon at the start of the turn, before any move (calculateDoublesMoves). */
-export type DoublesStartRow = { slot: DoublesSlotId; target: DoublesSlotId; row: MoveDamageResult };
+/**
+ * A damaging move's damage into a Pokémon it reaches at the start of the turn. `fact`: where the move goes then, when
+ * that is not its chosen target ("Lightning Rod: Raichu takes Thunderbolt."), or the Pokémon that takes it once a move
+ * of this turn has been used ("Follow Me: Clefairy takes Dragon Claw if Follow Me comes first.").
+ */
+export type DoublesStartRow = { slot: DoublesSlotId; target: DoublesSlotId; row: MoveDamageResult; fact?: string };
 export type DoublesIssues = {
   pokemon: Partial<Record<DoublesSlotId, BuildIssue[]>>;
   field: BuildIssue[];

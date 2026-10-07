@@ -133,6 +133,18 @@ export const CHARGE_TURN_MOVES: ReadonlySet<string> = new Set(["solarbeam", "sol
 export const SEMI_INVULNERABLE_MOVES: ReadonlySet<string> = new Set(["fly", "dig", "dive", "bounce", "phantomforce", "shadowforce"]);
 /** Moves that switch their user out (data/moves.ts selfSwitch). */
 export const SWITCH_MOVES: ReadonlySet<string> = new Set(["uturn", "voltswitch", "flipturn", "partingshot", "teleport", "batonpass", "chillyreception", "shedtail"]);
+/**
+ * Status moves that, with Neutralizing Gas on the field, can end it or change what it suppresses (doubles-turn.ts
+ * statusMove): they change or suppress an ability (Gastro Acid, Worry Seed, Simple Beam, Entrainment, Skill Swap, Role
+ * Play, Doodle, Transform), drag a Pokémon out (Roar, Whirlwind), or move, remove or switch off an Ability Shield (Trick,
+ * Switcheroo, Bestow, Corrosive Gas, Embargo, Magic Room).
+ */
+export const GAS_CHANGING_MOVES: ReadonlySet<string> = new Set([
+  "gastroacid", "worryseed", "simplebeam", "entrainment", "skillswap", "roleplay", "doodle", "transform", "roar", "whirlwind",
+  "trick", "switcheroo", "bestow", "corrosivegas", "embargo", "magicroom",
+]);
+/** Abilities that replace an attacker's on contact (data/abilities.ts mummy, lingeringaroma, wanderingspirit onDamagingHit). */
+export const ABILITY_REPLACERS: ReadonlySet<string> = new Set(["mummy", "lingeringaroma", "wanderingspirit"]);
 /** Dance moves (data/moves.ts flags.dance), which a Dancer copies (sim/battle-actions.ts runMove). */
 export const DANCE_MOVES: ReadonlySet<string> = new Set([
   "aquastep", "clangoroussoul", "dragondance", "featherdance", "fierydance", "lunardance", "petaldance", "quiverdance", "revelationdance", "swordsdance",
@@ -203,11 +215,15 @@ export const MODELLED_THIRD_PARTY: ReadonlySet<string> = new Set([
   "damp",
   // Flower Gift on a partner (doubles-turn.ts flowerGift: onAllyModifyAtk, onAllyModifySpD).
   "flowergift",
+  // A partner's power boost (doubles-turn.ts conditionsFor, calculate.ts partnerPowerBoosts: onAllyBasePower).
+  "battery", "powerspot", "steelyspirit",
+  // Neutralizing Gas from the turn's start (calculate.ts settleDoublesStart's DoublesGas); its end is guarded (doubles-turn.ts gasEnds).
+  "neutralizinggas",
 ]);
 
 /** Third-party handlers guarded wherever the Pokémon is in the turn (presence): `{Ability or item} is not modelled in 2v2.` and the SPEC's own texts. */
 export const PRESENCE_THIRD_PARTY: ReadonlySet<string> = new Set([
-  "battery", "powerspot", "steelyspirit", "poisonpuppeteer", "neutralizinggas", "imposter",
+  "poisonpuppeteer", "imposter",
 ]);
 
 /** Abilities a knockout reacts with that the turn does not follow (onSourceAfterFaint, onAllyFaint): guarded when one happens with a later action. */
@@ -242,7 +258,6 @@ export const REASONS = {
   allyEffect: (effect: string) => `${effect} against an ally's move is not modelled.`,
   spreadHeal: (move: string) => `${move} heals from more than one target: not modelled.`,
   spreadEffect: (move: string, name: string) => `${move}'s effect on ${name} from more than one target is not modelled.`,
-  partner: (ability: string) => `${ability} on a partner is not modelled.`,
   switchesOut: (name: string) => `${name} switches out: the replacement is not known.`,
   copiesRise: (name: string) => `${name} copying a stat rise is not modelled in 2v2.`,
   faceMultiHit: (ability: string) => `${ability} against a multi-hit move is not modelled in 2v2.`,
@@ -253,4 +268,7 @@ export const REASONS = {
   typeChange: (by: string, name: string) => `${by} changes ${name}'s type: later moves are not modelled.`,
   takesDouble: (move: string, name: string) => `${move} doubles the damage ${name} takes: later moves are not modelled.`,
   pledges: (move: string, other: string) => `${move} with ${other} is not modelled in 2v2.`,
+  gasEnds: "Neutralizing Gas ending is not modelled in 2v2.",
+  withGas: (name: string) => `${name} with Neutralizing Gas is not modelled in 2v2.`,
+  gasShield: "An Ability Shield change under Neutralizing Gas is not modelled in 2v2.",
 } as const;

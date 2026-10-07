@@ -191,10 +191,16 @@ describe("Serene Grace in the 2v2 turn (oracle cases SA01-SA04, SA06-SA08)", () 
     expect(flinch.hp["own-left"]).toMatchObject({ start: 160, low: 105, high: 94, average: 99.875 });
   });
 
-  it("leaves a foe's Neutralizing Gas not estimated, as before", async () => {
-    // The 2v2 does not model Neutralizing Gas (Showdown: no doubled chance; the 1v1 cross-check covers it).
+  it("doubles nothing under a foe's Neutralizing Gas", async () => {
+    // ngas-pp NG30 (Showdown): the gas suppresses Serene Grace from the turn's start, so Rock Smash's 50% drop does not
+    // happen: Hammer Arm 212-252 into Snorlax at 0 Defense, out at 0.73828125 (SA02's numbers).
     const gas = await turn(SW, { "own-left": smash(), "own-right": conkeldurr("opponent-left"), "opponent-left": foeSnorlax, "opponent-right": { id: "weezinggalar", ability: "neutralizinggas" } });
-    expect(gas).toMatchObject({ status: "not-estimated", reason: "Neutralizing Gas is not modelled in 2v2." });
+    expect(gas.status).toBe("ready");
+    if (gas.status !== "ready") return;
+    expect(gas.hp["opponent-left"]).toMatchObject({ start: 235, low: 11, high: 0, min: 0, max: 11 });
+    expect(gas.hp["opponent-left"]!.koChance).toBeCloseTo(0.73828125, 12);
+    expect(gas.hp["opponent-left"]!.average).toBeCloseTo(1.32421875, 12);
+    expect(gas.steps.find((step) => step.slot === "own-right")!.hits[0]).toMatchObject({ min: 212, max: 252 });
   });
 });
 

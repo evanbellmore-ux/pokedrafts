@@ -73,7 +73,7 @@ function describe(value: UsesToKO, ohko: number | null): [string, string[]] {
       if (value.guaranteed === null) {
         const [label, limit] = limitText(value);
         if (value.faintsFirst) {
-          // The chance comes first, then the faint lines that say why nothing is guaranteed, the earlier faint first. The limit is named only when it stops the lowest rolls too.
+          // The chance comes first, then the faint lines that say why nothing is guaranteed, the earlier faint first. The limit is named only with a count past it (`needed`, which the calculation gives only when no sequence faints the user first).
           const odds = value.chance !== undefined ? [`${partial(value.chance)} chance before the user faints`] : possible;
           // No roll sequence knocks out before the user faints: there is no KO to guarantee.
           return [value.fewest === null ? "No KO before user faints" : "No guaranteed KO",

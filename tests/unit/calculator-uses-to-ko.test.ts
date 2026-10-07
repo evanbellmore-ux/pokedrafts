@@ -352,13 +352,16 @@ describe("PP, Pressure and the attacker's own HP", () => {
   });
   it("Steel Beam costs half the user's HP: 2 uses at most", () => {
     expect(uses("scarlet_violet", "steelbeam", build("scarlet_violet", "magearna"), build("scarlet_violet", "blissey")))
-      .toMatchObject({ kind: "uses", fewest: null, guaranteed: null, limit: 2, limitReason: "self-cost", needed: 5, attackerFaints: { lowest: 2, highest: 2 } });
+      .toMatchObject({ kind: "uses", fewest: null, guaranteed: null, limit: 2, limitReason: "self-cost", attackerFaints: { lowest: 2, highest: 2 } });
+    // No count past the limit: the cost that sets it faints the user on every sequence (ngas-pp N2: `needed` is a guarantee).
+    expect(counted(uses("scarlet_violet", "steelbeam", build("scarlet_violet", "magearna"), build("scarlet_violet", "blissey"))).needed).toBeUndefined();
   });
   it("Steel Beam keeps its limit: a chance within its 2 uses, and its last use's cost is not a faint first", () => {
     // Showdown at 170 HP: 94, 18 with the lowest rolls (Magearna faints after use 2) and 79, 0 with the highest.
     const value = counted(uses("scarlet_violet", "steelbeam", build("scarlet_violet", "magearna"), build("scarlet_violet", "blissey", { hp: 170 })));
-    expect(value).toMatchObject({ fewest: 2, guaranteed: null, chance: 0.34765625, limit: 2, limitReason: "self-cost", needed: 3, attackerFaints: { lowest: 2, highest: 2 } });
+    expect(value).toMatchObject({ fewest: 2, guaranteed: null, chance: 0.34765625, limit: 2, limitReason: "self-cost", attackerFaints: { lowest: 2, highest: 2 } });
     expect(value.faintsFirst).toBeUndefined();
+    expect(value.needed).toBeUndefined();
     // From 100 HP the first use leaves it 22, and the second knocks out before its cost faints it.
     expect(uses("scarlet_violet", "steelbeam", build("scarlet_violet", "magearna", { hp: 100 }), build("scarlet_violet", "blissey", { hp: 150 })))
       .toMatchObject({ kind: "uses", fewest: 2, guaranteed: 2, limitReason: "self-cost" });
