@@ -326,8 +326,9 @@ function parseMember(lines: SourceLine[], index: number, format: ImportFormat, r
   }
   const resolvedId = header.resolution.status === "resolved" ? header.resolution.speciesId : null;
   // Zacian or Zamazenta holding its Rusted item battles as its Crowned form, whose Iron Head becomes Behemoth Blade /
-  // Bash (pinned Showdown onBattleStart), and Arceus holding a Plate (or a type's Z-Crystal) and Silvally holding a
-  // Memory as that type's form (mechanics.ts heldItemForm), so the import takes that form.
+  // Bash (pinned Showdown onBattleStart), and a base species holding an item one of its forms requires (Arceus's Plate,
+  // Giratina's Griseous Orb, Ogerpon's mask...) as that form, the item's forcedForme (mechanics.ts heldItemForm), so the
+  // import takes that form and checks the pasted ability against it (Giratina-Origin has only Levitate).
   const heldForm = resolvedId && item !== null ? heldItemForm(resolvedId, catalogId(item), runtime) : null;
   const crownedBy = heldForm && CROWNED_FORMS[resolvedId!]?.form === heldForm ? CROWNED_FORMS[resolvedId!] : null;
   const speciesId = heldForm ?? resolvedId;

@@ -39,8 +39,12 @@ import { NATURES } from "./model";
  *   damage inputs equal an earlier one's reuses its calculation. A new one reruns only the engine call when
  *   nothing else in calculateMove can differ, or the whole calculateMove otherwise. States are interned and
  *   their transitions memoised, so a use from a state already met costs only the HP arithmetic.
+ * - Crush Grip, Wring Out and Hard Press read the target's HP only through their power, so their states share one
+ *   calculation per power (hpCode), within a budget of their own.
  * - Past a budget of states and calculations the count falls back to the lowest and the highest roll on
- *   every use, with a note.
+ *   every use, with a note, where those two bound every sequence: no later use that cannot be calculated, and no
+ *   roll that changes what a later use reads (an HP line a Berry, Anger Shell or a form acts at, states apart after
+ *   a use); otherwise, and for the moves whose power reads the HP, the count is not estimated.
  * - The first use's outcome (types.ts AfterUse, UsesSearch.firstUse) is the same walk of one use's hits from the
  *   first state, with no end of turn: the target's HP over every sequence, or nothing where it is not exact.
  */
@@ -55,6 +59,11 @@ export const USES_REFERENCE = { on: false };
 /** Target-HP states (summed over hits and uses) and damage calculations beyond the row's own that one exact count may use. */
 const STATE_BUDGET = 60_000;
 const RUN_BUDGET = 24;
+/**
+ * The reruns for Crush Grip, Wring Out and Hard Press, which need one per power (up to 120) for each state they reach: five
+ * states' worth (Slow Start's turns, a Berry eaten or not). 2,074 rows of a seeded sweep used 67 at most.
+ */
+const HP_POWER_RUN_BUDGET = 600;
 /** The rerun budget of one doubles-turn search (createTurnSearch), shared by its turn's steps. */
 const TURN_RUN_BUDGET = 48;
 /** How far one roll path is walked past the limit to find `needed` before its state settles. */
@@ -160,9 +169,10 @@ type Mode = "all" | "lowest" | "highest";
 type Count = { guaranteed: number | null; fewest: number | null; ko: number[]; chance: number; fell: number | null; fallback: boolean; endOfTurn?: boolean };
 /**
  * One roll path: the uses to KO (null past its cap), the use after which the attacker faints, the use it
- * faints on with the target still in, why it stopped, and whether an end of turn knocked the target out.
+ * faints on with the target still in, why it stopped, and whether an end of turn knocked the target out. `keys`: the
+ * state after each use walked from the start (restIndex, with the attacker's HP where the search follows it).
  */
-type Walked = { uses: number | null; faints?: number; fallsFirst?: number; stop?: string; endOfTurn?: boolean; resume?: Resume };
+type Walked = { uses: number | null; faints?: number; fallsFirst?: number; stop?: string; endOfTurn?: boolean; resume?: Resume; keys?: string[] };
 /** Where a roll path that reached its cap stands, to walk on from (path's `from`). */
 type Resume = { groups: Group[]; use: number; previous: Node | null; faints?: number; fallsFirst?: number };
 /**
@@ -830,6 +840,8 @@ export class UsesSearch {
   private states = 0;
   /** The exact search ran out of budget, or a reachable state could not be calculated. */
   private exceeded = false;
+  /** After some use the exact search held more than one state (a roll changed what a later use reads). */
+  private diverged = false;
   /** Why a roll path stopped. */
   private stop: string | null = null;
   /** The field states a use or an end of turn made, by their JSON (the field as set is ""). */
@@ -866,11 +878,14 @@ export class UsesSearch {
    * use is the Z-Move), the row's own move otherwise, a Max Move's row's once Dynamax ends. Per use: useMoveId.
    */
   private readonly ownMove: string;
+  /** Crush Grip's, Wring Out's or Hard Press's top power (HP_POWER), whose calculations the search shares by power; 0 for any other row. */
+  private readonly hpPower: number;
   constructor(m: UsesMatchup, input: UsesRow, result: Result) {
     this.m = m;
     this.input = input;
     this.result = result;
     this.ownMove = ownMoveId(input.move.id, { isZ: result.move.isZ });
+    this.hpPower = HP_POWER[input.move.id] ?? 0;
     this.turnMode = m.turn;
     this.firstTurn = firstTurnOnly(m.attacker) || firstTurnOnly(m.defender);
     const { attacker, defender } = m;
@@ -970,9 +985,10 @@ export class UsesSearch {
     if (own && (this.ownMove === "acrobatics" || (stage && this.relevance.att.includes(stage)))) this.follow = true;
     const plain = own ? null : this.closedTerms();
     const walk = (mode: "lowest" | "highest") => plain ? this.closedPath(plain, mode, limit) : this.path(mode, limit);
-    // Damage that reads the target's exact HP (Crush Grip, Wring Out, Hard Press) needs a calculation for
-    // every HP reached: past two uses that is beyond the budget, so the roll paths count it.
-    const exact = this.hpModes.def.exact && !USES_REFERENCE.on;
+    // Damage that reads the target's exact HP needs a calculation for every HP reached (Guardian of Alola: past two uses
+    // that is beyond the budget, so the roll paths count it), or for every power (Crush Grip, Wring Out, Hard Press: the
+    // exact search, with its own budget).
+    const exact = this.hpModes.def.exact && !this.hpPower && !USES_REFERENCE.on;
     let lowest = losesHP || exact ? walk("lowest") : null;
     let highest = losesHP ? walk("highest") : null;
     if (SELF_COST_MOVES.has(move.id) && m.attAbility !== "magicguard" && lowest?.faints !== undefined && lowest.faints < limit) {
@@ -991,16 +1007,29 @@ export class UsesSearch {
       ?? (exact && (lowest!.uses ?? Infinity) > 2 ? { guaranteed: null, fewest: null, ko: [], chance: 0, fell: null, fallback: true } : this.exactCount(limit, losesHP, lowest));
     let guaranteed: number | null, fewest: number | null, fasterChance: number | undefined, chance: number | undefined, fell: number | null, endOfTurn: boolean;
     if (counted.fallback) {
+      // A power that reads the HP falls as the earlier rolls rise, so the lowest and highest rolls bound no other sequence.
+      if (this.hpPower) return { kind: "not-estimated", reason: this.stop ?? "Too many cases to count" };
       const low = lowest ??= this.path("lowest", limit), high = highest ??= this.path("highest", limit);
-      const stop = low.stop ?? high.stop;
+      // The lowest and highest roll paths stand in for every sequence only where none meets a use that cannot be
+      // calculated, the exact search's (this.stop: a sequence the paths do not take, such as one whose target ate its
+      // Berry and is still in once Dynamax ends and Fling fails) or theirs.
+      const stop = this.stop ?? low.stop ?? high.stop;
       if (stop) return { kind: "not-estimated", reason: stop };
+      // Nor where a roll changes what a later use reads: an HP line the target's Berry, Anger Shell or a form acts at (a
+      // sequence between the paths can cross it on another use than either, or one of them knocks out from above it), two
+      // states after a use of the exact search before it stopped, or the paths' states apart.
+      if (this.rollDependent(this.initial) || this.diverged || !sameKeys(low.keys, high.keys)) return { kind: "not-estimated", reason: "Too many cases to count" };
       // A path on which the attacker faints with the target still in does not knock it out.
       const fellOn = (walked: Walked) => walked.fallsFirst !== undefined && walked.fallsFirst <= limit ? walked.fallsFirst : Infinity;
       const ko = (walked: Walked) => fellOn(walked) === Infinity && walked.uses !== null && walked.uses <= limit ? walked.uses : null;
       const first = Math.min(fellOn(low), fellOn(high));
       fell = first === Infinity ? null : first;
-      guaranteed = fell === null ? ko(low) : null;
-      fewest = ko(high) ?? ko(low);
+      // Nor where the highest roll path is still in after the lowest one is out (a target's Berry eaten on one only):
+      // that sequence is not out, so the lowest path's count is no guarantee and the paths bound nothing.
+      const lowKO = ko(low), highKO = ko(high);
+      if (fell === null && lowKO !== null && (highKO === null || highKO > lowKO)) return { kind: "not-estimated", reason: "Too many cases to count" };
+      guaranteed = fell === null ? lowKO : null;
+      fewest = highKO ?? lowKO;
       endOfTurn = [low, high].some((walked) => walked.endOfTurn && ko(walked) !== null);
       notes.push("Too many roll sequences: lowest and highest rolls only, no chance.");
     } else {
@@ -2117,6 +2146,7 @@ export class UsesSearch {
     for (use = 1; use <= limit; use++) {
       groups = this.use(groups, "all", knock, undefined, faint);
       if (this.exceeded) return { guaranteed: null, fewest: null, ko, chance: 0, fell: null, fallback: true };
+      if (groups.length > 1) this.diverged = true;
       ko[use - 1] = Math.min(1, out);
       if (seen) fewest ??= use;
       if (!groups.length) {
@@ -2274,6 +2304,7 @@ export class UsesSearch {
     if (out) return { uses: 1 };
     let faints = from?.faints, fallsFirst = from ? from.fallsFirst : groups[0]?.node.state.attackerFainted ? 1 : undefined;
     let previous: Node | null = from ? from.previous : null;
+    const keys: string[] = [];
     for (let use = from ? from.use + 1 : 1; use <= cap; use++) {
       groups = this.use(groups, mode, knock, (hit) => {
         // Fainted by the use itself with the target in: a knockout at the end of the turn comes after it.
@@ -2281,18 +2312,19 @@ export class UsesSearch {
       });
       if (this.stop) { release(groups); return { uses: null, stop: this.stop, faints, fallsFirst }; }
       const after = groups[0];
+      if (after && !from) keys.push(`${this.restIndex(after.node.state)}${this.follow ? `|${after.node.state.att.hp}` : ""}`);
       if (after?.node.state.attackerFainted) fallsFirst ??= use;
       if (after?.node.state.attackerFainted || (out && this.koFaint)) faints ??= use;
-      if (out || !after) { release(groups); return { uses: out ? use : null, faints, fallsFirst }; }
+      if (out || !after) { release(groups); return { uses: out ? use : null, faints, fallsFirst, keys }; }
       if (tail && after.node === previous && !this.pending(after.node.state)) {
         const rest = this.tail(after, mode);
         release(groups);
-        return { uses: rest === null ? null : use + rest, faints, fallsFirst };
+        return { uses: rest === null ? null : use + rest, faints, fallsFirst, keys };
       }
       previous = after.node;
     }
     // The groups stay borrowed for a walk on from here (released by it, or left to the collector).
-    return { uses: null, faints, fallsFirst, resume: { groups, use: cap, previous, faints, fallsFirst } };
+    return { uses: null, faints, fallsFirst, keys, resume: { groups, use: cap, previous, faints, fallsFirst } };
   }
 
   /** The uses left from a settled path state, when each use takes the same HP, or null. */
@@ -2319,6 +2351,16 @@ export class UsesSearch {
     while (low < high) { const mid = Math.ceil((low + high) / 2); if (step(mid) === 0) low = mid; else high = mid - 1; }
     if (step(low) !== 0) return null;
     return 1 + Math.ceil((hp - low) / drop);
+  }
+
+  /**
+   * Whether the state can change at an HP line, which a sequence between the lowest and highest roll paths can cross on
+   * another use than either: the target's HP or pinch Berry still to eat (not an Enigma Berry, which waits for a
+   * super-effective hit), its Anger Shell, or a form that follows HP.
+   */
+  private rollDependent(state: State): boolean {
+    const berry = this.berryOf(state, true);
+    return (!!berry && berry !== "enigmaberry") || this.ability(state, "def") === "angershell" || this.m.hpForms;
   }
 
   /** Whether a later use could still change although this one did not. */
@@ -2455,7 +2497,10 @@ export class UsesSearch {
   private hpCode(hp: number, maxHP: number): number {
     const modes = this.hpModes.def;
     if (!this.readsHP) return 0;
-    if (USES_REFERENCE.on || modes.exact) return 8 + hp;
+    if (USES_REFERENCE.on || (modes.exact && !this.hpPower)) return 8 + hp;
+    // Crush Grip, Wring Out and Hard Press read the HP only through their power: one part per power, split at the
+    // lines a calculation reads besides (full HP, a half, a third and a quarter: Multiscale, the Berries, Shields Down).
+    if (this.hpPower) return 8 + 16 * hpPower(this.hpPower, hp, maxHP) + (hp >= maxHP ? 1 : 0) + (hp * 2 <= maxHP ? 2 : 0) + (hp * 3 <= maxHP ? 4 : 0) + (hp * 4 <= maxHP ? 8 : 0);
     return (modes.full && hp >= maxHP ? 1 : 0) | (modes.half && hp * 2 <= maxHP ? 2 : 0) | (modes.third && hp * 3 <= maxHP ? 4 : 0);
   }
 
@@ -2480,7 +2525,7 @@ export class UsesSearch {
         if (mode === "all" && this.hpModes.def.exact && !USES_REFERENCE.on) {
           let unknown = 0;
           for (let index = 0; index < dist.size; index++) if (!node.runs.has(this.hpCode(dist.hp[index], state.def.maxHP))) unknown++;
-          if (this.reruns + unknown > (this.turnMode ? TURN_RUN_BUDGET : RUN_BUDGET)) { this.exceeded = true; return []; }
+          if (this.reruns + unknown > this.runBudget()) { this.exceeded = true; return []; }
         }
         for (let index = 0; index < dist.size; index++) {
           const hp = dist.hp[index];
@@ -3739,6 +3784,11 @@ export class UsesSearch {
     return `|${side(att)}|${side(def)}|${state.fieldKey}|${state.weatherTurns},${state.terrainTurns}|${state.first}|${counter}`;
   }
 
+  /** The reruns one exact count may use: a doubles turn's, or a power that reads the HP (one calculation per power and state), or the usual. */
+  private runBudget(): number {
+    return this.turnMode ? TURN_RUN_BUDGET : this.hpPower ? HP_POWER_RUN_BUDGET : RUN_BUDGET;
+  }
+
   /** The run for a use from a node's state in HP part `code` (at the target's HP `hp`): memoised, or a rerun within the budget. */
   private runAt(node: Node, code: number, hp: number, mode: Mode): Run | null {
     const known = node.runs.get(code);
@@ -3746,7 +3796,7 @@ export class UsesSearch {
     const key = `${code}|${this.damageRest(node)}`;
     const shared = this.runs.get(key);
     if (shared) { node.runs.set(code, shared); return shared; }
-    if (mode === "all" && ++this.reruns > (this.turnMode ? TURN_RUN_BUDGET : RUN_BUDGET) && !USES_REFERENCE.on) { this.exceeded = true; return null; }
+    if (mode === "all" && ++this.reruns > this.runBudget() && !USES_REFERENCE.on) { this.exceeded = true; return null; }
     const { state } = node;
     const def = { ...state.def, hp };
     this.download ??= this.m.attacker.abilityId === "download" && !this.m.attacker.settledDownload && this.m.attAbility === "download"
@@ -3765,8 +3815,10 @@ export class UsesSearch {
     if (run.row.kind !== "calculated" || run.row.max === null || !run.trace.result) {
       // A doubles turn's step reports the calculation's own reason (a hit an intact Disguise takes, a needed count...).
       if (this.turnMode) this.turnFailure ??= run.row.reason;
+      // The exact search stops as the roll paths do: a sequence reached a use that cannot be calculated (Fling once
+      // Dynamax ends), so no roll path stands in for it (usesToKO's fallback reads the stop).
       if (mode === "all") this.exceeded = true;
-      else this.stop ??= "A later use cannot be calculated";
+      this.stop ??= "A later use cannot be calculated";
       return null;
     }
     // A full calculation whose engine inputs survived it serves the later states it differs from only in what an engine-only rerun sets.
@@ -4212,7 +4264,8 @@ function changeSources(m: UsesMatchup, { move, row, context, trace }: UsesRow, r
     }
   }
   if (hp.def.half) add("Brine doubles once the target is at half HP or less.");
-  if (hp.def.exact) add(`${name}'s power falls with the target's HP.`);
+  // The row's own move's (Crush Grip's, not the Max Strike or Z-Move it is used as while that lasts).
+  if (hp.def.exact) add(`${HP_POWER[move.id] ? move.name : name}'s power falls with the target's HP.`);
   const attHPSensitive = hp.att.exact || hp.att.full || hp.att.half || hp.att.third;
   const recoil = !!(engineMove as Move & { recoil?: unknown }).recoil || SELF_COST_MOVES.has(ownMove);
   const punished = contact && ((defItem === "rockyhelmet") || ["roughskin", "ironbarbs"].includes(defAbility));
@@ -4362,6 +4415,23 @@ function relevantStats(move: ChampionsMove, attacker: BattleBuild, result: Resul
 }
 
 type HPModes = { exact: boolean; full: boolean; half: boolean; third: boolean };
+
+/** Two roll paths' states agree use by use as far as both walked (a path walked without keys never changed its state). */
+function sameKeys(a: string[] | undefined, b: string[] | undefined): boolean {
+  if (!a || !b) return true;
+  for (let index = 0; index < Math.min(a.length, b.length); index++) if (a[index] !== b[index]) return false;
+  return true;
+}
+
+/** The top power of the moves whose power reads the target's HP (pinned Showdown data/moves.ts basePowerCallback). */
+const HP_POWER: Readonly<Record<string, number>> = { crushgrip: 120, wringout: 120, hardpress: 100 };
+/**
+ * Crush Grip's and Wring Out's power (top 120) and Hard Press's (top 100) at the target's HP, as pinned Showdown's
+ * basePowerCallback (every generation here) and the engine (gen789.js) compute it.
+ */
+function hpPower(top: number, hp: number, maxHP: number): number {
+  return Math.floor(Math.floor((top * (100 * Math.floor(hp * 4096 / maxHP)) + 2048 - 1) / 4096) / 100) || 1;
+}
 /**
  * Which HP lines can change this row's damage: the engine and the calculation read current HP only in these places.
  * Guardian of Alola, the Z-Move of Nature's Madness with Tapunium Z, deals 3/4 of the target's current HP (pinned

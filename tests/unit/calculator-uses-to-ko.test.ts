@@ -200,11 +200,12 @@ describe("the target's HP changes later damage", () => {
   it("Brine doubles at half HP: 7 to 9 uses", () => {
     expect(counts(uses("scarlet_violet", "brine", build("scarlet_violet", "lapras", { nature: "Modest", evs: { spa: 252 } }), build("scarlet_violet", "blissey", { evs: { hp: 252 } })))).toEqual({ fewest: 7, guaranteed: 9 });
   });
-  it("Hard Press falls with the target's HP: 5 to 7 uses, counted on the lowest and highest rolls", () => {
+  it("Hard Press falls with the target's HP: 5 to 7 uses, an exact search over its powers", () => {
+    // Showdown (u-oracle2.ts, forms-iceface-fling/verify/q-rows.ts ut-hardpress-blissey): out after 5 uses 0.000691, 6 0.574408, 7 1.
     const value = counted(uses("scarlet_violet", "hardpress", build("scarlet_violet", "mew", { nature: "Adamant", evs: { atk: 252 } }), build("scarlet_violet", "blissey", { evs: { hp: 252 } })));
     expect(value).toMatchObject({ fewest: 5, guaranteed: 7 });
-    expect(value.fasterChance).toBeUndefined();
-    expect(value.notes).toContain("Too many roll sequences: lowest and highest rolls only, no chance.");
+    expect(value.fasterChance).toBeCloseTo(0.574408, 6);
+    expect(value.notes).not.toContain("Too many roll sequences: lowest and highest rolls only, no chance.");
   });
   it("Super Fang halves the HP each use: 10 uses into 267 HP, 12 into a Dynamaxed Chansey", () => {
     expect(counts(uses("ultra_sun_ultra_moon", "superfang", build("ultra_sun_ultra_moon", "mew"), build("ultra_sun_ultra_moon", "snorlax", { evs: { hp: 252 } })))).toEqual({ fewest: 10, guaranteed: 10 });

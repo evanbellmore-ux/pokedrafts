@@ -20,11 +20,11 @@ import {
   type Factor, type MonState, type PendingAction, type SideState, type World,
 } from "./doubles-world";
 import { getBerryResistType } from "@smogon/calc/dist/items";
-import { getMoveEffectiveness } from "@smogon/calc/dist/mechanics/util";
 import {
   berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_STAT_BERRIES, stolenEat, UNNERVES,
   type Berry, type TurnUnnerve,
 } from "./hit-loop";
+import { neutralEffectiveness } from "./engine-corrections.cjs";
 import { isMaxActive } from "./mechanics";
 import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
 import type { BattleRuntime } from "./runtime";
@@ -66,7 +66,6 @@ const SPREAD_TARGETS = new Set(["allAdjacent", "allAdjacentFoes"]);
 const SCREEN_BREAKERS = new Set(["brickbreak", "psychicfangs", "ragingbull"]);
 /** Moves that cost their user half its maximum HP as they hit (data/moves.ts mindblown, steelbeam, chloroblast). */
 const SELF_COST_MOVES = new Set(["mindblown", "steelbeam", "chloroblast"]);
-const TYPE_NAMES = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
 
 type HitStats = {
   reached: number; ko: number; calculated: number; blocked: number; noDamage: number;
@@ -2143,10 +2142,10 @@ function faceTaken(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesS
 
 /**
  * A hit an intact Disguise or Ice Face takes (data/abilities.ts disguise, iceface): no damage (onDamage gives 0 and
- * onEffectiveness a neutral typeMod, so no resist Berry, Weakness Policy or Enigma Berry acts), the busted form at the
- * Update, and from generation 8 Disguise's 1/8 of the base maximum HP then (not in generation 7,
- * data/mods/gen7/abilities.ts). The hit still lands: the move's 100% stages and statuses on the target (stat-moves.ts),
- * a flinch, Focus Punch's lost focus, Rage Fist's count; the attacker's own effects are those of the same hit into the
+ * onEffectiveness a neutral typeMod, so no Weakness Policy, Enigma Berry or resist Berry acts but a Chilan Berry, which
+ * any Normal hit's getDamage eats), the busted form at the Update, and from generation 8 Disguise's 1/8 of the base
+ * maximum HP then (not in generation 7, data/mods/gen7/abilities.ts). The hit still lands: the move's 100% stages and
+ * statuses on the target (stat-moves.ts), a flinch, Focus Punch's lost focus, Rage Fist's count; the attacker's own effects are those of the same hit into the
  * busted form (faceProbe), and Life Orb follows. Items that act on a 0-damage hit and moves with other effects on their
  * target are not estimated. `inSpread`: the attacker's state goes to spreadStep's check, and its HP is spreadStep's.
  */
@@ -2158,6 +2157,9 @@ function faceHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMo
   if (FACE_REACTIVE_ITEMS.has(holder.build.itemId) && itemWorks(w, holder.build)) notEstimated(REASONS.notIn2v2(faceName));
   if (!info.transformed && FACE_UNSAFE_MOVES.has(move.id)) notEstimated(REASONS.notIn2v2(faceName));
   if (w.mons[attacker]!.build.abilityId === "magician") notEstimated(REASONS.notIn2v2(faceName));
+  // A Chilan Berry the hit eats (neutralRow), where the calculation reads Unnerve as the turn does (the other resist Berries
+  // need a super-effective hit, which the face's never is).
+  if (holder.build.itemId === "chilanberry") unnerveGuard(ctx, w, attacker, target);
   const found = faceProbe(ctx, w, action, info, target, multiple, faceName);
   const probe = found?.outcome ?? null;
   const world = cloneWorld(w);
@@ -2176,8 +2178,8 @@ function faceHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMo
     if (found) { stats.calculated += world.mass; note(stats.met, damageKey(found.row), found.row, world.mass); note(stats.firsts, JSON.stringify(found.row), found.row, world.mass); }
     else stats.noDamage += world.mass;
   }
-  // The hit's effects on the target.
-  receiver.build = { ...receiver.build, speciesId: BUSTED_FORMS[receiver.build.speciesId] ?? receiver.build.speciesId };
+  // The hit's effects on the target: the resist Berry its damage ate (a Chilan Berry's onSourceModifyDamage, inside getDamage).
+  receiver.build = { ...receiver.build, speciesId: BUSTED_FORMS[receiver.build.speciesId] ?? receiver.build.speciesId, ...(found?.berry ? { itemId: "" } : {}) };
   receiver.timesAttacked += 1;
   receiver.focusLost = true;
   const sheerForce = user.build.abilityId === "sheerforce";
@@ -2210,7 +2212,7 @@ function faceHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMo
  * not following the attacker's HP (the Gem, Throat Spray, Charge, Stellar and the move's own stages it uses); every
  * outcome must leave the attacker one state. Null when that hit deals no damage either.
  */
-function faceProbe(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMove, { kind: "move" }>, target: DoublesSlotId, multiple: boolean, faceName: string): { outcome: TurnStepOutcome; row: MoveDamageResult } | null {
+function faceProbe(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMove, { kind: "move" }>, target: DoublesSlotId, multiple: boolean, faceName: string): { outcome: TurnStepOutcome; row: MoveDamageResult; berry: string } | null {
   const attacker = action.slot;
   const move = ctx.runtime.movesById.get(action.moveId!)!;
   const probe = cloneWorld(w);
@@ -2225,36 +2227,34 @@ function faceProbe(ctx: Ctx, w: World, action: PendingAction, info: Extract<Turn
   if ("failed" in result) notEstimated(result.failed);
   if (new Set(result.outcomes.map((outcome) => sideKey(outcome.attacker))).size > 1) notEstimated(REASONS.notIn2v2(faceName));
   if (!result.outcomes[0]) return null;
-  return { outcome: result.outcomes[0], row: neutralRow(ctx, w, attacker, target, move, conditionsFor(ctx, w, attacker, target, multiple, move.id), context, entry) };
+  return { outcome: result.outcomes[0], ...neutralRow(ctx, w, attacker, target, move, conditionsFor(ctx, w, attacker, target, multiple, move.id), context, faceName) };
 }
 
 /**
  * The damage a hit into an intact face is calculated with (Showdown's getDamage before onDamage gives 0): the intact
- * form's stats, every type neutral (sim/pokemon.ts runEffectiveness: the face's onEffectiveness gives 0). Calculated
- * with the intact form holding Pressure (no damage effect) in place of the face; where its type is not neutral to the
- * move, in generation 9 also Terastallized into a type the move hits neutrally; in generations 7 and 8 such a hit
- * keeps the busted form's calculation.
+ * form's stats and every type of the holder neutral but an immunity (data/abilities.ts iceface and disguise
+ * onEffectiveness give 0 for each of its types, sim/pokemon.ts runEffectiveness), so no super-effective or resisted
+ * damage and nothing that reads it (Expert Belt, Filter, Tinted Lens), in every generation; a Snow holder that is Ice
+ * type keeps its Defense. Never a critical hit (iceface and disguise onCriticalHit give false, so getDamage's
+ * CriticalHit event stops the field's Critical hit, an always-critical move, a certain ratio and Merciless): calculated
+ * with the intact form holding Battle Armor in place of the face, which in the engine does that alone, under
+ * engine-corrections.cjs neutralEffectiveness. (Strong Winds, whose halving the engine applies apart, is only in Ultra
+ * Sun / Ultra Moon, where neither Mimikyu nor Eiscue is Flying type.) `berry`: the holder's resist Berry the hit eats
+ * (a Chilan Berry's onSourceModifyDamage runs inside getDamage for any Normal hit; the others need a super-effective
+ * typeMod, which the face's hit never has), or "".
  */
-function neutralRow(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, move: ChampionsMove, conditions: BattleConditions, context: MoveContext | undefined, entry: SearchEntry): MoveDamageResult {
-  const intact = calcBuild(w, target);
-  if (!ctx.runtime.abilitiesById.has("pressure")) return entry.row;
-  const plain: BattleBuild = { ...intact, abilityId: "pressure", abilityActive: false };
-  const user = calcBuild(w, attacker);
+function neutralRow(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, move: ChampionsMove, conditions: BattleConditions, context: MoveContext | undefined,
+  faceName: string): { row: MoveDamageResult; berry: string } {
+  if (!ctx.runtime.abilitiesById.has("battlearmor")) notEstimated(REASONS.notIn2v2(faceName));
+  const plain: BattleBuild = { ...calcBuild(w, target), abilityId: "battlearmor", abilityActive: false };
   countCalculation(ctx);
   const trace: CalcTrace = {};
-  const row = calculateTurnMove(move, user, plain, conditions, context, ctx.runtime, trace);
-  const result = trace.result;
-  if (row.kind !== "calculated" || !result) return entry.row;
-  const revealed = result.attacker.hasAbility("Scrappy") || result.attacker.hasAbility("Mind's Eye" as never);
-  const of = (type: string) => getMoveEffectiveness(result.gen, result.move, type as never, revealed, result.field.isGravity, false);
-  const types: readonly string[] = result.defender.teraType && result.defender.teraType !== "Stellar" ? [result.defender.teraType] : result.defender.types;
-  if (types.reduce((product, type) => product * of(type), 1) === 1) return row;
-  if (ctx.gen7 || ctx.runtime.profile.generation === 8 || isMaxActive(intact)) return entry.row;
-  const neutral = TYPE_NAMES.find((type) => of(type) === 1);
-  if (!neutral) return entry.row;
-  countCalculation(ctx);
-  const teraRow = calculateTurnMove(move, user, { ...plain, mechanic: "tera", configuration: { ...plain.configuration, teraType: neutral } }, conditions, context, ctx.runtime);
-  return teraRow.kind === "calculated" ? teraRow : entry.row;
+  const row = neutralEffectiveness(() => calculateTurnMove(move, calcBuild(w, attacker), plain, { ...conditions, critical: false }, context, ctx.runtime, trace));
+  if (row.kind !== "calculated") notEstimated(rowReason(ctx, w, target, row, move));
+  // The attacker's Neutralizing Gas would leave Battle Armor out of the engine's calculation, where the face still acts.
+  if (trace.result?.rawDesc.isCritical) notEstimated(REASONS.notIn2v2(faceName));
+  const used = trace.result?.rawDesc.defenderItem;
+  return { row, berry: used && getBerryResistType(used) ? plain.itemId : "" };
 }
 
 /**

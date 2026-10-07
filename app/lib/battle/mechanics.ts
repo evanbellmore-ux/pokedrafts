@@ -147,28 +147,43 @@ export const CROWNED_FORMS: Readonly<Record<string, { form: string; item: string
 };
 
 /**
- * Base species whose type is their held item's: Arceus (Multitype) holding a Plate, or in Ultra Sun / Ultra Moon a
- * type's Z-Crystal, and Silvally (RKS System) holding a Memory (pinned Showdown data/conditions.ts arceus / silvally
- * onType: the item's onPlate / onMemory type). Showdown's team validator gives such a set the item's forcedForme
- * (sim/team-validator.ts: "assign the right forme to a set with the base species"), the form that requires that item.
+ * Each game's item forms by base species and item: the forms that are not battle-only and require a held item (a Plate
+ * or type Z-Crystal for Arceus, a Memory for Silvally, a Drive for Genesect, the Griseous Orb (Griseous Core in Scarlet /
+ * Violet) for Giratina-Origin, the Adamant Crystal and Lustrous Globe for Dialga- and Palkia-Origin, a mask for Ogerpon).
+ * These are exactly the catalog items with a forcedForme in each game's pinned Showdown Dex (data/items.ts; Megas,
+ * Primals, Ultra Necrozma and the Tera and Crowned forms are battle-only, and the Griseous, Adamant and Lustrous Orbs
+ * change no form from generation 9).
  */
-const ITEM_TYPED_SPECIES: ReadonlySet<string> = new Set(["arceus", "silvally"]);
+const ITEM_FORMS = new WeakMap<BattleRuntime, ReadonlyMap<string, ReadonlyMap<string, string>>>();
+
+function itemForms(runtime: BattleRuntime): ReadonlyMap<string, ReadonlyMap<string, string>> {
+  let forms = ITEM_FORMS.get(runtime);
+  if (forms) return forms;
+  const byBase = new Map<string, Map<string, string>>();
+  for (const form of runtime.speciesById.values()) {
+    if (form.battleForm || form.baseSpecies === form.id) continue;
+    const required = form.requiredItems?.length ? form.requiredItems : form.requiredItem ? [form.requiredItem] : [];
+    for (const item of required) {
+      let items = byBase.get(form.baseSpecies);
+      if (!items) byBase.set(form.baseSpecies, items = new Map());
+      if (!items.has(item)) items.set(item, form.id);
+    }
+  }
+  ITEM_FORMS.set(runtime, forms = byBase);
+  return forms;
+}
 
 /**
  * The form a Pokémon battles as because of its held item, or null: Zacian or Zamazenta holding its Rusted item
- * (CROWNED_FORMS), and base Arceus or Silvally holding an item one of its forms requires (ITEM_TYPED_SPECIES).
+ * (CROWNED_FORMS), and a base species holding an item one of its forms requires (itemForms): Showdown's team validator
+ * gives that set the item's forcedForme (sim/team-validator.ts: "assign the right forme to a set with the base species
+ * (Arceus/Genesect/Giratina/Silvally)"), so it battles with that form's types, stats and ability.
  */
 export function heldItemForm(speciesId: string, itemId: string, runtime: BattleRuntime = championsRuntime): string | null {
   if (!itemId) return null;
   const crowned = CROWNED_FORMS[speciesId];
   if (crowned) return itemId === crowned.item && runtime.speciesById.has(crowned.form) ? crowned.form : null;
-  if (!ITEM_TYPED_SPECIES.has(speciesId)) return null;
-  for (const form of runtime.speciesById.values()) {
-    if (form.baseSpecies !== speciesId || form.id === speciesId) continue;
-    const required = form.requiredItems?.length ? form.requiredItems : form.requiredItem ? [form.requiredItem] : [];
-    if (required.includes(itemId)) return form.id;
-  }
-  return null;
+  return itemForms(runtime).get(speciesId)?.get(itemId) ?? null;
 }
 
 /** Gen 7's innate IV parity determines type; Hyper Training does not change it. */
