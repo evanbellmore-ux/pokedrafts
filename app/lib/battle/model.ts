@@ -404,8 +404,9 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
     else for (const reason of item.unsupported) issues.push({ field: "itemId", message: reason });
   }
   const requiredItems = species.requiredItems?.length ? species.requiredItems : species.requiredItem ? [species.requiredItem] : [];
-  // Zacian or Zamazenta holding its Rusted item, Arceus holding a Plate (or a type's Z-Crystal) and Silvally holding a
-  // Memory battle as that item's form (mechanics.ts heldItemForm): that form is the one to select.
+  // Zacian or Zamazenta holding its Rusted item, and a base species holding an item one of its forms requires (Arceus's
+  // Plate, Silvally's Memory, Genesect's Drive, Giratina's Griseous Orb or Core, Dialga's Adamant Crystal, Palkia's
+  // Lustrous Globe, Ogerpon's mask) battle as that item's form (mechanics.ts heldItemForm): that form is the one to select.
   const heldForm = heldItemForm(build.speciesId, build.itemId, runtime);
   if (heldForm) {
     const form = runtime.speciesById.get(heldForm)!.name;

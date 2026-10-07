@@ -38,3 +38,36 @@ if (!util.chainMods.corrected) {
   corrected.corrected = true;
   util.chainMods = corrected;
 }
+
+/*
+ * The hit an intact Ice Face or Disguise takes is calculated at a neutral type effectiveness: pinned Showdown
+ * data/abilities.ts iceface and disguise onEffectiveness return 0 for each of the holder's types the move does
+ * not miss (sim/pokemon.ts runEffectiveness), before onDamage gives the hit 0. The engine reads
+ * util.getMoveEffectiveness from this object at call time (the target's types, a Collision Course's boost),
+ * so inside neutralEffectiveness(run) every type it would not be immune to counts as 1 (an immunity stays 0):
+ * no super-effective or resisted damage, and nothing that reads them (Expert Belt, Filter, Tinted Lens).
+ * The state lives on the corrected function, so another copy of this module shares it.
+ */
+if (!util.getMoveEffectiveness.corrected) {
+  const original = util.getMoveEffectiveness;
+  const state = { neutral: false };
+  const corrected = (...args) => {
+    const effectiveness = original(...args);
+    return state.neutral && effectiveness !== 0 ? 1 : effectiveness;
+  };
+  corrected.corrected = true;
+  corrected.state = state;
+  util.getMoveEffectiveness = corrected;
+}
+
+/** Runs `run` with every type effectiveness the engine reads neutral but immunities (see above), and returns its result. */
+exports.neutralEffectiveness = (run) => {
+  const state = util.getMoveEffectiveness.state;
+  const before = state.neutral;
+  state.neutral = true;
+  try {
+    return run();
+  } finally {
+    state.neutral = before;
+  }
+};

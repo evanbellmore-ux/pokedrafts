@@ -59,8 +59,8 @@ describe("the form a held item gives (mechanics.ts heldItemForm)", () => {
     for (const [species, item] of [["arceus", "normaliumz"], ["arceus", "leftovers"], ["arceus", ""], ["arceusfire", "flameplate"], ["silvallyfire", "firememory"]]) {
       expect(heldItemForm(species, item, us)).toBeNull();
     }
-    // Genesect's Drives, Giratina's Griseous Orb and the other forced forms are not item-typed species.
-    expect(heldItemForm("genesect", "dousedrive", us)).toBeNull();
+    // Genesect's Drives are item forms too (calculator-item-forms.test.ts has those and the other forced forms).
+    expect(heldItemForm("genesect", "dousedrive", us)).toBe("genesectdouse");
   });
 
   it("flags the base form holding the item, as Zacian holding its Rusted Sword", async () => {
