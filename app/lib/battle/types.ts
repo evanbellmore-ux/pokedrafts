@@ -255,6 +255,14 @@ export type SideConditions = {
    * 1.5x in the sun (pinned Showdown flowergift onAllyModifyAtk / onAllyModifySpD; doubles-turn.ts flowerGift).
    */
   flowerGift?: boolean;
+  /**
+   * Doubles turn only: this side's attacker has a partner whose Battery (its Special moves), Power Spot (its moves) or
+   * Steely Spirit (its Steel moves) raises its move's power (pinned Showdown battery, powerspot, steelyspirit
+   * onAllyBasePower; doubles-turn.ts conditionsFor, calculate.ts partnerPowerBoosts).
+   */
+  battery?: boolean;
+  powerSpot?: boolean;
+  steelySpirit?: boolean;
 };
 
 export type BattleConditions = {
@@ -454,7 +462,11 @@ export type UsesToKO =
     /** The most uses counted, and why: the move's PP with PP Ups (halved by the target's Pressure), the uses the attacker's own HP allows (Steel Beam, Mind Blown, Chloroblast), or the calculation cap. */
     limit: number;
     limitReason: "pp" | "pressure" | "self-cost" | "cap";
-    /** Uses needed with the lowest rolls when that is more than `limit`, if known. */
+    /**
+     * With no guarantee within `limit` and no sequence fainting the attacker first there: the guaranteed count with the
+     * limit lifted (the worst roll sequence's uses, none fainting the attacker first), when known (uses-to-ko.ts neededUses).
+     * Never set for Steel Beam's family, whose own cost sets the limit.
+     */
     needed?: number;
     /** What the count follows, in short sentences ("Draco Meteor lowers the attacker's Sp. Atk after each use."). */
     carried: string[];

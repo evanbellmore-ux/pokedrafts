@@ -1,4 +1,4 @@
-import { calculate, Field, Generations, Move as EngineMove, Pokemon, toID } from "@smogon/calc";
+import { calculate as engineCalculate, Field, Generations, Move as EngineMove, Pokemon, toID } from "@smogon/calc";
 import type { Move, Result, StatsTable } from "@smogon/calc";
 import type { AbilityName, Generation, ID, MoveName, TypeName } from "@smogon/calc/dist/data/interface";
 import { calculateBPModsChampions } from "@smogon/calc/dist/mechanics/champions";
@@ -6,7 +6,7 @@ import { calculateBPModsSMSSSV } from "@smogon/calc/dist/mechanics/gen789";
 import { checkMultihitBoost, checkSeedBoost, getFinalSpeed, isGrounded } from "@smogon/calc/dist/mechanics/util";
 import { getBerryResistType, getNaturalGift } from "@smogon/calc/dist/items";
 import { championsRuntime, type BattleRuntime } from "./runtime";
-import "./engine-corrections.cjs";
+import { withPowerMods } from "./engine-corrections.cjs";
 import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
 import { getBuildGender, isMaxActive, specialTeraForm } from "./mechanics";
 import { resolveBattleMove, STELLAR_FIRST_USE_REASON, withResolvedPriority } from "./resolve-move";
@@ -266,9 +266,71 @@ function makeSide(side: SideConditions) {
     isCharge: side.charge,
     // Doubles turn only (doubles-turn.ts flowerGift): unset in 1v1, the engine's default.
     ...(side.flowerGift ? { isFlowerGift: true } : {}),
+    // Doubles turn only (doubles-turn.ts conditionsFor): carried in the engine's own flags, which calculate() takes off
+    // the engine and applies itself (partnerPowerBoosts).
+    ...(side.battery ? { isBattery: true } : {}),
+    ...(side.powerSpot ? { isPowerSpot: true } : {}),
+    ...(side.steelySpirit ? { isSteelySpirit: true } : {}),
     // Protect is resolved by protectOutcome: the engine quarters before the final modifiers,
     // gives mainline Unseen Fist a quarter, and blocks Future Sight and Mighty Cleave.
   };
+}
+
+/** A partner's power boost: its name, its 4096ths and the "1.3x" its row's line names. */
+type PartnerPower = { name: string; mod: number; factor: string };
+
+/**
+ * The power boosts a doubles partner gives this attack (SideConditions battery, powerSpot, steelySpirit; pinned
+ * Showdown data/abilities.ts onAllyBasePower): Battery 5325/4096 to a Special move, Power Spot 5325/4096 to any move,
+ * Steely Spirit 1.5x to a Steel move. Neither Battery nor Power Spot boosts its own holder (attacker !== effectState.target),
+ * so the partner's flag is the only source; the attacker's own Steely Spirit is the engine's (an attacker ability).
+ * `move`: the engine's move after its own type and category changes (a calculation's result.move).
+ */
+function partnerPowerBoosts(side: Field["attackerSide"], move: Move): PartnerPower[] {
+  return [
+    ...(side.isBattery && move.category === "Special" ? [{ name: "Battery", mod: 5325, factor: "1.3x" }] : []),
+    ...(side.isPowerSpot ? [{ name: "Power Spot", mod: 5325, factor: "1.3x" }] : []),
+    ...(side.isSteelySpirit && move.type === "Steel" ? [{ name: "Steely Spirit", mod: 6144, factor: "1.5x" }] : []),
+  ];
+}
+
+/** The partner power boosts each engine result was calculated with (calculate), for its row's lines. */
+const PARTNER_POWER = new WeakMap<Result, PartnerPower[]>();
+/**
+ * Why a partner power boost in an engine calculation of the current calculateMove (calculate) may not be applied as
+ * pinned Showdown applies it, or null; the first one met.
+ */
+let partnerPowerIssue: string | null = null;
+
+/**
+ * The engine's calculate, with a doubles partner's power boosts (partnerPowerBoosts) taken off the engine and put into
+ * its base power chain as pinned Showdown chains them (engine-corrections.cjs withPowerMods): the engine applies a
+ * partner's Steely Spirit to Attack (gen789.js calculateAtModsSMSSSV) and its Champions mechanics read neither Battery
+ * nor Power Spot. A first run without them gives the move's category and type the boosts read. Every engine
+ * calculation of the app goes through here; with no partner flag it is the engine's own. A chain of three or more power
+ * modifiers whose order changes the damage is not exact (Showdown chains them by handler priority, the engine in its
+ * own order: the engine is run again at each value the chain takes in some order), so partnerPowerIssue reports it.
+ * The Tera 60-power floor comes after the chain in both (sim/battle-actions.ts getDamage, gen789.js calculateBasePowerSMSSSV).
+ */
+function calculate(gen: Generation, attacker: Pokemon, defender: Pokemon, move: Move, field: Field): Result {
+  const side = field.attackerSide;
+  if (!side.isBattery && !side.isPowerSpot && !side.isSteelySpirit) return engineCalculate(gen, attacker, defender, move, field);
+  const plain = field.clone();
+  plain.attackerSide.isBattery = plain.attackerSide.isPowerSpot = plain.attackerSide.isSteelySpirit = false;
+  const probe = engineCalculate(gen, attacker, defender, move, plain);
+  const boosts = partnerPowerBoosts(side, probe.move);
+  if (!boosts.length) return probe;
+  const names = `The partner's ${boosts.map((boost) => boost.name).join(" and ")}`;
+  const mods = boosts.map((boost) => boost.mod);
+  const run = () => engineCalculate(gen, attacker, defender, move, plain);
+  const { result, order, values } = withPowerMods(mods, run);
+  // The damage at each value the chain takes in some order: one damage whatever Showdown's order.
+  const damage = JSON.stringify(result.damage);
+  if (order && (!values || values.some((value) => JSON.stringify(withPowerMods(mods, run, value).result.damage) !== damage))) {
+    partnerPowerIssue ??= `${names} with ${order - boosts.length} other power boosts: not calculated (their order can change the damage).`;
+  }
+  PARTNER_POWER.set(result, boosts);
+  return result;
 }
 
 /** Damaging moves without pinned Showdown's protect flag (data/moves.ts): they hit a Protecting Pokémon in full. */
@@ -349,9 +411,12 @@ function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean,
 /**
  * Ability and form states the battle has already settled on entry, as pinned Showdown resolves them:
  * Trace copies a foe's ability, Imposter transforms its user into the target, and Forecast sets
- * Castform's form from the weather (any selected Castform form).
+ * Castform's form from the weather (any selected Castform form). `fieldGas` (2v2, settleDoublesStart): a
+ * Neutralizing Gas on the field suppresses the ability a Tera form gives (Embody Aspect, Tera Shell, Teraform
+ * Zero), which then stands in as Run Away, as every ability the gas suppresses does there (settleDoublesStart).
  */
-function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, otherTailwind: boolean): { build: BattleBuild; lines: string[]; withheld?: string } {
+function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, otherTailwind: boolean,
+  fieldGas = false): { build: BattleBuild; lines: string[]; withheld?: string; suppressed?: string } {
   const lines: string[] = [];
   const name = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
   const abilityName = (id: string) => runtime.abilitiesById.get(id)?.name ?? id;
@@ -365,12 +430,14 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
     settled = { ...settled, speciesId: form, abilityId, abilityActive: defaultAbilityActive(abilityId) };
     const embody = EMBODY_STATS[abilityId];
     // The other battler's Neutralizing Gas suppresses Embody Aspect, Tera Shell and Teraform Zero.
-    const gassed = gassedAbility(settled, other, conditions);
+    const fieldGassed = fieldGas && gasSuppresses(settled, conditions);
+    const gassed = gassedAbility(settled, other, conditions) || fieldGassed;
     lines.push(form.startsWith("ogerpon")
       ? `Terastallization: ${who} ${name} is ${species.name}; ${abilityName(abilityId)} ${gassed ? "is suppressed by Neutralizing Gas" : `gives +1 ${embody}`}.`
       : form === "terapagosterastal"
         ? `Tera Shift: ${who} ${name} is Terapagos-Terastal${gassed ? "; Tera Shell is suppressed by Neutralizing Gas" : ", with Tera Shell"}.`
         : `Terastallization: ${who} ${name} is Terapagos-Stellar${gassed ? "; Teraform Zero is suppressed by Neutralizing Gas" : `; Teraform Zero cleared the weather and terrain${conditions.weather || conditions.terrain ? " (assumes the set weather and terrain returned after)" : ""}`}.`);
+    if (fieldGassed) return { build: { ...settled, abilityId: GAS_STAND_IN }, lines, suppressed: abilityId };
   }
   // Shields Down and Schooling set the form from HP on entry and at the end of each turn (pinned
   // Showdown onStart and onResidual; neither can be suppressed). Minior is Meteor above half HP;
@@ -873,7 +940,18 @@ function paradoxStat(build: BattleBuild, other: BattleBuild, conditions: BattleC
 const GAS_PROOF_ABILITIES = new Set(["asoneglastrier", "asonespectrier", "battlebond", "comatose", "disguise", "gulpmissile", "iceface", "multitype", "neutralizinggas", "powerconstruct", "rkssystem", "schooling", "shieldsdown", "stancechange", "terashift", "zenmode", "zerotohero"]);
 /** The other battler's Neutralizing Gas suppresses this ability (unless Ability Shield keeps it). */
 const gassedAbility = (build: BattleBuild, other: BattleBuild, conditions: BattleConditions) =>
-  other.abilityId === "neutralizinggas" && !GAS_PROOF_ABILITIES.has(build.abilityId) && !shieldsAbility(build, conditions);
+  other.abilityId === "neutralizinggas" && gasSuppresses(build, conditions);
+/**
+ * A Neutralizing Gas on the field suppresses this Pokémon's ability (pinned Showdown sim/pokemon.ts:858-877
+ * ignoringAbility): not a cantsuppress ability, not another Neutralizing Gas, not one an Ability Shield keeps (its
+ * hasItem fails under Magic Room; ignoreKlutz keeps it from Klutz).
+ */
+const gasSuppresses = (build: BattleBuild, conditions: BattleConditions) => !GAS_PROOF_ABILITIES.has(build.abilityId) && !shieldsAbility(build, conditions);
+/**
+ * The ability a suppressed one stands in as in the 2v2 turn (settleDoublesStart): Run Away does nothing in a
+ * trainer battle (data/abilities.ts runaway: onTrapPokemon only), as the engine stand-in is elsewhere here.
+ */
+export const GAS_STAND_IN = "runaway";
 const UMBRELLA_SUN_ABILITIES = new Set(["chlorophyll", "solarpower", "flowergift"]);
 /** Utility Umbrella makes its holder ignore sun and rain (Showdown effectiveWeather) for these abilities. */
 const umbrellaBlocksAbility = (build: BattleBuild, other: BattleBuild, conditions: BattleConditions) =>
@@ -1495,6 +1573,11 @@ function fixedHPDamage(move: ChampionsMove, probe: Result, assumptions: string[]
   };
 }
 
+/**
+ * One move's row (calculateMoveRow). With a doubles partner's power boost (SideConditions battery, powerSpot, steelySpirit)
+ * a calculated row is not given where an engine calculation of it may not apply the boost as pinned Showdown does
+ * (calculate: partnerPowerIssue), with the reason.
+ */
 function calculateMove(
   assigned: ChampionsMove,
   attackerBuild: BattleBuild,
@@ -1510,6 +1593,32 @@ function calculateMove(
   consecutive = 0,
   /** A later use's builds, whose stages already hold the entry rises the engine adds (uses-to-ko.ts entryStages). */
   settledEntry = false,
+): MoveDamageResult {
+  const side = battleConditions.attackerSide;
+  if (!side.battery && !side.powerSpot && !side.steelySpirit) {
+    return calculateMoveRow(assigned, attackerBuild, defenderBuild, battleConditions, context, runtime, friendGuardSuppressedBy, trace, consecutive, settledEntry);
+  }
+  const outer = partnerPowerIssue;
+  partnerPowerIssue = null;
+  try {
+    const row = calculateMoveRow(assigned, attackerBuild, defenderBuild, battleConditions, context, runtime, friendGuardSuppressedBy, trace, consecutive, settledEntry);
+    return partnerPowerIssue && row.kind === "calculated" ? emptyRow(assigned, "unsupported", partnerPowerIssue) : row;
+  } finally {
+    partnerPowerIssue = outer;
+  }
+}
+
+function calculateMoveRow(
+  assigned: ChampionsMove,
+  attackerBuild: BattleBuild,
+  defenderBuild: BattleBuild,
+  battleConditions: BattleConditions,
+  context: MoveContext | undefined,
+  runtime: BattleRuntime,
+  friendGuardSuppressedBy: string | null,
+  trace: CalcTrace,
+  consecutive: number,
+  settledEntry: boolean,
 ): MoveDamageResult {
   let conditions = battleConditions;
   // A critical-hit ratio that makes every hit critical counts as the field's Critical hit.
@@ -2276,6 +2385,7 @@ function calculateMove(
     if (landedHits && landedHits.length > 1) assumptions.push(MULTI_HIT_NOTE);
     if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome: first use, no boost.");
     if (conditions.attackerSide.charge && result.rawDesc.isCharge) assumptions.push("Charge: 2x power.");
+    for (const boost of PARTNER_POWER.get(result) ?? []) assumptions.push(`The partner's ${boost.name}: ${boost.factor} power.`);
     const tailwind = [conditions.attackerSide.tailwind && "the attacker's side", conditions.defenderSide.tailwind && "the target's side"].filter(Boolean);
     const speedSetsPower = SPEED_POWER_MOVES.has(metadata.id) && !MOVES_FIRST_POWER_MOVES.has(metadata.id);
     if (tailwind.length && (speedSetsPower || orderBySpeed)) assumptions.push(`Tailwind: doubled Speed on ${tailwind.join(" and ")}.`);
@@ -2989,7 +3099,22 @@ export type DoublesStartSlot = {
   /** The other Pokémon its settle read as "the other battler" (SPEC §4.2 step 2). */
   representative: DoublesSlotId;
 };
-export type DoublesSettle = { slots: Record<DoublesSlotId, DoublesStartSlot | null>; reason: string | null };
+/**
+ * Neutralizing Gas on the field as the doubles turn starts (settleDoublesStart), suppressing every other ability it can
+ * from the start (as the 1v1 assumes the gas was out first): each such ability stands in as Run Away for the whole
+ * turn, and so does each holder's own, which does nothing else. doubles-turn.ts guards the events that would end the
+ * gas or change what it suppresses.
+ */
+export type DoublesGas = {
+  holders: DoublesSlotId[];
+  /** The other Pokémon whose ability it suppresses (abilities other than Run Away). */
+  suppressed: DoublesSlotId[];
+  /** Ability Shield holders with an ability the gas can suppress: the Shield keeps it, except under Magic Room. */
+  shielded: DoublesSlotId[];
+  /** The ability each stand-in replaced, the holders' Neutralizing Gas included (for calculateDoublesOutcomes' builds). */
+  abilities: Partial<Record<DoublesSlotId, string>>;
+};
+export type DoublesSettle = { slots: Record<DoublesSlotId, DoublesStartSlot | null>; reason: string | null; gas?: DoublesGas | null };
 
 const UNNERVE_ABILITIES = new Set(["unnerve", "asoneglastrier", "asonespectrier"]);
 const WEATHER_NEGATORS = new Set(["cloudnine", "airlock"]);
@@ -3015,8 +3140,33 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
   const empty = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, null])) as Record<DoublesSlotId, DoublesStartSlot | null>;
   let reason: string | null = null;
   const fail = (text: string) => { reason ??= text; };
+  // Neutralizing Gas (pinned Showdown data/abilities.ts neutralizinggas onSwitchIn, priority 2, before any other
+  // switch-in or start ability; sim/pokemon.ts:858-877 ignoringAbility while a holder is active): from the turn's start,
+  // each ability it suppresses stands in as Run Away (gasSuppresses: not a cantsuppress one, not another holder's, not
+  // one an Ability Shield keeps outside Magic Room), and each holder's own does nothing else, so no calculation reads a gas.
+  const holders = present.filter((slot) => shown[slot]!.abilityId === "neutralizinggas");
+  const gas: DoublesGas | null = holders.length ? { holders, suppressed: [], shielded: [], abilities: {} } : null;
+  const gasLines = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, [] as string[]])) as Record<DoublesSlotId, string[]>;
+  const abilityName = (id: string) => runtime.abilitiesById.get(id)?.name ?? id;
+  // `tera`: the ability a Tera form gives, which its Terastallization line already says is suppressed (it replaces the one entered with).
+  const gassed = (slot: DoublesSlotId, abilityId: string, tera = false) => {
+    gas!.abilities[slot] = abilityId;
+    if (tera) gasLines[slot] = [];
+    if (holders.includes(slot) || abilityId === GAS_STAND_IN) return;
+    if (!gas!.suppressed.includes(slot)) gas!.suppressed.push(slot);
+    if (!tera) gasLines[slot] = [`${cap(SLOT_POSITION[slot])} ${names[slot]}'s ${abilityName(abilityId)} is suppressed by Neutralizing Gas.`];
+  };
+  if (gas) {
+    for (const slot of present) {
+      const build = shown[slot]!;
+      const holder = holders.includes(slot);
+      if (!holder && build.itemId === "abilityshield" && !GAS_PROOF_ABILITIES.has(build.abilityId)) gas.shielded.push(slot);
+      if (!holder && !gasSuppresses(build, field)) continue;
+      gassed(slot, build.abilityId);
+      shown[slot] = { ...build, abilityId: GAS_STAND_IN };
+    }
+  }
   for (const slot of present) {
-    if (shown[slot]!.abilityId === "neutralizinggas") fail("Neutralizing Gas is not modelled in 2v2.");
     if (shown[slot]!.abilityId === "imposter") fail("Imposter is not modelled in 2v2.");
   }
   if (reason) return { slots: empty, reason };
@@ -3055,7 +3205,12 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
     return [slot, needs];
   })) as Record<DoublesSlotId, DoublesSlotId[][]>;
   if (reason) return { slots: empty, reason };
-  const settleA = (slot: DoublesSlotId, rep: DoublesSlotId) => settleAbilities(shown[slot]!, shown[rep]!, field, runtime, SLOT_POSITION[slot], tailwind(rep));
+  const settleA = (slot: DoublesSlotId, rep: DoublesSlotId) => {
+    const settled = settleAbilities(shown[slot]!, shown[rep]!, field, runtime, SLOT_POSITION[slot], tailwind(rep), !!gas && !holders.includes(slot));
+    // A Tera form's ability the gas suppresses (Embody Aspect, Tera Shell, Teraform Zero) stands in too.
+    if (settled.suppressed && gas) gassed(slot, settled.suppressed, true);
+    return settled;
+  };
   const repA = Object.fromEntries(present.map((slot) => [slot, pick(slot, needsA[slot])])) as Record<DoublesSlotId, DoublesSlotId | null>;
   if (reason) return { slots: empty, reason };
   const abilities = Object.fromEntries(present.map((slot) => [slot, settleA(slot, repA[slot]!)])) as Record<DoublesSlotId, ReturnType<typeof settleAbilities>>;
@@ -3124,7 +3279,7 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
     const entry = entryStagesOf(build, build.abilityId, itemOn, field.terrain, tailwind(slot), runtime);
     const boosts = Object.fromEntries(COMBAT_STATS.map((stat) => [stat, clampStage((build.boosts[stat] ?? 0) + (entry.stages[stat] ?? 0))])) as BattleBuild["boosts"];
     const folded: BattleBuild = { ...build, boosts, ...(entry.seed ? { itemId: "" } : {}) };
-    slots[slot] = { build, folded, items, lines: [...lines[slot], ...items.lines], representative: reps[slot] };
+    slots[slot] = { build, folded, items, lines: [...gasLines[slot], ...lines[slot], ...items.lines], representative: reps[slot] };
   }
-  return { slots, reason };
+  return { slots, reason, gas };
 }

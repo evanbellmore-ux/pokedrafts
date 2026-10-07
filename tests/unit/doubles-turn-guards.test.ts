@@ -9,8 +9,8 @@ import type { BattleBuild, BattleConditions, BattleGame, BattleStatus, MoveConte
 /**
  * Every "not estimated" row of SPEC §2.2 with its exact reason text. A turn that meets one is "not-estimated" as a whole, and
  * still lists each damaging move's damage at the start of the turn (startRows), except where the guard is the start itself
- * (Neutralizing Gas, Imposter, Commander, Trace, Download, a Starf Berry, two Pokémon acting on one): no start row is exact
- * there, so none is required. Presence rows trigger when the Pokémon or move is in the turn; event rows only when the event
+ * (Imposter, Commander, Trace, Download, a Starf Berry, two Pokémon acting on one): no start row is exact there, so none is
+ * required. Neutralizing Gas is modelled from the turn's start (calculator-ngas-2v2.test.ts has its guards). Presence rows trigger when the Pokémon or move is in the turn; event rows only when the event
  * happens on some branch. Level 50, 0 EVs / Stat Points, Serious nature.
  */
 type P = {
@@ -99,10 +99,11 @@ describe("moves and abilities that are out in 2v2 (presence)", () => {
     }
   });
 
-  it("names Neutralizing Gas, Imposter and Commander with Dondozo on its side", async () => {
+  it("names Imposter and Commander with Dondozo on its side; Neutralizing Gas is modelled", async () => {
     const sv = await game("scarlet_violet");
     const base = { "opponent-left": idle("venusaur"), "opponent-right": { id: "garchomp", move: "dragonclaw", target: "own-left" as const } };
-    expectReason(turn(sv, { "own-left": idle("weezinggalar", { ability: "neutralizinggas" }), "own-right": idle("charizard"), ...base }), "Neutralizing Gas is not modelled in 2v2.");
+    // Dragon Claw has no effect on Fairy-type Weezing-Galar: the gas stays, so the turn is estimated (ngas-pp N1).
+    expect(calculateDoublesTurn(turn(sv, { "own-left": idle("weezinggalar", { ability: "neutralizinggas" }), "own-right": idle("charizard"), ...base })).status).toBe("ready");
     expectReason(turn(sv, { "own-left": idle("ditto", { ability: "imposter" }), "own-right": idle("charizard"), ...base }), "Imposter is not modelled in 2v2.");
     expectReason(turn(sv, { "own-left": idle("tatsugiri", { ability: "commander" }), "own-right": idle("dondozo", { ability: "unaware" }), ...base }), "Commander is not modelled in 2v2.");
     // Commander with no Dondozo on its side does nothing in 2v2.
@@ -119,21 +120,29 @@ describe("events that are out in v1", () => {
     }), "Dancer is not modelled.", ["opponent-left"]);
   });
 
-  it("Battery, Power Spot and Steely Spirit on the attacker's partner (Flower Gift is modelled: doubles-turn-fixes)", async () => {
+  it("Battery, Power Spot and Steely Spirit on the attacker's partner are modelled (doubles-start-rows.test.ts; Flower Gift: doubles-turn-fixes)", async () => {
     const sv = await game("scarlet_violet");
     const swsh = await game("sword_shield");
-    expectReason(turn(sv, {
+    // The hit into Blastoise with the partner's power boost, as pinned Showdown deals it (data/abilities.ts onAllyBasePower;
+    // the start-rows oracle cases SRG1-SRG3 of scripts/.cache/calc-audit/startrows/fix/cases-sr.ts).
+    const hit = (input: DoublesTurnInput) => {
+      const result = calculateDoublesTurn(input);
+      expect(result.status).toBe("ready");
+      const found = result.status === "ready" ? result.steps.find((step) => step.slot === "own-right")?.hits.find((each) => each.slot === "opponent-right") : undefined;
+      return found && { kind: found.kind, min: found.min, max: found.max };
+    };
+    expect(hit(turn(sv, {
       "own-left": idle("charjabug"), "own-right": { id: "vikavolt", move: "thunderbolt", target: "opponent-right" },
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Battery on a partner is not modelled.", ["own-right"]);
-    expectReason(turn(swsh, {
+    }))).toEqual({ kind: "calculated", min: 174, max: 206 });
+    expect(hit(turn(swsh, {
       "own-left": idle("stonjourner"), "own-right": { id: "charizard", move: "flamethrower", target: "opponent-right" },
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Power Spot on a partner is not modelled.", ["own-right"]);
-    expectReason(turn(swsh, {
+    }))).toEqual({ kind: "calculated", min: 34, max: 41 });
+    expect(hit(turn(swsh, {
       "own-left": idle("perrserker", { ability: "steelyspirit" }), "own-right": { id: "zamazenta", move: "ironhead", target: "opponent-right" },
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Steely Spirit on a partner is not modelled.", ["own-right"]);
+    }))).toEqual({ kind: "calculated", min: 28, max: 34 });
   });
 
   it("Trace with a random source or copying Intimidate; Download with a foe's entry boost", async () => {

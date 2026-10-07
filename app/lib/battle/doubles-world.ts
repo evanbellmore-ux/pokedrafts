@@ -28,7 +28,8 @@ export type MonState = {
   /** It used Charge before (its next Electric attack doubles), until an Electric move uses it up. */
   charged: boolean;
   protect: ProtectKind | null;
-  centre: "followme" | "ragepowder" | null;
+  /** It is the centre of attention (doubles-turn.ts redirection): its Follow Me or Rage Powder; Spotlight in the start rows only. */
+  centre: "followme" | "ragepowder" | "spotlight" | null;
   /** Helping Hand received this turn. */
   helpingHand: number;
   /** It took damage this turn (sim/battle.ts spreadDamage hurtThisTurn). */

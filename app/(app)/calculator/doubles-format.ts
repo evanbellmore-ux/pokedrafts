@@ -148,15 +148,15 @@ const ROW_KINDS: Record<MoveDamageResult["kind"], string> = {
 };
 
 /**
- * A move's damage into one Pokémon at the start of the turn: "Flamethrower · Charizard → Blastoise: 26–31 damage (…)".
- * `chosen` as for hitLine.
+ * A move's damage into one Pokémon at the start of the turn: "Flamethrower · Charizard → Blastoise: 26–31 damage (…)",
+ * then where the move goes when the row says (" · Lightning Rod: Raichu takes Thunderbolt."). `chosen` as for hitLine.
  */
 export function startRowLine(entry: DoublesStartRow, names: DoublesNames, runtime: BattleRuntime, chosen = false) {
   const { row } = entry;
   const name = row.effectiveName ?? runtime.movesById.get(row.moveId)?.name ?? row.moveId;
   const hits = row.kind === "calculated" ? hitRangeText(row, chosen) : null;
   const result = row.kind === "calculated" ? `${damageText(row)}${hits ? `, ${hits}` : ""}` : row.reason ?? ROW_KINDS[row.kind];
-  return `${name} · ${names[entry.slot]}${ARROW}${names[entry.target]}: ${result}`;
+  return `${name} · ${names[entry.slot]}${ARROW}${names[entry.target]}: ${result}${entry.fact ? ` · ${entry.fact}` : ""}`;
 }
 
 /**

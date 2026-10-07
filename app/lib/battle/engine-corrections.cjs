@@ -40,6 +40,86 @@ if (!util.chainMods.corrected) {
 }
 
 /*
+ * A doubles partner's power boosts (calculate.ts partnerPowerBoosts: Battery, Power Spot and Steely Spirit on the
+ * attacker's partner) are base power modifiers in pinned Showdown (data/abilities.ts battery, powerspot, steelyspirit
+ * onAllyBasePower, priority 22): chained into the BasePower event's modifier with every other one (sim/battle.ts
+ * chainModify) before it is applied. The engine applies a partner's Steely Spirit to Attack instead (gen789.js
+ * calculateAtModsSMSSSV isSteelySpirit) and its Champions mechanics read no isBattery or isPowerSpot, so the app adds
+ * them to the base power chain here: the engine reads util.chainMods from this object at call time, and only that chain
+ * has the bounds 41 and 2097152 (gen789.js, champions.js calculateBasePower). Showdown chains by handler priority and
+ * the engine in its own order; with three or more modifiers the order can change the chained value, so each chain is
+ * taken in every order, and its values are kept (`values`, the same set for every such chain of the run, else null) to
+ * run the engine again at each (`forced`).
+ */
+if (!util.chainMods.partnerPower) {
+  const inner = util.chainMods;
+  const state = { mods: null, forced: null, order: 0, values: undefined };
+  /** The values `mods` chains to in each distinct order of the multiset, ascending. */
+  const chainValues = (mods, lowerBound, upperBound) => {
+    const live = mods.filter((mod) => mod !== 4096);
+    if (live.length < 3) return [inner(live, lowerBound, upperBound)];
+    const counts = new Map();
+    for (const mod of live) counts.set(mod, (counts.get(mod) ?? 0) + 1);
+    const chain = [];
+    const values = new Set();
+    const walk = () => {
+      if (chain.length === live.length) { values.add(inner(chain, lowerBound, upperBound)); return; }
+      for (const [mod, left] of counts) {
+        if (!left) continue;
+        counts.set(mod, left - 1);
+        chain.push(mod);
+        walk();
+        chain.pop();
+        counts.set(mod, left);
+      }
+    };
+    walk();
+    return [...values].sort((a, b) => a - b);
+  };
+  const withPower = (mods, lowerBound, upperBound) => {
+    if (!state.mods || lowerBound !== 41 || upperBound !== 2097152) return inner(mods, lowerBound, upperBound);
+    const all = [...mods, ...state.mods];
+    const values = chainValues(all, lowerBound, upperBound);
+    if (values.length > 1) {
+      state.order = Math.max(state.order, all.filter((mod) => mod !== 4096).length);
+      const key = values.join();
+      state.values = state.values === undefined || (state.values && state.values.join() === key) ? values : null;
+      if (state.forced !== null && values.includes(state.forced)) return state.forced;
+    }
+    return inner(all, lowerBound, upperBound);
+  };
+  withPower.corrected = inner.corrected;
+  withPower.partnerPower = state;
+  util.chainMods = withPower;
+}
+
+/**
+ * Runs `run` with `mods` (4096ths) added to every base power chain the engine computes in it, and returns its result
+ * with `order`: the most modifiers of one of those chains whose value depended on their order (0: none), and `values`:
+ * the values such a chain takes in each order (null when two chains of the run differ). `forced`: a value of `values`
+ * each such chain takes instead of the engine's order.
+ * @template T
+ * @param {number[]} mods
+ * @param {() => T} run
+ * @param {number | null} [forced]
+ * @returns {{ result: T, order: number, values: number[] | null }}
+ */
+exports.withPowerMods = (mods, run, forced = null) => {
+  const state = util.chainMods.partnerPower;
+  const before = { mods: state.mods, forced: state.forced, order: state.order, values: state.values };
+  state.mods = mods;
+  state.forced = forced;
+  state.order = 0;
+  state.values = undefined;
+  try {
+    const result = run();
+    return { result, order: state.order, values: state.values ?? null };
+  } finally {
+    Object.assign(state, before);
+  }
+};
+
+/*
  * The hit an intact Ice Face or Disguise takes is calculated at a neutral type effectiveness: pinned Showdown
  * data/abilities.ts iceface and disguise onEffectiveness return 0 for each of the holder's types the move does
  * not miss (sim/pokemon.ts runEffectiveness), before onDamage gives the hit 0. The engine reads
