@@ -149,7 +149,7 @@ describe("Shell Side Arm ties", () => {
     const tie = row(championsRuntime, attacker, hydreigon);
     const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
     expect(renderToStaticMarkup(createElement(MoveResults, {
-      rows: [tie], moveIds: ["shellsidearm"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(), contexts: {},
+      rows: [tie], moveIds: ["shellsidearm"], ownerId: "0:0", selectedMoveId: null, onSelectMove: vi.fn(), contexts: {},
       onContextChange: vi.fn(), abilityId: "regenerator", itemId: "", attackerName: "Slowbro", defenderName: "Hydreigon", defenderHP: 167,
     }))).toContain("50% chance of a physical hit: 27–33 HP (16.17–19.76% of max HP)");
     const details = renderToStaticMarkup(createElement(MoveDetails, { moveId: "shellsidearm", row: tie, id: "d", context: {}, abilityId: "regenerator", itemId: "", onContextChange: vi.fn() }));

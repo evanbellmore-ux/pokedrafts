@@ -48,6 +48,10 @@ function subscribeReduced(onChange: () => void) {
 }
 const reducedNow = () => window.matchMedia(REDUCED).matches;
 const reducedOnServer = () => false;
+/** prefers-reduced-motion (false while server rendering). The replay screen's playback reads it too. */
+export function useReducedMotion(): boolean {
+  return useSyncExternalStore(subscribeReduced, reducedNow, reducedOnServer);
+}
 
 /** A battle seen for the first time (mounting, a rematch): nothing it already showed is replayed. */
 function fresh(battle: Battle): State {
@@ -77,7 +81,7 @@ function advance(state: State): State {
 const skipped = (state: State) => stopped(state, null);
 
 export function useTurnPlayback(battle: Battle): TurnPlayback {
-  const reducedMotion = useSyncExternalStore(subscribeReduced, reducedNow, reducedOnServer);
+  const reducedMotion = useReducedMotion();
   const [state, setState] = useState<State>(() => fresh(battle));
   // A new snapshot is read during render (as useTurnControls reads a new request), so its board never shows before its steps.
   let current = state;

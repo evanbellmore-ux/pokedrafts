@@ -459,7 +459,6 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             itemId={source.build.itemId}
             attackerName={speciesName(paneSlot)}
             defenderName={speciesName(into)}
-            sourcePosition={paneSlot.endsWith("left") ? "left" : "right"}
             positions={{ source: SLOT_POSITION[paneSlot], receiver: relativePosition(paneSlot, into).replace("-", " ") }}
             heading="Moves"
             turnOrderFromTurn

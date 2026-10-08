@@ -15,7 +15,7 @@ import { boardView, logTurns, moveRequest, report, runtime, switchRequest, train
 const ownName = (key: string) => trainingSetup().own.members.find((member) => member.key === key)?.name ?? null;
 
 function battle(patch: Partial<TrainingBattle> = {}): TrainingBattle {
-  return { id: 1, setup: trainingSetup(), seed: null, phase: { kind: "choose", request: moveRequest() }, board: boardView(), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), ...patch };
+  return { id: 1, setup: trainingSetup(), seed: null, phase: { kind: "choose", request: moveRequest() }, board: boardView(), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), savedId: "saved-1", startedAt: 0, ...patch };
 }
 
 describe("report text", () => {

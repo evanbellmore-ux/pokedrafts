@@ -150,6 +150,22 @@ describe("Training setup", () => {
     expect(setup.info).toEqual(DEFAULT_INFO);
   });
 
+  it("states a missing team, opponent or league once per side, as a fact", () => {
+    const base = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const count = (html: string, fact: string) => html.split(`>${fact}</p>`).length - 1;
+    const none = render(snapshotWith(), session(), { ...base, selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" }).html;
+    expect(count(none, "No team chosen.")).toBe(2);
+    const empty = render(snapshotWith(), session(), { ...base, leagues: [], selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" }).html;
+    expect(count(empty, "No leagues.")).toBe(2);
+    const noOpponent = render(snapshotWith(), session(), { ...base, opponentId: "" }).html;
+    expect(count(noOpponent, "No opponent chosen.")).toBe(1);
+    // Teams that failed to load: the picker's alert on each side, not the roster's "Could not load this league's teams." too.
+    const failed = render(snapshotWith(), session(), { ...base, teamsStatus: "error", data: null }).html;
+    expect(failed.split("League teams unavailable").length - 1).toBe(2);
+    expect(failed).not.toContain("Could not load this league&#x27;s teams.");
+    expect(none + empty + noOpponent).not.toMatch(/Choose (a|an|your)\b|manual|Join or create/);
+  });
+
   it("lists local blockers as facts", () => {
     const short = rosterState(OWN_ROSTER.slice(0, 5), OPPONENT_ROSTER);
     const draft = createSetupDraft();

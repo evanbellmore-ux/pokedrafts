@@ -52,11 +52,12 @@ describe("PokemonPanel 2v2 props", () => {
     const html = panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn() });
     expect(html).toContain("left Attack Stat Points");
     expect(html).toContain('aria-label="Left Pokémon stats and Stat Points"');
-    expect(html).toContain("Apply Intimidate to the right Pokémon");
-    expect(panel(usual("incineroar", "intimidate"), { side: "defender", onApplyIntimidate: vi.fn() })).toContain("Apply Intimidate to the left Pokémon");
+    // No side in the text: 1v1 passes the other Pokémon's name ("Apply Intimidate to Blastoise").
+    expect(html).toContain(">Apply Intimidate</button>");
+    expect(panel(usual("incineroar", "intimidate"), { side: "defender", onApplyIntimidate: vi.fn() })).toContain(">Apply Intimidate</button>");
     expect(panel(usual("gardevoir", "trace"))).toContain("<option value=\"\" selected=\"\">The other Pokémon’s ability</option>");
     // The props' 1v1 values give the same markup.
-    expect(panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn(), position: "left", intimidateLabel: "Apply Intimidate to the right Pokémon" })).toBe(html);
+    expect(panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn(), position: "left", intimidateLabel: "Apply Intimidate" })).toBe(html);
     expect(panel(usual("charizard", "plus"), { abilityActivationFact: null })).toBe(panel(usual("charizard", "plus")));
     expect(panel(usual("gardevoir", "trace"), { tracedUnsetLabel: "The other Pokémon’s ability" })).toBe(panel(usual("gardevoir", "trace")));
   });
@@ -82,13 +83,17 @@ describe("PokemonChooser and MechanicControls 2v2 props", () => {
     side: "attacker", build: usual("charizard"), open: true, onClose: vi.fn(), onChange: vi.fn(), ...props,
   }));
 
-  it("keeps the 1v1 labels without them, and names the slot with them", () => {
+  it("names the Pokémon, not its side, in 1v1 visible text, keeps the side in accessible names, and names the slot with the props", () => {
     const html = chooser();
-    expect(text(html)).toContain("Change left Pokémon");
-    expect(text(html)).toContain("Find left Pokémon");
+    expect(text(html)).toContain("Change Charizard");
+    expect(text(html)).toContain("Find Pokémon");
+    expect(text(html)).not.toMatch(/\b(left|right|Left|Right)\b/);
     expect(html).toContain('aria-label="Left Pokémon choices"');
-    expect(chooser({ position: "left", label: "Left Pokémon" })).toBe(html);
-    expect(text(chooser({ side: "defender" }))).toContain("Change right Pokémon");
+    expect(html).toContain('aria-label="Next left Pokémon page"');
+    expect(chooser({ label: "Left Pokémon" })).toBe(html);
+    const right = chooser({ side: "defender" });
+    expect(text(right)).toContain("Change Charizard");
+    expect(right).toContain('aria-label="Right Pokémon choices"');
     const slot = chooser({ position: "opponent's right", label: "Opponent's right Pokémon" });
     expect(text(slot)).toContain("Change opponent's right Pokémon");
     expect(text(slot)).toContain("Find opponent's right Pokémon");
@@ -164,7 +169,7 @@ describe("MoveResults 2v2 props", () => {
   const results = (props: Partial<ComponentProps<typeof MoveResults>> = {}) => {
     const sourceBuild = usual("magnezone", "analytic");
     return render(createElement(MoveResults, {
-      rows: [needsOrder], moveIds: ["flashcannon"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: "flashcannon", onSelectMove: vi.fn(), contexts: {},
+      rows: [needsOrder], moveIds: ["flashcannon"], ownerId: "0:0", selectedMoveId: "flashcannon", onSelectMove: vi.fn(), contexts: {},
       onContextChange: vi.fn(), abilityId: sourceBuild.abilityId, itemId: sourceBuild.itemId, attackerName: "Magnezone", defenderName: "Blastoise", defenderHP: 154,
       sourceBuild, gameType: "Doubles", ...props,
     }));
@@ -174,16 +179,17 @@ describe("MoveResults 2v2 props", () => {
     for (const wide of [false, true]) {
       viewport.wide = wide;
       const html = results();
-      expect(text(html)).toContain("Magnezone (left) → Blastoise (right) (154 current HP).");
+      // 1v1 names the two Pokémon only (no left/right); positions (2v2 slots, a 1v1 mirror's teams) follow the names.
+      expect(text(html)).toContain("Magnezone → Blastoise (154 current HP).");
       expect(text(html)).toContain("Turn order for Analytic");
       expect(results({ turnOrderFromTurn: false })).toBe(html);
-      expect(results({ positions: { source: "left", receiver: "right" } })).toBe(html);
+      expect(text(results({ positions: { source: "yours", receiver: "opponent's" } }))).toContain("Magnezone (yours) → Blastoise (opponent's) (154 current HP).");
     }
     viewport.wide = false;
   });
 
   it("names the 2v2 slots and leaves the order to the turn", () => {
-    expect(results({ heading: "Choose a move" })).toBe(results());
+    expect(results({ heading: "Moves" })).toBe(results());
     const html = results({ positions: { source: "your left", receiver: "left foe" }, turnOrderFromTurn: true, heading: "Moves" });
     expect(text(html)).toContain("Magnezone (your left) → Blastoise (left foe) (154 current HP).");
     expect(html).toMatch(/<h2 id="[^"]+-heading"[^>]*>Moves<\/h2>/);

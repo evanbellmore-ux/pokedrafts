@@ -109,7 +109,7 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <AIStatusPill ai={battle.ai} />
-            {!ended && <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { if (window.confirm("Forfeit this battle?")) session.forfeit(); }}>Forfeit</Button>}
+            {!ended && battle.board && <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { if (window.confirm("Forfeit this battle?")) session.forfeit(); }}>Forfeit</Button>}
           </div>
         </header>
         {error && <Alert variant="error" title="Choice not accepted">{error}</Alert>}
@@ -126,7 +126,7 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
               {!playing && controls.submitBar}
             </fieldset>
           </form>
-        ) : <p role="status" className="text-sm text-muted">Starting battle…</p>}
+        ) : <p role="status" className="text-sm text-muted">{battle.resumed ? "Resuming battle…" : "Starting battle…"}</p>}
         {battle.board && <BenchStrip board={shown} />}
       </div>
       <aside aria-labelledby={`${id}-log`} className={styles.logColumn}>

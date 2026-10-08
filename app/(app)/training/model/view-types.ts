@@ -6,6 +6,7 @@ import type { AppliedPaste } from "@/app/(app)/calculator/roster-prep";
 import type { ImportDraft } from "@/app/(app)/calculator/PokePasteImporter";
 import type { HabitsData } from "./habits-data";
 import type { InfoSettings } from "./info";
+import type { ReplayState, SavedBattlesState } from "./saved-battle";
 import type { ShowdownActiveData, ShowdownMoveData, ShowdownSidePokemon } from "./showdown-types";
 import type { EditorMoveOption, SuggestedSet, SuggestionSource } from "./usage";
 
@@ -286,6 +287,10 @@ export type TrainingBattle = {
   lastPreview: number[] | null;
   /** The habits sent with this battle's start (empty when none): "Your usual" at the battle end. */
   habitsBefore: HabitsData;
+  /** Saved battles: the record this battle autosaves to, its start time, and whether it was resumed from a reload. */
+  savedId: string;
+  startedAt: number;
+  resumed?: boolean;
 };
 export type TrainingSnapshot = {
   revision: number;
@@ -302,4 +307,7 @@ export type TrainingSnapshot = {
   suggestions: Record<DoublesSideId, SuggestionState>;
   /** Addendum A1.3: set editor move lists by speciesId, requested when an editor opens. */
   moveOptions: Readonly<Record<string, MoveOptionsState>>;
+  /** Saved battles in this browser (the setup screen's list, Resume, import) and the replay screen when one is open. */
+  saved: SavedBattlesState;
+  replay: ReplayState | null;
 };

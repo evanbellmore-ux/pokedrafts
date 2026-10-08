@@ -48,7 +48,7 @@ describe("Hidden Power IVs for USUM quick moves", () => {
     const magnezone = picked("magnezone");
     expect(magnezone.attacker.moves[3]).toMatchObject({ moveId: "hiddenpowerground", origin: "randomBattle" });
     expect(ivs(magnezone.attacker.build)).toEqual({ hp: 31, atk: 31, def: 31, spa: 30, spd: 30, spe: 31 });
-    expect(magnezone.notice).toBe("Left Pokémon Magnezone: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
+    expect(magnezone.notice).toBe("Your Pokémon Magnezone: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
     // Level 50 with no EVs: no stat changes.
     expect(getBuildStats(magnezone.attacker.build, us)).toEqual(getBuildStats(chosenBuild("magnezone", us, "Singles"), us));
     // Its usual Analytic (from its Random Battle sets) boosts: Magnezone is slower than both targets.
@@ -175,11 +175,11 @@ describe("Hidden Power IVs for USUM quick moves", () => {
 });
 
 describe("The Hidden Power IV notice", () => {
-  it("names the side on every species change and clears when the new Pokémon gets no IVs", () => {
+  it("names the team on every species change and clears when the new Pokémon gets no IVs", () => {
     let m = picked("magnezone");
-    expect(m.notice).toMatch(/^Left Pokémon Magnezone: IVs set/);
+    expect(m.notice).toMatch(/^Your Pokémon Magnezone: IVs set/);
     m = updateMatchupBuild(m, "defender", chosenBuild("magnezone", us, "Singles"));
-    expect(m.notice).toMatch(/^Right Pokémon Magnezone: IVs set/);
+    expect(m.notice).toMatch(/^The opponent's Pokémon Magnezone: IVs set/);
     m = updateMatchupBuild(m, "attacker", chosenBuild("garchomp", us, "Singles"));
     expect(m.notice).toBe("");
     // An edit that keeps the species leaves the notice alone.

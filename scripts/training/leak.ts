@@ -4,7 +4,8 @@
 // (JSON) and its decision (choice string, report, engine calls, rollout samples) must be identical. Two settings must make
 // a difference instead: aiKnows.exactHP for L1-hp and aiKnows.open.statPoints for L1-sp.
 // L2 (your direction): with youSee closed, no posted battle message names an AI item, ability, move, nature or Stat Point
-// the p1 channel has not shown, and no unbrought AI member is marked brought.
+// the p1 channel has not shown, and no unbrought AI member is marked brought; the same holds for every saved battle's replay
+// boards and for a resumed battle's messages, and each checkpoint leaves the worker sealed.
 //   npx tsx scripts/training/leak.ts [--battles 40 (dice 60)] [--fields sp,nature,…] [--l2 40] [--seat safe]
 import { join } from "node:path";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO } from "@/app/(app)/training/model/info";
@@ -33,6 +34,7 @@ async function main(): Promise<void> {
     const l2 = await runL2({ battles: l2Battles, seat, info: { aiKnows: DEFAULT_INFO.aiKnows, youSee: CLOSED_TEAM_SHEETS } });
     details.L2 = l2;
     rows.push({ gate: "L2 (your direction, youSee closed)", threshold: "0 hits over 40 battles", result: `${l2.hits.length} hits in ${l2.messages} messages over ${l2.battles} battles (${l2.forfeits} forfeited on a locked turn)`, status: l2.hits.length === 0 && l2.errors.length === 0 && l2.battles >= Math.min(40, l2Battles) ? "pass" : "fail", detail: [...l2.hits.slice(0, 10), ...l2.errors.slice(0, 5)].join(" | ") });
+    rows.push({ gate: "L2 saved battles (replay boards, Resume, sealed checkpoints)", threshold: "every battle replayed, its boards = the battle's; 0 hits (above)", result: `${l2.replays} replays (${l2.replayBoards} boards; ${l2.replayBoardsEqual} of ${l2.replays} equal to the battle's boards), ${l2.resumes} resumed, ${l2.checkpoints} checkpoints sealed`, status: l2.replays === l2.battles && l2.replayBoardsEqual === l2.replays && l2.resumes > 0 && l2.checkpoints > 0 && l2.hits.length === 0 && l2.errors.length === 0 ? "pass" : "fail" });
   }
   const dir = join(process.cwd(), "scripts", ".cache", "training", "leak");
   writeJson(join(dir, "leak.json"), details);

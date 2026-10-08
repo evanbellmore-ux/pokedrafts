@@ -190,7 +190,7 @@ describe("hit-count editor for these moves", () => {
 describe("Set hits prompts", () => {
   function results(runtime: BattleRuntime, attacker: BattleBuild, moveId: string, result: MoveDamageResult, context?: MoveContext) {
     return renderToStaticMarkup(createElement(MoveResults, {
-      rows: [result], moveIds: [moveId], ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(), contexts: context ? { [moveId]: context } : {},
+      rows: [result], moveIds: [moveId], ownerId: "0:0", selectedMoveId: null, onSelectMove: vi.fn(), contexts: context ? { [moveId]: context } : {},
       onContextChange: vi.fn(), abilityId: attacker.abilityId, itemId: attacker.itemId, attackerName: "Attacker", defenderName: "Defender",
       defenderHP: 100, runtime, sourceBuild: attacker,
     }));

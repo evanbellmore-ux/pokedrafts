@@ -11,7 +11,7 @@ import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { SHEET_FIELDS, type InfoView } from "../model/info";
 import type { MemberEdit, MoveOptionsState, TeamProblems, TeamSourceDraft } from "../model/view-types";
 import { takenItems } from "./set-editor";
-import { rosterMessage, TEAM_SIZE, toggleChosen, type ResolvedTeam } from "./team-draft";
+import { TEAM_SIZE, toggleChosen, type ResolvedTeam } from "./team-draft";
 import { exportTeamText } from "./team-export";
 import TeamMemberRow, { hiddenProblems } from "./TeamMemberRow";
 
@@ -35,8 +35,6 @@ export type TeamSourcePanelProps = {
 /** Training's facts in the calculator's league and paste panels (their defaults name the calculator's own controls). */
 export const TRAINING_PICKER_TEXT = {
   ownHeading: "League team",
-  ownLeagueHint: "No team chosen.",
-  ownTeamHint: "No team chosen.",
   pasteHeading: "PokéPaste",
   removeDescription: "This removes the team and its set edits from Setup.",
 } as const;
@@ -86,17 +84,20 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
       {source.mode === "league" ? (
         role === "own"
           ? <MyTeamPicker state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} loginNext="/training"
-            heading={TRAINING_PICKER_TEXT.ownHeading} leagueHint={TRAINING_PICKER_TEXT.ownLeagueHint} />
+            heading={TRAINING_PICKER_TEXT.ownHeading} />
           : <OpponentPicker state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} loginNext="/training"
-            onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} ownTeamHint={TRAINING_PICKER_TEXT.ownTeamHint} />
+            onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} />
       ) : (
         <PokePasteImporter role={role} owner={owner} applied={source.paste} runtime={runtime} onApply={apply} onRemove={removePaste}
           heading={TRAINING_PICKER_TEXT.pasteHeading} removeDescription={TRAINING_PICKER_TEXT.removeDescription}
           draft={source.pasteDraft ?? undefined} onDraftChange={(draft) => onSource((current) => ({ ...current, pasteDraft: draft }))} />
       )}
 
-      {source.mode === "league" && rosters.state.status === "ready" && team.status !== "ready" && team.status !== "loading" && team.message && (
-        <p role="status" className="wrap-anywhere text-sm text-muted">{rosterMessage(team.message)}</p>
+      {/* Without a chosen league, or with its teams unavailable, the picker above already states it ("No team chosen.", "No leagues.", "League teams unavailable"). */}
+      {source.mode === "league" && rosters.state.status === "ready" && rosters.state.teamsStatus !== "error"
+        && rosters.state.leagues.some((league) => league.id === rosters.state.selectedLeagueId)
+        && team.status !== "ready" && team.status !== "loading" && team.message && (
+        <p role="status" className="wrap-anywhere text-sm text-muted">{team.message}</p>
       )}
       {team.status === "ready" && team.candidates.length > 0 && (
         <fieldset className="min-w-0">

@@ -87,8 +87,8 @@ function isNullableString(value: unknown): value is string | null {
 }
 
 function parseLeagues(rows: unknown): CalculatorLeague[] {
-  const invalid = "League memberships could not be read. Please refresh and try again.";
-  const ambiguous = "League memberships are ambiguous. Please refresh and try again.";
+  const invalid = "League memberships could not be read.";
+  const ambiguous = "League memberships are ambiguous.";
   if (!Array.isArray(rows)) throw new Error(invalid);
 
   const leagueIds = new Set<string>();
@@ -138,7 +138,7 @@ function parseLeagues(rows: unknown): CalculatorLeague[] {
 }
 
 function parseMembers(rows: unknown): OverviewMember[] {
-  const invalid = "League members could not be read. Please refresh and try again.";
+  const invalid = "League members could not be read.";
   if (!Array.isArray(rows)) throw new Error(invalid);
   const seen = new Set<string>();
   return rows.map((row): OverviewMember => {
@@ -236,7 +236,7 @@ export function createRosterController(
           opponentId: "",
           data: null,
           teamsStatus: "error",
-          teamsMessage: "Your membership in this league is no longer available. Refresh and try again.",
+          teamsMessage: "Your membership in this league is no longer available.",
         });
         return;
       }

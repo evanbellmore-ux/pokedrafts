@@ -93,7 +93,7 @@ type Props = {
   requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
   /** The Pokémon's place in its labels ("your left" in 2v2); defaults to the side's "left" / "right". */
   position?: string;
-  /** The Intimidate button's text; defaults to applying it to the other 1v1 Pokémon. */
+  /** The Intimidate button's text ("Apply Intimidate to Blastoise"); "Apply Intimidate" by default. */
   intimidateLabel?: string;
   /** A fact shown instead of the ability-condition checkbox (2v2 Plus / Minus, which the ally's ability decides). */
   abilityActivationFact?: string | null;
@@ -236,7 +236,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
           <div className="flex flex-wrap items-end gap-2">
             <Field id={`${prefix}-required-move`} label={`Quick move to replace with ${requiredMove.name}`} error={errorFor("preparedMoves")} className="min-w-0 flex-1">
               <Select value={requiredSlot} onChange={(event) => setRequiredSlot(event.target.value)}>
-                <option value="">Choose a quick move</option>
+                <option value="">—</option>
                 {requiredMove.slots.map((label, index) => <option key={index} value={index}>{`Quick move ${index + 1}: ${label}`}</option>)}
               </Select>
             </Field>
@@ -274,7 +274,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       {build.abilityId === "intimidate" && onApplyIntimidate && (
         <div>
           <Button size="sm" variant="secondary" className="min-h-11" onClick={onApplyIntimidate}>
-            {intimidateLabel ?? <>Apply Intimidate to the {side === "attacker" ? "right" : "left"} Pokémon</>}
+            {intimidateLabel ?? "Apply Intimidate"}
           </Button>
           <p role="status" className="mt-1 text-xs text-text">{intimidateResult}</p>
         </div>

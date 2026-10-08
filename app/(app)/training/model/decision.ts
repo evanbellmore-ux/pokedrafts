@@ -126,6 +126,11 @@ export interface DecisionProvider {
   teamPreview(context: PreviewContext, options: DecideOptions): Promise<PreviewDecision>;
   chooseTurn(context: TurnContext, options: DecideOptions): Promise<TurnDecision>;
   chooseReplacements(context: SwitchContext, options: DecideOptions): Promise<SwitchDecision>;
+  /**
+   * Resume (saved battles): what chooseTurn would leave behind at this request (the belief's observation of it, the view
+   * observeTurn reads) and its question, without choosing. Absent: the worker calls chooseTurn and keeps its question.
+   */
+  replayTurn?(context: TurnContext, options: DecideOptions): Promise<Extract<PlayerQuestion, { kind: "turn" }>>;
   observeTurn(record: TurnRecord): void;
   observeBattle(record: BattleRecord): void;
   habits(): HabitsRecord;

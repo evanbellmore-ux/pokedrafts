@@ -153,10 +153,10 @@ describe("the 1v1 | 2v2 switch", () => {
     const moves = html.slice(html.indexOf('data-calculator-panel="moves"'), html.indexOf('data-calculator-panel="opponent"'));
     expect(moves.indexOf('data-calculator-mode-only="1v1"')).toBeLessThan(moves.indexOf("data-doubles-moves"));
     expect(count(moves, /Coverage and sources/g)).toBe(1);
-    // The 1v1 list keeps its heading; the 2v2 list's is a fact (the menu's name), not an instruction.
-    expect(count(moves, /Choose a move<\/h2>/g)).toBe(1);
+    // Both lists' headings are a fact (the menu's name), not an instruction.
+    expect(count(moves, /Choose a move<\/h2>/g)).toBe(0);
+    expect(count(moves, />Moves<\/h2>/g)).toBe(2);
     const twoMoves = moves.slice(moves.indexOf("data-doubles-moves"));
-    expect(count(twoMoves, /Choose a move<\/h2>/g)).toBe(0);
     expect(twoMoves).toMatch(/<h2 id="[^"]+" class="wrap-anywhere text-xl font-bold text-text">Moves<\/h2>/);
     expect(moves).toContain("Charizard (your left) → Blastoise (left foe)");
     // Each view's field summary once.

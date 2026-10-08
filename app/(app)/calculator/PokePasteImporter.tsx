@@ -67,7 +67,7 @@ function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: B
   );
 }
 
-export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon stay as manual builds." }: Props) {
+export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon keep their builds." }: Props) {
   const id = useId();
   const [localDraft, setLocalDraft] = useState<ImportDraft>(() => ({
     url: applied?.url ?? "", text: applied?.text ?? "", title: applied?.title ?? "",
@@ -159,7 +159,7 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
       setPreview({ team, text: result.paste, title: name, url: result.url, version: started, focusFrom: ownsFocus ? focused : null, scope, draftUrl: url });
     } catch (failure) {
       if (request.current !== controller || controller.signal.aborted || started !== version.current) return;
-      setError({ scope, message: failure instanceof Error ? failure.message : "Could not read PokéPaste. Paste the team text instead." });
+      setError({ scope, message: failure instanceof Error ? failure.message : "Could not read PokéPaste." });
       if (document.activeElement === cancelButton.current) returnFocus(urlInput.current);
     } finally {
       if (request.current === controller) { request.current = null; setPendingRequest(null); }
@@ -216,7 +216,7 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
             }}>{applied ? "Replace team" : "Import team"}{preview.team.members.length > selectable ? ` (${selectable} selectable)` : ""}</Button>
             <Button variant="secondary" onClick={() => { invalidate(); returnFocus(previewButton.current?.disabled ? urlInput.current : previewButton.current); }}>Cancel preview</Button>
           </div>
-          {!canApply && <p className="text-sm text-danger">Correct the reported issues in the text, then preview again. At least one selectable set is required.</p>}
+          {!canApply && <p className="text-sm text-danger">{[preview.team.diagnostics.some((entry) => entry.severity === "error") && "The team text has errors.", !selectable && "No selectable sets."].filter(Boolean).join(" ")}</p>}
         </div>
       )}
       <Dialog open={removeFor === scope} onReturnFocus={onReveal} onClose={() => setRemoveFor(null)} title="Remove imported team?" description={removeDescription} confirmLabel="Remove team" danger onConfirm={() => { setRemoveFor(null); onRemove(owner); }} />

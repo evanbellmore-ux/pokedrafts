@@ -9,8 +9,6 @@ import { ACTION_CLASSES, AIM_CLASSES, DECAY, TARGET_CLASSES, type AimClass, type
 
 export const MIN_TOTAL = 3;
 export const DECAY_FACT = `Recent battles count more (×${DECAY} per battle).`;
-export const THREATENED_FACT = "Threatened: the AI's estimate of a foe's best attack into it is half its HP or more.";
-export const BROUGHT_FACT = "Most brought counts a Pokémon once it entered the battle.";
 export const MOVES_SHOWN = 6;
 
 export const ACTION_LABEL: Record<ActionClass, string> = {

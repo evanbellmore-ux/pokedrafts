@@ -133,12 +133,13 @@ describe("PokePaste URL allowlist", () => {
     `https:\\pokepast.es\\${ID}`, `https://pokepast.es\\@example.com/${ID}`,
     `${URL}\\raw`, `${URL}\u007f`, `${URL}​`,
   ])("rejects noncanonical or disguised input %j", (input) => {
-    expect(() => parsePokePasteUrl(input)).toThrow(/valid HTTPS pokepast\.es.*paste the team text instead/);
+    // A fact only: the Team text field beside the link needs no instruction.
+    expect(() => parsePokePasteUrl(input)).toThrow(/^Not an HTTPS pokepast\.es paste link\.$/);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("rejects invalid input before starting a fetch or timeout", async () => {
-    await expect(fetchPokePaste("https://example.com/private")).rejects.toThrow(/paste the team text instead/);
+    await expect(fetchPokePaste("https://example.com/private")).rejects.toThrow(/^Not an HTTPS pokepast\.es paste link\.$/);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
@@ -212,7 +213,7 @@ describe("bounded direct PokePaste reads", () => {
     async (status) => {
       const h = jsonResponse(payload, { status });
       fetchMock.mockResolvedValueOnce(h.response);
-      await expect(fetchPokePaste(URL)).rejects.toThrow(/available paste.*paste the team text instead/);
+      await expect(fetchPokePaste(URL)).rejects.toThrow(/available paste/);
       expect(h.pull).not.toHaveBeenCalled();
       expect(h.cancel).toHaveBeenCalledTimes(1);
     },
@@ -229,7 +230,7 @@ describe("bounded direct PokePaste reads", () => {
     const h = jsonResponse();
     setResponseProperty(h.response, key as string, value);
     fetchMock.mockResolvedValueOnce(h.response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/unexpected or redirected.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/unexpected or redirected/);
     expect(h.pull).not.toHaveBeenCalled();
     expect(h.cancel).toHaveBeenCalledTimes(1);
   });
@@ -238,7 +239,7 @@ describe("bounded direct PokePaste reads", () => {
     const response = new Response(null);
     const text = vi.spyOn(response, "text");
     fetchMock.mockResolvedValueOnce(response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/no readable response body.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/no readable response body/);
     expect(text).not.toHaveBeenCalled();
   });
 
@@ -248,7 +249,7 @@ describe("bounded direct PokePaste reads", () => {
   ])("reports safe fallback text for a rejected fetch", async (error) => {
     fetchMock.mockRejectedValueOnce(error);
     const result = fetchPokePaste(URL);
-    await expect(result).rejects.toThrow(/could not be read.*paste the team text instead/);
+    await expect(result).rejects.toThrow(/could not be read/);
     await expect(result).rejects.not.toThrow(error.message);
   });
 
@@ -261,7 +262,7 @@ describe("bounded direct PokePaste reads", () => {
     const cancel = vi.spyOn(ReadableStreamDefaultReader.prototype, "cancel");
     fetchMock.mockResolvedValueOnce(new Response(stream));
     const result = fetchPokePaste(URL);
-    await expect(result).rejects.toThrow(/could not be read.*paste the team text instead/);
+    await expect(result).rejects.toThrow(/could not be read/);
     await expect(result).rejects.not.toThrow(/private stream diagnostic/);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(stream.locked).toBe(false);
@@ -287,7 +288,7 @@ describe("PokePaste encoding and schema validation", () => {
     const h = jsonResponse(data);
     const cancel = vi.spyOn(ReadableStreamDefaultReader.prototype, "cancel");
     fetchMock.mockResolvedValueOnce(h.response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid paste or metadata fields.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid paste or metadata fields/);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(h.stream.locked).toBe(false);
   });
@@ -298,7 +299,7 @@ describe("PokePaste encoding and schema validation", () => {
       const h = streamedResponse([encoder.encode(text)]);
       const cancel = vi.spyOn(ReadableStreamDefaultReader.prototype, "cancel");
       fetchMock.mockResolvedValueOnce(h.response);
-      await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid JSON.*paste the team text instead/);
+      await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid JSON/);
       expect(cancel).toHaveBeenCalledTimes(1);
       expect(h.stream.locked).toBe(false);
     },
@@ -312,7 +313,7 @@ describe("PokePaste encoding and schema validation", () => {
     const h = streamedResponse([...chunks]);
     const cancel = vi.spyOn(ReadableStreamDefaultReader.prototype, "cancel");
     fetchMock.mockResolvedValueOnce(h.response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid UTF-8.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid UTF-8/);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(h.stream.locked).toBe(false);
   });
@@ -324,7 +325,7 @@ describe("PokePaste response and team byte limits", () => {
     async (length) => {
       const h = jsonResponse(payload, { headers: { "content-length": length } });
       fetchMock.mockResolvedValueOnce(h.response);
-      await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB.*paste the team text instead/);
+      await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB/);
       expect(h.pull).not.toHaveBeenCalled();
       expect(h.cancel).toHaveBeenCalledTimes(1);
       expect(h.stream.locked).toBe(false);
@@ -336,7 +337,7 @@ describe("PokePaste response and team byte limits", () => {
     async (length) => {
       const h = jsonResponse(payload, { headers: { "content-length": length } });
       fetchMock.mockResolvedValueOnce(h.response);
-      await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid response size.*paste the team text instead/);
+      await expect(fetchPokePaste(URL)).rejects.toThrow(/invalid response size/);
       expect(h.cancel).toHaveBeenCalledTimes(1);
     },
   );
@@ -350,7 +351,7 @@ describe("PokePaste response and team byte limits", () => {
         encoder.encode(" "),
       ], { headers: length === undefined ? undefined : { "content-length": length } });
       fetchMock.mockResolvedValueOnce(h.response);
-      await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB.*paste the team text instead/);
+      await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB/);
       expect(h.pull).toHaveBeenCalledTimes(3);
       expect(h.cancel).toHaveBeenCalledTimes(1);
       expect(h.stream.locked).toBe(false);
@@ -360,7 +361,7 @@ describe("PokePaste response and team byte limits", () => {
   it("rejects an oversized single chunk immediately", async () => {
     const h = streamedResponse([new Uint8Array(RESPONSE_LIMIT + 1)]);
     fetchMock.mockResolvedValueOnce(h.response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB/);
     expect(h.pull).toHaveBeenCalledTimes(1);
     expect(h.cancel).toHaveBeenCalledTimes(1);
   });
@@ -388,7 +389,7 @@ describe("PokePaste response and team byte limits", () => {
     const h = jsonResponse({ ...payload, paste });
     const cancel = vi.spyOn(ReadableStreamDefaultReader.prototype, "cancel");
     fetchMock.mockResolvedValueOnce(h.response);
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/64 KiB.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/64 KiB/);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(h.stream.locked).toBe(false);
   });
@@ -402,7 +403,7 @@ describe("PokePaste response and team byte limits", () => {
       cancel,
     }, { highWaterMark: 0 });
     fetchMock.mockResolvedValueOnce(new Response(stream));
-    await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB.*paste the team text instead/);
+    await expect(fetchPokePaste(URL)).rejects.toThrow(/128 KiB/);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(stream.locked).toBe(false);
   });
@@ -510,7 +511,7 @@ describe("PokePaste cancellation, supersession and timeout cleanup", () => {
     const request = fetchPokePaste(URL, caller.signal);
     const settled = vi.fn();
     void request.then(settled, settled);
-    const failure = expect(request).rejects.toThrow(/timed out after 10 seconds.*paste the team text instead/);
+    const failure = expect(request).rejects.toThrow(/timed out after 10 seconds/);
     await vi.advanceTimersByTimeAsync(9_999);
     expect(settled).not.toHaveBeenCalled();
     expect(fetchMock.mock.calls[0][1]!.signal!.aborted).toBe(false);
@@ -529,7 +530,7 @@ describe("PokePaste cancellation, supersession and timeout cleanup", () => {
     const h = pendingResponse();
     fetchMock.mockResolvedValueOnce(h.response);
     const request = fetchPokePaste(URL, caller.signal);
-    const failure = expect(request).rejects.toThrow(/timed out.*paste the team text instead/);
+    const failure = expect(request).rejects.toThrow(/timed out/);
     await h.started;
     await vi.advanceTimersByTimeAsync(10_000);
     await failure;
@@ -548,7 +549,7 @@ describe("PokePaste cancellation, supersession and timeout cleanup", () => {
       else fetchMock.mockResolvedValueOnce(jsonResponse(outcome === "success" ? payload : {}).response);
       const request = fetchPokePaste(URL, caller.signal);
       if (outcome === "success") await expect(request).resolves.toEqual({ ...payload, url: URL });
-      else await expect(request).rejects.toThrow(/paste the team text instead/);
+      else await expect(request).rejects.toThrow(/^PokePaste (could not be read|returned invalid paste or metadata fields)\./);
       expect(add).toHaveBeenCalledTimes(1);
       expect(remove).toHaveBeenCalledWith("abort", add.mock.calls[0][1]);
       expect(vi.getTimerCount()).toBe(0);

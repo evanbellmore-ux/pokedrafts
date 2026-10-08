@@ -12,7 +12,7 @@ export const FORMAT_FACTS: readonly { term: string; value: string }[] = [
   { term: "Terastallization", value: "Not in Champions" },
   { term: "Timer", value: "Off" },
   { term: "AI", value: "Runs in your browser; never sees your choice for the turn or the battle's random rolls" },
-  { term: "Battles", value: "Not saved" },
+  { term: "Battles", value: "Saved in this browser (up to 100)" },
   { term: "Rules", value: "Pokémon Showdown c23d2e94" },
   { term: "Usage", value: USAGE_SOURCE_FACT },
 ];

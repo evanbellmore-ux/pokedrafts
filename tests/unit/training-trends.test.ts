@@ -397,6 +397,9 @@ describe("Your trends panel (SSR)", () => {
     expect(html.match(/data-training-trend-moves=/g)).toHaveLength(8);
     const visible = html.replace(/<[^>]+>/g, " ");
     expect(visible).not.toMatch(FORBIDDEN);
+    // No definition lines: Threatened's and Most brought's are in docs/training.md.
+    expect(visible).not.toMatch(/Threatened:|half its HP|counts a Pokémon once/);
+    expect(html.match(/<p\b/g)).toHaveLength(1);
     const button = elements.find((element) => element.type === "button" && element.props["data-training-trends-toggle"]);
     (button!.props.onClick as () => void)();
     expect(onToggle).toHaveBeenCalledWith(false);
@@ -413,7 +416,7 @@ describe("battle end comparison (SSR)", () => {
   function ended(habitsBefore: HabitsData): TrainingBattle {
     return {
       id: 1, setup: trainingSetup(), seed: "sodium,1", phase: { kind: "ended", result: "win", forfeited: false },
-      board: boardView({ turn: 3 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore,
+      board: boardView({ turn: 3 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore, savedId: "saved-1", startedAt: 0,
     };
   }
   const before: HabitsData = { ...emptyHabits(), battles: 4, classes: { "*": { protect: 9, switch: 4, "attack-ko": 10, "attack-best": 18 } } };

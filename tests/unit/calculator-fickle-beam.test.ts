@@ -38,7 +38,7 @@ describe("Fickle Beam", () => {
     const preview = previewRemainingHP(garchomp, row(garchomp), "high");
     expect(preview).toMatchObject({ status: "ready", damage: 144, remaining: 39, alternate: { chance: 0.3, damage: 284, remaining: 0 } });
     const html = renderToStaticMarkup(createElement(MoveResults, {
-      rows: [row(garchomp)], moveIds: ["ficklebeam"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(), contexts: {},
+      rows: [row(garchomp)], moveIds: ["ficklebeam"], ownerId: "0:0", selectedMoveId: null, onSelectMove: vi.fn(), contexts: {},
       onContextChange: vi.fn(), abilityId: "regenerator", itemId: "", attackerName: "Hydrapple", defenderName: "Garchomp", defenderHP: 183,
     }));
     expect(html).toContain("30% chance of doubled power: 240–284 HP (131.15–155.19% of max HP)");

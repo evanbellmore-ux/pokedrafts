@@ -267,14 +267,14 @@ describe("self-check against the reference search, which reruns the whole calcul
     const attacker = build(game, attackerId, attackerSpec), defender = build(game, defenderId, defenderSpec);
     const field = { ...createConditions(), gameType: "Singles" as const, multipleTargets: false };
     const searched = calculateMatchup(attacker, defender, field, {}, runtimes[game]);
-    USES_REFERENCE.on = true;
+    Object.assign(USES_REFERENCE, { on: true, skipNeeded: true });
     let reference: ReturnType<typeof calculateMatchup>;
     try {
       reference = calculateMatchup(attacker, defender, field, {}, runtimes[game]);
     } finally {
-      USES_REFERENCE.on = false;
+      Object.assign(USES_REFERENCE, { on: false, skipNeeded: false });
     }
-    // The budget's fallback is a different method; the reference walks `needed` only so far; the chances add in another order.
+    // The budget's fallback is a different method; the reference counts no `needed` (skipNeeded); the chances add in another order.
     const fellBack = (value: UsesToKO | undefined) => value?.kind === "uses" && value.notes.some((note) => note.startsWith("Too many roll sequences"));
     const comparable = (value: UsesToKO | undefined) => value?.kind === "uses"
       ? { ...value, needed: undefined, fasterChance: value.fasterChance?.toPrecision(12), chance: value.chance?.toPrecision(12) } : value;

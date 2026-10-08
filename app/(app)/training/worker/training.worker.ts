@@ -4,6 +4,7 @@ import { championsRuntime } from "@/app/lib/battle/runtime";
 import { createEngineProvider } from "../ai/engine-provider";
 import { BROWSER_VALVE_MS } from "../model/decision";
 import type { FromWorker, ToWorker } from "../model/worker-protocol";
+import { createBrowserSealer } from "./sealer";
 import { createTrainingWorker } from "./worker-handler";
 
 const scope = self as unknown as {
@@ -20,6 +21,8 @@ const handler = createTrainingWorker({
   now: () => performance.now(),
   randomHex,
   deadlineMs: BROWSER_VALVE_MS,
+  // Saved battles: each resolved turn's checkpoint, sealed with this browser's key (IndexedDB); none when unavailable.
+  sealer: createBrowserSealer(),
 });
 
 scope.addEventListener("message", (event) => handler.receive(event.data));

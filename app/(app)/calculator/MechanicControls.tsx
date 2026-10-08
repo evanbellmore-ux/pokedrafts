@@ -37,7 +37,7 @@ export function TeraTypeField({ build, runtime = championsRuntime, id, issues = 
     <Field id={id} label="Tera Type" error={issues.filter((issue) => issue.field === "configuration.teraType").map((issue) => issue.message).join(" ")}
       help={required ? `This form requires ${required}.` : undefined}>
       <Select value={value} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, teraType: event.target.value || undefined } })}>
-        <option value="">Choose Tera type</option>
+        <option value="">—</option>
         {value && !TERA_TYPES.some((type) => type === value) && <option value={value} disabled>{value} — invalid type</option>}
         {TERA_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
       </Select>
@@ -61,7 +61,7 @@ export default function MechanicControls({ build, runtime = championsRuntime, po
       {options.map(({ mechanic, label }) => {
         const active = build.mechanic === mechanic;
         const reason = !onToggle ? "Battle mechanic controls are unavailable."
-          : active ? null : build.game !== runtime.profile.id ? "Choose a build for this battle game."
+          : active ? null : build.game !== runtime.profile.id ? "This build is for another game."
             : validateMechanic({ ...build, mechanic }, runtime)
               .filter((issue) => ["mechanic", "configuration.teraType", "configuration.gigantamax", "configuration.dynamaxLevel"].includes(issue.field))
               .map((issue) => issue.message).join(" ") || null;

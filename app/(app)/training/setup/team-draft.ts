@@ -67,17 +67,6 @@ export function pasteKey(runtime: BattleRuntime, role: DoublesSideId, pasteId: s
   return JSON.stringify(["paste", runtime.identity, role, pasteId, index]);
 }
 
-/** The calculator's roster messages, worded for Training as facts (Training has no manual Pokémon selection). */
-export function rosterMessage(message: string) {
-  return message
-    .replace("Choose a team in Opponent to see their roster.", "No opponent chosen.")
-    .replace("Choose your team in My team to see its league rosters.", "No team chosen.")
-    .replace("Join a league to use roster shortcuts, or select Pokémon manually.", "No leagues.")
-    .replace(/\s*Use manual selection rather than guessing\./, "")
-    .replace(/\s*Use Retry teams or select Pokémon manually\./, "")
-    .replace(/\s*Choose the Pokémon manually\./, "")
-    .replace(/,? or (select|choose) Pokémon manually\./, ".");
-}
 function speciesName(runtime: BattleRuntime, speciesId: string | null, fallback: string) {
   return (speciesId && runtime.speciesById.get(speciesId)?.name) || fallback;
 }
@@ -113,7 +102,7 @@ function leagueCandidate(choice: RosterChoice, runtime: BattleRuntime): Candidat
     // The roster's sprite is the Mega form's: the base form's sprite instead (from speciesId).
     ...(choice.spriteName && !mega ? { spriteName: choice.spriteName } : {}),
     eligible,
-    reason: eligible ? null : rosterMessage(choice.reason ?? "This roster name does not resolve to one Champions Pokémon."),
+    reason: eligible ? null : choice.reason ?? "This roster name does not resolve to one Champions Pokémon.",
     suggest: eligible && source?.kind === "league"
       ? { key: source.key, speciesId: mega?.speciesId ?? source.speciesId, abilityId: source.abilityId ?? null, ...(mega ? { itemId: mega.stone } : {}) }
       : null,

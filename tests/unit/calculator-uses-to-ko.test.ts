@@ -507,14 +507,14 @@ describe("self-check against the reference search, which reruns the whole calcul
   it.each(cases)("%s %s into %s: every row agrees", (game, attackerId, attackerSpec, defenderId, defenderSpec, field) => {
     const attacker = build(game, attackerId, attackerSpec), defender = build(game, defenderId, defenderSpec);
     const searched = calculateMatchup(attacker, defender, singles(field), {}, runtimes[game]);
-    USES_REFERENCE.on = true;
+    Object.assign(USES_REFERENCE, { on: true, skipNeeded: true });
     let reference: ReturnType<typeof calculateMatchup>;
     try {
       reference = calculateMatchup(attacker, defender, singles(field), {}, runtimes[game]);
     } finally {
-      USES_REFERENCE.on = false;
+      Object.assign(USES_REFERENCE, { on: false, skipNeeded: false });
     }
-    // The budget's fallback is a different method; the reference walks `needed` only so far.
+    // The budget's fallback is a different method; the reference counts no `needed` (skipNeeded).
     const fellBack = (value: UsesToKO | undefined) => value?.kind === "uses" && value.notes.some((note) => note.startsWith("Too many roll sequences"));
     // The two searches add the same chances in a different order.
     const comparable = (value: UsesToKO | undefined) => value?.kind === "uses"
@@ -527,5 +527,8 @@ describe("self-check against the reference search, which reruns the whole calcul
       if (entry.usesToKO) compared++;
     }
     expect(compared).toBeGreaterThan(20);
-  });
+    // The reference reruns the whole calculation for every state: Mew's Metronome case, the slowest, takes about 1.2 s
+    // alone and 2.5 s with the whole suite's workers busy (1.7 s and 3.6 s while the reference also counted `needed`),
+    // so these checks get their own limit rather than vitest's 5 s.
+  }, 30_000);
 });

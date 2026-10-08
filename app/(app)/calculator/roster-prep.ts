@@ -63,7 +63,7 @@ export function rosterChoices(leagueId: string, team: TeamRoster, runtime: Battl
         kind: "league", key, runtimeIdentity: runtime.identity, leagueId, memberId: team.member_id, rosterId: team.id, name: pokemon.name, speciesId,
         ...(resolved.status === "resolved" && resolved.abilityId ? { abilityId: resolved.abilityId } : {}),
       } : null,
-      reason: duplicate ? "Duplicate roster name. Choose the Pokémon manually." : resolved.status === "resolved" ? null : resolved.reason,
+      reason: duplicate ? "Duplicate roster name." : resolved.status === "resolved" ? null : resolved.reason,
       spriteName: pokemon.name,
     };
   });
@@ -81,19 +81,19 @@ export function getRosterPanel(state: CalculatorRosterState, role: RosterRole, r
   if (state.status === "loading") return empty("Loading your leagues…", "loading");
   if (state.status !== "ready") return empty("League rosters are unavailable.", "error");
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
-  if (!league) return empty(state.leagues.length ? "Choose your team in My team to see its league rosters." : "Join a league to use roster shortcuts, or select Pokémon manually.");
-  if (role === "opponent" && !state.opponentId) return empty("Choose a team in Opponent to see their roster.");
+  if (!league) return empty(state.leagues.length ? "No team chosen." : "No leagues.");
+  if (role === "opponent" && !state.opponentId) return empty("No opponent chosen.");
   if (state.teamsStatus === "loading") return empty("Loading current team rosters…", "loading");
-  if (state.teamsStatus === "error") return empty("Could not load this league's teams. Use Retry teams or select Pokémon manually.", "error");
+  if (state.teamsStatus === "error") return empty("Could not load this league's teams.", "error");
   if (!state.data || state.data.leagueId !== league.id || state.teamsStatus !== "ready") return empty("Current team rosters are not loaded.");
   const memberId = role === "own" ? league.memberId : state.opponentId;
   const member = state.data.members.find((entry) => entry.id === memberId);
-  if (!member) return empty("This team is no longer available. Refresh teams or choose another opponent.");
+  if (!member) return empty("This team is no longer available.");
   const name = teamNameLabel(member.team_name);
   if (!league.draftCompleted) return empty("This league's draft is not complete. Current rosters appear after it finishes.", "empty", name);
   const teams = state.data.teams.filter((team) => team.member_id === memberId);
   if (!teams.length) return empty("No finalized roster is available for this team yet.", "empty", name);
-  if (teams.length !== 1) return empty("Multiple rosters were returned for this team. Use manual selection rather than guessing.", "error", name);
+  if (teams.length !== 1) return empty("Multiple rosters were returned for this team.", "error", name);
   if (!teams[0].pokemon.length) return empty("This team's current roster is empty.", "empty", name);
   return { status: "ready", teamName: name, message: null, choices: rosterChoices(league.id, teams[0], runtime) };
 }
@@ -107,7 +107,7 @@ export function getTeamPanel(current: PreparedMatchup, state: CalculatorRosterSt
     return { ...panel, choices: panel.choices.map((choice) => ({ ...choice, owner })) };
   }
   const paste = selection.paste;
-  if (!paste) return { status: "empty", teamName: null, message: "Import a PokéPaste link or team text in the team source panel, or choose Pokémon manually.", choices: [] };
+  if (!paste) return { status: "empty", teamName: null, message: "No team imported.", choices: [] };
   return {
     status: "ready", teamName: paste.title, message: "Imported sets",
     choices: paste.team.members.map((member) => {
@@ -401,7 +401,7 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
     const result = applyIntimidate({ ...holder, abilityId: "intimidate" }, otherBuild, {
       magicRoom: current.field.magicRoom, wonderRoom: current.field.wonderRoom, terrain: current.field.terrain, gameType: current.field.gameType,
       tailwind: { source: sideOf(side).tailwind, target: sideOf(otherSide).tailwind },
-      positions: { source: side === "attacker" ? "left" : "right", target: otherSide === "attacker" ? "left" : "right" },
+      positions: { source: teamWord(current[side]), target: teamWord(current[otherSide]) },
     }, current.runtime);
     holder = { ...holder, boosts: result.source.boosts, itemId: result.source.itemId, copiedIntimidateStored: intimidatedKey(otherBuild, current.runtime) };
     otherBuild = result.target;
@@ -451,13 +451,27 @@ export function toggleMatchupMechanic(current: PreparedMatchup, owner: MoveOwner
   };
 }
 
+/**
+ * The 1v1 "Charizard → Blastoise" lines name the two Pokémon only; when they share a name (a mirror), each also gets
+ * its team, "yours" / "opponent's", so the direction stays clear. Undefined when the names differ.
+ */
+export function mirrorTeams(source: Combatant, receiver: Combatant, runtime: BattleRuntime): { source: string; receiver: string } | undefined {
+  const name = (slot: Combatant) => runtime.speciesById.get(slot.build.speciesId)?.name ?? slot.build.speciesId;
+  return name(source) === name(receiver) ? { source: teamWord(source), receiver: teamWord(receiver) } : undefined;
+}
+
+function teamWord(slot: Combatant) {
+  return slot.role === "own" ? "yours" : "opponent's";
+}
+
 export function swapMatchup(current: PreparedMatchup): PreparedMatchup {
+  const name = (slot: Combatant) => current.runtime.speciesById.get(slot.build.speciesId)?.name ?? slot.build.speciesId;
   return clearMoveInteractions({
     ...current,
     attacker: current.defender,
     defender: current.attacker,
     field: { ...current.field, attackerSide: current.field.defenderSide, defenderSide: current.field.attackerSide },
-    notice: "Left and Right Pokémon swapped with their roster shortcuts and side conditions. Shared field settings are unchanged; move hit counts cleared.",
+    notice: `${name(current.attacker)} and ${name(current.defender)} swapped with their roster shortcuts and side conditions. Shared field settings are unchanged; move hit counts cleared.`,
   });
 }
 
@@ -541,12 +555,15 @@ export function applyTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner,
 export function removeTeamPaste(current: PreparedMatchup, owner: TeamSourceOwner): PreparedMatchup {
   if (!currentTeamSource(current, owner) || !current.teams[owner.role].paste) return current;
   const next = setTeamSelection(current, owner.role, { ...current.teams[owner.role], paste: null, epoch: owner.epoch + 1 });
-  return { ...next, cache: prunePaste(current, owner.role), notice: "Imported team removed. Current Pokémon and their preparation kept as manual builds." };
+  return { ...next, cache: prunePaste(current, owner.role), notice: "Imported team removed. Current Pokémon and their preparation kept." };
 }
 
-/** The Pokémon a notice names: "Left Pokémon" / "Right Pokémon", or the 2v2 slot's ("your left Pokémon"). */
-function sidePositionLabel(side: BattleSide, positionLabel?: string): string {
-  return positionLabel ?? `${side === "attacker" ? "Left" : "Right"} Pokémon`;
+/**
+ * The Pokémon a notice names: by its team ("your Pokémon" / "the opponent's Pokémon"), or the 2v2 slot's ("your left
+ * Pokémon"). The two sides' notices differ, so a second identical pick on the other side is announced too.
+ */
+function sidePositionLabel(slot: Combatant, positionLabel?: string): string {
+  return positionLabel ?? (slot.role === "own" ? "your Pokémon" : "the opponent's Pokémon");
 }
 
 function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, hpInput: string, positionLabel?: string): PreparedMatchup {
@@ -561,15 +578,15 @@ function storeBuild(current: PreparedMatchup, side: BattleSide, build: BattleBui
     megaBase: changedSpecies ? null : slot.megaBase,
     editorRevision: slot.editorRevision + (changedSpecies ? 1 : 0),
   };
-  // A species change replaces the notice: its Hidden Power IVs, named by side so a second identical pick is
-  // announced too, or nothing, so an earlier Pokémon's sentence does not linger.
+  // A species change replaces the notice: its Hidden Power IVs, named by team (sidePositionLabel) so a second identical
+  // pick is announced too, or nothing, so an earlier Pokémon's sentence does not linger.
   const note = hiddenPowerIVsNote(build, fresh, moves);
-  const label = sidePositionLabel(side, positionLabel);
+  const label = sidePositionLabel(slot, positionLabel);
   const next = { ...current, [side]: nextSlot, cache: cacheCombatant(current, nextSlot), ...(changedSpecies ? { notice: note ? `${label.charAt(0).toUpperCase()}${label.slice(1)} ${current.runtime.speciesById.get(build.speciesId)?.name}:${note}` : "" } : {}) };
   return changedSpecies ? clearMoveInteractions(next) : next;
 }
 
-/** `positionLabel` names the Pokémon in the notice (default "Left Pokémon" / "Right Pokémon"). */
+/** `positionLabel` names the Pokémon in the notice (default "your Pokémon" / "the opponent's Pokémon"). */
 export function updateMatchupBuild(current: PreparedMatchup, side: BattleSide, build: BattleBuild, positionLabel?: string): PreparedMatchup {
   if (build.game !== current.runtime.profile.id) return current;
   const slot = current[side];
@@ -588,11 +605,11 @@ export function applyMatchupIntimidate(current: PreparedMatchup, side: BattleSid
   const { field } = current;
   // The left Pokémon's side conditions are attackerSide.
   const sideOf = (slot: BattleSide) => slot === "attacker" ? field.attackerSide : field.defenderSide;
-  const position = (slot: BattleSide) => slot === "attacker" ? "left" : "right";
   const result = applyIntimidate(current[side].build, current[other].build, {
     magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: field.gameType,
     tailwind: { source: sideOf(side).tailwind, target: sideOf(other).tailwind },
-    positions: { source: position(side), target: position(other) },
+    // A mirror's lines tell the two apart by team: "Incineroar (yours)'s Intimidate".
+    positions: { source: teamWord(current[side]), target: teamWord(current[other]) },
   }, current.runtime);
   const withSource = storeBuild(current, side, result.source, current[side].hpInput);
   const next = storeBuild(withSource, other, result.target, withSource[other].hpInput);
@@ -657,7 +674,7 @@ export function selectRosterPokemon(current: PreparedMatchup, side: BattleSide, 
     ...current,
     [side]: nextSlot,
     cache: cacheCombatant(current, nextSlot),
-    notice: `${choice.name} selected as ${sidePositionLabel(side, positionLabel)}. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : `Default build loaded.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
+    notice: `${choice.name} selected as ${sidePositionLabel(slot, positionLabel)}. ${cached ? "Your session build edits were restored." : seed ? "Imported build and prepared moves loaded." : `Default build loaded.${hiddenPowerIVsNote(base, build, moves)}`} Field settings are unchanged; move contexts cleared.`,
   });
 }
 

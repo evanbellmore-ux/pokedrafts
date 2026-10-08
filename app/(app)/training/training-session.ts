@@ -1,19 +1,26 @@
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { HabitsRecord } from "./model/decision";
 import { emptyHabits, parseHabits } from "./model/habits-data";
+import {
+  canonicalJson, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_LABEL, logHash, newBattleId, RULES_VERSION, summaryOf, turnHashes,
+  type ReplayState, type SavedBattle, type SavedBattlesState,
+} from "./model/saved-battle";
 import { DEFAULT_INFO, parseInfoSettings, SHEET_FIELDS, type InfoSettings } from "./model/info";
 import type { SuggestedSet, SuggestMember } from "./model/usage";
-import type {
-  LogTurn, PlayerChoice, SetupDraft, TrainingBattle, TrainingPhase, TrainingRequest, TrainingSetup, TrainingSnapshot,
+import {
+  TRAINING_FORMAT_ID, type LogTurn, type PlayerChoice, type SetupDraft, type TrainingBattle, type TrainingPhase, type TrainingRequest,
+  type TrainingSetup, type TrainingSnapshot,
 } from "./model/view-types";
 import type { FromWorker, ToWorker, TrainingTransport } from "./model/worker-protocol";
+import { browserBattleStore, STORAGE_UNAVAILABLE, StoreError, type BattleStore } from "./saved/battle-store";
 import { createSetupDraft } from "./setup/team-draft";
 import { createWorkerTransport } from "./worker/worker-transport";
 
-// The Training page's module-level store (browser only): the worker transport, the setup draft and the battle. It survives
-// tab navigation; a reload ends the battle (nothing is saved). The transport is created on the first subscribe, never during
-// server rendering. Habits, the information settings and whether "Your trends" is open live in localStorage, per account;
-// test extras are never stored.
+// The Training page's module-level store (browser only): the worker transport, the setup draft, the battle, saved battles and
+// the replay screen. It survives tab navigation; a reload ends the battle, which Resume rebuilds from its last autosave. The
+// transport is created on the first subscribe, never during server rendering. Habits, the information settings and whether
+// "Your trends" is open live in localStorage, per account (test extras are never stored); saved battles in the BattleStore
+// (this browser's IndexedDB, per account).
 
 export type TrainingSession = {
   subscribe(listener: () => void): () => void;
@@ -38,6 +45,17 @@ export type TrainingSession = {
   setTrendsOpen(open: boolean): void;
   /** From useCalculatorRosters().state.userId; another account resets draft, battle, habits and information settings. */
   bindAccount(userId: string | null): void;
+  /** Saved battles: the replay screen for a finished one (re-run in the worker), and closing it. */
+  openReplay(id: string): void;
+  closeReplay(): void;
+  /** An unfinished battle: rebuilt in the worker from its sealed checkpoint, then played on. */
+  resume(id: string): void;
+  deleteSaved(id: string): void;
+  deleteAllSaved(): void;
+  /** A finished battle's export file (the page downloads it on your click). */
+  exportSaved(id: string): Promise<{ name: string; text: string } | null>;
+  /** An export file: size, schema and version checks, the validator and a re-run in the worker, then saved and opened. */
+  importSaved(file: { name: string; size: number; text(): Promise<string> }): void;
 };
 
 export type TrainingSessionOptions = {
@@ -46,6 +64,8 @@ export type TrainingSessionOptions = {
   now?: () => number;
   /** false: never create the transport (the server's inert session). */
   connect?: boolean;
+  /** Saved battles for an account ("anon" signed out); null or a throw: unavailable. Default: none. */
+  battleStore?: (account: string) => BattleStore | null;
 };
 
 export const HABITS_KEY = "pokedrafts:training:habits:v1:";
@@ -69,6 +89,8 @@ export function initialSnapshot(info: InfoSettings = DEFAULT_INFO): TrainingSnap
     battle: null,
     suggestions: { own: { status: "idle" }, opponent: { status: "idle" } },
     moveOptions: {},
+    saved: { status: "idle", list: [], message: null, import: { status: "idle" }, autosaved: null },
+    replay: null,
   };
 }
 
@@ -102,12 +124,18 @@ function mergeLog(current: readonly LogTurn[], changed: readonly LogTurn[]) {
   return [...byTurn.values()].sort((a, b) => a.turn - b.turn);
 }
 
+/** The saved log of an unfinished battle: the turns that resolved before `turn` began. */
+const resolvedBefore = (log: readonly LogTurn[], turn: number) => log.filter((each) => each.turn < turn);
+const factOf = (error: unknown, fallback: string) => (error instanceof StoreError || error instanceof Error ? error.message : fallback);
+const UNREADABLE = "The saved battle could not be read.";
+
 function sameTeam(a: TrainingSetup, b: TrainingSetup) {
   return a.own.members.length === b.own.members.length && a.own.members.every((member, index) => member.key === b.own.members[index]?.key);
 }
 
 export function createTrainingSession(options: TrainingSessionOptions): TrainingSession {
   const storage = options.storage ?? null;
+  const now = options.now ?? Date.now;
   const connectOnSubscribe = options.connect ?? true;
   const server = initialSnapshot();
   let snapshot = server;
@@ -126,7 +154,27 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   let chosenFrom: TrainingPhase | null = null;
   /** The team order you submitted in this battle (1-based), for "Same as last battle". */
   let submittedOrder: number[] | null = null;
+  // ---------- saved battles ----------
+  let store: BattleStore | null = null;
+  /** Bumped on every account change: answers for the previous account's store are dropped. */
+  let storeEpoch = 0;
+  /** Saves run one after another (an autosave never lands after the battle's final save). */
+  let saveChain: Promise<void> = Promise.resolve();
+  /** Resume after the stored habits changed (another battle, Clear habits): this battle does not write them. */
+  let habitsDetached = false;
+  /** Worker messages waiting for it to load (Resume, replays, an import's check). */
+  let waiting: ToWorker[] = [];
+  let replayCounter = 0;
+  /** The re-runs the worker is doing, by replayId: the replay screen's, and an import file's check (both can run at once). */
+  type ReplayJob = {
+    replayId: number; record: SavedBattle; kind: "view" | "import"; message: ToWorker;
+    settle?: (error: string | null, boards: ReplayState["boards"]) => void;
+  };
+  const replayJobs = new Map<number, ReplayJob>();
 
+  function setSaved(patch: Partial<SavedBattlesState>) {
+    set({ saved: { ...snapshot.saved, ...patch } });
+  }
   function set(patch: Partial<Omit<TrainingSnapshot, "revision">>) {
     snapshot = { ...snapshot, ...patch, revision: snapshot.revision + 1 };
     for (const listener of [...listeners]) listener();
@@ -207,6 +255,23 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     }
     for (const speciesId of queuedMoves) post({ type: "move-options", speciesId });
     queuedMoves.clear();
+    const queued = waiting;
+    waiting = [];
+    for (const message of queued) post(message);
+  }
+  /** Posts now, or once the worker has loaded (failed with it when it does not). */
+  function postWhenReady(message: ToWorker) {
+    if (ready()) post(message);
+    else waiting.push(message);
+  }
+  /** The worker did not load (or stopped): what waited for it, and the replay it was re-running, fail with that fact. */
+  function failWaiting(message: string) {
+    const queued = waiting;
+    waiting = [];
+    for (const each of queued) {
+      if (each.type === "resume" && snapshot.battle?.id === each.battleId) set({ battle: null, setupError: `The battle engine did not load: ${message}` });
+    }
+    for (const job of [...replayJobs.values()]) replayFailed(job.replayId, `The battle engine did not load: ${message}`);
   }
 
   function receive(message: FromWorker) {
@@ -227,6 +292,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         const moveOptions = Object.fromEntries(Object.entries(snapshot.moveOptions).map(([speciesId, state]) =>
           [speciesId, state.status === "loading" ? { status: "error" as const, message: message.message } : state]));
         set({ engine: { status: "error", message: message.message }, suggestions, moveOptions });
+        failWaiting(message.message);
         return;
       }
       case "validated":
@@ -269,9 +335,11 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         else phase = battle.phase;
         if (phase.kind !== "waiting" || message.request) chosenFrom = null;
         const newRequest = !!message.request && message.request.id !== previous?.id;
-        if (message.habits) {
-          habits = message.habits;
-          if (account) write(HABITS_KEY + accountKey(account.id), message.habits);
+        // A resumed battle whose habits changed meanwhile (another battle, Clear habits) leaves the stored habits alone.
+        const learned = message.habits && !(battle.resumed && habitsDetached) ? message.habits : undefined;
+        if (learned) {
+          habits = learned;
+          if (account) write(HABITS_KEY + accountKey(account.id), learned);
         }
         const log = stripUnresolved(mergeLog(battle.log, message.log), message.board.turn, !!ended);
         set({
@@ -279,10 +347,49 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
             ...battle, seed: message.seed, phase, board: message.board, log,
             ai: newRequest || ended ? { status: "idle" } : battle.ai,
           },
-          ...(message.habits ? { habits: habitsView(message.habits) } : {}),
+          ...(learned ? { habits: habitsView(learned) } : {}),
+        });
+        if (ended && snapshot.battle) saveFinished(snapshot.battle, message.inputLog ?? null);
+        return;
+      }
+      case "checkpoint": {
+        const battle = snapshot.battle;
+        // A late checkpoint never replaces the battle's final save.
+        if (!battle || battle.id !== message.battleId || battle.phase.kind === "ended") return;
+        if (!message.sealed) {
+          setSaved({ message: "Resume is unavailable in this browser.", autosaved: null });
+          return;
+        }
+        saveUnfinished(battle, message.turn, message.sealed);
+        return;
+      }
+      case "replay-ready": {
+        const job = replayJobs.get(message.replayId);
+        if (!job) return;
+        replayJobs.delete(message.replayId);
+        const boards = { starts: message.starts, end: message.end };
+        const differs = message.hash === logHash(job.record.log) ? null : firstDifference(turnHashes(job.record.log), message.turnHashes);
+        const differsText = differs === null ? "" : ` from turn ${differs}`;
+        if (job.kind === "import") {
+          // An import file is untrusted: its log, result and turns must all be the re-run's.
+          const result = job.record.result;
+          const refused = message.hash !== logHash(job.record.log) ? `The file's log does not match a re-run of its battle${differsText}.`
+            : !result || result.result !== message.result.result || result.forfeited !== message.result.forfeited ? "The file's result does not match a re-run of its battle."
+              : job.record.turn !== message.end.turn ? "The file's turn count does not match a re-run of its battle." : null;
+          job.settle?.(refused, boards);
+          return;
+        }
+        if (snapshot.replay?.id !== job.record.id) return;
+        set({
+          replay: message.hash === logHash(job.record.log)
+            ? { ...snapshot.replay, status: "board", boards, message: null }
+            : { ...snapshot.replay, status: "log", boards: null, message: `The re-run differs from the saved log${differsText}. The saved log is shown.` },
         });
         return;
       }
+      case "replay-error":
+        replayFailed(message.replayId, message.message);
+        return;
       case "choice-error": {
         const battle = snapshot.battle;
         const from = chosenFrom;
@@ -316,15 +423,83 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     const id = ++battleCounter;
     chosenFrom = null;
     submittedOrder = null;
+    habitsDetached = false;
     post({ type: "start", battleId: id, setup, habits });
     set({
       setupError: null,
-      battle: { id, setup, seed: null, phase: { kind: "starting" }, board: null, log: [], ai: { status: "idle" }, lastPreview, habitsBefore: parseHabits(habits?.data) },
+      saved: { ...snapshot.saved, autosaved: null },
+      battle: {
+        id, setup, seed: null, phase: { kind: "starting" }, board: null, log: [], ai: { status: "idle" }, lastPreview, habitsBefore: parseHabits(habits?.data),
+        savedId: newBattleId(), startedAt: now(),
+      },
     });
   }
   function stopBattle() {
     const battle = snapshot.battle;
     if (battle && battle.phase.kind !== "ended") post({ type: "stop", battleId: battle.id });
+  }
+
+  // ---------- saved battles ----------
+  function refreshSaved() {
+    const target = store;
+    const epoch = storeEpoch;
+    if (!target) return;
+    target.list().then(
+      (list) => { if (epoch === storeEpoch) setSaved({ status: "ready", list }); },
+      (error: unknown) => { if (epoch === storeEpoch) setSaved({ status: "unavailable", list: [], message: factOf(error, STORAGE_UNAVAILABLE) }); },
+    );
+  }
+  /** Queued after earlier saves; `failed` states what was not saved. */
+  function persist(record: SavedBattle, onSaved: () => void, failed: (fact: string) => void) {
+    const target = store;
+    const epoch = storeEpoch;
+    if (!target) { failed(STORAGE_UNAVAILABLE); return; }
+    saveChain = saveChain.then(() => target.save(record)).then(
+      () => { if (epoch === storeEpoch) { onSaved(); refreshSaved(); } },
+      (error: unknown) => { if (epoch === storeEpoch) failed(factOf(error, STORAGE_UNAVAILABLE)); },
+    );
+  }
+  function baseRecord(battle: TrainingBattle): Omit<SavedBattle, "status" | "turn" | "result" | "seed" | "inputLog" | "log" | "resume" | "habitsBefore" | "habitsAfter"> {
+    return {
+      version: 1, id: battle.savedId, source: "played", format: TRAINING_FORMAT_ID, rules: RULES_VERSION, createdAt: battle.startedAt, updatedAt: now(),
+      setup: battle.setup, order: submittedOrder ?? battle.lastPreview,
+    };
+  }
+  function saveUnfinished(battle: TrainingBattle, turn: number, sealed: string) {
+    const record: SavedBattle = {
+      ...baseRecord(battle), status: "unfinished", turn, result: null, seed: null, inputLog: null, log: resolvedBefore(battle.log, turn),
+      resume: { sealed }, habitsBefore: battle.habitsBefore, habitsAfter: habits,
+    };
+    const battleId = battle.id;
+    persist(record, () => { if (snapshot.battle?.id === battleId) setSaved({ autosaved: { battleId, turn }, message: null }); },
+      (fact) => setSaved({ autosaved: null, message: `${fact} Turn ${turn} was not saved for Resume.` }));
+  }
+  function saveFinished(battle: TrainingBattle, inputLog: string[] | null) {
+    if (battle.phase.kind !== "ended" || !battle.seed || !inputLog) return;
+    const record: SavedBattle = {
+      ...baseRecord(battle), status: "finished", turn: battle.board?.turn ?? 0, result: { result: battle.phase.result, forfeited: battle.phase.forfeited },
+      seed: battle.seed, inputLog, log: battle.log, resume: null, habitsBefore: null, habitsAfter: null,
+    };
+    persist(record, () => setSaved({ autosaved: null, message: null }), (fact) => setSaved({ autosaved: null, message: `${fact} This battle was not saved.` }));
+  }
+  function replayFailed(replayId: number, message: string) {
+    const job = replayJobs.get(replayId);
+    if (!job) return;
+    replayJobs.delete(replayId);
+    if (job.kind === "import") { job.settle?.(message, null); return; }
+    if (snapshot.replay?.id !== job.record.id) return;
+    set({ replay: { ...snapshot.replay, status: "log", boards: null, message: `The battle could not be re-run: ${message} The saved log is shown.` } });
+  }
+  /** The worker re-runs a finished record (the replay screen, or an import's check). */
+  function rerun(record: SavedBattle, kind: "view" | "import", settle?: (error: string | null, boards: ReplayState["boards"]) => void) {
+    const replayId = ++replayCounter;
+    const message: ToWorker = { type: "replay", replayId, setup: record.setup, seed: record.seed ?? "", inputLog: record.inputLog ?? [], forfeited: !!record.result?.forfeited };
+    replayJobs.set(replayId, { replayId, record, kind, settle, message });
+    if (snapshot.engine.status === "error") { replayFailed(replayId, `The battle engine did not load: ${snapshot.engine.message ?? "unknown error"}`); return; }
+    postWhenReady(message);
+  }
+  function replayView(record: SavedBattle, boards: ReplayState["boards"]): ReplayState {
+    return { id: record.id, summary: summaryOf(record), setup: record.setup, log: record.log, status: boards ? "board" : "loading", boards, message: null };
   }
 
   return {
@@ -424,6 +599,8 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       disconnect();
       chosenFrom = null;
       queuedValidate = null;
+      // The new worker re-runs the replays and import checks the old one was asked for; a Resume does not carry over.
+      waiting = [...replayJobs.values()].map((job) => job.message);
       const suggestions = { ...snapshot.suggestions };
       for (const side of ["own", "opponent"] as const) {
         const last = suggestRequests[side];
@@ -457,6 +634,17 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (account && account.id === userId) return;
       const first = account === undefined;
       account = { id: userId };
+      // Saved battles: this account's store (none, or a throw: unavailable).
+      storeEpoch++;
+      replayJobs.clear();
+      try {
+        store = options.battleStore?.(accountKey(userId)) ?? null;
+      } catch {
+        store = null;
+      }
+      const saved: SavedBattlesState = store
+        ? { status: "loading", list: [], message: null, import: { status: "idle" }, autosaved: null }
+        : { status: "unavailable", list: [], message: STORAGE_UNAVAILABLE, import: { status: "idle" }, autosaved: null };
       habits = readHabits(userId);
       const stored = readInfo(userId);
       const view = habitsView(habits);
@@ -464,8 +652,9 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (first) {
         // The draft so far belongs to this account: keep it, with its remembered categories when there are any.
         const info = stored ?? snapshot.draft.info;
-        set({ draft: { ...snapshot.draft, info }, habits: view, trendsOpen });
+        set({ draft: { ...snapshot.draft, info }, habits: view, trendsOpen, saved, replay: null });
         if (!stored) storeInfo(info);
+        refreshSaved();
         return;
       }
       stopBattle();
@@ -474,7 +663,97 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       queuedValidate = null;
       set({
         draft: createSetupDraft(stored ?? DEFAULT_INFO), battle: null, validation: { status: "idle" }, setupError: null, habits: view, trendsOpen,
-        suggestions: { own: { status: "idle" }, opponent: { status: "idle" } },
+        suggestions: { own: { status: "idle" }, opponent: { status: "idle" } }, saved, replay: null,
+      });
+      refreshSaved();
+    },
+
+    openReplay(id) {
+      const target = store;
+      const epoch = storeEpoch;
+      if (!target) return;
+      target.get(id).then((record) => {
+        if (epoch !== storeEpoch) return;
+        if (!record || record.status !== "finished") { setSaved({ message: UNREADABLE }); return; }
+        set({ replay: replayView(record, null) });
+        rerun(record, "view");
+      }, (error: unknown) => { if (epoch === storeEpoch) setSaved({ message: factOf(error, UNREADABLE) }); });
+    },
+
+    closeReplay() {
+      for (const job of [...replayJobs.values()]) if (job.kind === "view") replayJobs.delete(job.replayId);
+      if (snapshot.replay) set({ replay: null });
+    },
+
+    resume(id) {
+      const target = store;
+      const epoch = storeEpoch;
+      if (!target) return;
+      target.get(id).then((record) => {
+        if (epoch !== storeEpoch) return;
+        if (!record || record.status !== "unfinished" || !record.resume) { setSaved({ message: UNREADABLE }); return; }
+        stopBattle();
+        chosenFrom = null;
+        submittedOrder = record.order;
+        habitsDetached = canonicalJson(habits) !== canonicalJson(record.habitsAfter);
+        const battleId = ++battleCounter;
+        set({
+          replay: null, setupError: null, saved: { ...snapshot.saved, autosaved: { battleId, turn: record.turn } },
+          battle: {
+            id: battleId, setup: record.setup, seed: null, phase: { kind: "starting" }, board: null, log: record.log, ai: { status: "idle" },
+            lastPreview: record.order, habitsBefore: record.habitsBefore ?? parseHabits(habits?.data), savedId: record.id, startedAt: record.createdAt, resumed: true,
+          },
+        });
+        if (snapshot.engine.status === "error") { set({ battle: null, setupError: `The battle engine did not load: ${snapshot.engine.message ?? "unknown error"}` }); return; }
+        postWhenReady({ type: "resume", battleId, setup: record.setup, sealed: record.resume.sealed, log: record.log });
+      }, (error: unknown) => { if (epoch === storeEpoch) setSaved({ message: factOf(error, UNREADABLE) }); });
+    },
+
+    deleteSaved(id) {
+      const target = store;
+      const epoch = storeEpoch;
+      if (!target) return;
+      target.remove(id).then(() => { if (epoch === storeEpoch) refreshSaved(); }, (error: unknown) => { if (epoch === storeEpoch) setSaved({ message: factOf(error, STORAGE_UNAVAILABLE) }); });
+    },
+
+    deleteAllSaved() {
+      const target = store;
+      const epoch = storeEpoch;
+      if (!target) return;
+      target.removeAll().then(() => { if (epoch === storeEpoch) refreshSaved(); }, (error: unknown) => { if (epoch === storeEpoch) setSaved({ message: factOf(error, STORAGE_UNAVAILABLE) }); });
+    },
+
+    async exportSaved(id) {
+      if (!store) return null;
+      try {
+        return await store.export(id);
+      } catch (error) {
+        setSaved({ message: factOf(error, UNREADABLE) });
+        return null;
+      }
+    },
+
+    importSaved(file) {
+      const target = store;
+      const epoch = storeEpoch;
+      const name = file.name.slice(0, 120);
+      if (!target) { setSaved({ import: { status: "error", name, message: STORAGE_UNAVAILABLE } }); return; }
+      if (file.size > IMPORT_MAX_BYTES) { setSaved({ import: { status: "error", name, message: `The file is larger than ${IMPORT_MAX_LABEL}.` } }); return; }
+      setSaved({ import: { status: "checking", name } });
+      let checked: ReplayState["boards"] = null;
+      const verify = (record: SavedBattle) => new Promise<string | null>((resolve) => {
+        rerun(record, "import", (error, boards) => { checked = boards; resolve(error); });
+      });
+      // The browser's own words for an unreadable file are not a fact of ours.
+      const read = file.text().catch(() => { throw new StoreError("The file could not be read."); });
+      read.then((text) => target.import(text, verify)).then((record) => {
+        if (epoch !== storeEpoch) return;
+        setSaved({ import: { status: "done", name } });
+        set({ replay: replayView(record, checked) });
+        refreshSaved();
+      }, (error: unknown) => {
+        if (epoch !== storeEpoch) return;
+        setSaved({ import: { status: "error", name, message: factOf(error, "The file could not be read.") } });
       });
     },
   };
@@ -495,6 +774,6 @@ let singleton: TrainingSession | null = null;
 /** Browser: the module singleton. Server: a fresh inert session per call (a server singleton would be shared across users). */
 export function getTrainingSession(): TrainingSession {
   if (typeof window === "undefined") return createTrainingSession({ transport: () => INERT, storage: null, connect: false });
-  singleton ??= createTrainingSession({ transport: createWorkerTransport, storage: browserStorage() });
+  singleton ??= createTrainingSession({ transport: createWorkerTransport, storage: browserStorage(), battleStore: browserBattleStore });
   return singleton;
 }
