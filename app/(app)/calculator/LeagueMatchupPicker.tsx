@@ -42,12 +42,12 @@ function SourceFeedback({ state, loginNext = "/calculator" }: { state: Calculato
         </Alert>
       )}
       {state.status === "signed-out" && (
-        <Alert variant="info" title="Sign in to see your leagues">
+        <Alert variant="info" title="Signed out">
           <p>Your session has ended.</p>
           <ButtonLink href={`/login?next=${encodeURIComponent(loginNext)}`} variant="secondary" size="sm" className="mt-3">Log in again</ButtonLink>
         </Alert>
       )}
-      {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues yet. Join or create a league from your dashboard.</p>}
+      {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues.</p>}
     </>
   );
 }
@@ -62,7 +62,7 @@ function LeagueSelector({ state, onLeagueChange, opponent = false }: {
   return (
     <Field id={`${id}-league`} label={opponent ? "Opponent league" : "My team"}>
       <Select data-league-selector value={state.selectedLeagueId} disabled={state.status !== "ready" || !state.leagues.length} onChange={(event) => onLeagueChange(event.target.value)}>
-        <option value="">{state.status === "loading" ? "Loading leagues…" : opponent ? "Choose a league" : "Choose your team"}</option>
+        <option value="">{state.status === "loading" ? "Loading leagues…" : "—"}</option>
         {state.leagues.map((entry, index) => {
           const label = labels[index];
           const duplicate = labels.indexOf(label) !== labels.lastIndexOf(label);
@@ -73,12 +73,10 @@ function LeagueSelector({ state, onLeagueChange, opponent = false }: {
   );
 }
 
-export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, heading = "My team", leagueHint = "Choose your team above to load its league roster." }: SourcePickerProps & {
+export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, heading = "My team" }: SourcePickerProps & {
   onLeagueChange: (id: string) => void;
   /** The section heading; defaults to the calculator's. */
   heading?: string;
-  /** The fact shown while no league team is chosen; defaults to the calculator's wording. */
-  leagueHint?: string;
 }) {
   const id = useId();
   const ready = state.status === "ready";
@@ -90,17 +88,16 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, head
         <RefreshTeamsButton state={state} onRefresh={onRefresh} />
       </div>
       <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{leagueHint}</p>}
+      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">No team chosen.</p>}
       <SourceFeedback state={state} loginNext={loginNext} />
     </section>
   );
 }
 
-export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext, ownTeamHint = "Choose your team in the My team tab to see opponents from that league." }: SourcePickerProps & {
+export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext }: SourcePickerProps & {
   onOpponentChange: (id: string) => void;
+  /** Its own league selector (your team is a paste): the opponents are that league's. */
   onLeagueChange?: (id: string) => void;
-  /** The fact shown while your own team is not chosen; defaults to the calculator's tab wording. */
-  ownTeamHint?: string;
 }) {
   const id = useId();
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
@@ -123,7 +120,7 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
       )}
       <Field id={`${id}-opponent`} label="Opponent">
         <Select data-opponent-selector value={opponents.some((member) => member.id === state.opponentId) ? state.opponentId : ""} disabled={!teamsReady || !opponents.length} onChange={(event) => onOpponentChange(event.target.value)}>
-          <option value="">Choose an opponent</option>
+          <option value="">—</option>
           {opponents.map((member, index) => {
             const name = teamNameLabel(member.team_name);
             const duplicate = opponents.filter((entry) => teamNameLabel(entry.team_name).toLowerCase() === name.toLowerCase()).length > 1;
@@ -131,7 +128,7 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
           })}
         </Select>
       </Field>
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{onLeagueChange ? "Choose a league above to see its opponents." : ownTeamHint}</p>}
+      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{onLeagueChange ? "No league chosen." : "No team chosen."}</p>}
       {teamsReady && !opponents.length && <p role="status" className="text-sm text-muted">There are no other members in this league yet.</p>}
       <SourceFeedback state={state} loginNext={loginNext} />
     </section>
@@ -169,7 +166,7 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
   slots?: readonly RosterSlot[];
 }) {
   const id = useId();
-  const panel: RosterPanel = providedPanel ?? (state ? getRosterPanel(state, role, runtime) : { status: "empty", teamName: null, message: "Choose a team source or select Pokémon manually.", choices: [] });
+  const panel: RosterPanel = providedPanel ?? (state ? getRosterPanel(state, role, runtime) : { status: "empty", teamName: null, message: "No team chosen.", choices: [] });
   const ownership = role === "own" ? "Your team" : "Opponent's team";
   const position = positionLabel ?? (side === "attacker" ? "left" : "right");
   const rail = variant === "rail";

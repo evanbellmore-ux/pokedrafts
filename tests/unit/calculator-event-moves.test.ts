@@ -89,7 +89,7 @@ describe("doubled-case toggle in the move list", () => {
   function render(moveId: string, overrides: Partial<ComponentProps<typeof MoveResults>> = {}) {
     const build = createBuild(moveId === "round" ? "snorlax" : "garchomp");
     return renderToStaticMarkup(createElement(MoveResults, {
-      runtime: championsRuntime, sourceBuild: build, rows: [row(moveId)], moveIds: [moveId], ownerId: "1:1", sourcePosition: "left",
+      runtime: championsRuntime, sourceBuild: build, rows: [row(moveId)], moveIds: [moveId], ownerId: "1:1",
       selectedMoveId: moveId, onSelectMove: vi.fn(), contexts: {}, onContextChange: vi.fn(),
       abilityId: build.abilityId, itemId: build.itemId, attackerName: "Garchomp", defenderName: "Snorlax", defenderHP: 235,
       ...overrides,
@@ -115,7 +115,7 @@ describe("doubled-case toggle in the move list", () => {
   it("hides the toggle while the move is a Z-Move or Max Move, whose power is fixed", async () => {
     const renderIn = (runtime: BattleRuntime, build: ReturnType<typeof createBuild>, contexts: ComponentProps<typeof MoveResults>["contexts"]) =>
       renderToStaticMarkup(createElement(MoveResults, {
-        runtime, sourceBuild: build, rows: [row("stompingtantrum")], moveIds: ["stompingtantrum"], ownerId: "1:1", sourcePosition: "left",
+        runtime, sourceBuild: build, rows: [row("stompingtantrum")], moveIds: ["stompingtantrum"], ownerId: "1:1",
         selectedMoveId: "stompingtantrum", onSelectMove: vi.fn(), contexts, onContextChange: vi.fn(),
         abilityId: build.abilityId, itemId: build.itemId, attackerName: "Garchomp", defenderName: "Snorlax", defenderHP: 235,
       }));

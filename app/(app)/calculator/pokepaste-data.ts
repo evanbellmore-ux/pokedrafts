@@ -10,11 +10,8 @@ const RESPONSE_BYTE_LIMIT = 128 * 1024;
 const PASTE_BYTE_LIMIT = 64 * 1024;
 const TIMEOUT_MS = 10_000;
 
-class PokePasteError extends Error {
-  constructor(message: string) {
-    super(`${message} Please paste the team text instead.`);
-  }
-}
+/** A failed link load, stated as a fact; the Team text field beside the link is the alternative. */
+class PokePasteError extends Error {}
 
 export function parsePokePasteUrl(input: string): { url: string; jsonUrl: string } {
   // Match the original input, not a URL parser's normalized host/path. This also
@@ -24,7 +21,7 @@ export function parsePokePasteUrl(input: string): { url: string; jsonUrl: string
     : null;
   // JavaScript's $ can match before a final newline; require the entire input.
   if (!match || match[0] !== input) {
-    throw new PokePasteError("Enter a valid HTTPS pokepast.es paste link.");
+    throw new PokePasteError("Not an HTTPS pokepast.es paste link.");
   }
   const url = `https://pokepast.es/${match[1]}`;
   return { url, jsonUrl: `${url}/json` };

@@ -61,7 +61,7 @@ function build(id: string, abilityId: string, runtime: BattleRuntime, extra: Par
 
 function list(rows: MoveDamageResult[], attacker: BattleBuild, runtime: BattleRuntime, contexts: Record<string, MoveContext> = {}, extra: Record<string, unknown> = {}) {
   return renderToStaticMarkup(createElement(MoveResults, {
-    rows, moveIds: rows.map((row) => row.moveId), ownerId: "0:0", sourcePosition: "left", selectedMoveId: null, onSelectMove: vi.fn(),
+    rows, moveIds: rows.map((row) => row.moveId), ownerId: "0:0", selectedMoveId: null, onSelectMove: vi.fn(),
     contexts, onContextChange: vi.fn(), abilityId: attacker.abilityId, itemId: attacker.itemId, attackerName: "Attacker",
     defenderName: "Garchomp", defenderHP: GARCHOMP_HP, runtime, sourceBuild: attacker, ...extra,
   }));

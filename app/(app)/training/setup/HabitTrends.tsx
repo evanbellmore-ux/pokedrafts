@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { HabitsData } from "../model/habits-data";
 import {
-  BROUGHT_FACT, DECAY_FACT, fewerText, habitTrends, MOVES_SHOWN, shareText, THREATENED_FACT, whole,
+  DECAY_FACT, fewerText, habitTrends, MOVES_SHOWN, shareText, whole,
   type CountItem, type MoveTrend, type ShareGroup, type ShareLine, type TrendNames,
 } from "./habit-trends";
 
@@ -99,10 +99,7 @@ export default function HabitTrends({ data, runtime, open, onToggle }: HabitTren
           <>
             <p className="text-sm text-muted">{view.battles} {view.battles === 1 ? "battle" : "battles"} recorded. {DECAY_FACT}</p>
             <Section id={`${id}-actions`} title="Actions"><Group group={view.actions} /></Section>
-            <Section id={`${id}-situations`} title="Situations">
-              <Lines lines={view.situations} />
-              <p className="text-xs text-muted">{THREATENED_FACT}</p>
-            </Section>
+            <Section id={`${id}-situations`} title="Situations"><Lines lines={view.situations} /></Section>
             <Section id={`${id}-targets`} title="Targets">
               <Group group={view.targets} />
               <Group group={view.aims} />
@@ -131,7 +128,6 @@ export default function HabitTrends({ data, runtime, open, onToggle }: HabitTren
                   </div>
                 </dl>
               ) : <p className="text-sm text-text">{fewerText("battles")}</p>}
-              <p className="text-xs text-muted">{BROUGHT_FACT}</p>
             </Section>
             <Section id={`${id}-mega`} title="Mega Evolution"><Lines lines={view.mega} /></Section>
           </>

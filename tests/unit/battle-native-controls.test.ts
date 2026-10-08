@@ -75,7 +75,7 @@ function row(moveId = "flamethrower", overrides: Partial<MoveDamageResult> = {})
 }
 function moves(runtime: BattleRuntime, sourceBuild: BattleBuild, overrides: Partial<ComponentProps<typeof MoveResults>> = {}) {
   return renderToStaticMarkup(createElement(MoveResults, {
-    runtime, sourceBuild, rows: [row()], moveIds: ["flamethrower"], ownerId: "2:3", sourcePosition: "left",
+    runtime, sourceBuild, rows: [row()], moveIds: ["flamethrower"], ownerId: "2:3",
     selectedMoveId: "flamethrower", onSelectMove: vi.fn(), contexts: {}, onContextChange: vi.fn(),
     abilityId: sourceBuild.abilityId, itemId: sourceBuild.itemId, attackerName: "Charizard", defenderName: "Blastoise", defenderHP: 154,
     ...overrides,

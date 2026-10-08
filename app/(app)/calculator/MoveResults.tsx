@@ -273,7 +273,6 @@ type Props = {
   itemId: string;
   attackerName: string;
   defenderName: string;
-  sourcePosition: "left" | "right";
   defenderHP: number | null;
   blocked?: boolean;
   id?: string;
@@ -287,17 +286,17 @@ type Props = {
   partyOptions?: readonly { speciesId: string; name: string }[];
   /** Doubles cannot work out Analytic's turn order, so it always asks. */
   gameType?: "Singles" | "Doubles";
-  /** The heading's places for the two Pokémon ("your left", "left foe" in 2v2); default: sourcePosition and the other side. */
+  /** Each Pokémon's place after its name in the heading: "your left", "left foe" in 2v2, a 1v1 mirror's teams; none by default. */
   positions?: { source: string; receiver: string };
   /** 2v2: the turn decides the order, so the move settings have no turn-order choice. */
   turnOrderFromTurn?: boolean;
-  /** The list's heading outside a replacement ("Moves" in 2v2); defaults to the 1v1 heading. */
+  /** The list's heading outside a replacement; "Moves" by default. */
   heading?: string;
   /** 2v2: its side's fainted Pokémon, the least Last Respects counts (the turn raises a lower count to it). */
   faintedAtLeast?: number;
 };
 
-export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, sourcePosition, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading, faintedAtLeast = 0 }: Props) {
+export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading, faintedAtLeast = 0 }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -473,8 +472,8 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
     }}>
       <div className={`flex flex-wrap items-start justify-between gap-3 ${replacement ? "rounded-xl border border-accent-border bg-accent-soft p-4" : ""}`}>
         <div className="min-w-0 flex-1">
-          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "Choose move"}` : heading ?? "Choose a move"}</h2>
-          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} ({positions?.source ?? sourcePosition}) → {defenderName} ({positions?.receiver ?? (sourcePosition === "left" ? "right" : "left")}){defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
+          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "No move"}` : heading ?? "Moves"}</h2>
+          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName}{positions && ` (${positions.source})`} → {defenderName}{positions && ` (${positions.receiver})`}{defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>
@@ -493,7 +492,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         </>}
         {stellarActive && selectedMove.category !== "Status" && <Field id={`${prefix}-stellar-first-use`} label="Stellar: first use of this move’s type?">
           <Select value={selectedContext?.stellarFirstUse === undefined ? "" : selectedContext.stellarFirstUse ? "yes" : "no"} onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, stellarFirstUse: event.target.value === "" ? undefined : event.target.value === "yes" })}>
-            <option value="">Choose first-use context</option><option value="yes">Yes — boost still available</option><option value="no">No — this type already used</option>
+            <option value="">—</option><option value="yes">Yes — boost still available</option><option value="no">No — this type already used</option>
           </Select>
         </Field>}
         {eventRule && <label htmlFor={`${prefix}-event-doubled`} className="flex min-h-11 items-center gap-2 text-sm text-text">
@@ -504,7 +503,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
         </label>}
         {turnQuestion && <Field id={`${prefix}-turn-order`} label={turnQuestion === "analytic" ? "Turn order for Analytic" : `Turn order for ${selectedMove.name}`}>
           <Select value={selectedContext?.turnOrder ?? ""} onChange={(event) => onContextChange(selectedMove.id, { ...selectedContext, turnOrder: event.target.value === "first" || event.target.value === "last" ? event.target.value : undefined })}>
-            <option value="">{turnQuestion === "analytic" && gameType === "Doubles" ? "Choose the turn order" : "Work it out from priority and Speed"}</option>
+            <option value="">{turnQuestion === "analytic" && gameType === "Doubles" ? "—" : "From priority and Speed"}</option>
             {turnQuestion === "analytic" ? <>
               <option value="last">It moves last this turn: Analytic boosts</option>
               <option value="first">Another Pokémon moves after it: no boost</option>
@@ -531,14 +530,14 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
               const size = parseIntegerInput(event.target.value);
               setParty(size === null ? undefined : Array.from({ length: size }, (_, index) => party?.[index] ?? ""));
             }}>
-              <option value="">Choose how many</option>
+              <option value="">—</option>
               {Array.from({ length: MAX_BEAT_UP_ALLIES + 1 }, (_, count) => <option key={count} value={count}>{count}</option>)}
             </Select>
           </Field>
           {party?.map((speciesId, index) => (
             <Field key={index} id={`${prefix}-party-${index}`} label={`Party member ${index + 2}`}>
               <Select value={speciesId} onChange={(event) => setParty(party.map((id, slot) => slot === index ? event.target.value : id))}>
-                <option value="">Choose a Pokémon</option>
+                <option value="">—</option>
                 {partyOptions.length > 0 && <optgroup label="This team">{partyOptions.map((option) => <option key={`team-${option.speciesId}`} value={option.speciesId}>{option.name}</option>)}</optgroup>}
                 <optgroup label="All Pokémon">{allPartySpecies.map((option) => <option key={option.speciesId} value={option.speciesId}>{option.name}</option>)}</optgroup>
               </Select>

@@ -397,6 +397,9 @@ describe("Your trends panel (SSR)", () => {
     expect(html.match(/data-training-trend-moves=/g)).toHaveLength(8);
     const visible = html.replace(/<[^>]+>/g, " ");
     expect(visible).not.toMatch(FORBIDDEN);
+    // No definition lines: Threatened's and Most brought's are in docs/training.md.
+    expect(visible).not.toMatch(/Threatened:|half its HP|counts a Pokémon once/);
+    expect(html.match(/<p\b/g)).toHaveLength(1);
     const button = elements.find((element) => element.type === "button" && element.props["data-training-trends-toggle"]);
     (button!.props.onClick as () => void)();
     expect(onToggle).toHaveBeenCalledWith(false);

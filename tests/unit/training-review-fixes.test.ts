@@ -17,7 +17,7 @@ import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
 import type { DecisionOption, DecisionReport, ReadRefs, SlotAction, TrainingSetup } from "@/app/(app)/training/model/view-types";
 import { buildBeliefBattle } from "@/app/(app)/training/sim/belief-battle";
 import { toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
-import { asBaseForm, emptySource, megaBase, rosterMessage, teamCandidates } from "@/app/(app)/training/setup/team-draft";
+import { asBaseForm, emptySource, megaBase, teamCandidates } from "@/app/(app)/training/setup/team-draft";
 import { createStubProvider } from "@/app/(app)/training/worker/stub-provider";
 import { redactReport, type RedactContext } from "@/app/(app)/training/worker/redact-report";
 import { createTrainingWorker } from "@/app/(app)/training/worker/worker-handler";
@@ -172,10 +172,16 @@ describe("Setup's Mega-form members", () => {
     expect(paste[0].imported?.build).toMatchObject({ speciesId: "charizard", itemId: "charizarditey" });
   });
 
-  it("words the calculator's roster messages as facts", () => {
-    expect(rosterMessage("Duplicate roster name. Choose the Pokémon manually.")).toBe("Duplicate roster name.");
-    expect(rosterMessage("Could not load this league's teams. Use Retry teams or select Pokémon manually.")).toBe("Could not load this league's teams.");
-    expect(rosterMessage("Multiple rosters were returned for this team. Use manual selection rather than guessing.")).toBe("Multiple rosters were returned for this team.");
+  it("shows the calculator's roster messages, which are facts", () => {
+    const state = rosterState(["Garchomp", "Garchomp"], ["Absol"]);
+    expect(teamCandidates(emptySource(), state, "own", runtime).candidates.map((candidate) => candidate.reason)).toEqual(["Duplicate roster name.", "Duplicate roster name."]);
+    const message = (patch: Partial<typeof state>, role: "own" | "opponent" = "own") => teamCandidates(emptySource(), { ...state, ...patch }, role, runtime).message;
+    expect(message({ selectedLeagueId: "" })).toBe("No team chosen.");
+    expect(message({ selectedLeagueId: "", leagues: [] })).toBe("No leagues.");
+    expect(message({ opponentId: "" }, "opponent")).toBe("No opponent chosen.");
+    expect(message({ teamsStatus: "error" })).toBe("Could not load this league's teams.");
+    expect(message({ opponentId: "member-gone" }, "opponent")).toBe("This team is no longer available.");
+    expect(message({ data: { ...state.data!, teams: [...state.data!.teams, state.data!.teams[0]] } })).toBe("Multiple rosters were returned for this team.");
   });
 });
 

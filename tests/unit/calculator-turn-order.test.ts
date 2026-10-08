@@ -155,11 +155,11 @@ describe("the turn-order setting", () => {
     matchup = selectMatchupMove(matchup, "psychic");
     const result = row("psychic", starmie, snorlax, { gameType: "Doubles", multipleTargets: false });
     const html = renderToStaticMarkup(createElement(MoveResults, {
-      rows: [result], moveIds: ["psychic"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: "psychic", onSelectMove: vi.fn(), contexts: {},
+      rows: [result], moveIds: ["psychic"], ownerId: "0:0", selectedMoveId: "psychic", onSelectMove: vi.fn(), contexts: {},
       onContextChange: vi.fn(), abilityId: "analytic", itemId: "", attackerName: "Starmie", defenderName: "Snorlax", defenderHP: 235, sourceBuild: starmie, gameType: "Doubles",
     }));
     expect(html).toContain("Turn order for Analytic");
-    expect(html).toContain("Choose the turn order");
+    expect(html).toMatch(/-turn-order"[^>]*><option value="" selected="">—<\/option><option value="last">It moves last/);
     expect(html).toContain("It moves last this turn: Analytic boosts");
     const view = getAttackView(matchup);
     const summary = renderToStaticMarkup(createElement(MatchupSummary, {

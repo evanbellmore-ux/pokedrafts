@@ -184,7 +184,7 @@ describe("team import state: source ownership and activation", () => {
     const current = changeTeamSource(bind(), getTeamSourceOwner(bind(), "own"), "paste");
     for (const state of [loaded(), { ...loaded(), status: "error" as const }, createRosterState()]) {
       expect(getTeamPanel(current, state, "own")).toMatchObject({ status: "empty", teamName: null, choices: [] });
-      expect(getTeamPanel(current, state, "own").message).toMatch(/Import a PokéPaste link or team text/);
+      expect(getTeamPanel(current, state, "own").message).toBe("No team imported.");
     }
     expect(getRosterPanel(loaded(), "own").choices).toHaveLength(2);
   });
@@ -757,13 +757,13 @@ describe("team import SSR: shared source panels and league context", () => {
     expect(state.opponentId).toBe("member-away");
   });
 
-  it("directs paste-owned users to the opponent's own league selector when no league is selected", () => {
+  it("states that no league is chosen to paste-owned users, beside the opponent's own league selector", () => {
     const html = renderToStaticMarkup(createElement(OpponentPicker, {
       state: { ...loaded(), selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" },
       onLeagueChange: vi.fn(), onOpponentChange: vi.fn(), onRefresh: vi.fn(),
     }));
-    expect(html).toContain("Choose a league above to see its opponents.");
-    expect(html).not.toContain("Choose your team in the My team tab");
+    expect(html).toContain(">No league chosen.</p>");
+    expect(html).not.toContain("No team chosen.");
     const controls = html.match(/<select\b[^>]*>/g)!;
     expect(controls[0]).not.toContain('disabled=""');
     expect(controls[1]).toContain('disabled=""');
@@ -803,7 +803,7 @@ describe("team import SSR: shared source panels and league context", () => {
       state: loaded(), panel: getTeamPanel(current, loaded(), "own"), role: "own", side: "attacker",
       activeSource: null, onSelect: vi.fn(),
     }));
-    expect(html).toContain("Import a PokéPaste link or team text");
+    expect(html).toContain(">No team imported.</p>");
     expect(html).not.toContain("data-roster-choice");
     expect(html).not.toContain("Charizard");
     assertLabels(html);
@@ -838,8 +838,8 @@ describe("team import SSR: shared source panels and league context", () => {
     for (const position of ["left", "right"]) {
       expect(html).toContain(`aria-label="Raichu ${position} move 1: Protect"`);
       expect(html).toContain(`aria-label="Raichu ${position} move 2: Thunderbolt"`);
-      expect(html).toContain(`aria-label="Raichu ${position} move 3: Choose move"`);
-      expect(html).toContain(`aria-label="Raichu ${position} move 4: Choose move"`);
+      expect(html).toContain(`aria-label="Raichu ${position} move 3: No move"`);
+      expect(html).toContain(`aria-label="Raichu ${position} move 4: No move"`);
     }
     expect(html).not.toContain("data-roster-choice"); // Closed choosers do not duplicate the inline/rail entries.
     assertLabels(html);
@@ -852,8 +852,7 @@ describe("team import SSR: shared source panels and league context", () => {
     const panels = { own: getTeamPanel(current, state, "own"), opponent: getTeamPanel(current, state, "opponent") };
     const html = renderToStaticMarkup(createElement(MatchupSummary, { ...summaryProps(current), rosterState: state, rosterPanels: panels }));
     expect(html).not.toContain(">Team Pokémon</button>");
-    expect(html).toContain("Find left Pokémon");
-    expect(html).toContain("Find right Pokémon");
+    expect(html.match(/>Find Pokémon<\/label>/g)).toHaveLength(2);
     assertLabels(html);
   });
 
@@ -862,7 +861,6 @@ describe("team import SSR: shared source panels and league context", () => {
     if (disabled) state.data!.teams = [team("roster-home", "member-home", ["Unknown home mascot"]), team("roster-away", "member-away", ["Unknown away mascot"])];
     const html = renderToStaticMarkup(createElement(MatchupSummary, { ...summaryProps(bind(state)), rosterState: state }));
     expect(html.includes(">Team Pokémon</button>")).toBe(!disabled);
-    expect(html).toContain("Find left Pokémon");
-    expect(html).toContain("Find right Pokémon");
+    expect(html.match(/>Find Pokémon<\/label>/g)).toHaveLength(2);
   });
 });

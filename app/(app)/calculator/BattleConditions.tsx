@@ -44,7 +44,7 @@ type Props = {
   names?: Partial<Record<Side, string>>;
   /** "doubles": the 2v2 field, without the controls its Pokémon and moves decide (DOUBLES_DERIVED). */
   variant?: "matchup" | "doubles";
-  /** The side fieldsets' legends ("Your side", "Opponent's side"), in place of the Pokémon names. */
+  /** The side fieldsets' legends ("Your side", "Opponent's side" in 2v2; a 1v1 mirror's "Charizard’s side (yours)"), in place of the Pokémon names. */
   sideLegends?: Record<Side, string>;
   /** 2v2: one Charge checkbox per Pokémon, inside its side's fieldset. */
   charge?: readonly ChargeToggle[];

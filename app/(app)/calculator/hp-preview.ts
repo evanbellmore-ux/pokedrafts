@@ -93,7 +93,7 @@ function usablePath(afterUse: AfterUse, mode: DamageRollMode): AfterUsePath | nu
  */
 export function previewRemainingHP(defender: BattleBuild, row: MoveDamageResult | undefined, mode: DamageRollMode = "average", runtime: BattleRuntime = championsRuntime, settled?: SettledHP): HPPreview {
   const entered = getBuildHealth(defender, runtime);
-  if (!entered) return { status: "unavailable", reason: getEffectiveHealth(defender, runtime)?.reason ?? "Enter a valid defender build and current HP to preview remaining HP." };
+  if (!entered) return { status: "unavailable", reason: getEffectiveHealth(defender, runtime)?.reason ?? "Remaining HP needs a valid target build and current HP." };
   const settledHealth = getSettledHealth(defender, settled, runtime);
   const health = settledHealth ?? entered;
   // A settled HP for another entered HP marks a result calculated before the HP was edited: its one-use outcome

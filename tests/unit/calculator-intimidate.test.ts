@@ -194,7 +194,9 @@ describe("Intimidate in the matchup", () => {
   it("shows the result under the button until either build changes, counting repeats", () => {
     const start = matchup(build("incineroar", "intimidate"), build("incineroar", "intimidate"));
     const once = applyMatchupIntimidate(start, "attacker");
-    expect(intimidateResult(once, "attacker")).toBe("Incineroar (left)'s Intimidate: Incineroar (right)'s Attack falls to -1.");
+    // A mirror tells the two apart by team, not by side.
+    expect(intimidateResult(once, "attacker")).toBe("Incineroar (yours)'s Intimidate: Incineroar (opponent's)'s Attack falls to -1.");
+    expect(intimidateResult(applyMatchupIntimidate(start, "defender"), "defender")).toBe("Incineroar (opponent's)'s Intimidate: Incineroar (yours)'s Attack falls to -1.");
     expect(intimidateResult(once, "defender")).toBeNull();
     expect(intimidateResult(applyMatchupIntimidate(once, "attacker"), "attacker")).toMatch(/^Applied 2 times in a row\. .*falls to -2\.$/);
     // An edit to either build hides it, and the next application starts the count again.
@@ -215,7 +217,7 @@ describe("Intimidate in the matchup", () => {
       side: "attacker", build: build("incineroar", abilityId), issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined, onApplyIntimidate: () => undefined,
     }));
     const html = panel("intimidate");
-    expect(html).toContain("Apply Intimidate to the right Pokémon");
+    expect(html).toContain(">Apply Intimidate</button>");
     expect(renderToStaticMarkup(createElement(PokemonPanel, {
       side: "attacker", build: build("incineroar", "intimidate"), issues: [], onChange: () => undefined, hpInput: "", onHPChange: () => undefined,
       onApplyIntimidate: () => undefined, intimidateResult: "Incineroar's Intimidate: Garchomp's Attack falls to -1.",

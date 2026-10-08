@@ -32,7 +32,7 @@ import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./us
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "./settings-sections";
 import type { CalculatorRosterState } from "./roster-data";
-import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
+import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, mirrorTeams, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -111,6 +111,10 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   const rosters = useCalculatorRosters(receiveRosters);
   const attacker = matchup.attacker.build;
   const defender = matchup.defender.build;
+  // A mirror's side legends name each one's team, not its side ("Charizard’s side (yours)").
+  const mirror = mirrorTeams(matchup.attacker, matchup.defender, runtime);
+  const mirrorName = speciesById.get(attacker.speciesId)?.name ?? attacker.speciesId;
+  const mirrorLegends = mirror && { attackerSide: `${mirrorName}’s side (${mirror.source})`, defenderSide: `${mirrorName}’s side (${mirror.receiver})` };
   const attackerKey = matchup.attacker.key;
   const defenderKey = matchup.defender.key;
   const fieldId = `${prefix}-field`;
@@ -273,12 +277,12 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   const onlyLeague = matchup.teams.own.mode === "league" && matchup.teams.opponent.mode === "league";
   const teamsLoading = usesLeague && (rosters.state.status === "loading" || rosters.state.teamsStatus === "loading");
   const teamsFailed = usesLeague && (rosters.state.status === "error" || rosters.state.teamsStatus === "error");
-  const describeTeam = (role: RosterRole) => rosterPanels[role].teamName ?? (matchup.teams[role].mode === "paste" ? "Import a PokéPaste" : rosterPanels[role].message);
+  const describeTeam = (role: RosterRole) => rosterPanels[role].teamName ?? rosterPanels[role].message;
   const teamSummary = !onlyLeague ? `Your team: ${describeTeam("own")} · Opponent: ${describeTeam("opponent")}` : teamsLoading ? "Loading your leagues and teams…"
-    : teamsFailed ? "Teams unavailable — retry or use manual Pokémon."
-      : rosters.state.status === "signed-out" ? "Sign in to use league rosters."
-        : league ? `${teamNameLabel(ownMember ? ownMember.team_name : league.teamName)} — ${league.name} · ${opponent ? `Facing ${teamNameLabel(opponent.team_name)}` : "Choose an opponent"}`
-          : "Choose My team, or use manual Pokémon.";
+    : teamsFailed ? "Teams unavailable."
+      : rosters.state.status === "signed-out" ? "Signed out."
+        : league ? `${teamNameLabel(ownMember ? ownMember.team_name : league.teamName)} — ${league.name} · ${opponent ? `Facing ${teamNameLabel(opponent.team_name)}` : "No opponent chosen"}`
+          : rosters.state.leagues.length ? "No team chosen." : "No leagues.";
   const results = { loading: engine.status === "loading", error: engine.status === "error" ? engine.message : calculation?.error || null, invalid };
   const blockedReason = previewBlockedReason(results);
 
@@ -489,6 +493,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   function renderBuildEditor(side: BattleSide) {
     const slot = matchup[side];
     const other = matchup[side === "attacker" ? "defender" : "attacker"].build;
+    const otherName = speciesById.get(other.speciesId)?.name;
     return (
       <PokemonPanel
         runtime={runtime}
@@ -503,6 +508,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
         editorRevision={slot.editorRevision}
         onChange={(build) => updateBuild(slot.key, build)}
         onApplyIntimidate={() => updateCombatant(slot.key, (current, slotSide) => applyMatchupIntimidate(current, slotSide))}
+        intimidateLabel={otherName ? `Apply Intimidate to ${otherName}` : undefined}
         intimidateResult={intimidateResult(matchup, side)}
         hpInput={slot.hpInput}
         onHPChange={(text) => updateHP(slot.key, text)}
@@ -613,7 +619,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
                   <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeConditions(matchup.field)}</span>
                 </>}
               >
-                <BattleConditions runtime={runtime} names={{ attackerSide: speciesById.get(attacker.speciesId)?.name, defenderSide: speciesById.get(defender.speciesId)?.name }} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
+                <BattleConditions runtime={runtime} names={{ attackerSide: speciesById.get(attacker.speciesId)?.name, defenderSide: speciesById.get(defender.speciesId)?.name }} sideLegends={mirrorLegends} value={matchup.field} issues={issues.field} onChange={(field) => setMatchup((current) => current.revision === matchup.revision ? { ...current, field } : current)} />
               </SettingsDisclosure>
             </div>
           )} />
@@ -655,7 +661,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
                     itemId={attackView.source.build.itemId}
                     attackerName={sourceSpecies?.name ?? "Source Pokémon"}
                     defenderName={receiverSpecies?.name ?? "Receiving Pokémon"}
-                    sourcePosition={attackView.sourceSide === "attacker" ? "left" : "right"}
+                    positions={mirrorTeams(attackView.source, attackView.receiver, runtime)}
                     defenderHP={currentHP}
                     blocked={resultsBlocked}
                     onReveal={reveal}

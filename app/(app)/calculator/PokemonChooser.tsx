@@ -39,9 +39,12 @@ type Props = {
   runtime?: BattleRuntime;
   /** Champions usage, or a native game's Random Battle sets, pick the usual ability per format. */
   gameType?: "Singles" | "Doubles";
-  /** The Pokémon's place in labels ("your left" in 2v2); defaults to the side's "left" / "right". */
+  /**
+   * The Pokémon's place in labels ("your left" in 2v2). Without it (1v1) the side's "left" / "right" is in accessible
+   * names only: the title names the Pokémon ("Change Charizard") and the search field is "Find Pokémon".
+   */
   position?: string;
-  /** Its name as a Pokémon ("Your left Pokémon" in 2v2); defaults to "Left Pokémon" / "Right Pokémon". */
+  /** Its name as a Pokémon ("Your left Pokémon" in 2v2); without it, "Left Pokémon" / "Right Pokémon" in accessible names and the Pokémon's own name in the notice. */
   label?: string;
 };
 
@@ -54,6 +57,7 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
   const id = useId();
   const position = positionLabel ?? (side === "attacker" ? "left" : "right");
   const label = pokemonLabel ?? (side === "attacker" ? "Left Pokémon" : "Right Pokémon");
+  const current = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [teamMode, setTeamMode] = useState(false);
@@ -75,13 +79,13 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
     onClose();
     if (speciesId === build.speciesId && build.game === runtime.profile.id) return;
     onChange(chosenBuild(speciesId, runtime, gameType));
-    setNotice(`${label} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
+    setNotice(`${pokemonLabel ?? current} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
   }
 
   return (
     <div onKeyDown={wrapPickerFocus}>
       <p role="status" className="sr-only">{notice}</p>
-      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={`Change ${position} Pokémon`}>
+      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={positionLabel ? `Change ${position} Pokémon` : `Change ${current}`}>
         {roster && (
           <div role="group" aria-label="Pokémon source" className="mb-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" className="min-h-11" aria-pressed={!showTeam} onClick={() => setTeamMode(false)}>All Pokémon</Button>
@@ -90,7 +94,7 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={`Find ${position} Pokémon`}>
+            <Field id={`${id}-search`} label={positionLabel ? `Find ${position} Pokémon` : "Find Pokémon"}>
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">

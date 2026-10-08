@@ -504,7 +504,7 @@ describe("following 1v1 updates", () => {
     expect(state.doubles.notice).toBe("First imported for the opponent. Current Pokémon kept.");
     state = selectDoublesRoster(state, state.doubles.slots["opponent-left"].key, getTeamPanel(state.matchup, loaded(), "opponent").choices[0]);
     state = on1v1(state, (matchup) => removeTeamPaste(matchup, getTeamSourceOwner(matchup, "opponent")));
-    expect(state.doubles.notice).toBe("Imported team removed. Current Pokémon and their preparation kept as manual builds. Opponent's left Pokémon detached from its roster entry; its move and move contexts cleared.");
+    expect(state.doubles.notice).toBe("Imported team removed. Current Pokémon and their preparation kept. Opponent's left Pokémon detached from its roster entry; its move and move contexts cleared.");
     // 1v1 Reset keeps each side's source, so 2v2's notice stays.
     expect(on1v1(state, resetMatchup).doubles).toBe(state.doubles);
   });

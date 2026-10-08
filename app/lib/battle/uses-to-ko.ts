@@ -53,9 +53,11 @@ import { NATURES } from "./model";
 export const USES_CAP = 64;
 /**
  * Test-only hook for the self-check: when on, every new state reruns the whole calculation, with no shared
- * damage, no engine-only rerun and no closed form. The app never turns it on.
+ * damage, no engine-only rerun and no closed form. `skipNeeded` (with `on`) also leaves out `needed` (neededUses), for the
+ * 1v1 self-checks that do not compare it: searching on past the limit is a third of the slowest one's time. The 2v2
+ * reference compares it, so it keeps it. The app never turns either on.
  */
-export const USES_REFERENCE = { on: false };
+export const USES_REFERENCE = { on: false, skipNeeded: false };
 /** Target-HP states (summed over hits and uses) and damage calculations beyond the row's own that one exact count may use. */
 const STATE_BUDGET = 60_000;
 const RUN_BUDGET = 24;
@@ -1064,7 +1066,9 @@ export class UsesSearch {
     // In the closed form the first use changes nothing an end of turn reads, so its sentences are the first state's.
     const carriedAll = [...this.sources, ...carried, ...this.berryTexts(losesHP), ...(closed ? this.sharedFirst!.texts ??= texts(this.residualsAt(this.initial)) : this.residualTexts())];
     // Last, as it can search on past the limit: the count with the limit lifted, when the limit alone stops the guarantee.
-    const needed = guaranteed === null && fell === null && limitReason !== "self-cost" ? this.neededUses(limit, losesHP, plain, closed, counted, lowest) : undefined;
+    // A reference search may leave it out (USES_REFERENCE.skipNeeded).
+    const needed = guaranteed === null && fell === null && limitReason !== "self-cost" && !(USES_REFERENCE.on && USES_REFERENCE.skipNeeded)
+      ? this.neededUses(limit, losesHP, plain, closed, counted, lowest) : undefined;
     return {
       kind: "uses", guaranteed, fewest, ...(fasterChance !== undefined ? { fasterChance } : {}),
       ...(chance !== undefined ? { chance } : {}), ...(faintsFirst ? { faintsFirst: true as const } : {}), ...(endOfTurn ? { endOfTurn: true as const } : {}),

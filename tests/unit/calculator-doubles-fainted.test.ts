@@ -276,7 +276,7 @@ describe("Last Respects in the Moves pane", () => {
     const attacker = { ...createBuild("houndstone"), abilityId: "sandrush" };
     const row: MoveDamageResult = { moveId: "lastrespects", kind: "needs-context", min: null, max: null, minPercent: null, maxPercent: null, rolls: null, ohkoChance: null, description: "", assumptions: [], reason: null, hits: null };
     const html = renderToStaticMarkup(createElement(MoveResults, {
-      rows: [row], moveIds: ["lastrespects"], ownerId: "0:0", sourcePosition: "left", selectedMoveId: "lastrespects", onSelectMove: vi.fn(), contexts,
+      rows: [row], moveIds: ["lastrespects"], ownerId: "0:0", selectedMoveId: "lastrespects", onSelectMove: vi.fn(), contexts,
       onContextChange: vi.fn(), abilityId: attacker.abilityId, itemId: attacker.itemId, attackerName: "Houndstone", defenderName: "Blastoise",
       defenderHP: 154, sourceBuild: attacker, faintedAtLeast,
     }));

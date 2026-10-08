@@ -17,7 +17,7 @@ import { formatRange, hitRangeText, koChance } from "./result-format";
 import { KOText, rowHitRule, waitsForHits } from "./MoveResults";
 import { usesToKOText } from "./uses-format";
 import type { CalculatorRosterState } from "./roster-data";
-import { getMoveOwner, getRosterPanel, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
+import { getMoveOwner, getRosterPanel, mirrorTeams, sameMoveOwner, type BattleSide, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
 import { describeMoveSlot } from "@/app/lib/battle/move-defaults";
 import styles from "./calculator.module.css";
 
@@ -115,7 +115,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
     <div data-summary-combatant={side} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">
       {slot.source && <p className="wrap-anywhere text-xs font-semibold text-muted">{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg">{species?.name ?? "Choose Pokémon"}</h3>
+        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg">{species?.name ?? "—"}</h3>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${baseName} ${position} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
@@ -194,7 +194,7 @@ function SummaryCombatant({ slot, side, issues, projected, moveName, rollDescrip
             const move = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
             const selected = prepared.moveId !== null && sameMoveOwner(attack.owner, owner) && attack.moveId === prepared.moveId;
             const effective = selected && selectedResult?.moveId === prepared.moveId ? selectedResult : undefined;
-            const name = effective?.effectiveName ?? move?.name ?? "Choose move";
+            const name = effective?.effectiveName ?? move?.name ?? "No move";
             const editing = replacement && sameMoveOwner(replacement.owner, owner) && replacement.slotIndex === index;
             return (
               <button
@@ -240,7 +240,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
   const receiver = source === defender ? attacker : defender;
   const sourceName = source && runtime.speciesById.get(source.build.speciesId)?.name;
   const receiverName = runtime.speciesById.get(receiver.build.speciesId)?.name;
-  const receiverPosition = receiver === attacker ? "Left" : "Right";
+  const teams = source ? mirrorTeams(source, receiver, runtime) : undefined;
   const move = selectedMoveId ? runtime.movesById.get(selectedMoveId) : undefined;
   const currentResult = source && resultIdentity && sameMoveOwner(resultIdentity.source, getMoveOwner(source)) && sameMoveOwner(resultIdentity.receiver, getMoveOwner(receiver));
   const row = currentResult && selectedMoveId && selectedRow?.moveId === selectedMoveId && !blockedReason ? selectedRow : undefined;
@@ -310,10 +310,10 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div aria-live="polite" aria-atomic="true" className="min-w-0 flex-1">
             {!selectedMoveId ? (
-              <p className="text-sm font-medium text-accent-text">Click either Pokémon’s quick move, or browse all moves below.</p>
+              <p className="text-sm font-medium text-accent-text">No move chosen.</p>
             ) : (
               <>
-                <p className="wrap-anywhere text-xs font-semibold text-muted">{sourceName ?? "Choose a Pokémon"} ({source === defender ? "right" : "left"}) → {receiverName} ({receiverPosition.toLowerCase()})</p>
+                <p className="wrap-anywhere text-xs font-semibold text-muted">{sourceName ?? "—"}{teams && ` (${teams.source})`} → {receiverName ?? "—"}{teams && ` (${teams.receiver})`}</p>
                 <p className="mt-1 wrap-anywhere text-sm font-bold text-text">{moveName}</p>
                 {row?.effectiveName && move && row.effectiveName !== move.name && <p className="mt-1 wrap-anywhere text-xs text-muted">From {move.name} · {row.effectiveType} · {row.effectiveCategory} · Power {row.effectivePower ?? "—"}</p>}
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
@@ -323,7 +323,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
                     {usesToKO && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">Uses to KO: {row?.usesToKO ? <span className="font-semibold text-text"><KOText text={usesToKO.label} /></span> : usesToKO.label}{usesToKO.details.map((detail, index) => <Fragment key={index}> · <KOText text={detail} /></Fragment>)}</p>}
                     {preview.status === "ready" ? (
                       <>
-                        <p className="mt-1 text-sm text-text">{receiverName ?? `${receiverPosition} Pokémon`} HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
+                        <p className="mt-1 text-sm text-text">{receiverName ?? "Target"} HP remaining: <strong className="whitespace-nowrap text-lg tabular-nums">{preview.remaining} / {preview.maximum}</strong></p>
                         {preview.heals && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{preview.heals.join(" ")}</p>}
                         {preview.alternate && <p className="mt-1 text-xs tabular-nums text-muted">With {preview.alternate.label} ({Math.round(preview.alternate.chance * 100)}% chance, same {rollDescription}): {preview.alternate.damage} damage, {preview.alternate.remaining} / {preview.maximum} HP remaining.</p>}
                       </>

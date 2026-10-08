@@ -173,7 +173,7 @@ describe("count controls", () => {
   function results(moveId: string, attacker: BattleBuild, contexts: Record<string, MoveContext> = {}, runtime: BattleRuntime = championsRuntime) {
     const result: MoveDamageResult = { moveId, kind: "needs-context", min: null, max: null, minPercent: null, maxPercent: null, rolls: null, ohkoChance: null, description: "", assumptions: [], reason: null, hits: null };
     return renderToStaticMarkup(createElement(MoveResults, {
-      rows: [result], moveIds: [moveId], ownerId: "0:0", sourcePosition: "left", selectedMoveId: moveId, onSelectMove: vi.fn(), contexts,
+      rows: [result], moveIds: [moveId], ownerId: "0:0", selectedMoveId: moveId, onSelectMove: vi.fn(), contexts,
       onContextChange: vi.fn(), abilityId: attacker.abilityId, itemId: attacker.itemId, attackerName: "Attacker", defenderName: "Defender",
       defenderHP: 100, runtime, sourceBuild: attacker, partyOptions: [{ speciesId: "garchomp", name: "Garchomp" }],
     }));
@@ -223,7 +223,7 @@ describe("count controls", () => {
   it("builds Beat Up's party with the team listed first", () => {
     const empty = results("beatup", build("mausholdfour", "technician"));
     expect(empty).toContain("Other party members that can attack");
-    expect(empty).toContain("Choose how many");
+    expect(empty).toMatch(/<option value="" selected="">—<\/option><option value="0">0<\/option>/);
     const chosen = results("beatup", build("mausholdfour", "technician"), { beatup: { party: ["garchomp", ""] } });
     expect(chosen).toContain("Party member 2");
     expect(chosen).toContain("Party member 3");

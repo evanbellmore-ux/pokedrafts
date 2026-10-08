@@ -55,7 +55,7 @@ function moves(options: { wide?: boolean; sort?: DamageSort; expanded?: string; 
   try {
     const rows = options.rows ?? ROWS;
     return renderToStaticMarkup(createElement(MoveResults, {
-      rows, moveIds: rows.map((result) => result.moveId), ownerId: "0:0", sourcePosition: "left", selectedMoveId: "thunderpunch", onSelectMove: vi.fn(), contexts: {},
+      rows, moveIds: rows.map((result) => result.moveId), ownerId: "0:0", selectedMoveId: "thunderpunch", onSelectMove: vi.fn(), contexts: {},
       onContextChange: vi.fn(), abilityId: "roughskin", itemId: "", attackerName: "Garchomp", defenderName: "Incineroar", defenderHP: HP, runtime: sv, blocked: options.blocked,
     }));
   } finally {
