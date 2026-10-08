@@ -1,4 +1,6 @@
 // Addendum A1.2: ToWorker "suggest" → FromWorker "suggested" / "suggest-error"; A1.3: ToWorker "move-options" → FromWorker "move-options-ready" / "move-options-error".
+// Saved battles: FromWorker "checkpoint" (the sealed autosave of each resolved turn), ToWorker "resume" (rebuild it, then
+// continue) and "replay" → FromWorker "replay-ready" / "replay-error" (re-run a finished battle from its seed and choices).
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { HabitsRecord } from "./decision";
 import type { EditorMoveOption, SuggestedSet, SuggestMember } from "./usage";
@@ -14,7 +16,11 @@ export type ToWorker =
   /** Addendum A1.2: suggested sets for one side's league members, in team order (Item Clause takes items in that order). */
   | { type: "suggest"; key: string; side: DoublesSideId; members: SuggestMember[] }
   /** Addendum A1.3: the set editor's move list for one species. */
-  | { type: "move-options"; speciesId: string };
+  | { type: "move-options"; speciesId: string }
+  /** An unfinished battle from its sealed checkpoint: rebuilt by replaying its choices, then played on. `log`: the saved log (its reads). */
+  | { type: "resume"; battleId: number; setup: TrainingSetup; sealed: string; log: LogTurn[] }
+  /** A finished battle re-run for the replay screen; the teams are validated first (an import file is untrusted). */
+  | { type: "replay"; replayId: number; setup: TrainingSetup; seed: string; inputLog: string[]; forfeited: boolean };
 
 export type FromWorker =
   | { type: "loaded"; ms: number }
@@ -33,7 +39,20 @@ export type FromWorker =
     log: LogTurn[];
     ended: { result: "win" | "loss" | "tie"; forfeited: boolean } | null;
     habits?: HabitsRecord;
+    /** Once ended: the simulator's choice lines (both sides, committed turns only), for the saved battle's replay. */
+    inputLog?: string[];
   }
+  /**
+   * After each turn resolves (turn = the turn that begins): the battle sealed for Resume (its seed, both sides' choices, the AI's
+   * seed base, the habits at the start), encrypted with this browser's key; null when it could not be sealed.
+   */
+  | { type: "checkpoint"; battleId: number; turn: number; sealed: string | null }
+  /** The board as each turn began and after the last one (built per setup.info.youSee), the re-run log's hashes and the re-run's result. */
+  | {
+    type: "replay-ready"; replayId: number; starts: Record<number, BoardView>; end: BoardView; hash: string; turnHashes: Record<number, string>;
+    result: { result: "win" | "loss" | "tie"; forfeited: boolean };
+  }
+  | { type: "replay-error"; replayId: number; message: string }
   | { type: "choice-error"; battleId: number; requestId: number; message: string; request?: TrainingRequest }
   | { type: "ai"; battleId: number; requestId: number; status: "thinking" | "locked" | "fallback" | "error"; message?: string }
   | { type: "battle-error"; battleId: number; message: string }

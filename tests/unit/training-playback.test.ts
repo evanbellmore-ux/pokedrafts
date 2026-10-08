@@ -69,7 +69,7 @@ const TURN_3: LogTurn = {
 function battle(overrides: Partial<TrainingBattle> = {}): TrainingBattle {
   return {
     id: 1, setup: trainingSetup(), seed: null, phase: { kind: "choose", request: moveRequest() }, board: boardView(), log: logTurns(),
-    ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), ...overrides,
+    ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), savedId: "saved-1", startedAt: 0, ...overrides,
   };
 }
 const resolved = (overrides: Partial<TrainingBattle> = {}) => battle({ board: after(), log: [...logTurns(), TURN_3], phase: { kind: "choose", request: moveRequest({ id: 8 }) }, ...overrides });

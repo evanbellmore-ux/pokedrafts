@@ -416,7 +416,7 @@ describe("battle end comparison (SSR)", () => {
   function ended(habitsBefore: HabitsData): TrainingBattle {
     return {
       id: 1, setup: trainingSetup(), seed: "sodium,1", phase: { kind: "ended", result: "win", forfeited: false },
-      board: boardView({ turn: 3 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore,
+      board: boardView({ turn: 3 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore, savedId: "saved-1", startedAt: 0,
     };
   }
   const before: HabitsData = { ...emptyHabits(), battles: 4, classes: { "*": { protect: 9, switch: 4, "attack-ko": 10, "attack-best": 18 } } };

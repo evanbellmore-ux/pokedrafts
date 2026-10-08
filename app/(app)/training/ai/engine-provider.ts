@@ -142,9 +142,11 @@ export function createEngineProvider(config: EngineProviderOptions): EngineProvi
     return { prediction: { probabilities, weight: total }, provider };
   }
 
-  async function chooseTurn(ctx: Parameters<DecisionProvider["chooseTurn"]>[0], o: DecideOptions): Promise<TurnDecision> {
-    const started = o.now();
-    checkAbort(o.signal);
+  /**
+   * chooseTurn up to its question: the belief observes the turn's inputs, the view, rows and worth are kept for observeTurn,
+   * and your candidates make the question. Everything chooseTurn changes in the provider happens here (Resume replays it).
+   */
+  function prepareTurn(ctx: Parameters<DecisionProvider["chooseTurn"]>[0], o: DecideOptions) {
     const model = ensureBelief(ctx.inputs, ctx.usage);
     const beliefStart = o.now();
     model.observe(ctx.inputs, runtime);
@@ -164,11 +166,18 @@ export function createEngineProvider(config: EngineProviderOptions): EngineProvi
     // The habit model's per-slot chances reserve its favourites before pruning (SPEC 10.4 "+ the habit model's top option").
     const slotsOnly = playerCandidates(view, rows, worth, null, runtime, candidateOptions).slots;
     const player = playerCandidates(view, rows, worth, { probabilities: habit.slotPrediction(slotsOnly), weight: 1 }, runtime, candidateOptions);
-    const ai = aiCandidates(view, rows, worth, runtime, candidateOptions);
     const question: Extract<PlayerQuestion, { kind: "turn" }> = {
       kind: "turn", turn: view.turn, options: player.kept.map((candidate) => ({ id: candidate.id, action: candidate.action, label: candidate.label })),
       slots: player.slots, summary: questionSummary(view, runtime),
     };
+    return { model, beliefMs, services, view, rows, worth, mega, candidateOptions, player, question, servicesStart, rowsStart, candidatesStart };
+  }
+
+  async function chooseTurn(ctx: Parameters<DecisionProvider["chooseTurn"]>[0], o: DecideOptions): Promise<TurnDecision> {
+    const started = o.now();
+    checkAbort(o.signal);
+    const { model, beliefMs, services, view, rows, worth, mega, candidateOptions, player, question, servicesStart, rowsStart, candidatesStart } = prepareTurn(ctx, o);
+    const ai = aiCandidates(view, rows, worth, runtime, candidateOptions);
     // Player models answer while stage A runs (a remote model's latency overlaps the evaluation).
     const predicted = predict(question, o.signal);
     const evaluateStart = o.now();
@@ -367,6 +376,10 @@ export function createEngineProvider(config: EngineProviderOptions): EngineProvi
       return { order: result.order, report: { ...result.report, elapsedMs: o.now() - started } };
     },
     chooseTurn,
+    async replayTurn(ctx, o) {
+      checkAbort(o.signal);
+      return prepareTurn(ctx, o).question;
+    },
     async chooseReplacements(ctx, o) {
       checkAbort(o.signal);
       const model = ensureBelief(ctx.inputs, ctx.usage);

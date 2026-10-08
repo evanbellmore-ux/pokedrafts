@@ -42,7 +42,7 @@ describe("Training page shell", () => {
 
   it("never logs to the console and never imports the simulator, the engine, sim/* or ai/* from page code", () => {
     const pageFiles = ["page.tsx", "TrainingClient.tsx", "BattleScreen.tsx", "training-session.ts", "useTrainingSession.ts"].map((file) => join(training, file));
-    for (const folder of ["setup", "preview", "board", "actions", "end", "log"]) {
+    for (const folder of ["setup", "preview", "board", "actions", "end", "log", "saved", "replay"]) {
       for (const entry of readdirSync(join(training, folder))) {
         // log/protocol-text.ts and log/protocol-steps.ts are worker-only (the worker reads the p1 channel); the page never imports them.
         if (/.tsx?$/.test(entry) && entry !== "protocol-text.ts" && entry !== "protocol-steps.ts") pageFiles.push(join(training, folder, entry));

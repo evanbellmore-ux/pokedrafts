@@ -1,6 +1,7 @@
 // Training conformance (SPEC §14.3): tracker parity, belief-battle equivalence under Perfect information, default-settings
-// robustness, the bridge (stats/HP and E2 containment), split weights, choice strings, and the effect census.
-//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--seats maxdamage:random] [--containment 2]
+// robustness, the bridge (stats/HP and E2 containment), split weights, choice strings, the effect census, and saved battles
+// (replays re-run hash-equal, Resume equals uninterrupted play: --saved 30 engine battles, 0 skips).
+//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--seats maxdamage:random] [--containment 2] [--saved 30]
 // Writes scripts/.cache/training/conformance/<run>.json and .txt; exits 1 when a gated check fails.
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
@@ -20,6 +21,7 @@ import { identName, isFainted, legalJointActions, toChoiceString, type MemberKey
 import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
 import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
 import { runMatch } from "./lib/match";
+import { runSavedCheck, type SavedCheck } from "./lib/saved-check";
 import { createTurnServices } from "@/app/(app)/training/sim/services";
 import { compareFacts, oracleFacts, realBattle, trackerFacts } from "./lib/oracle";
 import { createSeat, ensureSeats, isSeatName } from "./lib/providers";
@@ -128,6 +130,7 @@ type Report = {
   choices: { checked: number; accepted: number; unavailable: number; failures: string[] };
   census: Record<string, number>;
   splits: { protect3: number; sleep1: number; freeze: number; samples: number } | null;
+  saved?: SavedCheck;
   errors: string[];
 };
 
@@ -299,6 +302,14 @@ async function main(): Promise<void> {
     const plain = `${e2.stdout ?? ""}${e2.stderr ?? ""}`.replace(/\x1b\[[0-9;]*m/g, "");
     const summary = plain.split("\n").filter((line) => /Tests\s+\d|Test Files/.test(line)).map((line) => line.trim()).join("; ");
     rows.push({ gate: "8. E2 vs Showdown (doubles-outcomes + doubles-turn-showdown tests)", threshold: "all pass", result: summary || `exit ${e2.status}`, status: e2.status === 0 ? "pass" : "fail" });
+  }
+  const savedBattles = Number(args.saved ?? 30);
+  if (savedBattles > 0) {
+    // Check 9: saved battles on the engine seat ("Plays safe" and "Reads you" alternate, information settings rotate).
+    const saved = await runSavedCheck({ battles: savedBattles, seat: "safe", pools: pools.join(","), run: `${run}-saved` });
+    report.saved = saved;
+    rows.push({ gate: "9a. Saved battles: re-run log hash, boards and result = original", threshold: `100% of ${savedBattles}`, result: `${saved.replayEqual}/${saved.replays} hash, ${saved.replayBoardsEqual}/${saved.replays} boards and result (${saved.forfeits} forfeited)`, status: saved.replays === savedBattles && saved.replayEqual === saved.replays && saved.replayBoardsEqual === saved.replays ? "pass" : "fail", detail: saved.failures.slice(0, 5).join(" | ") });
+    rows.push({ gate: "9b. Resume from the middle autosave = uninterrupted play", threshold: "100% (log, reads, choices, seed, habits)", result: `${saved.resumeEqual}/${saved.resumed}; largest record ${Math.round(saved.maxRecordBytes / 1024)} KB`, status: saved.resumed >= savedBattles - 2 && saved.resumeEqual === saved.resumed ? "pass" : "fail" });
   }
   rows.push({ gate: "Runner errors", threshold: "0", result: `${report.errors.length}`, status: report.errors.length === 0 ? "pass" : "fail" });
   const dir = join(process.cwd(), "scripts", ".cache", "training", "conformance");

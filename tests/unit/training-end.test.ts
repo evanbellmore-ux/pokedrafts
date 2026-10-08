@@ -13,7 +13,7 @@ vi.mock("react/jsx-dev-runtime", async (original) => (await import("../fixtures/
 function ended(result: "win" | "loss" | "tie", forfeited = false): TrainingBattle {
   return {
     id: 1, setup: trainingSetup(), seed: "sodium,1a2b3c4d", phase: { kind: "ended", result, forfeited },
-    board: boardView({ turn: 7 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(),
+    board: boardView({ turn: 7 }), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), savedId: "saved-1", startedAt: 0,
   };
 }
 
