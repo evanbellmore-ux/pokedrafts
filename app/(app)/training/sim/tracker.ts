@@ -14,6 +14,24 @@ export type PublicTracker = {
   observations(): TurnObservations[];
 };
 
+/**
+ * Public counts the 2v2 end of turn and status moves read (status-eot SPEC §6, ADDENDUM §6), kept on the exported
+ * PublicMon beside its fields (plain JSON; absent: none): `restSleep`, its sleep came from Rest (`-status|X|slp|[from]
+ * move: Rest`: three turns); `allySwitchStreak`, consecutive turns its Ally Switch passed its PrepareHit (the next use works
+ * with 1/3^streak); `itemSince`, the `actions` count when Trick or Switcheroo gave it its item (a Choice item received
+ * during or after its last move locks nothing yet); `choiceMove`, the move a Choice item locks it into: its first move
+ * this stint since an item last reached it (pinned data/items.ts choicescarf onModifyMove adds choicelock, whose onStart
+ * keeps that move; a later move, a forced Struggle included, does not change it; a Choice item's onStart removes the
+ * lock, and a lock begun by Struggle ends at the next DisableMove, so the move after it locks instead).
+ */
+export type PublicCounts = { restSleep?: true; allySwitchStreak?: number; itemSince?: number; choiceMove?: string };
+export const countsOf = (mon: PublicMon): PublicCounts => mon as PublicMon & PublicCounts;
+/**
+ * A Substitute stint's public record (ADDENDUM §6): `sourceKey` the Pokémon whose `-start|X|Substitute` began it (Baton
+ * Pass and Shed Tail copy it), `hits` the `-activate|X|move: Substitute|[damage]` lines since (its HP after a hit is hidden).
+ */
+export type SubstituteVolatile = PublicVolatile & { hits?: number };
+
 export const toID = (text: unknown) => String(text ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 const BOOSTS: readonly BoostId[] = ["atk", "def", "spa", "spd", "spe", "accuracy", "evasion"];
 const zeroBoosts = (): Record<BoostId, number> => ({ atk: 0, def: 0, spa: 0, spd: 0, spe: 0, accuracy: 0, evasion: 0 });
@@ -29,7 +47,9 @@ const SINGLE_TURN: readonly string[] = ["protect", "helpinghand", "followme", "r
 const SELF_HEAL_ABILITIES: ReadonlySet<string> = new Set(["waterabsorb", "voltabsorb", "dryskin", "eartheater"]);
 
 type Ref = { side: SideID; position: 0 | 1 | null; name: string };
-type Mon = PublicMon & {
+type Mon = PublicMon & PublicCounts & {
+  /** Its Ally Switch passed its PrepareHit this turn (the streak goes on), or it used it and failed (the streak ends). */
+  allySwitchThisTurn?: "passed" | "failed";
   thisResult: boolean | null | undefined;
   protectedThisTurn: boolean;
   /** Two-turn charge started (R5). */
@@ -165,7 +185,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     } else {
       mon.hp = { percent: hp.current, color: hp.color };
     }
-    if (hp.status !== null && hp.status !== mon.status) { mon.status = hp.status; mon.statusElapsed = 0; }
+    if (hp.status !== null && hp.status !== mon.status) { mon.status = hp.status; mon.statusElapsed = 0; delete mon.restSleep; }
   }
   const hpSnapshot = (mon: Mon): ShownHP | ExactHP => (mon.side === viewer && mon.exact ? { ...mon.exact } : { ...mon.hp });
   const withGone = (snapshot: HitSnapshot, gone: boolean): HitSnapshot => {
@@ -234,6 +254,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     } mon.boosts = zeroBoosts(); mon.lastMove = null; mon.lastMoveTarget = null; mon.lastResult = null;
     mon.thisResult = undefined; mon.lock = null; mon.protectStreak = 0; mon.protectedThisTurn = false; mon.charging = null;
     mon.transformedInto = null; mon.speciesId = mon.stintSpecies;
+    delete mon.allySwitchStreak; delete mon.allySwitchThisTurn; delete mon.itemSince; delete mon.choiceMove;
     // Mean Look / Block: "trapped" and the source's "trapper" are linked volatiles; either leaving ends both
     // (pinned data/moves.ts meanlook onHit addVolatile(..., 'trapper'); sim/pokemon.ts removeVolatile linkedStatus).
     for (const each of Object.values(mons)) {
@@ -315,6 +336,11 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         mon.thisResult = undefined;
         if (!mon.protectedThisTurn) mon.protectStreak = 0;
         mon.protectedThisTurn = false;
+        // Ally Switch (pinned data/moves.ts allyswitch: the volatile lasts 2 turns; each use that passes PrepareHit restarts
+        // it and triples its counter): a turn without a passing use ends the streak.
+        if (mon.allySwitchThisTurn === "passed") mon.allySwitchStreak = (mon.allySwitchStreak ?? 0) + 1;
+        else delete mon.allySwitchStreak;
+        delete mon.allySwitchThisTurn;
       }
     }
     for (const mon of Object.values(mons)) mon.volatiles = mon.volatiles.filter((each) => !SINGLE_TURN.includes(each.id));
@@ -397,6 +423,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     for (const id of SINGLE_MOVE) removeVolatile(mon, id);
     mon.actions++;
     mon.lastMove = moveId;
+    if (!mon.choiceMove || mon.choiceMove === "struggle") mon.choiceMove = moveId;
     mon.lastMoveTarget = targetRef && targetRef.position !== null && !("notarget" in tags) ? { side: targetRef.side, position: targetRef.position } : null;
     mon.thisResult = true;
     if (!tags.from) {
@@ -470,7 +497,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     mon.fainted = true;
     mon.hp = { percent: 0, color: null };
     if (mon.exact) mon.exact = { hp: 0, maxhp: mon.exact.maxhp };
-    mon.status = ""; mon.statusElapsed = 0;
+    mon.status = ""; mon.statusElapsed = 0; delete mon.restSleep;
     clearStint(mon);
     sides[mon.side].totalFainted++;
     faintedThisTurn[mon.side] = mon.key;
@@ -493,7 +520,17 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     const tags = tagsOf(parts);
     switch (command) {
       case "turn": onTurn(Number(parts[2])); break;
-      case "upkeep": finishMove(); closeEntries(); afterUpkeep = true; break;
+      case "upkeep": {
+        finishMove(); closeEntries(); afterUpkeep = true;
+        // This residual resolved a Wish from last turn and a Future Sight or Doom Desire from two turns ago, healing or
+        // hitting or not (pinned data/moves.ts wish, data/conditions.ts futuremove onResidual remove the slot condition first;
+        // a fainted target gets no line): gone before a replacement request at this upkeep (EOT-5, conformance on pool E).
+        for (const side of ["p1", "p2"] as const) {
+          sides[side].conditions = sides[side].conditions.filter((each) => !(each.id === "wish" && turn - each.since >= 1)
+            && !((each.id === "futuresight" || each.id === "doomdesire") && turn - each.since >= 2));
+        }
+        break;
+      }
       case "switch": case "drag": finishMove(); onSwitch(parts, tags, command); break;
       case "replace": {
         // Illusion broke: the Pokémon in that position is the revealed member; its state moves there.
@@ -539,6 +576,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         row[to] = a; row[ref.position] = b;
         if (a) mons[a].position = to;
         if (b) mons[b].position = ref.position;
+        if (tags.from === "move: Ally Switch" && a) mons[a].allySwitchThisTurn = "passed";
         break;
       }
       case "detailschange": { const mon = activeMon(parts[2]); if (mon) { mon.speciesId = speciesOfDetails(parts[3]); mon.stintSpecies = mon.speciesId; if (/-Mega/.test(parts[3] ?? "")) mon.mega = true; } break; }
@@ -574,6 +612,9 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
       case "-fail": {
         const mon = activeMon(parts[2]);
         if (move && mon && mon.key === move.user && move.own) mons[move.user].thisResult = false;
+        // Ally Switch's onHit failing (a fainted ally: "-fail|X|move: Ally Switch") comes after its counter passed; a plain
+        // "-fail|X" is its PrepareHit's counter failing, which removes the volatile (pinned data/moves.ts allyswitch).
+        if (move && mon && mon.key === move.user && move.moveId === "allyswitch") mon.allySwitchThisTurn = parts[3] === "move: Ally Switch" ? "passed" : "failed";
         attribute(mon, tags, command);
         break;
       }
@@ -622,15 +663,18 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         const mon = activeMon(parts[2]);
         if (!mon) break;
         mon.status = toID(parts[3]) as BattleStatus; mon.statusElapsed = 0;
+        // Rest's sleep lasts three turns (pinned data/moves.ts rest onHit: statusState.time 3): "-status|X|slp|[from] move: Rest".
+        if (mon.status === "slp" && tags.from === "move: Rest") mon.restSleep = true;
+        else delete mon.restSleep;
         attribute(mon, tags, command);
         break;
       }
       case "-curestatus": {
         const mon = activeMon(parts[2]) ?? monOf(parts[2]);
-        if (mon) { mon.status = ""; mon.statusElapsed = 0; attribute(mon, tags, command); }
+        if (mon) { mon.status = ""; mon.statusElapsed = 0; delete mon.restSleep; attribute(mon, tags, command); }
         break;
       }
-      case "-cureteam": { const ref = parseRef(parts[2]); if (ref) for (const mon of Object.values(mons)) if (mon.side === ref.side) { mon.status = ""; mon.statusElapsed = 0; } break; }
+      case "-cureteam": { const ref = parseRef(parts[2]); if (ref) for (const mon of Object.values(mons)) if (mon.side === ref.side) { mon.status = ""; mon.statusElapsed = 0; delete mon.restSleep; } break; }
       case "-boost": case "-unboost": {
         const mon = activeMon(parts[2]);
         if (!mon) break;
@@ -744,7 +788,14 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         // R9; Cursed Body disables the attacker as it moves, which counts as not yet moved (data/moves.ts disable onStart).
         if (id === "taunt" || id === "encore" || id === "disable") entry.targetMovedFirst = builder.acted.has(mon.key) && !afterUpkeep && tags.from !== "ability: Cursed Body";
         if (id === "healblock" && move) entry.moveId = move.moveId;   // Psychic Noise blocks for 2 turns (data/moves.ts healblock durationCallback)
-        if (id === "leechseed" || id === "yawn" || id === "attract") entry.sourceKey = (tags.of ? activeMon(tags.of)?.key : move?.user) ?? undefined;
+        // Axe Kick's confusion lasts at least 3 turns (pinned data/conditions.ts confusion onStart: min 3 for axekick).
+        if (id === "confusion" && !("fatigue" in tags) && move?.moveId === "axekick" && move.user !== mon.key) entry.moveId = "axekick";
+        // A Substitute stint: its maker and the hits it has taken (ADDENDUM §6).
+        if (id === "substitute") Object.assign(entry, { sourceKey: mon.key, hits: 0 } satisfies Partial<SubstituteVolatile>);
+        // Syrup Bomb's source is the move's user (its -start line names no [of]; data/moves.ts syrupbomb ends when it leaves).
+        if (id === "leechseed" || id === "yawn" || id === "attract" || id === "syrupbomb") entry.sourceKey = (tags.of ? activeMon(tags.of)?.key : move?.user) ?? undefined;
+        // Leech Seed heals whoever stands at the seeder's position as it seeded (data/moves.ts leechseed sourceSlot).
+        if (id === "leechseed" && entry.sourceKey) { const at = mons[entry.sourceKey]?.position; if (at === 0 || at === 1) entry.sourcePosition = at; }
         addVolatile(mon, entry);
         break;
       }
@@ -769,6 +820,7 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         const id = effectId(what);
         if (id === "confusion") { const confusion = volatile(mon, "confusion"); if (confusion) confusion.elapsed++; break; }   // R10
         if (id === "substitute" && move && move.user !== mon.key) move.landed = true;
+        if (id === "substitute" && "damage" in tags) { const sub = volatile(mon, "substitute") as SubstituteVolatile | undefined; if (sub) sub.hits = (sub.hits ?? 0) + 1; }
         if (id === "spite" || id === "eeriespell") {
           // "-activate|target|move: Spite|Move|n": n PP of that move lost (pinned data/moves.ts spite onHit, eeriespell).
           const lost = toID(parts[4]);
@@ -826,6 +878,11 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
         const id = toID(parts[3]);
         mon.item = { state: "held", itemId: id };
         reveal(mon, "item", id);
+        // Trick and Switcheroo hand over an item (pinned data/moves.ts trick onHit "-item|X|item|[from] move: Trick").
+        if (tags.from === "move: Trick" || tags.from === "move: Switcheroo") mon.itemSince = mon.actions;
+        else delete mon.itemSince;
+        // An item reaching it (not a Frisk reveal or a switch-in announcement) starts a new Choice lock at its next move.
+        if (tags.from && tags.from !== "ability: Frisk") delete mon.choiceMove;
         if ((tags.from ?? "").startsWith("ability: ")) showAbility(tags.of ? activeMon(tags.of) : mon, effectId(tags.from));
         break;
       }
@@ -857,8 +914,8 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
   const sideOfName = (name: string): SideID | null => (playerNames.p1 === name ? "p1" : playerNames.p2 === name ? "p2" : null);
 
   function exportMon(mon: Mon): PublicMon {
-    const { thisResult: _r, protectedThisTurn: _p, charging: _c, stintMoves: _s, notChoiceShown: _n, stintSpecies: _f, baseShown: _b, ...rest } = mon;
-    void _r; void _p; void _c; void _s; void _n; void _f; void _b;
+    const { thisResult: _r, protectedThisTurn: _p, charging: _c, stintMoves: _s, notChoiceShown: _n, stintSpecies: _f, baseShown: _b, allySwitchThisTurn: _a, ...rest } = mon;
+    void _r; void _p; void _c; void _s; void _n; void _f; void _b; void _a;
     return structuredClone(rest);
   }
 

@@ -16,6 +16,11 @@ export type PublicVolatile = {
   /** Move attempts it has lasted (confusion: -activate lines). */
   elapsed: number;
   moveId?: string; layers?: number; sourceKey?: string;
+  /**
+   * Leech Seed: the seeder's position when it seeded (pinned data/moves.ts leechseed condition onStart sourceSlot); the
+   * Pokémon standing there heals, whoever it is after a switch or an Ally Switch.
+   */
+  sourcePosition?: 0 | 1;
   /** Taunt and Encore: the target had already acted that turn (one more turn, PS/data/moves.ts taunt/encore onStart). */
   targetMovedFirst?: boolean;
 };

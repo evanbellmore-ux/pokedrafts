@@ -4,6 +4,7 @@
 import type { AIRandom } from "../model/decision";
 import type { PublicMon, PublicVolatile } from "../model/public-state";
 import type { ClonedBattle, EffectState, WritablePokemon } from "./sim";
+import { countsOf, type SubstituteVolatile } from "./tracker";
 
 export type EffectContext = {
   battle: ClonedBattle;
@@ -52,7 +53,16 @@ export function volatileStates(ctx: EffectContext): Record<string, EffectState> 
     out.lockedmove = state("lockedmove", { duration: 1, trueDuration: pub.lock.turns <= 1 ? pick([1, 2], random) : 1, move: pub.lock.moveId });
   }
   // Choice lock: the holder's item is a Choice item and it acted this stint (items.ts choicescarf onModifyMove → choicelock).
-  if (pub.lastMove && pub.actions > 0 && pub.position !== null && mon.getItem().isChoice) out.choicelock = state("choicelock", { move: pub.lastMove });
+  // The lock comes from onModifyMove while holding it and keeps that move, and a Choice item's onStart removes a lock
+  // (pinned data/items.ts choiceband onStart; status-eot ADDENDUM §6): it is on its first move since an item last reached
+  // it (tracker.ts choiceMove), not on its last. A Choice item Trick or Switcheroo gave it locks nothing until its next
+  // move; a forced Struggle (its locked move disabled) keeps the lock (EOT-5, conformance on pool E).
+  const choiceMove = countsOf(pub).choiceMove;
+  if (choiceMove && pub.position !== null && mon.getItem().isChoice) out.choicelock = state("choicelock", { move: choiceMove });
+  // Ally Switch used last turn: the volatile (pinned data/moves.ts allyswitch condition, duration 2) with its counter, 3 per
+  // passing use in a row (at most 729); this turn's countdown ends it unless it is used again.
+  const streak = countsOf(pub).allySwitchStreak ?? 0;
+  if (streak > 0 && pub.position !== null) out.allyswitch = state("allyswitch", { duration: 1, counter: Math.min(729, 3 ** streak) });
   // R8: Unburden is active when it lost its item this stint (data/abilities.ts unburden onAfterUseItem/onTakeItem).
   if (mon.ability === "unburden" && pub.item.state === "gone" && pub.item.stint === pub.switchIns && pub.position !== null) out.unburden = state("unburden");
   // The Metronome item's counter starts at switch-in (data/items.ts metronome onStart addVolatile).
@@ -70,8 +80,9 @@ function construct(ctx: EffectContext, volatile: PublicVolatile, state: (id: str
   if (HANDLED_ELSEWHERE.has(id)) return null;
   switch (id) {
     case "confusion": {
-      // random(2, 6) attempts in all, one used per -activate line (R10); still confused, so more than elapsed.
-      const t0 = pick([2, 3, 4, 5].filter((n) => n > volatile.elapsed), random) ?? volatile.elapsed + 1;
+      // random(2, 6) attempts in all (Axe Kick's random(3, 6)), one used per -activate line (R10); still confused, so more than elapsed.
+      const least = volatile.moveId === "axekick" ? 3 : 2;
+      const t0 = pick([2, 3, 4, 5].filter((n) => n >= least && n > volatile.elapsed), random) ?? volatile.elapsed + 1;
       return { confusion: state("confusion", { time: t0 - volatile.elapsed }) };
     }
     case "twoturnmove": {
@@ -94,6 +105,9 @@ function construct(ctx: EffectContext, volatile: PublicVolatile, state: (id: str
     case "disable": return { disable: state("disable", { move: volatile.moveId ?? "", duration: left(volatile.targetMovedFirst ? 5 : 4, since, turn) }) };
     case "yawn": return { yawn: state("yawn", { duration: left(2, since, turn), source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
     case "perishsong": return { perishsong: state("perishsong", { duration: Math.max(1, volatile.layers ?? 3) }) };
+    // Syrup Bomb: 4 turns, its source the move's user (data/moves.ts syrupbomb condition: it ends when the source leaves,
+    // and the residual's Speed drop comes from it, which Defiant and Competitive read).
+    case "syrupbomb": return { syrupbomb: state("syrupbomb", { duration: left(4, since, turn), source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
     case "partiallytrapped": {
       const source = ctx.monOf(volatile.sourceKey);
       const total = source?.getItem().id === "gripclaw" ? 8 : pick([5, 6], random);
@@ -104,11 +118,21 @@ function construct(ctx: EffectContext, volatile: PublicVolatile, state: (id: str
     }
     case "leechseed": {
       const source = ctx.monOf(volatile.sourceKey);
-      return { leechseed: state("leechseed", { source: source ?? undefined, sourceSlot: source?.getSlot() ?? (mon.side.foe.active[0] as WritablePokemon | null)?.getSlot() }) };
+      // The seeder's position as it seeded (tracker sourcePosition): after it fainted, switched or used Ally Switch, the
+      // Pokémon standing there heals (data/moves.ts leechseed getAtSlot(sourceSlot)); its getSlot() now is elsewhere.
+      const side = volatile.sourceKey?.slice(0, 2);
+      const seeded = volatile.sourcePosition !== undefined && (side === "p1" || side === "p2") ? `${side}${"ab"[volatile.sourcePosition]}` : null;
+      return { leechseed: state("leechseed", { source: source ?? undefined, sourceSlot: seeded ?? source?.getSlot() ?? (mon.side.foe.active[0] as WritablePokemon | null)?.getSlot() }) };
     }
-    case "substitute":
+    case "substitute": {
+      // A Substitute no hit has met keeps its maker's quarter (pinned data/moves.ts substitute: floor(maxhp / 4) of the
+      // Pokémon that made it, which Shed Tail and Baton Pass pass on; ADDENDUM C13′). After a hit its HP is not public.
+      const sub = volatile as SubstituteVolatile;
+      const maker = ctx.monOf(sub.sourceKey) ?? mon;
+      if ((sub.hits ?? 0) === 0 && sub.sourceKey) return { substitute: state("substitute", { hp: Math.floor(maker.maxhp / 4) }) };
       ctx.approximations.add("Substitute HP assumed full.");
-      return { substitute: state("substitute", { hp: Math.floor(mon.maxhp / 4) }) };
+      return { substitute: state("substitute", { hp: Math.floor(maker.maxhp / 4) }) };
+    }
     case "stockpile": return { stockpile: state("stockpile", { layers: volatile.layers ?? 1 }) };
     case "attract": return { attract: state("attract", { source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
     // Psychic Noise's Heal Block lasts 2 turns, Heal Block's 5 (data/moves.ts healblock condition durationCallback).

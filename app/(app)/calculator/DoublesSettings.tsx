@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { DOUBLES_SLOTS, slotSide, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleConditions as Conditions, BuildIssue } from "@/app/lib/battle/types";
-import BattleConditions, { describeDoublesConditions } from "./BattleConditions";
+import BattleConditions, { describeDoublesConditions, useDoublesCarried } from "./BattleConditions";
 import type { BuildSettings } from "./BuildSettings";
 import SettingsDisclosure from "./SettingsDisclosure";
 import { positionedName } from "./doubles-format";
@@ -27,6 +27,8 @@ const SIDE_LEGENDS = { attackerSide: "Your side", defenderSide: "Opponent's side
  * width (data-doubles-settings). Each section is keyed like its Pokémon, so unfinished editor text follows it.
  */
 export default function DoublesSettings({ runtime, names, slots, issues, fieldIssues, builds, field, renderEditor, conditions, onConditionsChange, charged, onChargedChange }: DoublesSettingsProps) {
+  // Each Pokémon's state from earlier turns (useDoublesView provides it): its ticked checkboxes count among the toggles.
+  const carried = useDoublesCarried();
   return (
     <div data-doubles-settings className={`${styles.doublesSettings} overflow-hidden rounded-xl border border-line bg-panel`}>
       {DOUBLES_SLOTS.map((slot) => {
@@ -58,7 +60,7 @@ export default function DoublesSettings({ runtime, names, slots, issues, fieldIs
         className={styles.fieldSection}
         label={<>
           <span>Field conditions</span>
-          <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeDoublesConditions(conditions, charged)}</span>
+          <span className="min-w-0 wrap-anywhere font-normal text-muted">{describeDoublesConditions(conditions, charged, carried)}</span>
         </>}
       >
         <BattleConditions

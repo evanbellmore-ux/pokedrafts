@@ -1,7 +1,10 @@
 // Training conformance (SPEC §14.3): tracker parity, belief-battle equivalence under Perfect information, default-settings
 // robustness, the bridge (stats/HP and E2 containment), split weights, choice strings, the effect census, and saved battles
 // (replays re-run hash-equal, Resume equals uninterrupted play: --saved 30 engine battles, 0 skips).
-//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--seats maxdamage:random] [--containment 2] [--saved 30]
+//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--eot 10] [--seats maxdamage:random] [--containment 2] [--saved 30]
+// --eot N more battles in each mode play pool E (tests/fixtures/training-teams.ts: E01 against E02), whose moves leave the
+// state the bridge carries into the engine (Ally Switch, Trick, Switcheroo, Substitute, Leech Seed, Salt Cure, Syrup Bomb,
+// Wish, Future Sight, a Binding Band trap...: status-eot EOT-5); every gate counts them.
 // Writes scripts/.cache/training/conformance/<run>.json and .txt; exits 1 when a gated check fails.
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
@@ -22,6 +25,7 @@ import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-se
 import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
 import { runMatch } from "./lib/match";
 import { runSavedCheck, type SavedCheck } from "./lib/saved-check";
+import { startingHP, startingMons } from "./lib/starting-mons";
 import { createTurnServices } from "@/app/(app)/training/sim/services";
 import { compareFacts, oracleFacts, realBattle, trackerFacts } from "./lib/oracle";
 import { createSeat, ensureSeats, isSeatName } from "./lib/providers";
@@ -55,21 +59,19 @@ function playOnce(json: string, seed: string, choices: Partial<Record<SideID, st
   }
   return { lines: stripTime(battle.log.slice(before)), ok };
 }
-/** HP of each engine slot's active when the turn's Residual event starts (before the end of turn). */
-function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID): { hp: Partial<Record<DoublesSlotId, number>>; dirty: boolean } | null {
+/**
+ * HP of each engine slot's active when the turn's Residual event starts (before the end of turn), or with `afterTurn`
+ * once the turn is over (after the residual's faints and final Update: status-eot SPEC §6, the point E2's outcomes are at
+ * when their end of turn is applied). Keyed by the slot the Pokémon started the turn in: the Pokémon is followed, not its
+ * position, since an Ally Switch swaps the side's two (pinned sim/battle.ts swapPosition) while E2's outcomes stay keyed
+ * by the starting slot (EOT-5).
+ */
+function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID, afterTurn = false): { hp: Partial<Record<DoublesSlotId, number>>; dirty: boolean; lines: string[] } | null {
   const battle = clone(json);
   battle.prng = new PRNG(seed as `sodium,${string}`);
   let snap: Partial<Record<DoublesSlotId, number>> | null = null;
-  const read = () => {
-    const out: Partial<Record<DoublesSlotId, number>> = {};
-    for (const slot of DOUBLES_SLOTS) {
-      const side = slot.startsWith("own") ? (aiSide === "p2" ? "p1" : "p2") : aiSide;
-      const position = slot === "own-left" ? 0 : slot === "own-right" ? 1 : slot === "opponent-right" ? 0 : 1;
-      const mon = battle[side].active[position];
-      if (mon) out[slot] = mon.hp;
-    }
-    return out;
-  };
+  const started = startingMons(battle, aiSide);
+  const read = () => startingHP(started);
   const fieldEvent = battle.fieldEvent.bind(battle);
   battle.fieldEvent = (id: string, ...rest: unknown[]) => { if (id === "Residual" && !snap) snap = read(); return fieldEvent(id, ...rest); };
   const before = battle.log.length;
@@ -117,7 +119,7 @@ function preResidualHP(json: string, seed: string, choices: Record<SideID, strin
   });
   const dirty = chanceBoost || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
     || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|switch|") || line.startsWith("|-mega|"));
-  return { hp: snap ?? read(), dirty };
+  return { hp: afterTurn ? read() : snap ?? read(), dirty, lines: stripTime(lines) };
 }
 
 type Report = {
@@ -126,7 +128,18 @@ type Report = {
     /** By request kind: turn (move requests) and switch (forced and mid-turn replacements). */
     byKind: Record<string, { decisions: number; requests: number; clean: number; cleanSame: number }> };
   robustness: { decisions: number; built: number; played: number; p1ChoiceValid: number; failures: string[] };
-  bridge: { mons: number; statMismatch: string[]; hpMismatch: string[]; cells: number; engineCells: number; clean: number; contained: number; outside: string[] };
+  bridge: {
+    mons: number; statMismatch: string[]; hpMismatch: string[]; cells: number; engineCells: number; clean: number; contained: number; outside: string[];
+    /** Engine cells whose every world's E2 applied the end of turn (gate 4b read those after the turn). */
+    applied: number;
+  };
+  /** The decisions' cells by method (DecisionStats.byMethod), over both modes. */
+  methods: Record<string, number>;
+  /**
+   * What gate 4b exercised (status-eot EOT-5): engine cells whose input carries each DoublesCarried field, and clean
+   * samples whose turn had an Ally Switch swap, a Trick or Switcheroo, a Substitute made or hit.
+   */
+  coverage: Record<string, number>;
   choices: { checked: number; accepted: number; unavailable: number; failures: string[] };
   census: Record<string, number>;
   splits: { protect3: number; sleep1: number; freeze: number; samples: number } | null;
@@ -138,6 +151,7 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const battles = Number(args.battles ?? 40);
   const pools = parsePools(String(args.pools ?? "S,V,A"));
+  const eotBattles = Number(args.eot ?? 10);
   const [p2Name, p1Name] = String(args.seats ?? "maxdamage:random").split(":");
   if (!isSeatName(p2Name) || !isSeatName(p1Name)) throw new Error(`Unknown --seats ${String(args.seats)}.`);
   await ensureSeats([p2Name, p1Name]);
@@ -148,7 +162,9 @@ async function main(): Promise<void> {
     parity: { decisions: 0, equal: 0, diffs: [] },
     equivalence: { decisions: 0, built: 0, requestsP1: 0, requestsP2: 0, clean: 0, cleanSame: 0, hidden: 0, hiddenSame: 0, failures: [], byKind: {} },
     robustness: { decisions: 0, built: 0, played: 0, p1ChoiceValid: 0, failures: [] },
-    bridge: { mons: 0, statMismatch: [], hpMismatch: [], cells: 0, engineCells: 0, clean: 0, contained: 0, outside: [] },
+    bridge: { mons: 0, statMismatch: [], hpMismatch: [], cells: 0, engineCells: 0, clean: 0, contained: 0, outside: [], applied: 0 },
+    methods: {},
+    coverage: {},
     choices: { checked: 0, accepted: 0, unavailable: 0, failures: [] },
     census: {},
     splits: null,
@@ -159,8 +175,10 @@ async function main(): Promise<void> {
   for (const mode of ["perfect", "open"] as const) {
     // Perfect information (aiKnows): truth worlds, equivalence and the bridge. Open: parity, robustness, choices, census.
     const info: InfoSettings = mode === "perfect" ? { aiKnows: PERFECT_INFORMATION, youSee: DEFAULT_INFO.youSee } : DEFAULT_INFO;
-    for (let index = 0; index < battles; index++) {
-      const pair = teamPair(run, index, pools, runtime);
+    for (let index = 0; index < battles + eotBattles; index++) {
+      // --only N: one battle index (diagnosing a gate).
+      if (args.only !== undefined && Number(args.only) !== index) continue;
+      const pair = index < battles ? teamPair(run, index, pools, runtime) : teamPair(`${run}:eot`, index - battles, ["E"], runtime);
       const adapted = { p1: toShowdownTeam(pair.p1.team.members, runtime), p2: toShowdownTeam(pair.p2.team.members, runtime) };
       let pendingInputs: AiInputs | null = null;
       let pendingKind = "";
@@ -270,6 +288,7 @@ async function main(): Promise<void> {
       });
       for (const error of result.errors) note(report.errors, `${mode} #${index} ${error.side ?? "-"} ${error.stage}: ${error.message.split("\n")[0]}`);
       for (const decision of result.decisions) for (const text of decision.stats?.approximations ?? []) report.census[text] = (report.census[text] ?? 0) + 1;
+      for (const decision of result.decisions) for (const [method, count] of Object.entries(decision.stats?.byMethod ?? {})) report.methods[method] = (report.methods[method] ?? 0) + count;
     }
   }
   report.splits = splitSamples(Number(args.splitSamples ?? 2000));
@@ -287,6 +306,11 @@ async function main(): Promise<void> {
   const br = report.bridge;
   rows.push({ gate: "4a. Bridge stats/HP mismatches", threshold: "0", result: `${br.statMismatch.length + br.hpMismatch.length} over ${br.mons} Pokémon`, status: br.mons === 0 ? "not-run" : br.statMismatch.length + br.hpMismatch.length === 0 ? "pass" : "fail" });
   rows.push({ gate: "4b. Clean rollouts inside the E2 support", threshold: "≥ 99%", result: `${br.contained}/${br.clean} (${pct(share(br.contained, br.clean), 2)}) over ${br.engineCells}/${br.cells} engine cells`, status: br.clean === 0 ? "not-run" : share(br.contained, br.clean) >= 0.99 ? "pass" : "fail" });
+  // Informational (status-eot SPEC §6): the engine cells E2 took through the end of turn, and the decisions' cells by method.
+  const totalCells = Object.values(report.methods).reduce((sum, count) => sum + count, 0);
+  const engineShare = share((report.methods.engine ?? 0) + (report.methods.prelude ?? 0), totalCells);
+  rows.push({ gate: "4d. Carried state and new moves in 4b (report)", threshold: "report", result: Object.entries(report.coverage).sort(([a], [b]) => a.localeCompare(b)).map(([what, count]) => `${what} ${count}`).join(", ") || "none", status: "report" });
+  rows.push({ gate: "4c. End of turn applied (report)", threshold: "report", result: `${br.applied}/${br.engineCells} engine cells (${pct(share(br.applied, br.engineCells), 2)}); ${totalCells ? `decisions' cells: engine ${pct(engineShare, 2)} of ${totalCells} (${Object.entries(report.methods).map(([method, count]) => `${method} ${count}`).join(", ")})` : "decisions' cells: no engine seat in this run (eval:training reports them)"}`, status: "report" });
   if (report.splits) {
     const s = report.splits;
     const within = (x: number, target: number) => Math.abs(x - target) <= 0.03;
@@ -370,10 +394,14 @@ function bridgeCheck(report: Report, inputs: AiInputs, world: BeliefWorld, json:
     const worlds = services.engineWorlds(cell);
     if (worlds.kind !== "engine") continue;
     report.bridge.engineCells++;
+    const carriedKeys = new Set(worlds.worlds.flatMap((engineWorld) => DOUBLES_SLOTS.flatMap((slot) => Object.keys(engineWorld.input.pokemon[slot]?.carried ?? {}))));
+    for (const key of carriedKeys) report.coverage[`carried.${key}`] = (report.coverage[`carried.${key}`] ?? 0) + 1;
     const range: Partial<Record<string, [number, number]>> = {};
+    let applied = true;
     for (const engineWorld of worlds.worlds) {
       const outcome = calculateDoublesOutcomes(engineWorld.input);
-      if (outcome.status !== "ready") continue;
+      if (outcome.status !== "ready") { applied = false; continue; }
+      if (outcome.endOfTurn !== "applied") applied = false;
       for (const each of outcome.outcomes) for (const slot of DOUBLES_SLOTS) {
         const key = engineWorld.keys[slot];
         const mon = each.mons[slot];
@@ -391,16 +419,27 @@ function bridgeCheck(report: Report, inputs: AiInputs, world: BeliefWorld, json:
         p2: toChoiceString("p2", cell.opponent, real.p2.activeRequest as ShowdownRequest, keys, "p2"),
       };
     } catch { continue; }
+    if (applied) report.bridge.applied++;
     for (let n = 0; n < 64; n++) {
-      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2");
+      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2", applied);
       if (!played || played.dirty) continue;
       report.bridge.clean++;
+      const seen = (what: string, test: (line: string) => boolean) => { if (played.lines.some(test)) report.coverage[what] = (report.coverage[what] ?? 0) + 1; };
+      seen("turn.allyswitch", (line) => line.startsWith("|swap|"));
+      seen("turn.trick", (line) => line.startsWith("|-item|") && (line.includes("[from] move: Trick") || line.includes("[from] move: Switcheroo")));
+      seen("turn.substitute", (line) => line.startsWith("|-start|") && line.includes("Substitute"));
+      seen("turn.substitutehit", (line) => line.startsWith("|-activate|") && line.includes("Substitute|[damage]"));
       let inside = true;
       for (const slot of DOUBLES_SLOTS) {
         const mon = services.view.mons.find((entry) => entry.slot === slot);
         const bounds = mon ? range[mon.key] : undefined;
         const hp = played.hp[slot];
-        if (bounds && hp !== undefined && (hp < bounds[0] || hp > bounds[1])) { inside = false; if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${slot} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}`); }
+        if (bounds && hp !== undefined && (hp < bounds[0] || hp > bounds[1])) {
+          inside = false;
+          if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${slot} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`);
+          // The first one's log, to see what the engine missed.
+          if (report.bridge.outside.length === 1) report.bridge.outside.push(...played.lines.slice(-40).map((line) => `  ${line}`));
+        }
       }
       if (inside) report.bridge.contained++;
     }

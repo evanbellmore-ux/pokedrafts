@@ -4,7 +4,7 @@ import { cardReached } from "@/app/(app)/calculator/doubles-format";
 import type { Combatant, RosterPanel } from "@/app/(app)/calculator/roster-prep";
 import {
   DOUBLES_SLOTS, doublesNames, type DoublesAction, type DoublesHP, type DoublesHit, type DoublesSlotId, type DoublesStart, type DoublesStep,
-  type DoublesTargetRule, type DoublesTurnResult,
+  type DoublesEndOfTurn, type DoublesTargetRule, type DoublesTurnResult,
 } from "@/app/lib/battle/doubles-types";
 import { createBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { createMoveSlots, usualAbility } from "@/app/lib/battle/move-defaults";
@@ -97,7 +97,9 @@ const FULL_START: DoublesStart = {
   "own-left": { hp: 153, maximum: 153 }, "own-right": { hp: 155, maximum: 155 }, "opponent-left": { hp: 154, maximum: 154 }, "opponent-right": { hp: 110, maximum: 110 },
 };
 
-const FACTS = ["Every move hits; no critical hits; added effects below 100% do not happen.", "End-of-turn effects are not applied."];
+const FACTS = ["Every move hits; no critical hits; added effects below 100% do not happen."];
+/** Every ready fixture's end of turn: not estimated (a reason the engine gives), so the cards show HP after the moves. */
+const END_OF_TURN: DoublesEndOfTurn = { status: "not-estimated", reason: "Too many cases to follow." };
 
 /**
  * Both of your Pokémon into Blastoise (opponent's left, at 60 / 154): Weather Ball then Sludge Bomb, a 75% KO, so Blastoise
@@ -132,6 +134,7 @@ export const DOUBLE_TARGET: DoublesTurnResult = {
   },
   startRows: [],
   facts: [...FACTS, "Assumes no protecting move was used last turn."],
+  endOfTurn: END_OF_TURN,
 };
 
 /** A Garchomp mirror into each other: a speed tie, so each moves first half the time and the other faints before it moves. */
@@ -155,17 +158,18 @@ export const UNCERTAIN_ORDER: DoublesTurnResult = {
   hp: { "own-left": mirrorHP, "own-right": full(155), "opponent-left": mirrorHP, "opponent-right": full(110) },
   startRows: [],
   facts: FACTS,
+  endOfTurn: END_OF_TURN,
 };
 
-/** Venusaur's Sleep Powder comes before other moves: the turn is not estimated, and each move's start-of-turn damage is listed. */
+/** Venusaur's Worry Seed comes before other moves: the turn is not estimated, and each move's start-of-turn damage is listed. */
 export const NOT_ESTIMATED_ACTIONS: Partial<Record<DoublesSlotId, DoublesAction>> = {
   "own-left": { moveId: "heatwave", target: null },
-  "own-right": { moveId: "sleeppowder", target: "opponent-left" },
+  "own-right": { moveId: "worryseed", target: "opponent-left" },
 };
 export const NOT_ESTIMATED_RULES: Partial<Record<DoublesSlotId, DoublesTargetRule>> = { "own-left": RULES.ownSpreadFoes, "own-right": RULES.ownRightSingle };
 export const NOT_ESTIMATED: DoublesTurnResult = {
   status: "not-estimated",
-  reason: "Sleep Powder is not modelled and comes before another move.",
+  reason: "Worry Seed is not modelled and comes before another move.",
   start: FULL_START,
   startRows: [
     { slot: "own-left", target: "opponent-left", row: damageRow("heatwave", 26, 31, 154) },
@@ -201,6 +205,7 @@ export const SELF_KO: DoublesTurnResult = {
   },
   startRows: [],
   facts: FACTS,
+  endOfTurn: END_OF_TURN,
 };
 
 /** Venusaur (your right) uses Bullet Seed into Blastoise with 3 hits chosen in its move settings. */
@@ -219,9 +224,10 @@ export const CHOSEN_HITS: DoublesTurnResult = {
   },
   startRows: [],
   facts: FACTS,
+  endOfTurn: END_OF_TURN,
 };
 /** The same move in a not-estimated turn's start rows. */
 export const CHOSEN_HITS_NOT_ESTIMATED: DoublesTurnResult = {
-  status: "not-estimated", reason: "Sleep Powder is not modelled and comes before another move.", start: FULL_START,
+  status: "not-estimated", reason: "Worry Seed is not modelled and comes before another move.", start: FULL_START,
   startRows: [{ slot: "own-right", target: "opponent-left", row: bulletSeed }], facts: [],
 };

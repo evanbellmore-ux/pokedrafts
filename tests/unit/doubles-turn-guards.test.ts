@@ -49,36 +49,51 @@ function expectReason(input: DoublesTurnInput, reason: string | string[], rows: 
 const idle = (id: string, extra: Partial<P> = {}): P => ({ id, move: null, ...extra });
 
 describe("status moves outside the modelled list", () => {
-  it("is not estimated when the move comes before another move, and harmless when it is last", () => {
-    // Weavile (145) Taunts first; Charizard's Flamethrower comes after it.
+  it("is not estimated when the move comes before another move; as the last action only the end of turn is not estimated", () => {
+    // Gengar (130) uses Skill Swap (status-eot L) first; Charizard's Flamethrower comes after it.
     expectReason(turn(championsRuntime, {
-      "own-left": { id: "weavile", ability: "pressure", move: "taunt", target: "opponent-right" }, "own-right": { id: "charizard", move: "flamethrower", target: "opponent-right" },
+      "own-left": { id: "gengar", ability: "cursedbody", move: "skillswap", target: "opponent-right" }, "own-right": { id: "charizard", move: "flamethrower", target: "opponent-right" },
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Taunt is not modelled and comes before another move.", ["own-right"]);
-    // Kingambit (70) is the slowest Pokémon and Taunts last: no move follows it.
+    }), "Skill Swap is not modelled and comes before another move.", ["own-right"]);
+    // Under Trick Room the fastest Pokémon moves last: no action follows Gengar's Skill Swap.
     const last = calculateDoublesTurn(turn(championsRuntime, {
-      "own-left": { id: "charizard", move: "flamethrower", target: "opponent-right" }, "own-right": idle("weavile"),
-      "opponent-left": idle("venusaur"), "opponent-right": { id: "kingambit", ability: "defiant", move: "taunt", target: "own-left" },
-    }));
+      "own-left": idle("charizard"), "own-right": idle("garchomp"),
+      "opponent-left": idle("venusaur"), "opponent-right": { id: "gengar", ability: "cursedbody", move: "skillswap", target: "own-left" },
+    }, { trickRoom: true }));
     expect(last.status).toBe("ready");
+    if (last.status === "ready") expect(last.endOfTurn).toEqual({ status: "not-estimated", reason: "Skill Swap is not modelled." });
   });
 
-  it("is never estimated when the move changes HP, wherever it comes", () => {
+  it("models the status moves that change HP wherever they come; Revival Blessing stays not estimated", async () => {
     const hpMoves: [string, string, string | undefined][] = [["dragonite", "roost", undefined], ["gengar", "substitute", undefined], ["azumarill", "bellydrum", undefined], ["gengar", "painsplit", "own-left"]];
     for (const [id, move, target] of hpMoves) {
-      const name = championsRuntime.movesById.get(move)!.name;
-      expectReason(turn(championsRuntime, {
+      const result = calculateDoublesTurn(turn(championsRuntime, {
         "own-left": { id: "charizard", move: "flamethrower", target: "opponent-right" }, "own-right": idle("garchomp"),
         "opponent-left": idle("venusaur"), "opponent-right": { id, move, ...(target ? { target: target as DoublesSlotId } : {}) },
-      }), `${name} is not modelled.`, ["own-left"]);
+      }));
+      expect(result.status, move).toBe("ready");
     }
+    const sv = await game("scarlet_violet");
+    expectReason(turn(sv, {
+      "own-left": { id: "charizard", move: "flamethrower", target: "opponent-right" }, "own-right": idle("garchomp"),
+      "opponent-left": idle("venusaur"), "opponent-right": { id: "pawmot", move: "revivalblessing" },
+    }), "Revival Blessing is not modelled.", ["own-left"]);
   });
 
-  it("is not estimated for Pollen Puff into the user's ally", () => {
-    expectReason(turn(championsRuntime, {
-      "own-left": { id: "vivillon", ability: "shielddust", move: "pollenpuff", target: "own-right" }, "own-right": idle("charizard"),
+  it("heals the user's ally with Pollen Puff (half its maximum HP; it fails at full HP)", () => {
+    const puff = (hp?: number) => calculateDoublesTurn(turn(championsRuntime, {
+      "own-left": { id: "vivillon", ability: "shielddust", move: "pollenpuff", target: "own-right" }, "own-right": idle("charizard", hp === undefined ? {} : { hp }),
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Pollen Puff on an ally is not modelled.");
+    }));
+    const full = puff();
+    expect(full.status).toBe("ready");
+    if (full.status !== "ready") return;
+    const fullHit = full.steps[0].hits.find((hit) => hit.slot === "own-right")!;
+    expect(fullHit.facts.map((fact) => fact.text)).toEqual(["Pollen Puff fails: Charizard is at full HP."]);
+    const half = puff(50);
+    expect(half.status).toBe("ready");
+    if (half.status !== "ready") return;
+    expect(half.steps[0].hits.find((hit) => hit.slot === "own-right")!.change).toEqual({ min: 76, max: 76 });
   });
 });
 
@@ -189,18 +204,32 @@ describe("events that are out in v1", () => {
     }, { weather: "Sun" }), ["Tyranitar and Altaria both act on Flutter Mane as the turn starts.", "Altaria and Tyranitar both act on Flutter Mane as the turn starts."]);
   });
 
-  it("sleep, freeze and confusion on a Pokémon with a move", async () => {
+  it("sleep, freeze and confusion on a Pokémon with a move are modelled (status-eot SPEC §4.2)", async () => {
     const base = { "own-right": idle("charizard"), "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise") };
-    expectReason(turn(championsRuntime, { "own-left": { id: "garchomp", status: "slp", move: "dragonclaw", target: "opponent-right" }, ...base }), "Sleep wears off at random.", ["own-left"]);
-    expectReason(turn(championsRuntime, { "own-left": { id: "garchomp", status: "frz", move: "dragonclaw", target: "opponent-right" }, ...base }), "Freeze thaws at random.", ["own-left"]);
+    // Champions sleep {2: 1/3, 3: 2/3}: no wake at its first BeforeMove; with no carried count, a turn fact.
+    const asleep = calculateDoublesTurn(turn(championsRuntime, { "own-left": { id: "garchomp", status: "slp", move: "dragonclaw", target: "opponent-right" }, ...base }));
+    expect(asleep.status).toBe("ready");
+    if (asleep.status !== "ready") return;
+    expect(asleep.steps[0].skipped).toEqual([{ text: "Asleep.", chance: 1 }]);
+    expect(asleep.facts).toContain("Assumes Garchomp lost no turns to sleep before this one.");
+    // Champions freeze: it thaws with 1/4 at its first BeforeMove.
+    const frozen = calculateDoublesTurn(turn(championsRuntime, { "own-left": { id: "garchomp", status: "frz", move: "dragonclaw", target: "opponent-right" }, ...base }));
+    expect(frozen.status).toBe("ready");
+    if (frozen.status !== "ready") return;
+    expect(frozen.steps[0].skipped).toEqual([{ text: "Frozen.", chance: 0.75 }]);
+    expect(frozen.steps[0].facts).toContainEqual({ text: "Thaws.", chance: 0.25 });
     // A sleeping Pokémon with No move is fine.
     expect(calculateDoublesTurn(turn(championsRuntime, { "own-left": idle("garchomp", { status: "slp" }), ...base, "opponent-right": { id: "blastoise", move: "surf" } })).status).toBe("ready");
-    // Timid dislikes Figy (spicy): the Berry is eaten at 30/153 as the turn starts and confuses Charizard.
+    // Timid dislikes Figy (spicy): the Berry is eaten at 30/153 as the turn starts and confuses Charizard (a fresh confusion).
     const sv = await game("scarlet_violet");
-    expectReason(turn(sv, {
+    const figy = calculateDoublesTurn(turn(sv, {
       "own-left": { id: "charizard", nature: "Timid", item: "figyberry", hp: 30, move: "flamethrower", target: "opponent-right" }, "own-right": idle("garchomp"),
       "opponent-left": idle("venusaur"), "opponent-right": idle("blastoise"),
-    }), "Confusion is not modelled in 2v2.", ["own-left"]);
+    }));
+    expect(figy.status).toBe("ready");
+    if (figy.status !== "ready") return;
+    expect(figy.hp["own-left"]!.conditions?.map((fact) => fact.text)).toContain("Confused.");
+    expect(figy.steps[0].skipped.map((fact) => [fact.text.replace(/\d+–\d+/, "n"), fact.chance])).toEqual([["Hurts itself in confusion: n HP.", 0.33]]);
   });
 
   it("Focus Band when a hit into it can knock out, and Max Guard", async () => {
@@ -312,9 +341,9 @@ describe("events that are out in v1", () => {
 describe("a not-estimated turn keeps its start", () => {
   it("returns the start HP, the start rows of every damaging move and the turn facts", () => {
     const result = expectReason(turn(championsRuntime, {
-      "own-left": { id: "weavile", move: "taunt", target: "opponent-right" }, "own-right": { id: "charizard", move: "flamethrower", target: "opponent-right" },
+      "own-left": { id: "gengar", ability: "cursedbody", move: "skillswap", target: "opponent-right" }, "own-right": { id: "charizard", move: "flamethrower", target: "opponent-right" },
       "opponent-left": { id: "garchomp", move: "earthquake" }, "opponent-right": idle("blastoise"),
-    }), "Taunt is not modelled and comes before another move.", ["own-right", "opponent-left"]);
+    }), "Skill Swap is not modelled and comes before another move.", ["own-right", "opponent-left"]);
     if (result.status !== "not-estimated") return;
     expect(result.start?.["own-right"]).toEqual({ hp: 153, maximum: 153 });
     // Earthquake from the far side reaches both of your Pokémon and its ally.

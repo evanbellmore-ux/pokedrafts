@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createTracker, shownPercent } from "@/app/(app)/training/sim/tracker";
+import { countsOf, createTracker, shownPercent } from "@/app/(app)/training/sim/tracker";
 import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
 import { Battle, extractChannelMessages } from "@/app/(app)/training/sim/sim";
 import { AI_TEAM, PLAYER_TEAM, runtime } from "./training-sim-fixtures";
@@ -214,6 +214,61 @@ describe("tracker messages (SPEC 8.1)", () => {
       "|-primal|p2a: Gyarados", "|-zbroken|p2a: Gyarados", "|-burst|p2a: Gyarados|Necrozma-Ultra|Ultranecrozium Z", "|-candynamax|p1", "|inactive|", "|j|☆You", "|c|☆You|hi"];
     const base = tracker().state();
     expect(tracker([...START, ...ignored]).state()).toEqual(base);
+  });
+
+  it("status-eot public counts: Rest's sleep, Axe Kick's confusion, a Substitute's maker and hits, the Ally Switch streak, an item from Trick", () => {
+    const counts = (state: ReturnType<ReturnType<typeof tracker>["state"]>, key: string) => countsOf(state.mons[key]);
+    const rest = tracker([...START, "|move|p2b: Pelipper|Rest|p2b: Pelipper", "|-status|p2b: Pelipper|slp|[from] move: Rest", "|-heal|p2b: Pelipper|167/167 slp|[silent]",
+      "|move|p1a: Incineroar|Axe Kick|p2a: Gyarados", "|-damage|p2a: Gyarados|120/172", "|-start|p2a: Gyarados|confusion",
+      "|move|p1b: Charizard|Substitute|p1b: Charizard", "|-start|p1b: Charizard|Substitute", "|-damage|p1b: Charizard|75/100"]).state();
+    expect(counts(rest, "p2:pelipper").restSleep).toBe(true);
+    expect(rest.mons["p2:gyarados"].volatiles.find((each) => each.id === "confusion")).toMatchObject({ moveId: "axekick", elapsed: 0 });
+    expect(rest.mons["p1:charizard"].volatiles.find((each) => each.id === "substitute")).toMatchObject({ sourceKey: "p1:charizard", hits: 0 });
+    // A sleep from anything else is not Rest's; a hit on the Substitute counts.
+    const slept = tracker([...START, "|move|p1a: Incineroar|Spore|p2b: Pelipper", "|-status|p2b: Pelipper|slp|[from] move: Spore",
+      "|move|p1b: Charizard|Substitute|p1b: Charizard", "|-start|p1b: Charizard|Substitute", "|move|p2a: Gyarados|Waterfall|p1b: Charizard",
+      "|-activate|p1b: Charizard|move: Substitute|[damage]"]).state();
+    expect(counts(slept, "p2:pelipper").restSleep).toBeUndefined();
+    expect(slept.mons["p1:charizard"].volatiles.find((each) => each.id === "substitute")).toMatchObject({ hits: 1 });
+    // Ally Switch: a use that passes PrepareHit (a swap, or onHit's own failure) keeps the streak; a plain -fail or a turn without one ends it.
+    const swap = ["|move|p2a: Gyarados|Ally Switch|p2a: Gyarados", "|swap|p2a: Gyarados|1|[from] move: Ally Switch"];
+    const twice = tracker([...START, ...swap, "|upkeep", "|turn|2", "|move|p2b: Gyarados|Ally Switch|p2b: Gyarados", "|swap|p2b: Gyarados|0|[from] move: Ally Switch", "|upkeep", "|turn|3"]).state();
+    expect(counts(twice, "p2:gyarados").allySwitchStreak).toBe(2);
+    const failed = tracker([...START, ...swap, "|upkeep", "|turn|2", "|move|p2b: Gyarados|Ally Switch|p2b: Gyarados", "|-fail|p2b: Gyarados", "|upkeep", "|turn|3"]).state();
+    expect(counts(failed, "p2:gyarados").allySwitchStreak).toBeUndefined();
+    const skipped = tracker([...START, ...swap, "|upkeep", "|turn|2", "|upkeep", "|turn|3"]).state();
+    expect(counts(skipped, "p2:gyarados").allySwitchStreak).toBeUndefined();
+    const once = tracker([...START, ...swap, "|upkeep", "|turn|2"]).state();
+    expect(counts(once, "p2:gyarados").allySwitchStreak).toBe(1);
+    // Trick: the item's arrival is counted against the holder's actions (the Choice lock waits for its next move).
+    const trick = tracker([...START, "|move|p1a: Incineroar|Trick|p2a: Gyarados", "|-activate|p1a: Incineroar|move: Trick|[of] p2a: Gyarados",
+      "|-item|p2a: Gyarados|Choice Scarf|[from] move: Trick", "|-item|p1a: Incineroar|Leftovers|[from] move: Trick"]).state();
+    expect(counts(trick, "p2:gyarados").itemSince).toBe(0);
+    expect(counts(trick, "p1:incineroar").itemSince).toBe(1);
+    // The Choice lock's move (EOT-5): the first move since the item reached it, kept through a forced Struggle; an item
+    // from Trick clears it until the next move; a Frisk reveal does not.
+    expect(counts(trick, "p1:incineroar").choiceMove).toBeUndefined();
+    const struggle = tracker([...START, "|move|p1a: Incineroar|Flare Blitz|p2a: Gyarados", "|-damage|p2a: Gyarados|100/172", "|upkeep", "|turn|2",
+      "|move|p1a: Incineroar|Struggle|p2a: Gyarados", "|-activate|p1a: Incineroar|move: Struggle", "|-damage|p2a: Gyarados|90/172", "|upkeep", "|turn|3"]).state();
+    expect(counts(struggle, "p1:incineroar").choiceMove).toBe("flareblitz");
+    expect(struggle.mons["p1:incineroar"].lastMove).toBe("struggle");
+    const frisked = tracker([...START, "|move|p1a: Incineroar|Flare Blitz|p2a: Gyarados", "|-item|p1a: Incineroar|Choice Scarf|[from] ability: Frisk|[of] p2a: Gyarados"]).state();
+    expect(counts(frisked, "p1:incineroar").choiceMove).toBe("flareblitz");
+    const after = tracker([...START, "|move|p1a: Incineroar|Trick|p2a: Gyarados", "|-item|p2a: Gyarados|Choice Scarf|[from] move: Trick", "|upkeep", "|turn|2",
+      "|move|p2a: Gyarados|Waterfall|p1a: Incineroar"]).state();
+    expect(counts(after, "p2:gyarados").choiceMove).toBe("waterfall");
+    // Syrup Bomb's source is the move's user (its -start line names none).
+    const syrup = tracker([...START, "|move|p1b: Charizard|Syrup Bomb|p2a: Gyarados", "|-damage|p2a: Gyarados|150/172", "|-start|p2a: Gyarados|Syrup Bomb"]).state();
+    expect(syrup.mons["p2:gyarados"].volatiles.find((each) => each.id === "syrupbomb")).toMatchObject({ sourceKey: "p1:charizard" });
+    // Leech Seed keeps the seeder's position as it seeded (the Pokémon standing there heals after it leaves).
+    const seed = tracker([...START, "|move|p1b: Charizard|Leech Seed|p2a: Gyarados", "|-start|p2a: Gyarados|move: Leech Seed"]).state();
+    expect(seed.mons["p2:gyarados"].volatiles.find((each) => each.id === "leechseed")).toMatchObject({ sourceKey: "p1:charizard", sourcePosition: 1 });
+    // A Future Sight resolves at the residual two turns on, with no line when its target has fainted: gone at that upkeep.
+    const sight = ["|move|p2a: Gyarados|Future Sight|p1a: Incineroar", "|-start|p2a: Gyarados|move: Future Sight", "|upkeep", "|turn|2", "|upkeep", "|turn|3"];
+    const pending = tracker([...START, ...sight]).state();
+    expect(pending.sides.p1.conditions.map((each) => each.id)).toEqual(["futuresight"]);
+    const resolved = tracker([...START, ...sight, "|faint|p1a: Incineroar", "|upkeep"]).state();
+    expect(resolved.sides.p1.conditions.map((each) => each.id)).toEqual([]);
   });
 
   it("win ends it with the winner's side", () => {

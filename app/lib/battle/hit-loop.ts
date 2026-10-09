@@ -19,6 +19,23 @@ export const HEALING_BERRIES = new Set(["sitrusberry", "oranberry", "berryjuice"
 export const PINCH_HEAL_BERRIES = new Set(["figyberry", "wikiberry", "magoberry", "aguavberry", "iapapaberry"]);
 export const PINCH_STAT_BERRIES: Record<string, CombatStat> = { liechiberry: "atk", ganlonberry: "def", petayaberry: "spa", apicotberry: "spd", salacberry: "spe" };
 export const UNNERVES = new Set(["unnerve", "asoneglastrier", "asonespectrier"]);
+/**
+ * The healing Berries whose TryEatItem Berserk and Anger Shell answer (data/abilities.ts berserk, angershell onTryEatItem:
+ * checkedBerserk after damage from a move); Berry Juice is on that list too but is used, not eaten (no TryEatItem).
+ */
+export const BERSERK_BERRIES: ReadonlySet<string> = new Set(["aguavberry", "enigmaberry", "figyberry", "iapapaberry", "magoberry", "sitrusberry", "wikiberry", "oranberry"]);
+/**
+ * The abilities whose onUpdate cures their holder's own status (pinned Showdown data/abilities.ts immunity, pastelveil,
+ * insomnia, vitalspirit, limber, magmaarmor, waterveil, waterbubble, thermalexchange: cureStatus), by the statuses each
+ * cures. At the turn's first Update no move is active, so the ability (subOrder 7) cures before its holder's item
+ * (subOrder 8) can (sim/battle.ts resolvePriority).
+ */
+export const OWN_STATUS_CURES: Readonly<Record<string, readonly string[]>> = {
+  immunity: ["psn", "tox"], pastelveil: ["psn", "tox"], insomnia: ["slp"], vitalspirit: ["slp"], limber: ["par"], magmaarmor: ["frz"],
+  waterveil: ["brn"], waterbubble: ["brn"], thermalexchange: ["brn"],
+};
+/** The pinch Berries without a fixed stat (data/items.ts lansatberry, starfberry onUpdate at a quarter, half with Gluttony). */
+export const LANSAT_STARF: ReadonlySet<string> = new Set(["lansatberry", "starfberry"]);
 /** Abilities that power up their type at a third of the user's HP or less (pinned Showdown blaze, torrent, overgrow, swarm onModifyAtk / onModifySpA). */
 export const PINCH_TYPES: Record<string, string> = { blaze: "Fire", torrent: "Water", overgrow: "Grass", swarm: "Bug" };
 /** Pinned Showdown data/abilities.ts flags.cantsuppress: setAbility never replaces these, nor sets them. */
@@ -282,7 +299,8 @@ function modify(value: number, numerator: number, denominator: number): number {
  *    Guard or its Unnerve stops the eating). Each damage is battle.damage's: at least 1, rounded down, none
  *    through the attacker's Magic Guard (onDamage), none once it has fainted.
  * 4. The Update: the attacker eats its HP or pinch berry at its line (the target's Unnerve stops a Berry, not
- *    Berry Juice); a pinch berry raises its stat (Ripen doubles, Contrary reverses, Simple doubles).
+ *    Berry Juice); a pinch berry raises its stat (Ripen doubles, Contrary reverses, Simple doubles); Lansat's focus and
+ *    Starf's random rise are the caller's (`ate`: uses-to-ko.ts attackerAte, doubles-turn.ts ateBerry).
  * Pickpocket (onAfterMoveSecondary) and Shell Bell, recoil and Life Orb act only after the hits.
  */
 export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knocked = false): HitOutcome {
@@ -353,7 +371,7 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knoc
   }
   let ate: string | null = null;
   const item = state.attackerItem;
-  if (state.hp > 0 && item && item !== "enigmaberry" && (HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item])
+  if (state.hp > 0 && item && item !== "enigmaberry" && (HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item))
     && (item === "berryjuice" || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
     const berry = berryArithmetic(item, { maxHP: input.maxHP, baseMaxHP: input.baseMaxHP, ability: state.attackerAbility }, input.generation);
     if (state.hp <= berry.line) {
@@ -436,4 +454,67 @@ export function hitPaths(input: HitLoopInput, rolls: number[][]): { faints: numb
   }
   for (const path of paths.values()) { min = Math.min(min, path.min); max = Math.max(max, path.max); }
   return { faints, min, max };
+}
+
+/** What a hit into a Substitute costs its user besides recoil from a fraction: Steel Beam and Chloroblast, half the maximum HP. */
+export type SubCost = { recoil: [number, number] } | { half: "steelbeam" | "chloroblast" } | null;
+
+/**
+ * The attacker through one hit into a Substitute (pinned Showdown data/moves.ts:18342-18372 substitute onTryPrimaryHit):
+ * `taken`, the HP the Substitute lost (the hit's damage capped at its HP). When taken > 0, applyRecoilDamage first
+ * (sim/battle-actions.ts:1379-1398): round(taken × recoil), at least 1, or round(maxHP / 2) for Steel Beam and Chloroblast.
+ * Rock Head stops recoil and Chloroblast's (both the 'recoil' effect: battle-actions.ts:1391; data/abilities.ts rockhead
+ * onDamage), not Steel Beam's (its own condition); Magic Guard stops each. Then drain, d = ceil(taken × drain): the
+ * target's Liquid Ooze deals d to the attacker (Magic Guard stops it), at full HP too and with no Big Root (TryHeal hands
+ * it the value before Big Root's modifier, and runs before heal()'s full-HP check: data/abilities.ts:2402-2410,
+ * sim/battle.ts:2271-2275; K2); otherwise a heal of d, Big Root 5324/4096, none at full HP. Then the hit's Update (its HP
+ * or pinch Berry, as hitStep). The target's DamagingHit handlers do not run: no Rough Skin, Iron Barbs, Rocky Helmet,
+ * Jaboca or Rowap Berry, Gulp Missile, Mummy, Wandering Spirit. Heal Block on the attacker is not read: in the moves
+ * phase none stands while a later action follows (Psychic Noise is guarded, doubles-turn.ts volatileGuard), and none is
+ * carried (Training's carried healblock is a rollout).
+ */
+export function subHit(input: HitLoopInput, prev: HitState, taken: number, cost: SubCost): HitOutcome {
+  const state: HitState = { ...prev, stages: { ...prev.stages } };
+  const losses: HitLoss[] = [];
+  const lose = (source: string, amount: number) => {
+    if (state.hp <= 0 || state.attackerAbility === "magicguard") return;
+    const dealt = Math.min(state.hp, Math.max(1, Math.floor(amount)));
+    state.hp -= dealt;
+    losses.push({ source, amount: dealt });
+  };
+  if (taken > 0 && cost) {
+    if ("recoil" in cost) {
+      if (state.attackerAbility !== "rockhead") lose("recoil", Math.round(taken * cost.recoil[0] / cost.recoil[1]));
+    } else if (cost.half === "steelbeam") lose("Steel Beam", Math.round(input.maxHP / 2));
+    else if (state.attackerAbility !== "rockhead") lose("Chloroblast", Math.round(input.maxHP / 2));
+  }
+  if (input.drain && taken > 0) {
+    let amount = Math.ceil(taken * input.drain[0] / input.drain[1]);
+    if (amount && amount <= 1) amount = 1;
+    if (state.targetAbility === "liquidooze") {
+      if (amount) lose("Liquid Ooze", amount);
+    } else if (amount && state.hp > 0 && state.hp < input.maxHP) {
+      if (state.attackerItem === "bigroot") amount = modify(amount, 5324, 4096);
+      state.hp = Math.min(input.maxHP, state.hp + amount);
+    }
+  }
+  // The Update after the hit (sim/battle-actions.ts:967): the attacker's HP or pinch Berry at its line, as hitStep eats it.
+  let ate: string | null = null;
+  const item = state.attackerItem;
+  if (state.hp > 0 && item && item !== "enigmaberry" && (HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item))
+    && (item === "berryjuice" || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
+    const berry = berryArithmetic(item, { maxHP: input.maxHP, baseMaxHP: input.baseMaxHP, ability: state.attackerAbility }, input.generation);
+    if (state.hp <= berry.line) {
+      state.ate = { item, ...berryHeals(berry, state.hp) };
+      state.hp = eatBerry(berry, state.hp);
+      state.attackerItem = "";
+      ate = item;
+      const stat = PINCH_STAT_BERRIES[item];
+      if (stat) {
+        const ability = state.attackerAbility;
+        state.stages[stat] = (state.stages[stat] ?? 0) + (ability === "contrary" ? -1 : 1) * (ability === "simple" ? 2 : 1) * (ability === "ripen" ? 2 : 1);
+      }
+    }
+  }
+  return { state, losses, ate, fainted: state.hp <= 0 };
 }

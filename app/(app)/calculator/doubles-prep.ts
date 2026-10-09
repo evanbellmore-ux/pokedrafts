@@ -2,10 +2,10 @@ import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { defaultDoublesTarget, doublesTargetRule } from "@/app/lib/battle/doubles-targets";
 import {
   allyOf, DOUBLES_SLOTS, foesOf, relativePosition, SHOWDOWN_POSITION, SLOT_POSITION, slotSide,
-  type DoublesAction, type DoublesPokemonInput, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
+  type DoublesAction, type DoublesCarried, type DoublesPokemonInput, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
 } from "@/app/lib/battle/doubles-types";
 import { applyIntimidateToFoes } from "@/app/lib/battle/intimidate";
-import { createBuild, createConditions, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
+import { createBuild, createConditions, getBuildStats, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { createMoveSlots, usualAbility, withHiddenPowerIVs } from "@/app/lib/battle/move-defaults";
 import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveContext } from "@/app/lib/battle/types";
 import type { CalculatorRosterState } from "./roster-data";
@@ -25,6 +25,13 @@ export type DoublesMatchup = {
   actions: Record<DoublesSlotId, DoublesAction>;
   /** It used Charge on an earlier turn; cleared when the slot gets another Pokémon. */
   charged: Record<DoublesSlotId, boolean>;
+  /**
+   * Its state from earlier turns the calculator sets (status-eot SPEC §5, ADDENDUM §5): turns lost to sleep and Rest
+   * sleep, turns lost to freeze (Champions), confusion and its turns, bad poison turns, and a Substitute's HP. {} when
+   * none. Cleared when the slot gets another Pokémon; a build change drops or bounds what no longer applies
+   * (reconcileCarried).
+   */
+  carried: Record<DoublesSlotId, DoublesCarried>;
   /** attackerSide: your side; defenderSide: the opponent's. gameType "Doubles". */
   field: BattleConditions;
   /** The Moves pane: whose moves it lists and which Pokémon its rows are into (never the same slot). */
@@ -40,6 +47,7 @@ const DEFAULT_SPECIES: Record<DoublesSlotId, string> = {
   "own-left": "charizard", "own-right": "venusaur", "opponent-left": "blastoise", "opponent-right": "pikachu",
 };
 const NO_ACTION: DoublesAction = { moveId: null, target: null };
+const NO_CARRIED: DoublesCarried = {};
 
 function perSlot<T>(value: (slot: DoublesSlotId, index: number) => T): Record<DoublesSlotId, T> {
   return Object.fromEntries(DOUBLES_SLOTS.map((slot, index) => [slot, value(slot, index)])) as Record<DoublesSlotId, T>;
@@ -67,7 +75,7 @@ export function createDoubles(revision = 0, runtime: BattleRuntime = championsRu
   });
   return {
     runtime, revision, notice: "", slots,
-    actions: perSlot(() => NO_ACTION), charged: perSlot(() => false), field,
+    actions: perSlot(() => NO_ACTION), charged: perSlot(() => false), carried: perSlot(() => NO_CARRIED), field,
     moves: { slot: "own-left", into: "opponent-left" },
     replacement: null, replacementSession: 0, intimidate: null,
   };
@@ -138,11 +146,151 @@ export function doublesTurnInput(runtime: BattleRuntime, field: BattleConditions
   };
 }
 
+/** The controls of a Pokémon's state from earlier turns that apply to its build (BattleConditions CarriedControl). */
+export type CarriedOptions = {
+  /** Asleep: the most turns it can have lost to sleep (sleepTurnsMax); null otherwise. */
+  sleep: { max: number } | null;
+  /** Champions, Frozen: the most turns it can have lost to freeze (its third turn frozen always thaws it); null otherwise. */
+  freeze: { max: number } | null;
+  /** Badly poisoned: its bad poison turns so far (0–15). */
+  toxic: boolean;
+  /** Confused from an earlier turn, with its turns so far (0–4). */
+  confusion: boolean;
+  /** A Substitute from an earlier turn, at most a quarter of its maximum HP; null when that is below 1. */
+  substitute: { max: number } | null;
+};
+
+/** No controls: a Pokémon that has fainted takes no part in the turn (its state is kept for when its HP comes back). */
+export const NO_CARRIED_OPTIONS: CarriedOptions = { sleep: null, freeze: null, toxic: false, confusion: false, substitute: null };
+
+/**
+ * The most turns a sleeping Pokémon can have lost to sleep while it still sleeps: a sleep lasts 2–4 turns (Champions 2–3,
+ * PS/data/mods/champions/conditions.ts), Rest's 3 (status-eot SPEC §4.2), and Early Bird counts each turn twice, so its
+ * counter must still be above 0 (doubles-turn.ts carriedIssues).
+ */
+export function sleepTurnsMax(build: BattleBuild, runtime: BattleRuntime, rest: boolean): number {
+  const longest = rest || runtime.profile.id === "champions" ? 3 : 4;
+  return Math.floor((longest - 1) / (build.abilityId === "earlybird" ? 2 : 1));
+}
+
+/**
+ * The statuses an ability cures on its own holder at every Update (pinned Showdown data/abilities.ts onUpdate of immunity,
+ * pastelveil, insomnia, vitalspirit, limber, magmaarmor, waterveil, waterbubble, thermalexchange). The turn's first Update
+ * runs after its beforeTurn action, before any Mega Evolution or move (sim/battle.ts runAction, generation 5 on), so such
+ * a status never stands into a move and has no turns of its own to count. Own Tempo ends confusion there the same way.
+ */
+const START_CURES: Readonly<Record<string, readonly BattleBuild["status"][]>> = {
+  immunity: ["psn", "tox"], pastelveil: ["psn", "tox"], insomnia: ["slp"], vitalspirit: ["slp"], limber: ["par"], magmaarmor: ["frz"],
+  waterveil: ["brn"], waterbubble: ["brn"], thermalexchange: ["brn"],
+};
+
+/**
+ * The slot's own ability is in effect as the turn starts: no other Pokémon that has not fainted has Neutralizing Gas, or
+ * an Ability Shield keeps it outside Magic Room (calculate.ts settleDoublesStart; pinned Showdown sim/pokemon.ts
+ * ignoringAbility). For START_CURES and Own Tempo, none of which Neutralizing Gas spares.
+ */
+export function carriedAbilityOn(doubles: Pick<DoublesMatchup, "slots" | "field">, slot: DoublesSlotId): boolean {
+  if (doubles.slots[slot].build.itemId === "abilityshield" && !doubles.field.magicRoom) return true;
+  return !DOUBLES_SLOTS.some((other) => other !== slot && !isFaintedBuild(doubles.slots[other].build) && doubles.slots[other].build.abilityId === "neutralizinggas");
+}
+
+/**
+ * The state-from-earlier-turns controls the slot's build can use (status-eot SPEC §5, ADDENDUM §5). `abilityOn`
+ * (carriedAbilityOn): its ability is in effect as the turn starts, so a status it cures (START_CURES) and, with Own
+ * Tempo, confusion are gone before any move and offer no counts.
+ */
+export function carriedOptions(build: BattleBuild, runtime: BattleRuntime, rest: boolean, abilityOn = true): CarriedOptions {
+  const quarter = substituteMax(build, runtime) ?? 0;
+  const status = abilityOn && START_CURES[build.abilityId]?.includes(build.status) ? "" : build.status;
+  return {
+    sleep: status === "slp" ? { max: sleepTurnsMax(build, runtime, rest) } : null,
+    freeze: status === "frz" && runtime.profile.id === "champions" ? { max: 2 } : null,
+    toxic: status === "tox",
+    confusion: !(abilityOn && build.abilityId === "owntempo"),
+    substitute: quarter >= 1 ? { max: quarter } : null,
+  };
+}
+
+/**
+ * The most HP a Substitute of its own can have: a quarter of its maximum HP (PS/data/moves.ts substitute: floor(maxhp / 4)),
+ * the stored maximum, as a Dynamaxed Pokémon made it before Dynamaxing. Null while the build's stats are not valid.
+ */
+function substituteMax(build: BattleBuild, runtime: BattleRuntime): number | null {
+  const stats = getBuildStats(build, runtime);
+  return stats ? Math.floor(stats.hp / 4) : null;
+}
+
+const clamp = (value: number, least: number, most: number) => Math.min(most, Math.max(least, Math.trunc(value)));
+
+/**
+ * The slot's carried state for its build: what no longer applies is dropped (turns lost to sleep without Asleep, to freeze
+ * outside Champions or without Frozen, bad poison turns without Badly poisoned, a status or confusion its own ability ends
+ * as the turn starts while `abilityOn`, a Substitute it cannot have), each count is bounded to what the build allows
+ * (CarriedOptions), and a count at 0 is left out (the turn's assumption). The same object when nothing changes.
+ */
+export function reconcileCarried(carried: DoublesCarried, build: BattleBuild, runtime: BattleRuntime, abilityOn = true): DoublesCarried {
+  const options = carriedOptions(build, runtime, !!carried.sleep?.rest, abilityOn);
+  const next: DoublesCarried = { ...carried };
+  const set = <K extends keyof DoublesCarried>(key: K, value: DoublesCarried[K] | undefined) => {
+    if (value === undefined) delete next[key];
+    else next[key] = value;
+  };
+  if (carried.sleep) {
+    const attempts = options.sleep ? clamp(carried.sleep.attempts, 0, options.sleep.max) : 0;
+    set("sleep", !options.sleep || (!attempts && !carried.sleep.rest) ? undefined : attempts === carried.sleep.attempts ? carried.sleep : { attempts, rest: carried.sleep.rest });
+  }
+  if (carried.freeze) {
+    const attempts = options.freeze ? clamp(carried.freeze.attempts, 0, options.freeze.max) : 0;
+    set("freeze", !attempts ? undefined : attempts === carried.freeze.attempts ? carried.freeze : { attempts });
+  }
+  if (carried.confusion) {
+    const attempts = clamp(carried.confusion.attempts, 0, 4);
+    if (!options.confusion) set("confusion", undefined);
+    else if (attempts !== carried.confusion.attempts) set("confusion", { ...carried.confusion, attempts });
+  }
+  if (carried.toxic !== undefined) set("toxic", options.toxic ? clamp(carried.toxic, 0, 15) || undefined : undefined);
+  // A build being edited (its stats not valid yet) keeps its Substitute as it is.
+  if (carried.substitute !== undefined) {
+    const most = substituteMax(build, runtime);
+    if (most !== null) set("substitute", most >= 1 ? clamp(carried.substitute, 1, most) : undefined);
+  }
+  const keys = Object.keys(next) as (keyof DoublesCarried)[];
+  const same = keys.length === Object.keys(carried).length && keys.every((key) => next[key] === carried[key]);
+  return same ? carried : keys.length ? next : NO_CARRIED;
+}
+
+/** The turn's input issue fields (doubles-turn.ts carriedIssues) of the calculator's state-from-earlier-turns controls. */
+const CARRIED_ISSUE_FIELDS: Readonly<Record<string, keyof CarriedOptions>> = {
+  "carried.sleep": "sleep", "carried.freeze": "freeze", "carried.confusion": "confusion", "carried.toxic": "toxic", "carried.substitute": "substitute",
+};
+
+/**
+ * The turn's input issues of one Pokémon (DoublesIssues.pokemon[slot]) that its state-from-earlier-turns controls show,
+ * by control: "Garchomp: it cannot have lost 3 turns to sleep."
+ */
+export function carriedIssueTexts(issues: readonly BuildIssue[] | undefined, name: string): Partial<Record<keyof CarriedOptions, string>> {
+  const out: Partial<Record<keyof CarriedOptions, string>> = {};
+  for (const issue of issues ?? []) {
+    const key = CARRIED_ISSUE_FIELDS[issue.field];
+    if (key) out[key] = out[key] ? `${out[key]} ${name}: ${issue.message}` : `${name}: ${issue.message}`;
+  }
+  return out;
+}
+
+/**
+ * One slot's turn input: its build, move contexts, Charge and action, its state from earlier turns when it has any, and
+ * its moves when it uses Imprison (the quick moves and the chosen move: the one reader of them, status-eot SPEC §4.2), so
+ * every other turn's input is what it was before. No last move: the calculator does not know it.
+ */
+export function doublesSlotInput(combatant: Pick<Combatant, "build" | "contexts" | "moves">, charged: boolean, action: DoublesAction, carried: DoublesCarried): DoublesPokemonInput {
+  const { build, contexts } = combatant;
+  const moves = action.moveId === "imprison"
+    ? [...new Set([...combatant.moves.flatMap((prepared) => prepared.moveId ? [prepared.moveId] : []), action.moveId])] : null;
+  return { build, contexts, charged, action, ...(Object.keys(carried).length ? { carried } : {}), ...(moves ? { moves } : {}) };
+}
+
 function slotInputs(doubles: DoublesMatchup): Record<DoublesSlotId, DoublesPokemonInput> {
-  return perSlot((slot) => {
-    const { build, contexts } = doubles.slots[slot];
-    return { build, contexts, charged: doubles.charged[slot], action: doubles.actions[slot] };
-  });
+  return perSlot((slot) => doublesSlotInput(doubles.slots[slot], doubles.charged[slot], doubles.actions[slot], doubles.carried[slot]));
 }
 
 export function getDoublesTurnInput(doubles: DoublesMatchup): DoublesTurnInput {
@@ -249,12 +397,14 @@ function onSlot(state: CalculatorState, slot: DoublesSlotId, run: (pair: Prepare
     slots: { ...doubles.slots, [slot]: nextSlot },
     actions: moveId === action.moveId ? doubles.actions : { ...doubles.actions, [slot]: moveId === null ? NO_ACTION : { moveId, target: action.target } },
     charged: anotherPokemon && doubles.charged[slot] ? { ...doubles.charged, [slot]: false } : doubles.charged,
+    carried: anotherPokemon ? withCarried(doubles, slot, NO_CARRIED) : doubles.carried,
     replacement: owned(doubles.replacement) || owned(next.replacement) ? next.replacement : doubles.replacement,
     replacementSession: next.replacementSession,
   };
   return {
     matchup: next.cache === matchup.cache ? matchup : { ...matchup, cache: next.cache },
-    doubles: livingPane(retarget(updated, slot)),
+    // Every slot: this one's build, or a Neutralizing Gas it gains, loses or faints with, changes what the others carry.
+    doubles: livingPane(retarget(reconcileAllCarried(updated), slot)),
   };
 }
 
@@ -391,7 +541,8 @@ export function setDoublesMovesInto(state: CalculatorState, into: DoublesSlotId)
 
 export function setDoublesField(state: CalculatorState, revision: number, field: BattleConditions): CalculatorState {
   if (state.doubles.revision !== revision) return state;
-  let doubles: DoublesMatchup = { ...state.doubles, field: { ...field, gameType: "Doubles" } };
+  // Magic Room switches Ability Shield off, which lets a Neutralizing Gas reach a curing ability (carriedAbilityOn).
+  let doubles: DoublesMatchup = reconcileAllCarried({ ...state.doubles, field: { ...field, gameType: "Doubles" } });
   for (const slot of DOUBLES_SLOTS) doubles = retarget(doubles, slot);
   return withDoubles(state, doubles);
 }
@@ -400,6 +551,33 @@ export function setDoublesCharged(state: CalculatorState, key: number, charged: 
   const slot = slotByKey(state.doubles, key);
   if (!slot || state.doubles.charged[slot] === charged) return state;
   return withDoubles(state, { ...state.doubles, charged: { ...state.doubles.charged, [slot]: charged } });
+}
+
+/** `doubles.carried` with the slot's set to `carried`: the same record when it is unchanged. */
+function withCarried(doubles: DoublesMatchup, slot: DoublesSlotId, carried: DoublesCarried): Record<DoublesSlotId, DoublesCarried> {
+  return doubles.carried[slot] === carried ? doubles.carried : { ...doubles.carried, [slot]: carried };
+}
+
+/** Each slot's carried state for its build and whether its ability is in effect (reconcileCarried, carriedAbilityOn); the same matchup when none changes. */
+function reconcileAllCarried(doubles: DoublesMatchup): DoublesMatchup {
+  let carried = doubles.carried;
+  for (const slot of DOUBLES_SLOTS) {
+    if (!Object.keys(carried[slot]).length) continue;
+    const next = reconcileCarried(carried[slot], doubles.slots[slot].build, doubles.runtime, carriedAbilityOn(doubles, slot));
+    if (next !== carried[slot]) carried = { ...carried, [slot]: next };
+  }
+  return carried === doubles.carried ? doubles : { ...doubles, carried };
+}
+
+/** The slot's state from earlier turns (BattleConditions' 2v2 controls), bounded to what its build allows (reconcileCarried). */
+export function setDoublesCarried(state: CalculatorState, key: number, carried: DoublesCarried): CalculatorState {
+  const { doubles } = state;
+  const slot = slotByKey(doubles, key);
+  if (!slot) return state;
+  const next = reconcileCarried(carried, doubles.slots[slot].build, doubles.runtime, carriedAbilityOn(doubles, slot));
+  const current = doubles.carried[slot];
+  if (next === current || JSON.stringify(next) === JSON.stringify(current)) return state;
+  return withDoubles(state, { ...doubles, carried: withCarried(doubles, slot, next) });
 }
 
 function builds(doubles: DoublesMatchup): Record<DoublesSlotId, BattleBuild> {

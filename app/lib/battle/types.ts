@@ -200,6 +200,10 @@ type BuildBase = {
    * the focusenergy volatile, +2 critical-hit ratio while it stays in).
    */
   settledFocusEnergy?: true;
+  /** Set only by the 2v2 turn and Training: the focusenergy volatile from the move (+2 critical-hit ratio). Lansat keeps settledFocusEnergy. */
+  focusEnergy?: true;
+  /** Set only by the 2v2 turn and Training: Dragon Cheer's critical-hit stages (+2 when the Pokémon was a Dragon type as it started). */
+  dragonCheer?: 1 | 2;
   /**
    * Set only by the calculation, in generation 7: the Speed stage and Unburden state this turn's order was set
    * with, before the item it used at the turn's first Update changed them (pinned Showdown sim/battle.ts runAction

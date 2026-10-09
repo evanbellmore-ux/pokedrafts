@@ -241,7 +241,8 @@ describe("the fainted card and the other cards", () => {
   it("lists no step for a turn where no Pokémon with a move acts, and shows the turn's facts", () => {
     const view = faintedView({ "own-left": { moveId: "flamethrower", target: null } });
     const empty = { status: "ready", start: { "own-left": { hp: 153, maximum: 153 }, "own-right": { hp: 155, maximum: 155 }, "opponent-left": null, "opponent-right": null },
-      steps: [], hp: { "own-left": null, "own-right": null, "opponent-left": null, "opponent-right": null }, startRows: [], facts: ["No target: both foes have fainted."] } satisfies DoublesTurnResult;
+      steps: [], hp: { "own-left": null, "own-right": null, "opponent-left": null, "opponent-right": null }, startRows: [], facts: ["No target: both foes have fainted."],
+      endOfTurn: { status: "ready", hp: { "own-left": null, "own-right": null, "opponent-left": null, "opponent-right": null }, residuals: [], facts: [] } } satisfies DoublesTurnResult;
     const turn = summary(view, empty).slice(summary(view, empty).indexOf("data-doubles-turn"));
     expect(turn).not.toContain("<ol");
     expect(turn).toContain("No target: both foes have fainted.");

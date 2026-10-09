@@ -17,7 +17,7 @@ export function teamOf(fixture: TeamFixture, runtime: BattleRuntime = championsR
 
 export function parsePools(text: string): TeamPool[] {
   const pools = text.split(",").map((part) => part.trim().toUpperCase()).filter(Boolean);
-  for (const pool of pools) if (!["S", "V", "U", "A"].includes(pool)) throw new Error(`Unknown pool ${pool} (S, V, U, A).`);
+  for (const pool of pools) if (!["S", "V", "U", "A", "E"].includes(pool)) throw new Error(`Unknown pool ${pool} (S, V, U, A, E).`);
   return pools as TeamPool[];
 }
 

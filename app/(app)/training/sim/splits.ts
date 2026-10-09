@@ -1,7 +1,8 @@
 // Exact weighted mixtures of engine inputs for public random events at the start of a move (SPEC §9.4 "Splits"),
 // from public counts only (never a battle's hidden counters): consecutive protection (data/conditions.ts stall
-// 1/counter), sleep (champions/conditions.ts slp startTime sample([2, 3, 3])) and freeze (champions frz: 3 attempts, 1/4).
-import { DOUBLES_SLOTS, foesOf, type DoublesSlotId, type DoublesTurnInput } from "@/app/lib/battle/doubles-types";
+// 1/counter). Sleep and freeze are the engine's own BeforeMove (status-eot SPEC §4.2: carried.sleep and carried.freeze
+// from the public counts, sim/bridge.ts); wakeChance and thawChance stay as Champions' rates (conformance, tests).
+import { DOUBLES_SLOTS, type DoublesSlotId, type DoublesTurnInput } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { MonKey } from "../model/ai-view";
 import type { PublicMon } from "../model/public-state";
@@ -46,34 +47,17 @@ export function splitWorlds(base: DoublesTurnInput, ctx: { runtime: BattleRuntim
     if (!entry || !key || !moveId) continue;
     const mon = ctx.publicOf(key);
     const move = ctx.runtime.movesById.get(moveId);
-    const name = ctx.runtime.speciesById.get(entry.build.speciesId)?.name ?? key;
     if (PROTECT_FAMILY.has(moveId) && mon && mon.protectStreak > 0) {
+      // The failing world is No move (Splash), which Gravity stops before confusion (status-eot C5); a Protect that fails
+      // its stall check still meets confusion first: not the same turn for a confused Pokémon under Gravity.
+      if (entry.carried?.confusion && base.field.gravity) return { kind: "rollout", reasons: [`${move?.name ?? moveId} under Gravity while confused: its failing world is not modelled.`] };
       const p = 1 / Math.min(729, 3 ** mon.protectStreak);
       fork(slot, [
         { weight: p, apply: () => {}, note: `${move?.name ?? moveId} works (${pct(p)}).` },
         { weight: 1 - p, apply: noMove(slot), note: `${move?.name ?? moveId} fails (${pct(1 - p)}).` },
       ]);
     }
-    if (entry.build.status === "slp" && mon) {
-      const p = wakeChance(mon.statusElapsed, entry.build.abilityId === "earlybird");
-      fork(slot, [
-        { weight: 1 - p, apply: noMove(slot), note: `${name} stays asleep (${pct(1 - p)}).` },
-        { weight: p, apply: (input) => { const each = input.pokemon[slot]; if (each) each.build = { ...each.build, status: "" }; }, note: `${name} wakes up (${pct(p)}).` },
-      ]);
-    } else if (entry.build.status === "frz" && mon) {
-      // A foe's Fire move into it this turn thaws it mid-turn: not a start-of-turn split.
-      const fire = foesOf(slot).some((foe) => { const other = base.pokemon[foe]; return other?.action.moveId && ctx.runtime.movesById.get(other.action.moveId)?.type === "Fire"; });
-      if (fire) return { kind: "rollout", reasons: [`${name} is frozen and a Fire move may thaw it.`] };
-      const defrost = DEFROST_MOVES.has(moveId);
-      const p = thawChance(mon.statusElapsed, defrost);
-      fork(slot, [
-        { weight: 1 - p, apply: noMove(slot), note: `${name} stays frozen (${pct(1 - p)}).` },
-        { weight: p, apply: (input) => { const each = input.pokemon[slot]; if (each) each.build = { ...each.build, status: "" }; }, note: `${name} thaws (${pct(p)}).` },
-      ]);
-    }
   }
   return { kind: "worlds", worlds };
 }
 
-/** Moves with the defrost flag (pinned data/moves.ts flags.defrost). */
-const DEFROST_MOVES: ReadonlySet<string> = new Set(["burnup", "flamewheel", "flareblitz", "fusionflare", "hydrosteam", "matchagotcha", "pyroball", "sacredfire", "scald", "scorchingsands", "sizzlyslide", "steameruption", "polarflare"]);

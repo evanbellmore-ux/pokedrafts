@@ -28,6 +28,13 @@ function targetType(input: DoublesTurnInput, slot: DoublesSlotId, moveId: string
   const useZ = entry.contexts[moveId]?.useZ === true && move.category !== "Status";
   const crystal = useZ ? input.runtime.itemsById.get(entry.build.itemId) : undefined;
   const signature = crystal?.zMove && crystal.zMoveFrom === moveId ? input.runtime.movesById.get(crystal.zMove) : undefined;
+  // Curse from a Pokémon that is not a Ghost type: the request's target is its nonGhostTarget, "self" (sim/pokemon.ts
+  // getMoves; data/moves.ts curse), with the types the turn reads (doubles-turn.ts typesOf: a Tera type, else the species').
+  if (!dynamaxed && moveId === "curse") {
+    const build = entry.build;
+    const tera = build.mechanic === "tera" && build.configuration?.teraType && build.configuration.teraType !== "Stellar" ? [build.configuration.teraType] : null;
+    if (!(tera ?? input.runtime.speciesById.get(build.speciesId)?.types ?? []).includes("Ghost")) return "self";
+  }
   return dynamaxed ? (move.category === "Status" ? "self" : "adjacentFoe") : useZ ? signature?.target ?? "normal" : move.target;
 }
 

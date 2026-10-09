@@ -48,6 +48,7 @@ const texts = (facts: { text: string; chance: number }[]) => facts.map((f) => f.
 
 const TURN_FACT = "Every move hits; no critical hits; added effects below 100% do not happen.";
 const CRIT_FACT = "Every move hits and every damaging hit is critical; added effects below 100% do not happen.";
+/** Step 0's stub fact, gone now that the end of turn is applied (status-eot SPEC §2.5). */
 const END_FACT = "End-of-turn effects are not applied.";
 const PROTECT_FACT = "Assumes no protecting move was used last turn.";
 const FIRST_TURN_FACT = "Assumes the attacker's first turn in battle.";
@@ -89,7 +90,8 @@ describe("No move (SPEC C13)", () => {
       const hp = result.hp[slot]!;
       expect({ low: hp.low, high: hp.high, min: hp.min, max: hp.max, average: hp.average, koChance: hp.koChance }).toEqual({ low: hp.start, high: hp.start, min: hp.start, max: hp.start, average: hp.start, koChance: 0 });
     }
-    expect(result.facts).toEqual(expect.arrayContaining([TURN_FACT, END_FACT]));
+    expect(result.facts).toContain(TURN_FACT);
+    expect(result.facts).not.toContain(END_FACT);
   });
 
   it("is not an attacking move for Sucker Punch (V17b)", () => {
@@ -213,7 +215,8 @@ describe("turn facts (SPEC §2.3)", () => {
 
   it("states the turn's assumptions once, each only when it applies", () => {
     const plain = ready(calculateDoublesTurn(turn(championsRuntime, field)));
-    expect(plain.facts).toEqual(expect.arrayContaining([TURN_FACT, END_FACT]));
+    expect(plain.facts).toContain(TURN_FACT);
+    expect(plain.facts).not.toContain(END_FACT);
     for (const absent of [CRIT_FACT, PROTECT_FACT, FIRST_TURN_FACT, TRICK_ROOM_FACT]) expect(plain.facts).not.toContain(absent);
     const crit = ready(calculateDoublesTurn(turn(championsRuntime, field, { critical: true })));
     expect(crit.facts).toContain(CRIT_FACT);

@@ -14,7 +14,7 @@ import CurrentHPField from "./CurrentHPField";
 import { RosterPicker } from "./LeagueMatchupPicker";
 import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import PokemonChooser from "./PokemonChooser";
-import { actionFact, ARROW, baseName, cardHPLabel, FAINTED, positionLabel, relativeLabel, rollDescription, shownHP, type DoublesNames } from "./doubles-format";
+import { actionFact, ARROW, baseName, cardHPLabel, conditionsLine, FAINTED, positionLabel, relativeLabel, rollDescription, shownHP, type DoublesNames } from "./doubles-format";
 import { getBuildHealth, settledText, type DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type Combatant, type MoveOwner, type MoveReplacement, type RosterChoice, type RosterPanel } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -26,6 +26,8 @@ export type DoublesCardView = {
   rule: DoublesTargetRule | null;
   /** The turn's HP for this slot; null: no ready turn, or the slot is not in it. */
   hp: DoublesHP | null;
+  /** `hp` is after the whole turn (its end of turn is estimated: doubles-format turnHP); otherwise after the moves. */
+  afterTurn?: boolean;
   /** Some step reaches it: the card shows its KO chance. */
   reached: boolean;
   /** Its HP is 0: it fainted before the turn, so the card shows no move or target and the turn leaves it out. */
@@ -78,10 +80,13 @@ export type DoublesCardTarget = {
   onPick(): void;
 };
 
-/** A 2v2 card: the Pokémon, its HP after the turn's moves, its move and its target (data-doubles-slot). */
+/**
+ * A 2v2 card: the Pokémon, its HP after the turn (or after the moves when the end of turn is not estimated) with its
+ * statuses and other conditions then, its move and its target (data-doubles-slot).
+ */
 export default function DoublesCard({ view, names, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange }: Props) {
   const id = useId();
-  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false } = view;
+  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false, afterTurn = false } = view;
   const position = SLOT_POSITION[slotId];
   const owner = getMoveOwner(slot);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -102,8 +107,9 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
   const fraction = maximum ? shown / maximum : 0;
   const range = hp && hp.min !== hp.max ? ` (${hp.min}–${hp.max})` : "";
   const ko = hp && reached ? chanceText(hp.koChance) : null;
-  const hpText = hp ? `${shown} of ${maximum} HP after the moves, ${rollDescription(rollMode)}${range}.${ko ? ` KO chance: ${ko}.` : ""} Turn start HP: ${hp.start}.${hp.settled ? ` ${settledText(hp.settled)}.` : ""}`
+  const hpText = hp ? `${shown} of ${maximum} HP ${afterTurn ? "after the turn" : "after the moves"}, ${rollDescription(rollMode)}${range}.${ko ? ` KO chance: ${ko}.` : ""} Turn start HP: ${hp.start}.${hp.settled ? ` ${settledText(hp.settled)}.` : ""}`
     : health ? `${health.current} of ${health.maximum} HP` : "";
+  const conditions = hp?.conditions?.length ? conditionsLine(hp.conditions) : "";
   const move = action.moveId ? runtime.movesById.get(action.moveId) : undefined;
   const moveName = effective?.name ?? move?.name ?? action.moveId ?? "";
   const offList = !!action.moveId && !slot.moves.some((prepared) => prepared.moveId === action.moveId);
@@ -165,13 +171,14 @@ export default function DoublesCard({ view, names, runtime, rollMode, replacemen
         </>
       ) : hp || health ? (
         <>
-          <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(!!hp, rollMode, slot.build.mechanic)}</p>
+          <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(!!hp, rollMode, slot.build.mechanic, afterTurn)}</p>
           <p className="tabular-nums"><span className="text-xl font-bold text-text">{shown}</span><span className="text-sm text-muted"> / {maximum} HP</span></p>
           <div role="meter" aria-label={`${name} ${position} ${hp ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={shown} aria-valuetext={hpText} title={hpText} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
             {/* The least to the most HP left over the turn's outcomes, over the selected roll's fill. */}
             {hp && range && <div data-hp-range aria-hidden="true" className="absolute inset-y-0 bg-text/25" style={{ left: `${hp.min / maximum * 100}%`, width: `${(hp.max - hp.min) / maximum * 100}%` }} />}
           </div>
+          {conditions && <p data-doubles-conditions={slotId} className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{conditions}</p>}
           {hp && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{hp.settled ? settledText(hp.settled) : `Turn start: ${hp.start} / ${hp.maximum}`}{ko && ` · KO chance: ${ko}`}</p>}
           {hp && hp.heals.length > 0 && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{hp.heals.join(" ")}</p>}
         </>

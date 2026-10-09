@@ -4,11 +4,13 @@ import { PRNG, type Battle } from "@pokedrafts/showdown-sim";
 import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
 import type { BattleBuild } from "@/app/lib/battle/types";
 import type { AiInputs } from "@/app/(app)/training/model/ai-inputs";
+import type { CellActions, TurnServices } from "@/app/(app)/training/model/ai-view";
 import type { WorkBudget } from "@/app/(app)/training/model/decision";
 import { DEFAULT_INFO, OPEN_TEAM_SHEETS, type InfoSettings, type InfoView } from "@/app/(app)/training/model/info";
 import type { SideID } from "@/app/(app)/training/model/showdown-types";
 import type { TrainingMember, TrainingTeam } from "@/app/(app)/training/model/view-types";
 import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
+import { needsPrelude } from "@/app/(app)/training/sim/bridge";
 import { fixtureById } from "@/tests/fixtures/training-teams";
 import { runMatch, type DecisionRecord, type MatchResult } from "./match";
 import { createSeat, ensureSeats, type SeatName } from "./providers";
@@ -28,6 +30,9 @@ export type Field = {
   choice?: boolean;
   /** The setting that must make A and B differ (inputs JSON) at a compared decision. */
   mustDiffer?: boolean;
+  /** The player's team and the opponents' (default PLAYER, OPPONENTS). */
+  player?: string;
+  opponents?: readonly string[];
 };
 
 const withMember = (team: TrainingTeam, speciesId: string, change: (member: TrainingMember) => TrainingMember): TrainingTeam =>
@@ -55,6 +60,9 @@ export function l1Fields(): Field[] {
     { id: "hp", info: DEFAULT_INFO, mutate: sameShownHP },
     { id: "hp-exact", info: { aiKnows: { ...OPEN_TEAM_SHEETS, exactHP: true }, youSee: OPEN_TEAM_SHEETS }, mutate: sameShownHP, mustDiffer: true },
     { id: "dice", info: DEFAULT_INFO, mutate: redrawDice },
+    // Pool E (status-eot EOT-5): Substitutes after a hit, Binding Band traps, Ally Switch, Trick, Leech Seed, Wish, Yawn,
+    // Future Sight on both sides, with the hidden counters redrawn as for "dice".
+    { id: "dice-eot", info: DEFAULT_INFO, mutate: redrawDice, player: "E01", opponents: ["E02", "E02", "V02", "V04", "A08"] },
     { id: "choice", info: DEFAULT_INFO, choice: true },
   ];
 }
@@ -75,34 +83,63 @@ function sameShownHP(battle: Battle, ordinal: number): boolean {
   }
   return false;
 }
-/** A new PRNG and other sleep / confusion counters on every Pokémon that has them. */
+/**
+ * A new PRNG and other hidden counters on every Pokémon that has them: sleep and confusion turns, Champions freeze turns,
+ * a partial trap's turns left, and a Substitute's HP (no -activate line shows its HP after a hit: status-eot EOT-5).
+ */
 function redrawDice(battle: Battle, ordinal: number): boolean {
   if (ordinal < 1) return false;
   (battle as unknown as { prng: PRNG }).prng = new PRNG(`sodium,${"9".repeat(32)}`);
   for (const pokemon of battle.getAllActive()) {
-    const writable = pokemon as unknown as { statusState: { time?: number }; volatiles: Record<string, { time?: number; duration?: number }> };
-    if (pokemon.status === "slp" && typeof writable.statusState.time === "number") writable.statusState.time = writable.statusState.time === 1 ? 2 : 1;
+    const writable = pokemon as unknown as { statusState: { time?: number }; volatiles: Record<string, { time?: number; duration?: number; hp?: number }> };
+    if ((pokemon.status === "slp" || pokemon.status === "frz") && typeof writable.statusState.time === "number") writable.statusState.time = writable.statusState.time === 1 ? 2 : 1;
     const confusion = writable.volatiles.confusion;
     if (confusion && typeof confusion.time === "number") confusion.time = confusion.time === 1 ? 3 : 1;
+    const trap = writable.volatiles.partiallytrapped;
+    if (trap && typeof trap.duration === "number") trap.duration = trap.duration > 2 ? trap.duration - 1 : trap.duration + 1;
+    const substitute = writable.volatiles.substitute;
+    if (substitute && typeof substitute.hp === "number") substitute.hp = substitute.hp > 1 ? substitute.hp - 1 : substitute.hp + 1;
   }
   return true;
 }
 
+/**
+ * The engine inputs the AI's services bridge for up to four cells that need no prelude (calculateDoublesOutcomes' input:
+ * carried state, last moves, positions, Substitute HP), hashed, so L1 also compares what reaches the engine (EOT-5). The
+ * services memoise each cell, so the AI's own later call returns the same object and its work (preludes) is unchanged.
+ */
+function bridgedHash(inputs: AiInputs, services: TurnServices): string {
+  if (!("active" in inputs.request)) return "";
+  const { own, opponent } = services.view.legal;
+  const parts: string[] = [];
+  for (let k = 0; k < opponent.length && own.length && parts.length < 4; k++) {
+    const cell: CellActions = { own: own[k % own.length], opponent: opponent[k] };
+    if (needsPrelude(cell)) continue;
+    try {
+      parts.push(JSON.stringify(services.engineWorlds(cell), (key, value) => key === "runtime" ? undefined : value));
+    } catch (error) {
+      parts.push(`error ${(error as Error).message}`);
+    }
+  }
+  return createHash("sha256").update(parts.join("\n")).digest("hex");
+}
+
 type Captured = { requestId: number; kind: string; history: string; inputs: string; decision: string };
 const historyHash = (lines: readonly string[]) => createHash("sha256").update(lines.filter((line) => !line.startsWith("|t:|")).join("\n")).digest("hex");
-const decisionKey = (record: DecisionRecord | undefined) => record
-  ? JSON.stringify({ choice: record.choice, report: record.report && { ...record.report, elapsedMs: 0 }, engineCalls: record.stats?.engineCalls, rolloutSamples: record.stats?.rolloutSamples })
+const decisionKey = (record: DecisionRecord | undefined, bridged = "") => record
+  ? JSON.stringify({ choice: record.choice, report: record.report && { ...record.report, elapsedMs: 0 }, engineCalls: record.stats?.engineCalls, rolloutSamples: record.stats?.rolloutSamples, bridged })
   : "";
 
 /** One battle of a pair: A (teamB false) records its choices; B replays them (with its one difference). */
 export async function playL1(field: Field, opponentId: string, index: number, seat: SeatName, forced: Record<SideID, string[]> | null, mutateAt: number | null, choiceAt: number | null, teamB: boolean, budget?: WorkBudget): Promise<{ result: MatchResult; captured: Captured[]; appliedAt: number | null }> {
   await ensureSeats([seat]);
   const usage = loadTrainingUsage();
-  const base = teamOf(fixtureById(PLAYER));
+  const base = teamOf(fixtureById(field.player ?? PLAYER));
   const p1Team = teamB && field.variant ? field.variant(base) : base;
   const p2Team = teamOf(fixtureById(opponentId));
   const p2Lines: string[] = [];
   const captures: Omit<Captured, "decision">[] = [];
+  const bridged = new Map<number, string>();
   let appliedAt: number | null = null;
   const forcedChoices = forced ? structuredClone(forced) : undefined;
   if (forcedChoices && choiceAt !== null && teamB) {
@@ -124,11 +161,14 @@ export async function playL1(field: Field, opponentId: string, index: number, se
       inputs(side, kind, inputs: AiInputs | null, host) {
         if (side === "p2") captures.push({ requestId: host.requestId, kind, history: historyHash(p2Lines), inputs: JSON.stringify(inputs) });
       },
+      services(side, inputs, _worlds, services) {
+        if (side === "p2") bridged.set(inputs.requestId, `${bridged.get(inputs.requestId) ?? ""}${bridgedHash(inputs, services)}`);
+      },
     },
   });
   const byRequest = new Map<number, DecisionRecord>();
   for (const record of result.decisions) if (record.side === "p2" && !byRequest.has(record.requestId)) byRequest.set(record.requestId, record);
-  return { result, captured: captures.map((capture) => ({ ...capture, decision: decisionKey(byRequest.get(capture.requestId)) })), appliedAt };
+  return { result, captured: captures.map((capture) => ({ ...capture, decision: decisionKey(byRequest.get(capture.requestId), bridged.get(capture.requestId)) })), appliedAt };
 }
 
 
@@ -138,7 +178,8 @@ export async function runL1Field(field: Field, options: { battles: number; seat:
   let compared = 0, differences = 0, inputDifferences = 0;
   const notes: string[] = [];
   for (let k = 0; k < options.battles; k++) {
-    const opponent = OPPONENTS[k % OPPONENTS.length];
+    const opponents = field.opponents ?? OPPONENTS;
+    const opponent = opponents[k % opponents.length];
     const a = await playL1(field, opponent, k, options.seat, null, null, null, false, options.budget);
     const mutateAt = field.mutate ? 1 + (k % 3) * 2 : null;
     const choiceAt = field.choice ? 1 + (k % 3) * 2 : null;

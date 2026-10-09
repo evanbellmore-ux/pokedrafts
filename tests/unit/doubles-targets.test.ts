@@ -76,6 +76,14 @@ describe("doublesTargetRule: the dex target from each slot", () => {
     expect(rule(stellar, "own-left", "terastarstorm")).toEqual({ kind: "choose", options: ["opponent-left", "opponent-right", "own-right"] });
   });
 
+  it("gives Curse no target from a Pokémon that is not a Ghost type (its nonGhostTarget, self), and a chosen one from a Ghost type", async () => {
+    const sv = await loadBattleRuntime("scarlet_violet");
+    const turn = input(sv, { "own-left": { id: "snorlax" }, "own-right": { id: "gengar" }, "opponent-left": { id: "garchomp", build: { mechanic: "tera", configuration: { teraType: "Ghost" } } } });
+    expect(rule(turn, "own-left", "curse")).toEqual({ kind: "none", scope: "self" });
+    expect(rule(turn, "own-right", "curse")).toEqual({ kind: "choose", options: ["opponent-left", "opponent-right", "own-left"] });
+    expect(rule(turn, "opponent-left", "curse")).toEqual({ kind: "choose", options: ["own-left", "own-right", "opponent-right"] });
+  });
+
   it("lists only the slots with a Pokémon", () => {
     const lone = input(championsRuntime, { "own-right": null, "opponent-left": null });
     expect(rule(lone, "own-left", "dragonclaw")).toEqual({ kind: "choose", options: ["opponent-right"] });

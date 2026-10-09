@@ -17,14 +17,14 @@ import { gateTable, parseArgs, writeJson, writeText, type GateRow } from "./lib/
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   // 40 battles per field compare at least 50 decisions for every field; the dice field (decisions with a shown sleep or
-  // confusion only) needs 60 (integration runs, scripts/.cache/training/build/integrate/).
+  // confusion only) needs 60 (integration runs, scripts/.cache/training/build/integrate/), as does dice-eot (pool E).
   const battles = Number(args.battles ?? 40);
   const seat = String(args.seat ?? "safe") as SeatName;
   const only = typeof args.fields === "string" ? String(args.fields).split(",") : null;
   const rows: GateRow[] = [];
   const details: Record<string, unknown> = {};
   for (const field of l1Fields().filter((each) => !only || only.includes(each.id))) {
-    const result = await runL1Field(field, { battles: field.id === "dice" && args.battles === undefined ? 60 : battles, seat });
+    const result = await runL1Field(field, { battles: field.id.startsWith("dice") && args.battles === undefined ? 60 : battles, seat });
     details[field.id] = result;
     if (field.mustDiffer) rows.push({ gate: `L1-${field.id} (setting works)`, threshold: "inputs differ at compared decisions", result: `${result.inputDifferences}/${result.compared} differ`, status: result.compared > 0 && result.inputDifferences > 0 ? "pass" : "fail" });
     else rows.push({ gate: `L1-${field.id}`, threshold: "≥ 50 compared, 0 differences", result: `${result.differences} differences in ${result.compared}`, status: result.compared >= 50 && result.differences === 0 ? "pass" : "fail", detail: result.notes.join(" | ") });

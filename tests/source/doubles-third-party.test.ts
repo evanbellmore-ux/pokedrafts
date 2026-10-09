@@ -10,7 +10,8 @@ import { doublesTargetRule } from "../../app/lib/battle/doubles-targets";
 import type { DoublesPokemonInput, DoublesSlotId, DoublesTargetRule, DoublesTurnInput } from "../../app/lib/battle/doubles-types";
 import { createBuild, createConditions } from "../../app/lib/battle/model";
 import { createBattleRuntime, type BattleRuntime } from "../../app/lib/battle/runtime";
-import type { BattleCatalog } from "../../app/lib/battle/types";
+import { statusEntry } from "../../app/lib/battle/status-table";
+import type { BattleCatalog, BattleGame } from "../../app/lib/battle/types";
 
 /**
  * The 2v2 engine's tables against pinned Showdown c23d2e94 (SPEC §8.4), read from the compiled dex the data build makes
@@ -85,6 +86,15 @@ describe("third-party handlers (SPEC §8.4)", () => {
   it("keeps the modelled and the guarded lists apart", () => {
     expect([...MODELLED_THIRD_PARTY].filter((id) => GUARDED_THIRD_PARTY.has(id))).toEqual([]);
   });
+
+  it("models the status pipeline's and the end of turn's third parties (status-eot SPEC §9)", () => {
+    for (const id of ["sweetveil", "magicbounce", "goodasgold", "oblivious", "owntempo", "synchronize", "earlybird", "healer", "hydration", "shedskin", "baddreams", "bigroot"]) {
+      expect(MODELLED_THIRD_PARTY.has(id), id).toBe(true);
+    }
+    // Flower Veil and Pastel Veil are modelled against status moves (doubles-status.ts canStatus, applyBoosts) and stay
+    // guarded against a damaging move's added effect (doubles-turn.ts veilGuard); Pickup acts at the end of turn (E2).
+    for (const id of ["flowerveil", "pastelveil", "pickup"]) expect(GUARDED_THIRD_PARTY.has(id), id).toBe(true);
+  });
 });
 
 describe("move tables against pinned data", () => {
@@ -113,25 +123,37 @@ describe("move tables against pinned data", () => {
     }
   });
 
-  it("lists every status move that changes HP in HP_STATUS_MOVES", () => {
+  it("models or guards every status move that changes HP", () => {
     const changesHP = (data: NonNullable<ReturnType<typeof move>>) => !!data.heal || !!data.flags?.heal || !!data.selfdestruct
       || Object.entries(data).some(([key, fn]) => /^on(Hit|TryHit|HitField|HitSide|AfterHit|PrepareHit)$/.test(key) && typeof fn === "function" && /\.heal\(|\.sethp\(|directDamage\(|this\.damage\(|\.faint\(|\.eatItem\(/.test(String(fn)));
-    const expected = new Set<string>();
-    for (const catalog of Object.values(catalogs)) {
+    // status-eot SPEC §2.2: such a move is modelled (kind M, C or S, status-table.ts) or guarded wherever it is (HP_STATUS_MOVES).
+    const unfollowed: string[] = [];
+    for (const [game, catalog] of Object.entries(catalogs)) {
       for (const m of catalog.moves) {
         const data = move(m.id);
-        if (data?.category === "Status" && changesHP(data)) expected.add(m.id);
+        if (data?.category !== "Status" || !changesHP(data)) continue;
+        const kind = statusEntry(m.id, game as BattleGame)?.kind;
+        if (kind !== "M" && kind !== "C" && kind !== "S" && !HP_STATUS_MOVES.has(m.id)) unfollowed.push(`${game} ${m.id} (${kind})`);
       }
     }
-    expect([...expected].filter((id) => !HP_STATUS_MOVES.has(id)).sort(), "missing from HP_STATUS_MOVES").toEqual([]);
-    for (const id of HP_STATUS_MOVES) expect(move(id)?.category, id).toBe("Status");
+    expect(unfollowed, "neither modelled nor guarded").toEqual([]);
+    for (const id of HP_STATUS_MOVES) {
+      expect(move(id)?.category, id).toBe("Status");
+      expect(MODELLED_STATUS_MOVES.has(id), id).toBe(false);
+    }
   });
 
-  it("keeps the no-effect moves free of anything this turn's HP can see", () => {
+  it("keeps the no-effect moves (kind N) free of anything this turn's later moves can see", () => {
+    // Their volatiles act on a later turn (Grudge and Laser Focus on the user's next move, Torment on the next choice), their
+    // side conditions on a switch-in (the hazards).
+    const LATER_VOLATILES = new Set(["grudge", "laserfocus", "torment"]);
+    const HAZARDS = new Set(["spikes", "stealthrock", "stickyweb", "toxicspikes"]);
     for (const id of NO_EFFECT_MOVES) {
-      const data = move(id)!;
+      const data = move(id)! as NonNullable<ReturnType<typeof move>> & { sideCondition?: string };
       expect(data.category, id).toBe("Status");
-      expect(!!data.heal || !!data.flags?.heal || !!data.selfdestruct || !!data.boosts || !!data.status || !!data.volatileStatus && id !== "leechseed", id).toBe(false);
+      expect(!!data.heal || !!data.flags?.heal || !!data.selfdestruct || !!data.boosts || !!data.status, id).toBe(false);
+      if (data.volatileStatus) expect(LATER_VOLATILES.has(data.volatileStatus), `${id}: ${data.volatileStatus}`).toBe(true);
+      if (data.sideCondition) expect(HAZARDS.has(data.sideCondition), `${id}: ${data.sideCondition}`).toBe(true);
       expect(HP_STATUS_MOVES.has(id) || MODELLED_STATUS_MOVES.has(id), id).toBe(false);
     }
   });
@@ -177,7 +199,10 @@ describe("the target map (doubles-targets.ts) against pinned move targets", () =
           const pinned = (entry("moves", m.id, game) as { target?: string } | undefined)?.target;
           expect(m.target, `${game} ${m.id}: the catalog's target is the pinned one`).toBe(pinned);
         }
-        for (const slot of ["own-left", "opponent-right"] as const) expect(doublesTargetRule(input, slot, m.id), `${game} ${m.id} from ${slot}`).toEqual(expected(m.target, slot));
+        // Curse from a user that is not a Ghost type asks for its nonGhostTarget, self (pinned sim/pokemon.ts getMoves).
+        const ghost = runtime.speciesById.get(species)?.types.includes("Ghost");
+        const target = m.id === "curse" && !ghost ? "self" : m.target;
+        for (const slot of ["own-left", "opponent-right"] as const) expect(doublesTargetRule(input, slot, m.id), `${game} ${m.id} from ${slot}`).toEqual(expected(target, slot));
       }
     }
   });

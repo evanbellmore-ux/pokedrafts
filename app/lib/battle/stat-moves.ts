@@ -53,6 +53,18 @@ export const SERENE_GRACE_MOVES: Record<string, StatMove & { status?: BattleStat
   razorshell: { target: { def: -1 } }, rocksmash: { target: { def: -1 } }, sacredfire: { status: "brn" },
   triplearrows: { target: { def: -1 } },
 };
+/**
+ * Damaging moves whose secondary lowers the target's accuracy by 1, by its chance (pinned Showdown data/moves.ts; the same
+ * in each game's mod). STAT_MOVES leaves them out, as no calculation reads accuracy, but in a doubles turn the drop meets
+ * Keen Eye, Mind's Eye and Illuminate and sets off Defiant, Competitive, Mirror Armor and Eject Pack (doubles-turn.ts
+ * afterHit). A drop below 100% does not happen (every added effect below 100% is assumed not to).
+ */
+export const ACCURACY_DROPS: Readonly<Record<string, number>> = { mudslap: 100, octazooka: 50, leaftornado: 50, nightdaze: 40, mirrorshot: 30, mudbomb: 30, muddywater: 30 };
+/** The accuracy stage a use of `moveId` certainly lowers (−1), or 0: its chance, doubled by the user's Serene Grace (data/abilities.ts serenegrace), at 100. */
+export function accuracyDrop(moveId: string, sereneGrace = false): number {
+  const chance = ACCURACY_DROPS[moveId];
+  return chance && chance * (sereneGrace ? 2 : 1) >= 100 ? -1 : 0;
+}
 /** Dire Claw's 50% secondary poisons, paralyses or puts its target to sleep at random (data/moves.ts direclaw onHit this.sample). */
 export const SERENE_GRACE_RANDOM_STATUS: ReadonlySet<string> = new Set(["direclaw"]);
 

@@ -48,7 +48,16 @@ export function oracleFacts(battle: Battle, viewer: SideID, keys: MemberKeys): P
   }
   const sides = {} as Record<SideID, string>;
   for (const side of battle.sides) {
-    sides[side.id] = Object.entries(side.sideConditions).map(([id, state]) => `${id}${typeof state.layers === "number" && state.layers > 1 ? `x${state.layers}` : ""}`).sort().join(",");
+    const entries = Object.entries(side.sideConditions).map(([id, state]) => `${id}${typeof state.layers === "number" && state.layers > 1 ? `x${state.layers}` : ""}`);
+    // The slot conditions the tracker keeps as side conditions with layers = the position + 1 (tracker.ts: Wish, Future
+    // Sight and Doom Desire, whose slot condition is "futuremove" naming its move; status-eot EOT-5, pool E).
+    side.slotConditions.forEach((conditions, position) => {
+      for (const [id, state] of Object.entries(conditions)) {
+        const named = id === "futuremove" ? String((state as { move?: string }).move ?? "futuresight") : id;
+        if (named === "wish" || named === "futuresight" || named === "doomdesire") entries.push(`${named}${position > 0 ? `x${position + 1}` : ""}`);
+      }
+    });
+    sides[side.id] = entries.sort().join(",");
   }
   return {
     mons, sides,

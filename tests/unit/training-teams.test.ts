@@ -15,11 +15,12 @@ const megaCapable = (fixture: TeamFixture) => fixtureTeam(fixture).members.filte
   || runtime.catalog.items.find((item) => item.id === member.build.itemId)?.megaTargets.some((target) => target.baseSpeciesId === member.speciesId));
 
 describe("training team fixtures (SPEC §14.1)", () => {
-  it("has the four pools at their sizes", () => {
+  it("has the five pools at their sizes", () => {
     expect(fixturesIn(["S"])).toHaveLength(12);
     expect(fixturesIn(["V"])).toHaveLength(12);
     expect(fixturesIn(["U"])).toHaveLength(6);
     expect(fixturesIn(["A"])).toHaveLength(8);
+    expect(fixturesIn(["E"])).toHaveLength(2);
     expect(new Set(TEAM_FIXTURES.map((fixture) => fixture.id)).size).toBe(TEAM_FIXTURES.length);
   });
 
