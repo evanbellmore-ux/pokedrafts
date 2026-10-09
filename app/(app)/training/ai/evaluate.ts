@@ -1,7 +1,8 @@
 // SPEC 10.5 cell evaluation: one pairing of the AI's joint option with the player's, valued on belief battles through
 // TurnServices only. Engine path: the bridge's worlds of belief world 0 (live, or after a prelude that ran the turn's
 // switches and Mega Evolution exactly as Showdown does: the new form's types, ability and Speed before any move, A1.5),
-// E2 per world, the residual pass and the field clock added, plus a first-order accuracy correction. Rollout path:
+// E2 per world (after the whole turn when its end of turn is applied, status-eot SPEC §6; otherwise after the moves with
+// the residual pass added), the field clock counted down, plus a first-order accuracy correction. Rollout path:
 // simulator samples on the belief worlds with common random numbers. Engine paths assume no crits and no chance effects
 // below 100% (doubles-turn.ts turnFacts; one Serene Grace doubles to 100% happens); rollouts sample them. Documented, not corrected.
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
@@ -79,14 +80,11 @@ export const ROLLOUT_WORK = 2.5, PRELUDE_WORK = 1;
 export const CORRECTION_WORK = 260;
 /** Turns a field effect set this turn has left after this turn's countdown (pinned data/moves.ts durations − 1). */
 const SET_THIS_TURN = { weather: 4, terrain: 4, room: 4, tailwind: 3, screen: 4 } as const;
-/** Hazard moves the engine leaves without effect (doubles-actions.ts NO_EFFECT_MOVES), set on the foe side when used. */
-const HAZARD_MOVES: ReadonlySet<string> = new Set(["stealthrock", "spikes", "toxicspikes", "stickyweb"]);
 
 const cellKey = (cell: CellActions) => `${jointActionKey(cell.opponent)}|${jointActionKey(cell.own)}`;
 const addTerms = (a: Terms, b: Terms, scale = 1): Terms => ({ total: a.total + scale * b.total, lasting: a.lasting + scale * b.lasting, keep: a.keep + scale * b.keep });
 const ZERO: Terms = { total: 0, lasting: 0, keep: 0 };
 const inputKey = (input: DoublesTurnInput) => JSON.stringify([input.field, input.pokemon]);
-const otherSide = (side: DoublesSideId): DoublesSideId => side === "own" ? "opponent" : "own";
 
 /**
  * The field clock after this turn's countdown (SPEC 10.5): an effect up before the turn loses one turn; one set this turn
@@ -162,14 +160,22 @@ function withoutAction(input: DoublesTurnInput, slot: DoublesSlotId): DoublesTur
 }
 
 /**
- * One E2 outcome as a PostState (SPEC 10.5): slots to keys by the world; bench and unseen members as in `base` (a Pokémon
- * the prelude switched out keeps its HP on the bench); the residual pass added to each surviving Pokémon (clamped); the
- * field clock counted down one turn; the side's wipe chance when it has no living bench and no unseen members.
+ * One E2 outcome as a PostState (SPEC 10.5): slots to keys by the world, the slots of a side whose two Pokémon swapped
+ * (Ally Switch) exchanged; bench and unseen members as in `base` (a Pokémon the prelude switched out keeps its HP on the
+ * bench); the outcome's volatiles, sleep counter and perish count; with the end of turn applied (status-eot SPEC §6) the
+ * HP as it stands, otherwise the residual pass added to each surviving Pokémon (clamped; `residual` is read only then);
+ * the hazards that landed this turn (the outcome's sides) and the field clock counted down one turn; the side's wipe
+ * chance when it has no living bench and no unseen members.
  */
 export function postFromOutcome(args: {
-  view: AiView; base: PostState; residual: Readonly<Record<MonKey, number>>; outcome: DoublesOutcome; start: DoublesStart; world: EngineWorld; cell: CellActions;
+  view: AiView; base: PostState; residual: Readonly<Record<MonKey, number>> | (() => Readonly<Record<MonKey, number>>); outcome: DoublesOutcome; start: DoublesStart;
+  world: EngineWorld; cell: CellActions;
+  /** The E2 result's end of turn: "applied", the outcomes are after the whole turn. Absent: not applied. */
+  endOfTurn?: "applied" | { notEstimated: string };
 }): PostState {
-  const { view, base, residual, outcome, start, world, cell } = args;
+  const { view, base, outcome, start, world, cell } = args;
+  const applied = args.endOfTurn === "applied";
+  const residual = applied ? {} : typeof args.residual === "function" ? args.residual() : args.residual;
   const placed = new Set<MonKey>();
   const mons: PostMon[] = [];
   for (const slot of DOUBLES_SLOTS) {
@@ -180,27 +186,30 @@ export function postFromOutcome(args: {
     const before = base.mons.find((each) => each.key === key);
     const maxHp = start[slot]?.maximum ?? before?.maxHp ?? 1;
     const change = residual[key] ?? 0;
+    // Ally Switch: the Pokémon that started in `slot` stands in its partner's place after the turn (ADDENDUM §6).
+    const at = outcome.positions?.[slotSide(slot)] === "swapped" ? partnerOf(slot) : slot;
     mons.push({
-      key, side: slotSide(slot), slot, known: before?.known ?? view.mons.some((each) => each.key === key), build: mon.build,
+      key, side: slotSide(slot), slot: at, known: before?.known ?? view.mons.some((each) => each.key === key), build: mon.build,
       hp: mon.hp.map((entry) => ({ hp: entry.hp > 0 ? Math.max(0, Math.min(maxHp, entry.hp + change)) : 0, chance: entry.chance })),
-      maxHp, volatiles: [], protected: mon.protected,
+      maxHp, volatiles: mon.volatiles ?? [], protected: mon.protected,
+      ...(mon.perishCount !== undefined ? { perishCount: mon.perishCount } : {}), ...(mon.sleepTurns !== undefined ? { sleepTurns: mon.sleepTurns } : {}),
     });
   }
   for (const mon of base.mons) if (!placed.has(mon.key)) mons.push({ ...mon, slot: mon.slot !== null && mon.hp.some((entry) => entry.hp > 0) ? null : mon.slot, protected: false });
   const megaUsed = { own: view.megaUsed.own || megaSlots(cell.own).length > 0, opponent: view.megaUsed.opponent || megaSlots(cell.opponent).length > 0 };
+  // Hazard moves that landed on each side this turn (the engine's E2 sides: Magic Bounce, Ceaseless Edge and Stone Axe included).
   const hazards: Partial<Record<DoublesSideId, string[]>> = {};
-  for (const slot of DOUBLES_SLOTS) {
-    const action = world.input.pokemon[slot]?.action;
-    if (action?.moveId && HAZARD_MOVES.has(action.moveId) && outcome.mons[slot]?.moved) (hazards[otherSide(slotSide(slot))] ??= []).push(action.moveId);
-  }
+  for (const side of ["own", "opponent"] as const) if (outcome.sides[side].hazards?.length) hazards[side] = [...outcome.sides[side].hazards!];
   const wiped = { own: 0, opponent: 0 };
   for (const side of ["own", "opponent"] as const) {
     const bench = mons.some((mon) => mon.side === side && mon.slot === null && mon.hp.some((entry) => entry.hp > 0));
     const unseen = side === "own" && view.hidden.unrevealed > 0;
     if (!bench && !unseen) wiped[side] = outcome.allFainted[side];
   }
-  return { chance: outcome.chance, mons, clock: nextClock(view.clock, outcome, hazards), megaUsed, wiped, endOfTurn: "estimated" };
+  return { chance: outcome.chance, mons, clock: nextClock(view.clock, outcome, hazards), megaUsed, wiped, endOfTurn: applied ? "applied" : "estimated" };
 }
+/** The other slot of a slot's side. */
+const partnerOf = (slot: DoublesSlotId): DoublesSlotId => slot.endsWith("left") ? slot.replace("left", "right") as DoublesSlotId : slot.replace("right", "left") as DoublesSlotId;
 
 export function createCellEvaluator(deps: EvaluatorDeps): CellEvaluator {
   const { services, runtime, weights, worth, rows, replace, budget } = deps;
@@ -243,8 +252,9 @@ export function createCellEvaluator(deps: EvaluatorDeps): CellEvaluator {
     return result;
   };
 
-  const postOf = (outcome: DoublesOutcome, startHP: DoublesStart, world: EngineWorld, cell: CellActions) =>
-    postFromOutcome({ view, base: current(), residual: residualOf(), outcome, start: startHP, world, cell });
+  // The residual pass (a simulator run) only for outcomes whose end of turn E2 did not apply.
+  const postOf = (outcome: DoublesOutcome, result: Extract<DoublesOutcomesResult, { status: "ready" }>, world: EngineWorld, cell: CellActions) =>
+    postFromOutcome({ view, base: current(), residual: residualOf, outcome, start: result.start, world, cell, endOfTurn: result.endOfTurn });
   const termsOf = (post: PostState, cell: CellActions): Terms => {
     const terms = timed("value", () => stateTerms(post, { ...ctx, cell }));
     return { total: terms.total, lasting: terms.megaLasting, keep: terms.megaKeep };
@@ -259,7 +269,7 @@ export function createCellEvaluator(deps: EvaluatorDeps): CellEvaluator {
       const result = outcomesOf(world.input);
       if (result.status === "issues") { notes.push(`The turn engine reported issues: ${issueText(result.issues)}`); return null; }
       if (result.status === "not-estimated") { notes.push(result.reason); return null; }
-      for (const outcome of result.outcomes) total = addTerms(total, termsOf(postOf(outcome, result.start, world, cell), cell), world.weight * outcome.chance);
+      for (const outcome of result.outcomes) total = addTerms(total, termsOf(postOf(outcome, result, world, cell), cell), world.weight * outcome.chance);
     }
     return total;
   }

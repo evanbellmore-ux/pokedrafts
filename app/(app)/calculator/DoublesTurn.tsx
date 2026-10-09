@@ -7,8 +7,8 @@ import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 import { PointedText, type DoublesCardView } from "./DoublesCard";
 import {
-  actionTargets, factLine, hitLine, issueLines, orderFact, positionedName, rollDescription, startRowLine, stepHeading, stepMoveName, turnSummary,
-  type DoublesNames,
+  actionTargets, actsWithoutMoves, endNotEstimatedText, factLine, hitLine, issueLines, listedHits, orderFact, positionedName, residualLine, rollDescription, startRowLine,
+  stepHeading, stepMoveName, substituteLine, turnSummary, type DoublesNames,
 } from "./doubles-format";
 import type { DamageRollMode } from "./hp-preview";
 import { isConverted, rowHitRule } from "./MoveResults";
@@ -48,7 +48,8 @@ function chosenHits(runtime: BattleRuntime, cards: Record<DoublesSlotId, Doubles
 /** The 2v2 turn (data-doubles-turn): each move in Showdown order with each Pokémon it reaches, or why it is not shown. */
 export default function DoublesTurn({ runtime, names, cards, turn, blockedReason, rollMode, movesControl, magicRoom = false, onShowStep, onFixSettings }: Props) {
   const id = useId();
-  const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null);
+  // No moves chosen and nothing happens without them (no end of turn to show, no self-hit): nothing to list.
+  const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
   const live = blockedReason ?? (turn?.status !== "issues" && noMoves ? "No moves chosen." : turnSummary(turn, names, rollMode));
 
   let body: ReactNode = null;
@@ -77,6 +78,10 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
       </div>
     );
   } else if (turn?.status === "ready") {
+    // HP lost outside any step (a No-move Pokémon's confusion self-hit), in slot order.
+    const losses = DOUBLES_SLOTS.flatMap((slot) => (turn.hp[slot]?.losses ?? []).map((loss) => ({ slot, loss })));
+    const end = turn.endOfTurn;
+    const divided = turn.steps.length > 0 || losses.length > 0 ? "border-t border-line pt-2" : "";
     body = (
       <div className="space-y-2">
         {/* No step: every Pokémon with a move has fainted or has no target (the facts say which). */}
@@ -85,6 +90,8 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
             const view = cards[step.slot];
             const move = stepMoveName(step, runtime);
             const order = orderFact(step.order);
+            const status = runtime.movesById.get(step.moveId)?.category === "Status";
+            const hits = listedHits(step);
             return (
               <li key={`${step.slot}-${step.moveId}`} data-doubles-step={step.slot} className="min-w-0 border-t border-line pt-2 first:border-t-0 first:pt-0">
                 <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-2 gap-y-1">
@@ -95,21 +102,49 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
                 </div>
                 {order && <p className="mt-0.5 text-xs tabular-nums text-muted">{order}</p>}
                 {[...step.skipped, ...step.facts].map((fact, factIndex) => <p key={factIndex} className="mt-0.5 wrap-anywhere text-xs text-muted">{factLine(fact)}</p>)}
-                {step.hits.length > 0 && (
+                {hits.length > 0 && (
                   <ul aria-label={`${move} hits`} className="mt-1 space-y-1">
-                    {step.hits.map((hit) => (
-                      <li key={hit.slot} data-doubles-hit={hit.slot} className="wrap-anywhere text-xs tabular-nums text-text">
-                        {hitLine(hit, names, chosenHits(runtime, cards, step.slot, step.moveId, hit.slot, hit.row, magicRoom))}
-                        {hit.facts.map((fact, factIndex) => <span key={factIndex} className="block text-muted">{factLine(fact)}</span>)}
-                      </li>
-                    ))}
+                    {hits.map((hit) => {
+                      // A calculated hit that also met a Substitute: the Substitute's line, then the hits that reached the Pokémon.
+                      const sub = hit.kind === "calculated" ? substituteLine(hit, names) : null;
+                      return (
+                        <li key={hit.slot} data-doubles-hit={hit.slot} className="wrap-anywhere text-xs tabular-nums text-text">
+                          {sub && <span data-doubles-substitute-hit={hit.slot} className="block">{sub}</span>}
+                          {hitLine(hit, names, chosenHits(runtime, cards, step.slot, step.moveId, hit.slot, hit.row, magicRoom), status)}
+                          {hit.facts.map((fact, factIndex) => <span key={factIndex} className="block text-muted">{factLine(fact)}</span>)}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </li>
             );
           })}
         </ol>}
-        {turn.facts.length > 0 && <ul aria-label="Turn facts" className={`space-y-1 text-xs text-muted ${turn.steps.length ? "border-t border-line pt-2" : ""}`}>{turn.facts.map((fact, index) => <li key={index} className="wrap-anywhere">{fact}</li>)}</ul>}
+        {losses.length > 0 && (
+          <ul className={`space-y-1 text-xs tabular-nums text-text ${turn.steps.length ? "border-t border-line pt-2" : ""}`}>
+            {losses.map(({ slot, loss }, index) => <li key={index} data-doubles-loss={slot} className="wrap-anywhere">{factLine(loss)}</li>)}
+          </ul>
+        )}
+        {end.status === "not-estimated" ? (
+          <p data-doubles-end-not-estimated className={`wrap-anywhere text-xs font-semibold text-text ${divided}`}>{endNotEstimatedText(end.reason)}</p>
+        ) : (end.residuals.length > 0 || end.facts.length > 0) && (
+          <div data-doubles-end className={divided}>
+            <h4 id={`${id}-end`} className="text-xs font-semibold text-muted">End of turn</h4>
+            {end.residuals.length > 0 && (
+              <ul aria-labelledby={`${id}-end`} className="mt-1 space-y-1 text-xs tabular-nums text-text">
+                {end.residuals.map((residual, index) => (
+                  <li key={index} data-doubles-residual={residual.slot} className="wrap-anywhere">
+                    {residualLine(residual, names)}
+                    {residual.facts.map((fact, factIndex) => <span key={factIndex} className="block text-muted">{factLine(fact)}</span>)}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {end.facts.length > 0 && <ul aria-label="End-of-turn facts" className="mt-1 space-y-1 text-xs text-muted">{end.facts.map((fact, index) => <li key={index} className="wrap-anywhere">{fact}</li>)}</ul>}
+          </div>
+        )}
+        {turn.facts.length > 0 && <ul aria-label="Turn facts" className={`space-y-1 text-xs text-muted ${divided}`}>{turn.facts.map((fact, index) => <li key={index} className="wrap-anywhere">{fact}</li>)}</ul>}
       </div>
     );
   }

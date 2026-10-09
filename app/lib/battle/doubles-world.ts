@@ -1,4 +1,4 @@
-import type { DoublesSideId, DoublesSlotId } from "./doubles-types";
+import { allyOf, slotSide, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
 import type { BattleBuild, BattleConditions } from "./types";
 
 // The doubles turn's worlds (SPEC §4.3): one discrete state of the turn with its mass, and the Pokémon's HP as factors (a
@@ -13,6 +13,80 @@ const SPLIT_TOLERANCE = 1e-12;
 export type Factor = { slots: DoublesSlotId[]; table: Map<number, number> };
 
 export type ProtectKind = "protect" | "kingsshield" | "spikyshield" | "banefulbunker" | "obstruct" | "silktrap" | "burningbulwark";
+
+/**
+ * Moves-phase volatiles (status-eot SPEC §3.4; ADDENDUM §3.4). Track A (doubles-status.ts) writes them, Track E the
+ * Substitute's hits and the Ally Switch counter; the end of turn reads only sleep (Bad Dreams reads build.status).
+ * Values are immutable: replace a field, never mutate one in place (cloneMon copies the object shallowly).
+ */
+export type MoveVolatiles = {
+  /** With build.status "slp": the counter's total decrease (attempts × 1, Early Bird × 2), and whether Rest put it to sleep. */
+  sleep?: { elapsed: number; rest: boolean };
+  /** Champions, with build.status "frz": BeforeMoves spent frozen. */
+  freeze?: { attempts: number };
+  /** Confused: BeforeMoves spent confused, and the least duration (T uniform on min..5; Axe Kick's 3); fresh: attempts 0. */
+  confusion?: { attempts: number; min: 2 | 3 };
+  taunt?: true;
+  /** The move Disable stops (set only when it can still act). */
+  disabled?: string;
+  /** The move Encore holds it to (E2 "encore"; it changes no action this turn). */
+  encore?: string;
+  imprisoning?: true;
+  /** Its Substitute's HP left: from carried.substitute or this turn's Substitute; hits lower it (Track E); deleted at 0. */
+  substitute?: number;
+  endure?: true;
+  /** Its move this turn passed BeforeMove (lastMove for later reads). */
+  usedMove?: string;
+  /** Scarlet/Violet, Champions: the Ally Switch counter (carried, or 3 after a first use this turn). */
+  allySwitch?: number;
+  /**
+   * Berserk or Anger Shell after a confusion self-hit (data/abilities.ts berserk, angershell onDamage: checkedBerserk false
+   * for an effect of type Move): the TryEatItem of its healing Berry fails (Sitrus, Oran, the Figy family; not Berry Juice,
+   * which is used, not eaten) until damage from something other than a move resets it (doubles-turn.ts afterLoss).
+   */
+  berryLocked?: true;
+  /**
+   * Its accuracy and evasion stages from this turn (sim/pokemon.ts boosts.accuracy, boosts.evasion; no input carries them,
+   * so they start at 0): written by doubles-status.ts applyBoosts, cleared by Haze and White Herb. The calculations do not
+   * read them: Stored Power, Power Trip and Punishment are not estimated while one is positive (doubles-turn.ts applyStep).
+   */
+  stages?: { accuracy?: number; evasion?: number };
+};
+
+/**
+ * End-of-turn state (one writer per field: A = status engine, B = end-of-turn engine, as marked; C16's Rapid Spin and
+ * Mortal Spin and a Substitute starting may also end leechSeed and trap). Values are immutable, as MoveVolatiles'.
+ */
+export type EotState = {
+  /** A (setStatus "tox": 0) / carried. */
+  toxic?: number;
+  /** A / carried: the position of the seeder (Leech Seed's sourceSlot). */
+  leechSeed?: DoublesSlotId;
+  /** B (trapping damaging moves) / carried: the trapper (a Pokémon), the divisor (Binding Band 6) and the move that set it (the residual's name). */
+  trap?: { source: DoublesSlotId; divisor: 6 | 8; move?: string };
+  /** B / carried. */
+  saltCure?: true;
+  /** A / carried. */
+  aquaRing?: true; ingrain?: true; curse?: true;
+  /** B / carried: the Pokémon whose Syrup Bomb it is. */
+  syrupBomb?: DoublesSlotId;
+  /** A (2: this turn's) / carried (1: falls asleep at this end of turn). */
+  yawn?: 1 | 2;
+  /** A (4: this turn's Perish Song) / carried (1–3). */
+  perish?: number;
+  /** Carried: a Wish landing on this slot (a position) at this end of turn, its HP. */
+  wish?: number;
+  /** A. */
+  roosted?: true; magnetRise?: true;
+  /** B. */
+  smackedDown?: true;
+  /** B (Psychic Noise). */
+  healBlock?: true;
+  /** B (charge turn: Dig/Dive vs Fly/Bounce/Phantom Force/Shadow Force). */
+  hidden?: "sheltered" | "semi";
+  /** Carried. */
+  futureMove?: string; cudChew?: true;
+};
 
 /** Everything about one Pokémon in a world but its HP (which is in the factors). */
 export type MonState = {
@@ -48,9 +122,19 @@ export type MonState = {
   ownHP?: true;
   /** Throat Chop hit it this turn (data/moves.ts throatchop condition): no sound move. */
   throatChopped?: true;
+  /** Moves-phase volatiles (Track A, Track E). */
+  vol: MoveVolatiles;
+  /** End-of-turn state (Track A, Track B). */
+  eot: EotState;
 };
 
-export type SideState = { reflect: boolean; lightScreen: boolean; auroraVeil: boolean; tailwind: boolean; wideGuard: boolean; quickGuard: boolean; faintedThisTurn: number };
+export type SideState = {
+  reflect: boolean; lightScreen: boolean; auroraVeil: boolean; tailwind: boolean; wideGuard: boolean; quickGuard: boolean; faintedThisTurn: number;
+  /** Safeguard up on the side (Track A). */
+  safeguard: boolean;
+  /** Hazard move ids that landed on the side this turn, in order (Track A; Magic Bounce sends them back). Replace the array, never push into it. */
+  hazards: string[];
+};
 export type FieldState = Pick<BattleConditions, "weather" | "terrain" | "gravity" | "trickRoom" | "wonderRoom" | "magicRoom">;
 
 /** One queued action (sim/battle-queue.ts): a move, or "No move" (a Splash-like pass), with its fractional priority fixed at queue time. */
@@ -63,6 +147,12 @@ export type PendingAction = {
   fractional: number;
   /** Generation 7: the priority (fractional included) and Speed sorted at the turn's start, frozen for the turn. */
   frozen?: { priority: number; speed: number };
+  /**
+   * The queue's order key (sim/battle-queue.ts:277-287 comparePriority, order ascending first): absent = 200, a move;
+   * After You 3 (the action next, data/moves.ts:195-216), Quash 201 (last, data/moves.ts:14455-14472; gen 7's
+   * data/mods/gen7/moves.ts:750-766 inserts it before the residual, also last).
+   */
+  order?: number;
 };
 
 export type World = {
@@ -81,9 +171,47 @@ export type World = {
    * Ally, Foe and Any handlers no longer run (sim/pokemon.ts allies() needs HP; sim/battle.ts findEventHandlers).
    */
   ghost?: DoublesSlotId;
+  /** Pokémon that left during the moves with no later action (S moves, U-turn, Eject Button...): the end of turn is not estimated (Track B: doubles-eot.ts leaving). */
+  leaving?: DoublesSlotId[];
+  /** An end-of-turn-level guard set during the moves (an L move as the last action...): the end of turn is not estimated with this reason. */
+  endGuard?: string;
+  /** Ally Switch: this side's two Pokémon stand swapped (PS/sim/battle.ts:1588-1607). */
+  swapped?: Partial<Record<DoublesSideId, true>>;
+  /** During one action: the Pokémon whose item Trick or Switcheroo moved (eventGuards: no Symbiosis, T11). Cleared after the action. */
+  itemsMoved?: DoublesSlotId[];
+  /**
+   * During one action (its BeforeMove included): the Pokémon a boost() reached with a rise or a drop in the table its
+   * AfterBoost reads (sim/battle.ts boost: after ChangeBoost, the cap and TryBoost; accuracy and evasion included), as
+   * doubles-status.ts applyBoosts records it: Opportunist and Mirror Herb read a rise (onFoeAfterBoost), Eject Pack a
+   * drop (onAfterBoost), whatever the stage ends at. A clearBoosts (Haze) is none. `reset`: a damaging move's clearBoosts
+   * (Clear Smog) set the Pokémon's stages to 0, so the step's stage difference is no drop there. eventGuards reads and clears it.
+   */
+  boosted?: Partial<Record<DoublesSlotId, { rose?: true; fell?: true; reset?: true }>>;
+  /** During one damaging action: the Pokémon its move hit (sim/battle-actions.ts move.hitTargets), in hit order (Sparkling Aria). */
+  hitTargets?: DoublesSlotId[];
+  /**
+   * An action of the moves changed the weather (doubles-turn.ts walk): the weather up now was set this turn (or none is
+   * up), so it has its new duration (sim/field.ts setWeather) and is not the one from before the turn whose turns left
+   * the input gives (doubles-eot.ts weatherHandler).
+   */
+  weatherSet?: true;
 };
 
-const digit = (key: number, index: number) => Math.floor(key / RADIX ** index) % RADIX;
+/** Where the Pokémon that started the turn in `slot` stands now. */
+export function positionOf(w: World, slot: DoublesSlotId): DoublesSlotId {
+  return w.swapped?.[slotSide(slot)] ? allyOf(slot) : slot;
+}
+/** The Pokémon (its starting slot) standing at `position` now. In doubles the swap is its own inverse, so this is positionOf's map. */
+export function occupant(w: World, position: DoublesSlotId): DoublesSlotId {
+  return w.swapped?.[slotSide(position)] ? allyOf(position) : position;
+}
+/** A partial trap ends on `slot` (its Substitute starting: PS/data/moves.ts:18336-18339; its Rapid Spin, Mortal Spin: C16). */
+export function endTrap(w: World, slot: DoublesSlotId): void {
+  const mon = w.mons[slot];
+  if (mon?.eot.trap) mon.eot = { ...mon.eot, trap: undefined };
+}
+
+const digit =(key: number, index: number) => Math.floor(key / RADIX ** index) % RADIX;
 
 /** A slot's factor index and its digit in that factor. */
 export function locate(world: World, slot: DoublesSlotId): { factor: number; index: number } {
@@ -191,8 +319,9 @@ export function splitFactor(factor: Factor, reference = false): Factor[] {
   return [factor];
 }
 
+/** A copy of the Pokémon's state whose parts can be changed (vol and eot copied shallowly: their values are immutable). */
 export function cloneMon(mon: MonState): MonState {
-  return { ...mon, damagedBy: [...mon.damagedBy] };
+  return { ...mon, damagedBy: [...mon.damagedBy], vol: { ...mon.vol }, eot: { ...mon.eot } };
 }
 
 /** A copy of the world whose discrete parts can be changed (factors shared until replaced). */
@@ -203,6 +332,10 @@ export function cloneWorld(world: World, mass = world.mass): World {
     mass, mons, sides: { own: { ...world.sides.own }, opponent: { ...world.sides.opponent } }, field: { ...world.field },
     remaining: [...world.remaining], executed: world.executed, factors: [...world.factors], ...(world.spread ? { spread: [...world.spread] } : {}),
     ...(world.ghost ? { ghost: world.ghost } : {}),
+    ...(world.leaving ? { leaving: [...world.leaving] } : {}), ...(world.endGuard !== undefined ? { endGuard: world.endGuard } : {}),
+    ...(world.swapped ? { swapped: { ...world.swapped } } : {}), ...(world.itemsMoved ? { itemsMoved: [...world.itemsMoved] } : {}),
+    ...(world.boosted ? { boosted: { ...world.boosted } } : {}), ...(world.hitTargets ? { hitTargets: [...world.hitTargets] } : {}),
+    ...(world.weatherSet ? { weatherSet: true as const } : {}),
   };
 }
 
@@ -253,10 +386,70 @@ export function mapHP(world: World, slot: DoublesSlotId, map: (hp: number) => { 
   return out;
 }
 
+/**
+ * The world after `slot` loses an amount drawn from `dist` (loss → mass, summing to 1), convolved into its factor: `apply`
+ * maps an HP and a loss to the HP after and a tag (afterLoss-style: "fainted" or "in", a Berry eaten or not), one world
+ * per tag, each table renormalised and re-split exactly (a confusion self-hit's rolls: Track A).
+ */
+export function lossDist(world: World, slot: DoublesSlotId, dist: ReadonlyMap<number, number>, apply: (hp: number, loss: number) => { hp: number; tag: string }): { world: World; tag: string }[] {
+  const { factor } = locate(world, slot);
+  const f = world.factors[factor];
+  const byTag = new Map<string, Map<number, number>>();
+  for (const [key, mass] of f.table) {
+    const hp = hpIn(f, key, slot);
+    for (const [loss, share] of dist) {
+      const { hp: after, tag } = apply(hp, loss);
+      let table = byTag.get(tag);
+      if (!table) byTag.set(tag, table = new Map());
+      const next = withHP(f, key, slot, after);
+      table.set(next, (table.get(next) ?? 0) + mass * share);
+    }
+  }
+  const out: { world: World; tag: string }[] = [];
+  for (const [tag, table] of byTag) {
+    const share = normalise(table);
+    if (share <= 0) continue;
+    const next = cloneWorld(world, world.mass * share);
+    next.factors[factor] = { slots: f.slots, table };
+    next.factors.splice(factor, 1, ...splitFactor(next.factors[factor]));
+    out.push({ world: next, tag });
+  }
+  return out;
+}
+
+/**
+ * The world after the HPs of `a` and `b` go through `map` together (Pain Split, Leech Seed: Track B), from their joined
+ * factors: each joint entry rewritten, one world per tag, each table renormalised and re-split exactly.
+ */
+export function mapJoint(world: World, [a, b]: readonly [DoublesSlotId, DoublesSlotId], map: (hpA: number, hpB: number) => { hp: readonly [number, number]; tag: string }): { world: World; tag: string }[] {
+  const base = cloneWorld(world);
+  const at = join(base, [a, b]);
+  const f = base.factors[at];
+  const byTag = new Map<string, Map<number, number>>();
+  for (const [key, mass] of f.table) {
+    const { hp: [toA, toB], tag } = map(hpIn(f, key, a), hpIn(f, key, b));
+    let table = byTag.get(tag);
+    if (!table) byTag.set(tag, table = new Map());
+    const next = withHP(f, withHP(f, key, a, toA), b, toB);
+    table.set(next, (table.get(next) ?? 0) + mass);
+  }
+  const out: { world: World; tag: string }[] = [];
+  for (const [tag, table] of byTag) {
+    const share = normalise(table);
+    if (share <= 0) continue;
+    const next = cloneWorld(base, world.mass * share);
+    next.factors[at] = { slots: f.slots, table };
+    next.factors.splice(at, 1, ...splitFactor(next.factors[at]));
+    out.push({ world: next, tag });
+  }
+  return out;
+}
+
 /** The discrete key two worlds must share to merge: everything but the mass and the factor tables (their partition included). */
 export function discreteKey(world: World): string {
   const partition = world.factors.map((factor) => factor.slots.join(",")).sort();
-  return JSON.stringify([world.mons, world.sides, world.field, world.remaining, world.executed, world.spread ?? null, partition]);
+  return JSON.stringify([world.mons, world.sides, world.field, world.remaining, world.executed, world.spread ?? null, partition,
+    world.swapped ?? null, world.endGuard ?? null, world.leaving ?? null, world.weatherSet ?? null]);
 }
 
 /**

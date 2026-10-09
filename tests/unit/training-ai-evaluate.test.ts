@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
-import type { DoublesOutcome } from "@/app/lib/battle/doubles-types";
+import type { DoublesOutcome, DoublesOutcomeMon, DoublesSlotId, DoublesStart } from "@/app/lib/battle/doubles-types";
 import { createCellEvaluator, nextClock, postFromOutcome } from "@/app/(app)/training/ai/evaluate";
 import { megaOutlook } from "@/app/(app)/training/ai/mega";
 import { damageRows, worthOf } from "@/app/(app)/training/ai/rows";
@@ -76,20 +76,22 @@ describe("cell evaluation", () => {
 
   it("rolls out an unmodelled status move: stageASamples in stage A, topped up to stageBSamples in stage B, within the budget", () => {
     const budget = { ...DEFAULT_BUDGET, rolloutSamples: 9 };
-    const { evaluator } = setup([garchomp, charizard, kingambit, venusaur, rotom], budget);
+    // Worry Seed is not modelled (status-eot SPEC §2.2 L) and comes before Rotom's move: the turn is not estimated.
+    const seeder: MonSpec = { ...venusaur, moves: ["gigadrain", "sludgebomb", "worryseed", "protect"], points: { hp: 2, spa: 32, spe: 32 } };
+    const { evaluator } = setup([garchomp, charizard, kingambit, seeder, rotom], budget);
     const cell: CellActions = {
       opponent: { "opponent-left": { kind: "move", moveId: "dragonclaw", target: "own-right" }, "opponent-right": { kind: "move", moveId: "airslash", target: "own-left" } },
-      own: { "own-left": { kind: "move", moveId: "sleeppowder", target: "opponent-left" }, "own-right": { kind: "move", moveId: "willowisp", target: "opponent-left" } },
+      own: { "own-left": { kind: "move", moveId: "worryseed", target: "opponent-left" }, "own-right": { kind: "move", moveId: "willowisp", target: "opponent-left" } },
     };
     const first = evaluator.evaluate(cell, "A")!;
     expect(first.method).toBe("rollout");
     expect(first.samples).toBe(DEFAULT_BUDGET.stageASamples);
     const topped = evaluator.evaluate(cell, "B")!;
     expect(topped.samples).toBe(DEFAULT_BUDGET.stageBSamples);
-    const other = evaluator.evaluate({ ...cell, own: { ...cell.own, "own-left": { kind: "move", moveId: "gigadrain", target: "opponent-left" } } }, "A")!;
+    const other = evaluator.evaluate({ ...cell, own: { ...cell.own, "own-right": { kind: "move", moveId: "hydropump", target: "opponent-left" } } }, "A")!;
     expect(other.samples).toBe(1);
     expect(evaluator.used.rolloutSamples).toBe(9);
-    expect(evaluator.evaluate({ ...cell, own: { ...cell.own, "own-left": { kind: "move", moveId: "sludgebomb", target: "opponent-left" } } }, "A")).toBeNull();
+    expect(evaluator.evaluate({ ...cell, own: { ...cell.own, "own-right": { kind: "move", moveId: "thunderbolt", target: "opponent-left" } } }, "A")).toBeNull();
   });
 
   it("drops a cell world 0 rejects and returns null once the budget is spent", () => {
@@ -109,7 +111,7 @@ describe("cell evaluation", () => {
 
 describe("the field clock after a turn", () => {
   const outcome = (changes: Partial<DoublesOutcome> = {}): DoublesOutcome => ({
-    chance: 1, mons: {}, allFainted: { own: 0, opponent: 0 },
+    chance: 1, mons: {}, allFainted: { own: 0, opponent: 0 }, positions: { own: "kept", opponent: "kept" },
     sides: { own: { reflect: false, lightScreen: false, auroraVeil: false, tailwind: false, faintedThisTurn: 0 }, opponent: { reflect: false, lightScreen: false, auroraVeil: false, tailwind: true, faintedThisTurn: 0 } },
     field: { weather: "Sun", terrain: "", gravity: false, trickRoom: true, wonderRoom: false, magicRoom: false }, ...changes,
   });
@@ -128,5 +130,50 @@ describe("the field clock after a turn", () => {
     expect(ended.weather).toEqual({ id: "Rain", turns: 4 });
     expect(ended.rooms.trickRoom).toBe(0);
     expect(nextClock(emptyClock(), outcome(), { own: ["stealthrock", "spikes"] }).sides.own).toMatchObject({ stealthRock: true, spikes: 1 });
+  });
+});
+
+describe("an E2 outcome as the next state (status-eot SPEC §6, ADDENDUM §6)", () => {
+  const view = makeView([garchomp, charizard, kingambit, venusaur, rotom]);
+  const base = postOf(view);
+  const keyAt = (slot: DoublesSlotId) => view.mons.find((mon) => mon.slot === slot)!.key;
+  const world: EngineWorld = { weight: 1, input: { pokemon: {} } as EngineWorld["input"], keys: { "own-left": keyAt("own-left"), "own-right": keyAt("own-right"), "opponent-left": keyAt("opponent-left"), "opponent-right": keyAt("opponent-right") }, notes: [] };
+  const start = Object.fromEntries((["own-left", "own-right", "opponent-left", "opponent-right"] as const).map((slot) => [slot, { hp: 100, maximum: 200 }])) as DoublesStart;
+  const mon = (slot: DoublesSlotId, extra: Partial<DoublesOutcomeMon> = {}): DoublesOutcomeMon => ({ hp: [{ hp: 100, chance: 1 }], build: view.mons.find((each) => each.slot === slot)!.build, protected: false, moved: true, ...extra });
+  const outcome = (changes: Partial<DoublesOutcome> = {}): DoublesOutcome => ({
+    chance: 1, allFainted: { own: 0, opponent: 0 }, positions: { own: "kept", opponent: "kept" },
+    mons: { "own-left": mon("own-left"), "own-right": mon("own-right"), "opponent-left": mon("opponent-left", { volatiles: ["leechseed", "yawn"], perishCount: 2 }), "opponent-right": mon("opponent-right", { sleepTurns: 1.5 }) },
+    sides: { own: { reflect: false, lightScreen: false, auroraVeil: false, tailwind: false, faintedThisTurn: 0, hazards: ["stealthrock"] }, opponent: { reflect: false, lightScreen: false, auroraVeil: false, tailwind: false, faintedThisTurn: 0 } },
+    field: { weather: "", terrain: "", gravity: false, trickRoom: false, wonderRoom: false, magicRoom: false }, ...changes,
+  });
+  const cell: CellActions = { own: {}, opponent: {} };
+  const residual = { [keyAt("own-left")]: -25 };
+
+  it("applied: the HP as E2 gives it, no residual pass read; otherwise the residual pass is added", () => {
+    let read = 0;
+    const lazy = () => { read++; return residual; };
+    const applied = postFromOutcome({ view, base, residual: lazy, outcome: outcome(), start, world, cell, endOfTurn: "applied" });
+    expect(read).toBe(0);
+    expect(applied.endOfTurn).toBe("applied");
+    expect(applied.mons.find((each) => each.key === keyAt("own-left"))!.hp).toEqual([{ hp: 100, chance: 1 }]);
+    const estimated = postFromOutcome({ view, base, residual: lazy, outcome: outcome(), start, world, cell, endOfTurn: { notEstimated: "Spidops switches out: the replacement is not known." } });
+    expect(read).toBe(1);
+    expect(estimated.endOfTurn).toBe("estimated");
+    expect(estimated.mons.find((each) => each.key === keyAt("own-left"))!.hp).toEqual([{ hp: 75, chance: 1 }]);
+  });
+
+  it("carries the outcome's volatiles, perish count and sleep counter, and the hazards that landed", () => {
+    const post = postFromOutcome({ view, base, residual: {}, outcome: outcome(), start, world, cell, endOfTurn: "applied" });
+    expect(post.mons.find((each) => each.key === keyAt("opponent-left"))).toMatchObject({ volatiles: ["leechseed", "yawn"], perishCount: 2 });
+    expect(post.mons.find((each) => each.key === keyAt("opponent-right"))).toMatchObject({ volatiles: [], sleepTurns: 1.5 });
+    expect(post.clock.sides.own.stealthRock).toBe(true);
+    expect(post.clock.sides.opponent.stealthRock).toBe(false);
+  });
+
+  it("a side whose two Pokémon swapped (Ally Switch) has their slots exchanged", () => {
+    const post = postFromOutcome({ view, base, residual: {}, outcome: outcome({ positions: { own: "kept", opponent: "swapped" } }), start, world, cell, endOfTurn: "applied" });
+    expect(post.mons.find((each) => each.key === keyAt("opponent-left"))!.slot).toBe("opponent-right");
+    expect(post.mons.find((each) => each.key === keyAt("opponent-right"))!.slot).toBe("opponent-left");
+    expect(post.mons.find((each) => each.key === keyAt("own-left"))!.slot).toBe("own-left");
   });
 });

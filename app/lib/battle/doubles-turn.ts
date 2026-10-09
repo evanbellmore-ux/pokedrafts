@@ -3,36 +3,42 @@ import {
   type DoublesGas, type DoublesSettle, type MatchupResult, type SettledMatchup, type TurnMove,
 } from "./calculate";
 import {
-  ABILITY_REPLACERS, ABSORBING, ANCHORING_ABILITIES, BUSTED_FORMS, RESIST_BERRIES, CALLING_MOVES, CHARGE_TURN_MOVES, CONFUSING_BERRIES, CONFUSING_MOVES, DAMP_MOVES, DANCE_MOVES, DRAG_MOVES,
-  FACE_REACTIVE_ITEMS, FACE_UNSAFE_MOVES, FAINT_REACTIONS, FIELD_MOVES, FUTURE_MOVES, GAS_CHANGING_MOVES,
-  GMAX_EFFECTS, GRAVITY_MOVES, HP_STATUS_MOVES, IGNORE_ABILITY_MOVES, KO_BOOSTS, MODELLED_STATUS_MOVES, MOLD_BREAKERS, PLEDGE_MOVES, PRESENCE_THIRD_PARTY, SELF_DESTRUCT_MOVES,
+  ABILITY_REPLACERS, ABSORBING, ANCHORING_ABILITIES, BUSTED_FORMS, RESIST_BERRIES, CALLING_MOVES, CHARGE_TURN_MOVES, DAMP_MOVES, DANCE_MOVES, DRAG_MOVES,
+  FACE_REACTIVE_ITEMS, FACE_UNSAFE_MOVES, FAINT_REACTIONS, FUTURE_MOVES,
+  GMAX_EFFECTS, IGNORE_ABILITY_MOVES, KO_BOOSTS, MOLD_BREAKERS, PLEDGE_MOVES, PRESENCE_THIRD_PARTY, SELF_DESTRUCT_MOVES,
   TYPE_LOSS_MOVES, VOLATILE_SECONDARY_MOVES,
-  NO_EFFECT_MOVES, PENDING_MOVES, PRESENCE_MOVES, PROTECT_CONTACT, PROTECT_MOVES, RANDOM_STATUS_MAX_MOVES, REASONS, REDIRECT_ABILITIES,
-  SEMI_INVULNERABLE_MOVES, SIDE_MOVES, STRONG_WEATHERS, SWITCH_MOVES, TERRAIN_MOVES, TRACKING_ABILITIES, TRACKS_TARGET_MOVES, WEATHER_MOVES,
+  PENDING_MOVES, PRESENCE_MOVES, PROTECT_CONTACT, PROTECT_MOVES, RANDOM_STATUS_MAX_MOVES, REASONS, REDIRECT_ABILITIES,
+  SEMI_INVULNERABLE_MOVES, STRONG_WEATHERS, SWITCH_MOVES, TRACKING_ABILITIES, TRACKS_TARGET_MOVES,
 } from "./doubles-actions";
 import {
   allyOf, DOUBLES_SLOTS, doublesNames, foesOf, SHOWDOWN_POSITION, slotSide, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
   type DoublesSlotId, type DoublesStart, type DoublesStartRow, type DoublesStep, type DoublesTurnInput, type DoublesTurnResult,
-  type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult,
+  type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesEndOfTurn,
 } from "./doubles-types";
 import {
-  cloneWorld, condition, entryCount, hpIn, join, mapHP, marginal, mergeWorlds, pointFactor, RADIX, splitFactor,
-  type Factor, type MonState, type PendingAction, type SideState, type World,
+  cloneWorld, condition, entryCount, hpIn, join, mapHP, marginal, mergeWorlds, occupant, pointFactor, positionOf, RADIX, splitFactor,
+  type EotState, type Factor, type MonState, type MoveVolatiles, type PendingAction, type SideState, type World,
 } from "./doubles-world";
+import * as statusHooks from "./doubles-status";
+import * as eotHooks from "./doubles-eot";
+import * as positionHooks from "./doubles-positions";
+import * as itemHooks from "./doubles-items";
+import * as substituteHooks from "./doubles-substitute";
 import { getBerryResistType } from "@smogon/calc/dist/items";
 import {
-  berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_STAT_BERRIES, stolenEat, UNNERVES,
+  berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, BERSERK_BERRIES, eatBerry, HEALING_BERRIES, KLUTZ_IGNORED_ITEMS, LANSAT_STARF, ownMoveId, PINCH_STAT_BERRIES, stolenEat, UNNERVES,
   type Berry, type TurnUnnerve,
 } from "./hit-loop";
 import { neutralEffectiveness } from "./engine-corrections.cjs";
 import { isMaxActive } from "./mechanics";
-import { getBuildStats, NATURES, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
+import { getBuildStats, PRIORITY_SHIELD_ABILITIES, validateBuild, validateConditions } from "./model";
 import type { BattleRuntime } from "./runtime";
-import { everyUseStatus, MAX_MOVE_EFFECTS, statMove } from "./stat-moves";
-import type { BattleBuild, BattleConditions, ChampionsMove, CombatStat, MoveContext, MoveDamageResult } from "./types";
+import { accuracyDrop, everyUseStatus, MAX_MOVE_EFFECTS, statMove } from "./stat-moves";
+import type { StatusStages } from "./status-table";
+import type { BattleBuild, BattleConditions, BuildIssue, ChampionsMove, CombatStat, MoveContext, MoveDamageResult } from "./types";
 import { doublesNoFoeLeft, doublesTargetRule } from "./doubles-targets";
 import {
-  buildAt, createTurnSearch, prepareUses, uncertain, USES_REFERENCE, type CalcTrace, type Mode, type TurnSide, type TurnStepEntry, type TurnStepOutcome, type UsesSearch,
+  buildAt, createTurnSearch, prepareUses, uncertain, USES_REFERENCE, type CalcTrace, type Mode, type TurnSide, type TurnStepEntry, type TurnStepOutcome, type TurnStepPart, type UsesSearch,
 } from "./uses-to-ko";
 
 // The 2v2 tab's turn (SPEC §4): every queued action in pinned Showdown c23d2e94's order, each random event branched
@@ -40,6 +46,12 @@ import {
 // exact or the turn is not estimated with a fact reason (SPEC §2.2). Extension points for the rest of §2.2's "In" list:
 // statusMove (Tailwind, Trick Room, Gravity, weather, terrain, screens), afterMove (Moxie and the other faint reactions,
 // the Explosion family), contextFor, presenceGuards/PENDING_MOVES (each guard removed where a mechanic is modelled).
+//
+// Status moves and end of turn (scripts/.cache/calc-audit/status-eot/design SPEC.md §3.5, ADDENDUM.md §3.5): this file
+// is the kernel. It hands a TurnKernel (closures over one walk's Ctx) to the hook modules, which own the mechanics:
+// doubles-status.ts (Track A: BeforeMove, status moves), doubles-eot.ts (Track B: the end of turn), doubles-positions.ts,
+// doubles-items.ts and doubles-substitute.ts (Track E: Ally Switch, Trick, hits into a Substitute). The hook points are
+// listed in scripts/.cache/calc-audit/status-eot/build/STEP0.md; after Step 0 only the integrator edits this file.
 
 /** Test-only (SPEC §8.3): no factor splitting, no mixture merges, no memoised searches; with USES_REFERENCE, no shared calculations. */
 export const DOUBLES_REFERENCE = { on: false };
@@ -67,17 +79,30 @@ const SCREEN_BREAKERS = new Set(["brickbreak", "psychicfangs", "ragingbull"]);
 /** Moves that cost their user half its maximum HP as they hit (data/moves.ts mindblown, steelbeam, chloroblast). */
 const SELF_COST_MOVES = new Set(["mindblown", "steelbeam", "chloroblast"]);
 
-type HitStats = {
+/** One target's statistics over a step (the "all" walk): DoublesHit is assembled from it. */
+export type HitStats = {
   reached: number; ko: number; calculated: number; blocked: number; noDamage: number;
+  /** Mass in which a status move reached it and acted (DoublesHit kind "effect"; Track A). */
+  effect: number;
+  /** The least and the most HP a status move changed on it (DoublesHit.change; Track A), or null. */
+  change: { min: number; max: number } | null;
+  /** Hits that met its Substitute (kernel.subStat; DoublesHit.substitute): their mass, the mass in which it broke, the HP it lost. */
+  sub: { mass: number; breaks: number; min: number; max: number };
   /** The calculations met, by their damage (rolls, hits and power), and each step's first calculation, by its row. */
   met: Map<string, { row: MoveDamageResult; mass: number }>; firsts: Map<string, { row: MoveDamageResult; mass: number }>;
   facts: Map<string, number>;
 };
-type StepStats = {
+/** One action's statistics over the turn (the "all" walk): DoublesStep is assembled from it. */
+export type StepStats = {
   slot: DoublesSlotId; moveId: string; order: Map<number, number>; moves: number; positionSum: number; positionMass: number;
   skipped: Map<string, number>; facts: Map<string, number>; hits: Map<DoublesSlotId, HitStats>; effectiveName?: string; effectiveType?: string;
 };
-type SearchEntry = { row: MoveDamageResult; search: UsesSearch | null; follow: boolean; trace?: CalcTrace };
+/** One pair's calculation and its turn search (searchFor). */
+export type SearchEntry = { row: MoveDamageResult; search: UsesSearch | null; follow: boolean; trace?: CalcTrace };
+/** The move a Pokémon uses this turn, resolved (calculate.ts resolveTurnMove's "move" kind). */
+export type TurnMoveInfo = Extract<TurnMove, { kind: "move" }>;
+/** One child world of a pair's step (applyStep): its hits on the target (`landed`) and whether the target was knocked out. */
+export type StepChild = { world: World; landed: number; knocked: boolean };
 type Memo = {
   searches: Map<string, SearchEntry>; priorities: Map<string, number | { reason: string }>; speeds: Map<string, number>;
   moves: Map<string, TurnMove>; rows: Map<string, MoveDamageResult>; calculations: number;
@@ -98,6 +123,179 @@ type Ctx = {
   targetless: Set<DoublesSlotId>;
   /** Neutralizing Gas on the field from the turn's start (calculate.ts DoublesGas), or null. */
   gas: DoublesGas | null;
+  /** The "all" walk: HP lost outside any step (kernel.lossFact; DoublesHP.losses), by slot and text. */
+  losses: Map<DoublesSlotId, Map<string, number>>;
+  /** The "all" walk: turn facts found during the walk (kernel.turnFact), in first-found order. */
+  walkFacts: Set<string>;
+  /** The hook modules' view of this context (kernelOf). */
+  kernel?: TurnKernel;
+  /** The "all" walk met a certain critical hit (applyStep): the turn's hit rule says so. */
+  certainCrit?: true;
+};
+
+/**
+ * The turn's kernel (status-eot SPEC §3.5, ADDENDUM §3.5): closures over one walk's private context. The hook modules
+ * (doubles-status.ts, doubles-eot.ts, doubles-positions.ts, doubles-items.ts, doubles-substitute.ts) receive it and import
+ * only this type. Every helper is the one this file uses itself, so a hook reads and changes the world as the turn does.
+ */
+export type TurnKernel = {
+  // ---- Context ----
+  readonly input: DoublesTurnInput;
+  readonly runtime: BattleRuntime;
+  /** doublesNames: a species name, " (your left)" added to duplicates; "" for an empty slot. */
+  readonly names: Record<DoublesSlotId, string>;
+  /** Each slot's engine maximum HP (Dynamax HP while Dynamaxed) and base maximum HP. */
+  readonly hp: Record<DoublesSlotId, { maxHP: number; baseMaxHP: number }>;
+  readonly gen7: boolean;
+  readonly champions: boolean;
+  /** "all": every outcome; "lowest" / "highest": the roll walks. */
+  readonly mode: Mode;
+  /** DOUBLES_REFERENCE.on: no factor splits, no mixture merges, no memoised searches (tie shortcuts off). */
+  readonly reference: boolean;
+  /** This walk records the turn's statistics (calculateDoublesTurn's "all" walk): steps, hits, losses, turn facts. */
+  readonly recording: boolean;
+  /** Neutralizing Gas on the field from the turn's start (calculate.ts DoublesGas), or null. */
+  readonly gas: DoublesGas | null;
+  /** The count budgets (SPEC §9): over one is REASONS.tooMany. */
+  readonly budget: Readonly<{ worlds: number; entries: number; calculations: number }>;
+  /** The abilities and items a weather or terrain change would change (searchFor's fieldSettled, fieldGuard). */
+  readonly fieldSettledAbilities: ReadonlySet<string>;
+  readonly fieldSettledItems: ReadonlySet<string>;
+  /** The slot's move has no target because both foe slots are empty (doublesNoFoeLeft). */
+  targetless(slot: DoublesSlotId): boolean;
+  moveName(id: string): string;
+  abilityName(id: string): string;
+  itemName(id: string): string;
+  // ---- World state ----
+  alive(w: World, slot: DoublesSlotId): boolean;
+  isFoe(a: DoublesSlotId, b: DoublesSlotId): boolean;
+  /** A Pokémon fainting (faint count, Soul-Heart, a strong weather ending, gas, Receiver guard); `byHit`: a hit a step counts. */
+  faint(w: World, slot: DoublesSlotId, byHit?: boolean): void;
+  /** Its Speed in this world as the turn sorts it (Trick Room, Tailwind, paralysis, stages, items; memoised). */
+  speedOf(w: World, slot: DoublesSlotId): number;
+  /** A build's types (a Terastallized one's Tera Type but Stellar). */
+  typesOf(build: BattleBuild): readonly string[];
+  /** sim/pokemon.ts isGrounded: Gravity, Ingrain, Smack Down, Iron Ball; then not Flying (unless Roosted), Levitate, Magnet Rise, Air Balloon. */
+  grounded(w: World, slot: DoublesSlotId): boolean;
+  itemWorks(w: World, build: BattleBuild): boolean;
+  /** The field's weather as effectiveWeather reads it (none while a living Cloud Nine or Air Lock holder suppresses it). */
+  effectiveWeather(w: World): BattleConditions["weather"];
+  /** A living Pokémon still has a damaging move queued. */
+  laterDamaging(w: World): boolean;
+  /** A living Pokémon still has an action queued. */
+  laterAction(w: World): boolean;
+  occupant(w: World, position: DoublesSlotId): DoublesSlotId;
+  positionOf(w: World, slot: DoublesSlotId): DoublesSlotId;
+  /** Powder immunity (Grass, Overcoat, Safety Goggles). */
+  powderImmune(w: World, slot: DoublesSlotId): boolean;
+  /** Neutralizing Gas ending with `slot` (not estimated while a Pokémon it suppressed is still in). */
+  gasEnds(w: World, slot: DoublesSlotId): void;
+  /** Whether a Pokémon with Unburden-free Berries is stopped from eating (a living foe's Unnerve or As One). */
+  berryStopped(w: World, slot: DoublesSlotId): boolean;
+  // ---- Moves ----
+  breaks(w: World, attacker: DoublesSlotId, target: DoublesSlotId, info: TurnMoveInfo): boolean;
+  /** The integer priority an action is used with in this world (no fractional part). */
+  priorityOf(w: World, action: PendingAction): number;
+  /** The move `slot` uses (Z-Move and Max Move conversion), memoised. */
+  moveInfo(w: World, slot: DoublesSlotId, moveId: string, context: MoveContext | undefined): TurnMove;
+  /** The type the move has used against `target` (after ModifyType). */
+  usedType(w: World, attacker: DoublesSlotId, moveId: string, target: DoublesSlotId, info: TurnMoveInfo, context: MoveContext | undefined): string;
+  /** The dex target type the move is used with in this world (a Z-Move's own, a Max Move's, Expanding Force's spread). */
+  usedTargetType(w: World, attacker: DoublesSlotId, move: ChampionsMove, info: TurnMoveInfo): string;
+  /** The targets a move reaches in this world, with the worlds a random target splits into (positions included). */
+  resolveTargets(w: World, action: PendingAction, info: TurnMoveInfo): Resolution[];
+  /** The redirection that takes the move (a tie between two holders is not estimated), or null. */
+  redirect(w: World, attacker: DoublesSlotId, target: DoublesSlotId, info: TurnMoveInfo, moveId: string, context: MoveContext | undefined): Redirection | null;
+  /** Spread targets in Showdown's order: the adjacent ally first, then the foes by position. */
+  spreadTargets(w: World, attacker: DoublesSlotId, targetType: string): DoublesSlotId[];
+  /** Snipe Shot, Stalwart and Propeller Tail keep the chosen target. */
+  tracksTarget(w: World, attacker: DoublesSlotId, move: ChampionsMove, info: TurnMoveInfo): boolean;
+  /** Whether the move passes `target`'s protection (calculate.ts turnProtectOutcome not "blocked"). */
+  protectPasses(w: World, action: PendingAction, target: DoublesSlotId): boolean;
+  /** TryMove and Try (moveFailure: Sucker Punch, Upper Hand, Damp, the priority shields), or null. */
+  moveFailure(w: World, action: PendingAction, move: ChampionsMove, target: DoublesSlotId, priority: number, info?: TurnMoveInfo): string | null;
+  /** Queenly Majesty, Dazzling and Armor Tail of `target` or its partner against a foe's priority move (C6), or null. */
+  priorityShield(w: World, action: PendingAction, move: ChampionsMove, target: DoublesSlotId, priority: number, info: TurnMoveInfo): string | null;
+  /** TryHit for each target of a damaging move (Wide Guard, Quick Guard, protection, Telepathy, the absorbing abilities). */
+  hitChecks(w: World, action: PendingAction, info: TurnMoveInfo, targets: DoublesSlotId[], spread: boolean, priority: number): HitCheck[];
+  /** Whether `slot`'s move this turn is a focusing Focus Punch. */
+  focuses(w: World, slot: DoublesSlotId, moveId: string | null): boolean;
+  /** A 100% secondary reaches its target (Sheer Force, Shield Dust, Covert Cloak). */
+  secondaryLands(w: World, attacker: DoublesSlotId, target: DoublesSlotId, info: TurnMoveInfo): boolean;
+  // ---- HP and Berries ----
+  /** The Pokémon's HP after fixed losses outside its move's hits, its HP or pinch Berry at each Update: one world per outcome. */
+  afterLoss(w: World, slot: DoublesSlotId, ...losses: (number | number[])[]): World[];
+  /** `slot` eats a Berry that is due at an Update: one world per outcome. */
+  berryDue(w: World, slot: DoublesSlotId): World[];
+  /** Not estimated where a Berserk or Anger Shell lock (MoveVolatiles.berryLocked) keeps `slot`'s healing Berry at or under its line. */
+  lockedBerryGuard(w: World, slot: DoublesSlotId): void;
+  /** What eating an HP or pinch Berry leaves (no item, Unburden, the pinch rise, a Figy-family Berry's confusion, Lansat's focus, Starf's random rise: one world each, `w` first). */
+  ateBerry(w: World, slot: DoublesSlotId, item: string): World[];
+  /** Cheek Pouch's heal for a Berry that heals nothing itself, in place. */
+  pouchHeal(w: World, slot: DoublesSlotId): void;
+  /** The heals list (DoublesHP.heals) in the "all" walk. */
+  noteHeal(slot: DoublesSlotId, source: string, amount: number): void;
+  noteBerry(slot: DoublesSlotId, item: string, berry: Berry, hp: number): void;
+  /** The Update after an Unnerve or As One holder went: the Berries it stopped that are due. */
+  unnerveEnds(w: World, gone: DoublesSlotId[]): World[];
+  /** An absorbing ability's effect (a quarter healed, a stat rise, Flash Fire). */
+  absorbEffect(w: World, slot: DoublesSlotId, ability: string, action: PendingAction): World[];
+  /** A protecting move's effect on a blocked contact attacker. */
+  protectContact(w: World, attacker: DoublesSlotId, protector: DoublesSlotId, kind: keyof typeof PROTECT_CONTACT, info: TurnMoveInfo, followed?: boolean): World[];
+  // ---- Statistics (the "all" walk; no-ops otherwise) ----
+  step(action: PendingAction): StepStats | null;
+  stepFact(action: PendingAction, text: string, mass: number): void;
+  hitFact(action: PendingAction, slot: DoublesSlotId, text: string, mass: number): void;
+  /** Why the action did not use its move (DoublesStep.skipped). */
+  skipFact(action: PendingAction, text: string, mass: number): void;
+  hitStats(action: PendingAction, slot: DoublesSlotId): HitStats | null;
+  /** A hit's part into `target`'s Substitute: `taken` the HP it lost, `broke` whether it broke (DoublesHit.substitute). */
+  subStat(action: PendingAction, target: DoublesSlotId, mass: number, taken: number, broke: boolean): void;
+  /** HP `slot` lost outside any step (DoublesHP.losses: "{Name} hurts itself in confusion: 23–28 HP."). */
+  lossFact(slot: DoublesSlotId, text: string, mass: number): void;
+  /** A turn fact found during the walk (DoublesTurnResult.facts, after the facts read from the input; deduplicated). */
+  turnFact(text: string): void;
+  // ---- Guards ----
+  snapshot(w: World): Snapshot;
+  /** `damaging` (default true): Emergency Exit and Wimp Out are checked (status-eot C7: only after damaging moves). */
+  eventGuards(before: Snapshot, w: World, damaging?: boolean): void;
+  gasShieldGuard(w: World): void;
+  notEstimated(reason: string): never;
+  /** The reason of a NotEstimated this file throws, or null for any other error. */
+  reasonOf(error: unknown): string | null;
+  /** A Pokémon leaves during the moves with no later action (doubles-eot.ts leaving). */
+  leaving(w: World, slot: DoublesSlotId): void;
+  // ---- Build data ----
+  /** model.ts getBuildStats: the stored stats. */
+  buildStats(build: BattleBuild): ReturnType<typeof getBuildStats>;
+  // ---- Calculations ----
+  /** The build a calculation reads (HP in the factors; Plus and Minus). */
+  calcBuild(w: World, slot: DoublesSlotId): BattleBuild;
+  conditionsFor(w: World, attacker: DoublesSlotId, target: DoublesSlotId, multiple: boolean, moveId?: string): BattleConditions;
+  contextFor(w: World, action: PendingAction, target: DoublesSlotId, info: TurnMoveInfo): MoveContext | undefined;
+  /**
+   * One pair's calculation and turn search, memoised. `behindSubstitute`: the calculation into a Substitute (ADDENDUM
+   * §4.13.3): the target's working resist or Chilan Berry reads as Leftovers, an intact Disguise or Ice Face as no ability.
+   */
+  searchFor(w: World, attacker: DoublesSlotId, target: DoublesSlotId, moveId: string, conditions: BattleConditions, context: MoveContext | undefined,
+    spread?: boolean, attackerHP?: number, opts?: { behindSubstitute?: true; healBlocked?: true }): SearchEntry;
+  /** One pair's turnStep applied to the world; `part`: a step after hits into a Substitute (uses-to-ko.ts TurnStepPart). */
+  applyStep(w: World, action: PendingAction, target: DoublesSlotId, entry: SearchEntry, info: TurnMoveInfo, spread: boolean, part?: TurnStepPart): StepChild[];
+  blockedHit(w: World, action: PendingAction, info: TurnMoveInfo, check: HitCheck, contactEffect?: boolean): World[];
+  faceTaken(w: World, attacker: DoublesSlotId, target: DoublesSlotId, row: MoveDamageResult, move: ChampionsMove): FaceKind | null;
+  faceHit(w: World, action: PendingAction, info: TurnMoveInfo, target: DoublesSlotId, face: FaceKind, multiple: boolean, inSpread?: boolean): World[];
+  rowReason(w: World, target: DoublesSlotId, row: MoveDamageResult, move: ChampionsMove): string;
+  noDamageFact(row: MoveDamageResult, move: ChampionsMove, target: DoublesSlotId): string;
+  focusBandGuard(w: World, target: DoublesSlotId, row: MoveDamageResult): void;
+  unnerveGuard(w: World, attacker: DoublesSlotId, target: DoublesSlotId): void;
+  /** The knocker-out's rise after a faint batch of `count` (Moxie and its kin). */
+  koBoost(w: World, slot: DoublesSlotId, count: number): void;
+  /** A Max Move's side effects beyond its target. */
+  maxEffects(w: World, action: PendingAction, info: TurnMoveInfo, target: DoublesSlotId): void;
+  // ---- Stages and statuses (doubles-status.ts) ----
+  selfBoost(w: World, slot: DoublesSlotId, changes: Partial<Record<CombatStat, number>>, action: PendingAction | null): void;
+  foeDrop(w: World, slot: DoublesSlotId, changes: StatusStages, source: DoublesSlotId | null, broken?: boolean, reflected?: boolean): void;
+  giveStatus(w: World, slot: DoublesSlotId, given: statusHooks.GivenStatus, source: DoublesSlotId): void;
 };
 
 const alive = (w: World, slot: DoublesSlotId) => !!w.mons[slot] && !w.mons[slot]!.fainted;
@@ -107,10 +305,16 @@ const abilityName = (ctx: Ctx, id: string) => ctx.runtime.abilitiesById.get(id)?
 const itemName = (ctx: Ctx, id: string) => ctx.runtime.itemsById.get(id)?.name ?? id;
 const itemWorks = (w: World, build: BattleBuild) => !w.field.magicRoom && build.abilityId !== "klutz";
 const bump = <K>(map: Map<K, number>, key: K, mass: number) => map.set(key, (map.get(key) ?? 0) + mass);
+const laterAction = (w: World) => w.remaining.some((entry) => alive(w, entry.slot));
 
 function hitStats(step: StepStats, slot: DoublesSlotId): HitStats {
   let stats = step.hits.get(slot);
-  if (!stats) step.hits.set(slot, stats = { reached: 0, ko: 0, calculated: 0, blocked: 0, noDamage: 0, met: new Map(), firsts: new Map(), facts: new Map() });
+  if (!stats) {
+    step.hits.set(slot, stats = {
+      reached: 0, ko: 0, calculated: 0, blocked: 0, noDamage: 0, effect: 0, change: null, sub: { mass: 0, breaks: 0, min: Infinity, max: -Infinity },
+      met: new Map(), firsts: new Map(), facts: new Map(),
+    });
+  }
   return stats;
 }
 const stepOf = (ctx: Ctx, action: PendingAction) => ctx.stats?.[action.index] ?? null;
@@ -122,6 +326,115 @@ function hitFact(ctx: Ctx, action: PendingAction, slot: DoublesSlotId, text: str
   const step = stepOf(ctx, action);
   if (step) bump(hitStats(step, slot).facts, text, mass);
 }
+
+/** The kernel of a context (made once). */
+function kernelOf(ctx: Ctx): TurnKernel {
+  return ctx.kernel ??= makeKernel(ctx);
+}
+
+function makeKernel(ctx: Ctx): TurnKernel {
+  const kernel: TurnKernel = {
+    input: ctx.input, runtime: ctx.runtime, names: ctx.names, hp: ctx.hp, gen7: ctx.gen7, champions: ctx.champions, mode: ctx.mode,
+    get reference() { return DOUBLES_REFERENCE.on; },
+    recording: ctx.stats !== null, gas: ctx.gas, budget: BUDGET,
+    fieldSettledAbilities: FIELD_SETTLED_ABILITIES, fieldSettledItems: FIELD_SETTLED_ITEMS,
+    targetless: (slot) => ctx.targetless.has(slot),
+    moveName: (id) => moveName(ctx, id), abilityName: (id) => abilityName(ctx, id), itemName: (id) => itemName(ctx, id),
+    alive, isFoe,
+    faint: (w, slot, byHit) => faint(ctx, w, slot, byHit),
+    speedOf: (w, slot) => speedOf(ctx, w, slot),
+    typesOf: (build) => typesOf(ctx, build),
+    grounded: (w, slot) => grounded(ctx, w, slot),
+    itemWorks,
+    effectiveWeather,
+    laterDamaging: (w) => laterDamaging(ctx, w),
+    laterAction,
+    occupant, positionOf,
+    powderImmune: (w, slot) => powderImmune(ctx, w, slot),
+    gasEnds: (w, slot) => gasEnds(ctx, w, slot),
+    berryStopped,
+    breaks,
+    priorityOf: (w, action) => priorityOf(ctx, w, action),
+    moveInfo: (w, slot, moveId, context) => moveInfo(ctx, w, slot, moveId, context),
+    usedType: (w, attacker, moveId, target, info, context) => usedType(ctx, w, attacker, moveId, target, info, context),
+    usedTargetType: (w, attacker, move, info) => usedTargetType(ctx, w, attacker, move, info),
+    resolveTargets: (w, action, info) => resolveTargets(ctx, w, action, info),
+    redirect: (w, attacker, target, info, moveId, context) => redirect(ctx, w, attacker, target, info, moveId, context),
+    spreadTargets,
+    tracksTarget,
+    protectPasses: (w, action, target) => protectPasses(ctx, w, action, target),
+    moveFailure: (w, action, move, target, priority, info) => moveFailure(ctx, w, action, move, target, priority, info),
+    priorityShield: (w, action, move, target, priority, info) => priorityShield(ctx, w, action, move, target, priority, info),
+    hitChecks: (w, action, info, targets, spread, priority) => hitChecks(ctx, w, action, info, targets, spread, priority),
+    focuses: (w, slot, moveId) => focuses(ctx, w, slot, moveId),
+    secondaryLands: (w, attacker, target, info) => secondaryLands(ctx, w, attacker, target, info),
+    afterLoss: (w, slot, ...losses) => afterLoss(ctx, w, slot, ...losses),
+    berryDue: (w, slot) => berryDue(ctx, w, slot),
+    lockedBerryGuard: (w, slot) => lockedBerryGuard(ctx, w, slot),
+    ateBerry: (w, slot, item) => ateBerry(ctx, w, slot, item),
+    pouchHeal: (w, slot) => pouchHeal(ctx, w, slot),
+    noteHeal: (slot, source, amount) => noteHeal(ctx, slot, source, amount),
+    noteBerry: (slot, item, berry, hp) => noteBerry(ctx, slot, item, berry, hp),
+    unnerveEnds: (w, gone) => unnerveEnds(ctx, w, gone),
+    absorbEffect: (w, slot, ability, action) => absorbEffect(ctx, w, slot, ability, action),
+    protectContact: (w, attacker, protector, kind, info, followed) => protectContact(ctx, w, attacker, protector, kind, info, followed),
+    step: (action) => stepOf(ctx, action),
+    stepFact: (action, text, mass) => stepFact(ctx, action, text, mass),
+    hitFact: (action, slot, text, mass) => hitFact(ctx, action, slot, text, mass),
+    skipFact: (action, text, mass) => { const step = stepOf(ctx, action); if (step) bump(step.skipped, text, mass); },
+    hitStats: (action, slot) => { const step = stepOf(ctx, action); return step ? hitStats(step, slot) : null; },
+    subStat: (action, target, mass, taken, broke) => {
+      const step = stepOf(ctx, action);
+      if (!step) return;
+      const sub = hitStats(step, target).sub;
+      sub.mass += mass;
+      if (broke) sub.breaks += mass;
+      sub.min = Math.min(sub.min, taken);
+      sub.max = Math.max(sub.max, taken);
+    },
+    lossFact: (slot, text, mass) => {
+      if (!ctx.stats) return;
+      let facts = ctx.losses.get(slot);
+      if (!facts) ctx.losses.set(slot, facts = new Map());
+      bump(facts, text, mass);
+    },
+    turnFact: (text) => { if (ctx.stats) ctx.walkFacts.add(text); },
+    snapshot: (w) => snapshot(ctx, w),
+    eventGuards: (before, w, damaging) => eventGuards(ctx, before, w, damaging),
+    gasShieldGuard: (w) => gasShieldGuard(ctx, w),
+    notEstimated,
+    reasonOf: (error) => error instanceof NotEstimated ? error.reason : null,
+    leaving: (w, slot) => eotHooks.leaving(w, slot),
+    buildStats: (build) => getBuildStats(build, ctx.runtime),
+    calcBuild,
+    conditionsFor: (w, attacker, target, multiple, moveId) => conditionsFor(ctx, w, attacker, target, multiple, moveId),
+    contextFor: (w, action, target, info) => contextFor(ctx, w, action, target, info),
+    searchFor: (w, attacker, target, moveId, conditions, context, spread, attackerHP, opts) => searchFor(ctx, w, attacker, target, moveId, conditions, context, spread, attackerHP, opts),
+    applyStep: (w, action, target, entry, info, spread, part) => applyStep(ctx, w, action, target, entry, info, spread, part),
+    blockedHit: (w, action, info, check, contactEffect) => blockedHit(ctx, w, action, info, check, contactEffect),
+    faceTaken: (w, attacker, target, row, move) => faceTaken(ctx, w, attacker, target, row, move),
+    faceHit: (w, action, info, target, face, multiple, inSpread) => faceHit(ctx, w, action, info, target, face, multiple, inSpread),
+    rowReason: (w, target, row, move) => rowReason(ctx, w, target, row, move),
+    noDamageFact: (row, move, target) => noDamageFact(ctx, row, move, target),
+    focusBandGuard: (w, target, row) => focusBandGuard(ctx, w, target, row),
+    unnerveGuard: (w, attacker, target) => unnerveGuard(ctx, w, attacker, target),
+    koBoost: (w, slot, count) => koBoost(ctx, w, slot, count),
+    maxEffects: (w, action, info, target) => maxEffects(ctx, w, action, info, target),
+    selfBoost: (w, slot, changes, action) => statusHooks.selfBoost(kernel, w, slot, changes, action),
+    foeDrop: (w, slot, changes, source, broken, reflected) => statusHooks.foeDrop(kernel, w, slot, changes, source, broken, reflected),
+    giveStatus: (w, slot, given, source) => statusHooks.giveStatus(kernel, w, slot, given, source),
+  };
+  return kernel;
+}
+
+// The moved helpers (doubles-status.ts) as this file calls them.
+const selfBoost = (ctx: Ctx, w: World, slot: DoublesSlotId, changes: Partial<Record<CombatStat, number>>, action: PendingAction | null) => statusHooks.selfBoost(kernelOf(ctx), w, slot, changes, action);
+const foeDrop = (ctx: Ctx, w: World, slot: DoublesSlotId, changes: StatusStages, source: DoublesSlotId | null, broken = false, reflected = false) =>
+  statusHooks.foeDrop(kernelOf(ctx), w, slot, changes, source, broken, reflected);
+const giveStatus = (ctx: Ctx, w: World, slot: DoublesSlotId, given: statusHooks.GivenStatus, source: DoublesSlotId) => statusHooks.giveStatus(kernelOf(ctx), w, slot, given, source);
+const proteanGuard = (ctx: Ctx, w: World, slot: DoublesSlotId, moveId: string, type: () => string) => statusHooks.proteanGuard(kernelOf(ctx), w, slot, moveId, type);
+const stanceChange = (ctx: Ctx, w: World, slot: DoublesSlotId, blade: boolean) => statusHooks.stanceChange(kernelOf(ctx), w, slot, blade);
+const berryConfusion = (ctx: Ctx, w: World, slot: DoublesSlotId, item: string) => statusHooks.berryConfusion(kernelOf(ctx), w, slot, item);
 
 // ------------------------------------------------------------------------------------------------------------------
 // Builds, conditions and the pairwise calculations
@@ -230,18 +543,46 @@ function moveInfo(ctx: Ctx, w: World, slot: DoublesSlotId, moveId: string, conte
   return info;
 }
 
-/** One pair's calculation and its turn search (memoised by everything they read; SPEC §9). */
+/**
+ * Stored Power and Power Trip (data/moves.ts storedpower, powertrip basePowerCallback: 20 per positive stage of the user)
+ * and Punishment (60 plus 20 per positive stage of the target) count accuracy and evasion stages (sim/pokemon.ts
+ * positiveBoosts), which no calculation reads (MoveVolatiles.stages): not estimated while the Pokémon they read has one
+ * above 0 from this turn (Double Team; Contrary against Sand Attack). Their Z-Moves and Max Moves have a power of their own.
+ */
+function hiddenStageGuard(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, moveId: string, context: MoveContext | undefined) {
+  const reads = moveId === "storedpower" || moveId === "powertrip" ? attacker : moveId === "punishment" ? target : null;
+  if (!reads || context?.useZ || isMaxActive(w.mons[attacker]!.build)) return;
+  const stages = w.mons[reads]?.vol.stages;
+  if (stages && ((stages.accuracy ?? 0) > 0 || (stages.evasion ?? 0) > 0)) notEstimated(REASONS.hiddenStages(moveName(ctx, moveId), ctx.names[reads]));
+}
+
+/**
+ * One pair's calculation and its turn search (memoised by everything they read; SPEC §9). The target's Endure this turn
+ * (doubles-status.ts endureFor: UsesEnv.endure) is read too. `behindSubstitute` (ADDENDUM §4.13.3): the calculation into
+ * the target's Substitute, with the target's build changed for it alone: a working resist Berry or Chilan Berry reads as
+ * Leftovers (their onSourceModifyDamage returns for hitSub, PS/data/items.ts, while Knock Off's 1.5x and Poltergeist still
+ * see a held item: K6), an intact Disguise or Ice Face as no ability (their onEffectiveness and onCriticalHit return for
+ * hitSub, PS/data/abilities.ts:979-1001, 1985-2002: U9). `healBlocked` (psychicNoiseKeepsBerry): the target's HP Berry reads
+ * as Leftovers. The step's target build then holds the stand-in; the caller puts the real item and ability back.
+ */
 function searchFor(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, moveId: string, conditions: BattleConditions, context: MoveContext | undefined,
-  spread = false, attackerHP?: number): SearchEntry {
+  spread = false, attackerHP?: number, opts?: { behindSubstitute?: true; healBlocked?: true }): SearchEntry {
+  hiddenStageGuard(ctx, w, attacker, target, moveId, context);
   const move = ctx.runtime.movesById.get(moveId)!;
   const xb = attackerHP === undefined ? calcBuild(w, attacker) : { ...calcBuild(w, attacker), currentHP: baseHP(ctx, attacker, attackerHP) };
-  const tb = calcBuild(w, target);
+  let tb = calcBuild(w, target);
+  const behind = !!opts?.behindSubstitute;
+  if (behind && RESIST_BERRIES.has(tb.itemId) && itemWorks(w, tb)) tb = { ...tb, itemId: "leftovers" };
+  if (behind && BUSTED_FORMS[tb.speciesId] && (tb.abilityId === "disguise" || tb.abilityId === "iceface")) tb = { ...tb, abilityId: GAS_STAND_IN };
+  // `healBlocked` (psychicNoiseKeepsBerry): the target's HP Berry is not eaten at the hit's Update; it reads as Leftovers (no damage change).
+  if (opts?.healBlocked) tb = { ...tb, itemId: "leftovers" };
   const fieldSettled = DOUBLES_SLOTS.filter((slot) => slot !== attacker && slot !== target && alive(w, slot)).flatMap((slot) => {
     const build = w.mons[slot]!.build;
     return [...(FIELD_SETTLED_ABILITIES.has(build.abilityId) ? [abilityName(ctx, build.abilityId)] : []), ...(FIELD_SETTLED_ITEMS.has(build.itemId) ? [itemName(ctx, build.itemId)] : [])];
   });
   const unnerve = turnUnnerve(w, attacker, target);
-  const key = JSON.stringify([moveId, xb, tb, conditions, context, fieldSettled, spread, unnerve]);
+  const endure = statusHooks.endureFor(w, target);
+  const key = JSON.stringify([moveId, xb, tb, conditions, context, fieldSettled, spread, unnerve, ...(endure ? ["endure"] : []), ...(behind ? ["substitute"] : [])]);
   const known = DOUBLES_REFERENCE.on ? undefined : ctx.memo.searches.get(key);
   if (known) return known;
   countCalculation(ctx);
@@ -250,7 +591,7 @@ function searchFor(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesS
   let entry: SearchEntry = { row, search: null, follow: false, trace };
   if (row.kind === "calculated" && row.max !== null && row.max > 0 && trace.result) {
     try {
-      const m = prepareUses(xb, tb, conditions, ctx.runtime, usesHelpers(ctx.runtime), { turn: true, fieldSettled, ...(unnerve ? { unnerve } : {}) });
+      const m = prepareUses(xb, tb, conditions, ctx.runtime, usesHelpers(ctx.runtime), { turn: true, fieldSettled, ...(unnerve ? { unnerve } : {}), ...(endure ? { endure: true as const } : {}) });
       const search = createTurnSearch(m, {
         move, row, trace, context,
         rerun: (next) => {
@@ -367,19 +708,27 @@ function speedOf(ctx: Ctx, w: World, slot: DoublesSlotId, firstTurn = false): nu
   return speed;
 }
 
-function keyOf(ctx: Ctx, w: World, action: PendingAction): { priority: number; speed: number } {
-  if (action.frozen) return action.frozen;
-  return { priority: priorityOf(ctx, w, action) + action.fractional, speed: speedOf(ctx, w, action.slot) };
+/**
+ * An action's sort key (sim/battle-queue.ts:277-287, sim/battle.ts comparePriority): order ascending (absent 200; After You
+ * 3, Quash 201: PendingAction.order), then priority and Speed descending. Generation 7's frozen priority and Speed keep the
+ * order too.
+ */
+function keyOf(ctx: Ctx, w: World, action: PendingAction): { order: number; priority: number; speed: number } {
+  const order = action.order ?? 200;
+  if (action.frozen) return { order, ...action.frozen };
+  return { order, priority: priorityOf(ctx, w, action) + action.fractional, speed: speedOf(ctx, w, action.slot) };
 }
 
 /** The actions tied at the head of the queue (sim/battle.ts comparePriority and speedSort). */
 function topGroup(ctx: Ctx, w: World): PendingAction[] {
   let best: PendingAction[] = [];
-  let top: { priority: number; speed: number } | null = null;
+  let top: { order: number; priority: number; speed: number } | null = null;
   for (const action of w.remaining) {
     const key = keyOf(ctx, w, action);
-    if (!top || key.priority > top.priority || (key.priority === top.priority && key.speed > top.speed)) { top = key; best = [action]; }
-    else if (key.priority === top.priority && key.speed === top.speed) best.push(action);
+    const ahead = !top || key.order < top.order || (key.order === top.order
+      && (key.priority > top.priority || (key.priority === top.priority && key.speed > top.speed)));
+    if (ahead) { top = key; best = [action]; }
+    else if (key.order === top!.order && key.priority === top!.priority && key.speed === top!.speed) best.push(action);
   }
   return best;
 }
@@ -444,11 +793,8 @@ function presenceGuards(ctx: Ctx, w: World) {
     const context = entry.contexts[moveId];
     // A Dancer copies a dance move another Pokémon uses (sim/battle-actions.ts runMove).
     if (DANCE_MOVES.has(moveId) && DOUBLES_SLOTS.some((other) => other !== slot && w.mons[other]?.build.abilityId === "dancer")) notEstimated(REASONS.notModelled("Dancer"));
-    // Sleep's counter is not known (data/conditions.ts slp onBeforeMove): a sleeping Pokémon may wake and use its move,
-    // and Snore and Sleep Talk fail once it is awake (their onTry).
-    if (build.status === "slp") notEstimated(REASONS.sleep);
-    if (build.status === "frz") notEstimated(REASONS.freeze);
-    if (HP_STATUS_MOVES.has(moveId)) notEstimated(REASONS.notModelled(move.name));
+    // Track A's guards (doubles-status.ts presenceGuards: sleep, freeze, the HP-changing status moves, Pollen Puff on an ally).
+    statusHooks.presenceGuards(kernelOf(ctx), w, slot);
     if (PRESENCE_MOVES.has(moveId) || PENDING_MOVES.has(moveId)) notEstimated(REASONS.notIn2v2(move.name));
     // A move that uses another move, picked from the battle or at random (callsMove; Instruct makes its target move
     // again); Sleep Talk only does so asleep or with Comatose (data/moves.ts sleeptalk onTry), and otherwise fails.
@@ -459,7 +805,6 @@ function presenceGuards(ctx: Ctx, w: World) {
     if (PLEDGE_MOVES.has(moveId) && partnerMove && PLEDGE_MOVES.has(partnerMove) && partnerMove !== moveId) {
       notEstimated(REASONS.pledges(move.name, moveName(ctx, partnerMove)));
     }
-    if (moveId === "pollenpuff" && entry.action.target === partner) notEstimated(REASONS.pollenPuff);
     if (isMaxActive(build) && move.category === "Status") notEstimated(REASONS.maxGuard);
     if (build.itemId === "custapberry" && (build.abilityId === "quickdraw" || build.abilityId === "myceliummight")) notEstimated(REASONS.notIn2v2("Custap Berry"));
     if (move.category !== "Status" && isMaxActive(build)) {
@@ -483,15 +828,20 @@ function startWorld(ctx: Ctx, settle: DoublesSettle): World {
   for (const slot of DOUBLES_SLOTS) {
     const start = settle.slots[slot];
     if (!start) continue;
+    const build: BattleBuild = { ...start.folded, currentHP: null };
+    const state = carriedState(ctx, slot, build);
+    // A Figy-family Berry eaten as the turn starts confused it (settleItems confused): a fresh confusion (SPEC §4.6).
+    if (start.items.confused && !state.vol.confusion) state.vol.confusion = { attempts: 0, min: 2 };
     mons[slot] = {
-      build: { ...start.folded, currentHP: null }, fainted: false, moved: false, flinched: null, focusLost: false,
+      build, fainted: false, moved: false, flinched: null, focusLost: false,
       charged: input.pokemon[slot]!.charged, protect: null, centre: null, helpingHand: 0, hurt: false, damagedBy: [], timesAttacked: 0, statsLowered: false, statsRaised: false,
+      ...state,
     };
     factors.push(pointFactor(slot, turnHP(start.folded, ctx.runtime).hp));
   }
   const side = (conditions: BattleConditions["attackerSide"]): SideState => ({
     reflect: conditions.reflect, lightScreen: conditions.lightScreen, auroraVeil: conditions.auroraVeil, tailwind: conditions.tailwind,
-    wideGuard: false, quickGuard: false, faintedThisTurn: 0,
+    wideGuard: false, quickGuard: false, faintedThisTurn: 0, safeguard: false, hazards: [],
   });
   const { weather, terrain, gravity, trickRoom, wonderRoom, magicRoom } = input.field;
   return {
@@ -500,9 +850,51 @@ function startWorld(ctx: Ctx, settle: DoublesSettle): World {
   };
 }
 
+/**
+ * A Pokémon's state from earlier turns as the turn starts (status-eot SPEC §4.6, ADDENDUM §3.5.10): DoublesCarried mapped
+ * into its moves-phase volatiles and its end-of-turn state. Sleep: the counter's decrease so far (attempts, twice each
+ * with Early Bird: data/abilities.ts earlybird onBeforeMove), 0 without carried.sleep (a turn fact); Champions freeze:
+ * the attempts; confusion: its attempts and the least duration (Axe Kick's 3); bad poison: the stage, 0 without
+ * carried.toxic; the other end-of-turn fields copied (a trap's divisor 6 with Binding Band, else 8; a carried Yawn is
+ * the one that lands now: 1); the Substitute's HP and the Ally Switch counter.
+ */
+function carriedState(ctx: Ctx, slot: DoublesSlotId, build: BattleBuild): { vol: MoveVolatiles; eot: EotState } {
+  const carried = ctx.input.pokemon[slot]!.carried ?? {};
+  const vol: MoveVolatiles = {}, eotState: EotState = {};
+  if (build.status === "slp") vol.sleep = { elapsed: (carried.sleep?.attempts ?? 0) * (build.abilityId === "earlybird" ? 2 : 1), rest: carried.sleep?.rest ?? false };
+  if (build.status === "frz" && ctx.champions) vol.freeze = { attempts: carried.freeze?.attempts ?? 0 };
+  if (carried.confusion) vol.confusion = { attempts: carried.confusion.attempts, min: carried.confusion.axeKick ? 3 : 2 };
+  if (carried.substitute !== undefined) vol.substitute = carried.substitute;
+  if (carried.allySwitch !== undefined) vol.allySwitch = carried.allySwitch;
+  if (build.status === "tox") eotState.toxic = carried.toxic ?? 0;
+  if (carried.leechSeed) eotState.leechSeed = carried.leechSeed;
+  if (carried.trap) eotState.trap = { source: carried.trap.source, divisor: carried.trap.bindingBand ? 6 : 8, ...(carried.trap.move ? { move: carried.trap.move } : {}) };
+  if (carried.saltCure) eotState.saltCure = true;
+  if (carried.aquaRing) eotState.aquaRing = true;
+  if (carried.ingrain) eotState.ingrain = true;
+  if (carried.curse) eotState.curse = true;
+  if (carried.syrupBomb) eotState.syrupBomb = carried.syrupBomb;
+  if (carried.yawn) eotState.yawn = 1;
+  if (carried.perish !== undefined) eotState.perish = carried.perish;
+  if (carried.wish !== undefined) eotState.wish = carried.wish;
+  if (carried.futureMove) eotState.futureMove = carried.futureMove;
+  if (carried.cudChew) eotState.cudChew = true;
+  return { vol, eot: eotState };
+}
+
+/** The start world after the turn's first Update (doubles-status.ts turnStartUpdate), as the guards known before the walk read it. */
+function firstUpdated(ctx: Ctx, settle: DoublesSettle): World {
+  const w = startWorld(ctx, settle);
+  statusHooks.turnStartUpdate(kernelOf(ctx), w);
+  return w;
+}
+
 /** The turn's root worlds: the queue with each action's fractional priority outcomes (Quick Claw, Quick Draw). */
 function rootWorlds(ctx: Ctx, settle: DoublesSettle): World[] {
   const base = startWorld(ctx, settle);
+  // A status its holder's own ability cures cannot stand at the turn's start in pinned Showdown (its SetStatus stops it):
+  // generation 7's one sort reads the Speed without it (doubles-status.ts ownCuresAtStart).
+  if (ctx.gen7) statusHooks.ownCuresAtStart(kernelOf(ctx), base);
   let worlds: { world: World; facts: { index: number; text: string }[] }[] = [{ world: base, facts: [] }];
   ctx.actions.forEach((action, index) => {
     const build = base.mons[action.slot]!.build;
@@ -526,23 +918,52 @@ function rootWorlds(ctx: Ctx, settle: DoublesSettle): World[] {
 }
 
 function walk(ctx: Ctx, settle: DoublesSettle): World[] {
+  // The turn's first Update (doubles-status.ts turnStartUpdate): after generation 7 froze the order, before the first sort.
   let worlds = rootWorlds(ctx, settle);
+  for (const world of worlds) statusHooks.turnStartUpdate(kernelOf(ctx), world);
   const done: World[] = [];
   while (worlds.length) {
     const next: World[] = [];
     for (const w0 of worlds) {
       for (const w of refine(ctx, w0)) {
+        if (battleOver(ctx, w)) { done.push(w); continue; }
         const group = topGroup(ctx, w);
         if (!group.length) { done.push(w); continue; }
         // Each tied action is next with equal chance (sim/battle.ts:429-458 speedSort shuffles each tied run, at
-        // every sort from generation 8 and once in generation 7).
-        for (const action of group) next.push(...execute(ctx, cloneWorld(w, w.mass / group.length), action));
+        // every sort from generation 8 and once in generation 7). An action that changed the weather set it this turn
+        // (World.weatherSet: a new duration, or none up).
+        for (const action of group) {
+          for (const out of execute(ctx, cloneWorld(w, w.mass / group.length), action)) {
+            if (out.field.weather !== w.field.weather) out.weatherSet = true;
+            next.push(out);
+          }
+        }
       }
     }
     worlds = DOUBLES_REFERENCE.on ? next.filter((world) => world.mass > 0) : mergeWorlds(next, ctx.mode === "all");
     if ((worlds.length > BUDGET.worlds || entryCount(worlds) > BUDGET.entries) && !DOUBLES_REFERENCE.on) notEstimated(REASONS.tooMany);
   }
   return DOUBLES_REFERENCE.on ? done : mergeWorlds(done, ctx.mode === "all");
+}
+
+/**
+ * Whether the battle is over in this world before its next action (sim/battle.ts faintMessages then checkWin, after
+ * each action; runAction stops the queue once `ended`): a side with no Pokémon left to switch in (canSwitch false) has
+ * every Pokémon it had in place fainted. No later action runs (its step's skip fact says so), and the end of turn passes
+ * it through (doubles-eot.ts over). With canSwitch absent the turn assumes a Pokémon is left (doubles-eot.ts's fact).
+ */
+function battleOver(ctx: Ctx, w: World): boolean {
+  const over = (["own", "opponent"] as const).some((side) => {
+    if (ctx.input.canSwitch?.[side] !== false) return false;
+    const present = DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side && w.mons[slot]);
+    return present.length > 0 && present.every((slot) => w.mons[slot]!.fainted);
+  });
+  if (!over) return false;
+  for (const action of w.remaining) {
+    const step = stepOf(ctx, action);
+    if (step && action.moveId !== null && !w.mons[action.slot]!.fainted) bump(step.skipped, "The battle ends before it moves.", w.mass);
+  }
+  return true;
 }
 
 // ------------------------------------------------------------------------------------------------------------------
@@ -571,68 +992,35 @@ function execute(ctx: Ctx, w: World, action: PendingAction): World[] {
     return [w];
   }
   mon.moved = true;
-  if (action.moveId === null) return [w];
-  // BeforeMove, by handler priority (sim/battle-actions.ts runMove): flinch (data/conditions.ts flinch, 8), Gravity
-  // (data/moves.ts gravity condition, 6), paralysis (1); then Focus Punch's beforeMoveCallback.
-  if (mon.flinched) {
-    if (step) bump(step.skipped, `Flinches (${mon.flinched}).`, w.mass);
-    // Steadfast (data/abilities.ts steadfast onFlinch): +1 Speed, a rise a foe's Opportunist or Mirror Herb copies (eventGuards).
-    if (mon.build.abilityId === "steadfast") {
-      const before = snapshot(ctx, w);
-      selfBoost(ctx, w, action.slot, { spe: 1 }, action);
-      eventGuards(ctx, before, w);
+  // BeforeMove (doubles-status.ts beforeMove, Track A): the worlds that stop there (skip facts), then those that go on to
+  // the move. No move (moveId null) runs it too and then does nothing.
+  const { go, stopped } = statusHooks.beforeMove(kernelOf(ctx), w, action);
+  const out: World[] = [...stopped];
+  if (action.moveId === null) return [...out, ...go];
+  for (const next of go) {
+    if (step) step.moves += next.mass;
+    const before = step ? selfLossSnapshot(next) : null;
+    for (const world of runMove(ctx, next, action)) {
+      // A user that faints in its own move (the Explosion family, Final Gambit, recoil, Life Orb, what its targets hit back with).
+      if (step && before && world.mons[action.slot]!.fainted) stepFact(ctx, action, selfFaintFact(ctx, before, action, step), world.mass);
+      out.push(world);
     }
-    return [w];
-  }
-  // Gravity stops a move with the gravity flag (not a Z-Move; a Max Move has none).
-  const context = ctx.input.pokemon[action.slot]!.contexts[action.moveId];
-  if (w.field.gravity && GRAVITY_MOVES.has(action.moveId) && !context?.useZ && !isMaxActive(mon.build)) {
-    if (step) bump(step.skipped, `Gravity: ${moveName(ctx, action.moveId)} cannot be used.`, w.mass);
-    return [w];
-  }
-  // Throat Chop (data/moves.ts throatchop condition onBeforeMove, priority 6): no sound move but a Z-Move or Max Move.
-  if (mon.throatChopped) {
-    const info = moveInfo(ctx, w, action.slot, action.moveId, context);
-    if (info.kind === "move" && info.flags.sound && !info.isZ && !info.isMax) {
-      if (step) bump(step.skipped, `Throat Chop: ${moveName(ctx, action.moveId)} cannot be used.`, w.mass);
-      return [w];
-    }
-  }
-  const out: World[] = [];
-  if (mon.build.status === "par") {
-    // Full paralysis (data/conditions.ts par onBeforeMove randomChance(1, 4), Magic Guard or not; 1/8 in Champions,
-    // data/mods/champions/conditions.ts:2-10).
-    const chance = ctx.champions ? 1 / 8 : 1 / 4;
-    const stopped = cloneWorld(w, w.mass * chance);
-    if (step) bump(step.skipped, "Fully paralysed.", stopped.mass);
-    out.push(stopped);
-    w.mass *= 1 - chance;
-  }
-  if (mon.focusLost && focuses(ctx, w, action.slot, action.moveId)) {
-    if (step) bump(step.skipped, "Loses its focus (Focus Punch).", w.mass);
-    out.push(w);
-    return out;
-  }
-  if (step) step.moves += w.mass;
-  const before = step ? selfLossSnapshot(w) : null;
-  for (const world of runMove(ctx, w, action)) {
-    // A user that faints in its own move (the Explosion family, Final Gambit, recoil, Life Orb, what its targets hit back with).
-    if (step && before && world.mons[action.slot]!.fainted) stepFact(ctx, action, selfFaintFact(ctx, before, action, step), world.mass);
-    out.push(world);
   }
   return out;
 }
 
-type LossSnapshot = Partial<Record<DoublesSlotId, { build: BattleBuild; protect: MonState["protect"] }>>;
+type LossSnapshot = Partial<Record<DoublesSlotId, { build: BattleBuild; protect: MonState["protect"]; substitute: boolean }>>;
 function selfLossSnapshot(w: World): LossSnapshot {
-  return Object.fromEntries(DOUBLES_SLOTS.filter((slot) => w.mons[slot]).map((slot) => [slot, { build: w.mons[slot]!.build, protect: w.mons[slot]!.protect }]));
+  return Object.fromEntries(DOUBLES_SLOTS.filter((slot) => w.mons[slot]).map((slot) => [slot, { build: w.mons[slot]!.build, protect: w.mons[slot]!.protect, substitute: !!w.mons[slot]!.vol.substitute }]));
 }
 
 /**
  * "{Name} faints ({sources})." for a user that faints in its own move: the move itself (selfdestruct, Final Gambit's
  * damageCallback, Mind Blown and its kin), or what can take its HP in it as the move starts (recoil, the Pokémon it
  * reached hitting back on contact: Rough Skin, Iron Barbs, Rocky Helmet, Spiky Shield; a Jaboca or Rowap Berry;
- * Liquid Ooze on a draining move; Life Orb), none of which Magic Guard lets through.
+ * Liquid Ooze on a draining move; Life Orb), none of which Magic Guard lets through. A one-hit move into a Substitute
+ * meets none of the target's DamagingHit handlers (Rough Skin, Iron Barbs, Rocky Helmet, a Jaboca or Rowap Berry:
+ * ADDENDUM §4.13.8); Liquid Ooze still acts on its drain (K2).
  */
 function selfFaintFact(ctx: Ctx, before: LossSnapshot, action: PendingAction, step: StepStats): string {
   const name = ctx.names[action.slot];
@@ -650,10 +1038,11 @@ function selfFaintFact(ctx: Ctx, before: LossSnapshot, action: PendingAction, st
       const target = before[slot];
       if (!target || slot === action.slot) continue;
       const items = !ctx.input.field.magicRoom && target.build.abilityId !== "klutz";
-      if (info.contact && ["roughskin", "ironbarbs"].includes(target.build.abilityId)) sources.push(abilityName(ctx, target.build.abilityId));
-      if (info.contact && items && target.build.itemId === "rockyhelmet") sources.push(itemName(ctx, "rockyhelmet"));
+      const reached = !(target.substitute && move.multihit === null && substituteHooks.meetsSubstitute(user, info));
+      if (reached && info.contact && ["roughskin", "ironbarbs"].includes(target.build.abilityId)) sources.push(abilityName(ctx, target.build.abilityId));
+      if (reached && info.contact && items && target.build.itemId === "rockyhelmet") sources.push(itemName(ctx, "rockyhelmet"));
       if (info.contact && target.protect === "spikyshield") sources.push(moveName(ctx, "spikyshield"));
-      if (items && target.build.itemId === (physical ? "jabocaberry" : "rowapberry")) sources.push(itemName(ctx, target.build.itemId));
+      if (reached && items && target.build.itemId === (physical ? "jabocaberry" : "rowapberry")) sources.push(itemName(ctx, target.build.itemId));
       if (info.drain && target.build.abilityId === "liquidooze") sources.push(abilityName(ctx, "liquidooze"));
     }
     const sheerForce = user.abilityId === "sheerforce" && info.secondaries;
@@ -667,19 +1056,59 @@ function runMove(ctx: Ctx, w: World, action: PendingAction): World[] {
   const move = ctx.runtime.movesById.get(action.moveId!)!;
   const context = ctx.input.pokemon[action.slot]!.contexts[move.id];
   const before = snapshot(ctx, w);
-  const moved = move.category === "Status" && !context?.useZ ? statusMove(ctx, w, action, move) : damagingMove(ctx, w, action, move);
+  // Status moves: doubles-status.ts statusMove (Track A).
+  const status = move.category === "Status" && !context?.useZ;
+  const moved = status ? statusHooks.statusMove(kernelOf(ctx), w, action, move) : damagingMove(ctx, w, action, move);
+  // Sparkling Aria's own AfterMove (sparklingAria), not its Z-Move's or Max Move's.
+  const aria = !status && move.id === "sparklingaria" ? moveInfo(ctx, w, action.slot, move.id, context) : null;
+  for (const world of moved) {
+    if (aria?.kind === "move" && !aria.transformed) sparklingAria(ctx, world, action, aria);
+    delete world.hitTargets;
+  }
   const out = moved.flatMap((world) => {
     const gone = DOUBLES_SLOTS.filter((slot) => before[slot]?.alive && world.mons[slot]!.fainted && UNNERVES.has(world.mons[slot]!.build.abilityId));
     return gone.length ? unnerveEnds(ctx, world, gone) : [world];
   });
+  // Whether Emergency Exit and Wimp Out are checked after this action (doubles-status.ts exitsAfter: Track A's C7).
+  const exits = statusHooks.exitsAfter(kernelOf(ctx), action, move);
   for (const world of out) {
-    eventGuards(ctx, before, world);
+    // Parting Shot's drops set off no Eject Pack (data/items.ts ejectpack onAfterBoost: activeMove partingshot returns).
+    eventGuards(ctx, before, world, exits, move.id !== "partingshot");
     gasShieldGuard(ctx, world);
+    // The items Trick or Switcheroo moved in this action (World.itemsMoved) matter only to its eventGuards (no Symbiosis).
+    delete world.itemsMoved;
   }
   return out;
 }
 
-type Snapshot = Partial<Record<DoublesSlotId, { boosts: BattleBuild["boosts"]; itemId: string; above: boolean; alive: boolean }>>;
+/**
+ * Sparkling Aria's onAfterMove (data/moves.ts sparklingaria): with its user still in and the move's secondaries kept (no
+ * Sheer Force), each Pokémon it hit (World.hitTargets) that is burned is cured, the user aside: with more than one hit
+ * whatever its Shield Dust, with one only where the secondary's volatile landed (secondaryLands: Shield Dust, Covert Cloak).
+ */
+function sparklingAria(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMove, { kind: "move" }>) {
+  const hit = w.hitTargets ?? [];
+  const user = w.mons[action.slot]!.build;
+  if (user.abilityId === "sheerforce") return;
+  const cures = (slot: DoublesSlotId) => slot !== action.slot && alive(w, slot) && w.mons[slot]!.build.status === "brn" && (hit.length > 1 || secondaryLands(ctx, w, action.slot, slot, info));
+  if (!alive(w, action.slot)) {
+    // A user Life Orb knocks out after the hits (onAfterMoveSecondarySelf) has not fainted yet at AfterMove (the faint
+    // is processed later: sim/battle.ts faintMessages), so pinned Showdown still cures; one knocked out during the hits
+    // (Destiny Bond, Innards Out, a Rowap Berry) has. Which it was is not followed.
+    if (user.itemId === "lifeorb" && itemWorks(w, user) && user.abilityId !== "magicguard" && hit.some(cures)) notEstimated(REASONS.ariaFaint(ctx.names[action.slot]));
+    return;
+  }
+  for (const slot of hit) {
+    const mon = w.mons[slot]!;
+    if (slot === action.slot || !alive(w, slot) || mon.build.status !== "brn") continue;
+    if (hit.length === 1 && !secondaryLands(ctx, w, action.slot, slot, info)) continue;
+    mon.build = { ...mon.build, status: "" };
+    hitFact(ctx, action, slot, `${moveName(ctx, "sparklingaria")}: its burn is cured.`, w.mass);
+  }
+}
+
+/** What eventGuards compares across an action. */
+export type Snapshot = Partial<Record<DoublesSlotId, { boosts: BattleBuild["boosts"]; itemId: string; above: boolean; alive: boolean }>>;
 
 /** What eventGuards compares across an action: each Pokémon's stages, item, whether it was alive, and whether some HP of it was above half. */
 function snapshot(ctx: Ctx, w: World): Snapshot {
@@ -696,15 +1125,25 @@ function snapshot(ctx: Ctx, w: World): Snapshot {
  * The third-party reactions to an action the turn does not follow, as event guards (SPEC §2.2): Opportunist and
  * Mirror Herb copying a foe's rise (onFoeAfterBoost); Symbiosis passing its item to a partner that used its own
  * (onAllyAfterUseItem); and, with a later action, the switch-outs: Eject Button and Red Card after a damaging hit
- * (onAfterMoveSecondary), Eject Pack after a drop (onAfterBoost), Emergency Exit and Wimp Out falling to half HP.
+ * (onAfterMoveSecondary), Eject Pack after a drop (onAfterBoost), Emergency Exit and Wimp Out falling to half HP; with
+ * none, those reach only the end of turn (doubles-eot.ts leaving). A rise and a drop are the boost() events the action
+ * made (World.boosted, recorded by doubles-status.ts applyBoosts: accuracy and evasion included, a rise Defiant undid
+ * included, a clearBoosts none) and, for a damaging move, the stages its pairs' steps changed (the pairwise engine's
+ * boost() records none; applyStep adds a drop Defiant or Competitive hid). `damaging`: the action was a damaging move;
+ * Emergency Exit and Wimp Out act only from damaging-move paths (sim/battle-actions.ts:530,542,1015,1132,1395; status-eot
+ * C7), not after a status move's HP change or a confusion self-hit. `ejectPack`: false for Parting Shot, whose drops set
+ * off no Eject Pack (data/items.ts ejectpack onAfterBoost).
  */
-function eventGuards(ctx: Ctx, before: Snapshot, w: World) {
+function eventGuards(ctx: Ctx, before: Snapshot, w: World, damaging = true, ejectPack = true) {
   const later = w.remaining.some((entry) => alive(w, entry.slot));
+  const events = w.boosted;
+  delete w.boosted;
   for (const slot of DOUBLES_SLOTS) {
     const mon = w.mons[slot], was = before[slot];
     if (!mon || !was || !was.alive) continue;
-    const rose = STATS.some((stat) => (mon.build.boosts[stat] ?? 0) > (was.boosts[stat] ?? 0));
-    const fell = STATS.some((stat) => (mon.build.boosts[stat] ?? 0) < (was.boosts[stat] ?? 0));
+    const rose = !!events?.[slot]?.rose || (damaging && STATS.some((stat) => (mon.build.boosts[stat] ?? 0) > (was.boosts[stat] ?? 0)));
+    // A clearBoosts (Clear Smog: World.boosted reset) takes stages with no boost event: only the recorded drops count there.
+    const fell = !!events?.[slot]?.fell || (damaging && !events?.[slot]?.reset && STATS.some((stat) => (mon.build.boosts[stat] ?? 0) < (was.boosts[stat] ?? 0)));
     if (rose) {
       for (const other of DOUBLES_SLOTS) {
         if (!isFoe(other, slot) || !alive(w, other)) continue;
@@ -714,113 +1153,19 @@ function eventGuards(ctx: Ctx, before: Snapshot, w: World) {
       }
     }
     const partner = allyOf(slot);
-    if (was.itemId && !mon.build.itemId && !mon.fainted && alive(w, partner) && w.mons[partner]!.build.abilityId === "symbiosis" && w.mons[partner]!.build.itemId) {
+    // An item Trick or Switcheroo moved is not used: no Symbiosis (data/abilities.ts symbiosis onAllyAfterUseItem; ADDENDUM T11).
+    if (was.itemId && !mon.build.itemId && !mon.fainted && !w.itemsMoved?.includes(slot) && alive(w, partner) && w.mons[partner]!.build.abilityId === "symbiosis" && w.mons[partner]!.build.itemId) {
       notEstimated(REASONS.notIn2v2(abilityName(ctx, "symbiosis")));
     }
     // A gas holder's Eject Pack takes it out with its Neutralizing Gas, whether or not an action follows.
-    if (!mon.fainted && fell && was.itemId === "ejectpack" && !w.field.magicRoom && mon.build.abilityId !== "klutz") gasEnds(ctx, w, slot);
-    if (!later || mon.fainted) continue;
+    if (!mon.fainted && ejectPack && fell && was.itemId === "ejectpack" && !w.field.magicRoom && mon.build.abilityId !== "klutz") gasEnds(ctx, w, slot);
+    if (mon.fainted) continue;
     const item = was.itemId;
     const usable = !w.field.magicRoom && mon.build.abilityId !== "klutz";
-    if (fell && item === "ejectpack" && usable) notEstimated(REASONS.switchesOut(ctx.names[slot]));
-    if (["emergencyexit", "wimpout"].includes(mon.build.abilityId) && was.above && [...marginal(w, slot).keys()].some((hp) => hp * 2 <= ctx.hp[slot].maxHP)) {
-      notEstimated(REASONS.switchesOut(ctx.names[slot]));
-    }
-  }
-}
-
-/** A boost the Pokémon gives itself (sim/battle.ts boost: Contrary, Simple, the ±6 cap). */
-function selfBoost(ctx: Ctx, w: World, slot: DoublesSlotId, changes: Partial<Record<CombatStat, number>>, action: PendingAction | null) {
-  const mon = w.mons[slot]!;
-  const ability = mon.build.abilityId;
-  const boosts = { ...mon.build.boosts };
-  for (const [stat, raw] of Object.entries(changes) as [CombatStat, number][]) {
-    const amount = (ability === "contrary" ? -raw : raw) * (ability === "simple" ? 2 : 1);
-    const before = boosts[stat] ?? 0;
-    boosts[stat] = Math.max(-6, Math.min(6, before + amount));
-    if ((boosts[stat] ?? 0) < before) mon.statsLowered = true;
-    if ((boosts[stat] ?? 0) > before) mon.statsRaised = true;
-  }
-  mon.build = { ...mon.build, boosts };
-  void action; void ctx;
-}
-
-/**
- * A foe's drop on `slot` from `source` (sim/battle.ts boost with a foe source): Contrary, Simple, Clear Amulet
- * (onTryBoost, priority 1), Clear Body and its kin, Hyper Cutter, Big Pecks, Mirror Armor, then Defiant and
- * Competitive (+2) on a fall, and White Herb after the move (onAnyAfterMove). Mirror Armor (data/abilities.ts
- * mirrorarmor onTryBoost, breakable: `broken`) turns each drop not already at −6 back on a living source, as that
- * Pokémon's own drop from a foe, which no Mirror Armor turns back again (`reflected`: its effect is Mirror Armor).
- */
-function foeDrop(ctx: Ctx, w: World, slot: DoublesSlotId, changes: Partial<Record<CombatStat, number>>, source: DoublesSlotId | null, broken = false, reflected = false) {
-  const mon = w.mons[slot]!;
-  const ability = mon.build.abilityId;
-  if (mon.build.itemId === "clearamulet" && itemWorks(w, mon.build)) return;
-  if (["clearbody", "whitesmoke", "fullmetalbody"].includes(ability)) return;
-  if (ability === "mirrorarmor" && !broken && !reflected && source && source !== slot) {
-    const kept: Partial<Record<CombatStat, number>> = {}, bounced: Partial<Record<CombatStat, number>> = {};
-    for (const [stat, raw] of Object.entries(changes) as [CombatStat, number][]) {
-      if (raw >= 0) kept[stat] = raw;
-      else if ((mon.build.boosts[stat] ?? 0) > -6) bounced[stat] = raw;
-    }
-    if (Object.keys(bounced).length && alive(w, source)) foeDrop(ctx, w, source, bounced, slot, false, true);
-    changes = kept;
-  }
-  const boosts = { ...mon.build.boosts };
-  let fell = false;
-  for (const [stat, raw] of Object.entries(changes) as [CombatStat, number][]) {
-    if (raw < 0 && ((ability === "hypercutter" && stat === "atk") || (ability === "bigpecks" && stat === "def"))) continue;
-    const amount = (ability === "contrary" ? -raw : raw) * (ability === "simple" ? 2 : 1);
-    const before = boosts[stat] ?? 0;
-    boosts[stat] = Math.max(-6, Math.min(6, before + amount));
-    if ((boosts[stat] ?? 0) < before) fell = true;
-    if ((boosts[stat] ?? 0) > before) mon.statsRaised = true;
-  }
-  mon.build = { ...mon.build, boosts };
-  if (!fell) return;
-  mon.statsLowered = true;
-  if (ability === "defiant") selfBoost(ctx, w, slot, { atk: 2 }, null);
-  if (ability === "competitive") selfBoost(ctx, w, slot, { spa: 2 }, null);
-  if (mon.build.itemId === "whiteherb" && itemWorks(w, mon.build) && STATS.some((stat) => (mon.build.boosts[stat] ?? 0) < 0)) {
-    mon.build = { ...mon.build, itemId: "", boosts: Object.fromEntries(STATS.map((stat) => [stat, Math.max(0, mon.build.boosts[stat] ?? 0)])) as BattleBuild["boosts"] };
-  }
-}
-
-/** Bad poison only from a Serene Grace user's Poison Fang or Malignant Chain (stat-moves.ts SERENE_GRACE_MOVES). */
-type GivenStatus = "psn" | "tox" | "brn" | "par";
-
-/** Whether a status lands (sim/pokemon.ts setStatus: runStatusImmunity and the immunities the builds show). */
-function statusLands(ctx: Ctx, w: World, slot: DoublesSlotId, status: GivenStatus, source: DoublesSlotId): boolean {
-  const build = w.mons[slot]!.build;
-  if (build.status) return false;
-  const types = typesOf(ctx, build);
-  const ability = build.abilityId;
-  if (["comatose", "purifyingsalt"].includes(ability) || (ability === "shieldsdown" && build.speciesId === "miniormeteor")) return false;
-  if (ability === "leafguard" && ["Sun", "Harsh Sunshine"].includes(w.field.weather) && !(build.itemId === "utilityumbrella" && itemWorks(w, build))) return false;
-  if (w.field.terrain === "Misty" && grounded(ctx, w, slot)) return false;
-  if (status === "brn") return !types.includes("Fire") && !["waterveil", "waterbubble", "thermalexchange"].includes(ability);
-  // Electric types are immune to paralysis from generation 6 (data/typechart.ts par).
-  if (status === "par") return !types.includes("Electric") && ability !== "limber";
-  const corrosion = w.mons[source]!.build.abilityId === "corrosion";
-  return (corrosion || (!types.includes("Poison") && !types.includes("Steel"))) && !["immunity", "pastelveil"].includes(ability);
-}
-
-/**
- * A status set on `slot` by `source` (sim/pokemon.ts trySetStatus): Synchronize passes it back to its source
- * (data/abilities.ts synchronize onAfterSetStatus), then a curing Berry eats it at the Update (data/items.ts lumberry
- * and its kin onUpdate) unless a foe's Unnerve or As One stops the Berry (onFoeTryEatItem).
- */
-function giveStatus(ctx: Ctx, w: World, slot: DoublesSlotId, status: GivenStatus, source: DoublesSlotId) {
-  if (!statusLands(ctx, w, slot, status, source)) return;
-  const mon = w.mons[slot]!;
-  mon.build = { ...mon.build, status };
-  if (mon.build.abilityId === "synchronize" && source !== slot && alive(w, source)) giveStatus(ctx, w, source, status, slot);
-  const item = mon.build.itemId;
-  const cures = item === "lumberry" || ((status === "psn" || status === "tox") && item === "pechaberry") || (status === "brn" && item === "rawstberry") || (status === "par" && item === "cheriberry");
-  const unnerved = DOUBLES_SLOTS.some((other) => alive(w, other) && other !== w.ghost && isFoe(other, slot) && UNNERVES.has(w.mons[other]!.build.abilityId));
-  if (cures && itemWorks(w, mon.build) && !unnerved) {
-    mon.build = { ...mon.build, itemId: "", status: "" };
-    pouchHeal(ctx, w, slot);
+    const ejects = ejectPack && fell && item === "ejectpack" && usable;
+    const exits = damaging && ["emergencyexit", "wimpout"].includes(mon.build.abilityId) && was.above && [...marginal(w, slot).keys()].some((hp) => hp * 2 <= ctx.hp[slot].maxHP);
+    if (later && (ejects || exits)) notEstimated(REASONS.switchesOut(ctx.names[slot]));
+    if (ejects || exits) eotHooks.leaving(w, slot);
   }
 }
 
@@ -874,6 +1219,8 @@ function faint(ctx: Ctx, w: World, slot: DoublesSlotId, byHit = false) {
   const mon = w.mons[slot]!;
   if (mon.fainted) return;
   mon.fainted = true;
+  // Fainting clears its volatiles (sim/battle.ts faintMessages: clearVolatile): its Substitute too.
+  if (mon.vol.substitute) mon.vol = { ...mon.vol, substitute: undefined };
   if (!byHit && ctx.stats) ctx.otherFaints.add(slot);
   // Its Neutralizing Gas ends as it faints (faintMessages runs its ability's End).
   gasEnds(ctx, w, slot);
@@ -909,7 +1256,7 @@ function koBoost(ctx: Ctx, w: World, slot: DoublesSlotId, count: number) {
 }
 
 // ------------------------------------------------------------------------------------------------------------------
-// Status moves (SPEC §4.4 step 9)
+// Status moves (SPEC §4.4 step 9): doubles-status.ts statusMove (Track A), through the kernel. The helpers they share:
 // ------------------------------------------------------------------------------------------------------------------
 
 /** A living Pokémon still has a damaging move queued (what a change to another Pokémon's types or damage taken can reach). */
@@ -918,175 +1265,9 @@ function laterDamaging(ctx: Ctx, w: World): boolean {
     && (ctx.runtime.movesById.get(entry.moveId)!.category !== "Status" || !!ctx.input.pokemon[entry.slot]!.contexts[entry.moveId]?.useZ));
 }
 
-/**
- * Protean and Libero (data/abilities.ts protean, libero onPrepareHit; data/mods/gen8/abilities.ts on every move): the
- * user takes its move's one type as the move is about to hit (after Try: sim/battle-actions.ts trySpreadMoveHit,
- * tryMoveHit), unless the move is a future move or calls another, the user is Terastallized (sim/pokemon.ts setType)
- * or already of that type alone. The calculations read the species' types, so a later damaging action is not
- * estimated. `type`: the move's type after ModifyType, read only for a holder.
- */
-function proteanGuard(ctx: Ctx, w: World, slot: DoublesSlotId, moveId: string, type: () => string) {
-  const build = w.mons[slot]!.build;
-  if ((build.abilityId !== "protean" && build.abilityId !== "libero") || build.mechanic === "tera") return;
-  if (FUTURE_MOVES.has(moveId) || CALLING_MOVES.has(moveId) || !laterDamaging(ctx, w)) return;
-  const used = type();
-  if (!used || used === "???" || typesOf(ctx, build).join() === used) return;
-  notEstimated(REASONS.typeChange(abilityName(ctx, build.abilityId), ctx.names[slot]));
-}
-
-function statusMove(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove): World[] {
-  const slot = action.slot;
-  const mon = w.mons[slot]!;
-  const name = ctx.names[slot];
-  // A move aimed at the ally (Helping Hand, Aromatic Mist, Coaching, Dragon Cheer, Hold Hands) with the ally fainted or
-  // its slot empty: sim/battle.ts getTarget keeps a fainted ally, sim/pokemon.ts getMoveTargets then has no target and
-  // sim/battle-actions.ts useMoveInner fails it (-fail, [notarget]) before any PrepareHit (Protean).
-  const partner = allyOf(slot);
-  if (move.target === "adjacentAlly" && !alive(w, partner)) {
-    stepFact(ctx, action, `${move.name} fails: ${w.mons[partner] ? ctx.names[partner] : "its ally"} has fainted.`, w.mass);
-    return [w];
-  }
-  // A protecting move that fails stops in its own PrepareHit (data/moves.ts protect onPrepareHit), before Protean's:
-  // it fails only with no action left, where nothing reads the type.
-  proteanGuard(ctx, w, slot, move.id, () => move.type);
-  const protect = PROTECT_MOVES[move.id];
-  if (protect) {
-    // onPrepareHit: !!this.queue.willAct() (data/moves.ts:13973-13974): an action, a fainted Pokémon's included, is still queued.
-    if (!w.remaining.length) { stepFact(ctx, action, `${move.name} fails: no Pokémon moves after it.`, w.mass); return [w]; }
-    mon.protect = protect;
-    // Stance Change (data/abilities.ts stancechange onModifyMove): King's Shield gives Aegislash its Shield Forme.
-    if (move.id === "kingsshield") stanceChange(ctx, w, slot, false);
-    return [w];
-  }
-  if (move.id === "wideguard" || move.id === "quickguard") {
-    if (!w.remaining.length) { stepFact(ctx, action, `${move.name} fails: no Pokémon moves after it.`, w.mass); return [w]; }
-    w.sides[slotSide(slot)] = { ...w.sides[slotSide(slot)], [move.id === "wideguard" ? "wideGuard" : "quickGuard"]: true };
-    return [w];
-  }
-  if (move.id === "helpinghand") {
-    const ally = partner;
-    // onTryHit: the ally must still have a move queued (data/moves.ts:8584-8585 queue.willMove).
-    if (!w.remaining.some((entry) => entry.slot === ally)) {
-      stepFact(ctx, action, `Helping Hand fails: ${ctx.names[ally]} has already moved.`, w.mass);
-      return [w];
-    }
-    w.mons[ally]!.helpingHand += 1;
-    if (w.mons[ally]!.helpingHand > 1) notEstimated(REASONS.notIn2v2("Helping Hand"));
-    stepFact(ctx, action, `Helping Hand: ${ctx.names[ally]}'s move has 1.5x power.`, w.mass);
-    return [w];
-  }
-  if (move.id === "followme" || move.id === "ragepowder") {
-    mon.centre = move.id;
-    return [w];
-  }
-  // Destiny Bond (data/moves.ts destinybond): a foe's move that knocks its user out this turn is guarded (hitReactions).
-  if (move.id === "destinybond") {
-    mon.destinyBond = true;
-    return [w];
-  }
-  if (fieldMove(ctx, w, action, move)) return [w];
-  if (NO_EFFECT_MOVES.has(move.id) || MODELLED_STATUS_MOVES.has(move.id)) return [w];
-  const later = w.remaining.some((entry) => alive(w, entry.slot));
-  fieldGuard(ctx, w, slot, move);
-  // With Neutralizing Gas on the field these can end it or change what it suppresses, whether or not an action follows.
-  if (ctx.gas && GAS_CHANGING_MOVES.has(move.id)) notEstimated(REASONS.withGas(move.name));
-  if (SWITCH_MOVES.has(move.id)) gasEnds(ctx, w, slot);
-  if (SWITCH_MOVES.has(move.id) && later) notEstimated(REASONS.switchesOut(name));
-  // Any other status move changes later moves in ways the turn does not follow (SPEC §2.2): harmless only when no
-  // living Pokémon still has an action.
-  if (later) notEstimated(REASONS.notModelledBefore(move.name));
-  return [w];
-}
-
 /** The weather as the field's effectiveWeather reads it (sim/field.ts: none while a living Cloud Nine or Air Lock holder suppresses it). */
 function effectiveWeather(w: World): BattleConditions["weather"] {
   return DOUBLES_SLOTS.some((slot) => alive(w, slot) && WEATHER_NEGATORS.has(w.mons[slot]!.build.abilityId)) ? "" : w.field.weather;
-}
-
-/**
- * Tailwind, the screens, Trick Room, Gravity and the weather and terrain moves (SPEC §4.4 step 9): each sets its side
- * or field state, which every later calculation and, from generation 8, the next sort read; or it fails where
- * Showdown's own check does. Whether `move` is one of them.
- */
-function fieldMove(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove): boolean {
-  const slot = action.slot;
-  const side = slotSide(slot);
-  const fail = (reason: string) => { stepFact(ctx, action, `${move.name} fails: ${reason}.`, w.mass); return true; };
-  const done = (text: string) => { stepFact(ctx, action, text, w.mass); return true; };
-  const flag = SIDE_MOVES[move.id];
-  if (flag) {
-    // sim/side.ts addSideCondition fails while the condition is up (none of the four has onSideRestart).
-    if (w.sides[side][flag]) return fail(`it is already up on ${ctx.names[slot]}'s side`);
-    // Aurora Veil's onTry: this.field.isWeather(['hail', 'snowscape']), through effectiveWeather.
-    if (move.id === "auroraveil" && effectiveWeather(w) !== "Hail" && effectiveWeather(w) !== "Snow") return fail("there is no hail or snow");
-    fieldGuard(ctx, w, slot, move);
-    w.sides[side] = { ...w.sides[side], [flag]: true };
-    return done(`${move.name} starts on ${ctx.names[slot]}'s side.`);
-  }
-  if (move.id === "trickroom") {
-    fieldGuard(ctx, w, slot, move);
-    // A Trick Room used while it is up ends it (data/moves.ts trickroom condition onFieldRestart).
-    w.field = { ...w.field, trickRoom: !w.field.trickRoom };
-    return done(w.field.trickRoom ? "Trick Room starts." : "Trick Room ends.");
-  }
-  if (move.id === "gravity") {
-    // sim/field.ts addPseudoWeather fails while it is up (Gravity has no onFieldRestart).
-    if (w.field.gravity) return fail("Gravity is already up");
-    w.field = { ...w.field, gravity: true };
-    return done("Gravity starts.");
-  }
-  const weather = WEATHER_MOVES[move.id];
-  if (weather) {
-    // sim/field.ts setWeather: the weather already up fails (generation 3 on); a living strong-weather holder stops
-    // any other weather while its own is up (data/abilities.ts desolateland onAnySetWeather and its kin).
-    if (w.field.weather === weather) return fail(`the weather is already ${weather}`);
-    const keeper = STRONG_WEATHERS[w.field.weather];
-    if (keeper && DOUBLES_SLOTS.some((other) => alive(w, other) && w.mons[other]!.build.abilityId === keeper)) return fail(`${w.field.weather} cannot be replaced`);
-    fieldGuard(ctx, w, slot, move);
-    w.field = { ...w.field, weather };
-    return done(`The weather becomes ${weather}.`);
-  }
-  const terrain = TERRAIN_MOVES[move.id];
-  if (terrain) {
-    // sim/field.ts setTerrain: the terrain already up fails.
-    if (w.field.terrain === terrain) return fail(`the terrain is already ${terrain} Terrain`);
-    fieldGuard(ctx, w, slot, move);
-    w.field = { ...w.field, terrain };
-    return done(`The terrain becomes ${terrain} Terrain.`);
-  }
-  return false;
-}
-
-/**
- * A status move that changes the field changes what the battle settled from it (SPEC §2.2): a weather or a terrain
- * with a field-settled ability or item in (Protosynthesis, Quark Drive, Forecast, Mimicry, Flower Gift, Ice Face, a
- * Seed, Booster Energy), Tailwind with Wind Rider or Wind Power on its side, Trick Room with a Room Service holder.
- */
-function fieldGuard(ctx: Ctx, w: World, slot: DoublesSlotId, move: ChampionsMove) {
-  const living = DOUBLES_SLOTS.filter((other) => alive(w, other));
-  if (FIELD_MOVES.has(move.id)) {
-    for (const other of living) {
-      const build = w.mons[other]!.build;
-      if (FIELD_SETTLED_ABILITIES.has(build.abilityId)) notEstimated(REASONS.fieldChange(abilityName(ctx, build.abilityId)));
-      if (FIELD_SETTLED_ITEMS.has(build.itemId)) notEstimated(REASONS.fieldChange(itemName(ctx, build.itemId)));
-    }
-  }
-  if (move.id === "tailwind") {
-    for (const other of living) {
-      const ability = w.mons[other]!.build.abilityId;
-      if (slotSide(other) === slotSide(slot) && (ability === "windrider" || ability === "windpower")) notEstimated(REASONS.activates(move.name, abilityName(ctx, ability)));
-    }
-  }
-  if (move.id === "trickroom") {
-    for (const other of living) if (w.mons[other]!.build.itemId === "roomservice") notEstimated(REASONS.activates(move.name, itemName(ctx, "roomservice")));
-  }
-}
-
-function stanceChange(ctx: Ctx, w: World, slot: DoublesSlotId, blade: boolean) {
-  const mon = w.mons[slot]!;
-  if (mon.build.abilityId !== "stancechange" || mon.build.transformedFrom || !mon.build.speciesId.startsWith("aegislash")) return;
-  const form = blade ? "aegislashblade" : "aegislash";
-  if (ctx.runtime.speciesById.has(form)) mon.build = { ...mon.build, speciesId: form };
 }
 
 // ------------------------------------------------------------------------------------------------------------------
@@ -1136,7 +1317,7 @@ function powderImmune(ctx: Ctx, w: World, slot: DoublesSlotId): boolean {
   return types.includes("Grass") || build.abilityId === "overcoat" || (build.itemId === "safetygoggles" && itemWorks(w, build));
 }
 
-type Redirection = { slot: DoublesSlotId; by: string };
+export type Redirection = { slot: DoublesSlotId; by: string };
 /** The centres of attention (MonState.centre): the move that makes one and its RedirectTarget handler priority. */
 const CENTRES: Record<NonNullable<MonState["centre"]>, { by: string; priority: number }> = {
   spotlight: { by: "Spotlight", priority: 2 }, followme: { by: "Follow Me", priority: 1 }, ragepowder: { by: "Rage Powder", priority: 1 },
@@ -1185,21 +1366,35 @@ function across(slot: DoublesSlotId): DoublesSlotId {
   return slot.endsWith("left") ? left : right;
 }
 
-/** Spread targets in Showdown's order (sim/pokemon.ts getMoveTargets): the adjacent ally first, then the foes by position. */
+/** A Pokémon's Showdown position (sim/pokemon.ts position) in this world: its slot's, or its ally's after an Ally Switch. */
+const showdownPosition = (w: World, slot: DoublesSlotId) => SHOWDOWN_POSITION[positionOf(w, slot)].position;
+
+/**
+ * Spread targets in Showdown's order (sim/pokemon.ts getMoveTargets): the adjacent ally first, then the foes by position
+ * (sim/pokemon.ts:732-735, :809-814), their positions after an Ally Switch (ADDENDUM A5).
+ */
 function spreadTargets(w: World, attacker: DoublesSlotId, targetType: string): DoublesSlotId[] {
-  const foes = [...foesOf(attacker)].sort((a, b) => SHOWDOWN_POSITION[a].position - SHOWDOWN_POSITION[b].position).filter((slot) => alive(w, slot));
+  const foes = [...foesOf(attacker)].sort((a, b) => showdownPosition(w, a) - showdownPosition(w, b)).filter((slot) => alive(w, slot));
   const ally = allyOf(attacker);
   return [...(targetType === "allAdjacent" && alive(w, ally) ? [ally] : []), ...foes];
 }
 
-/** Whether `slot` is grounded (sim/pokemon.ts isGrounded): Gravity, Iron Ball, then not Flying, Levitate, Eelevate or Air Balloon. */
+/**
+ * Whether `slot` is grounded (sim/pokemon.ts:2148-2160 isGrounded): Gravity, Ingrain, Smack Down (EotState), Iron Ball;
+ * then not Flying (a Roosted Pokémon is not Flying unless Terastallized: data/moves.ts roost condition onType), Levitate,
+ * Eelevate, Magnet Rise (EotState) or Air Balloon.
+ */
 function grounded(ctx: Ctx, w: World, slot: DoublesSlotId): boolean {
-  const build = w.mons[slot]!.build;
+  const mon = w.mons[slot]!;
+  const build = mon.build;
   if (w.field.gravity) return true;
+  if (mon.eot.ingrain || mon.eot.smackedDown) return true;
   const item = itemWorks(w, build) ? build.itemId : "";
   if (item === "ironball") return true;
-  if (typesOf(ctx, build).includes("Flying")) return false;
+  const tera = build.mechanic === "tera" && !!build.configuration?.teraType && build.configuration.teraType !== "Stellar";
+  if (typesOf(ctx, build).includes("Flying") && !(mon.eot.roosted && !tera)) return false;
   if (build.abilityId === "levitate" || build.abilityId === "eelevate") return false;
+  if (mon.eot.magnetRise) return false;
   return item !== "airballoon";
 }
 
@@ -1209,8 +1404,12 @@ function typesOf(ctx: Ctx, build: BattleBuild): readonly string[] {
   return tera ?? ctx.runtime.speciesById.get(build.speciesId)?.types ?? [];
 }
 
-/** `darts`: Dragon Darts' smart targets, one dart each while both pass the hit steps (sim/pokemon.ts getSmartTargets). */
-type Resolution = { world: World; targets: DoublesSlotId[]; spread: boolean; darts?: true; facts: string[] };
+/**
+ * Where a damaging move goes in one world (resolveTargets). `darts`: Dragon Darts' smart targets, one dart each while
+ * both pass the hit steps (sim/pokemon.ts getSmartTargets). `failed`: with no target, the facts already say why it fails
+ * (no "no target" fact).
+ */
+export type Resolution = { world: World; targets: DoublesSlotId[]; spread: boolean; darts?: true; facts: string[]; failed?: true; swap?: string };
 
 /**
  * The dex target type `attacker`'s move is used with in this world: a Z-Move's own (getActiveZMove: Clangorous
@@ -1241,37 +1440,54 @@ function resolveTargets(ctx: Ctx, w: World, action: PendingAction, info: Extract
   const targetType = usedTargetType(ctx, w, attacker, move, info);
   if (SPREAD_TARGETS.has(targetType)) return [{ world: w, targets: spreadTargets(w, attacker, targetType), spread: true, facts: [] }];
   const living = foesOf(attacker).filter((slot) => alive(w, slot));
-  let picks: { world: World; target: DoublesSlotId; facts: string[] }[];
+  const tracks = tracksTarget(w, attacker, move, info);
+  const darts = move.id === "dragondarts" && !info.transformed;
+  // `swap`: the fact for a hit an Ally Switch sends to the Pokémon now at the chosen position (kept unless redirected).
+  let picks: { world: World; target: DoublesSlotId; facts: string[]; swap?: string }[];
   if (targetType === "randomNormal") {
     // sim/battle.ts getRandomTarget: one living foe at random.
     picks = living.map((target) => ({ world: living.length > 1 ? cloneWorld(w, w.mass / living.length) : w, target, facts: [] }));
   } else {
-    const chosen = action.target!;
-    if (alive(w, chosen)) picks = [{ world: w, target: chosen, facts: [] }];
+    const aimed = action.target!;
+    // Positions (ADDENDUM §3.5.1): the move is aimed at a position, whose Pokémon an Ally Switch can change; a tracking
+    // move keeps the Pokémon chosen at queue time, its user's own ally included (sim/battle-queue.ts:268 originalTarget,
+    // sim/battle.ts:2440-2447). One aimed at its user's ally's place after that ally's Ally Switch, where its user now
+    // stands, has no target (sim/battle.ts:2456-2462; A2), and Dragon Darts there is not followed (A2, p1:149).
+    if (!tracks && !isFoe(attacker, aimed) && occupant(w, aimed) === attacker) {
+      if (darts) notEstimated(REASONS.dartsAimSelf);
+      if (["adjacentAlly", "any", "normal"].includes(targetType)) {
+        return [{ world: w, targets: [], spread: false, facts: [`${move.name} fails: after Ally Switch, ${ctx.names[attacker]} stands in ${ctx.names[allyOf(attacker)]}'s place.`], failed: true }];
+      }
+    }
+    const chosen = tracks ? aimed : occupant(w, aimed);
+    const swap = chosen !== aimed ? `Ally Switch: ${move.name} hits ${ctx.names[chosen]} in ${ctx.names[aimed]}'s place.` : undefined;
+    if (alive(w, chosen)) picks = [{ world: w, target: chosen, facts: [], ...(swap ? { swap } : {}) }];
     // A move aimed at a fainted ally keeps that target; one aimed at a fainted foe goes to the other foe, or with none
     // left to the foe across (sim/battle.ts:2464-2487 getTarget, getRandomTarget: foe.active[length - 1 - position]).
     // Redirection then runs on that target, and the move fails only when it is still a fainted one (sim/pokemon.ts:824-840).
     else if (!isFoe(attacker, chosen)) picks = [{ world: w, target: chosen, facts: [] }];
     else if (!living.length) {
-      // An empty slot (no Pokémon) stands for the fainted foe there: redirection reads nothing more of the target.
-      const fallen = w.mons[across(attacker)] ? across(attacker) : foesOf(attacker).find((slot) => w.mons[slot]);
+      // An empty slot (no Pokémon) stands for the fainted foe there: redirection reads nothing more of the target. The
+      // foe across is the one across from where the attacker stands now (ADDENDUM §3.5.1).
+      const facing = occupant(w, across(positionOf(w, attacker)));
+      const fallen = w.mons[facing] ? facing : foesOf(attacker).find((slot) => w.mons[slot]);
       picks = fallen ? [{ world: w, target: fallen, facts: [] }] : [];
     }
     else picks = [{ world: w, target: living[0], facts: [`${ctx.names[chosen]} fainted: ${move.name} hits ${ctx.names[living[0]]}.`] }];
   }
   if (!picks.length) return [{ world: w, targets: [], spread: false, facts: [] }];
-  const tracks = tracksTarget(w, attacker, move, info);
-  const darts = move.id === "dragondarts" && !info.transformed;
-  return picks.flatMap(({ world, target, facts }) => {
+  return picks.flatMap(({ world, target, facts, swap }) => {
     const taken = tracks ? null : redirect(ctx, world, attacker, target, info, move.id, context);
     if (!taken && !alive(world, target)) return [{ world, targets: [], spread: false, facts: [] }];
     const routed = taken ? taken.slot : target;
     const routeFacts = taken && taken.slot !== target ? [...facts, takesFact(ctx, taken, move)] : facts;
+    // The Ally Switch fact is the caller's to state once TryMove passes (a Sucker Punch failing on the new occupant hits no one).
+    const moved = !(taken && taken.slot !== target) && swap ? { swap } : {};
     // getSmartTargets: Dragon Darts' target's partner too, unless that is the user or has fainted; a redirection
     // handler that applies turns smart targeting off (data/moves.ts followme, data/abilities.ts lightningrod).
     const second = allyOf(routed);
-    if (!darts || taken || second === attacker || !alive(world, second)) return [{ world, targets: [routed], spread: false, facts: routeFacts }];
-    return [{ world, targets: [routed, second], spread: false, darts: true as const, facts: routeFacts }];
+    if (!darts || taken || second === attacker || !alive(world, second)) return [{ world, targets: [routed], spread: false, facts: routeFacts, ...moved }];
+    return [{ world, targets: [routed, second], spread: false, darts: true as const, facts: routeFacts, ...moved }];
   });
 }
 
@@ -1327,7 +1543,7 @@ function resistUnnerve(ctx: Ctx, w: World, attacker: DoublesSlotId, target: Doub
 }
 
 /** `through`: a Z-Move or Max Move that gets through a protecting move with a contact effect, which then acts (its condition's onHit). */
-type HitCheck = {
+export type HitCheck = {
   slot: DoublesSlotId; block: null | { by: string; protect?: keyof typeof PROTECT_CONTACT } | { absorb: string }; through?: keyof typeof PROTECT_CONTACT;
   /** spreadStep: the block's effect was applied before the hit loop (a protecting move's contact effect). */
   done?: true;
@@ -1433,12 +1649,14 @@ function protectContact(ctx: Ctx, w: World, attacker: DoublesSlotId, protector: 
 /**
  * The attacker's HP after a fixed loss outside its move's hits (Spiky Shield; a spread move's retaliation and Life
  * Orb): fainted at 0, else its HP or pinch Berry at the Update (berryArithmetic: Sitrus, Oran, Berry Juice at half, the
- * Figy family and the stat Berries at a quarter, Gluttony, Ripen, Cheek Pouch). One world per outcome.
+ * Figy family, the stat Berries, Lansat and Starf at a quarter, Gluttony, Ripen, Cheek Pouch). Damage from something
+ * other than a move resets a Berserk or Anger Shell lock (onDamage: checkedBerserk true). One world per outcome.
  */
 function afterLoss(ctx: Ctx, w: World, slot: DoublesSlotId, ...losses: (number | number[])[]): World[] {
   const mon = w.mons[slot]!;
+  if (mon.vol.berryLocked) { const { berryLocked: _locked, ...rest } = mon.vol; void _locked; mon.vol = rest; }
   const item = mon.build.itemId;
-  const usable = itemWorks(w, mon.build) && (HEALING_BERRIES.has(item) || !!PINCH_STAT_BERRIES[item]) && item !== "enigmaberry";
+  const usable = itemWorks(w, mon.build) && (HEALING_BERRIES.has(item) || !!PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item)) && item !== "enigmaberry";
   const unnerved = DOUBLES_SLOTS.some((other) => alive(w, other) && other !== w.ghost && isFoe(other, slot) && UNNERVES.has(w.mons[other]!.build.abilityId)) && item !== "berryjuice";
   const { maxHP, baseMaxHP } = ctx.hp[slot];
   const berry = usable && !unnerved ? berryArithmetic(item, { maxHP, baseMaxHP, ability: mon.build.abilityId }, ctx.runtime.profile.generation) : null;
@@ -1452,22 +1670,73 @@ function afterLoss(ctx: Ctx, w: World, slot: DoublesSlotId, ...losses: (number |
     }
     return { hp, tag: `${hp <= 0 ? "fainted" : "in"}|${ate ? "ate" : ""}` };
   });
-  return outcomes.map(({ world, tag }) => {
+  return outcomes.flatMap(({ world, tag }) => {
     const target = world.mons[slot]!;
     target.hurt = true;
     if (tag.startsWith("fainted")) faint(ctx, world, slot);
-    if (tag.endsWith("ate")) ateBerry(ctx, world, slot, item);
-    return world;
+    return tag.endsWith("ate") ? ateBerry(ctx, world, slot, item) : [world];
   });
 }
 
-/** What eating an HP or pinch Berry leaves (data/items.ts onEat): no item (Unburden), a pinch Berry's rise (Ripen), a Figy-family Berry's confusion. */
-function ateBerry(ctx: Ctx, w: World, slot: DoublesSlotId, item: string) {
+/**
+ * What eating an HP or pinch Berry leaves (data/items.ts onEat): no item (Unburden), a pinch Berry's rise (Ripen), a
+ * Figy-family Berry's confusion, Lansat Berry's focusenergy volatile (+2 critical-hit ratio; none with Focus Energy's or
+ * Dragon Cheer's), Starf Berry's +2 (Ripen +4) to one of its stats below +6 at random (this.sample: one world each). The
+ * first world is `w`, changed in place.
+ */
+function ateBerry(ctx: Ctx, w: World, slot: DoublesSlotId, item: string): World[] {
   const mon = w.mons[slot]!;
   const stat = PINCH_STAT_BERRIES[item];
   mon.build = { ...mon.build, itemId: "", ...(mon.build.abilityId === "unburden" ? { abilityActive: true } : {}) };
   if (stat) selfBoost(ctx, w, slot, { [stat]: mon.build.abilityId === "ripen" ? 2 : 1 }, null);
   berryConfusion(ctx, w, slot, item);
+  // The Lansat Berry's focusenergy is BattleBuild.settledFocusEnergy (types.ts: focusEnergy is the move's), so a certain
+  // critical hit names the Berry (calculate.ts critRatio), as the pair's step does for an attacker that ate one (uses-to-ko.ts toBuild).
+  if (item === "lansatberry" && !mon.build.focusEnergy && !mon.build.settledFocusEnergy && !mon.build.dragonCheer) mon.build = { ...mon.build, settledFocusEnergy: true };
+  if (item !== "starfberry" || !alive(w, slot)) return [w];
+  const raised = STATS.filter((each) => (mon.build.boosts[each] ?? 0) < 6);
+  if (!raised.length) return [w];
+  const amount = mon.build.abilityId === "ripen" ? 4 : 2;
+  const share = w.mass / raised.length;
+  const worlds = raised.map((_, index) => (index === 0 ? w : cloneWorld(w, share)));
+  w.mass = share;
+  raised.forEach((each, index) => selfBoost(ctx, worlds[index], slot, { [each]: amount }, null));
+  return worlds;
+}
+
+/**
+ * A healing Berry a Berserk or Anger Shell lock (MoveVolatiles.berryLocked, after a confusion self-hit) keeps at or under
+ * its line: a later hit on its holder (the pair's step reads a held Berry as due) and a status move that resets the lock
+ * (doubles-status.ts hitOne) do not follow it: not estimated. The end of turn follows the lock (doubles-eot.ts updateSlot,
+ * unlock: a residual's damage resets it).
+ */
+function lockedBerryGuard(ctx: Ctx, w: World, slot: DoublesSlotId) {
+  const mon = w.mons[slot];
+  if (!mon?.vol.berryLocked || mon.fainted) return;
+  const item = mon.build.itemId;
+  if (!BERSERK_BERRIES.has(item) || item === "enigmaberry" || !itemWorks(w, mon.build) || berryStopped(w, slot)) return;
+  const { line } = berryArithmetic(item, { ...ctx.hp[slot], ability: mon.build.abilityId }, ctx.runtime.profile.generation);
+  if ([...marginal(w, slot).keys()].some((hp) => hp > 0 && hp <= line)) notEstimated(REASONS.berryLocked(abilityName(ctx, mon.build.abilityId), itemName(ctx, item)));
+}
+
+/**
+ * A target's Starf Berry, a Ganlon or Apicot Berry (a defense the later hits read) or, with Cheek Pouch, a Lansat Berry
+ * eaten at the Update between two hits of one move (data/items.ts onUpdate; sim/battle-actions.ts:967): the hits after
+ * it read the new stage or HP, which the pair's step does not follow (applyStep eats a Lansat or Starf Berry after the
+ * move). Not estimated where the hits before the last can take a target above the Berry's line to it
+ * (verify-engine VE-F1-10, VE-F1-13).
+ */
+function berryBetweenHitsGuard(ctx: Ctx, w: World, target: DoublesSlotId, row: MoveDamageResult) {
+  const hits = row.hits ?? 1;
+  const mon = w.mons[target];
+  if (hits < 2 || row.kind !== "calculated" || !mon || mon.fainted) return;
+  const item = mon.build.itemId;
+  const between = item === "starfberry" || item === "ganlonberry" || item === "apicotberry" || (item === "lansatberry" && mon.build.abilityId === "cheekpouch");
+  if (!between || !itemWorks(w, mon.build) || berryStopped(w, target)) return;
+  const { line } = berryArithmetic(item, { ...ctx.hp[target], ability: mon.build.abilityId }, ctx.runtime.profile.generation);
+  const perHit = Array.isArray(row.rolls) && Array.isArray(row.rolls[0]) ? (row.rolls as number[][]).map((rolls) => Math.max(...rolls)) : null;
+  const before = perHit ? perHit.slice(0, hits - 1).reduce((sum, each) => sum + each, 0) : row.max ?? 0;
+  if ([...marginal(w, target).keys()].some((hp) => hp > line && hp - before <= line)) notEstimated(REASONS.berryBetweenHits(itemName(ctx, item), moveName(ctx, row.moveId)));
 }
 
 /** A living foe of `slot` whose Unnerve or As One stops `slot`'s Berries (onFoeTryEatItem; an exploding user's no longer: World.ghost). */
@@ -1493,7 +1762,10 @@ function unnerveEnds(ctx: Ctx, w: World, gone: DoublesSlotId[]): World[] {
   return worlds;
 }
 
-/** `slot` eats a Berry that is due at an Update (unnerveEnds): one world per outcome. */
+/**
+ * `slot` eats a Berry that is due at an Update (unnerveEnds, a received item, Pain Split): one world per outcome. A
+ * Berserk or Anger Shell lock keeps a healing Berry (MoveVolatiles.berryLocked: TryEatItem fails).
+ */
 function berryDue(ctx: Ctx, w: World, slot: DoublesSlotId): World[] {
   const mon = w.mons[slot]!;
   const item = mon.build.itemId, status = mon.build.status;
@@ -1501,7 +1773,8 @@ function berryDue(ctx: Ctx, w: World, slot: DoublesSlotId): World[] {
   // data/items.ts lumberry, cheriberry, chestoberry, pechaberry, rawstberry, aspearberry onUpdate.
   const cures = item === "lumberry" ? !!status : { cheriberry: ["par"], chestoberry: ["slp"], pechaberry: ["psn", "tox"], rawstberry: ["brn"], aspearberry: ["frz"] }[item]?.includes(status) ?? false;
   if (cures) { mon.build = { ...mon.build, itemId: "", status: "" }; pouchHeal(ctx, w, slot); return [w]; }
-  if (!(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item]) || item === "enigmaberry") return [w];
+  if (!(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item)) || item === "enigmaberry") return [w];
+  if (mon.vol.berryLocked && BERSERK_BERRIES.has(item)) return [w];
   const { maxHP, baseMaxHP } = ctx.hp[slot];
   const berry = berryArithmetic(item, { maxHP, baseMaxHP, ability: mon.build.abilityId }, ctx.runtime.profile.generation);
   if (![...marginal(w, slot).keys()].some((hp) => hp > 0 && hp <= berry.line)) return [w];
@@ -1509,10 +1782,7 @@ function berryDue(ctx: Ctx, w: World, slot: DoublesSlotId): World[] {
     if (hp <= 0 || hp > berry.line) return { hp, tag: "" };
     noteBerry(ctx, slot, item, berry, hp);
     return { hp: eatBerry(berry, hp), tag: "ate" };
-  }).map(({ world, tag }) => {
-    if (tag === "ate") ateBerry(ctx, world, slot, item);
-    return world;
-  });
+  }).flatMap(({ world, tag }) => (tag === "ate" ? ateBerry(ctx, world, slot, item) : [world]));
 }
 
 function damagingMove(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove): World[] {
@@ -1536,7 +1806,7 @@ function damagingMove(ctx: Ctx, w: World, action: PendingAction, move: Champions
     const world = resolution.world;
     for (const fact of resolution.facts) stepFact(ctx, action, fact, world.mass);
     if (!resolution.targets.length) {
-      stepFact(ctx, action, `${move.name} fails: no target.`, world.mass);
+      if (!resolution.failed) stepFact(ctx, action, `${move.name} fails: no target.`, world.mass);
       out.push(world);
       continue;
     }
@@ -1549,8 +1819,10 @@ function damagingMove(ctx: Ctx, w: World, action: PendingAction, move: Champions
     // TryMove and Try (SPEC §4.4 step 5): TryMove reads the last target (sim/battle-actions.ts useMoveInner).
     const last = resolution.targets[resolution.targets.length - 1];
     if (step && info.transformed) { const used = usedMove(ctx, world, attacker, move.id, last, info); step.effectiveName = used.name; step.effectiveType = used.type; }
-    const failure = moveFailure(ctx, world, action, move, last, priority, info);
+    // Then a damaging move's own Try that Track A follows (doubles-status.ts tryMove: Snore once its user woke this turn).
+    const failure = moveFailure(ctx, world, action, move, last, priority, info) ?? statusHooks.tryMove(kernelOf(ctx), world, action, move, last, priority, info);
     if (failure) { stepFact(ctx, action, failure, world.mass); out.push(world); continue; }
+    if (resolution.swap) stepFact(ctx, action, resolution.swap, world.mass);
     // PrepareHit (sim/battle-actions.ts trySpreadMoveHit): Protean and Libero; an exploding user has already fainted.
     if (info.transformed || !SELF_DESTRUCT_MOVES.has(move.id)) proteanGuard(ctx, world, attacker, move.id, () => usedType(ctx, world, attacker, move.id, last, info, context));
     if (step) for (const slot of resolution.targets) hitStats(step, slot).reached += world.mass;
@@ -1610,6 +1882,8 @@ function chargesThisTurn(ctx: Ctx, w: World, slot: DoublesSlotId, move: Champion
 function chargeTurn(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove): World[] {
   const attacker = action.slot;
   if (SEMI_INVULNERABLE_MOVES.has(move.id) && w.remaining.some((entry) => alive(w, entry.slot))) notEstimated(REASONS.semiInvulnerable(ctx.names[attacker], move.name));
+  // The charge turn as the end of turn reads it (doubles-eot.ts charging: Dig and Dive sheltered, Fly and its kin semi-invulnerable).
+  eotHooks.charging(w, attacker, move);
   const rise = statMove(move.id, ctx.runtime.profile.id)?.preHit;
   if (rise) selfBoost(ctx, w, attacker, rise, action);
   stepFact(ctx, action, `${move.name}: ${ctx.names[attacker]} charges this turn.`, w.mass);
@@ -1635,17 +1909,8 @@ function moveFailure(ctx: Ctx, w: World, action: PendingAction, move: ChampionsM
       return `${move.name} fails: ${ctx.names[slot]} has Damp.`;
     }
   }
-  // Queenly Majesty, Dazzling and Armor Tail (data/abilities.ts onFoeTryMove): a foe's move used with priority above
-  // 0.1 (move.priority, sim/battle.ts:2649) at the holder or its partner fails in TryMove, before it reaches anyone
-  // (sim/battle-actions.ts useMoveInner). Breakable: the attacker's Mold Breaker and ignoreAbility moves pass them.
-  if (priority > 0.1 && isFoe(action.slot, target) && info) {
-    for (const holder of [target, allyOf(target)]) {
-      if (!alive(w, holder)) continue;
-      const ability = w.mons[holder]!.build.abilityId;
-      if (!(PRIORITY_SHIELD_ABILITIES as readonly string[]).includes(ability) || breaks(w, action.slot, holder, info)) continue;
-      return `${move.name} fails: ${ctx.names[holder]} has ${abilityName(ctx, ability)}.`;
-    }
-  }
+  const shield = info ? priorityShield(ctx, w, action, move, target, priority, info) : null;
+  if (shield) return shield;
   if (priority > 0 && !isFoe(action.slot, target) && target !== action.slot) {
     const ability = w.mons[target]!.build.abilityId;
     // The engine blocks a priority move into a shield holder or a grounded Pokémon on Psychic Terrain from any side;
@@ -1656,20 +1921,52 @@ function moveFailure(ctx: Ctx, w: World, action: PendingAction, move: ChampionsM
   return null;
 }
 
+/**
+ * Queenly Majesty, Dazzling and Armor Tail (data/abilities.ts onFoeTryMove): a foe's move used with priority above
+ * 0.1 (move.priority, sim/battle.ts:2649) at the holder or its partner fails in TryMove, before it reaches anyone
+ * (sim/battle-actions.ts useMoveInner). Breakable: the attacker's Mold Breaker and ignoreAbility moves pass them.
+ */
+function priorityShield(ctx: Ctx, w: World, action: PendingAction, move: ChampionsMove, target: DoublesSlotId, priority: number, info: Extract<TurnMove, { kind: "move" }>): string | null {
+  if (!(priority > 0.1 && isFoe(action.slot, target))) return null;
+  for (const holder of [target, allyOf(target)]) {
+    if (!alive(w, holder)) continue;
+    const ability = w.mons[holder]!.build.abilityId;
+    if (!(PRIORITY_SHIELD_ABILITIES as readonly string[]).includes(ability) || breaks(w, action.slot, holder, info)) continue;
+    return `${move.name} fails: ${ctx.names[holder]} has ${abilityName(ctx, ability)}.`;
+  }
+  return null;
+}
+
+/** Whether the move passes `target`'s protection (calculate.ts turnProtectOutcome, as hitChecks reads it). */
+function protectPasses(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId): boolean {
+  const move = ctx.runtime.movesById.get(action.moveId!)!;
+  const conditions = conditionsFor(ctx, w, action.slot, target, false);
+  const context = ctx.input.pokemon[action.slot]!.contexts[move.id];
+  return turnProtectOutcome(move, calcBuild(w, action.slot), calcBuild(w, target), conditions, context, ctx.runtime) !== "blocked";
+}
+
 /** One damaging hit X -> T through the pairwise engine, the target's (and a followed attacker's) state carried (SPEC §4.5). */
 function singleStep(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMove, { kind: "move" }>, check: HitCheck, attackerHP?: number): World[] {
   const attacker = action.slot, target = check.slot;
   const move = ctx.runtime.movesById.get(action.moveId!)!;
   const step = stepOf(ctx, action);
   if (check.block) return blockedHit(ctx, w, action, info, check);
+  // A damaging move with an effect of its own on this target instead of damage (doubles-status.ts singleHit, Track A:
+  // Pollen Puff on an ally), or null.
+  const instead = statusHooks.singleHit(kernelOf(ctx), w, action, info, check, attackerHP);
+  if (instead) return instead;
   // Final Gambit's damage is its user's HP (data/moves.ts finalgambit damageCallback): one world per HP it has.
   if (move.id === "finalgambit" && !info.transformed && attackerHP === undefined) {
     return [...marginal(w, attacker).keys()].flatMap((hp) => condition(w, attacker, (value) => value === hp)
       .filter(({ meets }) => meets).flatMap(({ world }) => singleStep(ctx, world, action, info, check, hp)));
   }
+  // A hit into a Substitute (doubles-substitute.ts single, Track E): its worlds, or null when the hit does not meet one.
+  const behind = substituteHooks.single(kernelOf(ctx), w, action, info, check, attackerHP);
+  if (behind) return behind;
   const conditions = conditionsFor(ctx, w, attacker, target, false, move.id);
   const context = contextFor(ctx, w, action, target, info);
-  const entry = searchFor(ctx, w, attacker, target, move.id, conditions, context, false, attackerHP);
+  const kept = psychicNoiseKeepsBerry(ctx, w, attacker, target, info);
+  const entry = searchFor(ctx, w, attacker, target, move.id, conditions, context, false, attackerHP, kept ? { healBlocked: true } : undefined);
   if (entry.row.kind !== "calculated") {
     const face = faceTaken(ctx, w, attacker, target, entry.row, move);
     if (face) return faceHit(ctx, w, action, info, target, face, false);
@@ -1682,6 +1979,9 @@ function singleStep(ctx: Ctx, w: World, action: PendingAction, info: Extract<Tur
   }
   unnerveGuard(ctx, w, attacker, target);
   return applyStep(ctx, w, action, target, entry, info, false).flatMap(({ world, landed, knocked }) => {
+    // The held Berry back in place of the stand-in (psychicNoiseKeepsBerry).
+    const receiver = world.mons[target]!;
+    if (kept && receiver.build.itemId === "leftovers") receiver.build = { ...receiver.build, itemId: kept };
     // The faint batch after the hits (sim/battle-actions.ts hitStepMoveHitLoop faintMessages): the knocker-out's rise.
     if (knocked) koBoost(ctx, world, attacker, 1);
     if (info.isMax && landed > 0) maxEffects(ctx, world, action, info, target);
@@ -1708,10 +2008,15 @@ function blockedHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<Tur
 /**
  * Apply one pair's turnStep to the world (SPEC §4.5 steps 2-4): the factors holding the target (and a followed
  * attacker) joined; for each assignment of their other slots one call; one child world per discrete outcome, with the
- * joint table over the joined slots. `spread`: the attacker's state is recorded for spreadStep, not applied.
+ * joint table over the joined slots. `spread`: the attacker's state is recorded for spreadStep, not applied. `part`: a
+ * step after hits into a Substitute (ADDENDUM §3.5.5; uses-to-ko.ts TurnStepPart): one case of the run, its first
+ * `skip` hits already dealt to the Substitute; the target's hit count then takes every hit of the move once a hit
+ * reached it (K1), and only outcomes with a hit on the target count as calculated.
  */
-function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId, entry: SearchEntry, info: Extract<TurnMove, { kind: "move" }>, spread: boolean): { world: World; landed: number; knocked: boolean }[] {
+function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId, entry: SearchEntry, info: Extract<TurnMove, { kind: "move" }>, spread: boolean, part?: TurnStepPart): StepChild[] {
   const attacker = action.slot;
+  lockedBerryGuard(ctx, w, target);
+  berryBetweenHitsGuard(ctx, w, target, entry.row);
   const follow = entry.follow && !spread;
   const world = cloneWorld(w);
   const at = join(world, follow ? [target, attacker] : [target]);
@@ -1743,7 +2048,7 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
   };
   for (const group of groups.values()) {
     const entries: TurnStepEntry[] = [...group.byAttacker].map(([x, dist]) => ({ attackerHP: x, target: dist }));
-    const result = entry.search!.turnStep(follow ? entries : [{ attackerHP: 0, target: mergeDists(entries) }], ctx.mode, follow);
+    const result = entry.search!.turnStep(follow ? entries : [{ attackerHP: 0, target: mergeDists(entries) }], ctx.mode, follow, part);
     if ("failed" in result) notEstimated(result.failed);
     for (const [source, [least, most]] of result.heals) { noteHeal(ctx, target, source, least); noteHeal(ctx, target, source, most); }
     // A followed attacker's own HP Berry and Shell Bell (data/items.ts shellbell onAfterMoveSecondarySelf), and Cheek Pouch.
@@ -1769,7 +2074,14 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
     }
   }
   if (step) note(hitStats(step, target).firsts, JSON.stringify(entry.row), entry.row, world.mass);
-  const out: { world: World; landed: number; knocked: boolean }[] = [];
+  // A certain critical hit without the field's Critical hit (a critical-hit ratio of 4: calculate.ts certainCrit; an
+  // always-critical move; Merciless): a fact on the hit, and the turn's hit rule says so (calculateDoublesTurn).
+  if (step && !ctx.input.field.critical && entry.trace?.result?.rawDesc.isCritical) {
+    ctx.certainCrit = true;
+    const ratio = entry.row.assumptions.find((text) => text.startsWith(CERTAIN_CRIT));
+    bump(hitStats(step, target).facts, ratio ?? `${entry.row.effectiveName ?? info.effective.name} is always a critical hit.`, world.mass);
+  }
+  const out: StepChild[] = [];
   for (const { table, outcome } of children.values()) {
     let total = 0;
     for (const mass of table.values()) total += mass;
@@ -1814,12 +2126,20 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
       if (ability === "electromorphosis" || (ability === "windpower" && !!info.flags.wind)) receiver.charged = true;
       receiver.hurt = true;
       receiver.focusLost = true;
-      receiver.timesAttacked += outcome.landed;
+      // Every hit of the move once its last hit reached the Pokémon, a Substitute's included (sim/battle-actions.ts:990-996; K1).
+      receiver.timesAttacked += outcome.landed + outcome.subHits;
       if (!receiver.damagedBy.includes(attacker)) receiver.damagedBy.push(attacker);
+      if (!next.hitTargets?.includes(target)) next.hitTargets = [...(next.hitTargets ?? []), target];
     }
     for (const [mon, was] of [[user, before.user], [receiver, before.receiver]] as const) {
       if (STATS.some((stat) => (mon.build.boosts[stat] ?? 0) < (was.boosts[stat] ?? 0)) || (was.itemId === "whiteherb" && !mon.build.itemId)) mon.statsLowered = true;
       if (STATS.some((stat) => (mon.build.boosts[stat] ?? 0) > (was.boosts[stat] ?? 0))) mon.statsRaised = true;
+    }
+    // A foe's drop of the stat Defiant or Competitive then raises (hiddenDrop) happened though the stage did not fall:
+    // Eject Pack reads the drop's AfterBoost (eventGuards), Lash Out statsLoweredThisTurn.
+    if (outcome.landed > 0 && isFoe(attacker, target) && hiddenDrop(ctx, w, action, target, info, before.user, before.receiver, receiver.build)) {
+      receiver.statsLowered = true;
+      next.boosted = { ...next.boosted, [target]: { ...next.boosted?.[target], fell: true } };
     }
     // Screens the move broke on the target's side (Brick Break, Psychic Fangs, Raging Bull, G-Max Wind Rage: the step's conditions).
     if (isFoe(attacker, target)) {
@@ -1828,14 +2148,37 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
         next.sides[slotSide(target)] = { ...side, reflect: side.reflect && left.reflect, lightScreen: side.lightScreen && left.lightScreen, auroraVeil: side.auroraVeil && left.auroraVeil };
       }
     }
-    if (step) {
+    // With a part, only the outcomes in which a hit reached the Pokémon (those that met only the Substitute: kernel.subStat).
+    if (step && (!part || outcome.landed > 0)) {
       const stats = hitStats(step, target);
       stats.calculated += next.mass;
     }
     afterHit(ctx, next, action, target, outcome, info);
-    out.push({ world: next, landed: outcome.landed, knocked: outcome.knocked });
+    // The target's own Lansat or Starf Berry at the hit's Update (data/items.ts lansatberry, starfberry onUpdate at a quarter,
+    // half with Gluttony; sim/battle-actions.ts:967), which the pair's step leaves held: Lansat's focusenergy for its later
+    // move, Starf's random rise (one world each), Cheek Pouch (berryDue). A foe's Unnerve or As One stops it.
+    const held = next.mons[target]!.build.itemId;
+    const due = LANSAT_STARF.has(held) && outcome.landed > 0 && alive(next, target) && !berryStopped(next, target);
+    for (const world of due ? berryDue(ctx, next, target) : [next]) out.push({ world, landed: outcome.landed, knocked: outcome.knocked });
   }
   return out;
+}
+
+/**
+ * Whether the pair's step dropped a stat of `target` that its Defiant (Attack) or Competitive (Sp. Atk) then raised by 2
+ * (data/abilities.ts defiant, competitive onAfterEachBoost; sim/battle.ts boost: the drop's AfterBoost runs after that
+ * rise), which its stages alone do not show: the move's own drop of that stat on the target (stat-moves.ts STAT_MOVES
+ * target, a secondary that must land; a Max Move's foe drop, MAX_MOVE_EFFECTS), and the stat rose in the step, or stayed
+ * at +6. Defiant and Competitive rise only after a foe's drop, and no other effect of a foe's move raises that stat.
+ */
+function hiddenDrop(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId, info: Extract<TurnMove, { kind: "move" }>, user: BattleBuild, was: BattleBuild, now: BattleBuild): boolean {
+  const stat: CombatStat | null = was.abilityId === "defiant" ? "atk" : was.abilityId === "competitive" ? "spa" : null;
+  if (!stat) return false;
+  const stages = info.isMax ? MAX_MOVE_EFFECTS[usedMove(ctx, w, action.slot, action.moveId!, target, info).name]?.foe
+    : info.isZ ? undefined : statMove(ownMoveId(action.moveId!, info), ctx.runtime.profile.id, user.abilityId === "serenegrace")?.target;
+  if (!((stages?.[stat] ?? 0) < 0) || (!info.isMax && !secondaryLands(ctx, w, action.slot, target, info))) return false;
+  const from = was.boosts[stat] ?? 0, to = now.boosts[stat] ?? 0;
+  return to > from || (from === 6 && to === 6);
 }
 
 /**
@@ -1886,13 +2229,19 @@ const STATUS_WORDS: Record<string, string> = { brn: "burn", par: "paralysis", ps
 function hitReactions(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, item: string) {
   const receiver = w.mons[target]!;
   if (receiver.build.abilityId === "cottondown") notEstimated(REASONS.notIn2v2(abilityName(ctx, "cottondown")));
-  if (receiver.fainted && receiver.destinyBond && isFoe(attacker, target)) notEstimated(REASONS.notIn2v2(moveName(ctx, "destinybond")));
+  // A knockout's reactions of Track A (doubles-status.ts onKnockOut: Destiny Bond).
+  statusHooks.onKnockOut(kernelOf(ctx), w, attacker, target);
   if (receiver.fainted || attacker === target) return;
   const usable = !w.field.magicRoom && receiver.build.abilityId !== "klutz";
   // A gas holder switched out takes its Neutralizing Gas with it, whether or not an action follows.
   if (item === "ejectbutton" && usable) gasEnds(ctx, w, target);
   if (item === "redcard" && usable && alive(w, attacker)) gasEnds(ctx, w, attacker);
-  if (!w.remaining.some((entry) => alive(w, entry.slot))) return;
+  if (!w.remaining.some((entry) => alive(w, entry.slot))) {
+    // With no later action the switch-out reaches only the end of turn (doubles-eot.ts leaving).
+    if (item === "ejectbutton" && usable) eotHooks.leaving(w, target);
+    if (item === "redcard" && usable && alive(w, attacker)) eotHooks.leaving(w, attacker);
+    return;
+  }
   if (item === "ejectbutton" && usable) notEstimated(REASONS.switchesOut(ctx.names[target]));
   if (item === "redcard" && usable && alive(w, attacker)) notEstimated(REASONS.switchesOut(ctx.names[attacker]));
 }
@@ -1945,7 +2294,13 @@ function mergeDists(entries: TurnStepEntry[]): Map<number, number> {
   return out;
 }
 
-/** The turn's reactions to one hit (SPEC §4.4 step 8): flinch from Fake Out and Upper Hand, the faint reactions not yet followed. */
+/**
+ * The turn's reactions to one hit (SPEC §4.4 step 8): flinch from Fake Out and Upper Hand, the faint reactions not yet
+ * followed. With hits into a Substitute (ADDENDUM §3.5.6) the user's own rules act when any hit of the move landed, a
+ * Substitute's included (`hitAny`: switching out, a type lost, Glaive Rush, Core Enforcer, Spectral Thief), and the
+ * target's when a hit reached the Pokémon (`outcome.landed > 0`). Then Track A's reactions (doubles-status.ts afterHit)
+ * and, last, Track B's (doubles-eot.ts afterHit).
+ */
 function afterHit(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlotId, outcome: TurnStepOutcome, info: Extract<TurnMove, { kind: "move" }>) {
   const attacker = action.slot;
   const user = w.mons[attacker]!, receiver = w.mons[target]!;
@@ -1958,13 +2313,17 @@ function afterHit(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlot
     if ((ability === "aftermath" && info.contact) || ability === "innardsout") notEstimated(REASONS.notIn2v2(abilityName(ctx, ability)));
   }
   const id = action.moveId!;
+  const hitAny = outcome.landed + outcome.subHits > 0;
   const own = !info.transformed && outcome.landed > 0;
+  const ownAny = !info.transformed && hitAny;
   // U-turn, Volt Switch and Flip Turn switch the user out after a hit (selfSwitch): its replacement is not known. A gas
-  // holder takes its Neutralizing Gas with it, whether or not an action follows.
-  if (SWITCH_MOVES.has(id) && own && !user.fainted) gasEnds(ctx, w, attacker);
-  if (SWITCH_MOVES.has(id) && own && !user.fainted && w.remaining.some((entry) => alive(w, entry.slot))) {
+  // holder takes its Neutralizing Gas with it, whether or not an action follows. With no later action the switch
+  // reaches only the end of turn (doubles-eot.ts leaving).
+  if (SWITCH_MOVES.has(id) && ownAny && !user.fainted) gasEnds(ctx, w, attacker);
+  if (SWITCH_MOVES.has(id) && ownAny && !user.fainted && w.remaining.some((entry) => alive(w, entry.slot))) {
     notEstimated(REASONS.switchesOut(ctx.names[attacker]));
   }
+  if (SWITCH_MOVES.has(id) && ownAny && !user.fainted) eotHooks.leaving(w, attacker);
   // Dragon Tail and Circle Throw drag the target out (forceSwitch: sim/battle-actions.ts:1353-1360, then
   // sim/battle.ts:2821-2829 between actions), unless it is Dynamaxed or a Suction Cups or Guard Dog holder
   // (onDragOut, breakable): later moves meet its replacement, which is not known.
@@ -1972,25 +2331,35 @@ function afterHit(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlot
     && !(ANCHORING_ABILITIES.has(receiver.build.abilityId) && !breaks(w, attacker, target, info));
   if (dragged) gasEnds(ctx, w, target);
   if (dragged && w.remaining.some((entry) => alive(w, entry.slot))) notEstimated(REASONS.switchesOut(ctx.names[target]));
+  if (dragged) eotHooks.leaving(w, target);
   // Burn Up and Double Shock take their type from the user as they hit (data/moves.ts burnup, doubleshock self.onHit
   // setType; a Terastallized user keeps its types, sim/pokemon.ts setType): later hits read its species' types.
-  if (TYPE_LOSS_MOVES.has(id) && own && !user.fainted && user.build.mechanic !== "tera" && laterDamaging(ctx, w)) {
+  if (TYPE_LOSS_MOVES.has(id) && ownAny && !user.fainted && user.build.mechanic !== "tera" && laterDamaging(ctx, w)) {
     notEstimated(REASONS.typeChange(moveName(ctx, id), ctx.names[attacker]));
   }
   // Glaive Rush (data/moves.ts glaiverush self volatile, onSourceModifyDamage 2x) until the user's next move.
-  if (id === "glaiverush" && own && !user.fainted && laterDamaging(ctx, w)) notEstimated(REASONS.takesDouble(moveName(ctx, id), ctx.names[attacker]));
+  if (id === "glaiverush" && ownAny && !user.fainted && laterDamaging(ctx, w)) notEstimated(REASONS.takesDouble(moveName(ctx, id), ctx.names[attacker]));
   if (outcome.landed > 0) flinchCheck(ctx, w, action, target, info);
+  // A certain accuracy drop (stat-moves.ts accuracyDrop: Mud-Slap; Octazooka and Leaf Tornado with Serene Grace), a
+  // secondary of the hit, which the pair's step leaves out: boost() with its TryBoost (Keen Eye, Mind's Eye, Illuminate,
+  // Clear Body...), Mirror Armor, Defiant and Competitive, and the drop Eject Pack reads.
+  const accuracy = own && !receiver.fainted ? accuracyDrop(id, user.build.abilityId === "serenegrace") : 0;
+  if (accuracy && secondaryLands(ctx, w, attacker, target, info)) foeDrop(ctx, w, target, { accuracy }, attacker, breaks(w, attacker, target, info));
+  // Clear Smog's onHit clearBoosts (data/moves.ts clearsmog): this turn's accuracy and evasion stages go too (the step clears
+  // the others). It runs no boost event: the stages it took are no drop for Eject Pack (eventGuards; verify-engine VE-M1-1).
+  if (id === "clearsmog" && own && !receiver.fainted) {
+    if (receiver.vol.stages) { const { stages: _stages, ...rest } = receiver.vol; void _stages; receiver.vol = rest; }
+    w.boosted = { ...w.boosted, [target]: { ...w.boosted?.[target], reset: true } };
+  }
   // Throat Chop's 100% secondary (data/moves.ts throatchop secondary onHit addVolatile): no sound move for its target.
   if (id === "throatchop" && own && !receiver.fainted && secondaryLands(ctx, w, attacker, target, info)) receiver.throatChopped = true;
-  // Dynamic Punch's and Chatter's confusion (data/conditions.ts confusion: 33% to hit itself at its BeforeMove), on a
-  // target with a move still to use: not estimated. Own Tempo (breakable) and Misty Terrain under a grounded target
-  // stop it (onTryAddVolatile).
-  if (CONFUSING_MOVES.has(id) && own && !receiver.fainted && secondaryLands(ctx, w, attacker, target, info)
-    && w.remaining.some((entry) => entry.slot === target && entry.moveId !== null)
-    && !(receiver.build.abilityId === "owntempo" && !breaks(w, attacker, target, info)) && !(w.field.terrain === "Misty" && grounded(ctx, w, target))) {
-    notEstimated(REASONS.confusion);
-  }
-  volatileGuard(ctx, w, action, target, info);
+  // Track A's reactions (doubles-status.ts afterHit: Dynamic Punch's and Chatter's confusion).
+  statusHooks.afterHit(kernelOf(ctx), w, action, target, outcome, info);
+  // Core Enforcer's onAfterSubDamage and Spectral Thief's stolen rises act on a hit into a Substitute too
+  // (PS/data/moves.ts:2889-2893; sim/battle-actions.ts:781-797); the other volatile secondaries only on the Pokémon.
+  if (outcome.landed > 0 || ((id === "coreenforcer" || id === "spectralthief") && hitAny)) volatileGuard(ctx, w, action, target, info);
+  // Track B's reactions (doubles-eot.ts afterHit: trap, Salt Cure, Syrup Bomb, Psychic Noise, Smack Down; Rapid Spin, Mortal Spin).
+  eotHooks.afterHit(kernelOf(ctx), w, action, target, outcome, info);
 }
 
 /** A 100% secondary reaches its target (sim/battle-actions.ts secondaries): Sheer Force removes it, Shield Dust (breakable) and Covert Cloak stop it. */
@@ -2003,17 +2372,20 @@ function secondaryLands(ctx: Ctx, w: World, attacker: DoublesSlotId, target: Dou
 }
 
 /**
- * A Figy-family Berry `slot` ate (data/items.ts figyberry and its kin onEat) confuses it when its Nature lowers that
- * Berry's stat, unless Own Tempo or Misty Terrain under it stops it (onTryAddVolatile); confused with a move still to
- * use, it hits itself 33% of the time (data/conditions.ts confusion onBeforeMove): not estimated.
+ * The HP Berry `target` keeps through Psychic Noise's hit, or null (status-eot ER21c). Its 100% secondary Heal Block
+ * (secondaryLands; Aroma Veil on the target's side stops it, data/abilities.ts aromaveil) comes before the hit's Update
+ * (sim/battle-actions.ts hitStepMoveHitLoop: spreadMoveHit, then eachEvent('Update')), where an HP Berry's onTryEatItem
+ * TryHeal then fails (data/items.ts): Sitrus, Oran, Berry Juice and the Figy family stay held and heal nothing. Enigma
+ * Berry is eaten in the hit's Hit event, before the secondary. doubles-eot.ts afterHit then sets the Heal Block.
  */
-function berryConfusion(ctx: Ctx, w: World, slot: DoublesSlotId, item: string) {
-  const stat = CONFUSING_BERRIES[item];
-  if (!stat || !alive(w, slot) || !w.remaining.some((entry) => entry.slot === slot && entry.moveId !== null)) return;
-  const build = w.mons[slot]!.build;
-  if (NATURES.find((nature) => nature.name === build.nature)?.minus !== stat || build.abilityId === "owntempo") return;
-  if (w.field.terrain === "Misty" && grounded(ctx, w, slot)) return;
-  notEstimated(REASONS.confusion);
+function psychicNoiseKeepsBerry(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, info: Extract<TurnMove, { kind: "move" }>): string | null {
+  if (info.transformed || info.effective.id !== "psychicnoise" || attacker === target) return null;
+  const receiver = w.mons[target]!;
+  const item = receiver.build.itemId;
+  if (!HEALING_BERRIES.has(item) || item === "enigmaberry" || !itemWorks(w, receiver.build) || receiver.eot.healBlock) return null;
+  if (!secondaryLands(ctx, w, attacker, target, info)) return null;
+  const veiled = [target, allyOf(target)].some((slot) => alive(w, slot) && w.mons[slot]!.build.abilityId === "aromaveil" && !breaks(w, attacker, slot, info));
+  return veiled ? null : item;
 }
 
 /**
@@ -2120,25 +2492,30 @@ function spreadStep(ctx: Ctx, w: World, action: PendingAction, info: Extract<Tur
   }
   // Every target's calculation from the world before the move (all of the move's damage is dealt at once).
   const plans = checks.map((check) => {
-    if (check.block) return { check, entry: null as SearchEntry | null, face: null as FaceKind | null };
+    if (check.block) return { check, entry: null as SearchEntry | null, face: null as FaceKind | null, sub: null as substituteHooks.SubPlan | null };
+    // A hit into a Substitute (doubles-substitute.ts plan, Track E): applied in the target's place in the hit order.
+    const sub = substituteHooks.plan(kernelOf(ctx), w, action, info, check, multiple, attackerHP);
+    if (sub) return { check, entry: null, face: null, sub };
     const conditions = conditionsFor(ctx, w, attacker, check.slot, multiple, move.id);
     const entry = searchFor(ctx, w, attacker, check.slot, move.id, conditions, contextFor(ctx, w, action, check.slot, info), true, attackerHP);
     if (entry.row.kind !== "calculated") {
       const face = faceTaken(ctx, w, attacker, check.slot, entry.row, move);
       if (!face) notEstimated(rowReason(ctx, w, check.slot, entry.row, move));
-      return { check, entry: null, face };
+      return { check, entry: null, face, sub: null };
     }
     focusBandGuard(ctx, w, check.slot, entry.row);
     if (entry.search) unnerveGuard(ctx, w, attacker, check.slot);
-    return { check, entry, face: null };
+    return { check, entry, face: null, sub: null };
   });
   const standing = checks.map((check) => check.slot).filter((slot) => alive(w, slot));
   let worlds: World[] = [cloneWorld(w)];
   worlds[0].spread = [];
   let retaliation = prior, hit = false;
-  for (const { check, entry, face } of plans) {
+  for (const { check, entry, face, sub } of plans) {
     const target = check.slot;
     if (check.block) { if (!check.done) worlds = worlds.flatMap((world) => blockedHit(ctx, world, action, info, check)); continue; }
+    // It adds no retaliation (no DamagingHit behind a Substitute); Life Orb stays this step's, once per move.
+    if (sub) { hit = true; worlds = worlds.flatMap((world) => sub.apply(world)); continue; }
     if (face) {
       hit = true;
       worlds = worlds.flatMap((world) => faceHit(ctx, world, action, info, target, face, multiple, true));
@@ -2213,7 +2590,7 @@ function dartsStep(ctx: Ctx, w: World, action: PendingAction, info: Extract<Turn
   return worlds;
 }
 
-type FaceKind = "disguise" | "iceface";
+export type FaceKind = "disguise" | "iceface";
 const FACE_REASONS: Record<string, FaceKind> = { "Intact Disguise takes the first hit.": "disguise", "Intact Ice Face takes the first physical hit.": "iceface" };
 
 /** The intact Disguise or Ice Face a single-hit move's hit meets (calculateMove's reason), or null (a multi-hit move: rowReason's text). */
@@ -2268,12 +2645,15 @@ function faceHit(ctx: Ctx, w: World, action: PendingAction, info: Extract<TurnMo
   receiver.build = { ...receiver.build, speciesId: BUSTED_FORMS[receiver.build.speciesId] ?? receiver.build.speciesId, ...(found?.berry ? { itemId: "" } : {}) };
   receiver.timesAttacked += 1;
   receiver.focusLost = true;
+  if (!world.hitTargets?.includes(target)) world.hitTargets = [...(world.hitTargets ?? []), target];
   const sheerForce = user.build.abilityId === "sheerforce";
   // Serene Grace makes the move's 50% and 70% added effects certain (stat-moves.ts SERENE_GRACE_MOVES).
   const sereneGrace = user.build.abilityId === "serenegrace";
   const cloak = receiver.build.itemId === "covertcloak" && itemWorks(world, receiver.build);
   const stages = info.transformed ? undefined : statMove(move.id, ctx.runtime.profile.id, sereneGrace)?.target;
   if (stages && !sheerForce && !cloak) foeDrop(ctx, world, target, stages, attacker, breaks(world, attacker, target, info));
+  const accuracy = info.transformed ? 0 : accuracyDrop(move.id, sereneGrace);
+  if (accuracy && !sheerForce && !cloak) foeDrop(ctx, world, target, { accuracy }, attacker, breaks(world, attacker, target, info));
   const status = info.transformed ? undefined : everyUseStatus(move.id, sereneGrace);
   if (status && (status.status === "psn" || status.status === "tox" || status.status === "brn" || status.status === "par") && !(status.secondary && (sheerForce || cloak))) {
     giveStatus(ctx, world, target, status.status, attacker);
@@ -2356,7 +2736,8 @@ function maxEffects(ctx: Ctx, w: World, action: PendingAction, info: Extract<Tur
   const name = usedMove(ctx, w, attacker, action.moveId!, target, info).name;
   const effect = MAX_MOVE_EFFECTS[name];
   const partner = allyOf(attacker);
-  const foes = [...foesOf(attacker)].sort((a, b) => SHOWDOWN_POSITION[a].position - SHOWDOWN_POSITION[b].position).filter((slot) => alive(w, slot));
+  // The foes by their positions after an Ally Switch (ADDENDUM §3.5.2).
+  const foes = [...foesOf(attacker)].sort((a, b) => showdownPosition(w, a) - showdownPosition(w, b)).filter((slot) => alive(w, slot));
   if (effect?.user && alive(w, partner)) selfBoost(ctx, w, partner, effect.user, null);
   if (effect?.foe) for (const foe of foes) if (foe !== target) foeDrop(ctx, w, foe, effect.foe, attacker, breaks(w, attacker, foe, info));
   const gmax = GMAX_EFFECTS[name];
@@ -2397,6 +2778,7 @@ function createContext(input: DoublesTurnInput, settle: DoublesSettle, memo: Mem
   return {
     input, runtime, gen7: runtime.profile.generation === 7, champions: runtime.profile.id === "champions", names, hp, actions, mode, memo, stats,
     heals: new Map(), faintsBefore: new Map(), otherFaints: new Set(), targetless: targetlessSlots(input), gas: settle.gas ?? null,
+    losses: new Map(), walkFacts: new Set(),
   };
 }
 
@@ -2430,7 +2812,7 @@ function validate(input: DoublesTurnInput): DoublesTurnResult | null {
   for (const slot of DOUBLES_SLOTS) {
     const entry = input.pokemon[slot];
     if (!entry) continue;
-    const found = validateBuild(entry.build, runtime);
+    const found = [...validateBuild(entry.build, runtime), ...carriedIssues(input, slot)];
     if (found.length) issues.pokemon[slot] = found;
     const { moveId, target } = entry.action;
     if (moveId === null) { if (target !== null) issues.actions.push({ slot, message: "No move takes no target." }); continue; }
@@ -2446,8 +2828,64 @@ function validate(input: DoublesTurnInput): DoublesTurnResult | null {
       : !target ? (rule.options.length ? "No target is chosen for this move." : null)
       : !rule.options.includes(target) && !emptyFoe ? "This move cannot target that Pokémon." : null;
     if (targetIssue) issues.actions.push({ slot, message: targetIssue });
+    // Assault Vest disables every status move but Me First (data/items.ts assaultvest onDisableMove), unless its holder
+    // ignores it (Klutz, not under Neutralizing Gas; Magic Room).
+    const gas = DOUBLES_SLOTS.some((other) => input.pokemon[other]?.build.abilityId === "neutralizinggas");
+    const vest = entry.build.itemId === "assaultvest" && !input.field.magicRoom && !(entry.build.abilityId === "klutz" && !gas);
+    if (vest && known.category === "Status" && moveId !== "mefirst") issues.actions.push({ slot, message: "Assault Vest stops status moves." });
   }
   return Object.keys(issues.pokemon).length || issues.field.length || issues.actions.length ? { status: "issues", issues } : null;
+}
+
+/**
+ * The issues of a slot's state from earlier turns and its move history (status-eot SPEC §3.1, ADDENDUM §3.1), shown as
+ * "{Name}: …": carried sleep without Asleep or more turns than any sleep lasts (2–4 turns, Champions and Rest 2–3: the
+ * hidden counter would be 0; Early Bird counts each turn twice), carried freeze outside Champions, without Frozen or past
+ * its third turn, confusion turns outside 0–4, bad poison turns without Badly poisoned or outside 0–15, a Leech Seed,
+ * trap or Syrup Bomb source that is not a foe in the turn, a perish count outside 1–3, a Wish or a Substitute below 1 HP
+ * (a Wish's HP is half its user's maximum, which can be more than the receiver's; a Substitute Shed Tail passed keeps its
+ * maker's quarter: C13′), an Ally Switch counter outside Scarlet/Violet and Champions or not a power of 3 from 3 to 729,
+ * a last move not in the game's catalog, and a moves list with a move twice.
+ */
+function carriedIssues(input: DoublesTurnInput, slot: DoublesSlotId): BuildIssue[] {
+  const entry = input.pokemon[slot]!;
+  const { runtime } = input;
+  const out: BuildIssue[] = [];
+  const add = (field: string, message: string) => out.push({ field, message });
+  const whole = (value: number, least: number, most = Infinity) => Number.isInteger(value) && value >= least && value <= most;
+  const champions = runtime.profile.id === "champions";
+  const { build } = entry;
+  const carried = entry.carried ?? {};
+  if (carried.sleep) {
+    const { attempts, rest } = carried.sleep;
+    const longest = rest || champions ? 3 : 4;
+    if (build.status !== "slp") add("carried.sleep", "turns lost to sleep need the Asleep status.");
+    else if (!whole(attempts, 0) || attempts * (build.abilityId === "earlybird" ? 2 : 1) >= longest) add("carried.sleep", `it cannot have lost ${attempts} turns to sleep.`);
+  }
+  if (carried.freeze) {
+    if (!champions) add("carried.freeze", "turns lost to freeze are counted in Champions only.");
+    else if (build.status !== "frz") add("carried.freeze", "turns lost to freeze need the Frozen status.");
+    else if (!whole(carried.freeze.attempts, 0, 2)) add("carried.freeze", `it cannot have lost ${carried.freeze.attempts} turns to freeze.`);
+  }
+  if (carried.confusion && !whole(carried.confusion.attempts, 0, 4)) add("carried.confusion", "confusion turns so far are 0 to 4.");
+  if (carried.toxic !== undefined) {
+    if (build.status !== "tox") add("carried.toxic", "bad poison turns need the Badly poisoned status.");
+    else if (!whole(carried.toxic, 0, 15)) add("carried.toxic", "bad poison turns are 0 to 15.");
+  }
+  const foe = (source: DoublesSlotId | undefined) => !source || (isFoe(slot, source) && !!input.pokemon[source]);
+  if (!foe(carried.leechSeed)) add("carried.leechSeed", "Leech Seed's seeder is not a foe in the turn.");
+  if (!foe(carried.trap?.source)) add("carried.trap", "the trap's source is not a foe in the turn.");
+  else if (carried.trap?.move && !runtime.movesById.has(carried.trap.move)) add("carried.trap", "the trap's move is not a move of this game.");
+  if (!foe(carried.syrupBomb)) add("carried.syrupBomb", "Syrup Bomb's source is not a foe in the turn.");
+  if (carried.perish !== undefined && !whole(carried.perish, 1, 3)) add("carried.perish", "the perish count is 1, 2 or 3.");
+  if (carried.wish !== undefined && !whole(carried.wish, 1)) add("carried.wish", "a Wish restores at least 1 HP.");
+  if (carried.substitute !== undefined && !whole(carried.substitute, 1)) add("carried.substitute", "a Substitute has at least 1 HP.");
+  if (carried.allySwitch !== undefined && (!(champions || runtime.profile.id === "scarlet_violet") || ![3, 9, 27, 81, 243, 729].includes(carried.allySwitch))) {
+    add("carried.allySwitch", "Ally Switch's counter is 3, 9, 27, 81, 243 or 729 (Scarlet/Violet and Champions).");
+  }
+  if (typeof entry.lastMove === "string" && !runtime.movesById.has(entry.lastMove)) add("lastMove", "its last move is not in this game.");
+  if (entry.moves && new Set(entry.moves).size !== entry.moves.length) add("moves", "its moves list a move twice.");
+  return out;
 }
 
 /** Every learnable move of `slot` into `into` at the start of the turn (four-way settle, partners' abilities; no move of this turn). */
@@ -2609,9 +3047,24 @@ function pairRows(input: DoublesTurnInput, settle: DoublesSettle, slot: DoublesS
   // the type it resists are not estimated.
   const unnerved = resistUnnerve(ctx, world, slot, into);
   const resisted = unnerved ? getBerryResistType(runtime.itemsById.get(d.build.itemId)?.name as never) : undefined;
+  // A Substitute from an earlier turn (carried.substitute) takes a move that does not pass it (doubles-substitute.ts
+  // meetsSubstitute: no sound or bypassing move, no Infiltrator): the calculation into the Pokémon is not what the move
+  // deals there (a 30 HP Substitute in front of Rock Blast: Showdown's most is 124 by 1-4 hits), so the row is not estimated.
+  // An immunity comes before the Substitute (sim/battle-actions.ts hitStepTryHitEvent and hitStepTypeImmunity; the
+  // Substitute's TryPrimaryHit is in the hit loop): a row with no damage stays.
+  const behindSubstitute = (id: string) => {
+    if (!world.mons[into]?.vol.substitute) return false;
+    let info: TurnMove;
+    try { info = moveInfo(ctx, world, slot, id, own[id]); } catch (error) { if (error instanceof NotEstimated) return true; throw error; }
+    return info.kind === "move" && substituteHooks.meetsSubstitute(world.mons[slot]!.build, info);
+  };
   const results = moves.flatMap((id) => {
     const row = rows.get(id);
     if (!row) return [];
+    if ((row.kind === "calculated" ? (row.max ?? 0) > 0 : row.kind === "needs-context") && behindSubstitute(id)) {
+      const { effectiveName, effectiveType, effectivePower, effectiveCategory } = row;
+      return [{ ...emptyRow(runtime.movesById.get(id)!, `${ctx.names[into]} is behind a Substitute.`), effectiveName, effectiveType, effectivePower, effectiveCategory }];
+    }
     if (resisted && row.kind === "calculated" && row.effectiveType === resisted) return [emptyRow(runtime.movesById.get(id)!, unnerved!)];
     const unknown = ordered.get(id);
     // An Analytic hit whose order is not known as the turn starts (the 1v1 text with the reason).
@@ -2627,7 +3080,7 @@ function pairRows(input: DoublesTurnInput, settle: DoublesSettle, slot: DoublesS
  * and whether it reaches one Pokémon alone (`oneTarget`: both of Dragon Darts' darts) or, for a move that spreads as it is
  * used, several (`spread`).
  */
-type StartRoute = { target: DoublesSlotId; fact?: string; oneTarget?: boolean; spread?: boolean; row?: MoveDamageResult; conditional?: true };
+export type StartRoute = { target: DoublesSlotId; fact?: string; oneTarget?: boolean; spread?: boolean; row?: MoveDamageResult; conditional?: true };
 
 /**
  * Why `slot`'s move fails in TryMove as the turn starts (moveFailure on `last`, the last Pokémon it reaches, with every
@@ -2757,17 +3210,25 @@ function startRoutes(ctx: Ctx, w: World, centred: ReturnType<typeof centredWorld
     // The other dart: into the target's partner (each takes one), or both there when the target's would not land.
     if (split === "each") routes.push(blocked(allyOf(routed)));
     else if (split && split !== routed) routes.push({ target: split, oneTarget: true });
-    const later = centred ? redirection(ctx, centred.world, slot, target, info, move.id, context) : null;
-    const user = later && centred!.users.get(later.taken.slot);
-    if (!later || !user || later.ties.length || later.taken.slot === routed || !mayComeAfter(ctx, w, slot, user)) continue;
-    // Spotlight keeps Dragon Darts' smart targeting (data/moves.ts spotlight): no game has both.
-    if (darts && later.taken.by === CENTRES.spotlight.by) continue;
-    // TryMove into it once that move has been used (Sucker Punch into the Follow Me user, which has moved).
-    const fails = startFailure(ctx, w, slot, move, info, later.taken.slot, user);
-    routes.push({
-      target: later.taken.slot, fact: `${later.taken.by}: ${ctx.names[later.taken.slot]} takes ${move.name} if ${later.taken.by} comes first.`,
-      oneTarget: darts, conditional: true, ...(fails ? { row: emptyRow(move, fails) } : {}),
-    });
+    // The centre of attention this turn's moves make, once its move has been used.
+    const centredRoute = (): StartRoute | null => {
+      const later = centred ? redirection(ctx, centred.world, slot, target, info, move.id, context) : null;
+      const user = later && centred!.users.get(later.taken.slot);
+      if (!later || !user || later.ties.length || later.taken.slot === routed || !mayComeAfter(ctx, w, slot, user)) return null;
+      // Spotlight keeps Dragon Darts' smart targeting (data/moves.ts spotlight): no game has both.
+      if (darts && later.taken.by === CENTRES.spotlight.by) return null;
+      // TryMove into it once that move has been used (Sucker Punch into the Follow Me user, which has moved).
+      const fails = startFailure(ctx, w, slot, move, info, later.taken.slot, user);
+      return {
+        target: later.taken.slot, fact: `${later.taken.by}: ${ctx.names[later.taken.slot]} takes ${move.name} if ${later.taken.by} comes first.`,
+        oneTarget: darts, conditional: true, ...(fails ? { row: emptyRow(move, fails) } : {}),
+      };
+    };
+    const conditional = centredRoute();
+    if (conditional) routes.push(conditional);
+    // An Ally Switch chosen this turn (doubles-positions.ts startRoute, Track E: ADDENDUM §4.11.7).
+    const swap = positionHooks.startRoute(kernelOf(ctx), w, slot, move, info, target, routed);
+    if (swap) routes.push(swap);
   }
   // One row per Pokémon as the turn starts (a random target's two picks can meet), with a fact either gave, and one once a
   // centre of attention's move has been used where that one differs (both of Dragon Darts' darts, a failure).
@@ -2819,10 +3280,19 @@ function startRows(input: DoublesTurnInput, settle: DoublesSettle): DoublesStart
   return rows;
 }
 
+/** The hit rule without the field's Critical hit, and with a certain critical hit met in the turn (calculateDoublesTurn). */
+const NO_CRITS = "Every move hits; no critical hits; added effects below 100% do not happen.";
+const CERTAIN_CRITS = "Every move hits; critical hits only where certain; added effects below 100% do not happen.";
+/** calculate.ts's assumption for a critical-hit ratio that makes every hit critical. */
+const CERTAIN_CRIT = "Every hit is a critical hit (";
+
+/**
+ * The turn's facts read from the input (SPEC §2.3; status-eot SPEC §2.5): the hit rule, then the end of turn's
+ * (doubles-eot.ts endFacts: "End-of-turn effects are not applied." until Track B lands), the field's, and the tracks'
+ * input facts (doubles-status.ts and doubles-positions.ts turnFacts), each once.
+ */
 function turnFacts(input: DoublesTurnInput, gas: DoublesGas | null | undefined): string[] {
-  const facts = [input.field.critical
-    ? "Every move hits and every damaging hit is critical; added effects below 100% do not happen."
-    : "Every move hits; no critical hits; added effects below 100% do not happen.", "End-of-turn effects are not applied."];
+  const facts = [input.field.critical ? "Every move hits and every damaging hit is critical; added effects below 100% do not happen." : NO_CRITS, ...eotHooks.endFacts(input)];
   // Neutralizing Gas from the turn's start (calculate.ts settleDoublesStart): the Pokémon whose abilities it suppresses.
   if (gas?.suppressed.length) {
     const names = doublesNames(input.pokemon, input.runtime);
@@ -2842,7 +3312,8 @@ function turnFacts(input: DoublesTurnInput, gas: DoublesGas | null | undefined):
   });
   if (firstTurn) facts.push("Assumes the attacker's first turn in battle.");
   if (input.field.trickRoom || moves.includes("trickroom")) facts.push("Trick Room: slower Pokémon move first.");
-  return facts;
+  facts.push(...statusHooks.turnFacts(input, gas?.suppressed ?? []), ...positionHooks.turnFacts(input));
+  return [...new Set(facts)];
 }
 
 /** HP distribution of each slot over the finished worlds (the mixture of its marginals). */
@@ -2895,31 +3366,21 @@ export function calculateDoublesTurn(input: DoublesTurnInput): DoublesTurnResult
       slot, moveId: input.pokemon[slot]!.action.moveId ?? "", order: new Map(), moves: 0, positionSum: 0, positionMass: 0, skipped: new Map(), facts: new Map(), hits: new Map(),
     }));
     const all = createContext(input, settle, memo, "all", stats);
-    presenceGuards(all, startWorld(all, settle));
+    presenceGuards(all, firstUpdated(all, settle));
     const finished = walk(all, settle);
-    const lowest = walk(createContext(input, settle, memo, "lowest", null), settle);
-    const highest = walk(createContext(input, settle, memo, "highest", null), settle);
-    const dists = distributions(finished), lows = distributions(lowest), highs = distributions(highest);
-    const hp = Object.fromEntries(DOUBLES_SLOTS.map((slot): [DoublesSlotId, DoublesHP | null] => {
-      const entry = start?.[slot];
-      const dist = dists.get(slot);
-      if (!entry || !dist) return [slot, null];
-      let average = 0, min = Infinity, max = -Infinity, out = 0, total = 0;
-      for (const [value, mass] of dist) { average += value * mass; total += mass; if (value < min) min = value; if (value > max) max = value; if (value <= 0) out += mass; }
-      const heals = [...(all.heals.get(slot) ?? new Map<string, [number, number]>())].map(([source, [least, most]]) => `${source}: +${least === most ? least : `${least}–${most}`} HP.`);
-      const before = all.faintsBefore.get(slot) ?? 0;
-      return [slot, {
-        start: entry.hp, maximum: entry.maximum, ...(entry.settled ? { settled: entry.settled } : {}),
-        low: modeOf(lows.get(slot), true), average: total ? average / total : entry.hp, high: modeOf(highs.get(slot), false),
-        min, max, koChance: out >= 1 - 1e-12 && min <= 0 && max <= 0 ? 1 : uncertain(out, out > 0), heals,
-        ...(input.pokemon[slot]!.action.moveId !== null && before > 0 ? { faintsBeforeMoving: Math.min(1, before) } : {}),
-      }];
-    })) as Record<DoublesSlotId, DoublesHP | null>;
+    const lowCtx = createContext(input, settle, memo, "lowest", null), highCtx = createContext(input, settle, memo, "highest", null);
+    const lowest = walk(lowCtx, settle);
+    const highest = walk(highCtx, settle);
+    // The end of turn on each walk's finished worlds (doubles-eot.ts endOfTurn, Track B).
+    const ends = [endOfTurnOf(all, finished), endOfTurnOf(lowCtx, lowest), endOfTurnOf(highCtx, highest)] as const;
+    const hp = hpRecords(all, start!, finished, lowest, highest);
     // A hit's KO chance is 1 when it is the only way its target faints on any branch and the target faints on every one
     // (its card's certain KO): the float sum of the branches can fall short of 1.
     const koHits = new Map<DoublesSlotId, number>();
     for (const step of stats) for (const [slot, each] of step.hits) if (each.ko > 0) bump(koHits, slot, 1);
     const certain = (slot: DoublesSlotId) => hp[slot]?.koChance === 1 && koHits.get(slot) === 1 && !all.otherFaints.has(slot);
+    // A certain critical hit met in the turn (applyStep): the turn's hit rule says so.
+    if (all.certainCrit && facts.includes(NO_CRITS)) facts.splice(facts.indexOf(NO_CRITS), 1, CERTAIN_CRITS);
     const steps = stats.filter((step) => step.moveId && !all.targetless.has(step.slot)).map((step): DoublesStep & { mean: number } => {
       const fact = (map: Map<string, number>): DoublesFact[] => [...map].map(([text, chance]) => ({ text, chance: Math.min(1, chance) }));
       const hits = [...step.hits].map(([slot, stats]): DoublesHit => {
@@ -2929,11 +3390,15 @@ export function calculateDoublesTurn(input: DoublesTurnInput): DoublesTurnResult
         const min = calculated.length ? Math.min(...calculated.map((row) => row.min!)) : null;
         const max = calculated.length ? Math.max(...calculated.map((row) => row.max!)) : null;
         const maximum = start?.[slot]?.maximum ?? 1;
-        const kind = stats.calculated > 0 ? "calculated" : stats.blocked > 0 ? "blocked" : "no-damage";
+        // A hit into a Substitute alone is "substitute" (ADDENDUM §3.5.9); a status move that acted, "effect" (Track A).
+        const kind = stats.calculated > 0 ? "calculated" : stats.sub.mass > 0 ? "substitute" : stats.effect > 0 ? "effect" : stats.blocked > 0 ? "blocked" : "no-damage";
+        const sub = stats.sub;
         return {
           slot, reached: Math.min(1, stats.reached), kind, min: kind === "calculated" ? min : null, max: kind === "calculated" ? max : null,
           minPercent: kind === "calculated" && min !== null ? min / maximum * 100 : null, maxPercent: kind === "calculated" && max !== null ? max / maximum * 100 : null,
-          koChance: stats.ko > 0 && certain(slot) ? 1 : uncertain(stats.ko, stats.ko > 0), ...(kind === "calculated" && first ? { row: first } : {}), cases: met.length, facts: fact(stats.facts),
+          koChance: stats.ko > 0 && certain(slot) ? 1 : uncertain(stats.ko, stats.ko > 0), ...((kind === "calculated" || kind === "substitute") && first ? { row: first } : {}), cases: met.length, facts: fact(stats.facts),
+          ...(stats.change ? { change: { ...stats.change } } : {}),
+          ...(sub.mass > 0 ? { substitute: { chance: Math.min(1, sub.mass), min: sub.min, max: sub.max, breaks: Math.min(1, sub.breaks) } } : {}),
         };
       });
       const order = [...step.order].sort((a, b) => a[0] - b[0]).map(([position, chance]) => ({ position, chance: Math.min(1, chance) }));
@@ -2948,13 +3413,108 @@ export function calculateDoublesTurn(input: DoublesTurnInput): DoublesTurnResult
       return rest;
     });
     rows = startRows(input, settle);
-    return { status: "ready", start: start!, steps, hp, startRows: rows, facts };
+    // The end of turn: ready when every walk's is, its HP built as the moves' from the worlds after the residuals.
+    const [endAll, endLow, endHigh] = ends;
+    const endOfTurn: DoublesEndOfTurn = endAll.status === "ready" && endLow.status === "ready" && endHigh.status === "ready"
+      ? { status: "ready", hp: hpRecords(all, start!, endAll.worlds, endLow.worlds, endHigh.worlds, hp), residuals: endAll.residuals, facts: endAll.facts }
+      : { status: "not-estimated", reason: [endAll, endLow, endHigh].map((end) => end.status === "not-estimated" ? end.reason : "").find(Boolean)! };
+    // Ally Switch: the chance each side stands swapped after the moves.
+    const swapped = swappedShares(finished);
+    // The turn facts found during the walk (kernel.turnFact) after the ones read from the input.
+    const turn = [...new Set([...facts, ...all.walkFacts])];
+    return { status: "ready", start: start!, steps, hp, startRows: rows, facts: turn, ...(swapped ? { swapped } : {}), endOfTurn };
   } catch (error) {
     if (error instanceof NotEstimated) return notEstimatedResult(error.reason);
     throw error;
   } finally {
     USES_REFERENCE.on = usesReference;
   }
+}
+
+/** One walk's end of turn (doubles-eot.ts endOfTurn); a NotEstimated thrown inside it leaves the moves estimated. */
+function endOfTurnOf(ctx: Ctx, worlds: World[]): eotHooks.EndOfTurnRun {
+  try {
+    return eotHooks.endOfTurn(kernelOf(ctx), worlds);
+  } catch (error) {
+    if (error instanceof NotEstimated) return { status: "not-estimated", reason: error.reason };
+    throw error;
+  }
+}
+
+/**
+ * Each Pokémon's HP over a turn's finished worlds (SPEC §4.8): low and high from the roll walks' modes, the average, the
+ * extremes and the KO chance from the "all" walk's mixture, the heals, the losses outside any step and the faint before
+ * moving from the "all" walk's statistics, and its condition facts in those worlds (conditionFacts). `moves`: the HP
+ * after the moves, for the HP after the end of turn (status-eot SPEC §4.9: its start, settled, heals, losses and faint
+ * before moving are those; the rest is recomputed).
+ */
+function hpRecords(all: Ctx, start: DoublesStart, finished: World[], lowest: World[], highest: World[], moves?: Record<DoublesSlotId, DoublesHP | null>): Record<DoublesSlotId, DoublesHP | null> {
+  const dists = distributions(finished), lows = distributions(lowest), highs = distributions(highest);
+  const conditions = conditionStats(all, finished);
+  return Object.fromEntries(DOUBLES_SLOTS.map((slot): [DoublesSlotId, DoublesHP | null] => {
+    const entry = start[slot];
+    const dist = dists.get(slot);
+    if (!entry || !dist) return [slot, null];
+    let average = 0, min = Infinity, max = -Infinity, out = 0, total = 0;
+    for (const [value, mass] of dist) { average += value * mass; total += mass; if (value < min) min = value; if (value > max) max = value; if (value <= 0) out += mass; }
+    const kept = moves?.[slot];
+    const heals = kept ? kept.heals : [...(all.heals.get(slot) ?? new Map<string, [number, number]>())].map(([source, [least, most]]) => `${source}: +${least === most ? least : `${least}–${most}`} HP.`);
+    const before = all.faintsBefore.get(slot) ?? 0;
+    const faintsBefore = kept ? kept.faintsBeforeMoving : all.input.pokemon[slot]!.action.moveId !== null && before > 0 ? Math.min(1, before) : undefined;
+    const losses = kept ? kept.losses : factList(all.losses.get(slot));
+    const facts = conditions.get(slot);
+    return [slot, {
+      start: entry.hp, maximum: entry.maximum, ...(entry.settled ? { settled: entry.settled } : {}),
+      low: modeOf(lows.get(slot), true), average: total ? average / total : entry.hp, high: modeOf(highs.get(slot), false),
+      min, max, koChance: out >= 1 - 1e-12 && min <= 0 && max <= 0 ? 1 : uncertain(out, out > 0), heals,
+      ...(faintsBefore !== undefined ? { faintsBeforeMoving: faintsBefore } : {}),
+      ...(losses?.length ? { losses } : {}),
+      ...(facts?.length ? { conditions: facts } : {}),
+    }];
+  })) as Record<DoublesSlotId, DoublesHP | null>;
+}
+
+/** Facts with their chances from a map of masses (each at most 1), in first-found order; undefined for none. */
+function factList(map: Map<string, number> | undefined): DoublesFact[] | undefined {
+  return map?.size ? [...map].map(([text, chance]) => ({ text, chance: Math.min(1, chance) })) : undefined;
+}
+
+/**
+ * A Pokémon's condition facts in one world (DoublesHP.conditions; ADDENDUM §3.5.12): Track A's statuses and volatiles,
+ * Track B's end-of-turn states, and Track E's positions, items and Substitute, in that order.
+ */
+function conditionFacts(kernel: TurnKernel, w: World, slot: DoublesSlotId): string[] {
+  return [
+    ...statusHooks.conditions(kernel, w, slot), ...eotHooks.conditions(kernel, w, slot),
+    ...positionHooks.conditions(kernel, w, slot), ...itemHooks.conditions(kernel, w, slot), ...substituteHooks.conditions(kernel, w, slot),
+  ];
+}
+
+/** Each slot's condition facts over finished worlds, with the share of the turn in which each holds. */
+function conditionStats(ctx: Ctx, worlds: World[]): Map<DoublesSlotId, DoublesFact[]> {
+  const kernel = kernelOf(ctx);
+  const masses = new Map<DoublesSlotId, Map<string, number>>();
+  for (const world of worlds) {
+    for (const slot of DOUBLES_SLOTS) {
+      if (!world.mons[slot]) continue;
+      for (const text of new Set(conditionFacts(kernel, world, slot))) {
+        let map = masses.get(slot);
+        if (!map) masses.set(slot, map = new Map());
+        bump(map, text, world.mass);
+      }
+    }
+  }
+  return new Map([...masses].map(([slot, map]) => [slot, factList(map)!]));
+}
+
+/** Ally Switch (World.swapped): each side's share of the finished worlds in which its two Pokémon stand swapped; null when none. */
+function swappedShares(worlds: World[]): Partial<Record<DoublesSideId, number>> | null {
+  const shares: Partial<Record<DoublesSideId, number>> = {};
+  let total = 0;
+  for (const world of worlds) total += world.mass;
+  for (const world of worlds) for (const side of ["own", "opponent"] as const) if (world.swapped?.[side]) shares[side] = (shares[side] ?? 0) + world.mass;
+  const out = Object.fromEntries(Object.entries(shares).map(([side, mass]) => [side, Math.min(1, total > 0 ? mass / total : 0)])) as Partial<Record<DoublesSideId, number>>;
+  return Object.keys(out).length ? out : null;
 }
 
 
@@ -2980,9 +3540,13 @@ function sideFaintedChance(world: World, side: DoublesSideId): number {
 
 /**
  * One finished world as an outcome (its mass not yet normalised). Under Neutralizing Gas each Run Away stand-in is given
- * back the ability it replaced (DoublesGas.abilities), which the gas still suppresses.
+ * back the ability it replaced (DoublesGas.abilities), which the gas still suppresses. The next turn's state (status-eot
+ * SPEC §3.1, ADDENDUM §3.1): the volatiles (Track A's, Track B's and Track E's hooks, a Substitute standing; sorted), the
+ * sleep counter and perish count, the Substitute's HP, the Ally Switch counter, Safeguard and the hazards that landed on
+ * each side, and whether each side's Pokémon stand swapped.
  */
-function outcomeOf(world: World, gas: DoublesGas | null | undefined): DoublesOutcome {
+function outcomeOf(ctx: Ctx, world: World, gas: DoublesGas | null | undefined): DoublesOutcome {
+  const kernel = kernelOf(ctx);
   const mons: DoublesOutcome["mons"] = {};
   for (const slot of DOUBLES_SLOTS) {
     const mon = world.mons[slot];
@@ -2994,46 +3558,67 @@ function outcomeOf(world: World, gas: DoublesGas | null | undefined): DoublesOut
     const hp = [...dist].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: total > 0 ? mass / total : 0 }));
     const build = own !== undefined && mon.build.abilityId === GAS_STAND_IN ? { ...mon.build, abilityId: own } : mon.build;
     const entry: DoublesOutcomeMon = { hp, build, protected: mon.protect !== null, moved: mon.moved };
+    const a = statusHooks.outcomeMon(kernel, world, slot), b = eotHooks.outcomeMon(kernel, world, slot), e = positionHooks.outcomeMon(kernel, world, slot);
+    const volatiles = [...new Set([...(a.volatiles ?? []), ...(b.volatiles ?? []), ...(e.volatiles ?? []), ...(mon.vol.substitute ? ["substitute"] : [])])].sort();
+    if (volatiles.length) entry.volatiles = volatiles;
+    if (a.sleepTurns !== undefined) entry.sleepTurns = a.sleepTurns;
+    if (b.perishCount !== undefined) entry.perishCount = b.perishCount;
+    if (mon.vol.substitute) entry.substitute = [{ hp: mon.vol.substitute, chance: 1 }];
+    if (e.allySwitch !== undefined) entry.allySwitch = e.allySwitch;
     mons[slot] = entry;
   }
-  const side = (state: SideState) => ({ reflect: state.reflect, lightScreen: state.lightScreen, auroraVeil: state.auroraVeil, tailwind: state.tailwind, faintedThisTurn: state.faintedThisTurn });
+  const side = (state: SideState) => ({
+    reflect: state.reflect, lightScreen: state.lightScreen, auroraVeil: state.auroraVeil, tailwind: state.tailwind, faintedThisTurn: state.faintedThisTurn,
+    ...(state.safeguard ? { safeguard: true } : {}), ...(state.hazards.length ? { hazards: [...state.hazards] } : {}),
+  });
   return {
     chance: world.mass, mons, sides: { own: side(world.sides.own), opponent: side(world.sides.opponent) }, field: { ...world.field },
     allFainted: { own: sideFaintedChance(world, "own"), opponent: sideFaintedChance(world, "opponent") },
+    positions: { own: world.swapped?.own ? "swapped" : "kept", opponent: world.swapped?.opponent ? "swapped" : "kept" },
   };
 }
 
 /**
- * Outcomes whose builds, protect and moved flags, sides and field are equal, merged: the chances add, and the HP
- * distributions and allFainted become their chance-weighted mixtures (exact for the marginals and for allFainted).
+ * Outcomes whose builds, protect and moved flags, volatiles, perish counts, Ally Switch counters, sides, field and
+ * positions are equal, merged: the chances add, and the HP distributions, the Substitutes' HP, the sleep counters'
+ * expectations and allFainted become their chance-weighted mixtures (exact for the marginals and for allFainted).
  */
 function mergeOutcomes(outcomes: DoublesOutcome[]): DoublesOutcome[] {
-  const byKey = new Map<string, { outcome: DoublesOutcome; hp: Map<DoublesSlotId, Map<number, number>>; fainted: Record<DoublesSideId, number> }>();
+  type Mixed = { hp: Map<number, number>; substitute: Map<number, number> | null; sleep: number | null };
+  const byKey = new Map<string, { outcome: DoublesOutcome; mixed: Map<DoublesSlotId, Mixed>; fainted: Record<DoublesSideId, number> }>();
   for (const outcome of outcomes) {
     const key = JSON.stringify([
-      DOUBLES_SLOTS.map((slot) => { const mon = outcome.mons[slot]; return mon ? [mon.build, mon.protected, mon.moved] : null; }), outcome.sides, outcome.field,
+      DOUBLES_SLOTS.map((slot) => {
+        const mon = outcome.mons[slot];
+        return mon ? [mon.build, mon.protected, mon.moved, mon.volatiles ?? null, mon.perishCount ?? null, mon.allySwitch ?? null] : null;
+      }), outcome.sides, outcome.field, outcome.positions,
     ]);
     let entry = byKey.get(key);
-    if (!entry) byKey.set(key, entry = { outcome: { ...outcome, chance: 0 }, hp: new Map(), fainted: { own: 0, opponent: 0 } });
+    if (!entry) byKey.set(key, entry = { outcome: { ...outcome, chance: 0 }, mixed: new Map(), fainted: { own: 0, opponent: 0 } });
     entry.outcome.chance += outcome.chance;
     for (const slot of DOUBLES_SLOTS) {
       const mon = outcome.mons[slot];
       if (!mon) continue;
-      let dist = entry.hp.get(slot);
-      if (!dist) entry.hp.set(slot, dist = new Map());
-      for (const { hp, chance } of mon.hp) dist.set(hp, (dist.get(hp) ?? 0) + chance * outcome.chance);
+      let mixed = entry.mixed.get(slot);
+      if (!mixed) entry.mixed.set(slot, mixed = { hp: new Map(), substitute: mon.substitute ? new Map() : null, sleep: mon.sleepTurns !== undefined ? 0 : null });
+      for (const { hp, chance } of mon.hp) mixed.hp.set(hp, (mixed.hp.get(hp) ?? 0) + chance * outcome.chance);
+      if (mixed.substitute) for (const { hp, chance } of mon.substitute ?? []) mixed.substitute.set(hp, (mixed.substitute.get(hp) ?? 0) + chance * outcome.chance);
+      if (mixed.sleep !== null) mixed.sleep += (mon.sleepTurns ?? 0) * outcome.chance;
     }
     entry.fainted.own += outcome.allFainted.own * outcome.chance;
     entry.fainted.opponent += outcome.allFainted.opponent * outcome.chance;
   }
-  return [...byKey.values()].map(({ outcome, hp, fainted }) => {
+  return [...byKey.values()].map(({ outcome, mixed, fainted }) => {
     const share = (mass: number) => outcome.chance > 0 ? mass / outcome.chance : 0;
+    const table = (map: Map<number, number>) => [...map].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: share(mass) }));
     const mons: DoublesOutcome["mons"] = {};
     for (const slot of DOUBLES_SLOTS) {
       const mon = outcome.mons[slot];
-      const dist = hp.get(slot);
-      if (!mon || !dist) continue;
-      mons[slot] = { ...mon, hp: [...dist].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: share(mass) })) };
+      const each = mixed.get(slot);
+      if (!mon || !each) continue;
+      mons[slot] = {
+        ...mon, hp: table(each.hp), ...(each.substitute ? { substitute: table(each.substitute) } : {}), ...(each.sleep !== null ? { sleepTurns: share(each.sleep) } : {}),
+      };
     }
     return { ...outcome, mons, allFainted: { own: share(fainted.own), opponent: share(fainted.opponent) } };
   });
@@ -3061,12 +3646,15 @@ export function calculateDoublesOutcomes(input: DoublesTurnInput): DoublesOutcom
   try {
     const memo: Memo = { searches: new Map(), priorities: new Map(), speeds: new Map(), moves: new Map(), rows: new Map(), calculations: 0 };
     const all = createContext(input, settle, memo, "all", null);
-    presenceGuards(all, startWorld(all, settle));
+    presenceGuards(all, firstUpdated(all, settle));
     const finished = walk(all, settle);
+    // The end of turn (doubles-eot.ts endOfTurn): applied, the outcomes are after the whole turn; otherwise after the moves.
+    const end = endOfTurnOf(all, finished);
+    const worlds = end.status === "ready" ? end.worlds : finished;
     let total = 0;
-    for (const world of finished) total += world.mass;
-    const outcomes = mergeOutcomes(finished.map((world) => outcomeOf(world, settle.gas))).map((outcome) => ({ ...outcome, chance: total > 0 ? outcome.chance / total : 0 }));
-    return { status: "ready", start, outcomes };
+    for (const world of worlds) total += world.mass;
+    const outcomes = mergeOutcomes(worlds.map((world) => outcomeOf(all, world, settle.gas))).map((outcome) => ({ ...outcome, chance: total > 0 ? outcome.chance / total : 0 }));
+    return { status: "ready", start, outcomes, endOfTurn: end.status === "ready" ? "applied" : { notEstimated: end.reason } };
   } catch (error) {
     if (error instanceof NotEstimated) return { status: "not-estimated", reason: error.reason };
     throw error;

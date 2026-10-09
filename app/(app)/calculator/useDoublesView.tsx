@@ -8,6 +8,7 @@ import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { mimicryState } from "@/app/lib/battle/mimicry";
 import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleConditions, BattleMechanic } from "@/app/lib/battle/types";
+import { DoublesCarriedContext, type CarriedControl } from "./BattleConditions";
 import type { BuildSettings } from "./BuildSettings";
 import type { CalculatorTab } from "./CalculatorTabs";
 import type { DoublesCardView } from "./DoublesCard";
@@ -15,12 +16,12 @@ import DoublesMoves from "./DoublesMoves";
 import DoublesSettings from "./DoublesSettings";
 import DoublesSummary from "./DoublesSummary";
 import {
-  activateDoublesMoveSlot, applyDoublesIntimidate, chooseDoublesMove, dismissDoublesReplacement, doublesBuildIssues, doublesFainted, doublesIntimidateResult,
-  doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove, focusDoublesMoves, getDoublesTurnInput, intimidateFoes, replaceDoublesMove,
-  selectDoublesRoster, setDoublesCharged, setDoublesField, setDoublesMovesInto, setDoublesTarget, toggleDoublesMechanic, toggleDoublesMega,
-  updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
+  activateDoublesMoveSlot, applyDoublesIntimidate, carriedAbilityOn, carriedIssueTexts, carriedOptions, chooseDoublesMove, dismissDoublesReplacement, doublesBuildIssues, doublesFainted,
+  doublesIntimidateResult, doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove, focusDoublesMoves, getDoublesTurnInput, intimidateFoes,
+  NO_CARRIED_OPTIONS, replaceDoublesMove, selectDoublesRoster, setDoublesCarried, setDoublesCharged, setDoublesField, setDoublesMovesInto, setDoublesTarget,
+  toggleDoublesMechanic, toggleDoublesMega, updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
 } from "./doubles-prep";
-import { cardReached, relativeName } from "./doubles-format";
+import { cardReached, relativeName, turnHP } from "./doubles-format";
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import KeepWhileHidden from "./KeepWhileHidden";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -335,6 +336,8 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
 
   function summaryCards() {
     const ready = turn?.status === "ready" ? turn : null;
+    // After the whole turn when its end of turn is estimated, else after the moves (the card's label says which).
+    const shown = ready ? turnHP(ready) : null;
     return perSlot((slot): DoublesCardView => {
       const combatant = doubles.slots[slot];
       // The action the turn uses: none for a fainted Pokémon (its own is kept for when its HP comes back).
@@ -342,8 +345,9 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
       return {
         id: slot, slot: combatant, action,
         rule: action.moveId ? doublesTargetRule(input, slot, action.moveId) : null,
-        hp: fainted[slot] ? null : ready?.hp[slot] ?? null,
-        reached: !fainted[slot] && cardReached(ready, slot),
+        hp: fainted[slot] ? null : shown?.hp[slot] ?? null,
+        afterTurn: !!shown?.afterTurn,
+        reached: !fainted[slot] && cardReached(ready, slot, runtime),
         fainted: fainted[slot],
         issues: issues[slot],
         mimicry: mimicryState(combatant.build, otherBuild(slot), { terrain: field.terrain, magicRoom: field.magicRoom }),
@@ -387,6 +391,24 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     );
   }
 
+  /**
+   * Each Pokémon's state from earlier turns for Field conditions (BattleConditions CarriedControl): the controls its build
+   * can use (none once it has fainted) and the turn's input issues about them.
+   */
+  function carriedControls(): CarriedControl[] {
+    const turnIssues = turn?.status === "issues" ? turn.issues.pokemon : {};
+    return DOUBLES_SLOTS.map((slot): CarriedControl => {
+      const combatant = doubles.slots[slot];
+      const value = doubles.carried[slot];
+      return {
+        slot, side: slotSide(slot) === "own" ? "attackerSide" : "defenderSide", name: names[slot], value,
+        issues: carriedIssueTexts(turnIssues[slot], names[slot]),
+        options: fainted[slot] ? NO_CARRIED_OPTIONS : carriedOptions(combatant.build, runtime, !!value.sleep?.rest, carriedAbilityOn(doubles, slot)),
+        onChange: (carried) => setCalc((state) => setDoublesCarried(state, combatant.key, carried)),
+      };
+    });
+  }
+
   function renderSettings() {
     const builds = perSlot((slot): BuildSettings => {
       const key = buildSectionKey(doubles.slots[slot].key);
@@ -394,20 +416,23 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     });
     return (
       <div data-calculator-mode-only="2v2" hidden={!active}>
-        <DoublesSettings
-          runtime={runtime}
-          names={names}
-          slots={doubles.slots}
-          issues={issues}
-          fieldIssues={fieldIssues}
-          builds={builds}
-          field={{ id: ids.field, open: !!tracked.open[fieldKey], onToggle: () => setSections((value) => setSectionOpen(value, fieldKey, !value.open[fieldKey])) }}
-          renderEditor={renderEditor}
-          conditions={field}
-          onConditionsChange={(next: BattleConditions) => setCalc((state) => setDoublesField(state, doubles.revision, next))}
-          charged={doubles.charged}
-          onChargedChange={(slot: DoublesSlotId, charged: boolean) => setCalc((state) => setDoublesCharged(state, doubles.slots[slot].key, charged))}
-        />
+        {/* DoublesSettings renders Field conditions, which reads the state-from-earlier-turns controls from this context. */}
+        <DoublesCarriedContext.Provider value={carriedControls()}>
+          <DoublesSettings
+            runtime={runtime}
+            names={names}
+            slots={doubles.slots}
+            issues={issues}
+            fieldIssues={fieldIssues}
+            builds={builds}
+            field={{ id: ids.field, open: !!tracked.open[fieldKey], onToggle: () => setSections((value) => setSectionOpen(value, fieldKey, !value.open[fieldKey])) }}
+            renderEditor={renderEditor}
+            conditions={field}
+            onConditionsChange={(next: BattleConditions) => setCalc((state) => setDoublesField(state, doubles.revision, next))}
+            charged={doubles.charged}
+            onChargedChange={(slot: DoublesSlotId, charged: boolean) => setCalc((state) => setDoublesCharged(state, doubles.slots[slot].key, charged))}
+          />
+        </DoublesCarriedContext.Provider>
       </div>
     );
   }

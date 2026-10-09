@@ -19,13 +19,14 @@ import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, int
 import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
 import {
   berryArithmetic, BERRY_STEALERS, CANT_SUPPRESS, CONFUSING_BERRIES, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, KLUTZ_IGNORED_ITEMS, ownMoveId,
-  PINCH_STAT_BERRIES, PINCH_TYPES, usedMoveName, walkHits,
+  OWN_STATUS_CURES, PINCH_STAT_BERRIES, PINCH_TYPES, usedMoveName, walkHits,
   type HitLoopInput, type HitState,
 } from "./hit-loop";
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
 import { CONFUSED_NOTE, ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, STARF_REASON, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
 import { DOUBLES_SLOTS, doublesNames, foesOf, SLOT_POSITION, slotSide, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
+import { healFlag } from "./status-table";
 import type {
   AfterUse,
   BattleBuild,
@@ -662,7 +663,7 @@ export type SettledItems = {
  * Pouch heals a third as any Berry is eaten); a terrain Seed on its terrain is used up on entry. Unburden then
  * activates, and it stays off while an item is still held.
  */
-function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string): SettledItems {
+function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string, ownCure = false): SettledItems {
   const lines: string[] = [];
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   let settled = build;
@@ -689,7 +690,8 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   const pouch = abilityOn && build.abilityId === "cheekpouch" ? Math.max(1, Math.floor(maxHP / 3)) : 0;
   const berry = STATUS_BERRIES[build.itemId];
   let usedUp = false;
-  if (berry && build.status && berry.includes(build.status) && itemOn && !unnerved) {
+  // `ownCure` (the 2v2 turn): its own ability cures the status at that Update before the Berry can (doubles-status.ts turnStartUpdate).
+  if (berry && build.status && berry.includes(build.status) && itemOn && !unnerved && !ownCure) {
     const healed = pouch && build.currentHP !== null && maxHP ? Math.min(maxHP, build.currentHP + pouch) : null;
     const heal = healed !== null && healed !== build.currentHP ? `, then Cheek Pouch: ${healed} HP` : "";
     lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} cured its ${STATUS_NAMES[build.status] ?? build.status} (used up)${heal}.`);
@@ -1250,7 +1252,7 @@ const CRIT_RATIO_MOVES: Record<string, number> = Object.fromEntries([
  * and what gave them, or null. A Z-Move or Max Move has its own ratio (only 10,000,000 Volt Thunderbolt's is raised).
  */
 function certainCrit(moveId: string, build: BattleBuild, other: BattleBuild, context: MoveContext | undefined, conditions: BattleConditions, runtime: BattleRuntime): { stages: number; sources: string[] } | null {
-  if (runtime.profile.generation < 6) return null;
+  if (runtime.profile.generation < 6 && runtime.profile.id !== "champions") return null;
   const { ratio, sources } = critRatio(moveId, build, other, context, conditions, runtime);
   return ratio >= 4 ? { stages: ratio - 1, sources } : null;
 }
@@ -1263,6 +1265,10 @@ function critRatio(moveId: string, build: BattleBuild, other: BattleBuild, conte
   const raised = CRIT_RATIO_MOVES[used];
   if (raised) { ratio = raised; sources.push(runtime.movesById.get(used)?.name ?? (used === "10000000voltthunderbolt" ? "10,000,000 Volt Thunderbolt" : used)); }
   if (build.settledFocusEnergy) { ratio += 2; sources.push("the Lansat Berry"); }
+  // The 2v2 turn's Focus Energy and Dragon Cheer this turn (data/moves.ts focusenergy, dragoncheer onModifyCritRatio: +2;
+  // +2 for a Dragon type as it started, else +1); 1v1 never sets them, and one excludes the other (their onStart).
+  if (build.focusEnergy) { ratio += 2; sources.push("Focus Energy"); }
+  if (build.dragonCheer) { ratio += build.dragonCheer; sources.push("Dragon Cheer"); }
   if (build.abilityId === "superluck" && !gassedAbility(build, other, conditions)) { ratio += 1; sources.push("Super Luck"); }
   const own = runtime.speciesById.get(build.transformedFrom?.speciesId ?? build.speciesId)?.baseSpecies;
   const item = !conditions.magicRoom && !klutzActive(build, other) ? build.itemId : "";
@@ -2655,7 +2661,7 @@ export function settleMatchup(attacker: BattleBuild, defender: BattleBuild, fiel
 export function usesHelpers(runtime: BattleRuntime): UsesHelpers {
   return {
     gassed: gassedAbility, klutz: klutzActive, spicySpray: spicySprayFirstBurnedHit, makeField, paradox: (speciesId) => PARADOX_SPECIES.has(speciesId),
-    critRatio: (moveId, build, other, context, conditions) => runtime.profile.generation < 6 ? 0 : critRatio(moveId, build, other, context, conditions, runtime).ratio,
+    critRatio: (moveId, build, other, context, conditions) => runtime.profile.generation < 6 && runtime.profile.id !== "champions" ? 0 : critRatio(moveId, build, other, context, conditions, runtime).ratio,
     hpForm: (build) => { const form = entryForm(build, runtime); return form && !form.kept ? form.speciesId : null; },
   };
 }
@@ -3026,8 +3032,9 @@ export function turnProtectOutcome(move: ChampionsMove, attacker: BattleBuild, d
  * priority of the move used, a Z-Move's or Max Move's own, then ModifyPriority, set again at every sort from
  * generation 8): for attacks usedPriority (Gale Wings at full HP, Triage on draining moves, Grassy Glide), the catalog
  * keeping a negative priority the engine drops; for status moves the catalog priority, Prankster +1
- * (data/abilities.ts prankster onModifyPriority) and Gale Wings +1 for a Flying move at full HP. Triage's status
- * moves all change HP (the turn does not estimate them). The build's currentHP is the HP at that sort.
+ * (data/abilities.ts prankster onModifyPriority), Gale Wings +1 for a Flying move at full HP and Triage +3 for one with
+ * the heal flag (data/abilities.ts triage onModifyPriority; status-table.ts flags). The build's currentHP is the HP at
+ * that sort.
  */
 export function turnPriority(move: ChampionsMove, build: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined, runtime: BattleRuntime): number | { reason: string } {
   const pokemon = makePokemon(build, runtime);
@@ -3035,6 +3042,7 @@ export function turnPriority(move: ChampionsMove, build: BattleBuild, conditions
     let priority = move.priority;
     if (build.abilityId === "prankster") priority += 1;
     if (build.abilityId === "galewings" && move.type === "Flying" && pokemon.curHP() === pokemon.maxHP()) priority += 1;
+    if (build.abilityId === "triage" && healFlag(move.id, runtime.profile.id)) priority += 3;
     return priority;
   }
   let resolved: ReturnType<typeof resolveBattleMove>;
@@ -3264,9 +3272,10 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
   }
   const slots = { ...empty };
   for (const slot of present) {
-    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, SLOT_POSITION[slot], names[slot]);
+    // A status its own ability cures at the turn's first Update (OWN_STATUS_CURES) is the walk's: its Berry stays.
+    const ownCure = !!OWN_STATUS_CURES[entered[slot].abilityId]?.includes(entered[slot].status);
+    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, SLOT_POSITION[slot], names[slot], ownCure);
     if (items.starf) fail(STARF_REASON);
-    if (items.confused && input.pokemon[slot]!.action.moveId !== null) fail("Confusion is not modelled in 2v2.");
     if (items.raised) {
       for (const foe of foes(slot)) {
         const copier = entered[foe];

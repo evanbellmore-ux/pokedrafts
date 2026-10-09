@@ -102,6 +102,53 @@ describe("buildBeliefBattle", () => {
     expect([...locks].sort()).toEqual([1, 2]);
   });
 
+  it("status-eot effects (ADDENDUM §6): a Substitute keeps its maker's quarter, Ally Switch's counter, Axe Kick's confusion, no Choice lock after Trick", () => {
+    const seat = seatBattle([7, 2, 3, 4]);
+    seat.step("team 1234", "team 1234");
+    seat.step("move 4, move 4", "move 4, move 4");
+    const inputs = seat.inputs();
+    const turn = inputs.public.turn;
+    const pub = inputs.public.mons;
+    // A Substitute Shed Tail passed: the maker (Charizard here) is not its holder.
+    pub["p1:incineroar"].volatiles.push({ id: "substitute", since: turn, elapsed: 0, sourceKey: "p1:charizard", hits: 0 } as never);
+    pub["p2:gyarados"].volatiles.push({ id: "confusion", since: turn - 1, elapsed: 2, moveId: "axekick" });
+    Object.assign(pub["p2:pelipper"], { allySwitchStreak: 2 });
+    const belief = buildBeliefBattle(inputs, seat.truthWorld(), runtime);
+    const [incineroar, charizard] = belief.battle.p1.active;
+    expect(incineroar!.volatiles.substitute.hp).toBe(Math.floor(charizard!.maxhp / 4));
+    expect(belief.approximations).not.toContain("Substitute HP assumed full.");
+    const pelipper = belief.battle.p2.active.find((each) => each?.name === "Pelipper")!;
+    expect(pelipper.volatiles.allyswitch).toMatchObject({ counter: 9, duration: 1 });
+    // Axe Kick's confusion lasts 3–5 attempts: above two attempts, 3, 4 or 5 in all (time 1–3 left).
+    const times = new Set<number>();
+    for (let n = 0; n < 30; n++) {
+      const each = buildBeliefBattle(inputs, seat.truthWorld(n.toString(16).padStart(32, "0")), runtime);
+      times.add(Number(each.battle.p2.active.find((mon) => mon?.name === "Gyarados")!.volatiles.confusion.time));
+    }
+    expect([...times].sort()).toEqual([1, 2, 3]);
+    // A hit on the Substitute hides its HP: the old approximation, for rollouts only.
+    const hit = seat.inputs();
+    hit.public.mons["p1:incineroar"].volatiles.push({ id: "substitute", since: turn, elapsed: 0, sourceKey: "p1:incineroar", hits: 1 } as never);
+    expect(buildBeliefBattle(hit, seat.truthWorld(), runtime).approximations).toContain("Substitute HP assumed full.");
+    // The lock is on its first move since the item reached it (tracker choiceMove): a Choice Scarf from Trick after its last
+    // move locks nothing yet (no choiceMove); a forced Struggle since keeps the lock on that move (EOT-5, pool E).
+    const lock = (counts: { choiceMove?: string }) => {
+      const each = seat.inputs();
+      const charizard = each.public.mons["p1:charizard"] as typeof each.public.mons[string] & { choiceMove?: string };
+      delete charizard.choiceMove;
+      Object.assign(charizard, { item: { state: "held", itemId: "choicescarf" }, lastMove: "struggle", actions: 2, ...counts });
+      return buildBeliefBattle(each, seat.truthWorld(), runtime).battle.p1.active[1]!.volatiles.choicelock as { move?: string } | undefined;
+    };
+    expect(lock({ choiceMove: "heatwave" })?.move).toBe("heatwave");
+    expect(lock({})).toBeUndefined();
+    // Syrup Bomb keeps its source, the move's user (it ends when that Pokémon leaves; the residual drop comes from it).
+    const syrup = seat.inputs();
+    syrup.public.mons["p2:gyarados"].volatiles.push({ id: "syrupbomb", since: syrup.public.turn, elapsed: 0, sourceKey: "p1:charizard" });
+    const sticky = buildBeliefBattle(syrup, seat.truthWorld(), runtime).battle;
+    const bombed = sticky.p2.active.find((each) => each?.name === "Gyarados")!.volatiles.syrupbomb as { source?: { name: string }; duration?: number };
+    expect([bombed.source?.name, bombed.duration]).toEqual(["Charizard", 4]);
+  });
+
   it("never reads anything but AiInputs and the world (no Battle argument)", () => {
     const seat = seatBattle([9, 2, 3, 4]);
     seat.step("team 1234", "team 1234");

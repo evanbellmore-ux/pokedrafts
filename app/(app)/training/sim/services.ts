@@ -125,7 +125,7 @@ export function createTurnServices(inputs: AiInputs, worlds: readonly BeliefWorl
       source = "prelude";
     }
     const switched = new Set<DoublesSlotId>(DOUBLES_SLOTS.filter((slot) => (slot.startsWith("own") ? cell.own : cell.opponent)[slot]?.kind === "switch"));
-    const bridged = bridgeTurn(battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched });
+    const bridged = bridgeTurn(battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched, publicOf });
     if (bridged.kind === "rollout") return bridged;
     const split = splitWorlds(bridged.input, { runtime, slotKeys: bridged.keys, publicOf });
     if (split.kind === "rollout") return split;

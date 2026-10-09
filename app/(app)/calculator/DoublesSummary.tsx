@@ -5,7 +5,7 @@ import { DOUBLES_SLOTS, slotSide, type DoublesSideId, type DoublesSlotId, type D
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleConditions } from "@/app/lib/battle/types";
 import DoublesCard, { type DoublesCardHandlers, type DoublesCardTarget, type DoublesCardView } from "./DoublesCard";
-import { baseName, relativeLabel } from "./doubles-format";
+import { actsWithoutMoves, baseName, relativeLabel } from "./doubles-format";
 import DoublesTurn from "./DoublesTurn";
 import type { DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type MoveOwner, type MoveReplacement } from "./roster-prep";
@@ -46,8 +46,8 @@ function effectiveMove(turn: DoublesTurnResult | null, view: DoublesCardView) {
 export default function DoublesSummary(props: DoublesSummaryProps) {
   const { runtime, cards, names, turn, blockedReason, rollMode, onRollModeChange, replacement, movesControl, onShowStep, onFixSettings } = props;
   const id = useId();
-  const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null);
-  // The cards show the turn's HP only for a ready turn with a move; otherwise their current HP.
+  const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
+  // The cards show the turn's HP only for a ready turn with a move, or with an end of turn that acts; otherwise their current HP.
   const projected = !blockedReason && !noMoves && turn?.status === "ready";
   const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange } = props;
   // The card frames aim the move of the slot last given a move, a Moves pane or a target.

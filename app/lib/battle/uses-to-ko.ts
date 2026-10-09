@@ -10,11 +10,12 @@ import type { AfterUse, BattleBuild, BattleConditions, BattleGame, BattleStatus,
 import { CHARGE_MOVES, everyUseStatus, MAX_MOVE_EFFECTS, NOT_TWICE_MOVES, RECHARGE_MOVES, SERENE_GRACE_RANDOM_STATUS, STATUS_MOVES, statMove, Z_MOVE_EFFECTS, type Stages as StageChanges } from "./stat-moves";
 import {
   berryArithmetic, berryHeals, berryUnnerved, BERRY_STEALERS, CANT_SUPPRESS, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitsCanFaint, hitStep, ITEM_MOVES,
-  KLUTZ_IGNORED_ITEMS, ownMoveId, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, usedMoveName, walkHits,
+  KLUTZ_IGNORED_ITEMS, LANSAT_STARF, ownMoveId, PINCH_HEAL_BERRIES, PINCH_STAT_BERRIES, PINCH_TYPES, startHits, stolenEat, UNNERVES, usedMoveName, walkHits,
   type Berry, type HitLoopInput, type HitState, type HitWalk, type StolenEat, type TurnUnnerve,
 } from "./hit-loop";
 import { hitCountRule, type HitChance } from "./hit-count";
 import { NATURES } from "./model";
+import { badDreamsDamage, ownResiduals, weatherResiduals, type OwnResidual, type ResidualId, type ResidualMon } from "./residuals";
 
 /**
  * Uses to KO (types.ts UsesToKO): how many uses of a row's move, one a turn by an attacker that uses it
@@ -354,9 +355,10 @@ const UPDATE = 0;
  * (createTurnSearch), `unnerved` whether the target's foes' Unnerve or As One stops its Berries, `unnerve` the turn's
  * Unnerve and As One for both Pokémon's Berries (hit-loop.ts TurnUnnerve: whether the two are foes, and another
  * Pokémon's), and `fieldSettled` the abilities and items of the other two Pokémon that a weather or terrain change
- * would change.
+ * would change. `endure` (turn mode only): the target used Endure this turn (data/moves.ts endure onDamage, priority −10,
+ * before False Swipe, Sturdy and Focus Sash: a hit that would knock it out leaves 1 HP, and Sturdy and the Sash do not act).
  */
-export type UsesEnv = { turn?: true; unnerved?: boolean; unnerve?: TurnUnnerve; fieldSettled?: readonly string[] };
+export type UsesEnv = { turn?: true; unnerved?: boolean; unnerve?: TurnUnnerve; fieldSettled?: readonly string[]; endure?: true };
 
 /** Facts about the two settled Pokémon that hold for every row of a matchup. */
 export type UsesMatchup = ReturnType<typeof prepareUses>;
@@ -381,7 +383,7 @@ export function prepareUses(attacker: BattleBuild, defender: BattleBuild, condit
     attacker, defender, conditions, runtime, helpers, gen: Generations.get(runtime.profile.generation),
     attAbility, defAbility, attItemOn, defItemOn, dynamax, notes, timed,
     unnerved: env?.unnerve ? berryUnnerved(env.unnerve, "target", attAbility) : env?.unnerved ?? UNNERVES.has(attAbility), unnerve: env?.unnerve,
-    turn: !!env?.turn, fieldSettled: env?.fieldSettled ?? [],
+    turn: !!env?.turn, fieldSettled: env?.fieldSettled ?? [], endure: !!env?.turn && !!env?.endure,
     hpForms: [attacker, defender].some((build) => HP_FORM_ABILITIES.has(build.abilityId)),
     attackerItem: attItemOn ? attacker.itemId : "", defenderItem: defItemOn ? defender.itemId : "",
     /** Cloud Nine or Air Lock on either Pokémon stops every weather residual (pinned Showdown suppressingWeather). */
@@ -718,7 +720,9 @@ type HitGroup = {
  */
 function hitEnd(group: HitGroup, at: number, landed: number, dealt: number, taken?: number): HitState {
   if (group.steps) return group.steps.states[taken === undefined ? at : group.steps.to(at, taken)];
-  if (group.drained) return group.drained.states[group.drained.to(0, dealt)];
+  // No hit on the target (a turn part whose hits all met a Substitute): the attacker as the prefix left it, no hitStep
+  // (no DamagingHit: Rough Skin, Rocky Helmet; ADDENDUM §4.13.8). 1v1 never emits a one-hit draining group with landed 0.
+  if (group.drained) return group.drained.states[landed ? group.drained.to(0, dealt) : 0];
   return hitsAfter(group.walk!, landed);
 }
 
@@ -875,6 +879,10 @@ export class UsesSearch {
   private turnAttackerAte: Map<string, [number, number]> | null = null;
   private turnRows: Map<MoveDamageResult, number> | null = null;
   private turnFailure: string | null = null;
+  /** While a turn's step after hits into a Substitute runs (turnStep's part): its case and the hits the Substitute took. */
+  private turnPart: TurnStepPart | null = null;
+  /** A part's case (partCases), made once per case and skip. */
+  private readonly partCaseMemo = new WeakMap<UseCase, Map<number, UseCase>>();
   /**
    * The move whose own effects and handlers the row's uses can run (hit-loop.ts ownMoveId): none for a Z-Move's row (its one
    * use is the Z-Move), the row's own move otherwise, a Max Move's row's once Dynamax ends. Per use: useMoveId.
@@ -1226,8 +1234,16 @@ export class UsesSearch {
    * Every outcome is a node: the state the use leaves, the hits that landed, the target's HP distribution, and the
    * knocked-out mass apart at 0 HP with the attacker's state after the hit that knocked out. No end of turn. A state
    * that cannot be calculated or a budget passed gives the reason instead.
+   *
+   * With `part` (status-eot ADDENDUM §3.3′; doubles-substitute.ts): the step after hits into a Substitute. Only case
+   * `caseIndex` of the run (turnCases' order, chance 1), its first `skip` hits already dealt to the Substitute (their
+   * recoil, drain and self-cost are in the entries' attackerHP), the hits from `skip` on dealt to the target; skip may
+   * equal the case's hit count (the target is untouched). The user's per-use effects act on any hit (its stages, every
+   * hit's userSecondary, a Gem, Charge, Life Orb, Ice Spinner's terrain, the target's Air Balloon popping); recoil, a
+   * self-cost and Shell Bell only on damage to the target; the target's effects only for hits on it. The rows met are the
+   * run's only when a hit reaches the target, and each outcome's `subHits` is `skip`.
    */
-  turnStep(entries: TurnStepEntry[], mode: Mode, follow: boolean): TurnStepResult {
+  turnStep(entries: TurnStepEntry[], mode: Mode, follow: boolean, part?: TurnStepPart): TurnStepResult {
     if (follow !== this.follow) throw new Error("A turn search follows the attacker's HP or not for all its steps.");
     this.states = 0; this.exceeded = false; this.stop = null; this.turnFailure = null;
     release([this.start(mode)]);
@@ -1244,12 +1260,14 @@ export class UsesSearch {
     const attackerHeals = new Map<string, [number, number]>(), attackerAte = new Map<string, [number, number]>();
     const rows = new Map<MoveDamageResult, number>();
     this.knockedOut = knocked; this.turnHeals = heals; this.turnRows = rows; this.turnAttackerHeals = follow ? attackerHeals : null; this.turnAttackerAte = follow ? attackerAte : null;
+    this.turnPart = part ?? null;
     let out: Group[];
     try {
       out = this.hits(groups, mode, () => {});
     } finally {
-      this.knockedOut = null; this.turnHeals = null; this.turnRows = null; this.turnAttackerHeals = null; this.turnAttackerAte = null;
+      this.knockedOut = null; this.turnHeals = null; this.turnRows = null; this.turnAttackerHeals = null; this.turnAttackerAte = null; this.turnPart = null;
     }
+    const subHits = part?.skip ?? 0;
     const outcomes: TurnStepOutcome[] = [];
     for (const [list, ko] of [[out, false], [knocked.groups(), true]] as const) {
       for (const group of list) {
@@ -1257,11 +1275,58 @@ export class UsesSearch {
         for (let index = 0; index < group.dist.size; index++) { const hp = group.dist.hp[index]; dist.set(hp, group.dist.p[hp]); }
         group.dist.release();
         const state = group.node.state;
-        outcomes.push({ attacker: state.att, attackerFainted: state.attackerFainted, target: state.def, knocked: ko, conditions: state.conditions, landed: group.landed ?? 0, dist });
+        outcomes.push({ attacker: state.att, attackerFainted: state.attackerFainted, target: state.def, knocked: ko, conditions: state.conditions, landed: group.landed ?? 0, subHits, dist });
       }
     }
     if (this.exceeded || this.stop) return { failed: this.turnFailure ?? this.stop ?? TURN_TOO_MANY };
     return { outcomes, heals, attackerHeals, attackerAte, rows };
+  }
+
+  /**
+   * A part's one case (turnStep's `part`): case `caseIndex` of the run's cases as hits() walks them in `mode`, with chance
+   * 1 and its hits from `skip` on (each keeps its own rolls: Triple Axel's powers, a Gem's first hit), keyed by its place
+   * in the run's cases.
+   */
+  private partCases(run: Run, mode: Mode, part: TurnStepPart): UseCase[] {
+    const picked = this.casesFor(run, mode)[part.caseIndex];
+    if (!picked || part.skip < 0 || part.skip > picked.hits.length) throw new Error("A turn step's part names a case or hits the run does not have.");
+    let bySkip = this.partCaseMemo.get(picked);
+    if (!bySkip) this.partCaseMemo.set(picked, bySkip = new Map());
+    let made = bySkip.get(part.skip);
+    if (!made) {
+      const hits = picked.hits.slice(part.skip);
+      made = { ...picked, chance: 1, hits, min: hits.reduce((sum, hit) => sum + hit.min, 0), max: hits.reduce((sum, hit) => sum + hit.max, 0), at: picked.at ?? part.caseIndex, random: undefined };
+      bySkip.set(part.skip, made);
+    }
+    return [made];
+  }
+
+  /**
+   * The cases of the run at a state with these HPs, as a doubles turn's hits into a Substitute read them (ADDENDUM
+   * §3.3′; doubles-substitute.ts): each case's chance and, hit by hit, its distinct damages and their shares as hits()
+   * walks them in `mode` ("lowest" / "highest": the roll path's one case, one value per hit; fixed damage, Super Fang's
+   * and Endeavor's, read at `targetHP`). The attacker's HP is read where the search follows it. A state that cannot be
+   * calculated or a budget passed gives the reason instead.
+   */
+  turnCases(attackerHP: number, targetHP: number, mode: Mode): TurnCase[] | { failed: string } {
+    this.states = 0; this.exceeded = false; this.stop = null; this.turnFailure = null;
+    release([this.start(mode)]);
+    const state = this.follow && attackerHP !== this.initial.att.hp ? { ...this.initial, att: { ...this.initial.att, hp: attackerHP } } : this.initial;
+    const node = this.node(state, mode);
+    const run = this.runAt(node, this.hpCode(targetHP, state.def.maxHP), targetHP, mode);
+    if (!run || this.exceeded || this.stop) return { failed: this.turnFailure ?? this.stop ?? TURN_TOO_MANY };
+    const fixed = !!run.trace.fixedHP, endeavor = fixed && this.input.move.id === "endeavor";
+    const fixedDamage = endeavor ? endeavorDamage(targetHP, state) : Math.max(1, Math.floor(Math.ceil(targetHP * state.def.baseMaxHP / state.def.maxHP) / 2));
+    return this.casesFor(run, mode).map((useCase) => ({
+      chance: useCase.chance,
+      hits: useCase.hits.map((hit) => fixed ? { values: [fixedDamage], weights: [1] }
+        : mode === "all" ? { values: [...hit.values], weights: [...hit.weights] } : { values: [mode === "lowest" ? hit.min : hit.max], weights: [1] }),
+    }));
+  }
+
+  /** The part of the target's HP range the damage reads (hits()'s hpCode: one part unless the damage reads the target's HP), as attackerHPClass for the attacker. */
+  targetHPClass(hp: number): string {
+    return String(this.hpCode(hp, this.initial.def.maxHP));
   }
 
   /**
@@ -1666,8 +1731,21 @@ export class UsesSearch {
     const item = this.berryOf(this.initial, this.first.cases.some((useCase) => useCase.contact));
     if (item && !PINCH_STAT_BERRIES[item] && !this.takenInHit(this.initial, item)) texts.push(`The target's ${name(item)} heals it once, ${when(item, this.m.defAbility)}.`);
     const own = losesHP && this.attackerBerry(this.initial) ? this.initial.att.itemId : null;
-    if (own) texts.push(`The attacker's ${name(own)} ${PINCH_STAT_BERRIES[own] ? `raises its ${STAT_LABELS[PINCH_STAT_BERRIES[own]]}` : "heals it"} once, ${when(own, this.m.attAbility)}.`);
+    // Lansat Berry counts only where its +2 makes the later uses certain critical hits (calculate.ts certainCrit), Starf
+    // Berry's random stat stops the count (attackerAte).
+    if (own && (!LANSAT_STARF.has(own) || (own === "lansatberry" && this.lansatCrits()))) {
+      const does = own === "lansatberry" ? "raises its critical-hit ratio" : PINCH_STAT_BERRIES[own] ? `raises its ${STAT_LABELS[PINCH_STAT_BERRIES[own]]}` : "heals it";
+      texts.push(`The attacker's ${name(own)} ${does} once, ${LANSAT_STARF.has(own) ? `at ${this.m.attAbility === "gluttony" ? "half" : "a quarter of"} its HP or less` : when(own, this.m.attAbility)}.`);
+    }
     return texts;
+  }
+
+  /** Whether the attacker's Lansat Berry (+2 critical-hit ratio) would make its later uses certain critical hits (a ratio of 4: calculate.ts certainCrit). */
+  private lansatCrits(): boolean {
+    const { m } = this;
+    if (m.conditions.critical || m.attacker.settledFocusEnergy) return false;
+    const ratio = m.helpers.critRatio(this.input.move.id, m.attacker, m.defender, this.input.context, m.conditions);
+    return ratio > 0 && ratio < 4 && ratio + 2 >= 4;
   }
 
   /** The end-of-turn effects the count includes, as sentences, from the state the first use leaves (an item it took, a terrain it ended, a status it gave). */
@@ -2584,12 +2662,14 @@ export class UsesSearch {
       const maxHP = state.def.maxHP;
       for (const [code, part] of parts) {
         const { run, dist: from } = part;
-        const cases = this.casesFor(run, mode);
+        // A doubles turn's step after hits into a Substitute (TurnStepPart): one case, from its first hit on the target.
+        const cases = this.turnPart ? this.partCases(run, mode, this.turnPart) : this.casesFor(run, mode);
         const engineMove = run.trace.result!.move;
         // Super Fang's family and Endeavor follow the HP (per calculation: a Max Move's row is its own move once Dynamax ends); False Swipe and Hold Back leave 1 HP.
-        const fixed = !!run.trace.fixedHP, endeavor = fixed && this.input.move.id === "endeavor", spares = !!run.row.leavesOneHP;
-        // A doubles turn's step reports the calculations it meets: a fixed-HP move's is its damage at each HP.
-        if (this.turnRows) {
+        const fixed = !!run.trace.fixedHP, endeavor = fixed && this.input.move.id === "endeavor", spares = !!run.row.leavesOneHP, endures = this.m.endure;
+        // A doubles turn's step reports the calculations it meets: a fixed-HP move's is its damage at each HP; after hits into
+        // a Substitute, only when a hit reaches the target.
+        if (this.turnRows && (!this.turnPart || cases[0].hits.length > 0)) {
           if (!fixed) this.turnRows.set(run.row, (this.turnRows.get(run.row) ?? 0) + massOf(from));
           else {
             for (let index = 0; index < from.size; index++) {
@@ -2692,6 +2772,8 @@ export class UsesSearch {
                 for (let roll = 0, count = fixed ? 1 : values.length; roll < count; roll++) {
                   // Super Fang, Nature's Madness, Ruination: half the target's HP scaled back from Dynamax, at least 1.
                   let damage = endeavor ? endeavorDamage(hp, state) : fixed ? Math.max(1, Math.floor(Math.ceil(hp * state.def.baseMaxHP / maxHP) / 2)) : values[roll];
+                  // A doubles turn's Endure (UsesEnv.endure: onDamage priority −10, before False Swipe, Sturdy and Focus Sash) leaves 1 HP.
+                  if (endures && damage >= hp && damage > 0) damage = hp - 1;
                   // False Swipe and Hold Back (pinned Showdown onDamage, before Sturdy and Focus Sash) leave 1 HP.
                   if (spares && damage >= hp) damage = hp - 1;
                   let bits = damage > 0 ? mask | DAMAGED : mask;
@@ -2807,8 +2889,10 @@ export class UsesSearch {
    */
   private afterHitNode(node: Node, code: number, run: Run, caseIndex: number, useCase: UseCase, mask: number, dealt: number, mode: Mode,
     landed: number, end: HitState, endKey: number): Node {
-    // A doubles turn's step keeps apart the hits that landed and the knocked-out target (KNOCKED is past the mask's 64).
-    const key: number | string = this.turnMode ? `${code},${caseIndex},${mask},${dealt},${endKey},${landed}` : (((code * 16 + caseIndex) * 64 + mask) * 4096 + dealt) * 65536 + endKey;
+    // A doubles turn's step keeps apart the hits that landed and the knocked-out target (KNOCKED is past the mask's 64), and
+    // a step after hits into a Substitute by their count (its user's and target's effects differ: TurnStepPart).
+    const sub = this.turnPart ? `,s${this.turnPart.skip}` : "";
+    const key: number | string = this.turnMode ? `${code},${caseIndex},${mask},${dealt},${endKey},${landed}${sub}` : (((code * 16 + caseIndex) * 64 + mask) * 4096 + dealt) * 65536 + endKey;
     let next = node.hits.get(key);
     if (next) { this.hitHeal = node.heals?.get(key) ?? 0; return next; }
     // The attacker's HP berry can hang on the dealt damage (recoil), so its state is made for each.
@@ -2820,7 +2904,7 @@ export class UsesSearch {
     // The dealt damage changes only the attacker's HP (recoil, draining, Shell Bell): the rest of the state is made
     // once for the hits that landed and what they changed but that HP (an ability replaced, a Berry eaten).
     const variants = node.shared.variants ??= new Map();
-    const baseKey = `${code},${caseIndex},${mask},${landed}|${end.attackerAbility}|${end.targetAbility}|${end.targetItem}|${end.gulping}`;
+    const baseKey = `${code},${caseIndex},${mask},${landed}${sub}|${end.attackerAbility}|${end.targetAbility}|${end.targetItem}|${end.gulping}`;
     let entry = variants.get(baseKey);
     if (!entry) {
       const base = this.afterHit(node.state, run, useCase, mask, dealt, mode, landed, end);
@@ -3161,8 +3245,14 @@ export class UsesSearch {
     const { contact, physical } = useCase;
     const type = engineMove.type;
     const damaged = !!(mask & DAMAGED);
+    // A doubles turn's step after hits into a Substitute (TurnStepPart, ADDENDUM §3.3′): the user's per-use effects act when
+    // any hit of the move landed, a Substitute's included (`hitAny`: PS/sim/battle-actions.ts:1317-1351 selfDrops and
+    // secondaries, :535-545 Life Orb, onAfterSubDamage), the target's only for the hits on it (`damaged`, `landed`); the
+    // attacker's HP after the use is followed on `hitAny` too, from the continuation's walk or, with none, its state.
+    const subHits = this.turnPart?.skip ?? 0;
+    const hitAny = damaged || subHits > 0;
     const followed = mode !== "all" || this.follow;
-    const loop = damaged ? this.loopInput(prev, run, useCase, followed ? prev.att.hp : UNTRACKED) : null;
+    const loop = hitAny ? this.loopInput(prev, run, useCase, followed ? prev.att.hp : UNTRACKED) : null;
     if (loop) end ??= walkHits(loop, landed).after;
     const broken = moldBreaks(m, prev);
     const stickyHold = defAbility === "stickyhold" && !broken;
@@ -3201,7 +3291,8 @@ export class UsesSearch {
     if (table) {
       if (table.self) boost(m, state, "att", table.self, false);
       if (table.preHit) boost(m, state, "att", table.preHit, false);
-      if (table.userSecondary && !sheerForce) for (let i = 0; i < Math.max(1, landed); i++) boost(m, state, "att", table.userSecondary, false);
+      // Once per hit of the move, its hits into a Substitute included (TurnStepPart).
+      if (table.userSecondary && !sheerForce) for (let i = 0; i < Math.max(1, landed + subHits); i++) boost(m, state, "att", table.userSecondary, false);
       if (table.target && !sheerForce && !shielded && damaged) boost(m, state, "def", table.target, true, true);
     }
     if (own === "terablast" && result.attacker.teraType === "Stellar") boost(m, state, "att", { atk: -1, spa: -1 }, false);
@@ -3238,7 +3329,8 @@ export class UsesSearch {
     }
     if (((own === "smellingsalts" && def.status === "par") || (own === "wakeupslap" && def.status === "slp")) && damaged) def.status = "";
     if (this.saltCures(prev, run) && damaged && !sheerForce && !shielded) def.saltCure = true;
-    if (!att.status && result.defender.hasAbility("Spicy Spray") && helpers.spicySpray(result, { ...attacker, status: att.status }, conditions) !== null) {
+    // Spicy Spray is the target's DamagingHit: none for hits into a Substitute alone (TurnStepPart).
+    if (!att.status && (!this.turnPart || landed > 0) && result.defender.hasAbility("Spicy Spray") && helpers.spicySpray(result, { ...attacker, status: att.status }, conditions) !== null) {
       if (att.itemId === "lumberry" || att.itemId === "rawstberry") { if (landed >= 2) att.status = "brn"; att.itemId = ""; }
       else att.status = "brn";
     }
@@ -3246,7 +3338,9 @@ export class UsesSearch {
     // 4. DamagingHit: Air Balloon pops; the target's abilities a hit sets off (Thermal Exchange is breakable;
     //    Champions keeps gen9's Weak Armor, Speed +2), Seed Sower and Sand Spit, Mummy, Lingering Aroma and
     //    Wandering Spirit (not past the attacker's Ability Shield), and the items a hit uses up.
-    if (def.itemId === "airballoon" && damaged) def.itemId = "";
+    // An Air Balloon pops on a hit into a Substitute too (PS/data/items.ts:203-210 onAfterSubDamage); an item handler, so
+    // not while Klutz or Magic Room has its holder ignore it (sim/battle.ts runEvent: ignoringItem).
+    if (def.itemId === "airballoon" && hitAny && this.m.defItemOn) def.itemId = "";
     const hit = HIT_ABILITIES[defAbility];
     if (hit && hit.when(type, physical, contact) && !(defAbility === "thermalexchange" && broken)) {
       for (let i = 0; i < landed; i++) boost(m, state, hit.attacker ? "att" : "def", hit.stages, !!hit.attacker, true);
@@ -3309,7 +3403,7 @@ export class UsesSearch {
     //    or Mirror Herb stored from the other's Berry eaten before the move (calculate.ts pendingCopy; pinned Showdown
     //    onAnyAfterMove), through boost() but not copied back, the herb used up. One its holder no longer has (taken,
     //    already used, its ability replaced) is not followed.
-    if (zEffect?.user && damaged && !sheerForce) boost(m, state, "att", zEffect.user, false);
+    if (zEffect?.user && hitAny && !sheerForce) boost(m, state, "att", zEffect.user, false);
     for (const [side, on] of [[att, m.attItemOn], [def, m.defItemOn]] as const) {
       if (on && side.itemId === "whiteherb" && STATS.some((stat) => side.boosts[stat] < 0)) {
         for (const stat of STATS) if (side.boosts[stat] < 0) side.boosts[stat] = 0;
@@ -3329,7 +3423,8 @@ export class UsesSearch {
 
     // 9. The attacker's HP, when followed, with its HP berry.
     if (loop && end && followed) {
-      const after = this.attackerAfterUse(prev, result, dealt, end, dealt, this.afterMove(prev, state), state);
+      // After hits into a Substitute alone, no recoil, second self-cost or Shell Bell (move.totalDamage 0: sim/battle-actions.ts:958-965, 981-982).
+      const after = this.attackerAfterUse(prev, result, dealt, end, dealt, this.afterMove(prev, state), state, !!this.turnPart && !damaged);
       if (after.berry && att.itemId === after.berry) this.attackerAte(state, after.berry);
       att.hp = after.hp;
       if (att.hp <= 0) { state.attackerFainted = true; att.hp = 1; }
@@ -3337,7 +3432,8 @@ export class UsesSearch {
     // 10. Field: Charge is used up; Ice Spinner and Steel Roller end the terrain; Smack Down and Thousand Arrows
     //     ground the target; a terrain a use set uses up a Seed held for it (onTerrainChange).
     if (type === "Electric" && conditions.attackerSide.charge) field().attackerSide.charge = false;
-    if ((own === "icespinner" || own === "steelroller") && damaged && conditions.terrain) { field().terrain = ""; state.terrainTurns = null; }
+    // Ice Spinner and Steel Roller end it on a hit into a Substitute too (their onAfterSubDamage).
+    if ((own === "icespinner" || own === "steelroller") && hitAny && conditions.terrain) { field().terrain = ""; state.terrainTurns = null; }
     if ((own === "smackdown" || own === "thousandarrows") && damaged && !this.grounded({ ...state, conditions }, "def")) def.smackedDown = true;
     if (conditions.terrain && conditions.terrain !== prev.conditions.terrain) this.useSeeds(state, conditions.terrain, true);
     this.itemsLost(prev, state);
@@ -3410,9 +3506,10 @@ export class UsesSearch {
    * too (`berry`: the one it ate): its own, until the target's Pickpocket takes it after the hits; one Thief or
    * Covet took in the hit, from that hit's Update on; one Magician took (in `final`, the state the use leaves),
    * at the last Update only. All of them act on a use that knocks out too. At most 0 once it faints (nothing
-   * heals it then). `healed` is the damage Shell Bell heals from, when a bound takes a lower one than recoil's.
+   * heals it then). `healed` is the damage Shell Bell heals from, when a bound takes a lower one than recoil's. `noDamage`:
+   * a doubles turn's use whose hits all met a Substitute (TurnStepPart): no recoil, no second self-cost, no Shell Bell.
    */
-  private attackerAfterUse(prev: State, result: Result, dealt: number, end: HitState, healed = dealt, after = prev, final = after): { hp: number; berry: string | null } {
+  private attackerAfterUse(prev: State, result: Result, dealt: number, end: HitState, healed = dealt, after = prev, final = after, noDamage = false): { hp: number; berry: string | null } {
     const { m } = this;
     const att = prev.att;
     const own = this.attackerBerry(prev);
@@ -3440,13 +3537,13 @@ export class UsesSearch {
     };
     // The last hit's Update, for a berry Thief or Covet took in it.
     update();
-    const { recoil, rest } = this.afterHitsLosses(after, result, dealt);
+    const { recoil, rest } = this.afterHitsLosses(after, result, dealt, noDamage);
     hp -= recoil;
     update();
     // AfterMoveSecondary: the target's Pickpocket takes an uneaten berry.
     if (own && after.att.itemId !== att.itemId) berry = null;
     if (hp > 0) hp -= rest;
-    if (hp > 0 && m.attItemOn && after.att.itemId === "shellbell" && !this.sheerForced(after, result)) {
+    if (hp > 0 && m.attItemOn && after.att.itemId === "shellbell" && !this.sheerForced(after, result) && !noDamage) {
       const bell = Math.min(att.maxHP, hp + Math.max(1, Math.floor(healed / 8)));
       this.noteAttackerHeal(m.runtime.itemsById.get("shellbell")?.name ?? "Shell Bell", bell - hp);
       hp = bell;
@@ -3490,14 +3587,15 @@ export class UsesSearch {
   /**
    * The attacker's HP lost after a use's hits: recoil on what it dealt (none with Rock Head), then Life Orb
    * (none with Sheer Force on a move it boosts) and Steel Beam's family (not as a Z-Move or Max Move: hit-loop.ts ownMoveId).
+   * `noDamage` (TurnStepPart: every hit met a Substitute): Life Orb alone (recoil and the self-cost need move.totalDamage).
    */
-  private afterHitsLosses(state: State, result: Result, dealt: number): { recoil: number; rest: number } {
+  private afterHitsLosses(state: State, result: Result, dealt: number, noDamage = false): { recoil: number; rest: number } {
     const attAbility = this.ability(state, "att");
     if (attAbility === "magicguard") return { recoil: 0, rest: 0 };
     const engineMove = result.move as Move & { recoil?: [number, number] };
-    const recoil = engineMove.recoil && attAbility !== "rockhead" ? Math.max(1, Math.round(dealt * engineMove.recoil[0] / engineMove.recoil[1])) : 0;
+    const recoil = engineMove.recoil && attAbility !== "rockhead" && !noDamage ? Math.max(1, Math.round(dealt * engineMove.recoil[0] / engineMove.recoil[1])) : 0;
     let rest = 0;
-    if (SELF_COST_MOVES.has(ownMoveId(this.input.move.id, engineMove))) rest += Math.max(1, Math.round(state.att.maxHP / 2));
+    if (SELF_COST_MOVES.has(ownMoveId(this.input.move.id, engineMove)) && !noDamage) rest += Math.max(1, Math.round(state.att.maxHP / 2));
     if (this.m.attItemOn && state.att.itemId === "lifeorb" && !this.sheerForced(state, result)) rest += Math.max(1, Math.floor(state.att.baseMaxHP / 10));
     return { recoil, rest };
   }
@@ -3575,46 +3673,32 @@ export class UsesSearch {
    * no Grassy Terrain heal, and underground or underwater no sand or hail (pinned Showdown dig and dive onImmunity).
    */
   residuals(state: State, who: "att" | "def", charging = false): Residuals {
+    // An adapter over the shared rules (residuals.ts, status-eot SPEC §4.8): the side as a ResidualMon (its status ""
+    // once Hydration cures it at 5.3, before poison and burn act), then today's ops, names and coarse orders.
     const { m } = this;
     const side = state[who];
     const itemOn = who === "att" ? m.attItemOn : m.defItemOn;
-    const ability = this.ability(state, who);
-    const types = this.types(state, who);
-    const guard = ability === "magicguard";
     const hidden = charging && who === "att" && SEMI_INVULNERABLE_MOVES.has(this.input.move.id);
-    const sheltered = hidden && (this.input.move.id === "dig" || this.input.move.id === "dive");
-    const part = (divisor: number) => Math.max(1, Math.floor(side.baseMaxHP / divisor));
+    const mon: ResidualMon = {
+      baseMaxHP: side.baseMaxHP, types: this.types(state, who), ability: this.ability(state, who), item: itemOn ? side.itemId : "",
+      status: this.hydrated(state, who) ? "" : side.status, toxicStage: side.toxic, grounded: this.grounded(state, who),
+      semiInvulnerable: hidden, sheltered: hidden && (this.input.move.id === "dig" || this.input.move.id === "dive"), saltCure: side.saltCure,
+    };
     const ops: number[] = [], names: string[] = [], orders: number[] = [];
-    const add = (op: number, name: string, order: number) => { ops.push(op); names.push(name); orders.push(order); };
+    const add = (each: OwnResidual) => { ops.push(each.amount); names.push(residualPhrase(each.id, each.amount)); orders.push(Math.floor(each.key.order)); };
     const weather = this.endWeather(state);
     if (weather) {
-      const umbrella = itemOn && side.itemId === "utilityumbrella", goggles = itemOn && side.itemId === "safetygoggles";
-      const sun = (weather === "Sun" || weather === "Harsh Sunshine") && !umbrella, rain = (weather === "Rain" || weather === "Heavy Rain") && !umbrella;
-      if (weather === "Sand" && !types.some((type) => ["Rock", "Ground", "Steel"].includes(type)) && !["overcoat", "sandforce", "sandrush", "sandveil"].includes(ability) && !goggles && !guard && !sheltered) add(-part(16), "Sandstorm damages", 1);
-      if (weather === "Hail" && !types.includes("Ice") && !["overcoat", "icebody", "snowcloak"].includes(ability) && !goggles && !guard && !sheltered) add(-part(16), "Hail damages", 1);
-      if (ability === "icebody" && (weather === "Hail" || weather === "Snow")) add(part(16), "Ice Body heals", 1);
-      if (ability === "raindish" && rain) add(part(16), "Rain Dish heals", 1);
-      if (ability === "dryskin" && rain) add(part(8), "Dry Skin heals", 1);
-      if ((ability === "dryskin" || ability === "solarpower") && sun && !guard) add(-part(8), `${ability === "dryskin" ? "Dry Skin" : "Solar Power"} hurts`, 1);
+      weatherResiduals(mon, weather).forEach(add);
       if (ops.length) { ops.push(UPDATE); orders.push(1); }
     }
-    if (state.conditions.terrain === "Grassy" && this.grounded(state, who) && !hidden) add(part(16), "Grassy Terrain heals", 5);
-    if (itemOn && side.itemId === "leftovers") add(part(16), "Leftovers heals", 5);
-    if (itemOn && side.itemId === "blacksludge") {
-      if (types.includes("Poison")) add(part(16), "Black Sludge heals", 5); else if (!guard) add(-part(8), "Black Sludge hurts", 5);
+    const own = ownResiduals(mon, { terrain: state.conditions.terrain, champions: m.runtime.profile.id === "champions" });
+    // The foe's Bad Dreams (28.2) before Sticky Barb (28.3); it reads the status as the turn left it (Hydration aside, as before).
+    const dreams = this.ability(state, who === "att" ? "def" : "att") === "baddreams" ? badDreamsDamage({ ...mon, status: side.status }) : 0;
+    for (const each of own) {
+      if (dreams && each.id === "stickybarb") { ops.push(-dreams); names.push("Bad Dreams damages"); orders.push(28); }
+      add(each);
     }
-    const cured = this.hydrated(state, who);
-    if ((side.status === "psn" || side.status === "tox") && !cured) {
-      if (ability === "poisonheal") add(part(8), "Poison Heal heals", 9);
-      else if (!guard) add(-(side.status === "psn" ? part(8) : part(16) * Math.min(15, side.toxic + 1)), side.status === "psn" ? "poison damages" : "bad poison damages", 9);
-    }
-    if (side.status === "brn" && !guard && !cured) add(-(ability === "heatproof" ? Math.max(1, Math.floor(part(16) / 2)) : part(16)), "its burn damages", 10);
-    if (side.saltCure && !guard) {
-      const resisted = types.includes("Water") || types.includes("Steel");
-      add(-part(m.runtime.profile.id === "champions" ? (resisted ? 8 : 16) : (resisted ? 4 : 8)), "Salt Cure damages", 13);
-    }
-    if (this.ability(state, who === "att" ? "def" : "att") === "baddreams" && (side.status === "slp" || ability === "comatose") && !guard) add(-part(8), "Bad Dreams damages", 28);
-    if (itemOn && side.itemId === "stickybarb" && !guard) add(-part(8), "Sticky Barb hurts", 28);
+    if (dreams && !own.some((each) => each.id === "stickybarb")) { ops.push(-dreams); names.push("Bad Dreams damages"); orders.push(28); }
     if (ops.length && ops[ops.length - 1] !== UPDATE) { ops.push(UPDATE); orders.push(28); }
     return { ops, names, orders };
   }
@@ -3723,14 +3807,19 @@ export class UsesSearch {
    */
   private attackerBerry(state: State): Berry | null {
     const item = state.att.itemId;
-    if (!item || !this.m.attItemOn || item === "enigmaberry" || !(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item])) return null;
+    if (!item || !this.m.attItemOn || item === "enigmaberry" || !(HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item))) return null;
     if (item !== "berryjuice" && berryUnnerved(this.m.unnerve, "attacker", this.ability(state, "def"))) return null;
     return this.berryFor(state, "att", item);
   }
 
-  /** The state side of the attacker's eaten berry: gone, and a pinch berry's stage. */
+  /**
+   * The state side of the attacker's eaten berry: gone, a pinch berry's stage, Lansat Berry's focusenergy (data/items.ts
+   * lansatberry onEat), and a Starf Berry's stat chosen at random, which the search does not follow.
+   */
   private attackerAte(state: State, item: string) {
     if (PINCH_STAT_BERRIES[item]) boost(this.m, state, "att", { [PINCH_STAT_BERRIES[item]]: this.ability(state, "att") === "ripen" ? 2 : 1 }, false);
+    if (item === "lansatberry") state.att.focusEnergy = true;
+    if (item === "starfberry") { this.stop ??= STARF_REASON; this.exceeded = true; }
     state.att.itemId = "";
   }
 
@@ -3987,13 +4076,24 @@ export const TURN_TOO_MANY = "Too many cases to follow.";
 export type TurnSide = Side;
 /** One entry of a turn's step: the attacker's HP (read when followed) and the mass on each target HP (engine HP). */
 export type TurnStepEntry = { attackerHP: number; target: Map<number, number> };
-/** One outcome of a turn's step; attacker.hp is meaningful only when the step follows the attacker's HP. */
+/**
+ * One outcome of a turn's step; attacker.hp is meaningful only when the step follows the attacker's HP. `landed`: the
+ * hits on the target; `subHits`: the hits a Substitute took before them (the step's TurnStepPart skip; 0 without a part).
+ */
 export type TurnStepOutcome = {
   attacker: TurnSide; attackerFainted: boolean;
   target: TurnSide; knocked: boolean;
-  conditions: BattleConditions; landed: number;
+  conditions: BattleConditions; landed: number; subHits: number;
   dist: Map<number, number>;
 };
+/** One case of a use as a doubles turn's Substitute prefix reads it: its chance and each hit's distinct damages with their shares. */
+export type TurnCase = { chance: number; hits: { values: number[]; weights: number[] }[] };
+/**
+ * A turn step after hits into a Substitute: only case `caseIndex` of the run (chance 1), its first `skip` hits already
+ * dealt to the Substitute (their recoil, drain and self-cost are in the entries' attackerHP, doubles-substitute.ts), the
+ * hits from `skip` on dealt to the target. skip may equal the case's hit count: the target is untouched.
+ */
+export type TurnStepPart = { caseIndex: number; skip: number };
 export type TurnStepResult = {
   outcomes: TurnStepOutcome[]; heals: Map<string, [number, number]>; rows: Map<MoveDamageResult, number>;
   /** What a followed attacker regained (its HP Berry, Shell Bell, Cheek Pouch), the least and the most from each source. */
@@ -4032,6 +4132,23 @@ export function entryStagesOf(build: BattleBuild, ability: string, itemOn: boole
   const on = ability === "windrider" ? tailwind : ability.startsWith("embodyaspect") ? game === "scarlet_violet" : game === "sword_shield" || build.abilityActive;
   if (stat && on) stages[stat] = (stages[stat] ?? 0) + 1;
   return { stages, seed: used };
+}
+
+/**
+ * The 1v1 row texts of the shared residuals (residuals.ts), by id: [heal, damage]. A status's own name is lowercase
+ * (texts capitalises the first). Aqua Ring, Ingrain, Curse and partial traps never reach a 1v1 side.
+ */
+const RESIDUAL_PHRASES: Readonly<Partial<Record<ResidualId, readonly [string, string]>>> = {
+  sandstorm: ["", "Sandstorm damages"], hail: ["", "Hail damages"], icebody: ["Ice Body heals", ""], raindish: ["Rain Dish heals", ""],
+  dryskin: ["Dry Skin heals", "Dry Skin hurts"], solarpower: ["", "Solar Power hurts"], grassyterrain: ["Grassy Terrain heals", ""],
+  leftovers: ["Leftovers heals", ""], blacksludge: ["Black Sludge heals", "Black Sludge hurts"], poisonheal: ["Poison Heal heals", ""],
+  psn: ["", "poison damages"], tox: ["", "bad poison damages"], brn: ["", "its burn damages"], saltcure: ["", "Salt Cure damages"],
+  stickybarb: ["", "Sticky Barb hurts"],
+};
+function residualPhrase(id: ResidualId, amount: number): string {
+  const phrase = RESIDUAL_PHRASES[id]?.[amount > 0 ? 0 : 1];
+  if (!phrase) throw new Error(`No 1v1 text for the residual ${id}.`);
+  return phrase;
 }
 
 /** The end-of-turn effects as sentences (a status's own name is lowercase, so only the first is capitalised). */
@@ -4587,7 +4704,15 @@ function boost(m: UsesMatchup, state: State, who: "att" | "def", changes: StageC
  * Energy from a Paradox Pokémon. A transformed Pokémon keeps its own species for this.
  */
 function takeable(m: UsesMatchup, itemId: string, holder: string, taker: string, thief: boolean): boolean {
-  const { runtime } = m;
+  return itemTakeable(m.runtime, m.helpers.paradox, itemId, holder, taker, thief);
+}
+
+/**
+ * takeable's rule without a matchup (status-eot ADDENDUM §3.3′): whether `itemId` can be taken from a Pokémon of species
+ * `holder` by one of species `taker`; `thief` (Thief, Covet, Trick, Switcheroo) runs the item's onTakeItem for the taker
+ * too. `paradox`: whether a species is a Paradox Pokémon (its Booster Energy cannot be taken; UsesHelpers.paradox).
+ */
+export function itemTakeable(runtime: BattleRuntime, paradox: (speciesId: string) => boolean, itemId: string, holder: string, taker: string, thief: boolean): boolean {
   const item = runtime.itemsById.get(itemId);
   if (!item) return true;
   if (item.zMoveType || item.zMove || itemId.endsWith("iumz")) return false;
@@ -4596,7 +4721,7 @@ function takeable(m: UsesMatchup, itemId: string, holder: string, taker: string,
     if (item.megaTargets.length) {
       return item.megaTargets.some((target) => FORM_KEYED_MEGA_STONES.has(itemId) ? target.baseSpeciesId === species || target.formId === species : family(target.baseSpeciesId) === family(species));
     }
-    if (itemId === "boosterenergy") return m.helpers.paradox(species);
+    if (itemId === "boosterenergy") return paradox(species);
     return itemOwner(itemId, runtime.profile.id)?.[0] === family(species);
   };
   return !owns(holder) && !((thief || itemOwner(itemId, runtime.profile.id)?.[1]) && owns(taker));

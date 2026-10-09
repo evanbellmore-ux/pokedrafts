@@ -9,21 +9,32 @@ import {
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
 import DoublesSettings from "@/app/(app)/calculator/DoublesSettings";
 import DoublesMoves from "@/app/(app)/calculator/DoublesMoves";
-import { describeDoublesConditions } from "@/app/(app)/calculator/BattleConditions";
+import BattleConditions, { DoublesCarriedContext, describeDoublesConditions, type CarriedControl } from "@/app/(app)/calculator/BattleConditions";
 import {
-  actionFact, baseName, cardHPLabel, factLine, hitLine, orderFact, positionedName, relativeLabel, relativeName, shownHP, startRowLine, stepHeading, turnSummary,
+  actionFact, baseName, cardHPLabel, cardReached, conditionsLine, factLine, hitLine, hpChangeText, listedHits, orderFact, positionedName, relativeLabel, relativeName,
+  residualLine, shownHP, startRowLine, stepHeading, substituteLine, turnHP, turnSummary,
 } from "@/app/(app)/calculator/doubles-format";
+import {
+  carriedAbilityOn, carriedIssueTexts, carriedOptions, createDoubles, doublesSlotInput, getDoublesTurnInput, NO_CARRIED_OPTIONS, reconcileCarried, setDoublesCarried,
+  setDoublesField, sleepTurnsMax, updateDoublesBuild, updateDoublesHP, type CalculatorState,
+} from "@/app/(app)/calculator/doubles-prep";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
-import { getMoveOwner } from "@/app/(app)/calculator/roster-prep";
-import { DOUBLES_SLOTS, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
-import { createConditions } from "@/app/lib/battle/model";
-import { championsRuntime } from "@/app/lib/battle/runtime";
+import { createMatchup, getMoveOwner } from "@/app/(app)/calculator/roster-prep";
+import { calculateDoublesTurn } from "@/app/lib/battle/doubles-turn";
+import {
+  DOUBLES_SLOTS, slotSide, type DoublesCarried, type DoublesHit, type DoublesHP, type DoublesResidual, type DoublesSlotId, type DoublesStep, type DoublesTurnResult,
+} from "@/app/lib/battle/doubles-types";
+import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
+import { createBuild, createConditions, getBuildStats } from "@/app/lib/battle/model";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
+import type { BattleBuild, MoveDamageResult } from "@/app/lib/battle/types";
 
 // Keep real SSR and hooks while recording host handlers for DOM-free callback tests (as calculator-ui.test.ts does).
 const hostEvents = vi.hoisted(() => ({
   capture: false,
   buttons: [] as (ComponentProps<"button"> & Record<string, unknown>)[],
   inputs: [] as (ComponentProps<"input"> & Record<string, unknown>)[],
+  selects: [] as (ComponentProps<"select"> & Record<string, unknown>)[],
 }));
 vi.mock("react/jsx-runtime", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react/jsx-runtime")>();
@@ -31,6 +42,7 @@ vi.mock("react/jsx-runtime", async (importOriginal) => {
     if (!hostEvents.capture) return;
     if (type === "button") hostEvents.buttons.push(props as typeof hostEvents.buttons[number]);
     if (type === "input") hostEvents.inputs.push(props as typeof hostEvents.inputs[number]);
+    if (type === "select") hostEvents.selects.push(props as typeof hostEvents.selects[number]);
   };
   return {
     ...actual,
@@ -45,6 +57,7 @@ vi.mock("react/jsx-dev-runtime", async (importOriginal) => {
     jsxDEV: (...args: Parameters<typeof actual.jsxDEV>) => {
       if (hostEvents.capture && args[0] === "button") hostEvents.buttons.push(args[1] as typeof hostEvents.buttons[number]);
       if (hostEvents.capture && args[0] === "input") hostEvents.inputs.push(args[1] as typeof hostEvents.inputs[number]);
+      if (hostEvents.capture && args[0] === "select") hostEvents.selects.push(args[1] as typeof hostEvents.selects[number]);
       return actual.jsxDEV(...args);
     },
   };
@@ -53,8 +66,9 @@ vi.mock("react/jsx-dev-runtime", async (importOriginal) => {
 function capture(render: () => string) {
   hostEvents.buttons = [];
   hostEvents.inputs = [];
+  hostEvents.selects = [];
   hostEvents.capture = true;
-  try { return { html: render(), buttons: hostEvents.buttons, inputs: hostEvents.inputs }; }
+  try { return { html: render(), buttons: hostEvents.buttons, inputs: hostEvents.inputs, selects: hostEvents.selects }; }
   finally { hostEvents.capture = false; }
 }
 
@@ -109,6 +123,11 @@ function assertControlLabels(html: string, external: string[] = []) {
   for (const [, references] of html.matchAll(/\baria-(?:describedby|labelledby|controls)="([^"]+)"/g)) {
     for (const id of references.split(" ")) expect([...ids, ...external]).toContain(id);
   }
+}
+
+/** The live summary's last sentence for a shared fixture's end of turn: " End of turn not estimated: {reason}" when it is not estimated. */
+function fixtureEnd(turn: DoublesTurnResult = DOUBLE_TARGET) {
+  return turn.status === "ready" && turn.endOfTurn.status === "not-estimated" ? ` End of turn not estimated: ${turn.endOfTurn.reason}` : "";
 }
 
 const click = (button: { onClick?: unknown }) => (button.onClick as (event: MouseEvent<HTMLButtonElement>) => void)({} as MouseEvent<HTMLButtonElement>);
@@ -181,8 +200,9 @@ describe("2v2 text (doubles-format)", () => {
     expect(stepHeading(2, DOUBLE_TARGET.steps[1], names, championsRuntime, { arrow: true, text: "Blastoise (left foe)" })).toBe("2 · Weather Ball · Charizard (your left) → Blastoise (left foe)");
     expect(stepHeading(1, DOUBLE_TARGET.steps[0], names, championsRuntime, { arrow: false, text: "Targets itself" })).toBe("1 · Protect · Pikachu (opponent's right) · Targets itself");
     expect(stepHeading(4, DOUBLE_TARGET.steps[3], names, championsRuntime, null)).toBe("4 · Water Spout · Blastoise (opponent's left) → both foes");
-    expect(turnSummary(DOUBLE_TARGET, names, "average")).toBe("Charizard HP remaining: 145 / 153. Venusaur HP remaining: 153 / 155. Blastoise HP remaining: 1 / 154, KO chance 75%. Pikachu HP remaining: 110 / 110.");
-    expect(turnSummary(NOT_ESTIMATED, names, "average")).toBe("Turn not estimated: Sleep Powder is not modelled and comes before another move.");
+    // With the end of turn not estimated (the fixture's), the HP is after the moves and the summary says why.
+    expect(turnSummary(DOUBLE_TARGET, names, "average")).toBe(`Charizard HP remaining: 145 / 153. Venusaur HP remaining: 153 / 155. Blastoise HP remaining: 1 / 154, KO chance 75%. Pikachu HP remaining: 110 / 110.${fixtureEnd()}`);
+    expect(turnSummary(NOT_ESTIMATED, names, "average")).toBe("Turn not estimated: Worry Seed is not modelled and comes before another move.");
     expect(turnSummary(ISSUES, names, "average")).toBe("Charizard (your left): Weather Ball has no target.");
     expect(turnSummary(null, names, "average")).toBe("");
   });
@@ -307,7 +327,8 @@ describe("2v2 turn (DoublesTurn)", () => {
     expect(steps).toContain("Every move hits; no critical hits; added effects below 100% do not happen.");
     expect(steps).toContain("Assumes no protecting move was used last turn.");
     expect(panel).toContain("Show move<span class=\"sr-only\"> Weather Ball, Charizard (your left)</span>");
-    expect(panel).toMatch(/<p data-doubles-live="true" aria-live="polite" aria-atomic="true" class="sr-only">Charizard HP remaining: 145 \/ 153\. Venusaur HP remaining: 153 \/ 155\. Blastoise HP remaining: 1 \/ 154, KO chance 75%\. Pikachu HP remaining: 110 \/ 110\.<\/p>/);
+    expect(text(panel.match(/<p data-doubles-live="true" aria-live="polite" aria-atomic="true" class="sr-only">([^<]*)<\/p>/)![1]))
+      .toBe(`Charizard HP remaining: 145 / 153. Venusaur HP remaining: 153 / 155. Blastoise HP remaining: 1 / 154, KO chance 75%. Pikachu HP remaining: 110 / 110.${fixtureEnd()}`);
     expect(steps).not.toMatch(/Assumes the target uses a 0-priority move|Analytic: needs the Doubles turn order/);
   });
 
@@ -323,7 +344,7 @@ describe("2v2 turn (DoublesTurn)", () => {
   it("gives the reason a turn is not estimated, then each move's damage at the start of the turn", () => {
     const html = summary(notEstimated());
     const panel = turnPanel(html);
-    expect(text(panel)).toContain("Turn not estimated: Sleep Powder is not modelled and comes before another move.");
+    expect(text(panel)).toContain("Turn not estimated: Worry Seed is not modelled and comes before another move.");
     expect(panel).toMatch(/<h4 id="([^"]+)"[^>]*>At the start of the turn<\/h4><ul aria-labelledby="\1"/);
     expect([...panel.matchAll(/<li data-doubles-start-row="[^"]+"[^>]*>([\s\S]*?)<\/li>/g)].map((match) => text(match[1]))).toEqual([
       "Heat Wave · Charizard →  targets Blastoise: 26–31 damage (16.88–20.13% of max HP)",
@@ -331,7 +352,7 @@ describe("2v2 turn (DoublesTurn)", () => {
     ]);
     expect(panel).not.toContain("data-doubles-step");
     for (const slot of DOUBLES_SLOTS) expect(card(html, slot)).toContain("Current HP");
-    expect(html.match(/Sleep Powder is not modelled/g)).toHaveLength(2);
+    expect(html.match(/Worry Seed is not modelled/g)).toHaveLength(2);
   });
 
   it("lists the engine's validation messages with Fix settings", () => {
@@ -491,5 +512,747 @@ describe("2v2 settings and Moves pane", () => {
     expect(onIntoChange).toHaveBeenCalledWith("own-left");
     assertControlLabels(html);
     expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a/);
+  });
+});
+
+// ---------- Status moves and end of turn (status-eot SPEC §5, ADDENDUM §5) ----------
+
+const MINUS = "−";
+
+function eotRow(moveId: string, min: number, max: number, maximum: number, overrides: Partial<MoveDamageResult> = {}): MoveDamageResult {
+  return {
+    moveId, kind: "calculated", min, max, minPercent: Math.round(min / maximum * 10000) / 100, maxPercent: Math.round(max / maximum * 10000) / 100,
+    rolls: null, ohkoChance: 0, description: "", assumptions: [], reason: null, hits: 1, ...overrides,
+  };
+}
+
+function record(start: number, maximum: number, rest: Partial<DoublesHP> = {}): DoublesHP {
+  return { start, maximum, low: start, average: start, high: start, min: start, max: start, koChance: 0, heals: [], ...rest };
+}
+
+function effectHit(slot: DoublesSlotId, facts: DoublesHit["facts"], rest: Partial<DoublesHit> = {}): DoublesHit {
+  return { slot, reached: 1, kind: "effect", min: null, max: null, minPercent: null, maxPercent: null, koChance: 0, cases: 0, facts, ...rest };
+}
+
+function eotStep(slot: DoublesSlotId, moveId: string, position: number, hits: DoublesHit[], rest: Partial<DoublesStep> = {}): DoublesStep {
+  return { slot, moveId, order: [{ position, chance: 1 }], moves: 1, skipped: [], hits, facts: [], ...rest };
+}
+
+const SAND_FACT = "Assumes the Sandstorm does not end this turn.";
+const HIT_FACT = "Every move hits; no critical hits; added effects below 100% do not happen.";
+
+/**
+ * In sand: Pikachu's Thunder Wave paralyses Charizard, whose Heat Wave (12.5% fully paralysed) meets Blastoise's
+ * Substitute from an earlier turn and hits Pikachu; Venusaur's Leech Seed seeds Pikachu; Blastoise, confused, uses No move.
+ * The end of turn: sand, Leech Seed between Pikachu and Venusaur, Pikachu's Toxic Orb. The numbers are fixtures.
+ */
+const EOT_ACTIONS = {
+  "own-left": { moveId: "heatwave", target: null },
+  "own-right": { moveId: "leechseed", target: "opponent-right" },
+  "opponent-right": { moveId: "thunderwave", target: "own-left" },
+} as const;
+const EOT_RULES = { "own-left": RULES.ownSpreadFoes, "own-right": RULES.ownRightSingle, "opponent-right": RULES.opponentSingle };
+const EOT_START = { "own-left": { hp: 153, maximum: 153 }, "own-right": { hp: 155, maximum: 155 }, "opponent-left": { hp: 154, maximum: 154 }, "opponent-right": { hp: 110, maximum: 110 } };
+const EOT_MOVES_HP: Record<DoublesSlotId, DoublesHP> = {
+  "own-left": record(153, 153, { conditions: [{ text: "Paralysed.", chance: 1 }] }),
+  "own-right": record(155, 155),
+  "opponent-left": record(154, 154, {
+    low: 154, average: 145.585, high: 154, min: 126, max: 154,
+    losses: [{ text: "Blastoise hurts itself in confusion: 23–28 HP.", chance: 0.33 }],
+    conditions: [{ text: "Confused.", chance: 1 }, { text: "Substitute: 7 HP.", chance: 0.4375 }, { text: "Substitute: 12 HP.", chance: 0.4375 }, { text: "Substitute: 38 HP.", chance: 0.125 }],
+  }),
+  "opponent-right": record(110, 110, { low: 40, average: 45.5, high: 27, min: 27, max: 110, conditions: [{ text: "Leech Seed.", chance: 1 }] }),
+};
+const EOT_TURN_HP: Record<DoublesSlotId, DoublesHP> = {
+  "own-left": { ...EOT_MOVES_HP["own-left"], low: 144, average: 144, high: 144, min: 144, max: 144 },
+  "own-right": { ...EOT_MOVES_HP["own-right"], low: 155, average: 155, high: 155, min: 155, max: 155 },
+  "opponent-left": { ...EOT_MOVES_HP["opponent-left"], low: 145, average: 136.585, high: 145, min: 117, max: 145 },
+  "opponent-right": {
+    ...EOT_MOVES_HP["opponent-right"], low: 21, average: 26.5, high: 8, min: 0, max: 91, koChance: 0.0625,
+    conditions: [{ text: "Leech Seed.", chance: 1 }, { text: "Badly poisoned.", chance: 0.9375 }],
+  },
+};
+const EOT_RESIDUALS: DoublesResidual[] = [
+  { slot: "own-left", effect: "Sandstorm", chance: 1, min: -9, max: -9, koChance: 0, facts: [] },
+  { slot: "opponent-left", effect: "Sandstorm", chance: 1, min: -9, max: -9, koChance: 0, facts: [] },
+  { slot: "opponent-right", effect: "Sandstorm", chance: 1, min: -6, max: -6, koChance: 0, facts: [] },
+  { slot: "opponent-right", effect: "Leech Seed", other: "own-right", chance: 1, min: -13, max: -13, koChance: 0.0625, facts: [] },
+  { slot: "own-right", effect: "Leech Seed", other: "opponent-right", chance: 1, min: 8, max: 13, koChance: 0, facts: [] },
+  { slot: "opponent-right", effect: "Toxic Orb", chance: 0.9375, min: null, max: null, koChance: 0, facts: [{ text: "Badly poisoned.", chance: 0.9375 }] },
+];
+const EOT_STEPS: DoublesStep[] = [
+  eotStep("opponent-right", "thunderwave", 1, [effectHit("own-left", [{ text: "Is paralysed.", chance: 1 }])]),
+  eotStep("own-left", "heatwave", 2, [
+    { slot: "opponent-left", reached: 0.875, kind: "substitute", min: null, max: null, minPercent: null, maxPercent: null, koChance: 0, row: eotRow("heatwave", 26, 31, 154), cases: 1,
+      substitute: { chance: 0.875, min: 26, max: 31, breaks: 0 }, facts: [] },
+    { slot: "opponent-right", reached: 0.875, kind: "calculated", min: 70, max: 83, minPercent: 63.64, maxPercent: 75.45, koChance: 0, row: eotRow("heatwave", 70, 83, 110), cases: 1, facts: [] },
+  ], { moves: 0.875, skipped: [{ text: "Fully paralysed.", chance: 0.125 }] }),
+  eotStep("own-right", "leechseed", 3, [effectHit("opponent-right", [{ text: "Is seeded.", chance: 1 }])]),
+];
+const EOT_READY: DoublesTurnResult = {
+  status: "ready", start: EOT_START, steps: EOT_STEPS, hp: EOT_MOVES_HP, startRows: [], facts: [HIT_FACT, SAND_FACT],
+  endOfTurn: { status: "ready", hp: EOT_TURN_HP, residuals: EOT_RESIDUALS, facts: [] },
+};
+const SWITCH_REASON = "Venusaur switches out: the replacement is not known.";
+const EOT_NOT_ESTIMATED: DoublesTurnResult = { ...EOT_READY, endOfTurn: { status: "not-estimated", reason: SWITCH_REASON } };
+const EOT_QUIET: DoublesTurnResult = { ...EOT_READY, endOfTurn: { status: "ready", hp: EOT_TURN_HP, residuals: [], facts: [] } };
+
+/** The four cards as useDoublesView makes them: the HP after the turn when its end of turn is estimated (turnHP). */
+function eotView(turn: DoublesTurnResult = EOT_READY) {
+  const view = fixture({ actions: EOT_ACTIONS, rules: EOT_RULES, turn });
+  const ready = turn.status === "ready" ? turn : null;
+  const shown = ready ? turnHP(ready) : null;
+  for (const slot of DOUBLES_SLOTS) view.cards[slot] = { ...view.cards[slot], hp: shown?.hp[slot] ?? null, afterTurn: !!shown?.afterTurn, reached: cardReached(ready, slot) };
+  return view;
+}
+
+describe("2v2 status moves and end of turn: text (doubles-format)", () => {
+  const names = eotView().names;
+
+  it("signs HP changes with a true minus sign", () => {
+    expect(hpChangeText(163, 163)).toBe("+163");
+    expect(hpChangeText(-87, -87)).toBe(`${MINUS}87`);
+    expect(hpChangeText(12, 20)).toBe("+12–20");
+    expect(hpChangeText(-22, -11)).toBe(`${MINUS}11–22`);
+    expect(hpChangeText(-30, 40)).toBe(`${MINUS}30 to +40`);
+    expect(hpChangeText(0, 0)).toBe("0");
+  });
+
+  it("writes a status move's hits: what it did, its HP change, or no effect", () => {
+    const paralysed = effectHit("own-left", [{ text: "Is paralysed.", chance: 1 }]);
+    expect(hitLine(paralysed, names, false, true)).toBe("Charizard");
+    expect(hitLine({ ...paralysed, reached: 0.5 }, names, false, true)).toBe("Charizard · reaches it 50%");
+    expect(hitLine(effectHit("opponent-left", [], { change: { min: 77, max: 77 } }), names, false, true)).toBe("Blastoise: +77 HP");
+    expect(hitLine(effectHit("own-right", [], { change: { min: -38, max: -38 } }), names, false, true)).toBe(`Venusaur: ${MINUS}38 HP`);
+    expect(hitLine(effectHit("opponent-left", [], { change: { min: -24, max: 31 }, reached: 0.25 }), names, false, true)).toBe(`Blastoise: ${MINUS}24 to +31 HP · reaches it 25%`);
+    const blocked: DoublesHit = { ...paralysed, kind: "no-damage", facts: [{ text: "Charizard is behind a Substitute.", chance: 1 }] };
+    expect(hitLine(blocked, names, false, true)).toBe("Charizard: no effect");
+    expect(hitLine({ ...blocked, kind: "blocked" }, names, false, true)).toBe("Charizard: no effect");
+    // A damaging move that does nothing keeps its wording.
+    expect(hitLine({ ...blocked, kind: "blocked" }, names)).toBe("Charizard: no damage");
+  });
+
+  it("writes hits into a Substitute: the HP it lost, its breaks and the hits that reached the Pokémon", () => {
+    if (EOT_READY.status !== "ready") throw new Error("fixture");
+    const [intoSub, pikachu] = EOT_READY.steps[1].hits;
+    expect(hitLine(intoSub, names)).toBe(`Blastoise's Substitute: ${MINUS}26–31 HP · reaches it 87.5%`);
+    expect(substituteLine(pikachu, names)).toBeNull();
+    const broke: DoublesHit = { ...pikachu, slot: "opponent-left", min: 20, max: 48, substitute: { chance: 1, min: 38, max: 38, breaks: 0.5 } };
+    expect(substituteLine(broke, names)).toBe(`Blastoise's Substitute: ${MINUS}38 HP, breaks 50%`);
+    expect(hitLine(broke, names)).toMatch(/^Blastoise: 20–48 damage/);
+  });
+
+  it("writes each residual with its HP change, the other Pokémon, its share of the turn and its KO chance", () => {
+    expect(EOT_RESIDUALS.map((residual) => residualLine(residual, names))).toEqual([
+      `Sandstorm · Charizard: ${MINUS}9 HP`,
+      `Sandstorm · Blastoise: ${MINUS}9 HP`,
+      `Sandstorm · Pikachu: ${MINUS}6 HP`,
+      `Leech Seed · Pikachu: ${MINUS}13 HP (from Venusaur), KO chance 6.25%`,
+      "Leech Seed · Venusaur: +8–13 HP (from Pikachu)",
+      "Toxic Orb · Pikachu (93.75%)",
+    ]);
+    expect(residualLine({ slot: "own-left", effect: "Bad poison", chance: 0.5, min: -19, max: -9, koChance: 0.125, facts: [] }, names)).toBe(`Bad poison · Charizard: ${MINUS}9–19 HP (50%), KO chance 12.5%`);
+    expect(residualLine({ slot: "own-left", effect: "Healer", other: "own-right", chance: 0.3, min: null, max: null, koChance: 0, facts: [] }, names)).toBe("Healer · Charizard (from Venusaur) (30%)");
+  });
+
+  it("writes a card's conditions on one line, a Substitute's HP worlds as one range", () => {
+    expect(conditionsLine(EOT_MOVES_HP["opponent-left"].conditions!)).toBe("Confused · Substitute: 7–38 HP");
+    expect(conditionsLine([{ text: "Paralysed.", chance: 1 }, { text: "Confused.", chance: 0.67 }])).toBe("Paralysed · Confused (67%)");
+    expect(conditionsLine([{ text: "Substitute: 15 HP.", chance: 0.25 }, { text: "Substitute: 19 HP.", chance: 0.25 }, { text: "Swapped places with Venusaur.", chance: 0.5 }]))
+      .toBe("Substitute: 15–19 HP (50%) · Swapped places with Venusaur (50%)");
+    expect(conditionsLine([{ text: "Holds Choice Scarf.", chance: 1 }, { text: "Substitute: 35 HP.", chance: 1 }])).toBe("Holds Choice Scarf · Substitute: 35 HP");
+  });
+
+  it("labels the HP after the turn or after the moves, and summarises it for screen readers", () => {
+    expect(cardHPLabel(true, "average", undefined, true)).toBe("After the turn · Average estimate");
+    expect(cardHPLabel(true, "low", undefined, false)).toBe("After the moves · Low roll");
+    expect(cardHPLabel(false, "average", undefined, true)).toBe("Current HP");
+    if (EOT_READY.status !== "ready" || EOT_NOT_ESTIMATED.status !== "ready") throw new Error("fixture");
+    expect(turnHP(EOT_READY)).toEqual({ hp: EOT_TURN_HP, afterTurn: true });
+    expect(turnHP(EOT_NOT_ESTIMATED)).toEqual({ hp: EOT_MOVES_HP, afterTurn: false });
+    expect(turnSummary(EOT_READY, names, "average")).toBe("Charizard HP remaining: 144 / 153. Venusaur HP remaining: 155 / 155. Blastoise HP remaining: 137 / 154. Pikachu HP remaining: 26 / 110, KO chance 6.25%.");
+    expect(turnSummary(EOT_NOT_ESTIMATED, names, "average")).toBe(`Charizard HP remaining: 153 / 153. Venusaur HP remaining: 155 / 155. Blastoise HP remaining: 146 / 154. Pikachu HP remaining: 45 / 110. End of turn not estimated: ${SWITCH_REASON}`);
+  });
+
+  it("shows the KO chance of a Pokémon a residual takes HP from", () => {
+    if (EOT_READY.status !== "ready") throw new Error("fixture");
+    const quiet = { ...EOT_READY, steps: [] };
+    // Sand reaches Charizard and Blastoise without a step; Venusaur only gains HP.
+    expect(DOUBLES_SLOTS.map((slot) => cardReached(quiet, slot))).toEqual([true, false, true, true]);
+    expect(DOUBLES_SLOTS.map((slot) => cardReached({ ...quiet, endOfTurn: { status: "not-estimated", reason: SWITCH_REASON } }, slot))).toEqual([false, false, false, false]);
+  });
+});
+
+describe("2v2 status moves and end of turn: cards and turn panel", () => {
+  it("shows each card's HP after the turn with its conditions", () => {
+    const html = summary(eotView());
+    const charizard = card(html, "own-left");
+    expect(text(charizard)).toContain("After the turn · Average estimate");
+    expect(charizard).toContain('aria-valuetext="144 of 153 HP after the turn, Average estimate. KO chance: 0%. Turn start HP: 153."');
+    expect(charizard).toMatch(/<p data-doubles-conditions="own-left" class="[^"]*wrap-anywhere[^"]*text-muted[^"]*">Paralysed<\/p>/);
+    expect(text(card(html, "opponent-left"))).toContain("Confused · Substitute: 7–38 HP");
+    expect(text(card(html, "opponent-right"))).toContain("Leech Seed · Badly poisoned (93.75%)");
+    expect(text(card(html, "opponent-right"))).toContain("KO chance: 6.25%");
+    // Venusaur has no condition, so no line.
+    expect(card(html, "own-right")).not.toContain("data-doubles-conditions");
+    // The conditions line sits under the HP bar.
+    expect(charizard.indexOf("data-doubles-conditions")).toBeGreaterThan(charizard.indexOf('role="meter"'));
+  });
+
+  it("shows HP after the moves when the end of turn is not estimated", () => {
+    const html = summary(eotView(EOT_NOT_ESTIMATED));
+    const charizard = card(html, "own-left");
+    expect(text(charizard)).toContain("After the moves · Average estimate");
+    expect(text(charizard)).not.toContain("After the turn");
+    // Only Thunder Wave reaches Charizard before the end of turn (not estimated here): no KO chance to show.
+    expect(charizard).toContain('aria-valuetext="153 of 153 HP after the moves, Average estimate. Turn start HP: 153."');
+    expect(text(card(html, "opponent-right"))).toContain("Leech Seed");
+    expect(text(card(html, "opponent-right"))).not.toContain("Badly poisoned");
+  });
+
+  it("lists the status moves' hits, the HP lost outside the moves, then the end of turn and the turn facts", () => {
+    const panel = turnPanel(summary(eotView()));
+    const steps = text(panel);
+    expect(steps).toContain("1 · Thunder Wave · Pikachu (opponent's right) →  targets Charizard (left foe)");
+    expect([...panel.matchAll(/<li data-doubles-hit="([^"]+)"[^>]*>([\s\S]*?)<\/li>/g)].map((match) => [match[1], text(match[2])])).toEqual([
+      ["own-left", "CharizardIs paralysed."],
+      ["opponent-left", `Blastoise's Substitute: ${MINUS}26–31 HP · reaches it 87.5%`],
+      ["opponent-right", "Pikachu: 70–83 damage (63.64–75.45% of max HP) · KO chance 0% · reaches it 87.5%"],
+      ["opponent-right", "PikachuIs seeded."],
+    ]);
+    expect(steps).toContain("Fully paralysed (12.5%).");
+    expect(panel).toMatch(/<li data-doubles-loss="opponent-left" class="wrap-anywhere">Blastoise hurts itself in confusion: 23–28 HP \(33%\)\.<\/li>/);
+    const end = panel.slice(panel.indexOf("data-doubles-end"));
+    expect(end).toMatch(/^data-doubles-end="true"[^>]*><h4 id="([^"]+)"[^>]*>End of turn<\/h4><ul aria-labelledby="\1"/);
+    expect([...end.matchAll(/<li data-doubles-residual="([^"]+)"[^>]*>([\s\S]*?)<\/li>/g)].map((match) => [match[1], text(match[2])])).toEqual([
+      ["own-left", `Sandstorm · Charizard: ${MINUS}9 HP`],
+      ["opponent-left", `Sandstorm · Blastoise: ${MINUS}9 HP`],
+      ["opponent-right", `Sandstorm · Pikachu: ${MINUS}6 HP`],
+      ["opponent-right", `Leech Seed · Pikachu: ${MINUS}13 HP (from Venusaur), KO chance 6.25%`],
+      ["own-right", "Leech Seed · Venusaur: +8–13 HP (from Pikachu)"],
+      ["opponent-right", "Toxic Orb · Pikachu (93.75%)Badly poisoned (93.75%)."],
+    ]);
+    // Steps, the HP lost outside them, the end of turn, then the turn facts.
+    const at = (needle: string) => panel.indexOf(needle);
+    expect(at("data-doubles-step")).toBeLessThan(at("data-doubles-loss"));
+    expect(at("data-doubles-loss")).toBeLessThan(at("data-doubles-end"));
+    expect(at("data-doubles-end")).toBeLessThan(at('aria-label="Turn facts"'));
+    expect(steps).toContain(SAND_FACT);
+    expect(panel).not.toContain("data-doubles-end-not-estimated");
+    expect(steps).not.toContain("End-of-turn effects are not applied.");
+    expect(panel).toMatch(/<p data-doubles-live="true"[^>]*>Charizard HP remaining: 144 \/ 153\. Venusaur HP remaining: 155 \/ 155\. Blastoise HP remaining: 137 \/ 154\. Pikachu HP remaining: 26 \/ 110, KO chance 6\.25%\.<\/p>/);
+  });
+
+  it("lists the end of turn's own facts", () => {
+    if (EOT_READY.status !== "ready" || EOT_READY.endOfTurn.status !== "ready") throw new Error("fixture");
+    const turn: DoublesTurnResult = { ...EOT_READY, endOfTurn: { ...EOT_READY.endOfTurn, residuals: [], facts: ["Garchomp switches out after the turn."] } };
+    const end = turnPanel(summary(eotView(turn)));
+    expect(end).toMatch(/data-doubles-end="true"[^>]*><h4[^>]*>End of turn<\/h4><ul aria-label="End-of-turn facts"[^>]*><li class="wrap-anywhere">Garchomp switches out after the turn\.<\/li><\/ul>/);
+  });
+
+  it("says why the end of turn is not estimated, and shows no end-of-turn section without residuals", () => {
+    const panel = turnPanel(summary(eotView(EOT_NOT_ESTIMATED)));
+    expect(panel).toMatch(new RegExp(`<p data-doubles-end-not-estimated="true" class="[^"]*wrap-anywhere[^"]*">End of turn not estimated: ${SWITCH_REASON}</p>`));
+    expect(panel).not.toContain("data-doubles-end=");
+    expect(panel.indexOf("data-doubles-end-not-estimated")).toBeLessThan(panel.indexOf('aria-label="Turn facts"'));
+    const quiet = turnPanel(summary(eotView(EOT_QUIET)));
+    expect(quiet).not.toContain("data-doubles-end");
+    expect(text(card(summary(eotView(EOT_QUIET)), "own-left"))).toContain("After the turn · Average estimate");
+  });
+
+  it("shows an end of turn that acts when no Pokémon chose a move (sand); none acting: No moves chosen", () => {
+    const moves = { "own-left": record(153, 153), "own-right": record(155, 155), "opponent-left": record(154, 154), "opponent-right": record(110, 110) };
+    const sanded = { ...moves, "own-left": { ...moves["own-left"], low: 144, average: 144, high: 144, min: 144, max: 144 } };
+    const sand: DoublesTurnResult = {
+      status: "ready", start: EOT_START, steps: [], hp: moves, startRows: [], facts: [HIT_FACT, SAND_FACT],
+      endOfTurn: { status: "ready", hp: sanded, residuals: [EOT_RESIDUALS[0]], facts: [] },
+    };
+    const view = (turn: DoublesTurnResult) => {
+      const shown = turnHP(turn as Extract<DoublesTurnResult, { status: "ready" }>);
+      const base = fixture({ turn });
+      for (const slot of DOUBLES_SLOTS) base.cards[slot] = { ...base.cards[slot], hp: shown.hp[slot], afterTurn: shown.afterTurn, reached: cardReached(turn as Extract<DoublesTurnResult, { status: "ready" }>, slot) };
+      return base;
+    };
+    const html = summary(view(sand));
+    expect(text(turnPanel(html))).toContain(`Sandstorm · Charizard: ${MINUS}9 HP`);
+    expect(text(turnPanel(html))).not.toContain("No moves chosen.");
+    expect(text(card(html, "own-left"))).toContain("After the turn · Average estimate");
+    const quiet = summary(view({ ...sand, endOfTurn: { status: "ready", hp: moves, residuals: [], facts: [] } }));
+    expect(text(turnPanel(quiet))).toContain("No moves chosen.");
+    expect(card(quiet, "own-left")).not.toContain("After the turn");
+  });
+
+  it("writes a calculated hit that also met a Substitute as two lines", () => {
+    if (EOT_READY.status !== "ready") throw new Error("fixture");
+    const [, pikachu] = EOT_READY.steps[1].hits;
+    const broke: DoublesHit = { ...pikachu, substitute: { chance: 0.875, min: 21, max: 21, breaks: 0.875 }, facts: [{ text: "Its Substitute breaks.", chance: 0.875 }] };
+    const turn: DoublesTurnResult = { ...EOT_READY, steps: [EOT_READY.steps[0], { ...EOT_READY.steps[1], hits: [EOT_READY.steps[1].hits[0], broke] }, EOT_READY.steps[2]] };
+    const panel = turnPanel(summary(eotView(turn)));
+    const line = panel.match(/<li data-doubles-hit="opponent-right"[^>]*>([\s\S]*?)<\/li>/)![1];
+    expect(line).toMatch(new RegExp(`^<span data-doubles-substitute-hit="opponent-right" class="block">Pikachu&#x27;s Substitute: ${MINUS}21 HP, breaks 87.5% · reaches it 87.5%</span>Pikachu: 70–83 damage`));
+    expect(text(line)).toContain("Its Substitute breaks (87.5%).");
+  });
+
+  it("states facts only, with names, at a phone's width", () => {
+    const tutorial = /Click|Choose a|to see|browse|Select a/;
+    for (const turn of [EOT_READY, EOT_NOT_ESTIMATED, EOT_QUIET]) {
+      const html = summary(eotView(turn));
+      expect(visibleText(html)).not.toMatch(tutorial);
+      expect(visibleText(turnPanel(html))).not.toMatch(/\b(left|right) Pokémon\b/);
+      // Every new line wraps instead of widening the page at 375 px.
+      for (const [, tag] of html.matchAll(/<(?:p|li)\b([^>]*data-doubles-(?:conditions|loss|residual|end-not-estimated)[^>]*)>/g)) expect(tag).toContain("wrap-anywhere");
+      assertControlLabels(html, ["moves-list"]);
+    }
+  });
+});
+
+// ---------- State from earlier turns: Field conditions controls and their state (status-eot SPEC §5, ADDENDUM §5) ----------
+
+const select = (target: { onChange?: unknown }, value: string) => (target.onChange as (event: ChangeEvent<HTMLSelectElement>) => void)({ target: { value } } as ChangeEvent<HTMLSelectElement>);
+const tick = (input: { onChange?: unknown }, checked: boolean) => (input.onChange as (event: ChangeEvent<HTMLInputElement>) => void)({ target: { checked } } as ChangeEvent<HTMLInputElement>);
+const enter = (input: { onChange?: unknown }, value: string) => (input.onChange as (event: ChangeEvent<HTMLInputElement>) => void)({ target: { value } } as ChangeEvent<HTMLInputElement>);
+
+/** The four controls as useDoublesView builds them (doubles-prep carriedOptions), for the builds and carried state given. */
+function carriedControlsFor(runtime: BattleRuntime, builds: Record<DoublesSlotId, BattleBuild>, names: Record<DoublesSlotId, string>,
+  carried: Partial<Record<DoublesSlotId, DoublesCarried>> = {}, onChange: (slot: DoublesSlotId, carried: DoublesCarried) => void = () => undefined,
+  issues: Partial<Record<DoublesSlotId, CarriedControl["issues"]>> = {}): CarriedControl[] {
+  return DOUBLES_SLOTS.map((slot) => {
+    const value = carried[slot] ?? {};
+    return {
+      slot, side: slotSide(slot) === "own" ? "attackerSide" : "defenderSide", name: names[slot], value, issues: issues[slot],
+      options: builds[slot].currentHP === 0 ? NO_CARRIED_OPTIONS : carriedOptions(builds[slot], runtime, !!value.sleep?.rest),
+      onChange: (next) => onChange(slot, next),
+    };
+  });
+}
+
+/** One Pokémon's block of controls (data-doubles-carried). */
+function carriedBlock(html: string, slot: DoublesSlotId) {
+  const start = html.indexOf(`data-doubles-carried="${slot}"`);
+  expect(start).toBeGreaterThan(-1);
+  const rest = html.slice(start);
+  const end = rest.slice(1).search(/data-doubles-carried="|<\/fieldset>/);
+  return end < 0 ? rest : rest.slice(0, end + 1);
+}
+
+const optionValues = (html: string, attribute: string) => {
+  const tag = html.match(new RegExp(`<select[^>]*${attribute}[^>]*>([\\s\\S]*?)</select>`));
+  return tag ? [...tag[1].matchAll(/<option value="(\d+)"/g)].map((match) => Number(match[1])) : null;
+};
+
+describe("2v2 state from earlier turns (Field conditions)", () => {
+  const view = doubleTarget();
+  const builds = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, view.cards[slot].slot.build])) as Record<DoublesSlotId, BattleBuild>;
+  const slots = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, view.cards[slot].slot])) as Record<DoublesSlotId, ReturnType<typeof combatant>>;
+  const settings = (controls: readonly CarriedControl[], charged: Partial<Record<DoublesSlotId, boolean>> = {}) => createElement(DoublesCarriedContext.Provider, { value: controls },
+    createElement(DoublesSettings, {
+      runtime: championsRuntime, names: view.names, slots,
+      issues: { "own-left": [], "own-right": [], "opponent-left": [], "opponent-right": [] }, fieldIssues: [],
+      builds: Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, { id: `build-${slot}`, open: false, onToggle: vi.fn() }])) as unknown as ComponentProps<typeof DoublesSettings>["builds"],
+      field: { id: "field-2v2", open: true, onToggle: vi.fn() },
+      renderEditor: (slot) => createElement("p", { "data-editor": slot }, `Editor ${slot}`),
+      conditions: createConditions(), onConditionsChange: vi.fn(),
+      charged: { "own-left": false, "own-right": false, "opponent-left": false, "opponent-right": false, ...charged }, onChargedChange: vi.fn(),
+    }));
+
+  it("groups each Pokémon's Charge, Confused and Substitute under its name, in its side's fieldset", () => {
+    const onChange = vi.fn();
+    const { html, inputs } = capture(() => renderToStaticMarkup(settings(carriedControlsFor(championsRuntime, builds, view.names, {}, onChange), { "own-left": true })));
+    const yours = html.slice(html.indexOf(">Your side</legend>"), html.indexOf(">Opponent&#x27;s side</legend>"));
+    expect([...yours.matchAll(/data-doubles-carried="([^"]+)"/g)].map((match) => match[1])).toEqual(["own-left", "own-right"]);
+    const charizard = carriedBlock(html, "own-left");
+    expect(html).toMatch(/<div role="group" aria-labelledby="([^"]+)" data-doubles-carried="own-left"[^>]*><p id="\1"[^>]*>Charizard<\/p>/);
+    expect(text(charizard)).toContain("Charge: Charizard");
+    expect(text(charizard)).toContain("Confused: Charizard");
+    expect(text(charizard)).toContain("Substitute: Charizard");
+    expect(visibleText(charizard)).not.toContain("Charge: Charizard");
+    expect(charizard).toMatch(/data-doubles-charge="own-left"[^>]*checked=""/);
+    // No status: no counts.
+    expect(charizard).not.toContain("<select");
+    expect(text(charizard)).not.toMatch(/Turns lost|Bad poison|Rest sleep|Substitute HP/);
+    // The Charge stays a single checkbox per Pokémon: none is left among the side's toggles.
+    expect(html.match(/data-doubles-charge=/g)).toHaveLength(4);
+    tick(inputs.find((input) => input["data-doubles-confused"] === "opponent-left")!, true);
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { confusion: { attempts: 0 } });
+    const quarter = Math.floor(getBuildStats(builds["opponent-right"], championsRuntime)!.hp / 4);
+    tick(inputs.find((input) => input["data-doubles-substitute"] === "opponent-right")!, true);
+    expect(onChange).toHaveBeenLastCalledWith("opponent-right", { substitute: quarter });
+    assertControlLabels(html);
+    expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a|\b(left|right) Pokémon\b/);
+  });
+
+  it("shows the counts that apply to each Pokémon's status, bounded to what the game allows", () => {
+    const status = (slot: DoublesSlotId, value: BattleBuild["status"], abilityId?: string) => ({ ...builds[slot], status: value, ...(abilityId ? { abilityId } : {}) });
+    const asleep = { ...builds, "own-left": status("own-left", "slp"), "own-right": status("own-right", "frz"), "opponent-left": status("opponent-left", "tox"), "opponent-right": status("opponent-right", "slp", "earlybird") };
+    const onChange = vi.fn();
+    const controls = carriedControlsFor(championsRuntime, asleep, view.names, { "own-left": { sleep: { attempts: 1, rest: false } }, "opponent-left": { toxic: 3, confusion: { attempts: 2 } } }, onChange);
+    const { html, inputs, selects } = capture(() => renderToStaticMarkup(settings(controls)));
+    const charizard = carriedBlock(html, "own-left");
+    // Champions: a sleep lasts 2 or 3 turns.
+    expect(text(charizard)).toContain("Turns lost to sleep: Charizard");
+    expect(optionValues(charizard, "data-doubles-sleep")).toEqual([0, 1, 2]);
+    expect(charizard).toMatch(/<option value="1" selected="">1<\/option>/);
+    expect(text(charizard)).toContain("Rest sleep: Charizard");
+    // Champions freeze: at most 2 turns before it thaws.
+    expect(optionValues(carriedBlock(html, "own-right"), "data-doubles-freeze")).toEqual([0, 1, 2]);
+    expect(text(carriedBlock(html, "own-right"))).toContain("Turns lost to freeze: Venusaur");
+    const blastoise = carriedBlock(html, "opponent-left");
+    expect(optionValues(blastoise, "data-doubles-toxic")).toEqual(Array.from({ length: 16 }, (_, index) => index));
+    expect(optionValues(blastoise, "data-doubles-confusion-turns")).toEqual([0, 1, 2, 3, 4]);
+    expect(text(blastoise)).toContain("Bad poison turns so far: Blastoise");
+    expect(text(blastoise)).toContain("Confusion turns so far: Blastoise");
+    // Early Bird counts each turn asleep twice.
+    expect(optionValues(carriedBlock(html, "opponent-right"), "data-doubles-sleep")).toEqual([0, 1]);
+    select(selects.find((entry) => entry["data-doubles-sleep"] === "own-left")!, "2");
+    expect(onChange).toHaveBeenLastCalledWith("own-left", { sleep: { attempts: 2, rest: false } });
+    // Back to 0: the turn's assumption, so nothing is carried.
+    select(selects.find((entry) => entry["data-doubles-sleep"] === "own-left")!, "0");
+    expect(onChange).toHaveBeenLastCalledWith("own-left", {});
+    tick(inputs.find((input) => input["data-doubles-rest"] === "own-left")!, true);
+    expect(onChange).toHaveBeenLastCalledWith("own-left", { sleep: { attempts: 1, rest: true } });
+    select(selects.find((entry) => entry["data-doubles-toxic"] === "opponent-left")!, "0");
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { confusion: { attempts: 2 } });
+    select(selects.find((entry) => entry["data-doubles-confusion-turns"] === "opponent-left")!, "4");
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { toxic: 3, confusion: { attempts: 4 } });
+    tick(inputs.find((input) => input["data-doubles-confused"] === "opponent-left")!, false);
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { toxic: 3 });
+    select(selects.find((entry) => entry["data-doubles-freeze"] === "own-right")!, "2");
+    expect(onChange).toHaveBeenLastCalledWith("own-right", { freeze: { attempts: 2 } });
+    assertControlLabels(html);
+  });
+
+  it("asks Scarlet/Violet for up to 3 turns lost to sleep, 2 after Rest, and no freeze turns", async () => {
+    const runtime = await loadBattleRuntime("scarlet_violet");
+    const build = { ...createBuild("snorlax", runtime), status: "slp" as const };
+    expect(sleepTurnsMax(build, runtime, false)).toBe(3);
+    expect(sleepTurnsMax(build, runtime, true)).toBe(2);
+    expect(sleepTurnsMax({ ...build, abilityId: "earlybird" }, runtime, false)).toBe(1);
+    expect(sleepTurnsMax(build, championsRuntime, false)).toBe(2);
+    expect(carriedOptions({ ...build, status: "frz" }, runtime, false).freeze).toBeNull();
+    expect(carriedOptions(build, runtime, false)).toMatchObject({ sleep: { max: 3 }, freeze: null, toxic: false, confusion: true });
+  });
+
+  it("shows a Substitute's HP from 1 to a quarter of the maximum HP", () => {
+    const onChange = vi.fn();
+    const quarter = Math.floor(getBuildStats(builds["opponent-left"], championsRuntime)!.hp / 4);
+    const { html, inputs } = capture(() => renderToStaticMarkup(settings(carriedControlsFor(championsRuntime, builds, view.names, { "opponent-left": { substitute: 20 } }, onChange))));
+    const blastoise = carriedBlock(html, "opponent-left");
+    expect(blastoise).toMatch(/data-doubles-substitute="opponent-left"[^>]*checked=""/);
+    expect(text(blastoise)).toContain("Substitute HP: Blastoise");
+    const field = inputs.find((input) => input["data-doubles-substitute-hp"] === "opponent-left")!;
+    expect([field.min, field.max, field.value]).toEqual([1, quarter, "20"]);
+    enter(field, "999");
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { substitute: quarter });
+    enter(field, "0");
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", { substitute: 1 });
+    tick(inputs.find((input) => input["data-doubles-substitute"] === "opponent-left")!, false);
+    expect(onChange).toHaveBeenLastCalledWith("opponent-left", {});
+    // A 1-HP Pokémon (Shedinja) has no Substitute of its own to set.
+    expect(carriedOptions(createBuild("shedinja"), championsRuntime, false).substitute).toBeNull();
+    assertControlLabels(html);
+  });
+
+  it("shows no controls for a Pokémon that has fainted, keeping its Charge", () => {
+    const fainted = { ...builds, "own-right": { ...builds["own-right"], currentHP: 0 } };
+    const html = renderToStaticMarkup(settings(carriedControlsFor(championsRuntime, fainted, view.names, { "own-right": { confusion: { attempts: 1 } } })));
+    const venusaur = carriedBlock(html, "own-right");
+    expect(text(venusaur)).toContain("Charge: Venusaur");
+    expect(venusaur).not.toMatch(/data-doubles-(confused|substitute|sleep)/);
+  });
+
+  it("marks a control the turn's input issue is about, with the issue as its fact", () => {
+    const asleep = { ...builds, "own-left": { ...builds["own-left"], status: "slp" as const } };
+    const issues = carriedIssueTexts([{ field: "carried.sleep", message: "it cannot have lost 3 turns to sleep." }, { field: "nature", message: "Nature is invalid." }], view.names["own-left"]);
+    expect(issues).toEqual({ sleep: "Charizard: it cannot have lost 3 turns to sleep." });
+    const html = renderToStaticMarkup(settings(carriedControlsFor(championsRuntime, asleep, view.names, { "own-left": { sleep: { attempts: 3, rest: false } } }, undefined, { "own-left": issues })));
+    const charizard = carriedBlock(html, "own-left");
+    expect(charizard).toMatch(/<select[^>]*aria-describedby="[^"]+-error"[^>]*aria-invalid="true"[^>]*data-doubles-sleep="own-left"/);
+    expect(text(charizard)).toContain("Charizard: it cannot have lost 3 turns to sleep.");
+    // The stored count stays visible, so the issue names a value the control shows.
+    expect(optionValues(charizard, "data-doubles-sleep")).toEqual([0, 1, 2, 3]);
+    assertControlLabels(html);
+  });
+
+  it("counts the ticked state-from-earlier-turns checkboxes among the toggles", () => {
+    const field = createConditions();
+    const none = { "own-left": false, "own-right": false, "opponent-left": false, "opponent-right": false };
+    const asleep = { ...builds, "opponent-left": { ...builds["opponent-left"], status: "slp" as const }, "opponent-right": { ...builds["opponent-right"], status: "tox" as const } };
+    const controls = carriedControlsFor(championsRuntime, asleep, view.names, {
+      "own-left": { confusion: { attempts: 1 }, substitute: 30 }, "opponent-left": { sleep: { attempts: 0, rest: true } }, "opponent-right": { toxic: 4 },
+    });
+    expect(describeDoublesConditions(field, none, controls)).toBe("Doubles · No weather · No terrain · 3 toggles on");
+    expect(describeDoublesConditions(field, { ...none, "own-right": true }, controls)).toBe("Doubles · No weather · No terrain · 4 toggles on");
+    expect(describeDoublesConditions(field, none)).toBe("Doubles · No weather · No terrain · 0 toggles on");
+  });
+
+  it("counts and shows only the controls a Pokémon has: none once it has fainted, though it keeps its state (ui F4)", () => {
+    const field = createConditions();
+    const none = { "own-left": false, "own-right": false, "opponent-left": false, "opponent-right": false };
+    const fainted = { ...builds, "own-right": { ...builds["own-right"], currentHP: 0 } };
+    const kept: DoublesCarried = { confusion: { attempts: 2 }, substitute: 30 };
+    const controls = carriedControlsFor(championsRuntime, fainted, view.names, { "own-right": kept });
+    expect(controls[1].value).toBe(kept);
+    expect(describeDoublesConditions(field, none, controls)).toBe("Doubles · No weather · No terrain · 0 toggles on");
+    const venusaur = carriedBlock(renderToStaticMarkup(settings(controls)), "own-right");
+    expect(venusaur).not.toMatch(/data-doubles-(confused|confusion-turns|substitute|substitute-hp)=/);
+    expect(text(venusaur)).not.toMatch(/Confusion turns so far|Substitute HP/);
+    // A Rest sleep kept from an Asleep status that has changed is not counted either.
+    expect(describeDoublesConditions(field, none, carriedControlsFor(championsRuntime, builds, view.names, { "opponent-left": { sleep: { attempts: 0, rest: true } } })))
+      .toBe("Doubles · No weather · No terrain · 0 toggles on");
+  });
+
+  it("takes the controls from its own prop as well as from the context", () => {
+    const html = renderToStaticMarkup(createElement(BattleConditions, {
+      value: createConditions(), issues: [], onChange: vi.fn(), variant: "doubles", sideLegends: { attackerSide: "Your side", defenderSide: "Opponent's side" },
+      carried: carriedControlsFor(championsRuntime, builds, view.names).slice(0, 1),
+    }));
+    expect([...html.matchAll(/data-doubles-carried="([^"]+)"/g)].map((match) => match[1])).toEqual(["own-left"]);
+    // 1v1 never shows them.
+    expect(renderToStaticMarkup(createElement(DoublesCarriedContext.Provider, { value: carriedControlsFor(championsRuntime, builds, view.names) },
+      createElement(BattleConditions, { value: createConditions(), issues: [], onChange: vi.fn() })))).not.toContain("data-doubles-carried");
+  });
+});
+
+describe("2v2 state from earlier turns (doubles-prep)", () => {
+  const start = (): CalculatorState => ({ matchup: createMatchup(0), doubles: createDoubles(0) });
+  const key = (state: CalculatorState, slot: DoublesSlotId) => state.doubles.slots[slot].key;
+  const withStatus = (state: CalculatorState, slot: DoublesSlotId, status: BattleBuild["status"], extra: { abilityId?: string } = {}) =>
+    updateDoublesBuild(state, key(state, slot), { ...state.doubles.slots[slot].build, status, ...extra } as BattleBuild);
+
+  it("starts with none, sets a slot's state bounded to its build, and passes it in the turn's input", () => {
+    let state = start();
+    expect(DOUBLES_SLOTS.map((slot) => state.doubles.carried[slot])).toEqual([{}, {}, {}, {}]);
+    expect(setDoublesCarried(state, key(state, "own-left"), {})).toBe(state);
+    state = withStatus(state, "own-left", "slp");
+    state = setDoublesCarried(state, key(state, "own-left"), { sleep: { attempts: 5, rest: false }, confusion: { attempts: 9 }, toxic: 3 });
+    // Champions: at most 2 turns lost to sleep; confusion turns 0–4; no bad poison turns without Badly poisoned.
+    expect(state.doubles.carried["own-left"]).toEqual({ sleep: { attempts: 2, rest: false }, confusion: { attempts: 4 } });
+    const input = getDoublesTurnInput(state.doubles);
+    expect(input.pokemon["own-left"]?.carried).toEqual({ sleep: { attempts: 2, rest: false }, confusion: { attempts: 4 } });
+    // A slot with none passes none: every other turn's input is what it was.
+    expect(input.pokemon["own-right"]).not.toHaveProperty("carried");
+    expect(setDoublesCarried(state, key(state, "own-left"), { sleep: { attempts: 2, rest: false }, confusion: { attempts: 4 } })).toBe(state);
+  });
+
+  it("drops what a status change leaves stale, bounds what an ability or Rest changes, and resets for another Pokémon", () => {
+    let state = withStatus(start(), "own-left", "slp");
+    state = setDoublesCarried(state, key(state, "own-left"), { sleep: { attempts: 2, rest: false }, confusion: { attempts: 1 } });
+    const early = withStatus(state, "own-left", "slp", { abilityId: "earlybird" });
+    expect(early.doubles.carried["own-left"]).toEqual({ sleep: { attempts: 1, rest: false }, confusion: { attempts: 1 } });
+    const woken = withStatus(state, "own-left", "par");
+    expect(woken.doubles.carried["own-left"]).toEqual({ confusion: { attempts: 1 } });
+    expect(woken.doubles.carried["own-right"]).toBe(state.doubles.carried["own-right"]);
+    // Rest: a 3-turn sleep in every game.
+    expect(reconcileCarried({ sleep: { attempts: 3, rest: true } }, { ...state.doubles.slots["own-left"].build }, championsRuntime)).toEqual({ sleep: { attempts: 2, rest: true } });
+    const other = updateDoublesBuild(state, key(state, "own-left"), createBuild("garchomp"));
+    expect(other.doubles.carried["own-left"]).toEqual({});
+  });
+
+  it("keeps a Substitute within a quarter of the maximum HP, and keeps it while the build is being edited", () => {
+    let state = start();
+    const build = state.doubles.slots["opponent-left"].build;
+    const withHP = (base: BattleBuild, hp: number) => ({ ...base, points: { ...base.points!, hp } }) as BattleBuild;
+    const full = withHP(build, 32);
+    state = updateDoublesBuild(state, key(state, "opponent-left"), full);
+    const quarter = Math.floor(getBuildStats(full, championsRuntime)!.hp / 4);
+    state = setDoublesCarried(state, key(state, "opponent-left"), { substitute: quarter });
+    expect(state.doubles.carried["opponent-left"]).toEqual({ substitute: quarter });
+    const lower = withHP(full, 0);
+    const lowered = updateDoublesBuild(state, key(state, "opponent-left"), lower);
+    expect(lowered.doubles.carried["opponent-left"]).toEqual({ substitute: Math.floor(getBuildStats(lower, championsRuntime)!.hp / 4) });
+    expect(Math.floor(getBuildStats(lower, championsRuntime)!.hp / 4)).toBeLessThan(quarter);
+    const editing = withHP(full, 99);
+    expect(reconcileCarried({ substitute: quarter }, editing, championsRuntime)).toEqual({ substitute: quarter });
+  });
+
+  it("passes an Imprison user's moves, the quick moves and the chosen one, and no last move", () => {
+    const doubles = createDoubles(0);
+    const combatant = doubles.slots["own-left"];
+    const quick = combatant.moves.flatMap((move) => move.moveId ? [move.moveId] : []);
+    const entry = doublesSlotInput(combatant, false, { moveId: "imprison", target: null }, {});
+    expect(entry.moves).toEqual([...new Set([...quick, "imprison"])]);
+    expect(entry).not.toHaveProperty("lastMove");
+    expect(doublesSlotInput(combatant, false, { moveId: quick[0], target: "opponent-left" }, {})).not.toHaveProperty("moves");
+  });
+
+  it("gives the engine's input issue for a state the controls never set", () => {
+    let state = withStatus(start(), "own-left", "slp");
+    // Set directly, past setDoublesCarried's bounds.
+    state = { ...state, doubles: { ...state.doubles, carried: { ...state.doubles.carried, "own-left": { sleep: { attempts: 3, rest: false } } } } };
+    const turn = calculateDoublesTurn(getDoublesTurnInput(state.doubles));
+    expect(turn.status).toBe("issues");
+    if (turn.status !== "issues") throw new Error("issues");
+    expect(carriedIssueTexts(turn.issues.pokemon["own-left"], "Charizard")).toEqual({ sleep: "Charizard: it cannot have lost 3 turns to sleep." });
+  });
+});
+
+// ---------- status-eot UI review fixes (review/reviews.json, lens "ui") ----------
+
+describe("2v2 state an ability ends as the turn starts (ui F1, F2)", () => {
+  const key = (state: CalculatorState, slot: DoublesSlotId) => state.doubles.slots[slot].key;
+  const edit = (state: CalculatorState, slot: DoublesSlotId, patch: Partial<BattleBuild>) =>
+    updateDoublesBuild(state, key(state, slot), { ...state.doubles.slots[slot].build, ...patch } as BattleBuild);
+  const sv = async () => {
+    const runtime = await loadBattleRuntime("scarlet_violet");
+    return { runtime, state: { matchup: createMatchup(0, runtime), doubles: createDoubles(0, runtime) } as CalculatorState };
+  };
+
+  it("offers no count for a status its own ability cures at the turn's first Update, nor Confused with Own Tempo", async () => {
+    const { runtime } = await sv();
+    const build = createBuild("snorlax", runtime);
+    // Pinned Showdown data/abilities.ts onUpdate: Immunity and Pastel Veil (poison), Insomnia and Vital Spirit (sleep), Magma Armor (freeze).
+    expect(carriedOptions({ ...build, status: "tox", abilityId: "immunity" }, runtime, false).toxic).toBe(false);
+    expect(carriedOptions({ ...build, status: "tox", abilityId: "pastelveil" }, runtime, false).toxic).toBe(false);
+    expect(carriedOptions({ ...build, status: "slp", abilityId: "insomnia" }, runtime, false).sleep).toBeNull();
+    expect(carriedOptions({ ...build, status: "slp", abilityId: "vitalspirit" }, runtime, true).sleep).toBeNull();
+    expect(carriedOptions({ ...build, status: "frz", abilityId: "magmaarmor" }, championsRuntime, false).freeze).toBeNull();
+    expect(carriedOptions({ ...build, abilityId: "owntempo" }, runtime, false).confusion).toBe(false);
+    // Suppressed (a Neutralizing Gas on the field), the status and the confusion stand and keep their counts.
+    expect(carriedOptions({ ...build, status: "tox", abilityId: "immunity" }, runtime, false, false).toxic).toBe(true);
+    expect(carriedOptions({ ...build, status: "slp", abilityId: "insomnia" }, runtime, false, false).sleep).toEqual({ max: 3 });
+    expect(carriedOptions({ ...build, abilityId: "owntempo" }, runtime, false, false).confusion).toBe(true);
+    // Other abilities and statuses are unchanged.
+    expect(carriedOptions({ ...build, status: "tox", abilityId: "insomnia" }, runtime, false).toxic).toBe(true);
+    expect(carriedOptions({ ...build, status: "slp", abilityId: "immunity" }, runtime, false).sleep).toEqual({ max: 3 });
+  });
+
+  it("reads a Neutralizing Gas from another Pokémon that has not fainted, and an Ability Shield outside Magic Room", async () => {
+    let { state } = await sv();
+    expect(DOUBLES_SLOTS.map((slot) => carriedAbilityOn(state.doubles, slot))).toEqual([true, true, true, true]);
+    state = edit(state, "opponent-right", { abilityId: "neutralizinggas" });
+    expect(DOUBLES_SLOTS.map((slot) => carriedAbilityOn(state.doubles, slot))).toEqual([false, false, false, true]);
+    expect(carriedAbilityOn(edit(state, "own-left", { itemId: "abilityshield" }).doubles, "own-left")).toBe(true);
+    const room = setDoublesField(edit(state, "own-left", { itemId: "abilityshield" }), state.doubles.revision, { ...state.doubles.field, magicRoom: true });
+    expect(carriedAbilityOn(room.doubles, "own-left")).toBe(false);
+    expect(carriedAbilityOn(updateDoublesHP(state, key(state, "opponent-right"), "0").doubles, "own-left")).toBe(true);
+  });
+
+  it("drops a confusion or count the ability ends, keeps it while a Neutralizing Gas stands, and passes none to the turn", async () => {
+    const setup = await sv();
+    const { runtime } = setup;
+    let state = updateDoublesBuild(setup.state, key(setup.state, "own-left"), { ...createBuild("slowbro", runtime), abilityId: "oblivious" });
+    state = setDoublesCarried(state, key(state, "own-left"), { confusion: { attempts: 1 } });
+    expect(state.doubles.carried["own-left"]).toEqual({ confusion: { attempts: 1 } });
+    // Own Tempo ends it at the first Update (data/abilities.ts owntempo onUpdate): nothing to carry.
+    const tempo = edit(state, "own-left", { abilityId: "owntempo" });
+    expect(tempo.doubles.carried["own-left"]).toEqual({});
+    expect(setDoublesCarried(tempo, key(tempo, "own-left"), { confusion: { attempts: 0 } })).toBe(tempo);
+    // With a Neutralizing Gas on the field it stands; the gas leaving drops it.
+    let gas = edit(tempo, "opponent-right", { abilityId: "neutralizinggas" });
+    gas = setDoublesCarried(gas, key(gas, "own-left"), { confusion: { attempts: 2 } });
+    expect(gas.doubles.carried["own-left"]).toEqual({ confusion: { attempts: 2 } });
+    expect(edit(gas, "opponent-right", { abilityId: "static" }).doubles.carried["own-left"]).toEqual({});
+    expect(updateDoublesHP(gas, key(gas, "opponent-right"), "0").doubles.carried["own-left"]).toEqual({});
+    // Insomnia ends a sleep: its count goes with it.
+    let asleep = edit(state, "own-right", { status: "slp" });
+    asleep = setDoublesCarried(asleep, key(asleep, "own-right"), { sleep: { attempts: 1, rest: true } });
+    expect(asleep.doubles.carried["own-right"]).toEqual({ sleep: { attempts: 1, rest: true } });
+    expect(edit(asleep, "own-right", { abilityId: "insomnia" }).doubles.carried["own-right"]).toEqual({});
+    // An Ability Shield keeps Own Tempo from the gas only outside Magic Room.
+    let shield = edit(gas, "own-left", { itemId: "abilityshield" });
+    expect(shield.doubles.carried["own-left"]).toEqual({});
+    shield = setDoublesField(shield, shield.doubles.revision, { ...shield.doubles.field, magicRoom: true });
+    shield = setDoublesCarried(shield, key(shield, "own-left"), { confusion: { attempts: 1 } });
+    expect(shield.doubles.carried["own-left"]).toEqual({ confusion: { attempts: 1 } });
+    expect(setDoublesField(shield, shield.doubles.revision, { ...shield.doubles.field, magicRoom: false }).doubles.carried["own-left"]).toEqual({});
+    // The turn: Slowbro's Scald always hits (pinned Showdown: Own Tempo ends the confusion before any move).
+    const scald = { ...tempo.doubles, actions: { ...tempo.doubles.actions, "own-left": { moveId: "scald", target: "opponent-left" as const } } };
+    const input = getDoublesTurnInput(scald);
+    expect(input.pokemon["own-left"]).not.toHaveProperty("carried");
+    const turn = calculateDoublesTurn(input);
+    expect(turn.status).toBe("ready");
+    if (turn.status !== "ready") throw new Error("ready");
+    const step = turn.steps.find((entry) => entry.slot === "own-left")!;
+    expect(step.hits.find((hit) => hit.slot === "opponent-left")!.reached).toBeCloseTo(1, 9);
+    expect([...step.skipped, ...step.facts].map((fact) => fact.text).join(" ")).not.toMatch(/confusion/i);
+  });
+});
+
+describe("2v2 turn lines after the review (ui F3, F6, F7)", () => {
+  const names = eotView().names;
+  const RANDOM_HITS = [{ hits: 2, chance: 0.35 }, { hits: 3, chance: 0.35 }, { hits: 4, chance: 0.15 }, { hits: 5, chance: 0.15 }];
+  const quiet = (steps: DoublesStep[]): Extract<DoublesTurnResult, { status: "ready" }> => ({
+    status: "ready", start: EOT_START, steps, hp: EOT_MOVES_HP, startRows: [], facts: [HIT_FACT], endOfTurn: { status: "ready", hp: EOT_MOVES_HP, residuals: [], facts: [] },
+  });
+
+  it("gives no hit count to the hits that got past a Substitute (ui F3)", () => {
+    const row = eotRow("rockblast", 25, 31, 235, { hits: 5, hitChances: RANDOM_HITS });
+    const hit: DoublesHit = {
+      slot: "opponent-left", reached: 0.759375, kind: "calculated", min: 25, max: 124, minPercent: 10.64, maxPercent: 52.77, koChance: 0, row, cases: 4,
+      substitute: { chance: 1, min: 30, max: 30, breaks: 1 }, facts: [],
+    };
+    // Pinned Showdown: 1–4 hits reach the Pokémon after a 30 HP Substitute breaks, not the move's 2–5.
+    expect(hitLine(hit, names)).toBe("Blastoise: 25–124 damage (10.64–52.77% of max HP) · KO chance 0% · reaches it 75.94%");
+    expect(hitLine(hit, names, true)).not.toMatch(/\bhits?\b/);
+    const clear: DoublesHit = { ...hit, reached: 1 };
+    delete clear.substitute;
+    expect(hitLine(clear, names)).toBe("Blastoise: 25–124 damage (10.64–52.77% of max HP), 2–5 hits · KO chance 0%");
+  });
+
+  it("shows no KO chance on a card only a status move reached, unless it took HP (ui F6)", async () => {
+    const runtime = await loadBattleRuntime("scarlet_violet");
+    const wave = quiet([eotStep("opponent-right", "thunderwave", 1, [effectHit("own-left", [{ text: "Is paralysed.", chance: 1 }])])]);
+    expect(cardReached(wave, "own-left")).toBe(false);
+    expect(cardReached(wave, "own-left", runtime)).toBe(false);
+    const dance = quiet([eotStep("own-left", "swordsdance", 1, [effectHit("own-left", [{ text: "+2 Attack.", chance: 1 }])])]);
+    expect(cardReached(dance, "own-left", runtime)).toBe(false);
+    // Pain Split and Belly Drum take HP: the card keeps its KO chance.
+    expect(cardReached(quiet([eotStep("own-right", "painsplit", 1, [effectHit("opponent-left", [], { change: { min: -88, max: -88 } })])]), "opponent-left", runtime)).toBe(true);
+    // A status move it is immune to (no-damage) shows none with the move's category; a damaging move's still does.
+    const immune: DoublesHit = { ...effectHit("opponent-left", [{ text: "Blastoise is immune.", chance: 1 }]), kind: "no-damage" };
+    expect(cardReached(quiet([eotStep("opponent-right", "thunderwave", 1, [immune])]), "opponent-left", runtime)).toBe(false);
+    expect(cardReached(quiet([eotStep("own-left", "earthquake", 1, [immune])]), "opponent-left", runtime)).toBe(true);
+    expect(cardReached(quiet([eotStep("own-left", "earthquake", 1, [immune])]), "opponent-left")).toBe(true);
+    expect(card(summary(eotView(wave)), "own-left")).not.toContain("KO chance");
+  });
+
+  it("leaves out a status move's hit that states nothing when the step says what the move did (ui F7)", () => {
+    const wishFact = { text: "Wish: the Pokémon at Charizard's position regains HP at the end of the next turn.", chance: 1 };
+    const lone = effectHit("own-left", []);
+    const wish = eotStep("own-left", "wish", 1, [lone], { facts: [wishFact] });
+    expect(listedHits(wish)).toEqual([]);
+    // Kept: a share below 1, an HP change, a fact of its own, or a step without facts.
+    const half = { ...lone, reached: 0.5 };
+    const healed = effectHit("own-right", [], { change: { min: 77, max: 77 } });
+    const seeded = effectHit("opponent-left", [{ text: "Is seeded.", chance: 1 }]);
+    expect(listedHits({ ...wish, hits: [half, healed, seeded] })).toEqual([half, healed, seeded]);
+    expect(listedHits({ ...wish, facts: [] })).toEqual([lone]);
+    const panel = turnPanel(summary(eotView(quiet([wish]))));
+    expect(text(panel)).toContain(wishFact.text);
+    expect(panel).not.toContain("data-doubles-hit=");
+    expect(panel).not.toContain("Wish hits");
+  });
+
+  it("leaves out a hit the move never reached, with nothing of its own to state (a Ghost type's Curse and its user)", async () => {
+    // The engine lists a Ghost type's Curse user as a hit it never reaches (pinned Showdown data/moves.ts curse: target
+    // "normal", nonGhostTarget "self" only for a non-Ghost user); the line would read "Charizard: no effect · reaches it 0%".
+    const cursed = effectHit("opponent-left", [{ text: "Is cursed.", chance: 1 }]);
+    const user: DoublesHit = { ...effectHit("own-left", []), kind: "no-damage", reached: 0 };
+    const curse = eotStep("own-left", "curse", 1, [cursed, user], { facts: [{ text: "Curse: Charizard loses 76 HP.", chance: 1 }] });
+    expect(listedHits(curse)).toEqual([cursed]);
+    // Kept: a hit with a share above 0, or one that states a fact of its own.
+    const some = { ...user, reached: 0.25 };
+    const said: DoublesHit = { ...user, facts: [{ text: "Charizard is immune.", chance: 1 }] };
+    expect(listedHits({ ...curse, hits: [cursed, some, said] })).toEqual([cursed, some, said]);
+    expect(listedHits({ ...curse, facts: [] })).toEqual([cursed]);
+    const panel = text(turnPanel(summary(eotView(quiet([curse])))));
+    expect(panel).toContain("Is cursed.");
+    expect(panel).not.toContain("reaches it 0%");
+    // Through the engine (Scarlet/Violet): Gengar's Curse into Snorlax.
+    const runtime = await loadBattleRuntime("scarlet_violet");
+    const build = (id: string, abilityId: string): BattleBuild => ({ ...createBuild(id, runtime), abilityId });
+    const turn = calculateDoublesTurn({
+      runtime, field: { ...createConditions(), gameType: "Doubles" },
+      pokemon: {
+        "own-left": { build: build("gengar", "cursedbody"), contexts: {}, charged: false, action: { moveId: "curse", target: "opponent-left" } },
+        "own-right": { build: build("venusaur", "overgrow"), contexts: {}, charged: false, action: { moveId: null, target: null } },
+        "opponent-left": { build: build("snorlax", "thickfat"), contexts: {}, charged: false, action: { moveId: null, target: null } },
+        "opponent-right": { build: build("charizard", "blaze"), contexts: {}, charged: false, action: { moveId: null, target: null } },
+      },
+    });
+    if (turn.status !== "ready") throw new Error(`ready: ${turn.status}`);
+    const step = turn.steps.find((entry) => entry.moveId === "curse")!;
+    expect(listedHits(step).map((hit) => hit.slot)).toContain("opponent-left");
+    expect(listedHits(step).every((hit) => hit.reached > 0 || hit.facts.length > 0)).toBe(true);
   });
 });

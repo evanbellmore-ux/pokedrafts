@@ -22,14 +22,18 @@ import type { TrainingMember, TrainingTeam } from "@/app/(app)/training/model/vi
  *   Trick Room, Follow Me and Rage Powder users and one Mega-capable member per team.
  * - Pool A (archetype): every member's spread and nature is both one SPEC 10.1 archetype candidate and one of the species'
  *   top 12 usage spreads, so the truth is inside the belief's support under the rule prior and the usage prior (A1.4).
+ * - Pool E (end of turn, status-eot EOT-5): two teams with the moves whose state Training carries into the 2v2 engine
+ *   (Ally Switch, Trick, Switcheroo, Substitute, Leech Seed, Ingrain, Salt Cure, Aqua Ring, Wish, Syrup Bomb, Curse, Yawn,
+ *   Future Sight, Fire Spin with a Binding Band, Perish Song, Shed Tail, Baton Pass) for conformance:training and
+ *   leak:training; the eval's win-rate runs do not draw from it.
  *
  * Compact set notation, one string per member: "Species @ Item; Ability; Nature hp/atk/def/spa/spd/spe; Move / Move / …".
  * The item part is optional. Mega forms are written as their base species holding the stone, as a PokéPaste names them.
  */
-export type TeamPool = "S" | "V" | "U" | "A";
+export type TeamPool = "S" | "V" | "U" | "A" | "E";
 export type TeamFixture =
   | { id: string; pool: "S"; species: readonly string[] }
-  | { id: string; pool: "V" | "U" | "A"; sets: readonly string[] };
+  | { id: string; pool: "V" | "U" | "A" | "E"; sets: readonly string[] };
 
 const STAT_ORDER: readonly BattleStat[] = ["hp", "atk", "def", "spa", "spd", "spe"];
 const STAT_LABEL: Readonly<Record<BattleStat, string>> = { hp: "HP", atk: "Atk", def: "Def", spa: "SpA", spd: "SpD", spe: "Spe" };
@@ -268,6 +272,25 @@ const POOL_A: Readonly<Record<string, readonly string[]>> = {
   ],
 };
 
+const POOL_E: Readonly<Record<string, readonly string[]>> = {
+  E01: [
+    "Farigiraf @ Sitrus Berry; Armor Tail; Quiet 32/0/2/32/0/0; Ally Switch / Wish / Psychic / Protect",
+    "Gholdengo @ Choice Scarf; Good as Gold; Timid 2/0/0/32/0/32; Trick / Make It Rain / Shadow Ball / Dazzling Gleam",
+    "Venusaur @ Big Root; Overgrow; Bold 32/0/32/0/2/0; Leech Seed / Ingrain / Sludge Bomb / Protect",
+    "Garganacl @ Rocky Helmet; Purifying Salt; Careful 32/2/0/0/32/0; Salt Cure / Protect / Rock Slide / Wide Guard",
+    "Hydrapple @ Life Orb; Regenerator; Modest 32/0/2/32/0/0; Syrup Bomb / Draco Meteor / Giga Drain / Protect",
+    "Milotic @ Leftovers; Competitive; Bold 32/0/32/0/2/0; Aqua Ring / Scald / Icy Wind / Protect",
+  ],
+  E02: [
+    "Snorlax @ Lum Berry; Thick Fat; Careful 32/2/16/0/16/0; Curse / Body Slam / Yawn / Protect",
+    "Sneasler @ Choice Scarf; Unburden; Jolly 2/32/0/0/0/32; Switcheroo / Close Combat / Dire Claw / Fake Out",
+    "Gengar @ Focus Sash; Cursed Body; Timid 2/0/0/32/0/32; Substitute / Shadow Ball / Sludge Bomb / Perish Song",
+    "Sceptile @ Sitrus Berry; Overgrow; Timid 2/0/0/32/0/32; Shed Tail / Leaf Storm / Leech Seed / Protect",
+    "Espeon @ Light Clay; Magic Bounce; Timid 2/0/0/32/0/32; Baton Pass / Psychic / Future Sight / Yawn",
+    "Charizard @ Binding Band; Blaze; Timid 2/0/0/32/0/32; Fire Spin / Heat Wave / Air Slash / Protect",
+  ],
+};
+
 /**
  * Addendum A1.5 gate positions: turn 1 after both team previews (the first two of each order lead; the AI is p2). Each
  * holds one Mega-capable AI member, so keeping the Mega has no option value for another member. Damage and Speed facts
@@ -412,6 +435,7 @@ export const TEAM_FIXTURES: readonly TeamFixture[] = [
   ...Object.entries(POOL_V).map(([id, sets]) => ({ id, pool: "V" as const, sets })),
   ...Object.entries(POOL_U).map(([id, sets]) => ({ id, pool: "U" as const, sets })),
   ...Object.entries(POOL_A).map(([id, sets]) => ({ id, pool: "A" as const, sets })),
+  ...Object.entries(POOL_E).map(([id, sets]) => ({ id, pool: "E" as const, sets })),
 ];
 
 export function fixturesIn(pools: readonly TeamPool[]): TeamFixture[] {
