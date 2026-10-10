@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { emptyHabits } from "@/app/(app)/training/model/habits-data";
 import {
-  canonicalJson, EXPORT_KIND, exportFileName, exportText, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_DEPTH, logHash, MAX_TIME, migrateSavedBattle,
-  nestsDeeper, parseExportText, parseFinishedBattle, parseStoredBattle, parseSummary, resultText, RULES_VERSION, SAVED_BATTLES_CAP, summaryOf, turnHashes,
-  turnsText, type SavedBattle,
+  canonicalJson, EXPORT_KIND, exportFileName, exportText, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_DEPTH, logHash, logShapeHash, MAX_TIME,
+  migrateSavedBattle, nestsDeeper, parseExportText, parseFinishedBattle, parseStoredBattle, parseSummary, resultText, rewordedLog, RULES_VERSION,
+  SAVED_BATTLES_CAP, summaryOf, turnHashes, turnShapeHashes, turnsText, type SavedBattle,
 } from "@/app/(app)/training/model/saved-battle";
 import { TRAINING_FORMAT_ID, type LogTurn } from "@/app/(app)/training/model/view-types";
 import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
@@ -30,6 +30,19 @@ function unfinished(patch: Partial<SavedBattle> = {}): SavedBattle {
   return finished({ id: "battle-2", status: "unfinished", turn: 3, result: null, seed: null, inputLog: null, resume: { sealed: "c2VhbGVk" }, habitsBefore: emptyHabits(), ...patch });
 }
 const flush = async (times = 8) => { for (let i = 0; i < times; i++) await new Promise((resolve) => setTimeout(resolve, 0)); };
+/** A re-run's hashes and written turns, as the worker's replay-ready sends them for this log. */
+const rerunOf = (log: LogTurn[]) => ({
+  hash: logHash(log), turnHashes: turnHashes(log), shape: logShapeHash(log), turnShapes: turnShapeHashes(log),
+  turns: log.filter((turn) => turn.lines.length || turn.steps?.length).map((turn) => ({ turn: turn.turn, lines: turn.lines, steps: turn.steps ?? [] })),
+});
+/** The same log in another wording: every line's and step's text changed, nothing else (a battle saved before the current wording). */
+function oldWording(log: LogTurn[]): LogTurn[] {
+  return structuredClone(log).map((turn) => ({
+    ...turn,
+    lines: turn.lines.map((line) => ({ ...line, text: `${line.text} (old wording)` })),
+    steps: turn.steps?.map((step) => ({ ...step, title: `${step.title} (old)`, by: step.by && `${step.by} (old)`, slots: step.slots.map((slot) => ({ ...slot, name: `${slot.name} (old)` })) })),
+  }));
+}
 
 describe("record format v1", () => {
   it("hashes the simulator's lines and steps only, independent of key order, reads and actions", () => {
@@ -38,10 +51,24 @@ describe("record format v1", () => {
     expect(logHash(reordered)).toBe(logHash(log));
     expect(logHash(log)).toMatch(/^[0-9a-f]{32}$/);
     const changed = structuredClone(log);
-    changed[2].lines[0].text = "Ampharos (opponent's left) fainted!";
+    changed[2].lines[0].text = "Ampharos fainted!";
     expect(logHash(changed)).not.toBe(logHash(log));
     expect(firstDifference(turnHashes(log), turnHashes(changed))).toBe(2);
     expect(firstDifference(turnHashes(log), turnHashes(log))).toBeNull();
+    // The shape hash leaves out every wording (lines' text, steps' titles, users, results, facts and names): the same battle
+    // in another wording has the same shape; a line's slots or a step's cards do not.
+    expect(logShapeHash(changed)).toBe(logShapeHash(log));
+    expect(logShapeHash(oldWording(log))).toBe(logShapeHash(log));
+    expect(logShapeHash(log)).toMatch(/^[0-9a-f]{32}$/);
+    const moved = structuredClone(log);
+    moved[1].lines[1].slots = [];
+    expect(logShapeHash(moved)).not.toBe(logShapeHash(log));
+    expect(firstDifference(turnShapeHashes(log), turnShapeHashes(moved))).toBe(1);
+    expect(logShapeHash([...log, { turn: 3, lines: [], steps: [], actions: null, read: null }])).toBe(logShapeHash(log));
+    // The saved log takes a re-run's lines and steps; its reads, actions and occupants stay.
+    const reworded = rewordedLog(oldWording(log), rerunOf(log).turns);
+    expect(logHash(reworded)).toBe(logHash(log));
+    expect(reworded.map((turn) => [turn.read, turn.actions, turn.occupants])).toEqual(log.map((turn) => [turn.read, turn.actions, turn.occupants]));
     // An empty turn (no lines, no steps) is not part of the hash: the page never received it.
     expect(logHash([...log, { turn: 3, lines: [], steps: [], actions: null, read: null }])).toBe(logHash(log));
     expect(canonicalJson({ b: 1, a: [undefined, { d: undefined, c: 2 }] })).toBe('{"a":[null,{"c":2}],"b":1}');
@@ -101,6 +128,15 @@ describe("record format v1", () => {
     expect(parseExportText(withBattle({ log: unredacted })).ok).toBe(false);
     const repeated = [...valid.battle.log, valid.battle.log[1]];
     expect(parseExportText(withBattle({ log: repeated }))).toEqual({ ok: false, error: "Not a saved Training battle: battle.log repeats a turn." });
+    // Each turn's names at the decision (LogTurn.names, naming review T1) are kept, and checked as text.
+    const named = structuredClone(valid.battle.log);
+    named[1].names = { "own-left": "Ditto", "own-right": "Garchomp (yours)", "opponent-left": "Garchomp (opponent's)" };
+    const kept = parseExportText(withBattle({ log: named }));
+    expect(kept.ok && kept.record.log[1].names).toEqual(named[1].names);
+    named[1].names = { "own-left": "x".repeat(201) };
+    expect(parseExportText(withBattle({ log: named }))).toMatchObject({ ok: false, error: expect.stringContaining("battle.log.1.names.own-left") });
+    named[1].names = { "left-foe": "Garchomp" };
+    expect(parseExportText(withBattle({ log: named })).ok).toBe(false);
   });
 
   it("has a migration hook: version 1 passes, other versions are refused as facts", () => {
@@ -299,22 +335,42 @@ describe("page store: autosave, Resume, replays and imports", () => {
     const [message] = fake.of("replay");
     expect(message).toMatchObject({ setup: finished().setup, seed: SEED, inputLog: INPUT, forfeited: false });
     const starts = { 1: boardView({ turn: 1 }), 2: boardView({ turn: 2 }) };
-    fake.emit({ type: "replay-ready", replayId: message.replayId, starts, end: boardView({ turn: 3 }), hash: logHash(finished().log), turnHashes: turnHashes(finished().log), result: WON });
+    fake.emit({ type: "replay-ready", replayId: message.replayId, starts, end: boardView({ turn: 3 }), ...rerunOf(finished().log), result: WON });
     expect(session.getSnapshot().replay).toMatchObject({ status: "board", boards: { starts, end: boardView({ turn: 3 }) }, message: null });
     session.closeReplay();
     expect(session.getSnapshot().replay).toBeNull();
 
+    // The re-run differs only in wording (a battle saved before it): the board plays it in the re-run's words, stored too.
     session.openReplay("battle-1");
     await flush();
     const second = fake.of("replay")[1];
     const other: LogTurn[] = structuredClone(finished().log);
-    other[1].lines[1].text = "Garchomp (your left) used Earthquake.";
-    fake.emit({ type: "replay-ready", replayId: second.replayId, starts, end: boardView(), hash: logHash(other), turnHashes: turnHashes(other), result: WON });
+    other[1].lines[1].text = "Garchomp used Earthquake!";
+    fake.emit({ type: "replay-ready", replayId: second.replayId, starts, end: boardView(), ...rerunOf(other), result: WON });
+    expect(session.getSnapshot().replay).toMatchObject({ status: "board", boards: { starts }, message: null });
+    expect(session.getSnapshot().replay!.log[1].lines[1].text).toBe("Garchomp used Earthquake!");
+    expect(session.getSnapshot().replay!.log[1].read).toEqual(finished().log[1].read);
+    await flush();
+    const stored = await store.get("battle-1");
+    expect(stored!.log[1].lines[1].text).toBe("Garchomp used Earthquake!");
+    expect(stored!.log[1].occupants).toEqual(finished().log[1].occupants);
+    expect(stored!.updatedAt).toBe(finished().updatedAt);
+    expect((await store.list()).map((each) => each.id)).toEqual(["battle-1"]);
+
+    // A re-run that differs in what happened (a line's Pokémon): only the saved log.
+    await store.save(finished());
+    session.openReplay("battle-1");
+    await flush();
+    const third = fake.of("replay")[2];
+    const moved: LogTurn[] = structuredClone(finished().log);
+    moved[1].lines[1].slots = [];
+    fake.emit({ type: "replay-ready", replayId: third.replayId, starts, end: boardView(), ...rerunOf(moved), result: WON });
     expect(session.getSnapshot().replay).toMatchObject({ status: "log", boards: null, message: "The re-run differs from the saved log from turn 1. The saved log is shown." });
+    expect(session.getSnapshot().replay!.log).toEqual(finished().log);
 
     session.openReplay("battle-1");
     await flush();
-    fake.emit({ type: "replay-error", replayId: fake.of("replay")[2].replayId, message: "The saved choices do not fit the battle (turn 2)." });
+    fake.emit({ type: "replay-error", replayId: fake.of("replay")[3].replayId, message: "The saved choices do not fit the battle (turn 2)." });
     expect(session.getSnapshot().replay).toMatchObject({ status: "log", message: "The battle could not be re-run: The saved choices do not fit the battle (turn 2). The saved log is shown." });
   });
 
@@ -354,14 +410,14 @@ describe("page store: autosave, Resume, replays and imports", () => {
     // A log that a re-run does not reproduce is refused too.
     session.importSaved({ name: "edited.json", size: text.length, text: async () => text });
     await flush();
-    fake.emit({ type: "replay-ready", replayId: fake.of("replay")[1].replayId, starts: {}, end: boardView({ turn: 7 }), hash: "0".repeat(32), turnHashes: { 0: "x" }, result: WON });
+    fake.emit({ type: "replay-ready", replayId: fake.of("replay")[1].replayId, starts: {}, end: boardView({ turn: 7 }), hash: "0".repeat(32), turnHashes: { 0: "x" }, shape: "0".repeat(32), turnShapes: { 0: "x" }, turns: [], result: WON });
     await flush();
     expect(session.getSnapshot().saved.import).toEqual({ status: "error", name: "edited.json", message: "The file's log does not match a re-run of its battle from turn 0." });
     // A good file.
     session.importSaved({ name: "good.json", size: text.length, text: async () => text });
     await flush();
     const starts = { 1: boardView({ turn: 1 }) };
-    fake.emit({ type: "replay-ready", replayId: fake.of("replay")[2].replayId, starts, end: boardView({ turn: 7 }), hash: logHash(finished().log), turnHashes: turnHashes(finished().log), result: WON });
+    fake.emit({ type: "replay-ready", replayId: fake.of("replay")[2].replayId, starts, end: boardView({ turn: 7 }), ...rerunOf(finished().log), result: WON });
     await flush();
     expect(session.getSnapshot().saved.import).toEqual({ status: "done", name: "good.json" });
     const list = await store.list();
@@ -369,6 +425,25 @@ describe("page store: autosave, Resume, replays and imports", () => {
     expect(list[0]).toMatchObject({ source: "imported", status: "finished" });
     expect(list[0].id).not.toBe("battle-1");
     expect(session.getSnapshot().replay).toMatchObject({ id: list[0].id, status: "board", boards: { starts } });
+  });
+
+  it("imports a file saved in an older wording: the record takes the re-run's lines and steps, never the file's text", async () => {
+    const store = memoryBattleStore();
+    const { session, fake } = setup(store);
+    await flush();
+    const text = exportText(finished({ log: oldWording(finished().log) }));
+    session.importSaved({ name: "old.json", size: text.length, text: async () => text });
+    await flush();
+    fake.emit({ type: "replay-ready", replayId: fake.of("replay")[0].replayId, starts: { 1: boardView({ turn: 1 }) }, end: boardView({ turn: 7 }), ...rerunOf(finished().log), result: WON });
+    await flush();
+    expect(session.getSnapshot().saved.import).toEqual({ status: "done", name: "old.json" });
+    const [summary] = await store.list();
+    const record = await store.get(summary.id);
+    expect(logHash(record!.log)).toBe(logHash(finished().log));
+    expect(JSON.stringify(record!.log)).not.toContain("old wording");
+    expect(record!.log.map((turn) => turn.read)).toEqual(finished().log.map((turn) => turn.read));
+    expect(JSON.stringify(session.getSnapshot().replay!.log)).not.toContain("old wording");
+    expect(session.getSnapshot().replay).toMatchObject({ status: "board" });
   });
 
   it("deletes one or all and exports a finished battle's file", async () => {
@@ -436,7 +511,7 @@ describe("untrusted files and concurrent re-runs (review fixes)", () => {
     return { session, fake };
   }
   const ready = (replayId: number, patch: Partial<Extract<FromWorker, { type: "replay-ready" }>> = {}): FromWorker => ({
-    type: "replay-ready", replayId, starts: { 1: boardView({ turn: 1 }) }, end: boardView({ turn: 7 }), hash: logHash(finished().log), turnHashes: turnHashes(finished().log), result: WON, ...patch,
+    type: "replay-ready", replayId, starts: { 1: boardView({ turn: 1 }) }, end: boardView({ turn: 7 }), ...rerunOf(finished().log), result: WON, ...patch,
   });
 
   it("an unreadable file is stated as a fact", async () => {

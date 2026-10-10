@@ -177,7 +177,7 @@ describe("Neutralizing Gas in the 2v2 turn: facts, start rows, the moves pane an
     const flamethrower = result.startRows.find((row) => row.slot === "own-right")!;
     expect(flamethrower).toMatchObject({ target: "opponent-right", row: { moveId: "flamethrower", min: 51, max: 61 } });
     expect(flamethrower.row.assumptions).toEqual(expect.arrayContaining([
-      "Your right Charizard's Blaze is suppressed by Neutralizing Gas.", "Opponent's right Snorlax's Thick Fat is suppressed by Neutralizing Gas.",
+      "Charizard's Blaze is suppressed by Neutralizing Gas.", "Snorlax's Thick Fat is suppressed by Neutralizing Gas.",
     ]));
     expect(result.startRows.find((row) => row.slot === "opponent-right")).toMatchObject({ target: "own-left", row: { moveId: "bodyslam", min: 45, max: 54 } });
   });
@@ -215,7 +215,7 @@ describe("Neutralizing Gas in the 2v2 turn: facts, start rows, the moves pane an
     const pane = calculateDoublesMoves(await input(byId("NG01")), "own-right", "opponent-right");
     const row = pane.results.find((entry) => entry.moveId === "flamethrower")!;
     expect(row).toMatchObject({ kind: "calculated", min: 51, max: 61 });
-    expect(row.assumptions).toContain("Opponent's right Snorlax's Thick Fat is suppressed by Neutralizing Gas.");
+    expect(row.assumptions).toContain("Snorlax's Thick Fat is suppressed by Neutralizing Gas.");
     expect(row.usesToKO).toMatchObject({ kind: "uses" });
   });
 

@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO } from "@/app/(app)/training/model/info";
-import { logHash } from "@/app/(app)/training/model/saved-battle";
-import type { TrainingSetup } from "@/app/(app)/training/model/view-types";
+import { logHash, logShapeHash } from "@/app/(app)/training/model/saved-battle";
+import type { LogTurn, TrainingSetup } from "@/app/(app)/training/model/view-types";
 import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
 import { createMemorySealer } from "@/app/(app)/training/worker/sealer";
 import { createStubProvider } from "@/app/(app)/training/worker/stub-provider";
 import { createTrainingWorker } from "@/app/(app)/training/worker/worker-handler";
-import { playBattle, replayBattle, runSavedCheck } from "@/scripts/training/lib/saved-check";
+import { compareRuns, playBattle, replayBattle, runSavedCheck, type DriveOptions } from "@/scripts/training/lib/saved-check";
 import { parsePools, teamPair } from "@/scripts/training/lib/teams";
 
 // Saved battles in the worker: a finished battle re-run from its seed and choice lines reproduces its log exactly; Resume
@@ -16,6 +16,21 @@ import { parsePools, teamPair } from "@/scripts/training/lib/teams";
 
 const pair = (index: number) => teamPair("saved-unit", index, parsePools("S,V"), runtime);
 const setupOf = (index: number, info = DEFAULT_INFO): TrainingSetup => ({ own: pair(index).p1.team, opponent: pair(index).p2.team, difficulty: "safe", showRead: true, info });
+const byTurn = (log: ReadonlyMap<number, LogTurn>) => [...log.values()].sort((a, b) => a.turn - b.turn);
+/** The same log in another wording (a battle saved before the current one): every text changed, nothing else. */
+function oldWording(log: readonly LogTurn[]): LogTurn[] {
+  return structuredClone(log).map((turn) => ({
+    ...turn,
+    lines: turn.lines.map((line) => ({ ...line, text: `${line.text} (old wording)` })),
+    steps: turn.steps?.map((step) => ({ ...step, title: `${step.title} (old)`, by: step.by && `${step.by} (old)`, slots: step.slots.map((slot) => ({ ...slot, name: `${slot.name} (old)` })) })),
+  }));
+}
+/** A checkpoint as one sealed before the shape hash existed: no `shape`, and the hash of the log it was saved with. */
+async function oldCheckpoint(sealer: ReturnType<typeof createMemorySealer>, sealed: string, savedLog: readonly LogTurn[]) {
+  const payload = JSON.parse(await sealer.unseal(sealed)) as Record<string, unknown>;
+  delete payload.shape;
+  return sealer.seal(JSON.stringify({ ...payload, hash: logHash(savedLog) }));
+}
 
 describe("replays and Resume are deterministic", () => {
   it("random AI: 8 battles re-run hash-equal and resume equal to uninterrupted play (forfeits included)", async () => {
@@ -85,6 +100,62 @@ describe("checkpoints and Resume", () => {
     const at = played.checkpoints.at(-1)!;
     const resumed = await playBattle({ run: "saved-unit", index: 4, setup: { ...setupOf(4), opponent: pair(5).p2.team }, seat: "random", sealer }, { sealed: at.sealed, log: [] });
     expect(resumed.errors.join(" ")).toContain("The saved battle did not re-run the same way.");
+  }, 60_000);
+});
+
+describe("saved battles from before the current wording", () => {
+  const options = (sealer: ReturnType<typeof createMemorySealer>): DriveOptions => ({ run: "saved-unit-wording", index: 9, setup: setupOf(9), seat: "random", sealer });
+
+  it("Resume fills the occupants a log saved before them lacks, from its re-run", async () => {
+    const sealer = createMemorySealer();
+    const a = await playBattle(options(sealer));
+    expect(a.ended).not.toBeNull();
+    // Every resolved turn with actions names each slot's Pokémon at the decision.
+    for (const turn of byTurn(a.log)) if (turn.actions) expect(Object.keys(turn.occupants ?? {}).length).toBeGreaterThanOrEqual(2);
+    const at = a.checkpoints[Math.floor(a.checkpoints.length / 2)];
+    const saved = byTurn(a.log).filter((turn) => turn.turn < at.turn).map(({ occupants: _occupants, ...turn }) => { void _occupants; return turn; });
+    expect(saved.some((turn) => turn.actions)).toBe(true);
+    const b = await playBattle(options(sealer), { sealed: at.sealed, log: saved });
+    expect(compareRuns(a, b)).toBeNull();
+    for (const turn of byTurn(b.log)) if (turn.actions) expect(turn.occupants).toEqual(a.log.get(turn.turn)!.occupants);
+  }, 120_000);
+
+  it("Resume accepts an old checkpoint with a log in an older wording (same shape) and plays on in the current wording", async () => {
+    const sealer = createMemorySealer();
+    const a = await playBattle(options(sealer));
+    const at = a.checkpoints[Math.floor(a.checkpoints.length / 2)];
+    const saved = oldWording(byTurn(a.log).filter((turn) => turn.turn < at.turn));
+    expect(logHash(saved)).not.toBe(logHash(byTurn(a.log).filter((turn) => turn.turn < at.turn)));
+    expect(logShapeHash(saved)).toBe(logShapeHash(byTurn(a.log).filter((turn) => turn.turn < at.turn)));
+    const b = await playBattle(options(sealer), { sealed: await oldCheckpoint(sealer, at.sealed, saved), log: saved });
+    expect(compareRuns(a, b)).toBeNull();
+    expect(JSON.stringify(byTurn(b.log))).not.toContain("(old");
+    // A checkpoint of the current format matches by its own shape too.
+    const c = await playBattle(options(sealer), { sealed: at.sealed, log: saved });
+    expect(compareRuns(a, c)).toBeNull();
+  }, 180_000);
+
+  it("Resume refuses an old checkpoint whose saved log differs in what happened (its shape)", async () => {
+    const sealer = createMemorySealer();
+    const a = await playBattle(options(sealer));
+    const at = a.checkpoints[Math.floor(a.checkpoints.length / 2)];
+    const saved = oldWording(byTurn(a.log).filter((turn) => turn.turn < at.turn));
+    const turn = saved.find((each) => each.lines.length > 1)!;
+    turn.lines[0] = { ...turn.lines[0], slots: [] };
+    const b = await playBattle(options(sealer), { sealed: await oldCheckpoint(sealer, at.sealed, saved), log: saved });
+    expect(b.errors.join(" ")).toContain("The saved battle did not re-run the same way.");
+  }, 120_000);
+
+  it("a replay posts its written turns and their shape, so a saved log in an older wording can take them", async () => {
+    const played = await playBattle({ ...options(createMemorySealer()), sealer: null });
+    const replay = await replayBattle(setupOf(9), played.ended!);
+    expect(replay.ok).toBe(true);
+    if (!replay.ok) return;
+    const log = byTurn(played.log);
+    expect(replay.message.shape).toBe(logShapeHash(log));
+    expect(replay.message.shape).toBe(logShapeHash(oldWording(log)));
+    expect(replay.message.turns).toEqual(log.filter((turn) => turn.lines.length || turn.steps?.length).map((turn) => ({ turn: turn.turn, lines: turn.lines, steps: turn.steps ?? [] })));
+    expect(Object.keys(replay.message.turnShapes).map(Number)).toEqual(Object.keys(replay.message.turnHashes).map(Number));
   }, 60_000);
 });
 

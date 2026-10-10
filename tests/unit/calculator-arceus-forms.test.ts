@@ -205,7 +205,7 @@ describe("the 2v2 card's move type", () => {
       onBuildChange: vi.fn(), onHPChange: vi.fn(), onRosterSelect: vi.fn(), onToggleMega: vi.fn(), onToggleMechanic: vi.fn(),
       onActivateMove: vi.fn(), onChooseMove: vi.fn(), onShowMoves: vi.fn(), onTargetChange: vi.fn(), onShowStep: vi.fn(), onFixSettings: vi.fn(),
     }));
-    const button = /aria-label="Charizard your left move \d: Weather Ball"[^>]*>([\s\S]*?)<\/button>/.exec(html)?.[1] ?? "";
+    const button = /aria-label="Charizard move \d: Weather Ball"[^>]*>([\s\S]*?)<\/button>/.exec(html)?.[1] ?? "";
     expect(button).toContain(">Fire<");
     expect(button).not.toContain(">Normal<");
   });

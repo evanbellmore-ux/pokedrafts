@@ -1,6 +1,6 @@
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BoardView, LogTurn } from "../model/view-types";
-import { actualText, jointText, leadsText, optionText, providerText } from "./report-format";
+import { actualText, jointText, leadsText, optionText, providerText, turnNames } from "./report-format";
 
 // The AI's read for a resolved turn (the worker releases it after the turn and redacts it per "You see", SPEC 9.7):
 // what it predicted you would do, its mixed strategy and what it chose, what you did, its assumed spreads, its Mega fact.
@@ -8,15 +8,18 @@ import { actualText, jointText, leadsText, optionText, providerText } from "./re
 export type AIReadPanelProps = {
   turn: LogTurn;
   board: BoardView | null;
+  /** The board the turn's actions were chosen on (a replay's boards.starts[turn]): names its slots when the turn has no occupants. */
+  decisionBoard?: BoardView | null;
   runtime: BattleRuntime;
   /** Your members' names by key (team preview's predicted leads). */
   ownName(key: string): string | null;
 };
 
-export default function AIReadPanel({ turn, board, runtime, ownName }: AIReadPanelProps) {
+export default function AIReadPanel({ turn, board, decisionBoard = null, runtime, ownName }: AIReadPanelProps) {
   const report = turn.read;
   if (!report) return null;
   const leads = report.preview?.predictedLeads ?? [];
+  const names = turnNames(turn, board, decisionBoard);
   return (
     <div data-training-read className="mt-2 rounded-lg border border-line bg-bg p-2">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">AI&apos;s read</p>
@@ -29,15 +32,15 @@ export default function AIReadPanel({ turn, board, runtime, ownName }: AIReadPan
         ) : (
           <>
             <dt className="font-semibold text-muted">Predicted</dt>
-            <dd className="min-w-0 wrap-anywhere text-text">{report.predicted.length ? report.predicted.map((option, index) => <span key={index} className="block">{optionText(option, board, runtime)}</span>) : "—"}</dd>
+            <dd className="min-w-0 wrap-anywhere text-text">{report.predicted.length ? report.predicted.map((option, index) => <span key={index} className="block">{optionText(option, board, runtime, names)}</span>) : "—"}</dd>
             <dt className="font-semibold text-muted">Chose</dt>
             <dd className="min-w-0 wrap-anywhere text-text">{report.strategy.length ? report.strategy.map((option, index) => (
-              <span key={index} className="block">{optionText(option, board, runtime)}{index === report.chosen ? " (chosen)" : ""}</span>
+              <span key={index} className="block">{optionText(option, board, runtime, names)}{index === report.chosen ? " (chosen)" : ""}</span>
             )) : "—"}</dd>
             {turn.actions && (
               <>
                 <dt className="font-semibold text-muted">You</dt>
-                <dd className="min-w-0 wrap-anywhere text-text">{jointText(turn.actions.own, board, runtime)}{actualText(report)}</dd>
+                <dd className="min-w-0 wrap-anywhere text-text">{jointText(turn.actions.own, board, runtime, names)}{actualText(report)}</dd>
               </>
             )}
           </>

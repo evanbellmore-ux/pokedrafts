@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
-import { allyOf, DOUBLES_SLOTS, doublesNames, foesOf, relativePosition, SLOT_POSITION, slotSide, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { allyOf, DOUBLES_SLOTS, doublesNameParts, foesOf, nameText, slotSide, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { mimicryState } from "@/app/lib/battle/mimicry";
 import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
@@ -21,7 +21,7 @@ import {
   NO_CARRIED_OPTIONS, replaceDoublesMove, selectDoublesRoster, setDoublesCarried, setDoublesCharged, setDoublesField, setDoublesMovesInto, setDoublesTarget,
   toggleDoublesMechanic, toggleDoublesMega, updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
 } from "./doubles-prep";
-import { cardReached, relativeName, turnHP } from "./doubles-format";
+import { cardReached, turnHP } from "./doubles-format";
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import KeepWhileHidden from "./KeepWhileHidden";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -80,8 +80,8 @@ const NONE: Omit<DoublesView, "restoreRosterFocus"> = { summary: null, settings:
 const perSlot = <T,>(value: (slot: DoublesSlotId) => T) => Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, value(slot)])) as Record<DoublesSlotId, T>;
 
 /**
- * The foe straight across (data/abilities.ts imposter: foe.active[length - 1 - position]): your left faces the opponent's
- * left. When that one has fainted, the other foe if it has not.
+ * The foe straight across (data/abilities.ts imposter: foe.active[length - 1 - position]): own-left faces opponent-left.
+ * When that one has fainted, the other foe if it has not.
  */
 function acrossFrom(slot: DoublesSlotId, fainted: Record<DoublesSlotId, boolean>): DoublesSlotId {
   const [left, right] = foesOf(slot);
@@ -173,9 +173,10 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     cancelPending();
     setCalc(transition);
   };
-  const names = doublesNames(doubles.slots, runtime);
+  // Each Pokémon's full name ("Garchomp (yours, 1)": doublesNames) for text and labels; its card shows the parts (PokemonName).
+  const nameParts = doublesNameParts(doubles.slots, runtime);
+  const names = perSlot((slot) => nameText(nameParts[slot]));
   const fainted = doublesFainted(doubles.slots);
-  const speciesName = (slot: DoublesSlotId) => runtime.speciesById.get(doubles.slots[slot].build.speciesId)?.name ?? "Pokémon";
   // The Pokémon the 1v1 helpers read as "the other" (room and field items, Mimicry, Imposter's moves): the engine's
   // representative, else (before it loads, or when two act on the slot) the foe across. Read only by the regions that
   // render (KeepWhileHidden), so a hidden 2v2 asks the engine nothing.
@@ -288,10 +289,9 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
 
   function renderRoster(slot: DoublesSlotId) {
     const combatant = doubles.slots[slot];
-    const position = SLOT_POSITION[slot];
     return (
       <RosterPicker pickerId={ids.roster(combatant.key)} variant="inline" panel={rosterPanels[combatant.role]} role={combatant.role} side={slot}
-        activeSource={combatant.source} runtime={runtime} position={position} label={`${position.charAt(0).toUpperCase()}${position.slice(1)} Pokémon`}
+        activeSource={combatant.source} runtime={runtime} occupant={names[slot]}
         isDisabled={(choice) => doublesRosterDisabled(doubles, slot, choice)}
         onSelect={(choice) => update((state) => selectDoublesRoster(state, combatant.key, choice))} />
     );
@@ -300,7 +300,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
   /** "Apply Intimidate to both foes", or to the one foe left; none from a fainted Pokémon or with both foes fainted. */
   function intimidateLabel(slot: DoublesSlotId): string | null {
     const foes = intimidateFoes(doubles, slot);
-    return foes.length === 2 ? "Apply Intimidate to both foes" : foes.length === 1 ? `Apply Intimidate to ${relativeName(names, slot, foes[0])}` : null;
+    return foes.length === 2 ? "Apply Intimidate to both foes" : foes.length === 1 ? `Apply Intimidate to ${names[foes[0]]}` : null;
   }
 
   function renderEditor(slot: DoublesSlotId) {
@@ -316,7 +316,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
         magicRoom={field.magicRoom}
         requiredMove={requiredMoveFix(combatant)}
         side={slotSide(slot) === "own" ? "attacker" : "defender"}
-        position={SLOT_POSITION[slot]}
+        label={names[slot]}
         build={combatant.build}
         issues={issues[slot]}
         editorRevision={combatant.editorRevision}
@@ -482,9 +482,8 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             } : undefined}
             abilityId={source.build.abilityId}
             itemId={source.build.itemId}
-            attackerName={speciesName(paneSlot)}
-            defenderName={speciesName(into)}
-            positions={{ source: SLOT_POSITION[paneSlot], receiver: relativePosition(paneSlot, into).replace("-", " ") }}
+            attackerName={names[paneSlot]}
+            defenderName={names[into]}
             heading="Moves"
             turnOrderFromTurn
             defenderHP={receiverHP}
@@ -505,7 +504,9 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
       <RosterPicker pickerId={ids.rail(side)} variant="rail" panel={rosterPanels[side]} role={side} side={side} activeSource={null} runtime={runtime}
         onSelect={() => undefined}
         slots={slots.map((slot) => ({
-          id: slot, position: SLOT_POSITION[slot], activeSource: doubles.slots[slot].source,
+          // The rail is one team's, so its buttons name each card by its visible heading ("Replace Garchomp (1)"): the
+          // accessible name then holds the visible text.
+          id: slot, occupant: names[slot], card: nameText({ ...nameParts[slot], side: null }), activeSource: doubles.slots[slot].source,
           onSelect: (choice: RosterChoice) => update((state) => selectDoublesRoster(state, doubles.slots[slot].key, choice)),
         }))} />
     );

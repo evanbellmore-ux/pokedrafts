@@ -447,6 +447,34 @@ export function fixtureById(id: string): TeamFixture {
   return fixture;
 }
 
+/**
+ * The leak and conformance slices with an Illusion and a Transform (in no pool, so the pools' draws stay as they are). The AI
+ * brings Zoroark, Ditto, Kingambit and Garchomp in that order (`aiOrder`): Zoroark leads disguised as Garchomp (the last one
+ * brought) and its Imposter Ditto transforms on entry; when it replaces one Pokémon it sends in Garchomp while it can
+ * (`aiReplaceWith`), so the real Garchomp often stands beside the disguise. Your team has a Garchomp too (the disguise's
+ * name on both teams) and an Imposter Ditto (a live collision across the sides when it copies the AI's Pokémon).
+ */
+export const ILLUSION_TRANSFORM: { own: TeamFixture; opponent: TeamFixture; aiOrder: readonly number[]; aiReplaceWith: string } = {
+  own: { id: "illusion-transform-own", pool: "V", sets: [
+    "Garchomp @ Life Orb; Rough Skin; Jolly 2/32/0/0/0/32; Dragon Claw / Earthquake / Rock Slide / Protect",
+    "Ditto @ Choice Scarf; Imposter; Hardy 32/0/0/0/0/32; Transform",
+    "Incineroar @ Shuca Berry; Intimidate; Careful 32/0/14/0/20/0; Fake Out / Parting Shot / Flare Blitz / Throat Chop",
+    "Sneasler @ White Herb; Unburden; Jolly 2/32/0/0/0/32; Fake Out / Close Combat / Dire Claw / Protect",
+    "Charizard @ Charizardite Y; Blaze; Timid 2/0/0/32/0/32; Heat Wave / Weather Ball / Solar Beam / Protect",
+    "Whimsicott @ Mental Herb; Prankster; Timid 2/0/0/32/0/32; Tailwind / Moonblast / Encore / Protect",
+  ] },
+  opponent: { id: "illusion-transform-ai", pool: "V", sets: [
+    "Zoroark @ Focus Sash; Illusion; Timid 2/0/0/32/0/32; Night Daze / Flamethrower / Focus Blast / Protect",
+    "Ditto @ Choice Scarf; Imposter; Hardy 32/0/0/0/0/32; Transform",
+    "Kingambit @ Black Glasses; Defiant; Adamant 32/32/0/0/2/0; Kowtow Cleave / Sucker Punch / Iron Head / Protect",
+    "Garchomp @ Rocky Helmet; Rough Skin; Jolly 0/30/4/0/0/32; Dragon Claw / Earthquake / Stomping Tantrum / Protect",
+    "Incineroar @ Sitrus Berry; Intimidate; Careful 32/0/14/0/20/0; Fake Out / Parting Shot / Flare Blitz / Protect",
+    "Gardevoir @ Wise Glasses; Trace; Modest 32/0/2/32/0/0; Hyper Voice / Psychic / Moonblast / Dazzling Gleam",
+  ] },
+  aiOrder: [1, 2, 3, 4],
+  aiReplaceWith: "garchomp",
+};
+
 /** One compact set as Showdown/PokéPaste text (Champions: "EVs" are Stat Points). */
 export function pasteSet(compact: string): string {
   const [head, ability, spread, moves] = compact.split(";").map((part) => part.trim());

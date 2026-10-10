@@ -138,13 +138,31 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
 /** A 2v2 rail's slot buttons: one per slot for each choice. */
 export type RosterSlot = {
   id: DoublesSlotId;
-  /** "your left": the slot's place in its button's label. */
-  position: string;
+  /** The full name of the Pokémon in the slot, which a pick replaces ("Garchomp (yours, 1)"). */
+  occupant: string;
+  /**
+   * The slot's card heading as it is seen ("Garchomp (1)": the name and its number, without the side word the rail's team
+   * already gives), which names its buttons ("Replace Garchomp (1)").
+   */
+  card: string;
   activeSource: RosterSource | null;
   onSelect: (choice: RosterChoice) => void;
 };
 
-export function RosterPicker({ state, panel: providedPanel, role, side, activeSource, onSelect, pickerId, variant = "inline", runtime = championsRuntime, position: positionLabel, label, isDisabled, slots }: {
+/** The Pokémon a pick replaces (a picker for one Pokémon), or the rail's slots (one button per slot for each choice). */
+type RosterTarget =
+  | {
+    /** The full name of the Pokémon a pick replaces ("Charizard", "Garchomp (yours)"): every label names it. */
+    occupant: string;
+    slots?: undefined;
+  }
+  | {
+    occupant?: undefined;
+    /** 2v2 rail: each choice once, with one button per slot (activeSource and onSelect are then the slots'). */
+    slots: readonly RosterSlot[];
+  };
+
+export function RosterPicker({ state, panel: providedPanel, role, side, activeSource, onSelect, pickerId, variant = "inline", runtime = championsRuntime, occupant, isDisabled, slots }: RosterTarget & {
   state?: CalculatorRosterState;
   panel?: RosterPanel;
   role: RosterRole;
@@ -156,30 +174,23 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
   variant?: "inline" | "rail";
   /** The matchup's game: types, sprites and unsupported notes come from its catalog. */
   runtime?: BattleRuntime;
-  /** The Pokémon's place in labels ("your left" in 2v2); defaults to the side's "left" / "right". */
-  position?: string;
-  /** Its name as a Pokémon ("Your left Pokémon"); defaults to "Left Pokémon" / "Right Pokémon". */
-  label?: string;
-  /** Why a choice cannot be picked here ("Active as your right Pokémon."), or null. */
+  /** Why a choice cannot be picked here ("Active as Venusaur's ally."), or null. */
   isDisabled?: (choice: RosterChoice) => string | null;
-  /** 2v2 rail: each choice once, with one button per slot (activeSource and onSelect are then the slots'). */
-  slots?: readonly RosterSlot[];
 }) {
   const id = useId();
   const panel: RosterPanel = providedPanel ?? (state ? getRosterPanel(state, role, runtime) : { status: "empty", teamName: null, message: "No team chosen.", choices: [] });
   const ownership = role === "own" ? "Your team" : "Opponent's team";
-  const position = positionLabel ?? (side === "attacker" ? "left" : "right");
   const rail = variant === "rail";
   if (slots) return <SlotRosterPicker id={id} panel={panel} ownership={ownership} side={side} slots={slots} pickerId={pickerId} rail={rail} runtime={runtime} />;
   return (
     <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
       <div className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
-        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership}<span className="sr-only"> · {label ?? (side === "attacker" ? "Left Pokémon" : "Right Pokémon")}</span></h3>
+        <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership}<span className="sr-only"> · {occupant}</span></h3>
         {panel.teamName && <span className={rail ? "max-w-full wrap-anywhere text-xs text-muted" : "wrap-anywhere text-xs text-muted"}>{panel.teamName}</span>}
       </div>
       {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
       {panel.status === "ready" && (
-        <ul aria-label={positionLabel ? `${ownership} roster for ${position}` : `${ownership} ${position} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
+        <ul aria-label={`${ownership} roster for ${occupant}`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
             const spriteName = rosterSpriteName(choice, species, runtime);
@@ -202,7 +213,7 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
                   data-roster-choice={choice.key}
                   disabled={!choice.source || !!unavailable}
                   aria-pressed={selected}
-                  aria-label={positionLabel ? `Use ${choice.name} as ${position} Pokémon from ${ownership.toLowerCase()}` : `Use ${choice.name} as the ${position} Pokémon from ${ownership.toLowerCase()}`}
+                  aria-label={selected ? `${choice.name} from ${ownership.toLowerCase()}, active` : `Use ${choice.name} from ${ownership.toLowerCase()} in place of ${occupant}`}
                   aria-describedby={reason ? `${id}-reason-${index}` : undefined}
                   onClick={() => onSelect(choice)}
                   className={`${rail ? "flex items-start gap-3 " : ""}min-h-11 w-full rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
@@ -245,7 +256,10 @@ function ChoiceDetails({ choice, species }: { choice: RosterChoice; species: Cha
   );
 }
 
-/** The 2v2 roster: each choice's name, types and sprite once, then a Left and a Right button for its side's two slots. */
+/**
+ * The 2v2 roster: each choice's name, types and sprite once, then a button for each of its side's two slots, named by the
+ * card it replaces ("Replace Garchomp (1)"), or "Active" on the slot that holds it.
+ */
 function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, runtime }: {
   id: string;
   panel: RosterPanel;
@@ -280,7 +294,9 @@ function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, r
                     <ChoiceDetails choice={choice} species={species} />
                   </div>
                 </div>
-                <div role="group" aria-label={`${choice.name} slots`} className="mt-2 grid grid-cols-2 gap-1">
+                {/* One button per row: each names the card it replaces, which needs the rail's width. The group is named after its
+                    buttons ("Garchomp from your team"), so it never shares a card's name ("Garchomp"). */}
+                <div role="group" aria-label={`${choice.name} from ${ownership.toLowerCase()}`} className="mt-2 grid grid-cols-1 gap-1">
                   {slots.map((slot) => {
                     const selected = activeIn === slot;
                     const taken = !!activeIn && !selected;
@@ -292,15 +308,15 @@ function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, r
                         data-roster-slot={slot.id}
                         disabled={!choice.source || taken}
                         aria-pressed={selected}
-                        aria-label={`Use ${choice.name} as ${slot.position} Pokémon from ${ownership.toLowerCase()}`}
-                        aria-describedby={reason || taken ? `${id}-reason-${index}` : undefined}
+                        aria-label={selected ? `Active: ${choice.name} from ${ownership.toLowerCase()}` : `Replace ${slot.card} with ${choice.name} from ${ownership.toLowerCase()}`}
+                        aria-describedby={reason ? `${id}-reason-${index}` : undefined}
                         onClick={() => slot.onSelect(choice)}
-                        className={`min-h-11 min-w-0 rounded-lg border px-2 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent text-on-accent" : "border-line bg-bg text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
-                      >{slot.id.endsWith("left") ? "Left" : "Right"}</button>
+                        className={`min-h-11 min-w-0 rounded-lg border px-2 py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${selected ? "border-accent-border bg-accent text-on-accent" : "border-line bg-bg text-text enabled:hover:bg-panel-hover disabled:text-muted"}`}
+                      ><span className="wrap-anywhere text-xs font-semibold">{selected ? "Active" : `Replace ${slot.card}`}</span></button>
                     );
                   })}
                 </div>
-                {(reason || activeIn) && <p id={`${id}-reason-${index}`} className="mt-1 wrap-anywhere text-xs text-muted">{[reason, activeIn && `Active as ${activeIn.position} Pokémon.`].filter(Boolean).join(" ")}</p>}
+                {reason && <p id={`${id}-reason-${index}`} className="mt-1 wrap-anywhere text-xs text-muted">{reason}</p>}
               </li>
             );
           })}

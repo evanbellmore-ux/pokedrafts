@@ -1,7 +1,9 @@
 // Training conformance (SPEC §14.3): tracker parity, belief-battle equivalence under Perfect information, default-settings
 // robustness, the bridge (stats/HP and E2 containment), split weights, choice strings, the effect census, and saved battles
 // (replays re-run hash-equal, Resume equals uninterrupted play: --saved 30 engine battles, 0 skips).
-//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--eot 10] [--seats maxdamage:random] [--containment 2] [--saved 30]
+// --saved-illusion N more saved battles play the Illusion and Transform teams (tests/fixtures/training-teams.ts
+// ILLUSION_TRANSFORM: the AI's Zoroark leads disguised and its Imposter Ditto transforms), which the pools never bring.
+//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--eot 10] [--seats maxdamage:random] [--containment 2] [--saved 30] [--saved-illusion 6]
 // --eot N more battles in each mode play pool E (tests/fixtures/training-teams.ts: E01 against E02), whose moves leave the
 // state the bridge carries into the engine (Ally Switch, Trick, Switcheroo, Substitute, Leech Seed, Salt Cure, Syrup Bomb,
 // Wish, Future Sight, a Binding Band trap...: status-eot EOT-5); every gate counts them.
@@ -30,7 +32,8 @@ import { createTurnServices } from "@/app/(app)/training/sim/services";
 import { compareFacts, oracleFacts, realBattle, trackerFacts } from "./lib/oracle";
 import { createSeat, ensureSeats, isSeatName } from "./lib/providers";
 import { gateTable, parseArgs, pct, writeJson, writeText, type GateRow } from "./lib/report";
-import { parsePools, teamPair } from "./lib/teams";
+import { illusionTransformPair, parsePools, teamPair } from "./lib/teams";
+import { ILLUSION_TRANSFORM } from "@/tests/fixtures/training-teams";
 
 const HIDDEN_VOLATILES = new Set(["confusion", "lockedmove", "partiallytrapped", "twoturnmove", "substitute"]);
 /** SPEC §2.2: a sleep, freeze, confusion, lock, partial trap, charge target or Substitute HP is in play. */
@@ -144,6 +147,8 @@ type Report = {
   census: Record<string, number>;
   splits: { protect3: number; sleep1: number; freeze: number; samples: number } | null;
   saved?: SavedCheck;
+  /** Check 9c: the saved-battle checks on the Illusion and Transform teams. */
+  savedIllusion?: SavedCheck;
   errors: string[];
 };
 
@@ -334,6 +339,13 @@ async function main(): Promise<void> {
     report.saved = saved;
     rows.push({ gate: "9a. Saved battles: re-run log hash, boards and result = original", threshold: `100% of ${savedBattles}`, result: `${saved.replayEqual}/${saved.replays} hash, ${saved.replayBoardsEqual}/${saved.replays} boards and result (${saved.forfeits} forfeited)`, status: saved.replays === savedBattles && saved.replayEqual === saved.replays && saved.replayBoardsEqual === saved.replays ? "pass" : "fail", detail: saved.failures.slice(0, 5).join(" | ") });
     rows.push({ gate: "9b. Resume from the middle autosave = uninterrupted play", threshold: "100% (log, reads, choices, seed, habits)", result: `${saved.resumeEqual}/${saved.resumed}; largest record ${Math.round(saved.maxRecordBytes / 1024)} KB`, status: saved.resumed >= savedBattles - 2 && saved.resumeEqual === saved.resumed ? "pass" : "fail" });
+  }
+  const illusionBattles = Number(args["saved-illusion"] ?? 6);
+  if (illusionBattles > 0) {
+    // Check 9c: the same saved-battle checks with an Illusion and a Transform in play (the occupants and names included).
+    const slice = await runSavedCheck({ battles: illusionBattles, seat: "safe", run: `${run}-saved-illusion`, teams: { pair: () => illusionTransformPair(runtime), aiOrder: ILLUSION_TRANSFORM.aiOrder, aiReplaceWith: ILLUSION_TRANSFORM.aiReplaceWith } });
+    report.savedIllusion = slice;
+    rows.push({ gate: "9c. Saved battles with an Illusion and a Transform: re-run and Resume = original", threshold: `100% of ${illusionBattles}`, result: `${slice.replayEqual}/${slice.replays} hash, ${slice.replayBoardsEqual}/${slice.replays} boards and result; Resume ${slice.resumeEqual}/${slice.resumed}`, status: slice.replays === illusionBattles && slice.replayEqual === slice.replays && slice.replayBoardsEqual === slice.replays && slice.resumed >= illusionBattles - 1 && slice.resumeEqual === slice.resumed ? "pass" : "fail", detail: slice.failures.slice(0, 5).join(" | ") });
   }
   rows.push({ gate: "Runner errors", threshold: "0", result: `${report.errors.length}`, status: report.errors.length === 0 ? "pass" : "fail" });
   const dir = join(process.cwd(), "scripts", ".cache", "training", "conformance");

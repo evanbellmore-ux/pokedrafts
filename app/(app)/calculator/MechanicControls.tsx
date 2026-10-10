@@ -45,9 +45,9 @@ export function TeraTypeField({ build, runtime = championsRuntime, id, issues = 
   );
 }
 
-export default function MechanicControls({ build, runtime = championsRuntime, position, onToggle }: ConfigurationProps & {
-  /** The Pokémon's place in its labels: "left" / "right" in 1v1, "your left" and so on in 2v2. */
-  position: string;
+export default function MechanicControls({ build, runtime = championsRuntime, label: pokemonLabel, onToggle }: ConfigurationProps & {
+  /** The Pokémon's name in its labels, its full name ("Charizard (yours)" in a mirror); defaults to the species name. */
+  label?: string;
   onToggle?: (mechanic: BattleMechanic) => void;
 }) {
   const id = useId();
@@ -55,9 +55,9 @@ export default function MechanicControls({ build, runtime = championsRuntime, po
     ? [{ mechanic: "tera", label: "Tera" }]
     : runtime.profile.dynamax ? [{ mechanic: "dynamax", label: "Dynamax" }, { mechanic: "gigantamax", label: "Gigantamax" }] : [];
   if (!options.length) return null;
-  const name = runtime.speciesById.get(build.speciesId)?.name ?? "Pokémon";
+  const name = pokemonLabel ?? runtime.speciesById.get(build.speciesId)?.name ?? "Pokémon";
   return (
-    <div role="group" aria-label={`${name} ${position} battle mechanics`} className="mt-2 flex min-w-0 flex-wrap gap-1">
+    <div role="group" aria-label={`${name} battle mechanics`} className="mt-2 flex min-w-0 flex-wrap gap-1">
       {options.map(({ mechanic, label }) => {
         const active = build.mechanic === mechanic;
         const reason = !onToggle ? "Battle mechanic controls are unavailable."
@@ -68,7 +68,7 @@ export default function MechanicControls({ build, runtime = championsRuntime, po
         return (
           <div key={mechanic} className="min-w-0">
             <Button size="sm" variant={active ? "primary" : "secondary"} className="min-h-11 px-2 text-xs"
-              data-battle-mechanic={mechanic} aria-label={`${name} ${position} ${label}`} aria-pressed={active}
+              data-battle-mechanic={mechanic} aria-label={`${name} ${label}`} aria-pressed={active}
               disabled={!!reason} aria-describedby={reason ? `${id}-${mechanic}-reason` : undefined}
               onClick={() => onToggle?.(mechanic)}>{label}</Button>
             {reason && <p id={`${id}-${mechanic}-reason`} className="mt-1 max-w-xs wrap-anywhere text-xs text-muted">{reason}</p>}

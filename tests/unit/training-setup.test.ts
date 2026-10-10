@@ -9,6 +9,7 @@ import type { SetupDraft, SuggestionState, TrainingSnapshot } from "@/app/(app)/
 import { createSetupDraft, resolveSetup } from "@/app/(app)/training/setup/team-draft";
 import { initialSnapshot } from "@/app/(app)/training/training-session";
 import { OPPONENT_ROSTER, OWN_ROSTER, rosterState, runtime, suggestedSet } from "../fixtures/training";
+import { positionalIn } from "../fixtures/naming";
 
 // Real SSR and hooks while recording host handlers for DOM-free callback tests (as calculator-doubles-ui.test.ts does).
 const host = vi.hoisted(() => ({ capture: false, buttons: [] as Record<string, unknown>[], inputs: [] as Record<string, unknown>[] }));
@@ -124,6 +125,11 @@ describe("Training setup", () => {
     expect(open.html).toContain(">30% (3 of 10 actions)</dd>");
     const cleared = render(snapshotWith({ habits: { turns: 0, data: emptyHabits() }, trendsOpen: true }));
     expect(cleared.html).toContain(">No turns recorded</p>");
+    // Your aimed moves: at a foe (either one) or at your partner, never a foe by its place.
+    const aimed = render(snapshotWith({ habits: { turns: 5, data: { ...data, aims: { "attack-best": { left: 2, right: 1, ally: 1 } } } }, trendsOpen: true }));
+    expect(aimed.html).toMatch(/A foe<\/dt><dd[^>]*>75% \(3 of 4 aimed moves\)<\/dd>/);
+    expect(aimed.html).toMatch(/Your partner<\/dt><dd[^>]*>25% \(1 of 4 aimed moves\)<\/dd>/);
+    expect(positionalIn(aimed.html)).toEqual([]);
   });
 
   it("keeps Start disabled with facts until Showdown's validator accepts the current key", () => {
@@ -164,6 +170,7 @@ describe("Training setup", () => {
     expect(failed.split("League teams unavailable").length - 1).toBe(2);
     expect(failed).not.toContain("Could not load this league&#x27;s teams.");
     expect(none + empty + noOpponent).not.toMatch(/Choose (a|an|your)\b|manual|Join or create/);
+    expect(positionalIn(none + empty + noOpponent + failed)).toEqual([]);
   });
 
   it("lists local blockers as facts", () => {

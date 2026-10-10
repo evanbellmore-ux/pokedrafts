@@ -1,4 +1,4 @@
-import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { nameText, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
 import type { SideID } from "../model/showdown-types";
 import type { LogLine, LogLineKind } from "../model/view-types";
 
@@ -16,13 +16,41 @@ export type LogFormatter = {
 export type LogFormatterOptions = {
   /** Display name for a Pokémon from its side and Showdown ident name (Nickname Clause: the species name). Default: the name. */
   names?: (side: SideID, name: string) => string;
+  /**
+   * Each team's battle names (both sixes, as the team preview shows them). A name on both teams carries its side word
+   * ("Incineroar (yours)", "Incineroar (opponent's)") in every line. Default: none.
+   */
+  teams?: Record<SideID, readonly string[]>;
 };
 
-/** Engine slot of a Showdown position for the page (you are p1): p2a stands across from your right (SHOWDOWN_POSITION). */
+/** Engine slot of a Showdown position for the page (you are p1): p2a stands across from own-right (SHOWDOWN_POSITION). */
 export const SLOT_OF: Record<string, DoublesSlotId> = { p1a: "own-left", p1b: "own-right", p2a: "opponent-right", p2b: "opponent-left" };
-export const POSITION_WORDS: Record<DoublesSlotId, string> = {
-  "own-left": "your left", "own-right": "your right", "opponent-left": "opponent's left", "opponent-right": "opponent's right",
-};
+/** The Showdown position of an engine slot (SLOT_OF reversed). */
+export const POSITION_OF: Record<DoublesSlotId, string> = { "own-left": "p1a", "own-right": "p1b", "opponent-right": "p2a", "opponent-left": "p2b" };
+
+/** "yours" / "opponent's" for a battle name both teams have (`teams`), else null: fixed for the whole battle. */
+export function teamSideWord(teams: Record<SideID, readonly string[]> | undefined, side: SideID, name: string): NameParts["side"] {
+  if (!teams || !teams.p1.includes(name) || !teams.p2.includes(name)) return null;
+  return side === "p1" ? "yours" : "opponent's";
+}
+/**
+ * The number of a Pokémon at `position` ("p2a") when the other position on its side shows the same name: its slot's place in
+ * the side's slot order (own-left / opponent-left 1, the right slots 2; p2b is opponent-left, so 1). Else null.
+ */
+export function positionNumber(position: string | null, name: string, nameAt: (position: string) => string | null): 1 | 2 | null {
+  const slot = position ? SLOT_OF[position] : undefined;
+  if (!position || !slot) return null;
+  const other = `${position.slice(0, 2)}${position[2] === "a" ? "b" : "a"}`;
+  return nameAt(other) === name ? (slot.endsWith("left") ? 1 : 2) : null;
+}
+/**
+ * The same Pokémon inside parentheses, so parentheses never nest: "Arcanine", "the opponent's Arcanine", "your Arcanine",
+ * "Garchomp 2", "the opponent's Garchomp 1".
+ */
+export function innerName(parts: NameParts): string {
+  const owner = parts.side === "yours" ? "your " : parts.side === "opponent's" ? "the opponent's " : "";
+  return `${owner}${parts.base}${parts.number ? ` ${parts.number}` : ""}`;
+}
 export const STAT_NAMES: Record<string, string> = {
   atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed", accuracy: "Accuracy", evasion: "Evasion",
 };
@@ -125,18 +153,33 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
     if (known) return { ...known, slot: parsed.position ? slot : known.slot };
     return { side: parsed.side, name: parsed.name, slot };
   }
-  function nameOf(mon: Mon) {
+  function nameOf(mon: Pick<Mon, "side" | "name">) {
     return display(mon.side, mon.name);
   }
-  /** "Garchomp (your left)"; the name alone off the field. */
+  /** The name shown at a position now ("p2a"), or null when no one stands there. */
+  function nameAt(position: string) {
+    const key = positions.get(position);
+    const mon = key ? mons.get(key) : undefined;
+    return mon ? nameOf(mon) : null;
+  }
+  /**
+   * A Pokémon's name parts: its display name, its team's side word when both teams have that name, and its number when the
+   * other position on its side shows the same name (an Illusion), from `position` (the line's own ident; an Illusion twin
+   * shares one entry in `mons`, so its slot there is only the last one written).
+   */
+  function partsOf(mon: Pick<Mon, "side" | "name">, position: string | null): NameParts {
+    const base = nameOf(mon);
+    return { base, side: teamSideWord(options.teams, mon.side, base), number: positionNumber(position, base, nameAt) };
+  }
+  /** "Garchomp", "Garchomp (yours)", "Garchomp (2)"; inner: the same inside parentheses ("the opponent's Arcanine"). */
   function who(ident: string | undefined): { text: string; inner: string; slot: DoublesSlotId | null } {
     const mon = monOf(ident);
     if (!mon) return { text: ident?.trim() || "Unknown", inner: ident?.trim() || "Unknown", slot: null };
-    const name = nameOf(mon);
-    // inner: the same Pokémon inside parentheses ("Intimidate (Arcanine, opponent's left)").
-    return mon.slot
-      ? { text: `${name} (${POSITION_WORDS[mon.slot]})`, inner: `${name}, ${POSITION_WORDS[mon.slot]}`, slot: mon.slot }
-      : { text: name, inner: name, slot: null };
+    const parsed = parseIdent(ident);
+    // A line naming it without a position ("p2: Absol") numbers it by the slot it stands in, if it still stands there.
+    const fallback = !parsed?.position && mon.slot && parsed && positions.get(POSITION_OF[mon.slot]) === parsed.key ? POSITION_OF[mon.slot] : null;
+    const parts = partsOf(mon, mon.slot ? parsed?.position ?? fallback : null);
+    return { text: nameText(parts), inner: innerName(parts), slot: mon.slot };
   }
   function sideWords(sideIdent: string | undefined) {
     return sideIdent?.trim().startsWith("p1") ? "your side" : "the opponent's side";
@@ -154,13 +197,13 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
     const prior = before ? (before.exact ? Math.floor(100 * before.current / before.maximum) : before.current) : 100;
     return `${prior}% → ${after.current}%`;
   }
-  /** " (Life Orb)", " (Rough Skin, Garchomp)", " (Sandstorm)", " (burn)" from the line's [from]/[of]. */
+  /** " (Life Orb)", " (Rough Skin, Garchomp)", " (Rough Skin, the opponent's Garchomp)", " (Sandstorm)", " (burn)" from the line's [from]/[of]. */
   function sourceText(args: readonly string[]) {
     const from = tag(args, "from");
     if (!from) return "";
     const name = DAMAGE_SOURCES[idOf(from)] ?? effectName(from);
     const of = tag(args, "of");
-    return of ? ` (${name}, ${nameOf(monOf(of) ?? { side: "p1", name: of, slot: null })})` : ` (${name})`;
+    return of ? ` (${name}, ${who(of).inner})` : ` (${name})`;
   }
   function setHP(ident: string | undefined, token: string | undefined): { before: HP | undefined; after: HP } | null {
     const parsed = parseIdent(ident);
@@ -221,17 +264,18 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
         const leaving = command === "replace" ? null : positions.get(parsed.position);
         const old = leaving && leaving !== parsed.key ? mons.get(leaving) : null;
         const oldFainted = old ? hp.get(leaving!)?.current === 0 : false;
+        // The Pokémon leaving is named as it stood there, before the switch.
+        const oldName = old ? nameText(partsOf(old, parsed.position)) : null;
         placeAt(parsed.position, parsed.key, parsed.side, parsed.name);
         const value = parseHP(args[3]);
         if (value) setHP(args[1], args[3]);
-        const name = display(parsed.side, parsed.name);
-        const where = POSITION_WORDS[slot];
+        const name = nameText(partsOf(parsed, parsed.position));
         const from = tag(args, "from");
         const reason = from ? ` (${effectName(from)})` : "";
-        if (command === "replace") add(`Illusion ended: ${name} (${where}).`, "form", [slot]);
-        else if (command === "drag") add(`${name} (${where}) was dragged in${reason}.`, "switch", [slot]);
-        else if (old && !oldFainted && started) add(`${name} switched in for ${display(old.side, old.name)} (${where})${reason}.`, "switch", [slot]);
-        else add(`${name} (${where}) sent out${reason}.`, "switch", [slot]);
+        if (command === "replace") add(`Illusion ended: ${name}.`, "form", [slot]);
+        else if (command === "drag") add(`${name} was dragged in${reason}.`, "switch", [slot]);
+        else if (old && !oldFainted && started) add(`${name} switched in for ${oldName}${reason}.`, "switch", [slot]);
+        else add(`${name} sent out${reason}.`, "switch", [slot]);
         return;
       }
       case "swap": {
@@ -239,16 +283,18 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
         if (!subject?.position) return;
         const target = `${subject.side}${Number(args[2]) === 0 ? "a" : "b"}`;
         const other = positions.get(target);
+        // Both are named as they stood before the swap (their numbers, for look-alikes, follow the slot afterwards).
         const mover = who(args[1]);
+        const otherMon = other ? mons.get(other) : undefined;
+        const otherText = other ? nameText(partsOf(otherMon ?? { side: subject.side, name: other }, target)) : null;
         if (other && other !== subject.key) {
-          const otherMon = mons.get(other);
           positions.set(subject.position, other);
           if (otherMon) mons.set(other, { ...otherMon, slot: SLOT_OF[subject.position] });
         } else positions.delete(subject.position);
         positions.set(target, subject.key);
         mons.set(subject.key, { side: subject.side, name: subject.name, slot: SLOT_OF[target] });
-        const otherText = other ? display(mons.get(other)?.side ?? subject.side, mons.get(other)?.name ?? other) : null;
-        add(otherText ? `${mover.text} and ${otherText} switched places.` : `${mover.text} moved to ${POSITION_WORDS[SLOT_OF[target]]}.`, "info", [mover.slot, SLOT_OF[target]]);
+        // Without a partner (unreachable: Ally Switch fails alone) it only moved.
+        add(otherText ? `${mover.text} and ${otherText} switched places.` : `${mover.text} moved.`, "info", [mover.slot, SLOT_OF[target]]);
         return;
       }
       case "move": {
@@ -450,7 +496,7 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
         if (!id || id === "none") { add("The weather ended.", "field"); return; }
         const from = tag(args, "from");
         const of = tag(args, "of");
-        const source = [from ? effectName(from) : null, of ? nameOfIdent(of) : null].filter(Boolean).join(", ");
+        const source = [from ? effectName(from) : null, of ? who(of).inner : null].filter(Boolean).join(", ");
         add(`${WEATHER_NAMES[id] ?? args[1]} started${source ? ` (${source})` : ""}.`, "field", [of ? who(of).slot : null]);
         return;
       }
@@ -458,7 +504,7 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
         const name = effectName(args[1] ?? "");
         const from = tag(args, "from");
         const of = tag(args, "of");
-        const source = [from ? effectName(from) : null, of ? nameOfIdent(of) : null].filter(Boolean).join(", ");
+        const source = [from ? effectName(from) : null, of ? who(of).inner : null].filter(Boolean).join(", ");
         add(command === "-fieldstart" ? `${name} started${source ? ` (${source})` : ""}.` : `${name} ended.`, "field", [of ? who(of).slot : null]);
         return;
       }
@@ -532,7 +578,8 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
       case "-mega": add(`${who(args[1]).text} Mega Evolved${args[3] ? ` (${args[3]})` : ""}.`, "form", [who(args[1]).slot]); return;
       case "-primal": add(`${who(args[1]).text} underwent Primal Reversion.`, "form", [who(args[1]).slot]); return;
       case "-formechange": add(`${who(args[1]).text} changed form: ${args[2]}.`, "form", [who(args[1]).slot]); return;
-      case "-transform": add(`${who(args[1]).text} transformed into ${who(args[2]).text}.`, "form", [who(args[1]).slot, who(args[2]).slot]); return;
+      // With its source when one is shown ("[from] ability: Imposter"), as the board's card then shows that ability.
+      case "-transform": add(`${who(args[1]).text} transformed into ${who(args[2]).text}${sourceText(args)}.`, "form", [who(args[1]).slot, who(args[2]).slot]); return;
       case "-terastallize": add(`${who(args[1]).text} Terastallized: ${args[2]}.`, "form", [who(args[1]).slot]); return;
       case "win": add(args[1] === "You" ? "You won." : "The AI won.", "result"); return;
       case "tie": add("Tie.", "result"); return;
@@ -541,15 +588,16 @@ export function createLogFormatter(options: LogFormatterOptions = {}): LogFormat
         add(`${command}: ${args.slice(1).filter(Boolean).join(" · ")}`, "info");
     }
   }
+  /** The Pokémon standing in `slot` by name ("—" when no one does). */
   function whoAt(slot: DoublesSlotId) {
-    const position = Object.entries(SLOT_OF).find(([, each]) => each === slot)?.[0];
-    const key = position ? positions.get(position) : undefined;
+    const position = POSITION_OF[slot];
+    const key = positions.get(position);
     const mon = key ? mons.get(key) : undefined;
-    return mon ? `${nameOf(mon)} (${POSITION_WORDS[slot]})` : POSITION_WORDS[slot];
+    return mon ? nameText(partsOf(mon, position)) : "—";
   }
+  /** A list entry or subject by name (Intimidate's targets: "Incineroar (yours) Attack −1"). */
   function nameOfIdent(ident: string) {
-    const mon = monOf(ident);
-    return mon ? nameOf(mon) : ident;
+    return who(ident).text;
   }
 
   return {

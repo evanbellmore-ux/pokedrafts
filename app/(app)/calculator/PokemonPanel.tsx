@@ -91,8 +91,8 @@ type Props = {
   magicRoom?: boolean;
   /** The form's required move and its current quick moves, to fix a prepared-move issue. */
   requiredMove?: { name: string; slots: readonly string[]; onEquip: (slotIndex: number) => void };
-  /** The Pokémon's place in its labels ("your left" in 2v2); defaults to the side's "left" / "right". */
-  position?: string;
+  /** The Pokémon's full name in its labels ("Charizard", a mirror's "Charizard (yours)"); defaults to the species name. */
+  label?: string;
   /** The Intimidate button's text ("Apply Intimidate to Blastoise"); "Apply Intimidate" by default. */
   intimidateLabel?: string;
   /** A fact shown instead of the ability-condition checkbox (2v2 Plus / Minus, which the ally's ability decides). */
@@ -107,11 +107,11 @@ type Props = {
  * One Pokémon's build editor, in its Build settings under its summary card. That card already
  * shows the species, types, Mimicry, Tera type, retained configuration and Change Pokémon.
  */
-export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, position: positionLabel, intimidateLabel, abilityActivationFact, tracedUnsetLabel, allowFainted = false }: Props) {
+export default function PokemonPanel({ side, build, issues, onChange, hpInput, onHPChange, roster, editorRevision = 0, runtime = championsRuntime, gameType = "Doubles", roomItemChoice = null, fieldItemChoice = null, magicRoom = true, requiredMove, onApplyIntimidate, intimidateResult, label, intimidateLabel, abilityActivationFact, tracedUnsetLabel, allowFainted = false }: Props) {
   const id = useId();
   const prefix = `${side}-${id}`;
-  const position = positionLabel ?? (side === "attacker" ? "left" : "right");
   const species = runtime.speciesById.get(build.speciesId);
+  const name = label ?? species?.name ?? build.speciesId;
   const stats = getBuildStats(build, runtime);
   const itemOptions = useMemo(() => [...runtime.catalog.items].sort((a, b) => a.name.localeCompare(b.name, "en")), [runtime]);
   const traceOptions = useMemo(() => runtime.catalog.abilities.filter((ability) => !NO_TRACE_ABILITIES.has(ability.id) && !ability.unsupported.length)
@@ -273,7 +273,8 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
 
       {build.abilityId === "intimidate" && onApplyIntimidate && (
         <div>
-          <Button size="sm" variant="secondary" className="min-h-11" onClick={onApplyIntimidate}>
+          {/* The label names a Pokémon ("Apply Intimidate to Dudunsparce-Three-Segment (opponent's, 2)"), so it wraps (over Button's nowrap). */}
+          <Button size="sm" variant="secondary" className="min-h-11 max-w-full whitespace-normal! wrap-anywhere" onClick={onApplyIntimidate}>
             {intimidateLabel ?? "Apply Intimidate"}
           </Button>
           <p role="status" className="mt-1 text-xs text-text">{intimidateResult}</p>
@@ -296,7 +297,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
           </label>
         )}
         <TableWrap>
-          <table className={`${styles.statTable} w-full ${build.game === "champions" ? "min-w-[15rem]" : innateIVs ? "min-w-[19.5rem]" : "min-w-[18rem]"} text-left text-sm`} aria-label={`${position[0].toUpperCase()}${position.slice(1)} Pokémon stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
+          <table className={`${styles.statTable} w-full ${build.game === "champions" ? "min-w-[15rem]" : innateIVs ? "min-w-[19.5rem]" : "min-w-[18rem]"} text-left text-sm`} aria-label={`${name} stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
             <thead className="bg-panel-hover text-xs text-muted">
               <tr>
                 <th scope="col" className={cell}>Stat</th>
@@ -313,7 +314,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                 <tr key={stat} className="border-t border-line">
                   <th scope="row" className={`${cell} text-xs font-medium text-text`}>{STAT_LABELS[stat]}</th>
                   {build.game === "champions" ? <td className={`w-20 ${cell}`}>
-                    <Field id={`${prefix}-points-${stat}`} label={`${position} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
+                    <Field id={`${prefix}-points-${stat}`} label={`${name} ${STAT_LABELS[stat]} Stat Points`} hideLabel>
                       <IntegerInput key={editorRevision} value={build.points[stat]}
                         aria-invalid={!!errorFor(`points.${stat}`) || !!errorFor("points") || undefined}
                         aria-describedby={trainingIssues.length ? `${prefix}-points-errors` : undefined}
@@ -321,7 +322,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                     </Field>
                   </td> : <>
                     {(["evs", "ivs", ...(innateIVs ? ["innateIVs"] as const : [])] as const).map((kind) => <td key={kind} className={`w-20 ${cell}`}>
-                      <Field id={`${prefix}-${kind}-${stat}`} label={`${position} ${STAT_LABELS[stat]} ${kind === "evs" ? "EVs" : kind === "ivs" ? "IVs" : "innate IVs"}`} hideLabel>
+                      <Field id={`${prefix}-${kind}-${stat}`} label={`${name} ${STAT_LABELS[stat]} ${kind === "evs" ? "EVs" : kind === "ivs" ? "IVs" : "innate IVs"}`} hideLabel>
                         <IntegerInput key={editorRevision} value={build.native[kind]?.[stat] ?? null}
                           aria-invalid={!!errorFor(`native.${kind}.${stat}`) || !!errorFor(`native.${kind}`) || undefined}
                           aria-describedby={trainingIssues.length ? `${prefix}-points-errors` : undefined}
@@ -333,7 +334,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
                   <td className={`w-20 ${cell}`}>
                     {stat === "hp" ? <span className="text-muted">—</span> : (
                       <>
-                        <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{position} {STAT_LABELS[stat]} stage</label>
+                        <label htmlFor={`${prefix}-stage-${stat}`} className="sr-only">{name} {STAT_LABELS[stat]} stage</label>
                         <select id={`${prefix}-stage-${stat}`} value={build.boosts[stat] ?? ""}
                           aria-invalid={!!errorFor(`boosts.${stat}`) || undefined}
                           aria-describedby={trainingIssues.length ? `${prefix}-points-errors` : undefined}

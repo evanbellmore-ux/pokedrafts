@@ -8,6 +8,7 @@ import { doublesIdentity, useDoublesCalculation, type DoublesEngine } from "@/ap
 import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
 import type { MatchupResult } from "@/app/lib/battle/calculate";
 import type { DoublesSlotId, DoublesTargetRule, DoublesTurnResult } from "@/app/lib/battle/doubles-types";
+import { positionalIn } from "../fixtures/naming";
 
 // The target rules are the engine's (doubles-targets.ts); a fixed table here.
 vi.mock("@/app/lib/battle/doubles-targets", async () => {
@@ -158,7 +159,8 @@ describe("the 1v1 | 2v2 switch", () => {
     expect(count(moves, />Moves<\/h2>/g)).toBe(2);
     const twoMoves = moves.slice(moves.indexOf("data-doubles-moves"));
     expect(twoMoves).toMatch(/<h2 id="[^"]+" class="wrap-anywhere text-xl font-bold text-text">Moves<\/h2>/);
-    expect(moves).toContain("Charizard (your left) → Blastoise (left foe)");
+    expect(moves).toContain("Charizard → Blastoise");
+    expect(positionalIn(html)).toEqual([]);
     // Each view's field summary once.
     expect(count(html, /Doubles · No weather · No terrain/g)).toBe(2);
     assertReferences(html);
@@ -172,14 +174,18 @@ describe("the 1v1 | 2v2 switch", () => {
     const rails = [...html.matchAll(/<aside\b[^>]*data-calculator-roster-rail="([^"]+)"[^>]*>/g)].map(([element, side]) => [side, text(element.match(/aria-label="([^"]+)"/)![1])]);
     expect(rails).toEqual([["own", "Your team shortcuts"], ["opponent", "Opponent's team shortcuts"]]);
     expect(html).not.toMatch(/data-calculator-roster-rail="(?:attacker|defender)"/);
-    const slots = [...html.matchAll(/<button\b[^>]*data-roster-slot="([^"]+)"[^>]*aria-label="([^"]+)"/g)].map(([, slot, label]) => [slot, text(label)]);
-    expect(slots).toEqual([
-      ["own-left", "Use Garchomp as your left Pokémon from your team"], ["own-right", "Use Garchomp as your right Pokémon from your team"],
-      ["own-left", "Use Incineroar as your left Pokémon from your team"], ["own-right", "Use Incineroar as your right Pokémon from your team"],
-      ["opponent-left", "Use Gyarados as opponent's left Pokémon from opponent's team"], ["opponent-right", "Use Gyarados as opponent's right Pokémon from opponent's team"],
-      ["opponent-left", "Use Venusaur as opponent's left Pokémon from opponent's team"], ["opponent-right", "Use Venusaur as opponent's right Pokémon from opponent's team"],
+    const slots = [...html.matchAll(/<button\b[^>]*data-roster-slot="([^"]+)"[^>]*aria-label="([^"]+)"[^>]*><span[^>]*>([^<]*)<\/span><\/button>/g)].map(([, slot, label, visible]) => [slot, text(label), text(visible)]);
+    expect(slots.map(([slot, label]) => [slot, label])).toEqual([
+      ["own-left", "Replace Charizard with Garchomp from your team"], ["own-right", "Replace Venusaur with Garchomp from your team"],
+      ["own-left", "Replace Charizard with Incineroar from your team"], ["own-right", "Replace Venusaur with Incineroar from your team"],
+      ["opponent-left", "Replace Blastoise with Gyarados from opponent's team"], ["opponent-right", "Replace Pikachu with Gyarados from opponent's team"],
+      ["opponent-left", "Replace Blastoise with Venusaur from opponent's team"], ["opponent-right", "Replace Pikachu with Venusaur from opponent's team"],
     ]);
+    // Each button shows "Replace {card}", inside its accessible name.
+    expect(slots.map(([, , visible]) => visible)).toEqual(["Replace Charizard", "Replace Venusaur", "Replace Charizard", "Replace Venusaur", "Replace Blastoise", "Replace Pikachu", "Replace Blastoise", "Replace Pikachu"]);
+    for (const [, label, visible] of slots) expect(label).toContain(visible);
     expect(html).not.toMatch(/data-calculator-roster="(?:own|opponent)-(?:left|right)"/);
+    expect(positionalIn(html)).toEqual([]);
     assertReferences(html);
   });
 

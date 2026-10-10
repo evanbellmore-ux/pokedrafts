@@ -15,14 +15,16 @@ describe("preview order (pinned Showdown `team 3152`: tap order, the first two l
     expect(toggleBrought([2, 0, 4, 1], 3)).toEqual([2, 0, 4, 1]);
     expect(toggleBrought([2, 0, 4, 1], 0)).toEqual([2, 4, 1]);
     expect(swapLeads([2, 0, 4, 1])).toEqual([0, 2, 4, 1]);
-    expect(orderLabel([2, 0, 4, 1], 2)).toBe("Lead · left");
-    expect(orderLabel([2, 0, 4, 1], 0)).toBe("Lead · right");
+    expect(orderLabel([2, 0, 4, 1], 2)).toBe("Lead");
+    expect(orderLabel([2, 0, 4, 1], 0)).toBe("Lead");
     expect(orderLabel([2, 0, 4, 1], 1)).toBe("Back");
     expect(orderLabel([2, 0, 4, 1], 5)).toBe("Not brought");
     expect(buildTeamOrder([2, 0, 4, 1])).toEqual([3, 1, 5, 2]);
     expect(fromTeamOrder([3, 1, 5, 2], 6)).toEqual([2, 0, 4, 1]);
     expect(fromTeamOrder([3, 3, 5, 2], 6)).toEqual([]);
-    expect(previewSummary([2, 0, 4, 1], ["A", "B", "C", "D", "E", "F"])).toBe("Leads: C (left), A (right) · Back: E, B");
+    expect(previewSummary([2, 0, 4, 1], ["A", "B", "C", "D", "E", "F"])).toBe("Leads: C, A · Back: E, B");
+    expect(previewSummary([], ["A", "B", "C", "D", "E", "F"])).toBe("Leads: —, — · Back: —");
+    expect(previewSummary([4], ["A", "B", "C", "D", "E", "F"])).toBe("Leads: E, — · Back: —");
   });
 });
 
@@ -81,11 +83,11 @@ describe("team preview", () => {
     expect(toggles().map((element) => reactProps(element)["aria-pressed"])).toEqual([true, true, true, false, true, false]);
     expect(reactProps(toggles()[3]).disabled).toBe(true);
     expect(document.body.textContent).toContain("Not brought · 4 chosen");
-    expect(document.body.textContent).toContain("Leads: Incineroar (left), Garchomp (right) · Back: Aegislash, Gyarados");
+    expect(document.body.textContent).toContain("Leads: Incineroar, Garchomp · Back: Aegislash, Gyarados");
     const place = document.getElementById(String(reactProps(toggles()[2])["aria-describedby"]));
-    expect(place?.textContent).toBe("Lead · left");
+    expect(place?.textContent).toBe("Lead");
     await press(button("Swap leads"));
-    expect(document.body.textContent).toContain("Leads: Garchomp (left), Incineroar (right)");
+    expect(document.body.textContent).toContain("Leads: Garchomp, Incineroar · Back: Aegislash, Gyarados");
     await press(button("Confirm"));
     expect(onConfirm).toHaveBeenCalledWith({ kind: "team", order: [1, 3, 5, 2] });
   });
@@ -93,7 +95,7 @@ describe("team preview", () => {
   it("restores the last battle's order and shows the sheet as You see allows; nothing to press while starting", async () => {
     await show({ request: { ...PREVIEW_REQUEST, id: 5 }, lastPreview: [3, 1, 5, 2], setup: trainingSetup({ info: { ...DEFAULT_INFO, youSee: CLOSED_TEAM_SHEETS } }) });
     await press(button("Same as last battle"));
-    expect(document.body.textContent).toContain("Leads: Incineroar (left), Garchomp (right) · Back: Aegislash, Gyarados");
+    expect(document.body.textContent).toContain("Leads: Incineroar, Garchomp · Back: Aegislash, Gyarados");
     expect(document.body.textContent).toContain("Items: not shown");
     expect(document.body.textContent).not.toContain("Absolite");
     await show({ request: null });

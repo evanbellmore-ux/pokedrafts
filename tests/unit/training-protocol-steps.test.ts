@@ -175,7 +175,9 @@ describe("turn steps (p1 channel)", () => {
   it("a move's type with its user's ability where you know it: Pixilate after a Mega Evolution, a sheet's, one the channel showed", () => {
     const known = new Map<string, string | null>([["p2:Sylveon", null], ["p1:Gardevoir", "Trace"]]);
     const typed = createMoveType((user) => known.get(`${user.side}:${user.name}`) ?? null);
-    const builder = createStepBuilder({ moveType: typed });
+    // Both teams have Gardevoir (the team preview's sixes): each is named with its team.
+    const teams = { p1: ["Gardevoir", "Garchomp", "Incineroar", "Gyarados", "Aegislash", "Aggron"], p2: ["Gardevoir", "Sylveon", "Absol", "Altaria", "Ampharos", "Annihilape"] };
+    const builder = createStepBuilder({ moveType: typed, teams });
     builder.push([
       "|switch|p1a: Gardevoir|Gardevoir, L50, F|175/175", "|switch|p1b: Garchomp|Garchomp, L50, M|183/183",
       "|switch|p2a: Gardevoir|Gardevoir, L50, F|100/100", "|switch|p2b: Sylveon|Sylveon, L50, F|100/100", "|turn|1",
@@ -190,8 +192,9 @@ describe("turn steps (p1 channel)", () => {
       "|", "|upkeep", "|turn|2",
     ]);
     const moves = builder.turns()[1].filter((step) => step.kind === "move").map((step) => `${step.title} (${step.by}): ${step.type}`);
-    // Two Gardevoir on the field: each named with its position.
-    expect(moves).toEqual(["Hyper Voice (Gardevoir (your left)): Normal", "Hyper Voice (Gardevoir (opponent's right)): Fairy", "Hyper Voice (Sylveon): Normal", "Quick Attack (Sylveon): Fairy"]);
+    expect(moves).toEqual(["Hyper Voice (Gardevoir (yours)): Normal", "Hyper Voice (Gardevoir (opponent's)): Fairy", "Hyper Voice (Sylveon): Normal", "Quick Attack (Sylveon): Fairy"]);
+    expect(builder.turns()[0].map((step) => step.title)).toEqual(["Gardevoir (yours) comes in · Garchomp comes in · Gardevoir (opponent's) comes in · Sylveon comes in"]);
+    expect(builder.turns()[1].find((step) => step.kind === "mega")?.title).toBe("Gardevoir (opponent's) Mega Evolves");
     // A move the -ate abilities leave alone, and Liquid Voice's sound moves.
     expect(typed("Weather Ball", { side: "p2", name: "Sylveon", species: "Sylveon", ability: "Pixilate" })).toBe("Normal");
     expect(typed("Hyper Voice", { side: "p2", name: "Primarina", species: "Primarina", ability: "Liquid Voice" })).toBe("Water");

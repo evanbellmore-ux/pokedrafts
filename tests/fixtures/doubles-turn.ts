@@ -26,7 +26,7 @@ export const EMPTY_PANEL: RosterPanel = { status: "empty", teamName: null, messa
 export const NO_ACTION: DoublesAction = { moveId: null, target: null };
 
 export const RULES = {
-  /** A single target from your left: left foe, right foe, ally. */
+  /** A single target from own-left: opponent-left, opponent-right, own-right. */
   ownSingle: { kind: "choose", options: ["opponent-left", "opponent-right", "own-right"] },
   ownRightSingle: { kind: "choose", options: ["opponent-left", "opponent-right", "own-left"] },
   opponentSingle: { kind: "choose", options: ["own-left", "own-right", "opponent-right"] },
@@ -102,7 +102,7 @@ const FACTS = ["Every move hits; no critical hits; added effects below 100% do n
 const END_OF_TURN: DoublesEndOfTurn = { status: "not-estimated", reason: "Too many cases to follow." };
 
 /**
- * Both of your Pokémon into Blastoise (opponent's left, at 60 / 154): Weather Ball then Sludge Bomb, a 75% KO, so Blastoise
+ * Both of your Pokémon into Blastoise (opponent-left, at 60 / 154): Weather Ball then Sludge Bomb, a 75% KO, so Blastoise
  * faints before its Water Spout 75% of the time. Pikachu protects first.
  */
 export const DOUBLE_TARGET_ACTIONS: Record<DoublesSlotId, DoublesAction> = {
@@ -185,7 +185,7 @@ export const ISSUES: DoublesTurnResult = {
 };
 
 /**
- * Charizard (your left, at 5 / 153) uses Flare Blitz into Blastoise and faints to its recoil; no move reaches Charizard.
+ * Charizard (own-left, at 5 / 153) uses Flare Blitz into Blastoise and faints to its recoil; no move reaches Charizard.
  * The step's fact stands in for the engine's self-effect fact.
  */
 export const SELF_KO_ACTIONS: Partial<Record<DoublesSlotId, DoublesAction>> = { "own-left": { moveId: "flareblitz", target: "opponent-left" } };
@@ -208,7 +208,7 @@ export const SELF_KO: DoublesTurnResult = {
   endOfTurn: END_OF_TURN,
 };
 
-/** Venusaur (your right) uses Bullet Seed into Blastoise with 3 hits chosen in its move settings. */
+/** Venusaur (own-right) uses Bullet Seed into Blastoise with 3 hits chosen in its move settings. */
 export const CHOSEN_HITS_ACTIONS: Partial<Record<DoublesSlotId, DoublesAction>> = { "own-right": { moveId: "bulletseed", target: "opponent-left" } };
 export const CHOSEN_HITS_RULES: Partial<Record<DoublesSlotId, DoublesTargetRule>> = { "own-right": RULES.ownRightSingle };
 export const CHOSEN_HITS_CONTEXTS: Partial<Record<DoublesSlotId, Record<string, MoveContext>>> = { "own-right": { bulletseed: { hits: 3 } } };

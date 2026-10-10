@@ -3,9 +3,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import BattleBoard from "@/app/(app)/training/board/BattleBoard";
 import BenchStrip, { benchFacts } from "@/app/(app)/training/board/BenchStrip";
-import { boardNames, boostLabel, boostText, hpText, hpTone, itemText, remaining } from "@/app/(app)/training/board/board-format";
+import { boardNameParts, boardNames, boostLabel, boostText, hpText, hpTone, itemText, plainName, remaining } from "@/app/(app)/training/board/board-format";
 import { fieldFacts } from "@/app/(app)/training/board/FieldBar";
-import { boardView } from "../fixtures/training";
+import ActionFieldset from "@/app/(app)/training/actions/ActionFieldset";
+import { EMPTY_SELECTION, slotOptions } from "@/app/(app)/training/actions/choice-builder";
+import type { BoardView } from "@/app/(app)/training/model/view-types";
+import { boardView, moveRequest, runtime } from "../fixtures/training";
+import { positionalIn } from "../fixtures/naming";
 
 function card(html: string, slot: string) {
   const start = html.indexOf(`data-training-card="${slot}"`);
@@ -35,9 +39,24 @@ describe("board text", () => {
     expect(fieldFacts(boardView().field)).toEqual(["Snow · 3 turns", "Trick Room · 2 turns", "Tailwind (your side) · 1 turn"]);
     expect(remaining(boardView(), "own")).toBe(3);
     expect(remaining(boardView(), "opponent")).toBe(4);
+  });
+
+  it("names the cards: the team's word for a name on both teams, a number for two of one name on a side", () => {
+    expect(boardNames(boardView())).toEqual({ "own-left": "Garchomp", "own-right": "Gyarados", "opponent-left": "Ampharos", "opponent-right": "Absol-Mega" });
+    // Both teams have Garchomp (BoardView.mirrored): the word on each, wherever the other one is.
+    const garchomp = { ...boardView().active["opponent-left"]!, key: "ai-garchomp", speciesId: "garchomp", name: "Garchomp" };
+    const mirrored = boardView({ mirrored: ["own-garchomp", "ai-garchomp"] });
+    expect(boardNames(mirrored)["own-left"]).toBe("Garchomp (yours)");
+    expect(boardNames({ ...mirrored, active: { ...mirrored.active, "opponent-left": garchomp } })).toMatchObject({ "own-left": "Garchomp (yours)", "opponent-left": "Garchomp (opponent's)" });
+    // Two of one name on one side (an Illusion, or your Ditto transformed into your Garchomp): numbered in slot order.
     const same = boardView();
     same.active["own-right"] = { ...same.active["own-right"]!, name: "Garchomp" };
-    expect(boardNames(same)["own-left"]).toBe("Garchomp (your left)");
+    expect(boardNames(same)).toMatchObject({ "own-left": "Garchomp (1)", "own-right": "Garchomp (2)" });
+    expect(boardNameParts(same)["own-right"]).toEqual({ base: "Garchomp", side: null, number: 2 });
+    expect(plainName(same, "own-right")).toBe("Garchomp (2)");
+    expect(plainName(mirrored, "own-left")).toBe("Garchomp");
+    // An empty slot has no name.
+    expect(boardNames({ ...boardView(), active: { ...boardView().active, "own-right": null } })["own-right"]).toBe("");
   });
 });
 
@@ -84,7 +103,54 @@ describe("battle board", () => {
     const html = renderToStaticMarkup(createElement(BattleBoard, { board }));
     expect(card(html, "own-right")).toContain("Fainted");
     expect(card(html, "own-right")).toContain('aria-valuetext="Fainted"');
+    // A fainted Pokémon keeps its name; an empty slot is no control and has no name.
+    expect(card(html, "own-right")).toContain('aria-label="Gyarados HP"');
+    expect(card(html, "opponent-left")).toContain('aria-label="Empty"');
     expect(card(html, "opponent-left")).toContain("Empty");
+    expect(positionalIn(html)).toEqual([]);
+  });
+
+  it("names cards and meters by Pokémon: the plain name visible, the side word for screen readers, numbers visible", () => {
+    const html = renderToStaticMarkup(createElement(BattleBoard, { board: boardView() }));
+    expect(card(html, "own-left")).toMatch(/<h3[^>]*>Garchomp<\/h3>/);
+    expect(card(html, "own-left")).toContain('aria-label="Garchomp HP"');
+    expect(card(html, "opponent-right")).toContain('aria-label="Absol-Mega HP"');
+    expect(positionalIn(html)).toEqual([]);
+    // A name on both teams: its side word in the heading (screen readers only, the card sits in its side's group) and the meter.
+    const mirrored = renderToStaticMarkup(createElement(BattleBoard, { board: boardView({ mirrored: ["own-garchomp"] }) }));
+    expect(card(mirrored, "own-left")).toMatch(/<h3[^>]*>Garchomp<span class="sr-only"> \(yours\)<\/span><\/h3>/);
+    expect(card(mirrored, "own-left")).toContain('aria-label="Garchomp (yours) HP"');
+  });
+
+  it("a Transform: your Garchomp and the opponent's Ditto shown as Garchomp get their side words on cards, meters and target radios", () => {
+    const base = boardView();
+    // The opponent's Ditto transformed into your Garchomp: its card shows Garchomp (no team has Garchomp twice, nothing mirrored).
+    const ditto = { ...base.active["opponent-left"]!, name: "Garchomp", speciesId: "garchomp" };
+    const board: BoardView = { ...base, active: { ...base.active, "opponent-left": ditto }, team: { ...base.team, opponent: base.team.opponent.map((view) => view.key === ditto.key ? ditto : view) } };
+    const html = renderToStaticMarkup(createElement(BattleBoard, { board }));
+    expect(card(html, "own-left")).toContain('aria-label="Garchomp (yours) HP"');
+    expect(card(html, "opponent-left")).toContain('aria-label="Garchomp (opponent&#x27;s) HP"');
+    expect(card(html, "opponent-left")).toMatch(/<h3[^>]*>Garchomp<span class="sr-only"> \(opponent&#x27;s\)<\/span><\/h3>/);
+    // Gyarados's Waterfall: one radio per Pokémon it can aim at, each named in full and so unique in its group.
+    const options = slotOptions(moveRequest(), board, 1, runtime);
+    const fieldset = renderToStaticMarkup(createElement(ActionFieldset, {
+      options, selection: { ...EMPTY_SELECTION, choice: { kind: "move", moveId: "waterfall" } }, names: boardNames(board), megaBlocked: null, otherSwitch: null, onChange: () => undefined,
+    }));
+    const radios = [...fieldset.matchAll(/data-training-target-option="[^"]+"[^>]*>.*?<span[^>]*>([^<]+)<\/span>/g)].map((match) => match[1].replace(/&#x27;/g, "'"));
+    expect(radios).toEqual(["Garchomp (opponent's)", "Absol-Mega", "Garchomp (yours)"]);
+    expect(fieldset).toContain('<span class="sr-only"> for Gyarados</span>');
+    expect(positionalIn(html + fieldset)).toEqual([]);
+  });
+
+  it("your Ditto transformed into your active Garchomp: the cards and your legends are numbered", () => {
+    const base = boardView();
+    const ditto = { ...base.active["own-right"]!, name: "Garchomp", speciesId: "garchomp" };
+    const board: BoardView = { ...base, active: { ...base.active, "own-right": ditto }, team: { ...base.team, own: [base.team.own[0], ditto, ...base.team.own.slice(2)] } };
+    const html = renderToStaticMarkup(createElement(BattleBoard, { board }));
+    expect(card(html, "own-left")).toMatch(/<h3[^>]*>Garchomp \(1\)<\/h3>/);
+    expect(card(html, "own-right")).toMatch(/<h3[^>]*>Garchomp \(2\)<\/h3>/);
+    expect(card(html, "own-right")).toContain('aria-label="Garchomp (2) HP"');
+    expect([0, 1].map((index) => slotOptions(moveRequest(), board, index as 0 | 1, runtime).name)).toEqual(["Garchomp (1)", "Garchomp (2)"]);
   });
 
   it("lists the benches with how many of the AI's four are not seen, or Brought / Not brought under the test setting", () => {

@@ -50,7 +50,7 @@ function ready(result: DoublesTurnResult): Extract<DoublesTurnResult, { status: 
 }
 const stepFacts = (result: Extract<DoublesTurnResult, { status: "ready" }>, slot: DoublesSlotId) => result.steps.find((step) => step.slot === slot)!.facts.map((fact) => fact.text);
 const T: DoublesSlotId = "opponent-right";
-/** Azelf (fast) Tricks the Pokémon at the opponent's right; Blissey and a slow filler stand by. */
+/** Azelf (fast) Tricks the Pokémon at opponent-right; Blissey and a slow filler stand by. */
 const trick = (game: BattleGame, user: Partial<P>, target: P, other: P = idle(game === "scarlet_violet" ? "torkoal" : "shuckle"), field: Partial<BattleConditions> = {}) =>
   input(game, { "own-left": { id: "azelf", move: "trick", target: T, ...user }, "own-right": idle("blissey"), [T]: target, "opponent-left": other }, field);
 function heldAfter(turn: DoublesTurnInput): Record<DoublesSlotId, string[]> {

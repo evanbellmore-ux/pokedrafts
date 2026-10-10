@@ -6,11 +6,18 @@ import {
   exportFileName, exportText, parseExportText, parseStoredBattle, parseSummary, SAVED_BATTLES_CAP, summaryOf, type SavedBattle,
   type SavedBattleSummary,
 } from "../model/saved-battle";
+import type { LogTurn } from "../model/view-types";
 
 export const BATTLES_DB_PREFIX = "pokedrafts:training:battles:v1:";
 export const STORAGE_FULL = "Storage is full.";
 export const STORAGE_UNAVAILABLE = "Saved battles are unavailable in this browser.";
 export const STORAGE_FAILED = "The saved battles could not be read or written.";
+
+/**
+ * An import check's answer: the fact that refused the file, or null; `{ log }` accepts it with that log instead of the file's
+ * (a battle saved before the current wording takes the re-run's lines and steps).
+ */
+export type ImportCheck = string | null | { log: LogTurn[] };
 
 export class StoreError extends Error {
   constructor(message: string) {
@@ -31,9 +38,9 @@ export interface BattleStore {
   export(id: string): Promise<{ name: string; text: string } | null>;
   /**
    * An export file's text: size, JSON, version and schema checks, then `verify` (the worker's validator and re-run),
-   * then saved under a new id. Throws StoreError with the fact that refused it.
+   * then saved under a new id (with the log `verify` gave, if any). Throws StoreError with the fact that refused it.
    */
-  import(text: string, verify?: (record: SavedBattle) => Promise<string | null>): Promise<SavedBattle>;
+  import(text: string, verify?: (record: SavedBattle) => Promise<ImportCheck>): Promise<SavedBattle>;
 }
 
 /** What a backend stores: each record and its summary (the list reads summaries only). */
@@ -93,9 +100,10 @@ export function createBattleStore(backend: StoreBackend, options: { cap?: number
     async import(text, verify) {
       const parsed = parseExportText(text);
       if (!parsed.ok) throw new StoreError(parsed.error);
-      const refused = verify ? await verify(parsed.record) : null;
-      if (refused) throw new StoreError(refused);
-      const record: SavedBattle = { ...parsed.record, id: newId(), source: "imported", updatedAt: now() };
+      const checked = verify ? await verify(parsed.record) : null;
+      if (typeof checked === "string" && checked) throw new StoreError(checked);
+      const log = checked && typeof checked === "object" ? { log: checked.log } : {};
+      const record: SavedBattle = { ...parsed.record, ...log, id: newId(), source: "imported", updatedAt: now() };
       await save(record);
       return record;
     },

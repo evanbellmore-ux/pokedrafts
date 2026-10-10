@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
-import { actionFact, relativeLabel } from "@/app/(app)/calculator/doubles-format";
-import { SLOT_POSITION, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { actionFact } from "@/app/(app)/calculator/doubles-format";
+import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { boardNames } from "../board/board-format";
 import type { CardTarget } from "../board/BattleCard";
@@ -74,7 +74,7 @@ export function useTurnControls({ runtime, board, phase, ai, onSubmit }: TurnCon
       const pick = aiming >= 0 ? choosing(aiming) : null;
       const eligible = !!pick && pick.targets.includes(target);
       if (!eligible && !chips.length) return null;
-      const label = pick ? `Target ${names[target] || SLOT_POSITION[target]} (${relativeLabel(OWN_SLOTS[aiming], target).toLowerCase()}) with ${options[aiming].name}'s ${pick.option.name}` : "";
+      const label = pick ? `Target ${names[target] || "—"} with ${options[aiming].name}'s ${pick.option.name}` : "";
       return {
         eligible, selected: eligible && selections.slots[aiming].target === target, label, chips,
         onPick: () => setState((current) => {
@@ -108,9 +108,9 @@ export function useTurnControls({ runtime, board, phase, ai, onSubmit }: TurnCon
         const option = options[index];
         if (index >= move.active.length || option.passes) return null;
         const other = selections.slots[index === 0 ? 1 : 0];
-        const otherSwitch = other.choice?.kind === "switch" ? { key: other.choice.key, position: SLOT_POSITION[OWN_SLOTS[index === 0 ? 1 : 0]] } : null;
+        const otherSwitch = other.choice?.kind === "switch" ? { key: other.choice.key, name: options[index === 0 ? 1 : 0].name } : null;
         return (
-          <ActionFieldset options={option} selection={selections.slots[index]} names={names} megaBlocked={megaBlockedBy(selections.slots, index as 0 | 1)}
+          <ActionFieldset options={option} selection={selections.slots[index]} names={names} megaBlocked={megaBlockedBy(selections.slots, index as 0 | 1, options.map((each) => each.name))}
             otherSwitch={otherSwitch} onChange={(selection) => setSlot(index, selection)} />
         );
       },
@@ -133,7 +133,7 @@ export function useTurnControls({ runtime, board, phase, ai, onSubmit }: TurnCon
     const summary = "action" in built ? slots.flatMap((slot) => {
       const each = built.action[slot.slot];
       if (!slot.flagged || each?.kind !== "switch") return [];
-      return [`${slot.options.find((option) => option.key === each.to)?.name ?? each.to} (${SLOT_POSITION[slot.slot]})`];
+      return [`${slot.options.find((option) => option.key === each.to)?.name ?? each.to} replaces ${slot.name}`];
     }) : [];
     return {
       formProps: {
@@ -149,7 +149,7 @@ export function useTurnControls({ runtime, board, phase, ai, onSubmit }: TurnCon
         const otherKey = other ? selections.picks[other.index] : null;
         return (
           <ForcedSwitchFieldset replace={each} midTurn={replace.midTurn} pick={selections.picks[each.index]}
-            otherPick={other && otherKey ? { key: otherKey, slot: other.slot } : null}
+            otherPick={other && otherKey ? { key: otherKey, name: other.name } : null}
             exhausted={flaggedOrder.indexOf(each.index) >= bench} onPick={(key) => setPick(each.index, key)} />
         );
       },

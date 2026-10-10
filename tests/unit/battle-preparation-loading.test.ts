@@ -67,7 +67,7 @@ describe("engine-independent calculator preparation", () => {
     const build = model.createBuild("charizard", selected);
     build.configuration = { teraType: "Fighting" };
     expect(model.validateBuild(build, selected)).toEqual([]);
-    const html = renderToStaticMarkup(createElement(controls.default, { build, runtime: selected, position: "left", onToggle: vi.fn() }));
+    const html = renderToStaticMarkup(createElement(controls.default, { build, runtime: selected, onToggle: vi.fn() }));
     expect(html).toContain('data-battle-mechanic="tera"');
     expect(html).toContain('aria-pressed="false"');
     expect(html).not.toContain("disabled=");
@@ -85,7 +85,7 @@ describe("engine-independent calculator preparation", () => {
     const selected = runtime.createBattleRuntime(catalog, "5".repeat(64));
     const build = model.createBuild("charizard", selected);
     build.configuration = { gigantamax: true, dynamaxLevel: 0 };
-    const html = renderToStaticMarkup(createElement(controls.default, { build, runtime: selected, position: "right", onToggle: vi.fn() }));
+    const html = renderToStaticMarkup(createElement(controls.default, { build, runtime: selected, onToggle: vi.fn() }));
     expect(html).toContain('data-battle-mechanic="dynamax"');
     expect(html).toContain('data-battle-mechanic="gigantamax"');
     expect(html).toContain("Gigantamax factor requires Gigantamax");

@@ -7,7 +7,7 @@ import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 import { PointedText, type DoublesCardView } from "./DoublesCard";
 import {
-  actionTargets, actsWithoutMoves, endNotEstimatedText, factLine, hitLine, issueLines, listedHits, orderFact, positionedName, residualLine, rollDescription, startRowLine,
+  actionTargets, actsWithoutMoves, endNotEstimatedText, factLine, hitLine, issueLines, listedHits, orderFact, residualLine, rollDescription, startRowLine,
   stepHeading, stepMoveName, substituteLine, turnSummary, type DoublesNames,
 } from "./doubles-format";
 import type { DamageRollMode } from "./hp-preview";
@@ -97,13 +97,14 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
                 <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-2 gap-y-1">
                   <p className="min-w-0 flex-1 wrap-anywhere text-sm font-semibold text-text"><PointedText text={stepHeading(index + 1, step, names, runtime, stepTargets(step, view, names))} /></p>
                   <Button size="sm" variant="secondary" className="min-h-11 shrink-0 px-2" aria-controls={movesControl} onClick={() => onShowStep(getMoveOwner(view.slot), step.moveId)}>
-                    <span className="text-xs">Show move<span className="sr-only"> {move}, {positionedName(names, step.slot)}</span></span>
+                    <span className="text-xs">Show move<span className="sr-only"> {move}, {names[step.slot]}</span></span>
                   </Button>
                 </div>
                 {order && <p className="mt-0.5 text-xs tabular-nums text-muted">{order}</p>}
                 {[...step.skipped, ...step.facts].map((fact, factIndex) => <p key={factIndex} className="mt-0.5 wrap-anywhere text-xs text-muted">{factLine(fact)}</p>)}
                 {hits.length > 0 && (
-                  <ul aria-label={`${move} hits`} className="mt-1 space-y-1">
+                  // Named after the move and its user: two Pokémon can use one move in a turn.
+                  <ul aria-label={`${move} hits from ${names[step.slot]}`} className="mt-1 space-y-1">
                     {hits.map((hit) => {
                       // A calculated hit that also met a Substitute: the Substitute's line, then the hits that reached the Pokémon.
                       const sub = hit.kind === "calculated" ? substituteLine(hit, names) : null;

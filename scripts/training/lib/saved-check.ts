@@ -1,15 +1,16 @@
 // Saved battles in Node (conformance gate 9, the leak test's replays, tests/unit/training-saved-worker.test.ts): drive the
 // real worker message loop with a seeded random p1, keep every checkpoint, then
-//   - replay: re-run the finished battle from its seed and choice lines; the re-run log must hash as the original, its
-//     result must be the battle's, and its boards (each turn's start, the end) must equal the boards the battle posted then;
+//   - replay: re-run the finished battle from its seed and choice lines; the re-run log must hash as the original (its text
+//     and its wording-free shape), its result must be the battle's, and its boards (each turn's start, the end) must equal the
+//     boards the battle posted then;
 //   - resume: a fresh worker resumes the middle checkpoint and plays on with the same p1; the whole log (lines, steps,
-//     actions, reads), the choice lines, the seed and the habits must equal the uninterrupted battle's.
+//     actions, reads, occupants, names), the choice lines, the seed and the habits must equal the uninterrupted battle's.
 // Decision times are fixed (now = 0) so the reads' elapsed times compare equal; the AI has no wall valve (deadlineMs null).
 import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
 import type { DecisionProvider, HabitsRecord } from "@/app/(app)/training/model/decision";
 import { DEFAULT_INFO, CLOSED_TEAM_SHEETS, PERFECT_INFORMATION, type InfoSettings } from "@/app/(app)/training/model/info";
 import { createRandom, seedHex } from "@/app/(app)/training/model/random";
-import { canonicalJson, logHash } from "@/app/(app)/training/model/saved-battle";
+import { canonicalJson, logHash, logShapeHash } from "@/app/(app)/training/model/saved-battle";
 import type { ShowdownRequest } from "@/app/(app)/training/model/showdown-types";
 import type { BoardView, JointAction, LogTurn, PlayerChoice, TrainingRequest, TrainingSetup, TrainingTeam } from "@/app/(app)/training/model/view-types";
 import type { FromWorker, ToWorker } from "@/app/(app)/training/model/worker-protocol";
@@ -17,8 +18,8 @@ import { identName, legalJointActions, type MemberKeys } from "@/app/(app)/train
 import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
 import { createMemorySealer, type Sealer } from "@/app/(app)/training/worker/sealer";
 import { createTrainingWorker } from "@/app/(app)/training/worker/worker-handler";
-import { createSeat, type SeatName } from "./providers";
-import { parsePools, teamPair } from "./teams";
+import { createSeat, forcedProvider, type ForcedChoices, type SeatName } from "./providers";
+import { parsePools, teamPair, type TeamPair } from "./teams";
 
 export type BattleMessage = Extract<FromWorker, { type: "battle" }>;
 export type Checkpointed = { turn: number; sealed: string };
@@ -62,6 +63,8 @@ export type DriveOptions = {
   forfeitTurn?: number | null;
   /** Called with every posted message (the leak test scans them). */
   onMessage?(message: FromWorker, log: ReadonlyMap<number, LogTurn>): void;
+  /** The AI's forced choices (the Illusion and Transform slice). */
+  forced?: ForcedChoices;
 };
 
 /** Starts (or, with `resume`, resumes) one battle in a fresh worker and plays it to the end. */
@@ -73,7 +76,7 @@ export async function playBattle(options: DriveOptions, resume?: { sealed: strin
   let hexes = 0;
   const worker = createTrainingWorker({
     post: (message) => { inbox.push(structuredClone(message)); wake?.(); },
-    createProvider: (habits: HabitsRecord | null): DecisionProvider => createSeat(options.seat, runtime, habits).provider,
+    createProvider: (habits: HabitsRecord | null): DecisionProvider => forcedProvider(createSeat(options.seat, runtime, habits).provider, options.forced),
     now: () => 0,
     randomHex: () => seedHex(run, index, "worker", hexes++),
     deadlineMs: null,
@@ -177,17 +180,21 @@ export type SavedCheck = {
  * `battles` seeded battles (info settings rotate: open both ways, You see closed, AI knows closed with You see perfect; every
  * fifth forfeits on turn 3 once the AI has locked in).
  */
-export async function runSavedCheck(options: { battles: number; seat: SeatName; pools?: string; run?: string; onProgress?(index: number): void }): Promise<SavedCheck> {
+export async function runSavedCheck(options: {
+  battles: number; seat: SeatName; pools?: string; run?: string; onProgress?(index: number): void;
+  /** Fixed teams for every battle (the Illusion and Transform slice) in place of pairs from the pools, and the AI's forced choices. */
+  teams?: { pair: () => TeamPair } & ForcedChoices;
+}): Promise<SavedCheck> {
   const run = options.run ?? "saved";
   const pools = parsePools(options.pools ?? "S,V,A");
   const sealer = createMemorySealer();
   const out: SavedCheck = { battles: 0, ended: 0, replays: 0, replayEqual: 0, resumed: 0, resumeEqual: 0, forfeits: 0, replayBoardsEqual: 0, maxRecordBytes: 0, failures: [] };
   for (let index = 0; index < options.battles; index++) {
     options.onProgress?.(index);
-    const pair = teamPair(run, index, pools, runtime);
+    const pair = options.teams ? options.teams.pair() : teamPair(run, index, pools, runtime);
     const setup: TrainingSetup = { own: pair.p1.team, opponent: pair.p2.team, difficulty: index % 2 ? "reads" : "safe", showRead: true, info: INFOS[index % INFOS.length] };
     const forfeitTurn = index % 5 === 4 ? 3 : null;
-    const base: DriveOptions = { run, index, setup, seat: options.seat, sealer, forfeitTurn };
+    const base: DriveOptions = { run, index, setup, seat: options.seat, sealer, forfeitTurn, forced: options.teams };
     out.battles++;
     const a = await playBattle(base);
     out.failures.push(...a.errors);
@@ -201,6 +208,7 @@ export async function runSavedCheck(options: { battles: number; seat: SeatName; 
     out.replays++;
     if (!replay.ok) out.failures.push(`#${index}: replay error ${replay.error}`);
     else if (replay.message.hash !== logHash(finalLog)) out.failures.push(`#${index}: replay hash differs`);
+    else if (replay.message.shape !== logShapeHash(finalLog)) out.failures.push(`#${index}: replay shape differs`);
     else {
       out.replayEqual++;
       const differs = replayBoardDifference(a, replay.message);
@@ -245,7 +253,7 @@ export function compareRuns(a: Played, b: Played): string | null {
   const logA = sorted(a.log), logB = sorted(b.log);
   if (logA.length !== logB.length) return `log turns ${logA.length} vs ${logB.length}`;
   for (let i = 0; i < logA.length; i++) {
-    for (const part of ["lines", "steps", "actions", "read"] as const) {
+    for (const part of ["lines", "steps", "actions", "read", "occupants", "names"] as const) {
       if (canonicalJson(logA[i][part]) !== canonicalJson(logB[i][part])) return `turn ${logA[i].turn} ${part} differ`;
     }
   }

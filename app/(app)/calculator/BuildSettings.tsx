@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BuildIssue } from "@/app/lib/battle/types";
 import SettingsDisclosure from "./SettingsDisclosure";
-import type { BattleSide, PreparedMatchup } from "./roster-prep";
+import { matchupNames, type BattleSide, type PreparedMatchup } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 /** One side's collapsible Build settings. */
@@ -30,12 +30,14 @@ type Props = {
  * summary, so a pinned summary never holds an editor.
  */
 export default function BuildSettingsSections({ attacker, defender, issues, builds, renderEditor, runtime = championsRuntime }: Props) {
+  // The full names: a mirror's carry their teams, so the two owners differ ("Charizard (yours)", "Charizard (opponent's)").
+  const names = matchupNames({ attacker, defender, runtime });
   return (
     <>
       {(["attacker", "defender"] as const).map((side) => {
         const slot = side === "attacker" ? attacker : defender;
         const { id, open, onToggle } = builds[side];
-        const name = runtime.speciesById.get(slot.build.speciesId)?.name ?? "Pokémon";
+        const name = names[side];
         return (
           // Keyed like the builds, so unfinished editor text also survives a Swap.
           <SettingsDisclosure
@@ -48,7 +50,7 @@ export default function BuildSettingsSections({ attacker, defender, issues, buil
             issueCount={issues[side].length}
             className={styles.buildSection}
             label={<>
-              <span><span className="sr-only">{name} {side === "attacker" ? "left" : "right"} </span>Build settings</span>
+              <span><span className="sr-only">{name} </span>Build settings</span>
               <span aria-hidden="true" className={`${styles.buildOwner} min-w-0 wrap-anywhere font-normal text-muted`}>{name}</span>
             </>}
           >

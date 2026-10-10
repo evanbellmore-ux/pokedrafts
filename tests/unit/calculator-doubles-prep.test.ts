@@ -299,7 +299,7 @@ describe("builds through the 1v1 transitions", () => {
     expect(updateDoublesHP(state, 999, "1")).toBe(state);
   });
 
-  it("clears the action, contexts and Charge when the species changes, and names the slot in the notice", async () => {
+  it("clears the action, contexts and Charge when the species changes, and names the Pokémon it replaces in the notice", async () => {
     const runtime = await loadBattleRuntime("ultra_sun_ultra_moon");
     let state: CalculatorState = { matchup: createMatchup(0, runtime), doubles: createDoubles(0, runtime) };
     const ownRight = owner(state, "own-right");
@@ -314,8 +314,11 @@ describe("builds through the 1v1 transitions", () => {
     expect(next.doubles.slots["own-right"].contexts).toEqual({});
     expect(next.doubles.slots["own-right"].moveEpoch).toBe(state.doubles.slots["own-right"].moveEpoch + 1);
     expect(next.doubles.charged["own-right"]).toBe(false);
-    expect(next.doubles.notice).toBe("Your right Pokémon Magnezone: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
+    expect(next.doubles.notice).toBe("Magnezone in place of Venusaur: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
     expectOthersKept(state, next, "own-right");
+    // The same species for your other slot gives another notice, so a live region announces it too.
+    const both = updateDoublesBuild(next, next.doubles.slots["own-left"].key, createBuild("magnezone", runtime));
+    expect(both.doubles.notice).toBe("Magnezone in place of Charizard: IVs set for its suggested Hidden Power Ground (30 Sp. Atk, Sp. Def).");
   });
 
   it("toggles a Mega form with its action kept under the new owner, and without the Trace-Intimidate store", () => {
@@ -379,7 +382,7 @@ function updateMatchupPair(matchup: PreparedMatchup, attacker: BattleBuild, defe
 }
 
 describe("roster choices", () => {
-  it("loads a team Pokémon into one slot, names the slot, and clears its action and Charge", () => {
+  it("loads a team Pokémon into one slot, names the Pokémon it replaces, and clears its action and Charge", () => {
     let state = start();
     state = chooseDoublesMove(state, owner(state, "own-left"), "flamethrower");
     state = chooseDoublesMove(state, owner(state, "opponent-left"), "icebeam");
@@ -388,7 +391,7 @@ describe("roster choices", () => {
     state = selectDoublesRoster(state, state.doubles.slots["own-left"].key, choice(state, "own", "Garchomp"));
     expect(state.doubles.slots["own-left"].build.speciesId).toBe("garchomp");
     expect(state.doubles.slots["own-left"].source?.name).toBe("Garchomp");
-    expect(state.doubles.notice).toBe("Garchomp selected as your left Pokémon. Default build loaded. Field settings are unchanged; move contexts cleared.");
+    expect(state.doubles.notice).toBe("Garchomp selected in place of Charizard. Default build loaded. Field settings are unchanged; move contexts cleared.");
     expect(state.doubles.actions["own-left"]).toEqual({ moveId: null, target: null });
     expect(state.doubles.charged["own-left"]).toBe(false);
     // The opponent's move stays aimed at the slot.
@@ -403,13 +406,28 @@ describe("roster choices", () => {
     let state = start();
     const garchomp = choice(state, "own", "Garchomp");
     state = selectDoublesRoster(state, state.doubles.slots["own-left"].key, garchomp);
-    expect(doublesRosterDisabled(state.doubles, "own-right", garchomp)).toBe("Active as your left Pokémon.");
+    expect(doublesRosterDisabled(state.doubles, "own-right", garchomp)).toBe("Active as Venusaur's ally.");
     expect(doublesRosterDisabled(state.doubles, "own-left", garchomp)).toBeNull();
     expect(doublesRosterDisabled(state.doubles, "own-right", choice(state, "own", "Incineroar"))).toBeNull();
     expect(selectDoublesRoster(state, state.doubles.slots["own-right"].key, garchomp)).toBe(state);
     const gyarados = choice(state, "opponent", "Gyarados");
     state = selectDoublesRoster(state, state.doubles.slots["opponent-right"].key, gyarados);
-    expect(doublesRosterDisabled(state.doubles, "opponent-left", gyarados)).toBe("Active as opponent's right Pokémon.");
+    expect(doublesRosterDisabled(state.doubles, "opponent-left", gyarados)).toBe("Active as Blastoise's ally.");
+  });
+
+  it("gives two picks of one Pokémon for your two slots different notices, and keeps 1v1's", () => {
+    let state = start();
+    const garchomp = choice(state, "own", "Garchomp");
+    state = selectDoublesRoster(state, state.doubles.slots["own-left"].key, garchomp);
+    const first = state.doubles.notice;
+    expect(first).toBe("Garchomp selected in place of Charizard. Default build loaded. Field settings are unchanged; move contexts cleared.");
+    state = selectDoublesRoster(state, state.doubles.slots["own-left"].key, choice(state, "own", "Incineroar"));
+    expect(state.doubles.notice).toBe("Incineroar selected in place of Garchomp. Default build loaded. Field settings are unchanged; move contexts cleared.");
+    state = selectDoublesRoster(state, state.doubles.slots["own-right"].key, garchomp);
+    expect(state.doubles.notice).toBe("Garchomp selected in place of Venusaur. Your session build edits were restored. Field settings are unchanged; move contexts cleared.");
+    expect(state.doubles.notice).not.toBe(first);
+    // 1v1 names the team, as before.
+    expect(selectRosterPokemon(start().matchup, "attacker", garchomp).notice).toBe("Garchomp selected as your Pokémon. Default build loaded. Field settings are unchanged; move contexts cleared.");
   });
 
   it("shares one session build per roster entry with 1v1", () => {
@@ -429,7 +447,7 @@ describe("roster choices", () => {
     other = { ...other, matchup: { ...tuned, cache: new Map(tuned.cache).set(garchomp.source!.key, { ...tuned.cache.get(garchomp.source!.key)!, build: { ...tuned.attacker.build, nature: "Adamant" } }) } };
     other = selectDoublesRoster(other, other.doubles.slots["own-right"].key, garchomp);
     expect(other.doubles.slots["own-right"].build.nature).toBe("Adamant");
-    expect(other.doubles.notice).toBe("Garchomp selected as your right Pokémon. Your session build edits were restored. Field settings are unchanged; move contexts cleared.");
+    expect(other.doubles.notice).toBe("Garchomp selected in place of Venusaur. Your session build edits were restored. Field settings are unchanged; move contexts cleared.");
   });
 });
 
@@ -492,29 +510,30 @@ describe("following 1v1 updates", () => {
     expect(game.doubles.replacementSession).toBe(state.doubles.replacementSession);
   });
 
-  it("gives 2v2 the 1v1 notice for a team source change, a paste imported or removed, and names the slots it detaches", () => {
+  it("gives 2v2 the 1v1 notice for a team source change, a paste imported or removed, and names the Pokémon it detaches", () => {
     const body = "Snorlax\nAbility: Thick Fat\n- Protect";
     let state = start();
     state = selectDoublesRoster(state, state.doubles.slots["opponent-left"].key, choice(state, "opponent", "Gyarados"));
     state = selectDoublesRoster(state, state.doubles.slots["opponent-right"].key, choice(state, "opponent", "Venusaur"));
     state = on1v1(state, (matchup) => changeTeamSource(matchup, getTeamSourceOwner(matchup, "opponent"), "paste"));
     expect(state.matchup.notice).toBe("Team source changed. Current Pokémon and their preparation kept.");
-    expect(state.doubles.notice).toBe("Team source changed. Current Pokémon and their preparation kept. Opponent's left and opponent's right Pokémon detached from their roster entries; their moves and move contexts cleared.");
+    // Venusaur is on both sides now, so each carries its team.
+    expect(state.doubles.notice).toBe("Team source changed. Current Pokémon and their preparation kept. Gyarados and Venusaur (opponent's) detached from their roster entries; their moves and move contexts cleared.");
     state = on1v1(state, (matchup) => applyTeamPaste(matchup, getTeamSourceOwner(matchup, "opponent"), { text: body, title: "First", url: null, team: parseTeamImport(body, "champions") }));
     expect(state.doubles.notice).toBe("First imported for the opponent. Current Pokémon kept.");
     state = selectDoublesRoster(state, state.doubles.slots["opponent-left"].key, getTeamPanel(state.matchup, loaded(), "opponent").choices[0]);
     state = on1v1(state, (matchup) => removeTeamPaste(matchup, getTeamSourceOwner(matchup, "opponent")));
-    expect(state.doubles.notice).toBe("Imported team removed. Current Pokémon and their preparation kept. Opponent's left Pokémon detached from its roster entry; its move and move contexts cleared.");
+    expect(state.doubles.notice).toBe("Imported team removed. Current Pokémon and their preparation kept. Snorlax detached from its roster entry; its move and move contexts cleared.");
     // 1v1 Reset keeps each side's source, so 2v2's notice stays.
     expect(on1v1(state, resetMatchup).doubles).toBe(state.doubles);
   });
 
-  it("names the slots a league or opponent change detaches", () => {
+  it("names the Pokémon a league or opponent change detaches", () => {
     let state = start();
     state = selectDoublesRoster(state, state.doubles.slots["opponent-left"].key, choice(state, "opponent", "Gyarados"));
     const rosters = loaded({ opponentId: "member-third" });
     const next = on1v1(state, (matchup) => reconcileRosters(matchup, rosters), rosters);
-    expect(next.doubles.notice).toBe("Opponent's left Pokémon detached from its roster entry; its move and move contexts cleared.");
+    expect(next.doubles.notice).toBe("Gyarados detached from its roster entry; its move and move contexts cleared.");
   });
 
   it("changes nothing for 1v1 Reset, Swap and build edits", () => {
@@ -558,9 +577,9 @@ describe("Intimidate on both foes", () => {
     state = applyDoublesIntimidate(state, state.doubles.slots["own-right"].key);
     expect(spy).toHaveBeenCalledTimes(1);
     const [, foes, battle] = spy.mock.calls[0];
-    // adjacentFoes(): foe position 0 (p2a, the opponent's right) first.
-    expect(foes.map((foe) => [foe.build.speciesId, foe.position])).toEqual([["kingambit", "right foe"], ["blastoise", "left foe"]]);
-    expect(battle).toMatchObject({ sourcePosition: "your right", gameType: "Doubles", sourceTailwind: false });
+    // adjacentFoes(): foe position 0 (p2a, opponent-right) first; each named by doublesNames.
+    expect(foes.map((foe) => [foe.build.speciesId, foe.name])).toEqual([["kingambit", "Kingambit"], ["blastoise", "Blastoise"]]);
+    expect(battle).toMatchObject({ sourceName: "Incineroar", gameType: "Doubles", sourceTailwind: false });
     expect(state.doubles.slots["opponent-left"].build.boosts.atk).toBe(-1);
     // Defiant: -1, then +2.
     expect(state.doubles.slots["opponent-right"].build.boosts.atk).toBe(1);
@@ -574,13 +593,22 @@ describe("Intimidate on both foes", () => {
     // Any later build edit ends the result.
     const edited = updateDoublesHP(again, again.doubles.slots["opponent-left"].key, "50");
     expect(doublesIntimidateResult(edited.doubles, "own-right")).toBeNull();
-    // Theirs: your left (p1a) first.
+    // Theirs: own-left (p1a) first.
     const theirs = updateDoublesBuild(start(), start().doubles.slots["opponent-left"].key, { ...createBuild("incineroar"), abilityId: "intimidate" });
     spy.mockClear();
     const lowered = applyDoublesIntimidate(theirs, theirs.doubles.slots["opponent-left"].key);
     expect(lowered.doubles.slots["own-left"].build.boosts.atk).toBe(-1);
-    expect(spy.mock.calls[0][1].map((foe) => [foe.build.speciesId, foe.position])).toEqual([["charizard", "left foe"], ["venusaur", "right foe"]]);
+    expect(spy.mock.calls[0][1].map((foe) => [foe.build.speciesId, foe.name])).toEqual([["charizard", "Charizard"], ["venusaur", "Venusaur"]]);
     expect(applyDoublesIntimidate(start(), start().doubles.slots["own-left"].key)).toEqual(start());
+  });
+
+  it("names a mirror's Pokémon by team in its lines", () => {
+    const incineroar = { ...createBuild("incineroar"), abilityId: "intimidate" };
+    let state = start();
+    state = updateDoublesBuild(state, state.doubles.slots["own-left"].key, incineroar);
+    state = updateDoublesBuild(state, state.doubles.slots["opponent-left"].key, incineroar);
+    state = applyDoublesIntimidate(state, state.doubles.slots["own-left"].key);
+    expect(doublesIntimidateResult(state.doubles, "own-left")).toBe("Incineroar (yours)'s Intimidate: Pikachu's Attack falls to -1. Incineroar (opponent's)'s Attack falls to -1.");
   });
 });
 

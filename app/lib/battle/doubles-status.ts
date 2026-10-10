@@ -3,7 +3,7 @@ import {
   PROTECT_MOVES, REASONS, REDIRECT_ABILITIES, SIDE_MOVES, STRONG_WEATHERS, TERRAIN_MOVES, WEATHER_MOVES,
 } from "./doubles-actions";
 import {
-  allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, slotSide, type DoublesOutcomeMon, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput,
+  allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, slotSide, turnNames, type DoublesOutcomeMon, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput,
 } from "./doubles-types";
 import { cloneWorld, condition, endTrap, lossDist, mapHP, mapJoint, marginal, type EotState, type MoveVolatiles, type PendingAction, type World } from "./doubles-world";
 import type { HitCheck, HitStats, TurnKernel, TurnMoveInfo } from "./doubles-turn";
@@ -647,7 +647,7 @@ export function outcomeMon(kernel: TurnKernel, w: World, slot: DoublesSlotId): P
  */
 export function turnFacts(input: DoublesTurnInput, suppressed: readonly DoublesSlotId[] = []): string[] {
   const facts: string[] = [];
-  const names = namesOf(input);
+  const names = turnNames(input);
   const champions = input.runtime.profile.id === "champions";
   for (const slot of DOUBLES_SLOTS) {
     const entry = input.pokemon[slot];
@@ -664,18 +664,6 @@ export function turnFacts(input: DoublesTurnInput, suppressed: readonly DoublesS
     if (entry.action.moveId === "endure") facts.push("Assumes no protecting move was used last turn.");
   }
   return facts;
-}
-/** doublesNames without the runtime import cycle (doubles-types.ts doublesNames). */
-function namesOf(input: DoublesTurnInput): Record<DoublesSlotId, string> {
-  const base = Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
-    const entry = input.pokemon[slot];
-    return [slot, entry ? input.runtime.speciesById.get(entry.build.speciesId)?.name ?? entry.build.speciesId : ""];
-  })) as Record<DoublesSlotId, string>;
-  const SLOT_POSITION: Record<DoublesSlotId, string> = { "own-left": "your left", "own-right": "your right", "opponent-left": "opponent's left", "opponent-right": "opponent's right" };
-  return Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
-    const same = base[slot] !== "" && DOUBLES_SLOTS.some((other) => other !== slot && base[other] === base[slot]);
-    return [slot, same ? `${base[slot]} (${SLOT_POSITION[slot]})` : base[slot]];
-  })) as Record<DoublesSlotId, string>;
 }
 
 // ------------------------------------------------------------------------------------------------------------------

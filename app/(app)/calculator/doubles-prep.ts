@@ -1,7 +1,7 @@
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { defaultDoublesTarget, doublesTargetRule } from "@/app/lib/battle/doubles-targets";
 import {
-  allyOf, DOUBLES_SLOTS, foesOf, relativePosition, SHOWDOWN_POSITION, SLOT_POSITION, slotSide,
+  allyOf, DOUBLES_SLOTS, doublesNames, foesOf, SHOWDOWN_POSITION, slotSide,
   type DoublesAction, type DoublesCarried, type DoublesPokemonInput, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
 } from "@/app/lib/battle/doubles-types";
 import { applyIntimidateToFoes } from "@/app/lib/battle/intimidate";
@@ -53,9 +53,9 @@ function perSlot<T>(value: (slot: DoublesSlotId, index: number) => T): Record<Do
   return Object.fromEntries(DOUBLES_SLOTS.map((slot, index) => [slot, value(slot, index)])) as Record<DoublesSlotId, T>;
 }
 
-/** The slot's Pokémon as a notice names it: "your left Pokémon". */
-function positionLabel(slot: DoublesSlotId): string {
-  return `${SLOT_POSITION[slot]} Pokémon`;
+/** The four slots' names (doublesNames): "Charizard", "Garchomp (yours)", "Garchomp (1)". */
+function namesOf(doubles: Pick<DoublesMatchup, "slots" | "runtime">): Record<DoublesSlotId, string> {
+  return doublesNames(doubles.slots, doubles.runtime);
 }
 
 /** The 1v1 side whose side conditions are the slot's (attackerSide is your side). */
@@ -129,13 +129,15 @@ function pickTarget(rule: DoublesTargetRule, full: DoublesTargetRule, slot: Doub
  * The turn's input from the four slots: a fainted slot is null (doubles-types: no Pokémon there), so it does not act,
  * is not a target and gives its partner nothing. Each other slot keeps its action; a target that has fainted is
  * replaced as the game does (pickTarget: the other foe), and the chosen one comes back when that Pokémon's HP does.
+ * The turn's text names the four Pokémon as their cards do (`names`: doublesNames over all four, a fainted one's too),
+ * so a fainted twin or mirror partner does not change the others' names.
  */
 export function doublesTurnInput(runtime: BattleRuntime, field: BattleConditions, pokemon: Record<DoublesSlotId, DoublesPokemonInput>): DoublesTurnInput {
   if (!DOUBLES_SLOTS.some((slot) => isFaintedBuild(pokemon[slot].build))) return { runtime, field, pokemon };
   const full: DoublesTurnInput = { runtime, field, pokemon };
   const living: DoublesTurnInput = { runtime, field, pokemon: perSlot((slot) => isFaintedBuild(pokemon[slot].build) ? null : pokemon[slot]) };
   return {
-    runtime, field,
+    runtime, field, names: doublesNames(pokemon, runtime),
     pokemon: perSlot((slot) => {
       const entry = living.pokemon[slot];
       const { moveId, target } = entry?.action ?? NO_ACTION;
@@ -310,7 +312,7 @@ function slotByOwner(doubles: DoublesMatchup, owner: MoveOwner): DoublesSlotId |
   return DOUBLES_SLOTS.find((slot) => sameMoveOwner(getMoveOwner(doubles.slots[slot]), owner)) ?? null;
 }
 
-/** The target a move change defaults to: the Moves pane's `into` while the pane shows this slot, else the left foe. */
+/** The target a move change defaults to: the Moves pane's `into` while the pane shows this slot, else the first foe in slot order. */
 function preferredTarget(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesSlotId {
   return doubles.moves.slot === slot ? doubles.moves.into : foesOf(slot)[0];
 }
@@ -336,7 +338,7 @@ function retarget(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesMatchup 
   return target === action.target ? doubles : { ...doubles, actions: { ...doubles.actions, [slot]: { ...action, target } } };
 }
 
-/** `into` while it is another slot whose Pokémon has not fainted, else the first such slot of left foe, right foe, ally; else `into`. */
+/** `into` while it is another slot whose Pokémon has not fainted, else the first such slot of its foes (in slot order) and its ally; else `into`. */
 function livingInto(fainted: Record<DoublesSlotId, boolean>, slot: DoublesSlotId, into: DoublesSlotId): DoublesSlotId {
   if (into !== slot && !fainted[into]) return into;
   return [...foesOf(slot), allyOf(slot)].find((entry) => !fainted[entry]) ?? into;
@@ -364,10 +366,10 @@ function withDoubles(state: CalculatorState, doubles: DoublesMatchup): Calculato
 }
 
 /**
- * Runs a 1v1 one-Pokémon transition on a 2v2 slot: the slot stands as "attacker", its left foe as "defender", the field
- * oriented to the slot's side. Reads back only the slot, the shared cache, the replacement/session and the action's move;
- * notices name the slot through the transitions' positionLabel. Discards every other change (clearMoveInteractions, the
- * other Pokémon, field). A replacement another slot owns is kept.
+ * Runs a 1v1 one-Pokémon transition on a 2v2 slot: the slot stands as "attacker", its first foe in slot order as
+ * "defender", the field oriented to the slot's side. Reads back only the slot, the shared cache, the replacement/session
+ * and the action's move; notices name the Pokémon the change replaces through the transitions' `place`. Discards every
+ * other change (clearMoveInteractions, the other Pokémon, field). A replacement another slot owns is kept.
  */
 function onSlot(state: CalculatorState, slot: DoublesSlotId, run: (pair: PreparedMatchup) => PreparedMatchup): CalculatorState {
   const { matchup, doubles } = state;
@@ -422,26 +424,26 @@ export function resetDoubles(state: CalculatorState): CalculatorState {
   };
 }
 
-/** Why `choice` cannot go into `slot`: the ally slot already shows that roster entry. */
+/** Why `choice` cannot go into `slot`: the ally slot already shows that roster entry ("Active as Venusaur's ally."). */
 export function doublesRosterDisabled(doubles: DoublesMatchup, slot: DoublesSlotId, choice: RosterChoice): string | null {
   const ally = allyOf(slot);
-  return choice.source && doubles.slots[ally].source?.key === choice.source.key ? `Active as ${SLOT_POSITION[ally]} Pokémon.` : null;
+  return choice.source && doubles.slots[ally].source?.key === choice.source.key ? `Active as ${namesOf(doubles)[slot]}'s ally.` : null;
 }
 
 export function selectDoublesRoster(state: CalculatorState, key: number, choice: RosterChoice): CalculatorState {
   const slot = slotByKey(state.doubles, key);
   if (!slot || doublesRosterDisabled(state.doubles, slot, choice)) return state;
-  return onSlot(state, slot, (pair) => selectRosterPokemon(pair, "attacker", choice, positionLabel(slot)));
+  return onSlot(state, slot, (pair) => selectRosterPokemon(pair, "attacker", choice, namesOf(state.doubles)[slot]));
 }
 
 export function updateDoublesBuild(state: CalculatorState, key: number, build: BattleBuild): CalculatorState {
   const slot = slotByKey(state.doubles, key);
-  return slot ? onSlot(state, slot, (pair) => updateMatchupBuild(pair, "attacker", build, positionLabel(slot))) : state;
+  return slot ? onSlot(state, slot, (pair) => updateMatchupBuild(pair, "attacker", build, namesOf(state.doubles)[slot])) : state;
 }
 
 export function updateDoublesHP(state: CalculatorState, key: number, text: string): CalculatorState {
   const slot = slotByKey(state.doubles, key);
-  return slot ? onSlot(state, slot, (pair) => updateMatchupHP(pair, "attacker", text, positionLabel(slot))) : state;
+  return slot ? onSlot(state, slot, (pair) => updateMatchupHP(pair, "attacker", text, namesOf(state.doubles)[slot])) : state;
 }
 
 /** Trace copies a random foe's ability in doubles, so the entry form's copied Intimidate is not stored here. */
@@ -461,8 +463,8 @@ export function equipDoublesRequiredMove(state: CalculatorState, key: number, sl
 }
 
 /**
- * Points the Moves pane at `slot`: into its target, else the current receiver when it is another slot, else its left foe;
- * a living one (livingInto). Not at a fainted slot.
+ * Points the Moves pane at `slot`: into its target, else the current receiver when it is another slot, else its first
+ * foe in slot order; a living one (livingInto). Not at a fainted slot.
  */
 function focusPane(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesMatchup {
   const fainted = doublesFainted(doubles.slots);
@@ -599,9 +601,10 @@ export function intimidateFoes(doubles: DoublesMatchup, slot: DoublesSlotId): Do
 
 /**
  * The slot's Pokémon uses Intimidate (on entry, or on Mega Evolution into an Intimidate form) against both foes, in
- * Showdown's adjacentFoes() order: foe position 0, then 1 (sim/pokemon.ts:732-735, sim/side.ts:397-403), so the
- * opponent's right (p2a) first for your Pokémon and your left (p1a) first for theirs. Every build it reads keeps the
- * result. A fainted foe is skipped, and a fainted Pokémon intimidates no one (intimidateFoes).
+ * Showdown's adjacentFoes() order: foe position 0, then 1 (sim/pokemon.ts:732-735, sim/side.ts:397-403), so
+ * opponent-right (p2a) first for your Pokémon and own-left (p1a) first for theirs. Each Pokémon is named in the lines
+ * by its doublesNames name. Every build it reads keeps the result. A fainted foe is skipped, and a fainted Pokémon
+ * intimidates no one (intimidateFoes).
  */
 export function applyDoublesIntimidate(state: CalculatorState, key: number): CalculatorState {
   const { doubles } = state;
@@ -611,11 +614,12 @@ export function applyDoublesIntimidate(state: CalculatorState, key: number): Cal
   if (!foes.length) return state;
   const { field } = doubles;
   const tailwind = (entry: DoublesSlotId) => (slotSide(entry) === "own" ? field.attackerSide : field.defenderSide).tailwind;
+  const names = namesOf(doubles);
   const result = applyIntimidateToFoes(doubles.slots[slot].build, foes.map((foe) => ({
-    build: doubles.slots[foe].build, tailwind: tailwind(foe), position: relativePosition(slot, foe).replace("-", " "),
+    build: doubles.slots[foe].build, tailwind: tailwind(foe), name: names[foe],
   })), {
     magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles",
-    sourceTailwind: tailwind(slot), sourcePosition: SLOT_POSITION[slot],
+    sourceTailwind: tailwind(slot), sourceName: names[slot],
   }, doubles.runtime);
   const store = (current: CalculatorState, entry: DoublesSlotId, build: BattleBuild) => onSlot(current, entry, (pair) => updateMatchupBuild(pair, "attacker", build));
   let next = store(state, slot, result.source);
@@ -664,14 +668,16 @@ export function reconcileDoublesRosters(doubles: DoublesMatchup, matchup: Prepar
   return next;
 }
 
-/** "Your left Pokémon detached from its roster entry; its move and move contexts cleared." for the slots reconcileDoublesRosters detached. */
-function detachedNotice(slots: DoublesSlotId[]): string {
-  const where = slots.map((slot) => SLOT_POSITION[slot]);
-  const joined = where.length <= 2 ? where.join(" and ") : `${where.slice(0, -1).join(", ")} and ${where.at(-1)}`;
-  const text = slots.length === 1
-    ? `${joined} Pokémon detached from its roster entry; its move and move contexts cleared.`
-    : `${joined} Pokémon detached from their roster entries; their moves and move contexts cleared.`;
-  return text.charAt(0).toUpperCase() + text.slice(1);
+/**
+ * "Charizard detached from its roster entry; its move and move contexts cleared." for the slots reconcileDoublesRosters
+ * detached, named by `names` (their builds stay).
+ */
+function detachedNotice(slots: DoublesSlotId[], names: Record<DoublesSlotId, string>): string {
+  const named = slots.map((slot) => names[slot]);
+  const joined = named.length <= 2 ? named.join(" and ") : `${named.slice(0, -1).join(", ")} and ${named.at(-1)}`;
+  return slots.length === 1
+    ? `${joined} detached from its roster entry; its move and move contexts cleared.`
+    : `${joined} detached from their roster entries; their moves and move contexts cleared.`;
 }
 
 /**
@@ -691,6 +697,6 @@ export function followShared(doubles: DoublesMatchup, before: PreparedMatchup, a
   // 1v1 Reset bumps both epochs and keeps each side's mode and paste, so its notice stays 1v1's.
   const sourceChanged = (["own", "opponent"] as const).some((role) => after.teams[role].mode !== before.teams[role].mode || after.teams[role].paste !== before.teams[role].paste);
   const detached = DOUBLES_SLOTS.filter((slot) => doubles.slots[slot].source && !next.slots[slot].source);
-  const notice = [sourceChanged ? after.notice : "", detached.length ? detachedNotice(detached) : ""].filter(Boolean).join(" ");
+  const notice = [sourceChanged ? after.notice : "", detached.length ? detachedNotice(detached, namesOf(next)) : ""].filter(Boolean).join(" ");
   return notice ? { ...next, notice } : next;
 }

@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
-import { relativeLabel } from "@/app/(app)/calculator/doubles-format";
+import { slotsText, targetName } from "@/app/(app)/calculator/doubles-format";
 import type { DoublesSlotId, DoublesTargetRule } from "@/app/lib/battle/doubles-types";
 import type { BoardNames } from "../board/board-format";
 import { MEGA_LABEL, type MoveOption, type SlotOptions, type SlotSelection } from "./choice-builder";
@@ -12,20 +12,22 @@ import styles from "./actions.module.css";
 // One active Pokémon's choices as native radios (moves and switches in one group, SPEC D9), its Mega Evolution for this turn,
 // and a Target group only when the move's rule lets you pick between two or more Pokémon.
 
-const AUTO_FACT = (rule: Extract<DoublesTargetRule, { kind: "auto" }>, slot: DoublesSlotId) => {
+/** What an automatic target reaches: "Both foes", "All adjacent", "A random foe", or the Pokémon by name ("Gyarados", as slotsText). */
+const AUTO_FACT = (rule: Extract<DoublesTargetRule, { kind: "auto" }>, slot: DoublesSlotId, names: BoardNames) => {
   if (rule.random) return "A random foe";
   if (!rule.hits.length) return "No target";
   const foes = rule.hits.filter((hit) => hit.startsWith(slot.startsWith("own") ? "opponent" : "own")).length;
   const ally = rule.hits.length - foes;
-  return foes === 2 && ally ? "All adjacent" : foes === 2 ? "Both foes" : ally && !foes ? "Ally" : foes ? "One foe" : "No target";
+  return foes === 2 && ally ? "All adjacent" : foes === 2 ? "Both foes" : slotsText(names, slot, rule.hits);
 };
 const NONE_FACT: Record<Extract<DoublesTargetRule, { kind: "none" }>["scope"], string> = {
   self: "Targets itself", "self-and-ally": "Targets itself and its ally", "own-side": "Targets its side", "foe-side": "Targets the foes' side",
   field: "Targets the field", "own-team": "Targets its team", "last-attacker": "Targets the foe that last hit it",
 };
-export function ruleFact(move: MoveOption, slot: DoublesSlotId) {
+/** `names`: the board's full names (boardNames). */
+export function ruleFact(move: MoveOption, slot: DoublesSlotId, names: BoardNames) {
   if (move.locked) return null;
-  return move.rule.kind === "auto" ? AUTO_FACT(move.rule, slot) : move.rule.kind === "none" ? NONE_FACT[move.rule.scope] : null;
+  return move.rule.kind === "auto" ? AUTO_FACT(move.rule, slot, names) : move.rule.kind === "none" ? NONE_FACT[move.rule.scope] : null;
 }
 
 const card = "flex min-h-11 min-w-0 cursor-pointer flex-col justify-center rounded-lg border px-2 py-1.5 text-left text-xs has-focus-visible:ring-2 has-focus-visible:ring-focus has-disabled:cursor-not-allowed has-disabled:opacity-60";
@@ -33,11 +35,12 @@ const card = "flex min-h-11 min-w-0 cursor-pointer flex-col justify-center round
 export type ActionFieldsetProps = {
   options: SlotOptions;
   selection: SlotSelection;
+  /** The board's full names (boardNames): target radios and automatic targets. */
   names: BoardNames;
-  /** "{position} is Mega Evolving": the partner already Mega Evolves this turn. */
+  /** "Gyarados is Mega Evolving": the partner already Mega Evolves this turn. */
   megaBlocked: string | null;
-  /** The bench member the other slot switches to, with that slot's position words ("your right"). */
-  otherSwitch: { key: string; position: string } | null;
+  /** The bench member the other slot switches to, with that slot's Pokémon's name ("Gyarados"). */
+  otherSwitch: { key: string; name: string } | null;
   onChange(selection: SlotSelection): void;
 };
 
@@ -58,7 +61,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
   const megaReason = megaBlocked ?? (choice?.kind === "switch" ? "Switching" : null);
   return (
     <fieldset data-training-action={slot} className="min-w-0 space-y-2 p-2 sm:p-3">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-muted">{options.label}</legend>
+      <legend className="wrap-anywhere text-xs font-semibold uppercase tracking-wide text-muted">{options.name}</legend>
       {options.mega.map((mechanic) => (
         <label key={mechanic} htmlFor={`${id}-${mechanic}`} className="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-text has-disabled:cursor-not-allowed has-disabled:opacity-60">
           <input id={`${id}-${mechanic}`} type="checkbox" data-training-mechanic={mechanic} checked={selection.mega === mechanic}
@@ -72,7 +75,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
       <div className={styles.moves}>
         {options.moves.map((each, index) => {
           const checked = value === `move:${each.id}`;
-          const fact = ruleFact(each, slot);
+          const fact = ruleFact(each, slot, names);
           return (
             <label key={each.id} htmlFor={`${id}-move-${index}`} data-training-move={index}
               className={`${card} ${checked ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}>
@@ -93,7 +96,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
         <div className={styles.switches}>
           {options.switches.map((each, index) => {
             const checked = value === `switch:${each.key}`;
-            const taken = otherSwitch?.key === each.key ? `Chosen for ${otherSwitch.position}` : null;
+            const taken = otherSwitch?.key === each.key ? `Chosen for ${otherSwitch.name}` : null;
             const reason = each.disabledReason ?? taken;
             return (
               <label key={each.key} htmlFor={`${id}-switch-${index}`} data-training-switch={each.key}
@@ -109,7 +112,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
       )}
       {move && move.rule.kind === "choose" && move.rule.options.length > 1 && (
         <fieldset data-training-target={slot} className="min-w-0">
-          <legend className="text-xs font-semibold text-muted">Target<span className="sr-only"> for {options.label}</span></legend>
+          <legend className="text-xs font-semibold text-muted">Target<span className="sr-only"> for {options.name}</span></legend>
           <div className={`${styles.targets} mt-1`}>
             {move.rule.options.map((option) => {
               const checked = selection.target === option;
@@ -118,8 +121,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
                   className={`flex min-h-11 min-w-0 cursor-pointer flex-col justify-center rounded-lg border px-2 py-1 text-xs has-focus-visible:ring-2 has-focus-visible:ring-focus ${checked ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}>
                   <input id={`${id}-target-${option}`} type="radio" name={`${id}-target`} value={option} checked={checked}
                     onChange={() => onChange({ ...selection, target: option })} className="sr-only" />
-                  <span className={`font-semibold ${checked ? "text-accent-text" : "text-text"}`}>{relativeLabel(slot, option)}</span>
-                  <span className="wrap-anywhere text-muted">{names[option] || "—"}</span>
+                  <span className={`wrap-anywhere font-semibold ${checked ? "text-accent-text" : "text-text"}`}>{targetName(names, slot, option)}</span>
                 </label>
               );
             })}

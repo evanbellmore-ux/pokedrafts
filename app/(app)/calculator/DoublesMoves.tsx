@@ -1,11 +1,12 @@
 "use client";
 
 import { useId, type ReactNode } from "react";
-import { DOUBLES_SLOTS, SLOT_POSITION, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
-import { baseName, FAINTED, intoOptions, relativeLabel } from "./doubles-format";
+import { DOUBLES_SLOTS, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { FAINTED, intoOptions } from "./doubles-format";
 import styles from "./calculator.module.css";
 
 export type DoublesMovesProps = {
+  /** The four Pokémon's full names (doublesNames), which name the radios. */
   names: Record<DoublesSlotId, string>; focus: DoublesSlotId; into: DoublesSlotId;
   /** Slots whose Pokémon has fainted: shown, not chosen. */
   fainted?: Partial<Record<DoublesSlotId, boolean>>;
@@ -34,7 +35,7 @@ export default function DoublesMoves({ names, focus, into, fainted = {}, onFocus
           <div className={`${styles.targets} mt-1`}>
             {DOUBLES_SLOTS.map((slot) => (
               <Choice key={slot} id={`${id}-for-${slot}`} name={`${id}-for`} value={slot} checked={focus === slot} disabled={!!fainted[slot]} onChange={() => onFocusChange(slot)}>
-                <span className="font-semibold text-text">{baseName(names, slot)}</span><span className="text-muted"> · {SLOT_POSITION[slot]}</span>
+                <span className="font-semibold text-text">{names[slot]}</span>
               </Choice>
             ))}
           </div>
@@ -44,7 +45,7 @@ export default function DoublesMoves({ names, focus, into, fainted = {}, onFocus
           <div className={`${styles.targets} mt-1`}>
             {intoOptions(focus).map((slot) => (
               <Choice key={slot} id={`${id}-into-${slot}`} name={`${id}-into`} value={slot} checked={into === slot} disabled={!!fainted[slot]} onChange={() => onIntoChange(slot)}>
-                <span className="font-semibold text-text">{relativeLabel(focus, slot)}</span><span className="text-muted"> · {baseName(names, slot)}</span>
+                <span className="font-semibold text-text">{names[slot]}</span>
               </Choice>
             ))}
           </div>

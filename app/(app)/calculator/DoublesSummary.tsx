@@ -1,11 +1,11 @@
 "use client";
 
 import { useId, useState } from "react";
-import { DOUBLES_SLOTS, slotSide, type DoublesSideId, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, doublesNameParts, slotSide, type DoublesSideId, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleConditions } from "@/app/lib/battle/types";
 import DoublesCard, { type DoublesCardHandlers, type DoublesCardTarget, type DoublesCardView } from "./DoublesCard";
-import { actsWithoutMoves, baseName, relativeLabel } from "./doubles-format";
+import { actsWithoutMoves } from "./doubles-format";
 import DoublesTurn from "./DoublesTurn";
 import type { DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type MoveOwner, type MoveReplacement } from "./roster-prep";
@@ -14,7 +14,9 @@ import styles from "./calculator.module.css";
 export type { DoublesCardView };
 
 export type DoublesSummaryProps = DoublesCardHandlers & {
-  runtime: BattleRuntime; cards: Record<DoublesSlotId, DoublesCardView>; names: Record<DoublesSlotId, string>;
+  runtime: BattleRuntime; cards: Record<DoublesSlotId, DoublesCardView>;
+  /** The four Pokémon's full names (doublesNames of the cards' builds). */
+  names: Record<DoublesSlotId, string>;
   turn: DoublesTurnResult | null; blockedReason?: string;
   rollMode: DamageRollMode; onRollModeChange: (mode: DamageRollMode) => void;
   replacement: MoveReplacement | null; movesControl: string;
@@ -46,6 +48,8 @@ function effectiveMove(turn: DoublesTurnResult | null, view: DoublesCardView) {
 export default function DoublesSummary(props: DoublesSummaryProps) {
   const { runtime, cards, names, turn, blockedReason, rollMode, onRollModeChange, replacement, movesControl, onShowStep, onFixSettings } = props;
   const id = useId();
+  // The card headings' parts, from the same builds as `names` (PokemonName: the side word for screen readers only).
+  const nameParts = doublesNameParts(Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, cards[slot].slot])) as Record<DoublesSlotId, DoublesCardView["slot"]>, runtime);
   const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
   // The cards show the turn's HP only for a ready turn with a move, or with an end of turn that acts; otherwise their current HP.
   const projected = !blockedReason && !noMoves && turn?.status === "ready";
@@ -68,9 +72,9 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
   const cardTarget = (slot: DoublesSlotId): DoublesCardTarget | null => {
     if (!aimer || !aimRule || !aimRule.options.includes(slot)) return null;
     const selected = aimer.action.target === slot;
-    const actor = baseName(names, aimer.id);
+    const actor = names[aimer.id];
     return {
-      selected, label: `Target ${baseName(names, slot)} (${relativeLabel(aimer.id, slot).toLowerCase()}) with ${actor}'s ${aimMove}`,
+      selected, label: `Target ${names[slot]} with ${actor}'s ${aimMove}`,
       chip: selected ? `Target of ${actor}'s ${aimMove}` : null,
       onPick: () => onTargetChange(getMoveOwner(aimer.slot), slot),
     };
@@ -104,6 +108,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
                   key={view.slot.key}
                   view={projected ? view : { ...view, hp: null, reached: false }}
                   names={names}
+                  nameParts={nameParts[slot]}
                   runtime={runtime}
                   rollMode={rollMode}
                   replacement={replacement}

@@ -22,17 +22,6 @@ export function allyOf(slot: DoublesSlotId): DoublesSlotId {
 export function foesOf(slot: DoublesSlotId): readonly [DoublesSlotId, DoublesSlotId] {
   return slotSide(slot) === "own" ? ["opponent-left", "opponent-right"] : ["own-left", "own-right"];
 }
-/** Where `target` stands as seen from `actor` (screen left and right). */
-export type RelativePosition = "left-foe" | "right-foe" | "ally" | "itself";
-export function relativePosition(actor: DoublesSlotId, target: DoublesSlotId): RelativePosition {
-  if (actor === target) return "itself";
-  if (target === ALLY[actor]) return "ally";
-  return foesOf(actor)[0] === target ? "left-foe" : "right-foe";
-}
-/** Position words for facts and labels. */
-export const SLOT_POSITION: Record<DoublesSlotId, string> = {
-  "own-left": "your left", "own-right": "your right", "opponent-left": "opponent's left", "opponent-right": "opponent's right",
-};
 /**
  * Pinned Showdown side (p1 = 0) and position. The far side is mirrored, so the screen-left foe is the one across from your left
  * Pokémon (sim/pokemon.ts:745 isAdjacent; data/abilities.ts imposter copies foe.active[length - 1 - position]).
@@ -41,16 +30,53 @@ export const SHOWDOWN_POSITION: Record<DoublesSlotId, { side: 0 | 1; position: 0
   "own-left": { side: 0, position: 0 }, "own-right": { side: 0, position: 1 },
   "opponent-left": { side: 1, position: 1 }, "opponent-right": { side: 1, position: 0 },
 };
-/** Species names for facts and labels, with " (your left)" etc. added to both when two slots show the same species; "" for an empty slot. */
-export function doublesNames(pokemon: Record<DoublesSlotId, { build: BattleBuild } | null>, runtime: BattleRuntime): Record<DoublesSlotId, string> {
-  const base = Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
+/**
+ * A Pokémon's name in text: its display name (`base`), its team when the other side shows the same name (`side`), and its
+ * place in its side's slot order when its partner shows the same name (`number`: the left slot 1, the right slot 2).
+ */
+export type NameParts = { base: string; side: "yours" | "opponent's" | null; number: 1 | 2 | null };
+
+/**
+ * The name parts of four slots' base names ("" = an empty slot): the side word when a slot on the other side has the same
+ * name, the number when the partner has it. Every slot sharing a name gets its words, so equal names always differ.
+ */
+export function duplicateNameParts(base: Record<DoublesSlotId, string>): Record<DoublesSlotId, NameParts> {
+  return Object.fromEntries(DOUBLES_SLOTS.map((slot): [DoublesSlotId, NameParts] => {
+    const name = base[slot];
+    if (!name) return [slot, { base: "", side: null, number: null }];
+    const mirrored = DOUBLES_SLOTS.some((other) => slotSide(other) !== slotSide(slot) && base[other] === name);
+    const twin = base[ALLY[slot]] === name;
+    return [slot, {
+      base: name,
+      side: mirrored ? (slotSide(slot) === "own" ? "yours" : "opponent's") : null,
+      number: twin ? (slot === "own-left" || slot === "opponent-left" ? 1 : 2) : null,
+    }];
+  })) as Record<DoublesSlotId, NameParts>;
+}
+
+/** "Garchomp", "Garchomp (yours)", "Garchomp (opponent's)", "Garchomp (1)", "Garchomp (yours, 1)"; "" for an empty base. */
+export function nameText(parts: NameParts): string {
+  if (!parts.base) return "";
+  const words = [parts.side, parts.number].filter((word) => word !== null);
+  return words.length ? `${parts.base} (${words.join(", ")})` : parts.base;
+}
+
+/** The name parts of the four slots' Pokémon by species name (duplicateNameParts); an empty slot's base is "". */
+export function doublesNameParts(pokemon: Record<DoublesSlotId, { build: BattleBuild } | null>, runtime: BattleRuntime): Record<DoublesSlotId, NameParts> {
+  return duplicateNameParts(Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
     const entry = pokemon[slot];
     return [slot, entry ? runtime.speciesById.get(entry.build.speciesId)?.name ?? entry.build.speciesId : ""];
-  })) as Record<DoublesSlotId, string>;
-  return Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
-    const same = base[slot] !== "" && DOUBLES_SLOTS.some((other) => other !== slot && base[other] === base[slot]);
-    return [slot, same ? `${base[slot]} (${SLOT_POSITION[slot]})` : base[slot]];
-  })) as Record<DoublesSlotId, string>;
+  })) as Record<DoublesSlotId, string>);
+}
+
+/**
+ * The four slots' names for facts and labels (nameText of doublesNameParts): "Garchomp (yours)" / "Garchomp (opponent's)"
+ * when both sides show the species, "Garchomp (1)" / "Garchomp (2)" when one side shows it twice; "" for an empty slot.
+ * The turn reads them from its input (turnNames), so they stay fixed for the turn (after an Ally Switch too).
+ */
+export function doublesNames(pokemon: Record<DoublesSlotId, { build: BattleBuild } | null>, runtime: BattleRuntime): Record<DoublesSlotId, string> {
+  const parts = doublesNameParts(pokemon, runtime);
+  return Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, nameText(parts[slot])])) as Record<DoublesSlotId, string>;
 }
 
 /**
@@ -145,7 +171,17 @@ export type DoublesTurnInput = {
   weatherTurns?: number;
   /** Whether each side has a Pokémon left to switch in (S moves, Healing Wish, Lunar Dance, Roar, Whirlwind). Absent: true (turn fact when read). */
   canSwitch?: Partial<Record<DoublesSideId, boolean>>;
+  /**
+   * The names the page shows for the four slots (doublesNames over every slot's Pokémon, a fainted one's too), so the
+   * turn's text names each Pokémon as its card does. Absent: doublesNames of `pokemon` (turnNames).
+   */
+  names?: Record<DoublesSlotId, string>;
 };
+
+/** The names the turn's text uses: the input's `names`, else doublesNames of its Pokémon ("" for an empty slot). */
+export function turnNames(input: Pick<DoublesTurnInput, "pokemon" | "runtime" | "names">): Record<DoublesSlotId, string> {
+  return input.names ?? doublesNames(input.pokemon, input.runtime);
+}
 
 /** Which targets the move a slot would use can take, as chosen in the game (doubles-targets.ts). */
 export type DoublesTargetRule =

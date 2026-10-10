@@ -100,7 +100,7 @@ export function validateMechanic(build: BattleBuild, runtime: BattleRuntime = ch
   }
   if (build.mechanic === "tera") {
     if (!runtime.profile.tera) issues.push({ field: "mechanic", message: `Terastallization is not available in ${runtime.profile.label}.` });
-    else if (!config?.teraType) issues.push({ field: "configuration.teraType", message: "Choose a Tera type before activating Terastallization." });
+    else if (!config?.teraType) issues.push({ field: "configuration.teraType", message: "No Tera type." });
   } else {
     if (!runtime.profile.dynamax) issues.push({ field: "mechanic", message: `Dynamax and Gigantamax are not available in ${runtime.profile.label}.` });
     // Pinned Showdown battle-actions.ts:1483–1501 chooses G-Max from the stored

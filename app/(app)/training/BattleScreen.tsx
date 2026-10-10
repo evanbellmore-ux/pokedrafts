@@ -8,7 +8,7 @@ import AIStatusPill from "./board/AIStatusPill";
 import BattleBoard from "./board/BattleBoard";
 import type { CardPlay } from "./board/BattleCard";
 import BenchStrip from "./board/BenchStrip";
-import { remaining } from "./board/board-format";
+import { boardNames, remaining } from "./board/board-format";
 import PlaybackBar from "./board/PlaybackBar";
 import { cardLabels, highlightColour, spokenName, stepAnnouncement } from "./board/playback";
 import TurnPopup from "./board/TurnPopup";
@@ -38,6 +38,7 @@ const EMPTY_BOARD: BoardView = {
   team: { own: [], opponent: [] },
   field: { weather: null, terrain: null, rooms: [], sides: { own: [], opponent: [] } },
   megaUsed: { own: false, opponent: false },
+  mirrored: [],
 };
 
 /**
@@ -121,7 +122,7 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
             <fieldset disabled={!playing && (phase.kind === "waiting" || ended)} className="min-w-0">
               <legend className="sr-only">Turn {turn}</legend>
               <BattleBoard ref={boardRef} board={shown} renderControls={ended || playing ? undefined : controls.renderSlot} cardTarget={ended || playing ? undefined : controls.cardTarget}
-                cardPlay={playing ? cardPlay : undefined} popup={step && !resolving ? <TurnPopup key={`${step.turn}:${step.index}`} step={step.step} actorName={step.step.actor ? shown.active[step.step.actor]?.name ?? null : null} /> : undefined}
+                cardPlay={playing ? cardPlay : undefined} popup={step && !resolving ? <TurnPopup key={`${step.turn}:${step.index}`} step={step.step} actorName={step.step.actor ? boardNames(shown)[step.step.actor] || null : null} /> : undefined}
                 playbackBar={step ? <PlaybackBar turn={step.turn} step={playback.index + 1} count={playback.count} onSkip={skip} /> : undefined} />
               {!playing && controls.submitBar}
             </fieldset>

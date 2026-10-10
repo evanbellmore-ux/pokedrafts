@@ -1,7 +1,7 @@
-import { DOUBLES_SLOTS, SLOT_POSITION, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, slotSide, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { getPokemonTypeColours } from "@/app/lib/theme";
 import type { BoardView, HPView, LogTurn, PokemonView, TurnStep } from "../model/view-types";
-import { hpText } from "./board-format";
+import { boardNames, hpText, memberFullName } from "./board-format";
 
 // The board's turn playback (pure): which steps are new, the board at each beat of a step, its popup, the cards' labels and
 // the live region's sentence. The worker sends each turn's steps (log/protocol-steps.ts); the page never parses protocol.
@@ -63,10 +63,10 @@ export type Popup = {
   outline: string;
 };
 
-/** `actorName`: the move's user as its card shows it ("Gardevoir-Mega"), used unless the step told two of one name apart. */
+/** `actorName`: the move's user as its card names it ("Gardevoir-Mega", "Garchomp (yours)"); else the step's own name for it. */
 export function popupOf(step: TurnStep, actorName: string | null = null): Popup {
   const colours = step.kind === "move" ? typeColours(step) : null;
-  const by = step.by && actorName && !step.by.includes("(") ? actorName : step.by;
+  const by = step.by ? actorName ?? step.by : null;
   return {
     title: step.title,
     sub: step.kind === "move" ? by : step.results.length ? step.results.join(" · ") : null,
@@ -92,21 +92,24 @@ function sameHP(a: HPView, b: HPView) {
 }
 
 /**
- * A Pokémon as the live region names it: as its card shows it on `board` ("Gardevoir-Mega"; by `key` when given, else the
- * one in `slot`), with its position when another active Pokémon shows the same name ("Garchomp (your right)").
+ * A Pokémon as the live region names it: as its card names it on `board` ("Gardevoir-Mega", "Garchomp (yours)",
+ * "Garchomp (2)"; by `key` when given, else the one in `slot`); a member off the field by its name with its team's word.
+ * `key` is looked up on the side of `slot` only: a member key may be on both teams (the same team on both sides).
  */
 export function spokenName(board: BoardView, slot: DoublesSlotId, key?: string): string | null {
-  const active = Object.values(board.active);
-  const view = key ? [...active, ...board.team.own, ...board.team.opponent].find((each) => each?.key === key) : board.active[slot];
-  if (!view) return null;
-  const twins = active.filter((each) => each && each.key !== view.key && each.name === view.name).length > 0;
-  return twins ? `${view.name} (${SLOT_POSITION[slot]})` : view.name;
+  const names = boardNames(board);
+  if (!key || board.active[slot]?.key === key) return names[slot] || null;
+  const side = slotSide(slot);
+  const at = DOUBLES_SLOTS.find((each) => slotSide(each) === side && board.active[each]?.key === key);
+  if (at) return names[at];
+  const view = board.team[side].find((each) => each.key === key);
+  return view ? memberFullName(board, view) : null;
 }
 
 /**
  * The live region's sentence for a step (read once, when its popup shows): "Abomasnow used Blizzard. Dragonite: 100% HP to
- * 17% HP, Super effective." `nameOf` names a Pokémon by its slot (and key) as the board does (spokenName); the step's own
- * names are the fallback.
+ * 17% HP, Super effective." `nameOf` names a Pokémon by its slot (and key) as the board does (spokenName, full names); the
+ * step's own names are the fallback.
  */
 export function stepAnnouncement(step: TurnStep, nameOf: (slot: DoublesSlotId, key?: string) => string | null): string {
   const user = step.actor ? nameOf(step.actor) : null;
@@ -130,51 +133,60 @@ export function stepAnnouncement(step: TurnStep, nameOf: (slot: DoublesSlotId, k
  * or Mega Evolved is drawn as `latest` (the board now) shows it, with the step's HP; the rest keep `base`'s facts.
  */
 export function playbackBoard(base: BoardView, latest: BoardView | null, queue: readonly QueuedStep[], index: number, phase: "from" | "low" | "to"): BoardView {
-  const baseViews = new Map([...base.team.own, ...base.team.opponent].map((view) => [view.key, view]));
-  for (const view of Object.values(base.active)) if (view && !baseViews.has(view.key)) baseViews.set(view.key, view);
-  const latestViews = new Map(latest ? [...latest.team.own, ...latest.team.opponent].map((view) => [view.key, view]) : []);
-  if (latest) for (const view of Object.values(latest.active)) if (view && !latestViews.has(view.key)) latestViews.set(view.key, view);
+  // Views by side and key: a member key may be on both teams (the same team on both sides).
+  const id = (side: PokemonView["side"], key: string) => `${side}:${key}`;
+  const byId = (board: BoardView) => {
+    const map = new Map([...board.team.own, ...board.team.opponent].map((view) => [id(view.side, view.key), view]));
+    for (const view of Object.values(board.active)) if (view && !map.has(id(view.side, view.key))) map.set(id(view.side, view.key), view);
+    return map;
+  };
+  const baseViews = byId(base);
+  const latestViews = latest ? byId(latest) : new Map<string, PokemonView>();
   const views = new Map<string, PokemonView>();
-  const get = (key: string) => views.get(key) ?? baseViews.get(key) ?? latestViews.get(key) ?? null;
-  const active = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, base.active[slot]?.key ?? null])) as Record<DoublesSlotId, string | null>;
+  const get = (at: string) => views.get(at) ?? baseViews.get(at) ?? latestViews.get(at) ?? null;
+  const active = Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
+    const view = base.active[slot];
+    return [slot, view ? id(view.side, view.key) : null];
+  })) as Record<DoublesSlotId, string | null>;
 
   const apply = (step: TurnStep, phase: "from" | "low" | "to") => {
     const at = phase === "from" ? "from" : "to";
     for (const change of step.slots) {
       // Before the step, a Pokémon coming in is not there yet (the slot shows the one it replaces).
       if (at === "from" && change.entered) continue;
-      let view = get(change.key);
+      const changed = id(slotSide(change.slot), change.key);
+      let view = get(changed);
       if (!view) continue;
       if (change.entered) {
-        const shown = latestViews.get(change.key) ?? view;
+        const shown = latestViews.get(changed) ?? view;
         view = { ...shown, hp: view.hp, status: view.status, fainted: false, boosts: {} };
-        for (const slot of DOUBLES_SLOTS) if (active[slot] === change.key) active[slot] = null;
-        active[change.slot] = change.key;
+        for (const slot of DOUBLES_SLOTS) if (active[slot] === changed) active[slot] = null;
+        active[change.slot] = changed;
       }
       if (change.mega && at === "to") {
-        const shown = latestViews.get(change.key);
+        const shown = latestViews.get(changed);
         if (shown) view = { ...view, name: shown.name, speciesId: shown.speciesId, types: shown.types, ability: shown.ability, mega: true };
       }
       const hp = change.hp ? (phase === "from" ? change.hp.from : phase === "low" ? change.hp.low ?? change.hp.to : change.hp.to) : view.hp;
       view = at === "to"
         ? { ...view, hp, fainted: change.fainted ? true : view.fainted, status: change.status ?? view.status, boosts: change.boosts ?? view.boosts }
         : { ...view, hp };
-      views.set(change.key, view);
+      views.set(changed, view);
     }
   };
   for (let each = 0; each < Math.min(index, queue.length); each++) apply(queue[each].step, "to");
   if (index < queue.length) apply(queue[index].step, phase);
 
-  const slotOf = (key: string): DoublesSlotId | null => DOUBLES_SLOTS.find((slot) => active[slot] === key) ?? null;
+  const slotOf = (at: string): DoublesSlotId | null => DOUBLES_SLOTS.find((slot) => active[slot] === at) ?? null;
   const place = (view: PokemonView): PokemonView => {
-    const current = views.get(view.key) ?? view;
-    return { ...current, slot: slotOf(view.key) };
+    const current = views.get(id(view.side, view.key)) ?? view;
+    return { ...current, slot: slotOf(id(view.side, view.key)) };
   };
   return {
     ...base,
     active: Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
-      const key = active[slot];
-      const view = key ? get(key) : null;
+      const at = active[slot];
+      const view = at ? get(at) : null;
       return [slot, view ? { ...view, slot } : null];
     })) as Record<DoublesSlotId, PokemonView | null>,
     team: { own: base.team.own.map(place), opponent: base.team.opponent.map(place) },

@@ -11,7 +11,7 @@ import {
   SEMI_INVULNERABLE_MOVES, STRONG_WEATHERS, SWITCH_MOVES, TRACKING_ABILITIES, TRACKS_TARGET_MOVES,
 } from "./doubles-actions";
 import {
-  allyOf, DOUBLES_SLOTS, doublesNames, foesOf, SHOWDOWN_POSITION, slotSide, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
+  allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, slotSide, turnNames, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
   type DoublesSlotId, type DoublesStart, type DoublesStartRow, type DoublesStep, type DoublesTurnInput, type DoublesTurnResult,
   type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesEndOfTurn,
 } from "./doubles-types";
@@ -142,7 +142,7 @@ export type TurnKernel = {
   // ---- Context ----
   readonly input: DoublesTurnInput;
   readonly runtime: BattleRuntime;
-  /** doublesNames: a species name, " (your left)" added to duplicates; "" for an empty slot. */
+  /** turnNames: a species name, with " (yours)" / " (opponent's)" across sides and " (1)" / " (2)" within one (doublesNames); the input's names name a fainted Pokémon as its card does, else "" for an empty slot. */
   readonly names: Record<DoublesSlotId, string>;
   /** Each slot's engine maximum HP (Dynamax HP while Dynamaxed) and base maximum HP. */
   readonly hp: Record<DoublesSlotId, { maxHP: number; baseMaxHP: number }>;
@@ -2768,7 +2768,7 @@ export function doublesRepresentative(input: DoublesTurnInput, slot: DoublesSlot
 
 function createContext(input: DoublesTurnInput, settle: DoublesSettle, memo: Memo, mode: Mode, stats: StepStats[] | null): Ctx {
   const { runtime } = input;
-  const names = doublesNames(input.pokemon, runtime);
+  const names = turnNames(input);
   const hp = Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
     const build = settle.slots[slot]?.folded;
     const values = build ? turnHP(build, runtime) : { maxHP: 0, baseMaxHP: 0 };
@@ -3295,7 +3295,7 @@ function turnFacts(input: DoublesTurnInput, gas: DoublesGas | null | undefined):
   const facts = [input.field.critical ? "Every move hits and every damaging hit is critical; added effects below 100% do not happen." : NO_CRITS, ...eotHooks.endFacts(input)];
   // Neutralizing Gas from the turn's start (calculate.ts settleDoublesStart): the Pokémon whose abilities it suppresses.
   if (gas?.suppressed.length) {
-    const names = doublesNames(input.pokemon, input.runtime);
+    const names = turnNames(input);
     const list = DOUBLES_SLOTS.filter((slot) => gas.suppressed.includes(slot)).map((slot) => names[slot]);
     facts.push(`Neutralizing Gas suppresses the abilities of ${list.length < 2 ? list.join("") : `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}`}.`);
   }

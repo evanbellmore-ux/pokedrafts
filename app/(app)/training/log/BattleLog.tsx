@@ -8,12 +8,14 @@ export type BattleLogProps = {
   runtime: BattleRuntime;
   showRead: boolean;
   board: BoardView | null;
+  /** A replay's board as each turn began: names a turn's slots when it has no occupants (a battle saved before them). */
+  decisionBoards?: Readonly<Record<number, BoardView>>;
   ownName(key: string): string | null;
   headingId: string;
 };
 
 /** Every turn, oldest first. Not a live region: the announcer reads the news once (SPEC D10). */
-export default function BattleLog({ log, runtime, showRead, board, ownName, headingId }: BattleLogProps) {
+export default function BattleLog({ log, runtime, showRead, board, decisionBoards, ownName, headingId }: BattleLogProps) {
   return (
     <div className="min-w-0 rounded-xl border border-line bg-panel p-3">
       <h2 id={headingId} className="text-base font-semibold text-text">Battle log</h2>
@@ -22,7 +24,7 @@ export default function BattleLog({ log, runtime, showRead, board, ownName, head
           <li key={turn.turn} data-training-log-turn={turn.turn} className="min-w-0">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{turnTitle(turn.turn)}</h3>
             <TurnLines lines={turn.lines} />
-            {showRead && <AIReadPanel turn={turn} board={board} runtime={runtime} ownName={ownName} />}
+            {showRead && <AIReadPanel turn={turn} board={board} decisionBoard={decisionBoards?.[turn.turn] ?? null} runtime={runtime} ownName={ownName} />}
           </li>
         ))}
       </ol>

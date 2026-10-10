@@ -4,6 +4,7 @@
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { HabitsRecord } from "./decision";
 import type { EditorMoveOption, SuggestedSet, SuggestMember } from "./usage";
+import type { RerunTurn } from "./saved-battle";
 import type { BoardView, LogTurn, PlayerChoice, TeamProblems, TrainingRequest, TrainingSetup } from "./view-types";
 
 export type ToWorker =
@@ -47,9 +48,14 @@ export type FromWorker =
    * seed base, the habits at the start), encrypted with this browser's key; null when it could not be sealed.
    */
   | { type: "checkpoint"; battleId: number; turn: number; sealed: string | null }
-  /** The board as each turn began and after the last one (built per setup.info.youSee), the re-run log's hashes and the re-run's result. */
+  /**
+   * The board as each turn began and after the last one (built per setup.info.youSee), the re-run log's hashes (its text and
+   * its wording-free shape, saved-battle.ts logShapeHash), its written turns (lines and steps: a saved log that differs only
+   * in wording takes them) and the re-run's result.
+   */
   | {
     type: "replay-ready"; replayId: number; starts: Record<number, BoardView>; end: BoardView; hash: string; turnHashes: Record<number, string>;
+    shape: string; turnShapes: Record<number, string>; turns: RerunTurn[];
     result: { result: "win" | "loss" | "tie"; forfeited: boolean };
   }
   | { type: "replay-error"; replayId: number; message: string }

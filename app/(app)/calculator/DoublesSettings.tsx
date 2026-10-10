@@ -7,7 +7,6 @@ import type { BattleConditions as Conditions, BuildIssue } from "@/app/lib/battl
 import BattleConditions, { describeDoublesConditions, useDoublesCarried } from "./BattleConditions";
 import type { BuildSettings } from "./BuildSettings";
 import SettingsDisclosure from "./SettingsDisclosure";
-import { positionedName } from "./doubles-format";
 import type { Combatant } from "./roster-prep";
 import styles from "./calculator.module.css";
 
@@ -44,7 +43,7 @@ export default function DoublesSettings({ runtime, names, slots, issues, fieldIs
             issueCount={issues[slot].length}
             label={<>
               <span>Build settings</span>
-              <span className="min-w-0 wrap-anywhere font-normal text-muted">{positionedName(names, slot)}</span>
+              <span className="min-w-0 wrap-anywhere font-normal text-muted">{names[slot]}</span>
             </>}
           >
             {renderEditor(slot)}

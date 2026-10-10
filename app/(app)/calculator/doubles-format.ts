@@ -1,7 +1,7 @@
 import {
-  allyOf, DOUBLES_SLOTS, foesOf, relativePosition, SLOT_POSITION, slotSide,
+  allyOf, DOUBLES_SLOTS, foesOf, slotSide,
   type DoublesFact, type DoublesHit, type DoublesHP, type DoublesResidual, type DoublesSlotId, type DoublesStartRow, type DoublesStep, type DoublesTargetRule,
-  type DoublesTurnResult, type RelativePosition,
+  type DoublesTurnResult,
 } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleMechanic, MoveDamageResult } from "@/app/lib/battle/types";
@@ -21,34 +21,17 @@ export function rollDescription(mode: DamageRollMode) {
   return ROLL_DESCRIPTIONS[mode];
 }
 
-const RELATIVE_LABELS: Record<RelativePosition, string> = { "left-foe": "Left foe", "right-foe": "Right foe", ally: "Ally", itself: "Itself" };
-
-/** Where `target` stands as `actor` sees it: "Left foe", "Right foe", "Ally" or "Itself". */
-export function relativeLabel(actor: DoublesSlotId, target: DoublesSlotId) {
-  return RELATIVE_LABELS[relativePosition(actor, target)];
+/**
+ * A target radio's label from `actor`: "Itself" for its own slot, else the target's name (doublesNames: "Blastoise",
+ * "Garchomp (opponent's)"); "—" for a slot with no Pokémon.
+ */
+export function targetName(names: DoublesNames, actor: DoublesSlotId, target: DoublesSlotId) {
+  return actor === target ? "Itself" : names[target] || "—";
 }
 
-/** "Your left", "Opponent's right". */
-export function positionLabel(slot: DoublesSlotId) {
-  const words = SLOT_POSITION[slot];
-  return words[0].toUpperCase() + words.slice(1);
-}
-
-/** The species name without the " (your left)" doublesNames adds when two slots show the same species. */
-export function baseName(names: DoublesNames, slot: DoublesSlotId) {
-  const suffix = ` (${SLOT_POSITION[slot]})`;
-  const name = names[slot];
-  return name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
-}
-
-/** "Charizard (your left)". */
-export function positionedName(names: DoublesNames, slot: DoublesSlotId) {
-  return `${baseName(names, slot)} (${SLOT_POSITION[slot]})`;
-}
-
-/** "Blastoise (left foe)", as `actor` sees `target`. */
-export function relativeName(names: DoublesNames, actor: DoublesSlotId, target: DoublesSlotId) {
-  return `${baseName(names, target)} (${relativeLabel(actor, target).toLowerCase()})`;
+/** A Pokémon a move of `actor`'s reaches, mid-sentence: "itself" for its own slot, else its name ("—" for none). */
+function reachedName(names: DoublesNames, actor: DoublesSlotId, slot: DoublesSlotId) {
+  return slot === actor ? "itself" : names[slot] || "—";
 }
 
 const NO_TARGET_FACTS: Record<Extract<DoublesTargetRule, { kind: "none" }>["scope"], string> = {
@@ -65,17 +48,17 @@ function joinAnd(parts: string[]) {
   return parts.length <= 2 ? parts.join(" and ") : `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}`;
 }
 
-/** The Pokémon a list of slots names, from `actor`: "both foes and Venusaur (ally)", "Blastoise (left foe)". */
+/** The Pokémon a list of slots names, from `actor`: "both foes and Venusaur", "Blastoise", "itself". */
 export function slotsText(names: DoublesNames, actor: DoublesSlotId, slots: readonly DoublesSlotId[]) {
   const foes = slots.filter((slot) => slotSide(slot) !== slotSide(actor));
   const others = slots.filter((slot) => slotSide(slot) === slotSide(actor));
-  const parts = [...(foes.length === 2 ? ["both foes"] : foes.map((slot) => relativeName(names, actor, slot))), ...others.map((slot) => relativeName(names, actor, slot))];
+  const parts = [...(foes.length === 2 ? ["both foes"] : foes.map((slot) => reachedName(names, actor, slot))), ...others.map((slot) => reachedName(names, actor, slot))];
   return parts.length ? joinAnd(parts) : "no Pokémon";
 }
 
 /**
  * What a slot's move aims at under its target rule (doubles-types DoublesTargetRule): `{ arrow: true }` for Pokémon targets
- * ("Blastoise (left foe)", "both foes and Venusaur (ally)", "a random foe"), `{ arrow: false }` for a "none" rule ("Targets itself").
+ * ("Blastoise", "both foes and Venusaur", "a random foe"), `{ arrow: false }` for a "none" rule ("Targets itself").
  * A "choose" rule without a target, or an "auto" rule that reaches no Pokémon (every one it could reach has fainted), gives
  * "No target"; a random foe with one foe left names it.
  */
@@ -85,10 +68,10 @@ export function actionTargets(names: DoublesNames, actor: DoublesSlotId, rule: D
     if (!rule.hits.length) return { arrow: false, text: "No target" };
     return { arrow: true, text: rule.random && rule.hits.length > 1 ? "a random foe" : slotsText(names, actor, rule.hits) };
   }
-  return target && rule.options.includes(target) ? { arrow: true, text: relativeName(names, actor, target) } : { arrow: false, text: "No target" };
+  return target && rule.options.includes(target) ? { arrow: true, text: reachedName(names, actor, target) } : { arrow: false, text: "No target" };
 }
 
-/** "Flamethrower → Blastoise (left foe)", "Earthquake → both foes and Venusaur (ally)", "Protect · Targets itself". */
+/** "Flamethrower → Blastoise", "Earthquake → both foes and Venusaur", "Protect · Targets itself". */
 export function actionFact(moveName: string, names: DoublesNames, actor: DoublesSlotId, rule: DoublesTargetRule, target: DoublesSlotId | null) {
   const targets = actionTargets(names, actor, rule, target);
   return `${moveName}${targets.arrow ? ARROW : " · "}${targets.text}`;
@@ -100,12 +83,12 @@ export function stepMoveName(step: Pick<DoublesStep, "moveId" | "effectiveName">
 }
 
 /**
- * A step's first line: "2 · Flamethrower · Charizard (your left) → Blastoise (left foe)". `targets` comes from the slot's
+ * A step's first line: "2 · Flamethrower · Charizard → Blastoise". `targets` comes from the slot's
  * action (actionTargets); without one (the action changed since), the Pokémon the step can reach.
  */
 export function stepHeading(position: number, step: DoublesStep, names: DoublesNames, runtime: BattleRuntime, targets: { arrow: boolean; text: string } | null) {
   const aim = targets ?? (step.hits.length ? { arrow: true, text: slotsText(names, step.slot, step.hits.map((hit) => hit.slot)) } : null);
-  const head = `${position} · ${stepMoveName(step, runtime)} · ${positionedName(names, step.slot)}`;
+  const head = `${position} · ${stepMoveName(step, runtime)} · ${names[step.slot]}`;
   return aim ? `${head}${aim.arrow ? ARROW : " · "}${aim.text}` : head;
 }
 
@@ -326,16 +309,16 @@ export function turnSummary(turn: DoublesTurnResult | null, names: DoublesNames,
   }), ...(turn.endOfTurn.status === "not-estimated" ? [endNotEstimatedText(turn.endOfTurn.reason)] : [])].join(" ");
 }
 
-/** The engine's validation messages, each with the Pokémon it is about. */
+/** The engine's validation messages, each with the Pokémon it is about: "Garchomp: No Tera type.". */
 export function issueLines(issues: Extract<DoublesTurnResult, { status: "issues" }>["issues"], names: DoublesNames) {
   return [
-    ...DOUBLES_SLOTS.flatMap((slot) => (issues.pokemon[slot] ?? []).map((issue) => `${positionedName(names, slot)}: ${issue.message}`)),
-    ...issues.actions.map((issue) => `${positionedName(names, issue.slot)}: ${issue.message}`),
+    ...DOUBLES_SLOTS.flatMap((slot) => (issues.pokemon[slot] ?? []).map((issue) => `${names[slot]}: ${issue.message}`)),
+    ...issues.actions.map((issue) => `${names[issue.slot]}: ${issue.message}`),
     ...issues.field.map((issue) => `Field: ${issue.message}`),
   ];
 }
 
-/** The Pokémon `slot`'s damage can go into, in the Moves pane's order: left foe, right foe, ally. */
+/** The Pokémon `slot`'s damage can go into, in the Moves pane's order: its foes in slot order, then its ally. */
 export function intoOptions(slot: DoublesSlotId): DoublesSlotId[] {
   return [...foesOf(slot), allyOf(slot)];
 }
