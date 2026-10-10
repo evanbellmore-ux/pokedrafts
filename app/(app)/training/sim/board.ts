@@ -64,9 +64,11 @@ export type BoardArgs = {
   battle: Battle; tracker: { state(): PublicState }; sheet: SheetView; info: InfoView; keys: MemberKeys; runtime: BattleRuntime;
   /** Your members' keys in team (sheet) order. */
   ownKeys: readonly string[];
+  /** Member keys (both sides) whose battle name is on both teams (BoardView.mirrored); default none. */
+  mirrored?: readonly string[];
 };
 
-export function buildBoard({ battle, tracker, sheet, info, keys, runtime, ownKeys }: BoardArgs): BoardView {
+export function buildBoard({ battle, tracker, sheet, info, keys, runtime, ownKeys, mirrored = [] }: BoardArgs): BoardView {
   const state = tracker.state();
   const keyOf = (pokemon: Pokemon) => keys.keyOf(pokemon.side.id, pokemon.name);
   const species = (id: string) => runtime.speciesById.get(id);
@@ -145,6 +147,7 @@ export function buildBoard({ battle, tracker, sheet, info, keys, runtime, ownKey
     turn: state.turn, active, team: { own: ownTeam, opponent: foeTeam },
     field: fieldView(state, battle, sheet, runtime, keys),
     megaUsed: { own: state.sides.p1.megaUsed, opponent: state.sides.p2.megaUsed },
+    mirrored: [...mirrored],
   };
 }
 

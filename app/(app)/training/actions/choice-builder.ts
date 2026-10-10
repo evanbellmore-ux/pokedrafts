@@ -1,13 +1,13 @@
-import { allyOf, SLOT_POSITION, type DoublesSlotId, type DoublesTargetRule } from "@/app/lib/battle/doubles-types";
+import { allyOf, type DoublesSlotId, type DoublesTargetRule } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BoardView, JointAction, MegaMechanic, MoveRequest, RequestActive, RequestPokemon, SlotAction, SwitchRequest } from "../model/view-types";
-import { capitalize } from "../board/board-format";
+import { plainName } from "../board/board-format";
 import { onlyTarget, requestTargetRule } from "./request-targets";
 
 // Your turn's choices, built from the Showdown request (moves, PP, target type, disabled, trapped, canMegaEvo*) as
 // JointActions; the worker writes the choice string (sim/choices.ts toChoiceString). No string building here.
 
-/** Your Showdown positions in request order: position 0 is your left (SHOWDOWN_POSITION). */
+/** Your Showdown positions in request order: position 0 is own-left (SHOWDOWN_POSITION). */
 export const OWN_SLOTS = ["own-left", "own-right"] as const;
 export type OwnSlot = (typeof OWN_SLOTS)[number];
 
@@ -26,8 +26,7 @@ export type MoveOption = {
 export type SwitchOption = { key: string; ident: string; name: string; condition: string; disabledReason: string | null };
 export type SlotOptions = {
   slot: OwnSlot;
-  /** "Aerodactyl (your left)". */
-  label: string;
+  /** "Aerodactyl"; "Garchomp (2)" while your other active card shows the same name (a Transform). */
   name: string;
   /** Fainted or commanding: the slot passes (pinned sim/side.ts:1305-1330). */
   passes: boolean;
@@ -53,16 +52,15 @@ export function memberKeyOf(pokemon: RequestPokemon, board: BoardView): string |
   return board.team.own.find((mon) => mon.ident.replace(/^p[12][ab]?:\s*/, "") === name)?.key ?? null;
 }
 
-function positionWords(slot: DoublesSlotId) {
-  return SLOT_POSITION[slot];
-}
-
-/** The board's name for the Pokémon in one of your positions ("Indeedee-F", not the request's "Indeedee"). */
+/**
+ * The board's name for the Pokémon in one of your positions ("Indeedee-F", not the request's "Indeedee"), without a side word
+ * (only your own Pokémon are meant) but with its number while your other card shows the same name ("Garchomp (2)").
+ */
 function nameAt(board: BoardView, slot: DoublesSlotId, pokemon: RequestPokemon | undefined): string {
-  const onBoard = board.active[slot]?.name;
+  const onBoard = plainName(board, slot);
   if (onBoard) return onBoard;
   const key = pokemon ? memberKeyOf(pokemon, board) : null;
-  return (key && board.team.own.find((mon) => mon.key === key)?.name) || pokemon?.ident.replace(/^p[12][ab]?:\s*/, "") || capitalize(positionWords(slot));
+  return (key && board.team.own.find((mon) => mon.key === key)?.name) || pokemon?.ident.replace(/^p[12][ab]?:\s*/, "") || "—";
 }
 
 /** Who is present (not fainted) at a slot, for target rules. */
@@ -110,7 +108,7 @@ export function slotOptions(request: MoveRequest, board: BoardView, index: 0 | 1
     ...(active?.canMegaEvoX ? ["megax" as const] : []),
     ...(active?.canMegaEvoY ? ["megay" as const] : []),
   ];
-  return { slot, label: `${name} (${positionWords(slot)})`, name, passes, moves, switches, mega, trapped };
+  return { slot, name, passes, moves, switches, mega, trapped };
 }
 
 /** The Pokémon a slot's move aims at: the pick for a choose rule (or its only option), the ally for adjacentAlly. */
@@ -123,10 +121,14 @@ export function actionTarget(option: MoveOption, picked: DoublesSlotId | null, s
 
 export const MEGA_LABEL: Record<MegaMechanic, string> = { mega: "Mega Evolve", megax: "Mega Evolve X", megay: "Mega Evolve Y" };
 
-/** "{position} is Mega Evolving": the partner already chose Mega Evolution this turn (once per side, sim/side.ts:779-781). */
-export function megaBlockedBy(selections: readonly SlotSelection[], index: 0 | 1): string | null {
-  const other = selections[index === 0 ? 1 : 0];
-  return other?.mega && other.choice?.kind === "move" ? `${capitalize(positionWords(OWN_SLOTS[index === 0 ? 1 : 0]))} is Mega Evolving` : null;
+/**
+ * "Garchomp is Mega Evolving": the partner already chose Mega Evolution this turn (once per side, sim/side.ts:779-781).
+ * `names`: your slots' names in request order (SlotOptions.name).
+ */
+export function megaBlockedBy(selections: readonly SlotSelection[], index: 0 | 1, names: readonly string[]): string | null {
+  const partner = index === 0 ? 1 : 0;
+  const other = selections[partner];
+  return other?.mega && other.choice?.kind === "move" ? `${names[partner] || "—"} is Mega Evolving` : null;
 }
 
 /** "Garchomp is chosen for both": two slots switching to one Pokémon. */
@@ -165,11 +167,12 @@ export function buildMoveAction(request: MoveRequest, board: BoardView, selectio
   const duplicate = duplicateSwitch(options.flatMap((option) => option.switches), switches);
   if (duplicate) missing.push(duplicate);
   const megas = OWN_SLOTS.filter((slot) => { const each = action[slot]; return each?.kind === "move" && !!each.mega; });
-  if (megas.length > 1) missing.push(`${capitalize(positionWords(megas[0]))} is Mega Evolving`);
+  if (megas.length > 1) missing.push(`${options[OWN_SLOTS.indexOf(megas[0] as OwnSlot)].name} is Mega Evolving`);
   return missing.length ? { missing } : { action };
 }
 
-export type ReplaceSlot = { slot: OwnSlot; index: number; label: string; name: string; flagged: boolean; options: SwitchOption[] };
+/** `name`: the Pokémon being replaced ("Abomasnow"; "Garchomp (2)" while your other card shows the same name). */
+export type ReplaceSlot = { slot: OwnSlot; index: number; name: string; flagged: boolean; options: SwitchOption[] };
 
 /** Forced and mid-turn replacements: one per flagged position (pinned sim/side.ts:936, a flagged slot passes once the living bench is used up). */
 export function replaceSlots(request: SwitchRequest, board: BoardView): ReplaceSlot[] {
@@ -178,7 +181,7 @@ export function replaceSlots(request: SwitchRequest, board: BoardView): ReplaceS
     const slot = OWN_SLOTS[index] ?? "own-left";
     const pokemon = request.side[index];
     const name = nameAt(board, slot, pokemon);
-    return { slot, index, label: `${name} (${positionWords(slot)})`, name, flagged, options: flagged ? bench : [] };
+    return { slot, index, name, flagged, options: flagged ? bench : [] };
   });
 }
 

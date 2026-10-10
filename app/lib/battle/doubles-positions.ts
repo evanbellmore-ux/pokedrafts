@@ -1,5 +1,5 @@
 import { REASONS } from "./doubles-actions";
-import { allyOf, DOUBLES_SLOTS, doublesNames, slotSide, type DoublesOutcomeMon, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
+import { allyOf, DOUBLES_SLOTS, slotSide, turnNames, type DoublesOutcomeMon, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
 import { cloneWorld, type PendingAction, type World } from "./doubles-world";
 import type { StartRoute, TurnKernel, TurnMoveInfo } from "./doubles-turn";
 import { turnSpeed } from "./calculate";
@@ -176,7 +176,7 @@ export function outcomeMon(kernel: TurnKernel, w: World, slot: DoublesSlotId): P
  */
 export function turnFacts(input: DoublesTurnInput): string[] {
   if (!counted({ champions: input.runtime.profile.id === "champions", runtime: input.runtime })) return [];
-  const names = doublesNames(input.pokemon, input.runtime);
+  const names = turnNames(input);
   return DOUBLES_SLOTS.filter((slot) => {
     const entry = input.pokemon[slot];
     return entry?.action.moveId === "allyswitch" && entry.carried?.allySwitch === undefined;

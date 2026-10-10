@@ -1,9 +1,10 @@
-import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { nameText, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { BattleStatus } from "@/app/lib/battle/types";
 import type { SideID } from "../model/showdown-types";
 import type { HPView, PokemonView, StepSlot, TurnStep } from "../model/view-types";
 import {
-  effectKind, effectName, hasTag, idOf, IGNORED, POSITION_WORDS, PROTECTING_MOVES, SLOT_OF, STAT_NAMES, tag, WEATHER_NAMES,
+  effectKind, effectName, hasTag, idOf, IGNORED, POSITION_OF, positionNumber, PROTECTING_MOVES, SLOT_OF, STAT_NAMES, tag, teamSideWord,
+  WEATHER_NAMES,
 } from "./protocol-text";
 
 // The board's playback of each turn (Training): the same p1 channel as the log (log/protocol-text.ts), read into steps in
@@ -21,6 +22,8 @@ export type StepBuilder = {
 export type StepBuilderOptions = {
   /** Display name for a Pokémon from its side and Showdown ident name (as the log's). Default: the name. */
   names?: (side: SideID, name: string) => string;
+  /** Each team's battle names (as the log's `teams`): a name on both teams carries its side word. Default: none. */
+  teams?: Record<SideID, readonly string[]>;
   /** TrainingMember.key for a side's Showdown ident name (the board's PokemonView.key). Default: "p1:Name". */
   keyOf?: (side: SideID, name: string) => string;
   /** A move's type ("Rock Slide" → "Rock"; Pixilate's Hyper Voice → "Fairy"), for the colours; null when unknown. */
@@ -46,6 +49,8 @@ type Change = {
 type Open = {
   kind: TurnStep["kind"]; group: number; title: string; titles: string[]; type: string | null;
   actor: Mon | null; actorSlot: DoublesSlotId | null; self: boolean;
+  /** The position the move's line named its user at ("p2a"), for its name. */
+  actorPosition: string | null;
   /** Slots the move named (its target, a spread list) and the ones its effects reached (damage, a miss, Protect …). */
   declared: Set<DoublesSlotId>; reached: Set<DoublesSlotId>;
   changes: Change[];
@@ -144,13 +149,24 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
     const position = parseIdent(ident)?.position;
     return position ? SLOT_OF[position] ?? null : null;
   };
-  /** "Garchomp", or "Garchomp (your left)" while another active Pokémon shows the same name. */
-  function label(mon: Mon) {
-    const name = display(mon.side, mon.name);
-    const twin = [...positions.values()].some((ident) => ident !== mon.ident && display(mons.get(ident)!.side, mons.get(ident)!.name) === name);
-    const slot = slotOf(mon);
-    return twin && slot ? `${name} (${POSITION_WORDS[slot]})` : name;
+  /** The name shown at a position now ("p2a"), or null when no one stands there. */
+  function nameAt(position: string) {
+    const ident = positions.get(position);
+    const mon = ident ? mons.get(ident) : undefined;
+    return mon ? display(mon.side, mon.name) : null;
   }
+  /**
+   * "Garchomp"; "Gardevoir (yours)" when both teams have the name; "Garchomp (2)" while the other position on its side shows
+   * the same name (an Illusion), numbered by `position` (the line's own ident, else where it stands).
+   */
+  function label(mon: Mon, position: string | null = mon.position) {
+    const base = display(mon.side, mon.name);
+    // A position it has left since (Ally Switch before its step closed) gives way to where it stands now.
+    const at = position && positions.get(position) === mon.ident ? position : mon.position;
+    return nameText({ base, side: teamSideWord(options.teams, mon.side, base), number: positionNumber(at, base, nameAt) });
+  }
+  /** The position a line's ident names ("p2a"), or where the Pokémon stands for an ident without one. */
+  const positionOf = (ident: string | undefined, mon: Mon) => parseIdent(ident)?.position ?? mon.position;
 
   /** "17/100 brn" → HP and status on the p1 channel (your HP exact; the AI's `n/100` with a g/y/r suffix at 50 and 20). */
   function readHP(mon: Mon, token: string | undefined) {
@@ -172,7 +188,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
   function begin(kind: TurnStep["kind"], title: string, extra: Partial<Open> = {}): Open {
     close();
     const step: Open = {
-      kind, group: groups.length - 1, title, titles: [title], type: null, actor: null, actorSlot: null, self: false,
+      kind, group: groups.length - 1, title, titles: [title], type: null, actor: null, actorSlot: null, self: false, actorPosition: null,
       declared: new Set(), reached: new Set(), changes: [], results: [], onlySwitches: false, ambient: false, ...extra,
     };
     open = step;
@@ -245,7 +261,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
     }
     const slots: StepSlot[] = [];
     for (const change of step.changes) {
-      const out: StepSlot = { slot: change.slot, key: change.mon.key, name: display(change.mon.side, change.mon.name), facts: [...change.facts] };
+      const out: StepSlot = { slot: change.slot, key: change.mon.key, name: label(change.mon, POSITION_OF[change.slot]), facts: [...change.facts] };
       if (change.entered) out.entered = true;
       if (change.entered || (change.hpTouched && !sameHP(change.hpFrom, change.mon.hp))) {
         out.hp = { from: { ...change.hpFrom }, to: { ...change.mon.hp } };
@@ -278,7 +294,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
       targets = slots.map((slot) => slot.slot);
     }
     targets = [...new Set(targets)];
-    const by = step.kind === "move" && step.actor && !(targets.length === 1 && targets[0] === step.actorSlot) ? label(step.actor) : null;
+    const by = step.kind === "move" && step.actor && !(targets.length === 1 && targets[0] === step.actorSlot) ? label(step.actor, step.actorPosition ?? step.actor.position) : null;
     groups[step.group].push({
       kind: step.kind, title: step.kind === "switch" ? step.titles.join(" · ") : step.title, by, results: [...step.results], type: step.type,
       targets, actor: step.kind === "move" ? step.actorSlot : null, slots,
@@ -329,6 +345,8 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
         const position = parsed.position;
         const leaving = positions.get(position);
         const old = leaving && leaving !== parsed.ident ? mons.get(leaving) ?? null : null;
+        // The Pokémon leaving is named as it stood there, before the switch.
+        const oldName = old ? label(old, position) : null;
         const mon = monOf(args[1])!;
         if (old) { old.position = null; old.boosts = {}; }
         positions.set(position, mon.ident);
@@ -340,8 +358,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
         if (command === "replace") { if (old) { mon.hp = { ...old.hp }; mon.status = old.status; } } else readHP(mon, args[3]);
         const from = tag(args, "from");
         const prefix = from ? effectName(from) : command === "drag" && open?.kind === "move" ? open.title : null;
-        const name = display(mon.side, mon.name);
-        const oldName = old ? display(old.side, old.name) : null;
+        const name = label(mon, position);
         const oldFainted = !!old && (old.hp.kind === "exact" ? old.hp.current === 0 : old.hp.percent === 0);
         const sentence = command === "replace" ? `Illusion ended: ${name}`
           : !old || !started ? `${name} comes in`
@@ -384,7 +401,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
         const actor = monOf(args[1]);
         const move = args[2] ?? "";
         const user = actor ? { side: actor.side, name: actor.name, species: actor.species, ability: actor.ability } : null;
-        const step = begin("move", move, { type: moveType(move, user), actor, actorSlot: slotOf(actor) });
+        const step = begin("move", move, { type: moveType(move, user), actor, actorSlot: slotOf(actor), actorPosition: parseIdent(args[1])?.position ?? null });
         const spread = args.find((arg) => arg.startsWith("[spread]"));
         const notarget = args.includes("[notarget]");
         if (spread) {
@@ -406,8 +423,8 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
         if (!mon) return;
         const reason = args[2] ?? "";
         const known = CANT_TITLES[idOf(reason)];
-        // "Garchomp (your right) is asleep" while another active Pokémon shows the same name.
-        const name = label(mon);
+        // "Garchomp is asleep"; "Garchomp (2) is asleep" while the other position on its side shows the same name.
+        const name = label(mon, positionOf(args[1], mon));
         const title = known ? `${name} ${known}` : args[3] ? `${name} can't use ${args[3]} (${effectName(reason)})` : `${name} can't move`;
         const step = begin("cant", title, { actor: mon, actorSlot: slotOf(mon) });
         touch(mon, step);
@@ -424,7 +441,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
       case "-mega": case "-primal": {
         const mon = monOf(args[1]);
         if (!mon) return;
-        const step = begin("mega", `${label(mon)} ${command === "-mega" ? "Mega Evolves" : "undergoes Primal Reversion"}`, { actor: mon, actorSlot: slotOf(mon) });
+        const step = begin("mega", `${label(mon, positionOf(args[1], mon))} ${command === "-mega" ? "Mega Evolves" : "undergoes Primal Reversion"}`, { actor: mon, actorSlot: slotOf(mon) });
         const change = touch(mon, step);
         if (change) change.mega = true;
         return;
@@ -507,7 +524,7 @@ export function createStepBuilder(options: StepBuilderOptions = {}): StepBuilder
           // Hurt in confusion: the next line is its damage. Otherwise "Confused" goes on its card in its move's step.
           const after = next?.slice(1).split("|");
           if (mon && after && after[0] === "-damage" && monOf(after[1]) === mon && idOf(tag(after, "from") ?? "") === "confusion") {
-            const step = begin("effect", `${label(mon)} is confused`, { actor: mon, actorSlot: slotOf(mon) });
+            const step = begin("effect", `${label(mon, positionOf(args[1], mon))} is confused`, { actor: mon, actorSlot: slotOf(mon) });
             touch(mon, step);
           } else if (actsNext(mon, next)) beforeOwnAction(mon, "Confused", false);
         } else if (open && effectKind(effect) === "move" && TRAPS.has(id)) {

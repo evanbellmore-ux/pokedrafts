@@ -1,4 +1,4 @@
-import { DOUBLES_SLOTS, SLOT_POSITION, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, duplicateNameParts, nameText, slotSide, type DoublesSideId, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
 import type { BattleStatus, CombatStat } from "@/app/lib/battle/types";
 import type { BoardView, FieldEffectView, HPView, ItemView, PokemonView } from "../model/view-types";
 
@@ -7,23 +7,39 @@ import type { BoardView, FieldEffectView, HPView, ItemView, PokemonView } from "
 
 export type BoardNames = Record<DoublesSlotId, string>;
 
-/** Names for facts and labels, with " (your left)" etc. on both when two slots show the same name; "" for an empty slot. */
-export function boardNames(board: BoardView): BoardNames {
+/** "yours" / "opponent's" for a side. */
+const SIDE_WORD: Record<DoublesSideId, NonNullable<NameParts["side"]>> = { own: "yours", opponent: "opponent's" };
+
+/**
+ * The active cards' name parts (§1.2-1.4 of the naming rules): the side word when both teams have the card's battle name
+ * (`board.mirrored`) or an active card on the other side shows the same name now (a Transform), the number while the two
+ * active cards of one side show the same name (an Illusion or a Transform: own-left / opponent-left 1, the right slots 2).
+ * An empty slot's base is "".
+ */
+export function boardNameParts(board: BoardView): Record<DoublesSlotId, NameParts> {
   const base = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, board.active[slot]?.name ?? ""])) as BoardNames;
-  return Object.fromEntries(DOUBLES_SLOTS.map((slot) => {
-    const same = base[slot] !== "" && DOUBLES_SLOTS.some((other) => other !== slot && base[other] === base[slot]);
-    return [slot, same ? `${base[slot]} (${SLOT_POSITION[slot]})` : base[slot]];
-  })) as BoardNames;
+  const parts = duplicateNameParts(base);
+  for (const slot of DOUBLES_SLOTS) {
+    const view = board.active[slot];
+    if (view && !parts[slot].side && board.mirrored.includes(view.key)) parts[slot] = { ...parts[slot], side: SIDE_WORD[slotSide(slot)] };
+  }
+  return parts;
 }
 
-/** "Garchomp (your left)". */
-export function slotName(board: BoardView, slot: DoublesSlotId) {
-  const name = board.active[slot]?.name ?? "";
-  return name ? `${name} (${SLOT_POSITION[slot]})` : capitalize(SLOT_POSITION[slot]);
+/** The active cards' full names for facts and labels ("Garchomp", "Garchomp (yours)", "Garchomp (1)"); "" for an empty slot. */
+export function boardNames(board: BoardView): BoardNames {
+  const parts = boardNameParts(board);
+  return Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, nameText(parts[slot])])) as BoardNames;
 }
 
-export function capitalize(text: string) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
+/** An active slot's name without its side word ("Garchomp", "Garchomp (2)"): where only your own Pokémon can be meant. */
+export function plainName(board: BoardView, slot: DoublesSlotId) {
+  return nameText({ ...boardNameParts(board)[slot], side: null });
+}
+
+/** A member by its name with its team's side word when both teams have that name ("Garchomp (opponent's)"), active or not. */
+export function memberFullName(board: BoardView, view: Pick<PokemonView, "key" | "name" | "side">) {
+  return nameText({ base: view.name, side: board.mirrored.includes(view.key) ? SIDE_WORD[view.side] : null, number: null });
 }
 
 /** "143 / 183 HP", "58% HP". */

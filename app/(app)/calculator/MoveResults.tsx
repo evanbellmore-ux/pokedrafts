@@ -271,6 +271,7 @@ type Props = {
   };
   abilityId: string;
   itemId: string;
+  /** The two Pokémon's full names (1v1 matchupNames, 2v2 doublesNames): "Charizard", "Charizard (yours)", "Garchomp (1)". */
   attackerName: string;
   defenderName: string;
   defenderHP: number | null;
@@ -286,8 +287,6 @@ type Props = {
   partyOptions?: readonly { speciesId: string; name: string }[];
   /** Doubles cannot work out Analytic's turn order, so it always asks. */
   gameType?: "Singles" | "Doubles";
-  /** Each Pokémon's place after its name in the heading: "your left", "left foe" in 2v2, a 1v1 mirror's teams; none by default. */
-  positions?: { source: string; receiver: string };
   /** 2v2: the turn decides the order, so the move settings have no turn-order choice. */
   turnOrderFromTurn?: boolean;
   /** The list's heading outside a replacement; "Moves" by default. */
@@ -296,7 +295,7 @@ type Props = {
   faintedAtLeast?: number;
 };
 
-export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", positions, turnOrderFromTurn = false, heading, faintedAtLeast = 0 }: Props) {
+export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, onSelectMove, contexts, onContextChange, replacement, abilityId, itemId, attackerName, defenderName, defenderHP, blocked = false, id, ref, onReveal, sourceBuild, runtime = championsRuntime, hitBattle, partyOptions = [], gameType = "Doubles", turnOrderFromTurn = false, heading, faintedAtLeast = 0 }: Props) {
   const prefix = useId();
   const wide = useMinWidthMd();
   const [query, setQuery] = useState("");
@@ -473,7 +472,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
       <div className={`flex flex-wrap items-start justify-between gap-3 ${replacement ? "rounded-xl border border-accent-border bg-accent-soft p-4" : ""}`}>
         <div className="min-w-0 flex-1">
           <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "No move"}` : heading ?? "Moves"}</h2>
-          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName}{positions && ` (${positions.source})`} → {defenderName}{positions && ` (${positions.receiver})`}{defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
+          <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} → {defenderName}{defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}
       </div>

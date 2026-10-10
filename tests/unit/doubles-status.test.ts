@@ -419,7 +419,7 @@ describe("costs", () => {
     expect(hitOf(result, OL, OL).change).toEqual({ min: -99, max: -99 });
     expect(hitTexts(result, OL, OL)).toEqual(["+1 Attack.", "+1 Defense.", "+1 Sp. Atk.", "+1 Sp. Def.", "+1 Speed."]);
     expect(result.hp[OL]!.min).toBe(1);
-    expect(texts(stepOf(result, OR).facts)).toEqual(["Clangorous Soul fails: Kommo-o (your right) has too little HP."]);
+    expect(texts(stepOf(result, OR).facts)).toEqual(["Clangorous Soul fails: Kommo-o (2) has too little HP."]);
     expect(result.hp[OR]!.min).toBe(99);
   });
 });

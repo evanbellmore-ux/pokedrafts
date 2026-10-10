@@ -7,7 +7,6 @@ import { createBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { createSpeciesSearch } from "@/app/lib/battle/species-search";
 import type { BattleBuild } from "@/app/lib/battle/types";
-import type { BattleSide } from "./roster-prep";
 
 const SEARCH_PAGE_SIZE = 8;
 
@@ -29,7 +28,6 @@ function wrapPickerFocus(event: KeyboardEvent<HTMLElement>) {
 }
 
 type Props = {
-  side: BattleSide;
   build: BattleBuild;
   open: boolean;
   onClose: () => void;
@@ -40,11 +38,10 @@ type Props = {
   /** Champions usage, or a native game's Random Battle sets, pick the usual ability per format. */
   gameType?: "Singles" | "Doubles";
   /**
-   * The Pokémon's place in labels ("your left" in 2v2). Without it (1v1) the side's "left" / "right" is in accessible
-   * names only: the title names the Pokémon ("Change Charizard") and the search field is "Find Pokémon".
+   * The Pokémon's full name for the change notice ("Charizard (yours) changed to …" in a 2v2 mirror); defaults to its
+   * species name. The dialog is modal and opened from that Pokémon's card, so its title names the species
+   * ("Change Charizard") and its controls need no name.
    */
-  position?: string;
-  /** Its name as a Pokémon ("Your left Pokémon" in 2v2); without it, "Left Pokémon" / "Right Pokémon" in accessible names and the Pokémon's own name in the notice. */
   label?: string;
 };
 
@@ -53,10 +50,8 @@ export function chosenBuild(speciesId: string, runtime: BattleRuntime, gameType:
   return withUsualAbility(createBuild(speciesId, runtime), usualAbility(speciesId, gameType, runtime));
 }
 
-export default function PokemonChooser({ side, build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles", position: positionLabel, label: pokemonLabel }: Props) {
+export default function PokemonChooser({ build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles", label }: Props) {
   const id = useId();
-  const position = positionLabel ?? (side === "attacker" ? "left" : "right");
-  const label = pokemonLabel ?? (side === "attacker" ? "Left Pokémon" : "Right Pokémon");
   const current = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
@@ -79,13 +74,13 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
     onClose();
     if (speciesId === build.speciesId && build.game === runtime.profile.id) return;
     onChange(chosenBuild(speciesId, runtime, gameType));
-    setNotice(`${pokemonLabel ?? current} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
+    setNotice(`${label ?? current} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
   }
 
   return (
     <div onKeyDown={wrapPickerFocus}>
       <p role="status" className="sr-only">{notice}</p>
-      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={positionLabel ? `Change ${position} Pokémon` : `Change ${current}`}>
+      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={`Change ${current}`}>
         {roster && (
           <div role="group" aria-label="Pokémon source" className="mb-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" className="min-h-11" aria-pressed={!showTeam} onClick={() => setTeamMode(false)}>All Pokémon</Button>
@@ -94,13 +89,13 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
         )}
         {showTeam ? open && roster : (
           <div className="space-y-3">
-            <Field id={`${id}-search`} label={positionLabel ? `Find ${position} Pokémon` : "Find Pokémon"}>
+            <Field id={`${id}-search`} label="Find Pokémon">
               <Input type="search" value={query} placeholder="Name or form, e.g. Charizard Mega" onChange={(event) => { setQuery(event.target.value); setPage(0); }} />
             </Field>
             <p role="status" className="text-xs text-muted">
               {matches.length ? `${page * SEARCH_PAGE_SIZE + 1}–${page * SEARCH_PAGE_SIZE + visible.length} of ${matches.length} Pokémon` : "No matching Pokémon."}
             </p>
-            <ul aria-label={`${label} choices`} className="space-y-1">
+            <ul aria-label="Pokémon choices" className="space-y-1">
               {visible.map((entry) => (
                 <li key={entry.id}>
                   <button
@@ -117,8 +112,8 @@ export default function PokemonChooser({ side, build, open, onClose, onChange, o
             </ul>
             {matches.length > SEARCH_PAGE_SIZE && (
               <div className="flex flex-wrap gap-2">
-                <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label={`Previous ${position} Pokémon page`}>Previous</Button>
-                <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label={`Next ${position} Pokémon page`}>Next</Button>
+                <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label="Previous Pokémon page">Previous</Button>
+                <Button size="sm" variant="secondary" disabled={(page + 1) * SEARCH_PAGE_SIZE >= matches.length} onClick={() => setPage(page + 1)} aria-label="Next Pokémon page">Next</Button>
               </div>
             )}
           </div>

@@ -25,7 +25,7 @@ import {
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
 import { CONFUSED_NOTE, ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, STARF_REASON, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
-import { DOUBLES_SLOTS, doublesNames, foesOf, SLOT_POSITION, slotSide, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
+import { DOUBLES_SLOTS, foesOf, slotSide, turnNames, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
 import { healFlag } from "./status-table";
 import type {
   AfterUse,
@@ -402,12 +402,18 @@ const STAGE_NAMES: Record<(typeof COMBAT_STATS)[number], string> = { atk: "Attac
 const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
 const cap = (text: string) => `${text[0].toUpperCase()}${text.slice(1)}`;
 
-function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean, targetTailwind: boolean, positions?: IntimidateBattle["positions"]): IntimidateBattle {
+function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean, targetTailwind: boolean, names?: IntimidateBattle["names"]): IntimidateBattle {
   return {
     magicRoom: conditions.magicRoom, wonderRoom: conditions.wonderRoom, terrain: conditions.terrain, gameType: conditions.gameType,
-    tailwind: { source: sourceTailwind, target: targetTailwind }, ...(positions ? { positions } : {}),
+    tailwind: { source: sourceTailwind, target: targetTailwind }, ...(names ? { names } : {}),
   };
 }
+
+/**
+ * How the settle lines name a Pokémon: in 1v1 by its role and species name ("the attacker Charizard"), in 2v2 by its
+ * full name (`label`, doublesNames: "Charizard", "Charizard (yours)") and its other battler's (`otherLabel`).
+ */
+type SettleName = { who: string } | { label: string; otherLabel?: string };
 
 /**
  * Ability and form states the battle has already settled on entry, as pinned Showdown resolves them:
@@ -416,12 +422,14 @@ function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean,
  * Neutralizing Gas on the field suppresses the ability a Tera form gives (Embody Aspect, Tera Shell, Teraform
  * Zero), which then stands in as Run Away, as every ability the gas suppresses does there (settleDoublesStart).
  */
-function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, otherTailwind: boolean,
+function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, otherTailwind: boolean,
   fieldGas = false): { build: BattleBuild; lines: string[]; withheld?: string; suppressed?: string } {
   const lines: string[] = [];
   const name = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
   const abilityName = (id: string) => runtime.abilitiesById.get(id)?.name ?? id;
-  const otherName = runtime.speciesById.get(other.speciesId)?.name ?? other.speciesId;
+  const otherName = ("label" in naming ? naming.otherLabel : undefined) ?? runtime.speciesById.get(other.speciesId)?.name ?? other.speciesId;
+  // "the attacker Charizard" (1v1), "Charizard" (2v2).
+  const subject = "label" in naming ? naming.label : `${naming.who} ${name}`;
   let settled = build;
   // Terastallized Ogerpon and Terapagos change form, and with it their ability.
   const form = specialTeraForm(build, runtime);
@@ -434,10 +442,10 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
     const fieldGassed = fieldGas && gasSuppresses(settled, conditions);
     const gassed = gassedAbility(settled, other, conditions) || fieldGassed;
     lines.push(form.startsWith("ogerpon")
-      ? `Terastallization: ${who} ${name} is ${species.name}; ${abilityName(abilityId)} ${gassed ? "is suppressed by Neutralizing Gas" : `gives +1 ${embody}`}.`
+      ? `Terastallization: ${subject} is ${species.name}; ${abilityName(abilityId)} ${gassed ? "is suppressed by Neutralizing Gas" : `gives +1 ${embody}`}.`
       : form === "terapagosterastal"
-        ? `Tera Shift: ${who} ${name} is Terapagos-Terastal${gassed ? "; Tera Shell is suppressed by Neutralizing Gas" : ", with Tera Shell"}.`
-        : `Terastallization: ${who} ${name} is Terapagos-Stellar${gassed ? "; Teraform Zero is suppressed by Neutralizing Gas" : `; Teraform Zero cleared the weather and terrain${conditions.weather || conditions.terrain ? " (assumes the set weather and terrain returned after)" : ""}`}.`);
+        ? `Tera Shift: ${subject} is Terapagos-Terastal${gassed ? "; Tera Shell is suppressed by Neutralizing Gas" : ", with Tera Shell"}.`
+        : `Terastallization: ${subject} is Terapagos-Stellar${gassed ? "; Teraform Zero is suppressed by Neutralizing Gas" : `; Teraform Zero cleared the weather and terrain${conditions.weather || conditions.terrain ? " (assumes the set weather and terrain returned after)" : ""}`}.`);
     if (fieldGassed) return { build: { ...settled, abilityId: GAS_STAND_IN }, lines, suppressed: abilityId };
   }
   // Shields Down and Schooling set the form from HP on entry and at the end of each turn (pinned
@@ -448,10 +456,10 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
   if (hpForm) {
     const formName = runtime.speciesById.get(hpForm.speciesId)?.name ?? hpForm.speciesId;
     if (hpForm.kept) {
-      lines.push(`${hpForm.ability}: ${who} ${name} stays ${name} until the end of the turn (${formName} ${hpForm.why}).`);
+      lines.push(`${hpForm.ability}: ${subject} stays ${name} until the end of the turn (${formName} ${hpForm.why}).`);
     } else {
       settled = { ...settled, speciesId: hpForm.speciesId };
-      lines.push(`${hpForm.ability}: ${who} ${name} is ${formName} ${hpForm.why}.`);
+      lines.push(`${hpForm.ability}: ${subject} is ${formName} ${hpForm.why}.`);
     }
   }
   // Ice Face is restored only on entry, or when snow or hail starts (pinned Showdown iceface onStart and
@@ -459,18 +467,18 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
   if (settled.abilityId === "iceface" && settled.speciesId === "eiscuenoice" && !settled.transformedFrom && ["Snow", "Hail"].includes(conditions.weather)
     && ![settled, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === settled ? other : settled, conditions))) {
     const weather = conditions.weather === "Hail" ? "hail" : "snow";
-    lines.push(`Ice Face: assumes ${who} Eiscue-Noice's face broke while the ${weather} was up.`);
+    lines.push(`Ice Face: assumes ${"label" in naming ? naming.label : `${naming.who} Eiscue-Noice`}'s face broke while the ${weather} was up.`);
   }
   // Trace copies a foe's ability on entry (pinned Showdown trace onStart); the engine has none.
   if (build.abilityId === "trace") {
     const traced = tracedAbility(build, other, conditions.magicRoom);
     if (traced.abilityId) {
       settled = { ...settled, abilityId: traced.abilityId, abilityActive: copiedAbilityActive(traced.abilityId) };
-      lines.push(`Trace: ${who} ${name} copied ${abilityName(traced.abilityId)}${traced.chosen ? "" : ` from ${otherName}`}.`);
+      lines.push(`Trace: ${subject} copied ${abilityName(traced.abilityId)}${traced.chosen ? "" : ` from ${otherName}`}.`);
     } else if (traced.blockedBy) {
-      lines.push(`Trace: ${who} ${name} copies nothing (${traced.blockedBy}).`);
+      lines.push(`Trace: ${subject} copies nothing (${traced.blockedBy}).`);
     } else {
-      lines.push(`Trace: ${who} ${name} copies nothing (${abilityName(other.abilityId)} cannot be copied).`);
+      lines.push(`Trace: ${subject} copies nothing (${abilityName(other.abilityId)} cannot be copied).`);
     }
   }
   // Imposter transforms its user into the target on entry (Showdown transformInto): the target's
@@ -530,7 +538,7 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
     };
     const entryList = targetEntry.map((entry) => `${entry.cause} ${entry.amount > 0 ? "+" : ""}${entry.amount} ${STAGE_NAMES[entry.stat]}`).join(" and ");
     const formName = runtime.speciesById.get(entryForm)?.name ?? entryForm;
-    lines.push(`Imposter: ${who} ${name} transformed into ${formName} (${abilityName(copiedAbility)}${inert ? ", no effect when transformed" : ""}${entryList ? `; copied ${entryList}` : ""}); ${name}'s own stat stages are added on top. Assumes both entered together, ${otherName} faster, and nothing blocked the transformation.`);
+    lines.push(`Imposter: ${subject} transformed into ${formName} (${abilityName(copiedAbility)}${inert ? ", no effect when transformed" : ""}${entryList ? `; copied ${entryList}` : ""}); ${name}'s own stat stages are added on top. Assumes both entered together, ${otherName} faster, and nothing blocked the transformation.`);
   }
   if (build.abilityId === "forecast" && build.speciesId.startsWith("castform") && runtime.speciesById.has("castform")) {
     const airLock = [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId));
@@ -538,7 +546,7 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
     const form = !airLock && !blocked ? CASTFORM_FORMS[conditions.weather] ?? "castform" : "castform";
     if (form !== build.speciesId) {
       const formName = runtime.speciesById.get(form)?.name ?? form;
-      lines.push(`Forecast: ${who} ${name} is ${formName} (${runtime.speciesById.get(form)?.types.join("/")} type)${blocked ? `; ${blocked} blocks it` : airLock ? "; Cloud Nine or Air Lock negates the weather" : conditions.weather ? ` in ${conditions.weather}` : " without sun, rain or snow"}.`);
+      lines.push(`Forecast: ${subject} is ${formName} (${runtime.speciesById.get(form)?.types.join("/")} type)${blocked ? `; ${blocked} blocks it` : airLock ? "; Cloud Nine or Air Lock negates the weather" : conditions.weather ? ` in ${conditions.weather}` : " without sun, rain or snow"}.`);
     }
     settled = { ...settled, speciesId: "castform" };
   }
@@ -563,15 +571,16 @@ function settleEntry(
     const holder = builds[side], foe = builds[foeSide];
     const who = side === "attacker" ? "the attacker" : "the target";
     const foeWho = foeSide === "attacker" ? "the attacker" : "the target";
-    // A transformed holder shares its foe's species name: name each by who it is instead.
+    // A transformed holder shares its foe's species name: each is then named by who it is (the holder by its own
+    // species, the foe by its role), and the lines start with a capital.
     const speciesName = runtime.speciesById.get(foe.speciesId)?.name ?? foe.speciesId;
-    const positions = holder.transformedFrom ? { source: ownName(holder), target: foeWho } : undefined;
-    const result = applyIntimidate(holder, foe, intimidateBattle(conditions, tailwind[side], tailwind[foeSide], positions), runtime);
+    const holderSpecies = runtime.speciesById.get(holder.speciesId)?.name ?? holder.speciesId;
+    const transformed = !!holder.transformedFrom;
+    const names = transformed && holderSpecies === speciesName ? { source: ownName(holder), target: `${foeWho} ${speciesName}` } : undefined;
+    const result = applyIntimidate(holder, foe, intimidateBattle(conditions, tailwind[side], tailwind[foeSide], names), runtime);
     builds[side] = result.source;
     builds[foeSide] = result.target;
-    const named = (line: string) => positions
-      ? cap(line.replaceAll(`${speciesName} (${positions.source})`, positions.source).replaceAll(`${speciesName} (${foeWho})`, `${foeWho} ${speciesName}`))
-      : line;
+    const named = (line: string) => transformed ? cap(line) : line;
     lines.push(`${cap(who)} ${ownName(holder)}'s Intimidate (copied by ${copiedBy}) is applied.`,
       // The engine adds entry boosts at calculation time; nothing is stored here.
       ...result.lines.slice(1).filter((line) => !/\(added at calculation\)\.$|^Assumes Tailwind started/.test(line)).map(named));
@@ -663,8 +672,11 @@ export type SettledItems = {
  * Pouch heals a third as any Berry is eaten); a terrain Seed on its terrain is used up on entry. Unburden then
  * activates, and it stays off while an item is still held.
  */
-function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, who: string, name: string, ownCure = false): SettledItems {
+function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, name: string, ownCure = false): SettledItems {
   const lines: string[] = [];
+  // "The attacker Charizard" (1v1), "Charizard" (2v2), and the name alone mid-sentence.
+  const subject = cap("label" in naming ? naming.label : `${naming.who} ${name}`);
+  const own = "label" in naming ? naming.label : name;
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   let settled = build;
   let settledHP: SettledHP | undefined;
@@ -694,7 +706,7 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   if (berry && build.status && berry.includes(build.status) && itemOn && !unnerved && !ownCure) {
     const healed = pouch && build.currentHP !== null && maxHP ? Math.min(maxHP, build.currentHP + pouch) : null;
     const heal = healed !== null && healed !== build.currentHP ? `, then Cheek Pouch: ${healed} HP` : "";
-    lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} cured its ${STATUS_NAMES[build.status] ?? build.status} (used up)${heal}.`);
+    lines.push(`${subject}'s ${itemName(build.itemId)} cured its ${STATUS_NAMES[build.status] ?? build.status} (used up)${heal}.`);
     settled = { ...settled, status: "", itemId: "", ...(heal ? { currentHP: healed } : {}) };
     if (heal) settledHP = { hp: healed!, entered: build.currentHP!, maxHP, item: itemName(build.itemId) };
     usedUp = true;
@@ -741,7 +753,7 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
       confused = !!disliked && NATURES.find((nature) => nature.name === build.nature)?.minus === disliked && !(abilityOn && build.abilityId === "owntempo")
         && !(conditions.terrain === "Misty" && isGrounded(ignoringItem(makePokemon(settled, runtime), settled, other, conditions), makeField(conditions)));
       const changes = [hp !== build.currentHP ? `${hp} HP` : "", effect, confused ? "confused" : ""].filter(Boolean);
-      lines.push(`${cap(who)} ${name}'s ${itemName(held)} was ${held === "berryjuice" ? "used" : "eaten"} at ${build.currentHP} HP${changes.length ? `: ${changes.join(", ")}` : ""}.`);
+      lines.push(`${subject}'s ${itemName(held)} was ${held === "berryjuice" ? "used" : "eaten"} at ${build.currentHP} HP${changes.length ? `: ${changes.join(", ")}` : ""}.`);
       settled = {
         ...settled, itemId: "", currentHP: hp, ...(pinchStat ? { boosts: { ...settled.boosts, [pinchStat]: clampStage((settled.boosts[pinchStat] ?? 0) + amount) } } : {}),
         ...(held === "custapberry" ? { settledCustap: true as const } : {}),
@@ -761,24 +773,24 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   }
   // An item Magic Room kept from acting: still unused under the room, and still held after it.
   const unused = conditions.magicRoom ? "is not used" : "is still held";
-  if (seedUsed) lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} was used up on ${conditions.terrain} Terrain${conditions.magicRoom ? " before Magic Room" : ""}: ${stages(boostScale, seedStat)}.`);
+  if (seedUsed) lines.push(`${subject}'s ${itemName(build.itemId)} was used up on ${conditions.terrain} Terrain${conditions.magicRoom ? " before Magic Room" : ""}: ${stages(boostScale, seedStat)}.`);
   else if (onSeedTerrain && !klutz) {
-    lines.push(`${cap(who)} ${name}'s ${itemName(build.itemId)} ${unused}: Magic Room was up when it entered or ${conditions.terrain} Terrain started.`);
+    lines.push(`${subject}'s ${itemName(build.itemId)} ${unused}: Magic Room was up when it entered or ${conditions.terrain} Terrain started.`);
   }
   // Room Service lowers Speed by 1 on entry under Trick Room, or when Trick Room starts, unless Magic
   // Room is already up (pinned Showdown data/items.ts roomservice); the engine does not model it.
   const roomService = build.itemId === "roomservice" && conditions.trickRoom;
   const roomServiceUsed = roomService && !klutz && build.itemUsedBeforeRoom !== false;
-  if (roomServiceUsed) lines.push(`${cap(who)} ${name}'s Room Service was used up under Trick Room${conditions.magicRoom ? " before Magic Room" : ""}: ${stages(-boostScale, "spe")}.`);
+  if (roomServiceUsed) lines.push(`${subject}'s Room Service was used up under Trick Room${conditions.magicRoom ? " before Magic Room" : ""}: ${stages(-boostScale, "spe")}.`);
   else if (roomService && !klutz) {
-    lines.push(`${cap(who)} ${name}'s Room Service ${unused}: Magic Room was up when it entered or Trick Room started.`);
+    lines.push(`${subject}'s Room Service ${unused}: Magic Room was up when it entered or Trick Room started.`);
   }
   if (build.abilityId === "unburden" && abilityOn) {
     if (usedUp || seedUsed || roomServiceUsed) {
-      if (!build.abilityActive) lines.push(`${cap(who)} ${name}'s Unburden is active (${itemName(build.itemId)} used up).`);
+      if (!build.abilityActive) lines.push(`${subject}'s Unburden is active (${itemName(build.itemId)} used up).`);
       settled = { ...settled, abilityActive: true };
     } else if (build.abilityActive && build.itemId) {
-      lines.push(`${cap(who)} ${name}'s Unburden is inactive (it holds its ${itemName(build.itemId)}).`);
+      lines.push(`${subject}'s Unburden is inactive (it holds its ${itemName(build.itemId)}).`);
       settled = { ...settled, abilityActive: false };
     }
   }
@@ -813,14 +825,14 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
     const itemFirst = build.itemUsedBeforeField ?? !foeSetsField;
     const fieldName = paradox === "sun" ? "the sun" : "Electric Terrain";
     if (burned) {
-      lines.push(`${cap(who)} ${name}'s Protosynthesis is not active: the sun activated it before the other Pokémon's ${cloud} came in, and its Booster Energy was used up.`);
+      lines.push(`${subject}'s Protosynthesis is not active: the sun activated it before the other Pokémon's ${cloud} came in, and its Booster Energy was used up.`);
       settled = { ...settled, itemId: "" };
     } else if (!fieldOn && !booster && settled.itemId === "boosterenergy") {
-      lines.push(klutz ? `${cap(who)} ${name}'s Booster Energy is not used (Klutz).` : `${cap(who)} ${name}'s Booster Energy ${unused}: it entered under Magic Room.`);
+      lines.push(klutz ? `${subject}'s Booster Energy is not used (Klutz).` : `${subject}'s Booster Energy ${unused}: it entered under Magic Room.`);
     } else if (fieldOn && !booster && settled.itemId === "boosterenergy" && !klutz) {
       lines.push(build.itemUsedBeforeRoom === false
-        ? `${cap(who)} ${name}'s Booster Energy is still held: it entered under Magic Room.`
-        : `${cap(who)} ${name}'s Booster Energy is still held (assumes ${fieldName} has been up since it entered).`);
+        ? `${subject}'s Booster Energy is still held: it entered under Magic Room.`
+        : `${subject}'s Booster Energy is still held (assumes ${fieldName} has been up since it entered).`);
     }
     if (!burned && (fieldOn || booster)) {
       const activated = { ...settled, boosts: stagesBeforeBerry };
@@ -835,9 +847,9 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
       // A Seed or Room Service used after the ability picked changed its stages since.
       const itemAfter = !booster && !itemFirst && (seedUsed || roomServiceUsed);
       const beforeItem = itemAfter && otherOrder !== stat ? (seedUsed ? " before its Seed" : " before Room Service") : "";
-      lines.push(`${cap(who)} ${name}'s ${abilityName} boosts its ${STAGE_NAMES[stat]} (its highest stat${beforeItem}), ${booster ? `from its Booster Energy (used up${usedUpText})` : paradox === "sun" ? "in the sun" : "on Electric Terrain"}. Assumes no stage changes since it activated${itemAfter ? ", other than its item's" : ""}.`);
+      lines.push(`${subject}'s ${abilityName} boosts its ${STAGE_NAMES[stat]} (its highest stat${beforeItem}), ${booster ? `from its Booster Energy (used up${usedUpText})` : paradox === "sun" ? "in the sun" : "on Electric Terrain"}. Assumes no stage changes since it activated${itemAfter ? ", other than its item's" : ""}.`);
       if (cloud && conditions.weather === "Sun") {
-        lines.push(`Assumes the other Pokémon's ${cloud} was out when ${name} entered, or the sun was down at some point since.`);
+        lines.push(`Assumes the other Pokémon's ${cloud} was out when ${own} entered, or the sun was down at some point since.`);
       }
       if (otherOrder !== stat) {
         const acted = seedUsed ? `its ${itemName(build.itemId)} was used` : "Room Service lowered its Speed";
@@ -846,8 +858,8 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
             : !seedUsed ? " (assumes Trick Room was up when it entered)"
               : paradox === "terrain" ? " (assumes Electric Terrain was up when it entered)" : ` (assumes ${conditions.terrain} Terrain was up before the sun started, or both were up when it entered)`;
         lines.push(itemFirst
-          ? `${cap(who)} ${name}'s ${cap(acted.replace(/^its /, ""))} before ${abilityName} activated${why}.`
-          : `${cap(who)} ${name}'s ${abilityName} activated before ${acted}${why}.`);
+          ? `${subject}'s ${cap(acted.replace(/^its /, ""))} before ${abilityName} activated${why}.`
+          : `${subject}'s ${abilityName} activated before ${acted}${why}.`);
       }
     }
   }
@@ -2629,8 +2641,8 @@ export function settleMatchup(attacker: BattleBuild, defender: BattleBuild, fiel
   // two, then held items (which read the settled abilities: a copied Klutz or Unnerve counts).
   const shown = { attacker: effective.attacker, defender: effective.defender };
   const names = { attacker: runtime.speciesById.get(shown.attacker.speciesId)?.name ?? shown.attacker.speciesId, defender: runtime.speciesById.get(shown.defender.speciesId)?.name ?? shown.defender.speciesId };
-  const attackerAbility = settleAbilities(shown.attacker, shown.defender, effective.field, runtime, "the attacker", effective.field.defenderSide.tailwind);
-  const defenderAbility = settleAbilities(shown.defender, shown.attacker, effective.field, runtime, "the target", effective.field.attackerSide.tailwind);
+  const attackerAbility = settleAbilities(shown.attacker, shown.defender, effective.field, runtime, { who: "the attacker" }, effective.field.defenderSide.tailwind);
+  const defenderAbility = settleAbilities(shown.defender, shown.attacker, effective.field, runtime, { who: "the target" }, effective.field.attackerSide.tailwind);
   const withheld = attackerAbility.withheld ?? defenderAbility.withheld;
   if (withheld) {
     // The rows follow the moves the attacker is shown with (a transformed Imposter user has its target's).
@@ -2638,8 +2650,8 @@ export function settleMatchup(attacker: BattleBuild, defender: BattleBuild, fiel
     return { issues, results: shownMoves.moves.flatMap((id) => { const move = runtime.movesById.get(id); return move ? [{ ...emptyRow(move, "unsupported", withheld), moveId: id }] : []; }) };
   }
   const entry = settleEntry(attackerAbility.build, defenderAbility.build, shown, effective.field, runtime);
-  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, "the attacker", names.attacker);
-  const defenderItems = settleItems(entry.defender, entry.attacker, effective.field, runtime, "the target", names.defender);
+  const attackerItems = settleItems(entry.attacker, entry.defender, effective.field, runtime, { who: "the attacker" }, names.attacker);
+  const defenderItems = settleItems(entry.defender, entry.attacker, effective.field, runtime, { who: "the target" }, names.defender);
   effective.attacker = attackerItems.build;
   effective.defender = defenderItems.build;
   notes.push(...attackerAbility.lines, ...defenderAbility.lines, ...entry.lines, ...attackerItems.lines, ...defenderItems.lines);
@@ -3143,7 +3155,7 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
   const present = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]);
   const shown = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, input.pokemon[slot]?.build ?? null])) as Record<DoublesSlotId, BattleBuild | null>;
   const names = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, shown[slot] ? runtime.speciesById.get(shown[slot]!.speciesId)?.name ?? shown[slot]!.speciesId : ""])) as Record<DoublesSlotId, string>;
-  const labels = doublesNames(input.pokemon, runtime);
+  const labels = turnNames(input);
   const tailwind = (slot: DoublesSlotId) => (slotSide(slot) === "own" ? field.attackerSide : field.defenderSide).tailwind;
   const empty = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, null])) as Record<DoublesSlotId, DoublesStartSlot | null>;
   let reason: string | null = null;
@@ -3162,7 +3174,7 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
     if (tera) gasLines[slot] = [];
     if (holders.includes(slot) || abilityId === GAS_STAND_IN) return;
     if (!gas!.suppressed.includes(slot)) gas!.suppressed.push(slot);
-    if (!tera) gasLines[slot] = [`${cap(SLOT_POSITION[slot])} ${names[slot]}'s ${abilityName(abilityId)} is suppressed by Neutralizing Gas.`];
+    if (!tera) gasLines[slot] = [`${cap(labels[slot])}'s ${abilityName(abilityId)} is suppressed by Neutralizing Gas.`];
   };
   if (gas) {
     for (const slot of present) {
@@ -3214,7 +3226,7 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
   })) as Record<DoublesSlotId, DoublesSlotId[][]>;
   if (reason) return { slots: empty, reason };
   const settleA = (slot: DoublesSlotId, rep: DoublesSlotId) => {
-    const settled = settleAbilities(shown[slot]!, shown[rep]!, field, runtime, SLOT_POSITION[slot], tailwind(rep), !!gas && !holders.includes(slot));
+    const settled = settleAbilities(shown[slot]!, shown[rep]!, field, runtime, { label: labels[slot], otherLabel: labels[rep] }, tailwind(rep), !!gas && !holders.includes(slot));
     // A Tera form's ability the gas suppresses (Embody Aspect, Tera Shell, Teraform Zero) stands in too.
     if (settled.suppressed && gas) gassed(slot, settled.suppressed, true);
     return settled;
@@ -3268,13 +3280,13 @@ export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
     const stat: CombatStat | null = def && def >= spd ? "spa" : spd ? "atk" : null;
     if (!stat) continue;
     entered[slot] = { ...holder, boosts: { ...holder.boosts, [stat]: clampStage((holder.boosts[stat] ?? 0) + 1) }, settledDownload: stat };
-    lines[slot].push(`${cap(SLOT_POSITION[slot])} ${names[slot]}'s Download raised its ${STAGE_NAMES[stat]}.`);
+    lines[slot].push(`${cap(labels[slot])}'s Download raised its ${STAGE_NAMES[stat]}.`);
   }
   const slots = { ...empty };
   for (const slot of present) {
     // A status its own ability cures at the turn's first Update (OWN_STATUS_CURES) is the walk's: its Berry stays.
     const ownCure = !!OWN_STATUS_CURES[entered[slot].abilityId]?.includes(entered[slot].status);
-    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, SLOT_POSITION[slot], names[slot], ownCure);
+    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, { label: labels[slot] }, names[slot], ownCure);
     if (items.starf) fail(STARF_REASON);
     if (items.raised) {
       for (const foe of foes(slot)) {

@@ -17,7 +17,11 @@ export const ACTION_LABEL: Record<ActionClass, string> = {
   "status-other": "Other status moves",
 };
 const TARGET_LABEL: Record<TargetClass, string> = { threat: "The biggest threat", weak: "The lower-HP foe", other: "Other" };
-const AIM_LABEL: Record<AimClass, string> = { left: "Left foe", right: "Right foe", ally: "Your partner" };
+/** Your aimed moves as the panel states them: at a foe (either one; the stored classes keep which) or at your partner. */
+const AIM_LINES: readonly { id: string; label: string; classes: readonly AimClass[] }[] = [
+  { id: "foe", label: "A foe", classes: ["left", "right"] },
+  { id: "ally", label: "Your partner", classes: ["ally"] },
+];
 const ATTACKS: readonly ActionClass[] = ["attack-ko", "attack-best", "attack-spread", "attack-other"];
 
 export type TrendUnit = "actions" | "attacks" | "moves aimed at a foe" | "aimed moves" | "moves used" | "battles" | "turns";
@@ -173,7 +177,7 @@ export function habitTrends(data: HabitsData | null | undefined, names: TrendNam
     actions: actionGroup(data),
     situations,
     targets: targetGroup(data),
-    aims: group("aimed moves", aimTotal, AIM_CLASSES.map((aim) => line(aim, AIM_LABEL[aim], "aimed moves", aims[aim], aimTotal))),
+    aims: group("aimed moves", aimTotal, AIM_LINES.map((aim) => line(aim.id, aim.label, "aimed moves", add(aim.classes.map((each) => aims[each])), aimTotal))),
     moves,
     weightedBattles: battles,
     brought: counted(data.brings, names.species, 6),

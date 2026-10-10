@@ -22,8 +22,11 @@ export type IntimidateBattle = {
   /** Tailwind on the Intimidate user's side and on the target's side (Wind Rider). */
   tailwind?: { source: boolean; target: boolean };
   gameType?: BattleConditions["gameType"];
-  /** Where each Pokémon stands ("left" / "right"), to tell apart two of the same species. */
-  positions?: { source: string; target: string };
+  /**
+   * The name each Pokémon goes by in the lines, as its caller names it (a 1v1 mirror's "Incineroar (yours)" and
+   * "Incineroar (opponent's)"); absent, its species name.
+   */
+  names?: { source: string; target: string };
 };
 export type IntimidateResult = { source: BattleBuild; target: BattleBuild; lines: string[] };
 
@@ -190,8 +193,8 @@ export function intimidatedKey(build: BattleBuild, runtime: BattleRuntime): stri
 }
 
 export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle: IntimidateBattle, runtime: BattleRuntime): IntimidateResult {
-  const result = intimidateAll(source, [{ build: target, tailwind: battle.tailwind?.target ?? false, position: battle.positions?.target }], {
-    ...battle, sourceTailwind: battle.tailwind?.source ?? false, sourcePosition: battle.positions?.source,
+  const result = intimidateAll(source, [{ build: target, tailwind: battle.tailwind?.target ?? false, name: battle.names?.target }], {
+    ...battle, sourceTailwind: battle.tailwind?.source ?? false, sourceName: battle.names?.source,
   }, runtime);
   return { source: result.source, target: result.foes[0], lines: result.lines };
 }
@@ -200,12 +203,13 @@ export function applyIntimidate(source: BattleBuild, target: BattleBuild, battle
  * Intimidate from `source` into each foe in order (pinned Showdown data/abilities.ts intimidate onStart: for each of
  * adjacentFoes(), position 0 then 1, boost({ atk: -1 })), the source updated after each (a Mirror Armor drop is
  * reflected onto it, and its Defiant or Competitive reacts). The switch-in White Herb (priority -2) and Mirror Herb
- * (-3) act once, after both drops; the rises the source's Mirror Herb stores come from every foe.
+ * (-3) act once, after both drops; the rises the source's Mirror Herb stores come from every foe. Each Pokémon is named
+ * in the lines by the name its caller gives (`name`, `sourceName`: 2v2's doublesNames).
  */
 export function applyIntimidateToFoes(
   source: BattleBuild,
-  foes: readonly { build: BattleBuild; tailwind: boolean; position: string }[],
-  battle: Omit<IntimidateBattle, "tailwind" | "positions"> & { sourceTailwind: boolean; sourcePosition: string },
+  foes: readonly { build: BattleBuild; tailwind: boolean; name: string }[],
+  battle: Omit<IntimidateBattle, "tailwind" | "names"> & { sourceTailwind: boolean; sourceName: string },
   runtime: BattleRuntime,
 ): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
   return intimidateAll(source, foes, battle, runtime);
@@ -213,28 +217,27 @@ export function applyIntimidateToFoes(
 
 function intimidateAll(
   source: BattleBuild,
-  foes: readonly { build: BattleBuild; tailwind: boolean; position: string | undefined }[],
-  battle: Omit<IntimidateBattle, "tailwind" | "positions"> & { sourceTailwind: boolean; sourcePosition: string | undefined },
+  foes: readonly { build: BattleBuild; tailwind: boolean; name: string | undefined }[],
+  battle: Omit<IntimidateBattle, "tailwind" | "names"> & { sourceTailwind: boolean; sourceName: string | undefined },
   runtime: BattleRuntime,
 ): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
   const gen7 = runtime.profile.id === "ultra_sun_ultra_moon";
   const gen9 = runtime.profile.id === "champions" || runtime.profile.id === "scarlet_violet";
   const speciesName = (build: BattleBuild) => runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
-  // A Pokémon is named with its position when another one here shows the same species (index 0 is the source).
+  // Each Pokémon goes by the name its caller gives, else its species name (index 0 is the source).
   const builds = [source, ...foes.map((foe) => foe.build)];
-  const name = (index: number, position: string | undefined) => position && builds.some((other, at) => at !== index && speciesName(other) === speciesName(builds[index]))
-    ? `${speciesName(builds[index])} (${position})` : speciesName(builds[index]);
+  const name = (index: number, given: string | undefined) => given ?? speciesName(builds[index]);
   const itemName = (id: string) => runtime.itemsById.get(id)?.name ?? id;
   const lines: string[] = [];
   const first = foes[0]?.build ?? source;
-  const mon = (index: number, position: string | undefined, entry: EntryBoost[]): Mon => {
+  const mon = (index: number, given: string | undefined, entry: EntryBoost[]): Mon => {
     const build = builds[index];
     const boosts = Object.fromEntries(STATS.map((stat) => [stat,
       clampStage((build.boosts[stat] ?? 0) + entry.filter((boost) => boost.stat === stat).reduce((sum, boost) => sum + boost.amount, 0))])) as Record<CombatStat, number>;
-    return { build, item: build.itemId, name: name(index, position), herb: null, lowered: false, entry, boosts, start: { ...boosts } };
+    return { build, item: build.itemId, name: name(index, given), herb: null, lowered: false, entry, boosts, start: { ...boosts } };
   };
-  const src = mon(0, battle.sourcePosition, entryBoosts(source, first, entryBoosts(first, source, null, foes[0]?.tailwind ?? false, battle, runtime), battle.sourceTailwind, battle, runtime));
-  const tgts = foes.map((foe, index) => mon(index + 1, foe.position, entryBoosts(foe.build, source, entryBoosts(source, foe.build, null, battle.sourceTailwind, battle, runtime), foe.tailwind, battle, runtime)));
+  const src = mon(0, battle.sourceName, entryBoosts(source, first, entryBoosts(first, source, null, foes[0]?.tailwind ?? false, battle, runtime), battle.sourceTailwind, battle, runtime));
+  const tgts = foes.map((foe, index) => mon(index + 1, foe.name, entryBoosts(foe.build, source, entryBoosts(source, foe.build, null, battle.sourceTailwind, battle, runtime), foe.tailwind, battle, runtime)));
   // The foe whose drop is being resolved: a rise of the source is stored by its Mirror Herb; a target's rise by the source's.
   let tgt = tgts[0];
   // Showdown ignores held items under Magic Room and for a Klutz holder.

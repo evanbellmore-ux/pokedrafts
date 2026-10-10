@@ -6,13 +6,14 @@ import {
   combatant, DOUBLE_TARGET, DOUBLE_TARGET_ACTIONS, DOUBLE_TARGET_RULES, fixture, ISSUES, NOT_ESTIMATED, NOT_ESTIMATED_ACTIONS, NOT_ESTIMATED_RULES,
   RULES, SELF_KO, SELF_KO_ACTIONS, SELF_KO_RULES, UNCERTAIN_ORDER, UNCERTAIN_ORDER_ACTIONS, UNCERTAIN_ORDER_RULES, UNCERTAIN_SPECIES, type DoublesFixture,
 } from "../fixtures/doubles-turn";
+import { positionalIn } from "../fixtures/naming";
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
 import DoublesSettings from "@/app/(app)/calculator/DoublesSettings";
 import DoublesMoves from "@/app/(app)/calculator/DoublesMoves";
 import BattleConditions, { DoublesCarriedContext, describeDoublesConditions, type CarriedControl } from "@/app/(app)/calculator/BattleConditions";
 import {
-  actionFact, baseName, cardHPLabel, cardReached, conditionsLine, factLine, hitLine, hpChangeText, listedHits, orderFact, positionedName, relativeLabel, relativeName,
-  residualLine, shownHP, startRowLine, stepHeading, substituteLine, turnHP, turnSummary,
+  actionFact, cardHPLabel, cardReached, conditionsLine, factLine, hitLine, hpChangeText, listedHits, orderFact,
+  residualLine, shownHP, startRowLine, stepHeading, substituteLine, targetName, turnHP, turnSummary,
 } from "@/app/(app)/calculator/doubles-format";
 import {
   carriedAbilityOn, carriedIssueTexts, carriedOptions, createDoubles, doublesSlotInput, getDoublesTurnInput, NO_CARRIED_OPTIONS, reconcileCarried, setDoublesCarried,
@@ -137,31 +138,32 @@ describe("2v2 text (doubles-format)", () => {
   const view = doubleTarget();
   const names = view.names;
 
-  it("names each target from the acting slot's place on the screen", () => {
-    expect(DOUBLES_SLOTS.map((slot) => relativeLabel("own-left", slot))).toEqual(["Itself", "Ally", "Left foe", "Right foe"]);
-    expect(DOUBLES_SLOTS.map((slot) => relativeLabel("opponent-right", slot))).toEqual(["Left foe", "Right foe", "Ally", "Itself"]);
-    expect(relativeName(names, "own-right", "opponent-right")).toBe("Pikachu (right foe)");
-    expect(positionedName(names, "opponent-left")).toBe("Blastoise (opponent's left)");
+  it("names each target by its Pokémon, and the acting Pokémon as itself", () => {
+    expect(DOUBLES_SLOTS.map((slot) => targetName(names, "own-left", slot))).toEqual(["Itself", "Venusaur", "Blastoise", "Pikachu"]);
+    expect(DOUBLES_SLOTS.map((slot) => targetName(names, "opponent-right", slot))).toEqual(["Charizard", "Venusaur", "Blastoise", "Itself"]);
+    expect(names["opponent-right"]).toBe("Pikachu");
+    expect(names["opponent-left"]).toBe("Blastoise");
+    // A slot with no Pokémon has no name: the UI's unset mark.
+    expect(targetName({ ...names, "opponent-left": "" }, "own-left", "opponent-left")).toBe("—");
   });
 
   it("writes each action as a fact", () => {
-    expect(actionFact("Weather Ball", names, "own-left", RULES.ownSingle, "opponent-left")).toBe("Weather Ball → Blastoise (left foe)");
-    expect(actionFact("Earthquake", names, "own-left", RULES.earthquake, null)).toBe("Earthquake → both foes and Venusaur (ally)");
+    expect(actionFact("Weather Ball", names, "own-left", RULES.ownSingle, "opponent-left")).toBe("Weather Ball → Blastoise");
+    expect(actionFact("Earthquake", names, "own-left", RULES.earthquake, null)).toBe("Earthquake → both foes and Venusaur");
     expect(actionFact("Outrage", names, "own-left", RULES.random, null)).toBe("Outrage → a random foe");
-    expect(actionFact("Helping Hand", names, "own-left", RULES.helpingHand, null)).toBe("Helping Hand → Venusaur (ally)");
+    expect(actionFact("Helping Hand", names, "own-left", RULES.helpingHand, null)).toBe("Helping Hand → Venusaur");
     expect(actionFact("Protect", names, "own-left", RULES.self, null)).toBe("Protect · Targets itself");
     expect(actionFact("Tailwind", names, "own-left", RULES.ownSide, null)).toBe("Tailwind · Targets its side");
     expect(actionFact("Water Spout", names, "opponent-left", RULES.opponentSpreadFoes, null)).toBe("Water Spout → both foes");
     expect(actionFact("Weather Ball", names, "own-left", RULES.ownSingle, null)).toBe("Weather Ball · No target");
   });
 
-  it("tells two of the same species apart by position, without repeating it", () => {
+  it("tells two of the same species apart by team", () => {
     const mirror = uncertain();
-    expect(mirror.names["own-left"]).toBe("Garchomp (your left)");
-    expect(mirror.names["opponent-left"]).toBe("Garchomp (opponent's left)");
-    expect(baseName(mirror.names, "own-left")).toBe("Garchomp");
-    expect(positionedName(mirror.names, "own-left")).toBe("Garchomp (your left)");
-    expect(relativeName(mirror.names, "own-left", "opponent-left")).toBe("Garchomp (left foe)");
+    expect(mirror.names["own-left"]).toBe("Garchomp (yours)");
+    expect(mirror.names["opponent-left"]).toBe("Garchomp (opponent's)");
+    expect(targetName(mirror.names, "opponent-left", "own-left")).toBe("Garchomp (yours)");
+    expect(targetName(mirror.names, "own-left", "opponent-left")).toBe("Garchomp (opponent's)");
   });
 
   it("adds a chance to a fact that does not always hold, and an order only when it is uncertain", () => {
@@ -197,13 +199,13 @@ describe("2v2 text (doubles-format)", () => {
     expect(startRowLine(NOT_ESTIMATED.startRows[0], names, championsRuntime)).toBe("Heat Wave · Charizard → Blastoise: 26–31 damage (16.88–20.13% of max HP)");
     expect(startRowLine({ slot: "own-right", target: "opponent-left", row: { ...NOT_ESTIMATED.startRows[0].row, moveId: "sleeppowder", kind: "status", reason: null } }, names, championsRuntime))
       .toBe("Sleep Powder · Venusaur → Blastoise: Status move");
-    expect(stepHeading(2, DOUBLE_TARGET.steps[1], names, championsRuntime, { arrow: true, text: "Blastoise (left foe)" })).toBe("2 · Weather Ball · Charizard (your left) → Blastoise (left foe)");
-    expect(stepHeading(1, DOUBLE_TARGET.steps[0], names, championsRuntime, { arrow: false, text: "Targets itself" })).toBe("1 · Protect · Pikachu (opponent's right) · Targets itself");
-    expect(stepHeading(4, DOUBLE_TARGET.steps[3], names, championsRuntime, null)).toBe("4 · Water Spout · Blastoise (opponent's left) → both foes");
+    expect(stepHeading(2, DOUBLE_TARGET.steps[1], names, championsRuntime, { arrow: true, text: "Blastoise" })).toBe("2 · Weather Ball · Charizard → Blastoise");
+    expect(stepHeading(1, DOUBLE_TARGET.steps[0], names, championsRuntime, { arrow: false, text: "Targets itself" })).toBe("1 · Protect · Pikachu · Targets itself");
+    expect(stepHeading(4, DOUBLE_TARGET.steps[3], names, championsRuntime, null)).toBe("4 · Water Spout · Blastoise → both foes");
     // With the end of turn not estimated (the fixture's), the HP is after the moves and the summary says why.
     expect(turnSummary(DOUBLE_TARGET, names, "average")).toBe(`Charizard HP remaining: 145 / 153. Venusaur HP remaining: 153 / 155. Blastoise HP remaining: 1 / 154, KO chance 75%. Pikachu HP remaining: 110 / 110.${fixtureEnd()}`);
     expect(turnSummary(NOT_ESTIMATED, names, "average")).toBe("Turn not estimated: Worry Seed is not modelled and comes before another move.");
-    expect(turnSummary(ISSUES, names, "average")).toBe("Charizard (your left): Weather Ball has no target.");
+    expect(turnSummary(ISSUES, names, "average")).toBe("Charizard: Weather Ball has no target.");
     expect(turnSummary(null, names, "average")).toBe("");
   });
 
@@ -230,10 +232,13 @@ describe("2v2 summary (DoublesSummary)", () => {
     const quick = [...html.matchAll(/<button[^>]*data-move-owner="([^"]+)"[^>]*aria-label="([^"]+)"/g)];
     expect(quick).toHaveLength(16);
     expect(new Set(quick.map((match) => match[2])).size).toBe(16);
-    expect(quick[0][2]).toBe("Charizard your left move 1: Heat Wave");
+    expect(quick[0][2]).toBe("Charizard move 1: Heat Wave");
     expect(quick.slice(12).every((match) => match[1] === `${view.cards["opponent-right"].slot.key}:0`)).toBe(true);
     expect(html.match(/data-doubles-no-move="[^"]+"[^>]*aria-pressed="true"/g)).toHaveLength(4);
-    expect(html).toMatch(/aria-label="Venusaur your right: all moves" aria-controls="moves-list"/);
+    expect(html).toMatch(/aria-label="Venusaur: all moves" aria-controls="moves-list"/);
+    // Each heading is the Pokémon's name (PokemonName), with no line above it naming a place.
+    expect([...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/g)].map((match) => match[1])).toEqual(["Charizard", "Venusaur", "Blastoise", "Pikachu"]);
+    expect(positionalIn(html)).toEqual([]);
     expect(html).not.toContain("<fieldset class=\"min-w-0\"><legend");
     expect(html).not.toContain("data-doubles-target");
     expect(text(turnPanel(html))).toContain("No moves chosen.");
@@ -244,12 +249,14 @@ describe("2v2 summary (DoublesSummary)", () => {
   it("asks for a target only when the move takes one, and states every action", () => {
     const html = summary(doubleTarget());
     const charizard = card(html, "own-left");
-    expect(charizard.match(/<legend[^>]*>Target<span class="sr-only"> for Charizard your left<\/span><\/legend>/)).not.toBeNull();
+    expect(charizard.match(/<legend[^>]*>Target<span class="sr-only"> for Charizard<\/span><\/legend>/)).not.toBeNull();
     const radios = [...charizard.matchAll(/<input[^>]*type="radio"[^>]*>/g)].map((match) => match[0]);
     expect(radios.map((tag) => tag.match(/value="([^"]+)"/)?.[1])).toEqual(["opponent-left", "opponent-right", "own-right"]);
     expect(radios.map((tag) => /checked=""/.test(tag))).toEqual([true, false, false]);
-    expect(text(charizard)).toMatch(/Left foeBlastoise[\s\S]*Right foePikachu[\s\S]*AllyVenusaur/);
-    expect(charizard).toMatch(/<p data-doubles-action="own-left" aria-hidden="true"[^>]*>Weather Ball<span aria-hidden="true"> → <\/span><span class="sr-only"> targets <\/span>Blastoise \(left foe\)<\/p>/);
+    // One line per radio: the Pokémon's name.
+    expect([...charizard.matchAll(/<label[^>]*for="[^"]+-target-[^"]+"[^>]*>([\s\S]*?)<\/label>/g)].map((match) => text(match[1]))).toEqual(["Blastoise", "Pikachu", "Venusaur"]);
+    expect(text(charizard)).toMatch(/Blastoise[\s\S]*Pikachu[\s\S]*Venusaur/);
+    expect(charizard).toMatch(/<p data-doubles-action="own-left" aria-hidden="true"[^>]*>Weather Ball<span aria-hidden="true"> → <\/span><span class="sr-only"> targets <\/span>Blastoise<\/p>/);
     const blastoise = card(html, "opponent-left");
     expect(blastoise).not.toContain('type="radio"');
     expect(blastoise).toMatch(/<p data-doubles-action="opponent-left" class[^>]*>Water Spout<span aria-hidden="true"> → <\/span><span class="sr-only"> targets <\/span>both foes<\/p>/);
@@ -259,8 +266,9 @@ describe("2v2 summary (DoublesSummary)", () => {
     expect(pikachu).toMatch(/data-doubles-all-moves="opponent-right"[^>]*class="[^"]*border-accent-border/);
     expect(pikachu.match(/data-doubles-no-move="opponent-right"[^>]*aria-pressed="false"/)).not.toBeNull();
     const earthquake = summary(fixture({ species: { "own-left": "garchomp" }, actions: { "own-left": { moveId: "earthquake", target: null } }, rules: { "own-left": RULES.earthquake } }));
-    expect(text(card(earthquake, "own-left"))).toContain("Earthquake →  targets both foes and Venusaur (ally)");
-    expect(earthquake).toMatch(/aria-label="Garchomp your left move 2: Earthquake"[^>]*aria-pressed="true"/);
+    expect(text(card(earthquake, "own-left"))).toContain("Earthquake →  targets both foes and Venusaur");
+    expect(earthquake).toMatch(/aria-label="Garchomp move 2: Earthquake"[^>]*aria-pressed="true"/);
+    expect(positionalIn(html)).toEqual([]);
     assertControlLabels(html, ["moves-list"]);
   });
 
@@ -269,7 +277,7 @@ describe("2v2 summary (DoublesSummary)", () => {
     const blastoise = card(html, "opponent-left");
     expect(blastoise).toContain(`After the moves · ${label}`);
     expect(blastoise).toMatch(new RegExp(`<span class="text-xl font-bold text-text">${shown}</span><span class="text-sm text-muted"> / 154 HP</span>`));
-    expect(blastoise).toMatch(new RegExp(`role="meter" aria-label="Blastoise opponent&#x27;s left projected HP" aria-valuemin="0" aria-valuemax="154" aria-valuenow="${shown}" aria-valuetext="${shown} of 154 HP after the moves, ${label} \\(0–4\\). KO chance: 75%. Turn start HP: 60."`));
+    expect(blastoise).toMatch(new RegExp(`role="meter" aria-label="Blastoise projected HP" aria-valuemin="0" aria-valuemax="154" aria-valuenow="${shown}" aria-valuetext="${shown} of 154 HP after the moves, ${label} \\(0–4\\). KO chance: 75%. Turn start HP: 60."`));
     expect(blastoise).toMatch(/data-hp-range="true" aria-hidden="true" class="absolute inset-y-0 bg-text\/25" style="left:0%;width:2.59740259740259\d*%"/);
     expect(text(blastoise)).toContain("Turn start: 60 / 154 · KO chance: 75%");
     expect(text(turnPanel(html))).toContain(`Turn · ${label}`);
@@ -297,14 +305,31 @@ describe("2v2 summary (DoublesSummary)", () => {
     expect(turnPanel(html)).not.toContain("data-doubles-step");
   });
 
-  it("names the Pokémon of an uncertain turn by position when two share a species", () => {
+  it("names the Pokémon of an uncertain turn by team when both sides show a species", () => {
     const html = summary(uncertain());
-    expect(html).toContain('aria-label="Garchomp your left move 1: Dragon Claw"');
-    expect(html).toContain('aria-label="Garchomp opponent&#x27;s left move 1: Dragon Claw"');
+    expect(html).toContain('aria-label="Garchomp (yours) move 1: Dragon Claw"');
+    expect(html).toContain('aria-label="Garchomp (opponent&#x27;s) move 1: Dragon Claw"');
     const garchomp = card(html, "own-left");
-    expect(text(garchomp)).toMatch(/Left foeGarchomp/);
-    expect(text(garchomp)).toContain("Dragon Claw →  targets Garchomp (left foe)");
+    // Each card sits in its side's labelled group, so its heading gives the team to screen readers only.
+    expect(garchomp).toMatch(/<h4[^>]*>Garchomp<span class="sr-only"> \(yours\)<\/span><\/h4>/);
+    expect(card(html, "opponent-left")).toMatch(/<h4[^>]*>Garchomp<span class="sr-only"> \(opponent&#x27;s\)<\/span><\/h4>/);
+    expect([...garchomp.matchAll(/<label[^>]*for="[^"]+-target-[^"]+"[^>]*>([\s\S]*?)<\/label>/g)].map((match) => text(match[1]))).toEqual(["Garchomp (opponent's)", "Pikachu", "Venusaur"]);
+    expect(text(garchomp)).toContain("Dragon Claw →  targets Garchomp (opponent's)");
     expect(text(card(html, "own-left"))).toContain("91 / 183 HP");
+    expect(positionalIn(html)).toEqual([]);
+  });
+
+  it("numbers two of one species on one side, with the team for screen readers only in their headings", () => {
+    const html = summary(fixture({ species: { "own-left": "garchomp", "own-right": "garchomp", "opponent-left": "garchomp" } }));
+    expect([...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/g)].map((match) => match[1])).toEqual([
+      'Garchomp (<span class="sr-only">yours, </span>1)', 'Garchomp (<span class="sr-only">yours, </span>2)',
+      'Garchomp<span class="sr-only"> (opponent&#x27;s)</span>', "Pikachu",
+    ]);
+    expect(html).toContain('aria-label="Garchomp (yours, 1) move 1: Dragon Claw"');
+    expect(html).toContain('aria-label="Garchomp (yours, 2) move 1: Dragon Claw"');
+    expect(html).toContain('aria-label="Change Garchomp (yours, 2)"');
+    expect(html).toContain('aria-label="Garchomp (opponent&#x27;s) current HP"');
+    expect(positionalIn(html)).toEqual([]);
   });
 });
 
@@ -315,30 +340,35 @@ describe("2v2 turn (DoublesTurn)", () => {
     expect(panel).toMatch(/<ol aria-label="Actions in turn order"/);
     expect([...panel.matchAll(/data-doubles-step="([^"]+)"/g)].map((match) => match[1])).toEqual(["opponent-right", "own-left", "own-right", "opponent-left"]);
     const steps = text(panel);
-    expect(steps).toContain("1 · Protect · Pikachu (opponent's right) · Targets itself");
-    expect(steps).toContain("2 · Weather Ball · Charizard (your left) →  targets Blastoise (left foe)");
+    expect(steps).toContain("1 · Protect · Pikachu · Targets itself");
+    expect(steps).toContain("2 · Weather Ball · Charizard →  targets Blastoise");
     expect(steps).toContain("Blastoise: 20–24 damage (12.99–15.58% of max HP) · KO chance 0%");
     expect(steps).toContain("Blastoise: 36–43 damage (23.38–27.92% of max HP) · KO chance 75%");
     expect(steps).toContain("Faints before it moves (75%).");
     expect(steps).toContain("Water Spout: 58 power at 60 HP (25%).");
     expect(steps).toContain("Charizard: 30–36 damage (19.61–23.53% of max HP) · KO chance 0% · reaches it 25%");
-    expect(panel).toMatch(/<ul aria-label="Sludge Bomb hits"[^>]*><li data-doubles-hit="opponent-left"/);
-    expect(panel).not.toMatch(/aria-label="Protect hits"/);
+    expect(panel).toMatch(/<ul aria-label="Sludge Bomb hits from Venusaur"[^>]*><li data-doubles-hit="opponent-left"/);
+    expect(panel).not.toMatch(/aria-label="Protect hits/);
     expect(steps).toContain("Every move hits; no critical hits; added effects below 100% do not happen.");
     expect(steps).toContain("Assumes no protecting move was used last turn.");
-    expect(panel).toContain("Show move<span class=\"sr-only\"> Weather Ball, Charizard (your left)</span>");
+    expect(panel).toContain("Show move<span class=\"sr-only\"> Weather Ball, Charizard</span>");
+    expect(positionalIn(panel)).toEqual([]);
     expect(text(panel.match(/<p data-doubles-live="true" aria-live="polite" aria-atomic="true" class="sr-only">([^<]*)<\/p>/)![1]))
       .toBe(`Charizard HP remaining: 145 / 153. Venusaur HP remaining: 153 / 155. Blastoise HP remaining: 1 / 154, KO chance 75%. Pikachu HP remaining: 110 / 110.${fixtureEnd()}`);
     expect(steps).not.toMatch(/Assumes the target uses a 0-priority move|Analytic: needs the Doubles turn order/);
   });
 
   it("states an uncertain order", () => {
-    const panel = text(turnPanel(summary(uncertain())));
+    const html = turnPanel(summary(uncertain()));
+    const panel = text(html);
     expect(panel.match(/Order: 1st 50% · 2nd 50%\./g)).toHaveLength(2);
     expect(panel).toContain("Faints before it moves (50%).");
-    expect(panel).toContain("1 · Dragon Claw · Garchomp (your left) →  targets Garchomp (left foe)");
-    expect(panel).toContain("2 · Dragon Claw · Garchomp (opponent's left) →  targets Garchomp (left foe)");
-    expect(panel).toContain("Garchomp (opponent's left): 184–217 damage (100.55–118.58% of max HP) · KO chance 50% · reaches it 50%");
+    expect(panel).toContain("1 · Dragon Claw · Garchomp (yours) →  targets Garchomp (opponent's)");
+    expect(panel).toContain("2 · Dragon Claw · Garchomp (opponent's) →  targets Garchomp (yours)");
+    expect(panel).toContain("Garchomp (opponent's): 184–217 damage (100.55–118.58% of max HP) · KO chance 50% · reaches it 50%");
+    // Two Pokémon use Dragon Claw: each hit list also names its user, so the two lists differ.
+    expect([...html.matchAll(/<ul aria-label="(Dragon Claw hits[^"]*)"/g)].map((match) => match[1])).toEqual(["Dragon Claw hits from Garchomp (yours)", "Dragon Claw hits from Garchomp (opponent&#x27;s)"]);
+    expect(positionalIn(html)).toEqual([]);
   });
 
   it("gives the reason a turn is not estimated, then each move's damage at the start of the turn", () => {
@@ -359,7 +389,7 @@ describe("2v2 turn (DoublesTurn)", () => {
     const view = fixture({ actions: { "own-left": { moveId: "weatherball", target: null } }, rules: { "own-left": RULES.ownSingle }, turn: ISSUES });
     const onFixSettings = vi.fn();
     const { html, buttons } = capture(() => summary(view, { onFixSettings }));
-    expect(text(turnPanel(html))).toContain("Charizard (your left): Weather Ball has no target.");
+    expect(text(turnPanel(html))).toContain("Charizard: Weather Ball has no target.");
     const fix = buttons.find((button) => [button.children].flat().includes("Fix settings"));
     expect(fix).toBeDefined();
     click(fix!);
@@ -433,20 +463,23 @@ describe("2v2 summary callbacks", () => {
     expect(picks.map((button) => button["data-doubles-card-pick"])).toEqual(["own-right", "opponent-left", "opponent-right"]);
     const left = picks.find((button) => button["data-doubles-card-pick"] === "opponent-left")!;
     expect(left["aria-pressed"]).toBe(true);
-    expect(left["aria-label"]).toBe(`Target ${baseName(view.names, "opponent-left")} (left foe) with ${baseName(view.names, "own-left")}'s Weather Ball`);
-    expect(html).toContain(`data-doubles-card-chip="true" class="wrap-anywhere text-xs font-semibold text-accent-text">Target of ${baseName(view.names, "own-left")}&#x27;s Weather Ball</p>`);
+    expect(left["aria-label"]).toBe(`Target ${view.names["opponent-left"]} with ${view.names["own-left"]}'s Weather Ball`);
+    expect(left["aria-label"]).toBe("Target Blastoise with Charizard's Weather Ball");
+    expect(html).toContain(`data-doubles-card-chip="true" class="wrap-anywhere text-xs font-semibold text-accent-text">Target of ${view.names["own-left"]}&#x27;s Weather Ball</p>`);
     expect(html.match(/data-doubles-card-target="eligible"/g)).toHaveLength(2);
     click(picks.find((button) => button["data-doubles-card-pick"] === "opponent-right")!);
     expect(props.onTargetChange).toHaveBeenCalledWith(getMoveOwner(view.cards["own-left"].slot), "opponent-right");
     // A move with its own targets (the opponent's left Water Spout) gives no frames.
     expect(summary(view, { defaultAiming: "opponent-left" })).not.toContain("data-doubles-card-pick");
     expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a/);
+    expect(positionalIn(html)).toEqual([]);
   });
 
   it("states facts only", () => {
     const tutorial = /Click|Choose a|to see|browse|Select a/;
     for (const view of [fixture(), doubleTarget(), uncertain(), notEstimated()]) {
       expect(visibleText(summary(view))).not.toMatch(tutorial);
+      expect(positionalIn(summary(view))).toEqual([]);
     }
     expect(visibleText(summary(doubleTarget(), { blockedReason: "HP preview paused while the calculator loads." }))).not.toMatch(tutorial);
   });
@@ -473,8 +506,9 @@ describe("2v2 settings and Moves pane", () => {
     expect([...html.matchAll(/data-build-toggle="([^"]+)" aria-expanded="(true|false)" aria-controls="([^"]+)"/g)].map((match) => [match[1], match[2], match[3]])).toEqual([
       ["own-left", "false", "build-own-left"], ["own-right", "true", "build-own-right"], ["opponent-left", "false", "build-opponent-left"], ["opponent-right", "false", "build-opponent-right"],
     ]);
-    expect(text(html)).toContain("Build settingsCharizard (your left)");
-    expect(text(html)).toContain("Build settingsPikachu (opponent's right)");
+    expect(text(html)).toContain("Build settingsCharizard");
+    expect(text(html)).toContain("Build settingsPikachu");
+    expect(positionalIn(html)).toEqual([]);
     expect(text(html)).toContain(", 1 setting to check");
     expect([...html.matchAll(/data-editor="([^"]+)"/g)].map((match) => match[1])).toEqual(DOUBLES_SLOTS);
     expect(html.match(/data-field-toggle="true" aria-expanded="true" aria-controls="field-2v2"/)).not.toBeNull();
@@ -501,9 +535,11 @@ describe("2v2 settings and Moves pane", () => {
       ["for", "own-left", false], ["for", "own-right", true], ["for", "opponent-left", false], ["for", "opponent-right", false],
       ["into", "opponent-left", false], ["into", "opponent-right", true], ["into", "own-left", false],
     ]);
-    expect(text(html)).toContain("Venusaur · your right");
-    expect(text(html)).toContain("Right foe · Pikachu");
-    expect(text(html)).toContain("Ally · Charizard");
+    // Each radio is the Pokémon's name, with no place beside it.
+    const labels = (kind: string) => [...html.matchAll(new RegExp(`<label[^>]*for="[^"]+-${kind}-[^"]+"[^>]*>([\\s\\S]*?)</label>`, "g"))].map((match) => text(match[1]));
+    expect(labels("for")).toEqual(["Charizard", "Venusaur", "Blastoise", "Pikachu"]);
+    expect(labels("into")).toEqual(["Blastoise", "Pikachu", "Charizard"]);
+    for (const label of [...labels("for"), ...labels("into")]) expect(label).not.toMatch(/ · your|foe ·/);
     expect(text(html)).toContain("Damage at the start of the turn, before any move.");
     expect(html).toContain('<section id="moves-list">List</section>');
     change(inputs.find((input) => input.value === "opponent-left" && String(input.name).endsWith("-for"))!);
@@ -512,6 +548,7 @@ describe("2v2 settings and Moves pane", () => {
     expect(onIntoChange).toHaveBeenCalledWith("own-left");
     assertControlLabels(html);
     expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a/);
+    expect(positionalIn(html)).toEqual([]);
   });
 });
 
@@ -713,7 +750,7 @@ describe("2v2 status moves and end of turn: cards and turn panel", () => {
   it("lists the status moves' hits, the HP lost outside the moves, then the end of turn and the turn facts", () => {
     const panel = turnPanel(summary(eotView()));
     const steps = text(panel);
-    expect(steps).toContain("1 · Thunder Wave · Pikachu (opponent's right) →  targets Charizard (left foe)");
+    expect(steps).toContain("1 · Thunder Wave · Pikachu →  targets Charizard");
     expect([...panel.matchAll(/<li data-doubles-hit="([^"]+)"[^>]*>([\s\S]*?)<\/li>/g)].map((match) => [match[1], text(match[2])])).toEqual([
       ["own-left", "CharizardIs paralysed."],
       ["opponent-left", `Blastoise's Substitute: ${MINUS}26–31 HP · reaches it 87.5%`],
@@ -799,6 +836,7 @@ describe("2v2 status moves and end of turn: cards and turn panel", () => {
       const html = summary(eotView(turn));
       expect(visibleText(html)).not.toMatch(tutorial);
       expect(visibleText(turnPanel(html))).not.toMatch(/\b(left|right) Pokémon\b/);
+      expect(positionalIn(html)).toEqual([]);
       // Every new line wraps instead of widening the page at 375 px.
       for (const [, tag] of html.matchAll(/<(?:p|li)\b([^>]*data-doubles-(?:conditions|loss|residual|end-not-estimated)[^>]*)>/g)) expect(tag).toContain("wrap-anywhere");
       assertControlLabels(html, ["moves-list"]);
@@ -879,6 +917,7 @@ describe("2v2 state from earlier turns (Field conditions)", () => {
     expect(onChange).toHaveBeenLastCalledWith("opponent-right", { substitute: quarter });
     assertControlLabels(html);
     expect(visibleText(html)).not.toMatch(/Click|Choose a|to see|browse|Select a|\b(left|right) Pokémon\b/);
+    expect(positionalIn(html)).toEqual([]);
   });
 
   it("shows the counts that apply to each Pokémon's status, bounded to what the game allows", () => {

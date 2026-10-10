@@ -2,6 +2,7 @@ import type { ReactNode, Ref } from "react";
 import type { BoardView } from "../model/view-types";
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import BattleCard, { type CardPlay, type CardTarget } from "./BattleCard";
+import { boardNameParts } from "./board-format";
 import FieldBar from "./FieldBar";
 import styles from "./board.module.css";
 
@@ -24,8 +25,10 @@ export type BattleBoardProps = {
 /** The opponent's row on top and yours below, as the game shows them (SPEC D2). */
 export default function BattleBoard({ board, ref, renderControls, cardTarget, cardPlay, popup, playbackBar }: BattleBoardProps) {
   // Keyed by the Pokémon: one that comes in gets a fresh card (its HP bar does not slide from the one it replaced).
+  // Each card's name: the side word when both teams (or both sides now) show it, the number for two of one name on a side.
+  const names = boardNameParts(board);
   const card = (slot: DoublesSlotId) => (
-    <BattleCard key={`${slot}:${board.active[slot]?.key ?? ""}`} mon={board.active[slot]} slot={slot} target={cardTarget?.(slot)} play={cardPlay?.(slot)} />
+    <BattleCard key={`${slot}:${board.active[slot]?.key ?? ""}`} mon={board.active[slot]} slot={slot} name={names[slot]} target={cardTarget?.(slot)} play={cardPlay?.(slot)} />
   );
   return (
     <div ref={ref} className={styles.boardWrap}>

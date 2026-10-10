@@ -225,14 +225,8 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
   const singles = value.gameType === "Singles";
   const doubles = variant === "doubles";
   const carried = doubles ? carriedProp ?? provided : [];
-  // Named after its Pokémon; the position is shown only to tell two of the same species apart.
-  const sideLegend = (side: Side) => {
-    if (sideLegends) return sideLegends[side];
-    const position = side === "attackerSide" ? "left" : "right";
-    const name = names[side];
-    if (!name) return `${side === "attackerSide" ? "Left" : "Right"} Pokémon’s side`;
-    return names.attackerSide === names.defenderSide ? `${name}’s side (${position})` : <>{name}’s side<span className="sr-only"> ({position})</span></>;
-  };
+  // Named after its Pokémon ("Charizard’s side"); a 1v1 mirror passes sideLegends, which name each one's team.
+  const sideLegend = (side: Side) => sideLegends ? sideLegends[side] : `${names[side] || "Pokémon"}’s side`;
 
   return (
     <div data-calculator-field className={styles.editor}>

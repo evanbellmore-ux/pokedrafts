@@ -32,7 +32,7 @@ function boardFrom(p1: ShowdownRequest, p2: ShowdownRequest | null, keys: Member
   return {
     turn, team: { own, opponent: foes },
     active: { "own-left": at("own-left"), "own-right": at("own-right"), "opponent-left": at("opponent-left"), "opponent-right": at("opponent-right") },
-    field: { weather: null, terrain: null, rooms: [], sides: { own: [], opponent: [] } }, megaUsed: { own: megaUsed, opponent: false },
+    field: { weather: null, terrain: null, rooms: [], sides: { own: [], opponent: [] } }, megaUsed: { own: megaUsed, opponent: false }, mirrored: [],
   };
 }
 

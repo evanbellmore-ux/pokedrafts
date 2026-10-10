@@ -15,11 +15,12 @@ import type { SideID } from "../model/showdown-types";
 import { createRandom, seedHex } from "../model/random";
 import { redactSheet, type SheetView } from "../model/sheet";
 import type { TrainingUsageData, SetLegality } from "../model/usage";
-import { logHash, turnHashes } from "../model/saved-battle";
+import { logHash, logShapeHash, turnHashes, turnShapeHashes } from "../model/saved-battle";
 import { jointActionKey, type BoardView, type DecisionReport, type JointAction, type LogTurn, type PlayerChoice, type TrainingSetup } from "../model/view-types";
 import type { FromWorker, ToWorker } from "../model/worker-protocol";
 import { createStepBuilder, type StepBuilder } from "../log/protocol-steps";
 import { createLogFormatter, type LogFormatter } from "../log/protocol-text";
+import { occupantNames } from "../log/report-format";
 import { BattleHost, type HostOptions } from "../sim/battle-host";
 import { buildBoard } from "../sim/board";
 import { ChoiceBuildError, identName, legalJointActions, teamChoice, toChoiceString, type MemberKeys } from "../sim/choices";
@@ -60,19 +61,30 @@ type AiStep = { decide: string } | { choose: string; ok: boolean };
 type LiveEvent =
   | { by: "ai"; requestId: number; midTurn: boolean; steps: AiStep[]; action: JointAction | null; decided: boolean }
   | { by: "you"; requestId: number; choice: string; action: JointAction | null };
-/** The sealed checkpoint (never posted in the clear). */
-type Checkpoint = { v: 1; turn: number; seed: string; aiBase: string; habits: HabitsRecord | null; events: LiveEvent[]; hash: string };
+/**
+ * The sealed checkpoint (never posted in the clear). `shape`: the log's wording-free hash (saved-battle.ts logShapeHash), so a
+ * Resume still matches after the log's wording changed; absent in checkpoints sealed before it existed.
+ */
+type Checkpoint = { v: 1; turn: number; seed: string; aiBase: string; habits: HabitsRecord | null; events: LiveEvent[]; hash: string; shape?: string };
 const REBUILD_FAILED = "The saved battle did not re-run the same way.";
+/** The p1 tracker's key for a Pokémon that came in beside one shown under the same name (an Illusion), until |replace|. */
+const ILLUSION_PLACEHOLDER = "p2:?illusion";
 
 type AiJob = { requestId: number; controller: AbortController; committed: boolean };
 type Pending = {
   turn: number; report: DecisionReport | null; question: Extract<PlayerQuestion, { kind: "turn" }> | null; aiAction: JointAction;
   /** The AI's member in each of its slots at the decision: from its request, and as your log showed it (Illusion). */
   slotMembers: Partial<Record<DoublesSlotId, string>>; shownMembers: Partial<Record<DoublesSlotId, string>>;
+  /** Each slot's member at the decision as you saw it (LogTurn.occupants): yours from your request, the AI's as shown. */
+  occupants: Partial<Record<DoublesSlotId, string>>;
+  /** Each occupant's full name on the board of the decision (LogTurn.names). */
+  names: Partial<Record<DoublesSlotId, string>>;
 };
 type BattleState = {
   battleId: number; setup: TrainingSetup; host: BattleHost; adapted: { own: AdaptedTeam; opponent: AdaptedTeam }; keys: MemberKeys;
   trackers: { p1: PublicTracker; p2: PublicTracker }; sheets: { forAI: SheetView; forYou: SheetView };
+  /** Member keys (both sides) whose battle name is on both teams (BoardView.mirrored). */
+  mirrored: string[];
   provider: DecisionProvider; aiBase: string; formatter: LogFormatter; steps: StepBuilder;
   log: Map<number, LogTurn>; dirty: Set<number>; snapshots: Map<number, string>;
   ai: AiJob | null; held: { requestId: number; choice: string; action: JointAction | null } | null;
@@ -183,6 +195,12 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     // Log names are the species each set battles as (a Mega form is sent as its base holding the stone, sim/showdown-set.ts).
     for (const [side, team] of [["p1", adapted.own], ["p2", adapted.opponent]] as const) for (const { key, set } of team.sets) names.set(`${side}:${key}`, set.name);
     const display = (side: SideID, name: string) => names.get(`${side}:${keys.keyOf(side, name)}`) ?? name;
+    // Both sixes as the team preview shows them (public, fixed for the battle): a name on both teams carries its side word.
+    const teams = { p1: adapted.own.sets.map((entry) => entry.set.name), p2: adapted.opponent.sets.map((entry) => entry.set.name) };
+    const mirrored = [
+      ...adapted.own.sets.filter((entry) => teams.p2.includes(entry.set.name)).map((entry) => entry.key),
+      ...adapted.opponent.sets.filter((entry) => teams.p1.includes(entry.set.name)).map((entry) => entry.key),
+    ];
     const forYou = redactSheet(sheetFromSets(adapted.opponent), setup.info.youSee);
     // A move's type for the playback's colours, with its user's ability where you know it (your sets; the AI's as "You see" opens).
     const moveType = createMoveType((user) => {
@@ -197,11 +215,11 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       p2: { name: "Training", team: adapted.opponent.sets.map((entry) => entry.set) },
     });
     return {
-      host, adapted: { own: adapted.own, opponent: adapted.opponent }, keys, forYou,
+      host, adapted: { own: adapted.own, opponent: adapted.opponent }, keys, forYou, mirrored: [...new Set(mirrored)],
       trackers: { p1: createTracker("p1", keys.keyOf), p2: createTracker("p2", keys.keyOf) },
-      formatter: createLogFormatter({ names: display }),
+      formatter: createLogFormatter({ names: display, teams }),
       // The board replays each turn from these steps (the same p1 channel as the log).
-      steps: createStepBuilder({ names: display, keyOf: keys.keyOf, moveType }),
+      steps: createStepBuilder({ names: display, teams, keyOf: keys.keyOf, moveType }),
     };
   }
 
@@ -210,7 +228,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     try {
       const parts = battleParts(setup, saved?.seed ?? null);
       return {
-        battleId, setup, host: parts.host, adapted: parts.adapted, keys: parts.keys, trackers: parts.trackers,
+        battleId, setup, host: parts.host, adapted: parts.adapted, keys: parts.keys, trackers: parts.trackers, mirrored: parts.mirrored,
         sheets: { forAI: redactSheet(sheetFromSets(parts.adapted.own), setup.info.aiKnows), forYou: parts.forYou },
         provider: deps.createProvider(habits), aiBase: saved?.aiBase ?? deps.randomHex(),
         formatter: parts.formatter, steps: parts.steps,
@@ -278,7 +296,11 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     const own = s.ownActions.get(turn) ?? null;
     if (pending) {
       const ctx = redactContext(s, pending);
-      if (turn > 0) entry.actions = { own: own ?? {}, opponent: redactJoint(pending.aiAction, ctx) };
+      if (turn > 0) {
+        entry.actions = { own: own ?? {}, opponent: redactJoint(pending.aiAction, ctx) };
+        entry.occupants = { ...pending.occupants };
+        entry.names = { ...pending.names };
+      }
       if (pending.report && s.setup.showRead) {
         const actual = own ? pending.report.predicted.find((option) => option.action && jointActionKey(option.action) === jointActionKey(own))?.chance ?? null : null;
         entry.read = redactReport({ ...pending.report, actual: turn > 0 ? { chance: actual } : null }, ctx);
@@ -365,16 +387,20 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
   }
 
   /** The board as you can see it (per setup.info.youSee). */
-  function boardOf(s: Pick<BattleState, "host" | "trackers" | "sheets" | "setup" | "keys" | "adapted">): BoardView {
-    return buildBoard({ battle: s.host.battle, tracker: s.trackers.p1, sheet: s.sheets.forYou, info: s.setup.info.youSee, keys: s.keys, runtime, ownKeys: s.adapted.own.sets.map((entry) => entry.key) });
+  function boardOf(s: Pick<BattleState, "host" | "trackers" | "sheets" | "setup" | "keys" | "adapted" | "mirrored">): BoardView {
+    return buildBoard({
+      battle: s.host.battle, tracker: s.trackers.p1, sheet: s.sheets.forYou, info: s.setup.info.youSee, keys: s.keys, runtime,
+      ownKeys: s.adapted.own.sets.map((entry) => entry.key), mirrored: s.mirrored,
+    });
   }
 
   // ---------- saved battles: checkpoints, Resume, replays ----------
-  /** The battle sealed as this turn begins: seed, AI seed base, starting habits, every choice so far and the log's hash. */
+  /** The battle sealed as this turn begins: seed, AI seed base, starting habits, every choice so far and the log's hashes. */
   function checkpoint(s: BattleState, turn: number) {
     const sealer = deps.sealer;
     if (!sealer) return;
-    const payload: Checkpoint = { v: 1, turn, seed: s.seed, aiBase: s.aiBase, habits: s.habitsAtStart, events: structuredClone(s.events), hash: logHash([...s.log.values()]) };
+    const log = [...s.log.values()];
+    const payload: Checkpoint = { v: 1, turn, seed: s.seed, aiBase: s.aiBase, habits: s.habitsAtStart, events: structuredClone(s.events), hash: logHash(log), shape: logShapeHash(log) };
     const battleId = s.battleId;
     // One after another: the page stores each checkpoint over the last, so an older one never lands after a newer one.
     sealing = sealing.then(() => sealer.seal(JSON.stringify(payload))).then(
@@ -386,7 +412,9 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
   /**
    * Resume: a new battle on the checkpoint's seed with its AI seed base and starting habits; every recorded choice goes in
    * again in order, with the AI's decides re-run up to their question (provider.replayTurn), so the AI's belief and habits
-   * are the ones it had. The log must hash as the checkpoint's. Then it posts the board and your request and plays on.
+   * are the ones it had. The log must hash as the checkpoint's, or have its shape (the same battle in another wording: a
+   * checkpoint sealed before the current wording, whose shape is the saved log's when it has none). Then it posts the board,
+   * your request and the whole log in the current wording (each turn's occupants from the re-run) and plays on.
    */
   async function resume(battleId: number, setup: TrainingSetup, sealed: string, shown: readonly LogTurn[]) {
     stop();
@@ -418,7 +446,9 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
         if (!ok) throw new Error(REBUILD_FAILED);
         ingest(s);
       }
-      if (s.host.battle.ended || s.lastTurn !== saved.turn || logHash([...s.log.values()]) !== saved.hash) throw new Error(REBUILD_FAILED);
+      const rebuilt = [...s.log.values()];
+      const same = logHash(rebuilt) === saved.hash || logShapeHash(rebuilt) === (saved.shape ?? logShapeHash(shown));
+      if (s.host.battle.ended || s.lastTurn !== saved.turn || !same) throw new Error(REBUILD_FAILED);
     } catch (error) {
       if (state === s) fail(messageOf(error) === REBUILD_FAILED ? REBUILD_FAILED : `${REBUILD_FAILED} ${messageOf(error)}`);
       return;
@@ -446,7 +476,10 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     }
     s.ai = { requestId: event.requestId, controller, committed: true };
     if (at.kind !== "switch") {
-      s.pending.set(at.turn, { turn: at.turn, report: null, question: event.decided ? question : null, aiAction: event.action ?? {}, slotMembers: at.slotMembers, shownMembers: at.shownMembers });
+      s.pending.set(at.turn, {
+        turn: at.turn, report: null, question: event.decided ? question : null, aiAction: event.action ?? {}, slotMembers: at.slotMembers, shownMembers: at.shownMembers,
+        occupants: at.occupants, names: at.names,
+      });
     }
     s.events.push(event);
     return true;
@@ -465,7 +498,8 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
   /**
    * The replay screen: the teams through Showdown's validator (an import file is untrusted), then the battle re-run from
    * its seed and choice lines, drained after each choice as the live battle was. Posts the board as each turn began and
-   * after the end (per setup.info.youSee, from your channel) and the re-run log's hashes; never the log itself.
+   * after the end (per setup.info.youSee, from your channel), the re-run log's hashes and its written turns' lines and steps
+   * (your channel's, as the battle showed them; a saved log that differs only in wording takes them).
    */
   function replay(replayId: number, setup: TrainingSetup, seed: string, inputLog: readonly string[], forfeited: boolean) {
     const fail = (message: string) => deps.post({ type: "replay-error", replayId, message });
@@ -476,7 +510,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       fail(messageOf(error));
       return;
     }
-    const view = { host: parts.host, trackers: parts.trackers, sheets: { forAI: parts.forYou, forYou: parts.forYou }, setup, keys: parts.keys, adapted: parts.adapted };
+    const view = { host: parts.host, trackers: parts.trackers, sheets: { forAI: parts.forYou, forYou: parts.forYou }, setup, keys: parts.keys, adapted: parts.adapted, mirrored: parts.mirrored };
     const log = new Map<number, LogTurn>();
     const starts: Record<number, BoardView> = {};
     let turn = 0;
@@ -507,8 +541,10 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       if (!parts.host.battle.ended) { fail("The saved choices end before the battle does."); return; }
       const winner = (ended as ReturnType<BattleHost["drain"]>["ended"])?.winner ?? null;
       const turns = [...log.values()];
+      const written = turns.filter((each) => each.lines.length || each.steps?.length).map((each) => ({ turn: each.turn, lines: each.lines, steps: each.steps ?? [] }));
       deps.post({
         type: "replay-ready", replayId, starts, end: boardOf(view), hash: logHash(turns), turnHashes: turnHashes(turns),
+        shape: logShapeHash(turns), turnShapes: turnShapeHashes(turns), turns: written,
         result: { result: winner === "p1" ? "win" : winner === "p2" ? "loss" : "tie", forfeited: forfeit },
       });
     } catch (error) {
@@ -561,7 +597,11 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     return { choice: toChoiceString("p2", decision.action, request, s.keys, "p2"), action: decision.action, report: decision.report, question: decision.question };
   }
 
-  /** What the AI's job records at its start: the turn, the AI's member in each slot (its request) and as your log shows it. */
+  /**
+   * What the AI's job records at its start: the turn, the AI's member in each slot (its request) and as your log shows it,
+   * each slot's member as you saw it (LogTurn.occupants: yours from your request) and its name on the board you chose on
+   * (LogTurn.names: the AI's read and the actions keep the names of their decision after a Transform or Mega Evolution).
+   */
   function aiContext(s: BattleState) {
     const turn = s.host.battle.turn;
     const request = s.host.request("p2");
@@ -571,8 +611,19 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     for (const mon of Object.values(s.trackers.p1.state().mons)) {
       if (mon.side === "p2" && mon.position !== null) shownMembers[slotAt("p2", mon.position, "p2")] = mon.key.slice(3);
     }
+    const occupants: Partial<Record<DoublesSlotId, string>> = {};
+    s.host.request("p1")?.side.pokemon.slice(0, 2).forEach((each, position) => { if (each.active) occupants[slotAt("p1", position, "p2")] = s.keys.keyOf("p1", identName(each.ident)); });
+    for (const mon of Object.values(s.trackers.p1.state().mons)) {
+      if (mon.side !== "p2" || mon.position === null) continue;
+      // An Illusion beside the Pokémon it copies is the tracker's placeholder (sim/tracker.ts onSwitch): both look-alikes are
+      // the member your log names them by (the ident name its lines carry), so they read "Garchomp (opponent's, 1)" / "(2)".
+      const shown = mon.key === ILLUSION_PLACEHOLDER ? s.host.battle.p2.active[mon.position] : null;
+      const key = shown ? s.keys.keyOf("p2", (shown.illusion ?? shown).name) : mon.key.slice(3);
+      if (key && key !== ILLUSION_PLACEHOLDER.slice(3)) occupants[slotAt("p2", mon.position, "p2")] = key;
+    }
+    const names = Object.fromEntries(Object.entries(occupantNames(occupants, boardOf(s))).filter(([slot]) => occupants[slot as DoublesSlotId])) as Partial<Record<DoublesSlotId, string>>;
     const kind = request && "teamPreview" in request ? "preview" : request && "forceSwitch" in request ? "switch" : "move";
-    return { turn, slotMembers, shownMembers, kind };
+    return { turn, slotMembers, shownMembers, occupants, names, kind };
   }
 
   function startAi(s: BattleState, requestId: number, midTurn: boolean) {
@@ -580,7 +631,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     s.ai = job;
     deps.post({ type: "ai", battleId: s.battleId, requestId, status: "thinking" });
     const live = () => state === s && s.ai === job && !job.controller.signal.aborted;
-    const { turn, slotMembers, shownMembers, kind } = aiContext(s);
+    const { turn, slotMembers, shownMembers, occupants, names, kind } = aiContext(s);
     const run = async () => {
       let status: "locked" | "fallback" = "locked";
       let message: string | undefined;
@@ -612,7 +663,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       }
       job.committed = true;
       s.events.push({ by: "ai", requestId, midTurn, steps, action: result?.action ?? null, decided: !!result });
-      if (kind !== "switch") s.pending.set(turn, { turn, report: result?.report ?? null, question: result?.question ?? null, aiAction: result?.action ?? {}, slotMembers, shownMembers });
+      if (kind !== "switch") s.pending.set(turn, { turn, report: result?.report ?? null, question: result?.question ?? null, aiAction: result?.action ?? {}, slotMembers, shownMembers, occupants, names });
       deps.post({ type: "ai", battleId: s.battleId, requestId, status, ...(message ? { message } : {}) });
       // G1: your held choice goes in only now (it already passed the clone check).
       const held = s.held;

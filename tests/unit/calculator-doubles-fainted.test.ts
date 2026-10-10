@@ -2,6 +2,7 @@ import { createElement, type ComponentProps } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fixture, NO_ACTION, type DoublesFixture } from "../fixtures/doubles-turn";
+import { positionalIn } from "../fixtures/naming";
 import DoublesMoves from "@/app/(app)/calculator/DoublesMoves";
 import MoveResults from "@/app/(app)/calculator/MoveResults";
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
@@ -13,7 +14,7 @@ import {
 import { actionTargets, FAINTED } from "@/app/(app)/calculator/doubles-format";
 import { changeBattleGame, createMatchup, getMoveOwner, updateMatchupHP } from "@/app/(app)/calculator/roster-prep";
 import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
-import { DOUBLES_SLOTS, type DoublesPokemonInput, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, doublesNames, type DoublesPokemonInput, type DoublesSlotId, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { createBuild, validateBuild } from "@/app/lib/battle/model";
 import type { MoveContext, MoveDamageResult } from "@/app/lib/battle/types";
@@ -48,7 +49,7 @@ const turnActions = (current: CalculatorState) => {
   return Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, input.pokemon[slot]?.action ?? null]));
 };
 
-/** Charizard Rock Slide, Venusaur Sludge Bomb → opponent's left, Pikachu Thunderbolt → your left. */
+/** Charizard Rock Slide, Venusaur Sludge Bomb → Blastoise (opponent-left), Pikachu Thunderbolt → Charizard (own-left). */
 function prepared() {
   let current = move(start(), "own-left", "rockslide");
   current = move(current, "own-right", "sludgebomb");
@@ -107,7 +108,7 @@ describe("current HP 0 in 2v2", () => {
     expect(changed.doubles.actions["own-right"]).toEqual({ moveId: "energyball", target: "opponent-right" });
     expect(turnActions(changed)["own-right"]).toEqual({ moveId: "energyball", target: "opponent-left" });
     expect(turnActions(hp(changed, "opponent-right", "50"))["own-right"]).toEqual({ moveId: "energyball", target: "opponent-right" });
-    // Your left fainted: the opponent's Thunderbolt aimed at it goes to your right.
+    // Charizard (own-left) fainted: Pikachu's Thunderbolt aimed at it goes to Venusaur (own-right).
     expect(turnActions(hp(prepared(), "own-left", "0"))["opponent-right"]).toEqual({ moveId: "thunderbolt", target: "own-right" });
   });
 
@@ -187,7 +188,7 @@ function summary(view: DoublesFixture, turn: DoublesTurnResult | null = view.tur
   }));
 }
 
-/** The four cards with Pikachu (opponent's right) at 0 HP, as useDoublesView makes them. */
+/** The four cards with Pikachu (opponent-right) at 0 HP, as useDoublesView makes them. */
 function faintedView(actions: Partial<Record<DoublesSlotId, { moveId: string; target: DoublesSlotId | null }>>) {
   const current = hp(start(), "opponent-right", "0");
   const input = getDoublesTurnInput(current.doubles);
@@ -214,19 +215,20 @@ describe("the fainted card and the other cards", () => {
     const pikachu = card(html, "opponent-right");
     expect(pikachu).toContain(`data-doubles-fainted="opponent-right" class="mt-1 text-xs font-semibold text-danger">${FAINTED}</p>`);
     expect(pikachu).toContain('<span class="text-xl font-bold text-text">0</span><span class="text-sm text-muted"> / 110 HP</span>');
-    expect(pikachu).toMatch(/role="meter" aria-label="Pikachu opponent&#x27;s right current HP" aria-valuemin="0" aria-valuemax="110" aria-valuenow="0" aria-valuetext="Fainted: 0 of 110 HP"/);
+    expect(pikachu).toMatch(/role="meter" aria-label="Pikachu current HP" aria-valuemin="0" aria-valuemax="110" aria-valuenow="0" aria-valuetext="Fainted: 0 of 110 HP"/);
     expect(pikachu).not.toMatch(/data-move-slot|data-doubles-no-move|data-doubles-all-moves|data-doubles-target|data-doubles-action|type="radio"/);
     expect(pikachu).not.toContain("Current HP must");
-    // It can still be changed or brought back.
-    expect(pikachu).toContain('aria-label="Change opponent&#x27;s right Pokémon"');
-    expect(pikachu).toContain('aria-label="Edit opponent&#x27;s right HP"');
+    // It keeps its name, and can still be changed or brought back.
+    expect(pikachu).toContain('aria-label="Change Pikachu"');
+    expect(pikachu).toContain('aria-label="Edit Pikachu HP"');
+    expect(positionalIn(html)).toEqual([]);
   });
 
   it("names the lone foe a spread move reaches, and picks a single foe without a picker", () => {
     const html = summary(faintedView({ "own-left": { moveId: "rockslide", target: null }, "opponent-left": { moveId: "hydropump", target: "own-left" } }));
-    expect(card(html, "own-left")).toContain('data-doubles-action="own-left" class="mt-1 wrap-anywhere text-xs text-muted">Rock Slide<span aria-hidden="true"> → </span><span class="sr-only"> targets </span>Blastoise (left foe)</p>');
+    expect(card(html, "own-left")).toContain('data-doubles-action="own-left" class="mt-1 wrap-anywhere text-xs text-muted">Rock Slide<span aria-hidden="true"> → </span><span class="sr-only"> targets </span>Blastoise</p>');
     const blastoise = card(html, "opponent-left");
-    // Hydro Pump (normal) from the opponent's left still offers your two Pokémon; its fainted ally is left out.
+    // Hydro Pump (normal) from Blastoise still offers your two Pokémon; its fainted ally is left out.
     expect([...blastoise.matchAll(/<input\b[^>]*type="radio"[^>]*value="([^"]+)"/g)].map((match) => match[1])).toEqual(["own-left", "own-right"]);
   });
 
@@ -235,7 +237,7 @@ describe("the fainted card and the other cards", () => {
     view.cards["own-right"] = { ...view.cards["own-right"], rule: { kind: "choose", options: ["opponent-left"] } };
     const venusaur = card(summary(view), "own-right");
     expect(venusaur).not.toContain('type="radio"');
-    expect(venusaur).toMatch(/<p data-doubles-action="own-right" class="[^"]+">Sludge Bomb<span aria-hidden="true"> → <\/span><span class="sr-only"> targets <\/span>Blastoise \(left foe\)<\/p>/);
+    expect(venusaur).toMatch(/<p data-doubles-action="own-right" class="[^"]+">Sludge Bomb<span aria-hidden="true"> → <\/span><span class="sr-only"> targets <\/span>Blastoise<\/p>/);
   });
 
   it("lists no step for a turn where no Pokémon with a move acts, and shows the turn's facts", () => {
@@ -252,7 +254,7 @@ describe("the fainted card and the other cards", () => {
     const names = { "own-left": "Charizard", "own-right": "Venusaur", "opponent-left": "Blastoise", "opponent-right": "Pikachu" };
     expect(actionTargets(names, "own-left", { kind: "auto", hits: [] }, null)).toEqual({ arrow: false, text: "No target" });
     expect(actionTargets(names, "opponent-left", { kind: "auto", hits: [] }, null)).toEqual({ arrow: false, text: "No target" });
-    expect(actionTargets(names, "own-left", { kind: "auto", hits: ["opponent-right"], random: true }, null)).toEqual({ arrow: true, text: "Pikachu (right foe)" });
+    expect(actionTargets(names, "own-left", { kind: "auto", hits: ["opponent-right"], random: true }, null)).toEqual({ arrow: true, text: "Pikachu" });
     expect(actionTargets(names, "own-left", { kind: "auto", hits: ["opponent-left", "opponent-right"], random: true }, null)).toEqual({ arrow: true, text: "a random foe" });
     expect(actionTargets(names, "own-left", { kind: "choose", options: [] }, null)).toEqual({ arrow: false, text: "No target" });
   });
@@ -268,7 +270,8 @@ describe("the Moves pane", () => {
       ["own-left", false], ["own-right", false], ["opponent-left", false], ["opponent-right", true],
       ["opponent-left", false], ["opponent-right", true], ["own-right", false],
     ]);
-    expect(html).toContain('Pikachu</span><span class="text-muted"> · opponent&#x27;s right</span><span class="text-muted"> · Fainted</span>');
+    expect(html).toContain('<span class="font-semibold text-text">Pikachu</span><span class="text-muted"> · Fainted</span>');
+    expect(positionalIn(html)).toEqual([]);
   });
 });
 
@@ -304,7 +307,7 @@ describe("the 2v2 page with a fainted Pokémon", () => {
     expect(html).toContain('data-build-region="opponent-right"');
     expect(html).not.toMatch(/data-build-toggle="opponent-right"[^>]*>[^<]*<[^>]*>\d+ issue/);
     // Rock Slide names the lone foe.
-    expect(card(html, "own-left")).toContain("Rock Slide<span aria-hidden=\"true\"> → </span><span class=\"sr-only\"> targets </span>Blastoise (left foe)");
+    expect(card(html, "own-left")).toContain("Rock Slide<span aria-hidden=\"true\"> → </span><span class=\"sr-only\"> targets </span>Blastoise");
   });
 });
 
@@ -326,6 +329,58 @@ describe("the turn with a fainted Pokémon (engine)", () => {
     if (both.status !== "ready") throw new Error(both.status);
     const spread = both.steps.find((step) => step.slot === "own-left")!.hits.find((hit) => hit.slot === "opponent-left")!;
     expect(spread.max!).toBeLessThan(rockSlide.min!);
+  });
+
+  // Naming pass review CALC-1: the input's fainted slot is null, but the turn's text names the four Pokémon as their cards
+  // do (doublesNames over all four builds), so a fainted twin or mirror partner does not rename the others.
+  it("names each Pokémon in the turn's text as its card does when a twin or mirror partner has fainted", async () => {
+    const { calculateDoublesTurn } = await import("@/app/lib/battle/doubles-turn");
+    const { chosenBuild } = await import("@/app/(app)/calculator/PokemonChooser");
+    const strings = (value: unknown, out: string[] = []): string[] => {
+      if (typeof value === "string") out.push(value);
+      else if (value && typeof value === "object") for (const each of Object.values(value)) strings(each, out);
+      return out;
+    };
+    const named = (species: Partial<Record<DoublesSlotId, [string, string?]>>, fainted: DoublesSlotId, runtime = championsRuntime) => {
+      let current: CalculatorState = { matchup: createMatchup(0, runtime), doubles: createDoubles(0, runtime) };
+      for (const [slot, [id, ability]] of Object.entries(species) as [DoublesSlotId, [string, string?]][]) {
+        const build = chosenBuild(id, runtime, "Doubles")!;
+        current = updateDoublesBuild(current, current.doubles.slots[slot].key, ability ? { ...build, abilityId: ability } : build);
+      }
+      return hp(current, fainted, "0");
+    };
+    const turnText = (current: CalculatorState) => {
+      const turn = calculateDoublesTurn(getDoublesTurnInput(current.doubles));
+      expect(turn.status).toBe("ready");
+      return strings(turn);
+    };
+    // Your Garchomp twins beside the opponent's Garchomp; your first one has fainted.
+    let twins = named({ "own-left": ["garchomp"], "own-right": ["garchomp"], "opponent-left": ["garchomp"] }, "own-left");
+    twins = target(move(twins, "opponent-right", "thunderbolt"), "opponent-right", "own-right");
+    expect(doublesNames(twins.doubles.slots, championsRuntime)["own-right"]).toBe("Garchomp (yours, 2)");
+    expect(getDoublesTurnInput(twins.doubles).names?.["own-right"]).toBe("Garchomp (yours, 2)");
+    const twinText = turnText(twins);
+    expect(twinText).toContain("Thunderbolt has no effect on Garchomp (yours, 2).");
+    expect(twinText.filter((text) => /Garchomp(?! \((?:yours, [12]|opponent's)\))/.test(text))).toEqual([]);
+    // A Garchomp mirror whose opponent's Garchomp has fainted: yours keeps its side word.
+    let mirror = named({ "own-left": ["garchomp"], "opponent-left": ["garchomp"] }, "opponent-left");
+    mirror = target(move(mirror, "opponent-right", "thunderbolt"), "opponent-right", "own-left");
+    const mirrorText = turnText(mirror);
+    expect(mirrorText).toContain("Thunderbolt has no effect on Garchomp (yours).");
+    expect(mirrorText.filter((text) => /Garchomp(?! \(yours\))/.test(text))).toEqual([]);
+    // Neutralizing Gas from the turn's start (settleDoublesStart and the turn's facts) over three Snorlax, one fainted.
+    const sv = await loadBattleRuntime("scarlet_violet");
+    let gas = named({
+      "own-left": ["weezinggalar", "neutralizinggas"], "own-right": ["snorlax", "thickfat"],
+      "opponent-left": ["snorlax", "thickfat"], "opponent-right": ["snorlax", "thickfat"],
+    }, "opponent-left", sv);
+    gas = target(move(gas, "own-left", "sludgebomb"), "own-left", "opponent-right");
+    const gasText = turnText(gas);
+    expect(gasText).toContain("Snorlax (opponent's, 2)'s Thick Fat is suppressed by Neutralizing Gas.");
+    expect(gasText).toContain("Neutralizing Gas suppresses the abilities of Snorlax (yours) and Snorlax (opponent's, 2).");
+    expect(gasText.filter((text) => /Snorlax(?! \((?:yours|opponent's, [12])\))/.test(text))).toEqual([]);
+    // With no fainted Pokémon the input carries no names: the turn names its four Pokémon itself (the same names).
+    expect(getDoublesTurnInput(createDoubles()).names).toBeUndefined();
   });
 });
 

@@ -94,9 +94,10 @@ export function toChoiceString(side: SideID, action: JointAction, request: Showd
   }).join(", ");
 }
 
+/** The Pokémon at a request position by name ("—" when the request lists none there). */
 function positionName(request: ShowdownRequest, position: number): string {
   const pokemon = request.side.pokemon[position];
-  return pokemon ? identName(pokemon.ident) : `Position ${position + 1}`;
+  return pokemon ? identName(pokemon.ident) : "—";
 }
 
 /** Target options for a request move from `slot` (doublesTargetRule's table keyed by the request's target type). */

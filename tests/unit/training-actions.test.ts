@@ -5,6 +5,7 @@ import { installFakeDom, reactProps, type FakeDocument, type FakeElement } from 
 import type { AIStatus, BoardView, PlayerChoice, TrainingPhase } from "@/app/(app)/training/model/view-types";
 import type { TurnControlsArgs } from "@/app/(app)/training/actions/useTurnControls";
 import { boardView, moveRequest, REQUEST_SIDE, runtime, switchRequest } from "../fixtures/training";
+import { positionalIn } from "../fixtures/naming";
 
 // Your controls, client-rendered in the fake DOM (tests/fixtures/fake-dom.ts): selections survive a re-render with the
 // same request id (a rejected choice) and clear on a new one; the form submits a PlayerChoice.
@@ -57,7 +58,7 @@ describe("turn controls", () => {
   it("renders one fieldset per active Pokémon with its moves, switches and Mega Evolution", async () => {
     await show({ kind: "choose", request: moveRequest() });
     const left = fieldset("own-left");
-    expect(text(left.querySelectorAll("legend")[0])).toBe("Garchomp (your left)");
+    expect(text(left.querySelectorAll("legend")[0])).toBe("Garchomp");
     const radios = inputs(left).filter((element) => reactProps(element).type === "radio");
     expect(radios.map((element) => reactProps(element).value)).toEqual(["move:earthquake", "move:dragonclaw", "move:rockslide", "move:protect", "switch:own-incineroar"]);
     expect(new Set(radios.map((element) => reactProps(element).name)).size).toBe(1);
@@ -85,18 +86,20 @@ describe("turn controls", () => {
     await choose(input(fieldset("own-left"), "mega"));
     const partnerMega = input(fieldset("own-right"), "mega");
     expect(reactProps(partnerMega).disabled).toBe(true);
-    expect(text(fieldset("own-right"))).toContain("Your left is Mega Evolving");
+    expect(text(fieldset("own-right"))).toContain("Garchomp is Mega Evolving");
     await choose(input(fieldset("own-right"), "move:waterfall"));
     const bar = document.querySelectorAll("[data-training-submit-bar]")[0];
     expect(text(bar)).toContain("Waterfall: no target");
     const submitButton = bar.querySelectorAll("button")[0];
     expect(reactProps(submitButton).disabled).toBe(true);
     const target = document.querySelectorAll('fieldset[data-training-target="own-right"]')[0];
-    expect(text(target)).toContain("Left foe");
-    expect(text(target)).toContain("Ally");
+    // One line per radio: the Pokémon's name (the legend names the actor).
+    expect(target.querySelectorAll("label").map(text)).toEqual(["Ampharos", "Absol-Mega", "Garchomp"]);
+    expect(text(target)).not.toMatch(/foe|Ally/);
     await choose(input(target, "opponent-right"));
     expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Garchomp: Rock Slide → both foes · Mega Evolve");
-    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Gyarados: Waterfall → Absol-Mega (right foe)");
+    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Gyarados: Waterfall → Absol-Mega");
+    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).not.toContain("foe)");
     await submit();
     expect(onSubmit).toHaveBeenCalledWith({
       kind: "action",
@@ -111,22 +114,53 @@ describe("turn controls", () => {
     await show({ kind: "choose", request: moveRequest({ id: 31 }) });
     await choose(input(fieldset("own-left"), "switch:own-incineroar"));
     expect(reactProps(input(fieldset("own-right"), "switch:own-incineroar")).disabled).toBe(true);
-    expect(text(fieldset("own-right"))).toContain("Chosen for your left");
+    expect(text(fieldset("own-right"))).toContain("Chosen for Garchomp");
   });
 
   it("sends out replacements: end of turn, mid-turn, and No Pokémon left", async () => {
     const side = [{ ...REQUEST_SIDE[0], condition: "0 fnt" }, { ...REQUEST_SIDE[1], condition: "0 fnt" }, REQUEST_SIDE[2], REQUEST_SIDE[3]];
     const onSubmit = await show({ kind: "switch", request: switchRequest([true, true], false, side) });
     const legends = document.querySelectorAll("legend[data-training-replace-legend]").map(text);
-    expect(legends).toEqual(["Replace Garchomp (your left)", "Replace Gyarados (your right)"]);
+    expect(legends).toEqual(["Replace Garchomp", "Replace Gyarados"]);
     expect(text(document.querySelectorAll('fieldset[data-training-replace="own-right"]')[0])).toContain("No Pokémon left");
     const left = document.querySelectorAll('fieldset[data-training-replace="own-left"]')[0];
     await choose(input(left, "own-incineroar"));
-    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Incineroar (your left)");
+    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Incineroar replaces Garchomp");
     await submit();
     expect(onSubmit).toHaveBeenCalledWith({ kind: "action", action: { "own-left": { kind: "switch", to: "own-incineroar" }, "own-right": { kind: "pass" } } });
     await show({ kind: "switch", request: { ...switchRequest([true, false], true), id: 40 } });
-    expect(document.querySelectorAll("legend[data-training-replace-legend]").map(text)).toEqual(["Switch in for Garchomp (your left)"]);
+    expect(document.querySelectorAll("legend[data-training-replace-legend]").map(text)).toEqual(["Switch in for Garchomp"]);
+    await choose(input(document.querySelectorAll('fieldset[data-training-replace="own-left"]')[0], "own-incineroar"));
+    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toContain("Incineroar replaces Garchomp");
+  });
+
+  it("names two of your cards that show one name (your Ditto transformed into your Garchomp) by number", async () => {
+    const base = boardView();
+    const ditto = { ...base.active["own-right"]!, name: "Garchomp", speciesId: "garchomp" };
+    const board: BoardView = { ...base, active: { ...base.active, "own-right": ditto }, team: { ...base.team, own: [base.team.own[0], ditto, ...base.team.own.slice(2)] } };
+    await show({ kind: "choose", request: moveRequest({ id: 60 }) }, vi.fn(), board);
+    expect([fieldset("own-left"), fieldset("own-right")].map((each) => text(each.querySelectorAll("legend")[0]))).toEqual(["Garchomp (1)", "Garchomp (2)"]);
+    await choose(input(fieldset("own-right"), "switch:own-incineroar"));
+    expect(text(fieldset("own-left"))).toContain("Chosen for Garchomp (2)");
+    await choose(input(fieldset("own-left"), "move:earthquake"));
+    // Earthquake hits both foes and the ally: its fact; your other card is named in full by the board elsewhere.
+    expect(text(fieldset("own-left"))).toContain("All adjacent");
+  });
+
+  it("states an automatic target by the Pokémon it reaches: the ally, or the one foe left", async () => {
+    const helping = { move: "Helping Hand", id: "helpinghand", pp: 32, maxpp: 32, target: "adjacentAlly", disabled: false };
+    const request = moveRequest({ id: 70, active: [{ ...moveRequest().active[0]!, moves: [...moveRequest().active[0]!.moves, helping] }, moveRequest().active[1]] });
+    await show({ kind: "choose", request });
+    const helpingFacts = fieldset("own-left").querySelectorAll("label").find((label) => text(label).startsWith("Helping Hand"));
+    expect(text(helpingFacts)).toContain("Gyarados");
+    expect(text(helpingFacts)).not.toContain("Ally");
+    // One foe left: Rock Slide reaches it by name.
+    const base = boardView();
+    const oneFoe: BoardView = { ...base, active: { ...base.active, "opponent-left": { ...base.active["opponent-left"]!, fainted: true } } };
+    await show({ kind: "choose", request: moveRequest({ id: 71 }) }, vi.fn(), oneFoe);
+    const rockSlide = fieldset("own-left").querySelectorAll("label").find((label) => text(label).startsWith("Rock Slide"));
+    expect(text(rockSlide)).toContain("Absol-Mega");
+    expect(text(rockSlide)).not.toContain("One foe");
   });
 });
 
@@ -149,7 +183,8 @@ describe("card frames as targets", () => {
     await choose(input(fieldset("own-right"), "move:waterfall"));
     expect(picks().map((button) => reactProps(button)["data-training-card-pick"]).sort()).toEqual(["opponent-left", "opponent-right", "own-left"]);
     const left = picks().find((button) => reactProps(button)["data-training-card-pick"] === "opponent-left")!;
-    expect(reactProps(left)["aria-label"]).toMatch(/^Target .+ \(left foe\) with Gyarados's Waterfall$/);
+    expect(reactProps(left)["aria-label"]).toBe("Target Ampharos with Gyarados's Waterfall");
+    expect(reactProps(left)["aria-label"]).not.toMatch(/foe/);
     expect(reactProps(left)["aria-pressed"]).toBe(false);
     await act(async () => { (reactProps(left).onClick as () => void)(); });
     const target = document.querySelectorAll('fieldset[data-training-target="own-right"]')[0];
@@ -157,7 +192,8 @@ describe("card frames as targets", () => {
     const picked = picks().find((button) => reactProps(button)["data-training-card-pick"] === "opponent-left")!;
     expect(reactProps(picked)["aria-pressed"]).toBe(true);
     expect(document.querySelectorAll("p[data-training-card-chips]").map(text)).toEqual(["Target of Gyarados's Waterfall"]);
-    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toMatch(/Gyarados: Waterfall → .+ \(left foe\)/);
+    expect(text(document.querySelectorAll("[data-training-submit-bar]")[0])).toMatch(/Gyarados: Waterfall → [^(]+$/);
+    expect(positionalIn([text(document.body), ...picks().map((button) => String(reactProps(button)["aria-label"]))].join(" "))).toEqual([]);
     // A second click on another frame changes it; choosing the radio still works too.
     const right = picks().find((button) => reactProps(button)["data-training-card-pick"] === "opponent-right")!;
     await act(async () => { (reactProps(right).onClick as () => void)(); });

@@ -32,7 +32,7 @@ import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./us
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "./settings-sections";
 import type { CalculatorRosterState } from "./roster-data";
-import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, mirrorTeams, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
+import { activateMoveSlot, applyMatchupIntimidate, applyTeamPaste, intimidateResult, changeBattleGame, changeTeamSource, createMatchup, dismissMoveReplacement, equipRequiredMove, getAttackView, getTeamPanel, getTeamSourceOwner, matchupNames, mirrorTeams, reconcileRosters, removeTeamPaste, replaceMatchupMove, resetMatchup, sameMoveOwner, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMechanic, toggleMatchupMega, updateImportDraft, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext, type BattleSide, type MoveOwner, type MoveReplacement, type PasteImport, type PreparedMatchup, type RosterChoice, type RosterRole, type TeamSourceOwner } from "./roster-prep";
 import styles from "./calculator.module.css";
 
 export { createMatchup, swapMatchup };
@@ -115,6 +115,8 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   const mirror = mirrorTeams(matchup.attacker, matchup.defender, runtime);
   const mirrorName = speciesById.get(attacker.speciesId)?.name ?? attacker.speciesId;
   const mirrorLegends = mirror && { attackerSide: `${mirrorName}’s side (${mirror.source})`, defenderSide: `${mirrorName}’s side (${mirror.receiver})` };
+  // Each Pokémon's full name for its controls' labels: its species name, with its team in a mirror ("Charizard (yours)").
+  const names = matchupNames(matchup);
   const attackerKey = matchup.attacker.key;
   const defenderKey = matchup.defender.key;
   const fieldId = `${prefix}-field`;
@@ -261,7 +263,6 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   // A transformed Imposter user lists its target's moves (imposter.ts).
   const sourceSpecies = speciesById.get(attackView.source.build.speciesId);
   const moveSpecies = speciesById.get(movesSpeciesId(attackView.source.build, attackView.receiver.build, matchup.field.magicRoom)) ?? sourceSpecies;
-  const receiverSpecies = speciesById.get(attackView.receiver.build.speciesId);
   const currentBatch = calculation && sameMoveOwner(calculation.identity.source, attackView.owner) && sameMoveOwner(calculation.identity.receiver, attackView.receiverOwner);
   const rows = !resultsBlocked && currentBatch ? calculation.result?.results ?? [] : [];
   const settledHP = !resultsBlocked && currentBatch ? calculation.result?.settledHP : undefined;
@@ -354,7 +355,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
 
   function renderRoster(side: BattleSide, variant: "inline" | "rail") {
     const slot = matchup[side];
-    return <RosterPicker pickerId={rosterControls[side]} variant={variant} panel={rosterPanels[slot.role]} role={slot.role} side={side} activeSource={slot.source} runtime={runtime} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
+    return <RosterPicker pickerId={rosterControls[side]} variant={variant} panel={rosterPanels[slot.role]} role={slot.role} side={side} occupant={names[side]} activeSource={slot.source} runtime={runtime} onSelect={(choice) => chooseRosterPokemon(slot.key, choice)} />;
   }
 
   function focusTeamSource(role: RosterRole) {
@@ -493,7 +494,6 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
   function renderBuildEditor(side: BattleSide) {
     const slot = matchup[side];
     const other = matchup[side === "attacker" ? "defender" : "attacker"].build;
-    const otherName = speciesById.get(other.speciesId)?.name;
     return (
       <PokemonPanel
         runtime={runtime}
@@ -503,12 +503,13 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
         magicRoom={matchup.field.magicRoom}
         requiredMove={requiredMoveFix(slot)}
         side={side}
+        label={names[side]}
         build={slot.build}
         issues={issues[side]}
         editorRevision={slot.editorRevision}
         onChange={(build) => updateBuild(slot.key, build)}
         onApplyIntimidate={() => updateCombatant(slot.key, (current, slotSide) => applyMatchupIntimidate(current, slotSide))}
-        intimidateLabel={otherName ? `Apply Intimidate to ${otherName}` : undefined}
+        intimidateLabel={`Apply Intimidate to ${names[side === "attacker" ? "defender" : "attacker"]}`}
         intimidateResult={intimidateResult(matchup, side)}
         hpInput={slot.hpInput}
         onHPChange={(text) => updateHP(slot.key, text)}
@@ -659,9 +660,8 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
                     } : undefined}
                     abilityId={attackView.source.build.abilityId}
                     itemId={attackView.source.build.itemId}
-                    attackerName={sourceSpecies?.name ?? "Source Pokémon"}
-                    defenderName={receiverSpecies?.name ?? "Receiving Pokémon"}
-                    positions={mirrorTeams(attackView.source, attackView.receiver, runtime)}
+                    attackerName={names[attackView.sourceSide]}
+                    defenderName={names[attackView.receiverSide]}
                     defenderHP={currentHP}
                     blocked={resultsBlocked}
                     onReveal={reveal}
@@ -692,7 +692,7 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
           </div>
         </div>
         {desktopRosters && mode === "1v1" && (["attacker", "defender"] as const).map((side) => (
-          <aside key={side} data-calculator-roster-rail={side} aria-label={`${side === "attacker" ? "Left Pokémon" : "Right Pokémon"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
+          <aside key={side} data-calculator-roster-rail={side} aria-label={`${matchup[side].role === "own" ? "Your" : "Opponent's"} team shortcuts`} className={`${styles.rail} ${side === "attacker" ? styles.attackerRoster : styles.defenderRoster}`}>
             {renderRoster(side, "rail")}
           </aside>
         ))}

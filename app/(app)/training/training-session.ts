@@ -2,8 +2,8 @@ import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { HabitsRecord } from "./model/decision";
 import { emptyHabits, parseHabits } from "./model/habits-data";
 import {
-  canonicalJson, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_LABEL, logHash, newBattleId, RULES_VERSION, summaryOf, turnHashes,
-  type ReplayState, type SavedBattle, type SavedBattlesState,
+  canonicalJson, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_LABEL, logHash, logShapeHash, newBattleId, rewordedLog, RULES_VERSION, summaryOf,
+  turnShapeHashes, type RerunTurn, type ReplayState, type SavedBattle, type SavedBattlesState,
 } from "./model/saved-battle";
 import { DEFAULT_INFO, parseInfoSettings, SHEET_FIELDS, type InfoSettings } from "./model/info";
 import type { SuggestedSet, SuggestMember } from "./model/usage";
@@ -12,7 +12,7 @@ import {
   type TrainingSetup, type TrainingSnapshot,
 } from "./model/view-types";
 import type { FromWorker, ToWorker, TrainingTransport } from "./model/worker-protocol";
-import { browserBattleStore, STORAGE_UNAVAILABLE, StoreError, type BattleStore } from "./saved/battle-store";
+import { browserBattleStore, STORAGE_UNAVAILABLE, StoreError, type BattleStore, type ImportCheck } from "./saved/battle-store";
 import { createSetupDraft } from "./setup/team-draft";
 import { createWorkerTransport } from "./worker/worker-transport";
 
@@ -168,7 +168,8 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   /** The re-runs the worker is doing, by replayId: the replay screen's, and an import file's check (both can run at once). */
   type ReplayJob = {
     replayId: number; record: SavedBattle; kind: "view" | "import"; message: ToWorker;
-    settle?: (error: string | null, boards: ReplayState["boards"]) => void;
+    /** `turns`: the re-run's written turns when the saved log differs from it only in wording (they replace its lines and steps). */
+    settle?: (error: string | null, boards: ReplayState["boards"], turns: RerunTurn[] | null) => void;
   };
   const replayJobs = new Map<number, ReplayJob>();
 
@@ -368,20 +369,30 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         if (!job) return;
         replayJobs.delete(message.replayId);
         const boards = { starts: message.starts, end: message.end };
-        const differs = message.hash === logHash(job.record.log) ? null : firstDifference(turnHashes(job.record.log), message.turnHashes);
+        // Equal text, or the same battle in another wording (saved before the current wording): its shape is the re-run's.
+        const sameText = message.hash === logHash(job.record.log);
+        const reworded = !sameText && message.shape === logShapeHash(job.record.log);
+        const differs = sameText || reworded ? null : firstDifference(turnShapeHashes(job.record.log), message.turnShapes);
         const differsText = differs === null ? "" : ` from turn ${differs}`;
         if (job.kind === "import") {
-          // An import file is untrusted: its log, result and turns must all be the re-run's.
+          // An import file is untrusted: its log, result and turns must all be the re-run's (its text is replaced by the re-run's).
           const result = job.record.result;
-          const refused = message.hash !== logHash(job.record.log) ? `The file's log does not match a re-run of its battle${differsText}.`
+          const refused = !sameText && !reworded ? `The file's log does not match a re-run of its battle${differsText}.`
             : !result || result.result !== message.result.result || result.forfeited !== message.result.forfeited ? "The file's result does not match a re-run of its battle."
               : job.record.turn !== message.end.turn ? "The file's turn count does not match a re-run of its battle." : null;
-          job.settle?.(refused, boards);
+          job.settle?.(refused, boards, reworded ? message.turns : null);
           return;
         }
         if (snapshot.replay?.id !== job.record.id) return;
+        if (reworded) {
+          // The re-run's wording is shown and stored (same id and last save, so the list keeps its order).
+          const log = rewordedLog(job.record.log, message.turns);
+          persist({ ...job.record, log }, () => undefined, () => undefined);
+          set({ replay: { ...snapshot.replay, log, status: "board", boards, message: null } });
+          return;
+        }
         set({
-          replay: message.hash === logHash(job.record.log)
+          replay: sameText
             ? { ...snapshot.replay, status: "board", boards, message: null }
             : { ...snapshot.replay, status: "log", boards: null, message: `The re-run differs from the saved log${differsText}. The saved log is shown.` },
         });
@@ -486,12 +497,12 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     const job = replayJobs.get(replayId);
     if (!job) return;
     replayJobs.delete(replayId);
-    if (job.kind === "import") { job.settle?.(message, null); return; }
+    if (job.kind === "import") { job.settle?.(message, null, null); return; }
     if (snapshot.replay?.id !== job.record.id) return;
     set({ replay: { ...snapshot.replay, status: "log", boards: null, message: `The battle could not be re-run: ${message} The saved log is shown.` } });
   }
   /** The worker re-runs a finished record (the replay screen, or an import's check). */
-  function rerun(record: SavedBattle, kind: "view" | "import", settle?: (error: string | null, boards: ReplayState["boards"]) => void) {
+  function rerun(record: SavedBattle, kind: "view" | "import", settle?: ReplayJob["settle"]) {
     const replayId = ++replayCounter;
     const message: ToWorker = { type: "replay", replayId, setup: record.setup, seed: record.seed ?? "", inputLog: record.inputLog ?? [], forfeited: !!record.result?.forfeited };
     replayJobs.set(replayId, { replayId, record, kind, settle, message });
@@ -741,8 +752,9 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (file.size > IMPORT_MAX_BYTES) { setSaved({ import: { status: "error", name, message: `The file is larger than ${IMPORT_MAX_LABEL}.` } }); return; }
       setSaved({ import: { status: "checking", name } });
       let checked: ReplayState["boards"] = null;
-      const verify = (record: SavedBattle) => new Promise<string | null>((resolve) => {
-        rerun(record, "import", (error, boards) => { checked = boards; resolve(error); });
+      // A file saved before the current wording is stored with the re-run's lines and steps: its own text is never shown.
+      const verify = (record: SavedBattle) => new Promise<ImportCheck>((resolve) => {
+        rerun(record, "import", (error, boards, turns) => { checked = boards; resolve(error ?? (turns ? { log: rewordedLog(record.log, turns) } : null)); });
       });
       // The browser's own words for an unreadable file are not a fact of ours.
       const read = file.text().catch(() => { throw new StoreError("The file could not be read."); });

@@ -8,7 +8,7 @@ import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import BattleBoard from "../board/BattleBoard";
 import type { CardPlay } from "../board/BattleCard";
 import BenchStrip from "../board/BenchStrip";
-import { remaining } from "../board/board-format";
+import { boardNames, remaining } from "../board/board-format";
 import { cardLabels, highlightColour, spokenName, stepAnnouncement } from "../board/playback";
 import TurnPopup from "../board/TurnPopup";
 import AIReadPanel from "../log/AIReadPanel";
@@ -69,8 +69,10 @@ function ReplayBoard({ runtime, replay, boards }: { runtime: BattleRuntime; repl
   const shownTurn = playback.turn === null ? replay.log.filter(shown).at(-1) ?? null
     : position.beat === "idle" ? resolvedBefore(playback.turn)
       : replay.log.find((entry) => entry.turn === playback.turn) ?? null;
-  // The board as that turn's read was shown: right after the turn resolved.
+  // The board as that turn's read was shown: right after the turn resolved. Its slots are named by the turn's occupants, or
+  // (a battle saved before they were recorded) by the board its actions were chosen on.
   const readBoard = shownTurn ? boards.starts[shownTurn.turn + 1] ?? boards.end : boards.end;
+  const decisionBoard = shownTurn ? boards.starts[shownTurn.turn] ?? null : null;
   const where = positionText(turns, position);
   const atStart = position.at === 0 && position.beat === "idle";
   const atEnd = position.at >= turns.length;
@@ -114,13 +116,13 @@ function ReplayBoard({ runtime, replay, boards }: { runtime: BattleRuntime; repl
           <p className="text-sm tabular-nums text-muted">You: {remaining(board, "own")} left · AI: {remaining(board, "opponent")} left</p>
         </div>
         <BattleBoard board={board} cardPlay={step ? cardPlay : undefined}
-          popup={step && position.beat === "announce" ? <TurnPopup key={`${step.turn}:${step.index}`} step={step.step} actorName={step.step.actor ? board.active[step.step.actor]?.name ?? null : null} /> : undefined} />
+          popup={step && position.beat === "announce" ? <TurnPopup key={`${step.turn}:${step.index}`} step={step.step} actorName={step.step.actor ? boardNames(board)[step.step.actor] || null : null} /> : undefined} />
         <BenchStrip board={board} />
         {shownTurn && (
           <section data-training-replay-turn aria-label={turnTitle(shownTurn.turn)} className="min-w-0 rounded-xl border border-line bg-panel p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted">{turnTitle(shownTurn.turn)}</p>
             <div className="mt-1"><TurnLines lines={shownTurn.lines} /></div>
-            {replay.setup.showRead && <AIReadPanel turn={shownTurn} board={readBoard} runtime={runtime} ownName={(key) => ownNames.get(key) ?? null} />}
+            {replay.setup.showRead && <AIReadPanel turn={shownTurn} board={readBoard} decisionBoard={decisionBoard} runtime={runtime} ownName={(key) => ownNames.get(key) ?? null} />}
           </section>
         )}
       </div>
@@ -159,7 +161,7 @@ export default function ReplayScreen({ runtime, replay, session }: ReplayScreenP
       <div className={styles.battle}>
         {replay.status === "board" && replay.boards ? <ReplayBoard runtime={runtime} replay={replay} boards={replay.boards} /> : <div className={styles.main} />}
         <aside aria-labelledby={`${id}-log`} className={styles.logColumn}>
-          <BattleLog log={replay.log} runtime={runtime} showRead={replay.setup.showRead} board={end} ownName={(key) => ownNames.get(key) ?? null} headingId={`${id}-log`} />
+          <BattleLog log={replay.log} runtime={runtime} showRead={replay.setup.showRead} board={end} decisionBoards={replay.boards?.starts} ownName={(key) => ownNames.get(key) ?? null} headingId={`${id}-log`} />
         </aside>
       </div>
     </div>

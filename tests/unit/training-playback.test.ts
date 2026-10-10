@@ -62,7 +62,7 @@ function after(): BoardView {
   };
 }
 const TURN_3: LogTurn = {
-  turn: 3, lines: [{ text: "Garchomp (your left) used Rock Slide → both foes.", kind: "move", slots: ["own-left"] }], steps: STEPS,
+  turn: 3, lines: [{ text: "Garchomp used Rock Slide → both foes.", kind: "move", slots: ["own-left"] }], steps: STEPS,
   actions: { own: { "own-left": { kind: "move", moveId: "rockslide", target: null } }, opponent: {} }, read: null,
 };
 
@@ -249,7 +249,7 @@ describe("turn playback on the board", () => {
     expect(card("opponent-right").querySelectorAll("[data-training-fainted]")).toHaveLength(1);
     expect(document.activeElement?.localName).toBe("h2");
     // Skipped steps were not read: the turn's recap, then the next request.
-    expect(announcer()).toMatch(/^Turn 3\. Garchomp \(your left\) used Rock Slide → both foes\..* Turn 4\.$/);
+    expect(announcer()).toMatch(/^Turn 3\. Garchomp used Rock Slide → both foes\..* Turn 4\.$/);
     await wait((ANNOUNCE_MS + RESOLVE_MS) * 3);
     expect(popup()).toBeNull();
   });
@@ -321,7 +321,7 @@ describe("turn playback on the board", () => {
   it("reads a step once: its names come from the board as it began, so a twin leaving mid-step changes nothing", async () => {
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     const start = boardView();
-    // The AI's left Pokémon shows the same name as your left Garchomp.
+    // The AI's Pokémon in opponent-left shows the same name as your Garchomp (a Transform): each card gets its side word.
     const twin = (view: PokemonView): PokemonView => (view.key === "ai-ampharos" ? { ...view, name: "Garchomp" } : view);
     const before: BoardView = { ...start, active: { ...start.active, "opponent-left": twin(start.active["opponent-left"]!) }, team: { ...start.team, opponent: start.team.opponent.map(twin) } };
     const incineroar: PokemonView = { ...start.team.own[2], slot: "own-left" };
@@ -335,7 +335,7 @@ describe("turn playback on the board", () => {
     };
     await show(battle({ board: before }));
     await show(battle({ board: later, log: [...logTurns(), { ...TURN_3, steps: [swap] }], phase: { kind: "choose", request: moveRequest({ id: 8 }) } }));
-    const read = "Garchomp switches for Incineroar. Incineroar: Intimidate. Garchomp (opponent's left): Attack −1.";
+    const read = "Garchomp switches for Incineroar. Incineroar: Intimidate. Garchomp (opponent's): Attack −1.";
     expect(announcer()).toBe(read);
     await wait(ANNOUNCE_MS);
     expect(name("own-left")).toBe("Incineroar");
@@ -378,9 +378,10 @@ describe("playback (pure)", () => {
     const blizzard: TurnStep = { ...STEPS[0], title: "Blizzard", type: "Ice", by: "Abomasnow" };
     const ice = getPokemonTypeColours("Ice")!;
     expect(popupOf(blizzard)).toEqual({ title: "Blizzard", sub: "Abomasnow", move: true, colour: ice.background, outline: ice.foreground });
-    // Its user as the card shows it (a Mega Evolved form), unless the step told two of one name apart.
+    // Its user as its card names it (a Mega Evolved form, a side word); the step's own name without one.
     expect(popupOf(blizzard, "Abomasnow-Mega").sub).toBe("Abomasnow-Mega");
-    expect(popupOf({ ...blizzard, by: "Garchomp (your left)" }, "Garchomp").sub).toBe("Garchomp (your left)");
+    expect(popupOf({ ...blizzard, by: "Garchomp (yours)" }, "Garchomp (yours)").sub).toBe("Garchomp (yours)");
+    expect(popupOf({ ...blizzard, by: "Garchomp (2)" }, null).sub).toBe("Garchomp (2)");
     expect(popupOf({ ...STEPS[1] }, "Garchomp").sub).toBeNull();
     const uturn: TurnStep = { ...STEPS[2], title: "U-turn: Staraptor switches for Venusaur" };
     expect(popupOf(uturn)).toEqual({ title: "U-turn: Staraptor switches for Venusaur", sub: null, move: false, colour: "var(--color-text)", outline: "var(--color-bg)" });
@@ -397,17 +398,51 @@ describe("playback (pure)", () => {
     expect(stepAnnouncement(failed, () => "Gyarados")).toBe("Gyarados used Protect. Failed.");
   });
 
-  it("the live region names each Pokémon as its card does, with its position when two active ones share a name", () => {
+  it("the live region names each Pokémon as its card does: its team's word on both sides' names, a number for one side's two", () => {
     const board = boardView();
     expect(spokenName(board, "opponent-right")).toBe(board.active["opponent-right"]!.name);
     expect(spokenName(board, "own-left", "own-garchomp")).toBe("Garchomp");
     const twins: BoardView = { ...board, active: { ...board.active, "opponent-left": { ...board.active["opponent-left"]!, key: "ai-garchomp", name: "Garchomp" } } };
-    expect(spokenName(twins, "own-left")).toBe("Garchomp (your left)");
-    expect(spokenName(twins, "opponent-left", "ai-garchomp")).toBe("Garchomp (opponent's left)");
+    expect(spokenName(twins, "own-left")).toBe("Garchomp (yours)");
+    expect(spokenName(twins, "opponent-left", "ai-garchomp")).toBe("Garchomp (opponent's)");
     const hit: TurnStep = {
-      kind: "move", title: "Earthquake", by: "Garchomp (opponent's left)", results: [], type: "Ground", actor: "opponent-left", targets: ["own-left"],
+      kind: "move", title: "Earthquake", by: "Garchomp (opponent's)", results: [], type: "Ground", actor: "opponent-left", targets: ["own-left"],
       slots: [{ slot: "own-left", key: "own-garchomp", name: "Garchomp", hp: { from: exact(143, 183), to: exact(100, 183) }, facts: [] }],
     };
-    expect(stepAnnouncement(hit, (slot, key) => spokenName(twins, slot, key))).toBe("Garchomp (opponent's left) used Earthquake. Garchomp (your left): 143 / 183 HP to 100 / 183 HP.");
+    expect(stepAnnouncement(hit, (slot, key) => spokenName(twins, slot, key))).toBe("Garchomp (opponent's) used Earthquake. Garchomp (yours): 143 / 183 HP to 100 / 183 HP.");
+    // A name on both teams (BoardView.mirrored) carries the word on the bench too; two of one name on a side are numbered.
+    const mirrored: BoardView = { ...board, mirrored: ["ai-annihilape", "own-gyarados"] };
+    expect(spokenName(mirrored, "opponent-left", "ai-annihilape")).toBe("Annihilape (opponent's)");
+    expect(spokenName(mirrored, "own-right")).toBe("Gyarados (yours)");
+    const sameSide: BoardView = { ...board, active: { ...board.active, "own-right": { ...board.active["own-right"]!, name: "Garchomp" } } };
+    expect([spokenName(sameSide, "own-left"), spokenName(sameSide, "own-right")]).toEqual(["Garchomp (1)", "Garchomp (2)"]);
+    expect(spokenName({ ...board, active: { ...board.active, "own-right": null } }, "own-right")).toBeNull();
+  });
+
+  // Naming review T4: one team on both sides gives both teams the same member keys; each is looked up on its own side.
+  it("a member key on both teams: the live region and the playback board take the Pokémon of the slot's side", () => {
+    const board = boardView();
+    const as = (view: PokemonView, key: string, name: string, slot: PokemonView["slot"]): PokemonView => ({ ...view, key, name, speciesId: key, slot });
+    const ownCharizard = as(board.active["own-left"]!, "charizard", "Charizard", "own-left");
+    const ownIncineroar = as(board.team.own[2], "incineroar", "Incineroar", null);
+    const foeCharizard = as(board.active["opponent-right"]!, "charizard", "Charizard", "opponent-right");
+    const foeIncineroar = as(board.team.opponent[2], "incineroar", "Incineroar", null);
+    const mirror: BoardView = {
+      ...board, mirrored: ["charizard", "incineroar"],
+      active: { ...board.active, "own-left": ownCharizard, "opponent-right": { ...foeCharizard, mega: false } },
+      team: { own: [ownCharizard, board.team.own[1], ownIncineroar], opponent: [{ ...foeCharizard, mega: false }, board.team.opponent[1], foeIncineroar] },
+    };
+    // The opponent's Incineroar comes in (the announce beat: it is not on its slot yet); yours stays on the bench.
+    expect(spokenName(mirror, "opponent-left", "incineroar")).toBe("Incineroar (opponent's)");
+    expect(spokenName(mirror, "own-right", "incineroar")).toBe("Incineroar (yours)");
+    expect(spokenName(mirror, "opponent-right", "charizard")).toBe("Charizard (opponent's)");
+    // The opponent's Charizard Mega Evolves: your Charizard keeps its own view.
+    const megaY = { ...foeCharizard, name: "Charizard-Mega-Y", speciesId: "charizardmegay", mega: true };
+    const latest: BoardView = { ...mirror, active: { ...mirror.active, "opponent-right": megaY }, team: { ...mirror.team, opponent: [megaY, board.team.opponent[1], foeIncineroar] } };
+    const mega: TurnStep = { kind: "mega", title: "Charizard Mega Evolves", by: null, results: [], type: null, actor: "opponent-right", targets: [], slots: [{ slot: "opponent-right", key: "charizard", name: "Charizard (opponent's)", mega: true, facts: [] }] };
+    const played = playbackBoard(mirror, latest, [{ turn: 3, index: 0, step: mega }], 0, "to");
+    expect([played.active["own-left"]?.name, played.active["opponent-right"]?.name]).toEqual(["Charizard", "Charizard-Mega-Y"]);
+    expect([played.team.own[0].name, played.team.own[0].slot, played.team.opponent[0].name, played.team.opponent[0].slot]).toEqual(["Charizard", "own-left", "Charizard-Mega-Y", "opponent-right"]);
+    expect(spokenName(played, "own-left")).toBe("Charizard (yours)");
   });
 });

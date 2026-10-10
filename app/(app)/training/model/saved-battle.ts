@@ -126,6 +126,36 @@ export function logHash(log: readonly LogTurn[]): string {
 export function turnHashes(log: readonly LogTurn[]): Record<number, string> {
   return Object.fromEntries(written(log).map((turn) => [turn.turn, hashText(canonicalJson([turn.turn, turn.lines, turn.steps ?? []]))]));
 }
+/**
+ * A written turn without its wording: each line's kind and slots, each step's kind, type, targets, actor and its cards'
+ * slots, members, HP, faints, status, stages and Mega Evolution (no text, title, by, results, facts or name). Two logs of one
+ * battle with different wording (a battle saved before the current wording) have the same shape.
+ */
+function shapeOf(turn: Pick<LogTurn, "turn" | "lines" | "steps">) {
+  return [
+    turn.turn,
+    turn.lines.map((line) => [line.kind, line.slots]),
+    (turn.steps ?? []).map((step) => [step.kind, step.type, step.targets, step.actor, step.slots.map((slot) => [
+      slot.slot, slot.key, slot.entered ?? null, slot.hp ?? null, slot.fainted ?? null, slot.status ?? null, slot.boosts ?? null, slot.mega ?? null,
+    ])]),
+  ];
+}
+export function logShapeHash(log: readonly LogTurn[]): string {
+  return hashText(canonicalJson(written(log).map(shapeOf)));
+}
+export function turnShapeHashes(log: readonly LogTurn[]): Record<number, string> {
+  return Object.fromEntries(written(log).map((turn) => [turn.turn, hashText(canonicalJson(shapeOf(turn)))]));
+}
+/** A re-run's written turns (lines and steps only): what a saved log takes its wording from. */
+export type RerunTurn = Pick<LogTurn, "turn" | "lines" | "steps">;
+/** The saved log in the re-run's wording: each turn's lines and steps from the re-run, its read, actions, occupants and names kept. */
+export function rewordedLog(log: readonly LogTurn[], rerun: readonly RerunTurn[]): LogTurn[] {
+  const byTurn = new Map(rerun.map((turn) => [turn.turn, turn]));
+  return log.map((turn) => {
+    const fresh = byTurn.get(turn.turn);
+    return fresh ? { ...turn, lines: structuredClone(fresh.lines), steps: structuredClone(fresh.steps ?? []) } : turn;
+  });
+}
 /** The first turn whose lines or steps differ (null when every turn is equal). */
 export function firstDifference(a: Record<number, string>, b: Record<number, string>): number | null {
   const turns = [...new Set([...Object.keys(a), ...Object.keys(b)].map(Number))].sort((x, y) => x - y);
@@ -251,6 +281,7 @@ const report = shape({
 const logTurn = shape({
   turn: int(0, 1000), lines: list(line, 0, 2000), steps: optional(list(step, 0, 200)),
   actions: nullable(shape({ own: jointAction, opponent: jointAction })), read: nullable(report),
+  occupants: optional(map(slot, text(200), 4)), names: optional(map(slot, text(200), 4)),
 });
 const SEED = /^(sodium,[0-9a-f]{32}|gen5,[0-9a-f]{16}|\d+(,\d+){3})$/;
 const INPUT_LINE = /^>p[12] [\x20-\x7e]{1,300}$/;

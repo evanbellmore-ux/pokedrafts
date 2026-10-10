@@ -31,7 +31,8 @@ describe("move requests to JointActions", () => {
 
   it("reads moves, PP, disabled moves, Mega and switches from the request", () => {
     const left = slotOptions(moveRequest(), board, 0, runtime);
-    expect(left.label).toBe("Garchomp (your left)");
+    expect(left.name).toBe("Garchomp");
+    expect(left).not.toHaveProperty("label");
     expect(left.moves.map((each) => [each.id, each.disabledReason])).toEqual([["earthquake", null], ["dragonclaw", "No PP"], ["rockslide", null], ["protect", "Disabled"]]);
     expect(left.moves[0]).toMatchObject({ type: "Ground", pp: 8, maxpp: 8, rule: { kind: "auto" } });
     expect(left.mega).toEqual(["mega"]);
@@ -57,9 +58,10 @@ describe("move requests to JointActions", () => {
     expect(buildMoveAction(moveRequest(), board, [EMPTY_SELECTION, move("waterfall")], runtime)).toEqual({ missing: ["Garchomp: no action", "Waterfall: no target"] });
     expect(buildMoveAction(moveRequest(), board, [move("dragonclaw"), move("waterfall", "opponent-left")], runtime)).toEqual({ missing: ["Garchomp: no action"] });
     expect(buildMoveAction(moveRequest(), board, [switchTo("own-incineroar"), switchTo("own-incineroar")], runtime)).toEqual({ missing: ["Incineroar is chosen for both"] });
-    expect(buildMoveAction(moveRequest(), board, [move("rockslide", null, "mega"), move("protect", null, "mega")], runtime)).toEqual({ missing: ["Your left is Mega Evolving"] });
-    expect(megaBlockedBy([move("rockslide", null, "mega"), EMPTY_SELECTION], 1)).toBe("Your left is Mega Evolving");
-    expect(megaBlockedBy([switchTo("own-incineroar"), EMPTY_SELECTION], 1)).toBeNull();
+    expect(buildMoveAction(moveRequest(), board, [move("rockslide", null, "mega"), move("protect", null, "mega")], runtime)).toEqual({ missing: ["Garchomp is Mega Evolving"] });
+    expect(megaBlockedBy([move("rockslide", null, "mega"), EMPTY_SELECTION], 1, ["Garchomp", "Gyarados"])).toBe("Garchomp is Mega Evolving");
+    expect(megaBlockedBy([EMPTY_SELECTION, move("waterfall", "opponent-left", "mega")], 0, ["Garchomp", "Gyarados"])).toBe("Gyarados is Mega Evolving");
+    expect(megaBlockedBy([switchTo("own-incineroar"), EMPTY_SELECTION], 1, ["Garchomp", "Gyarados"])).toBeNull();
   });
 
   it("aims a single-option choose move at its only target and passes a fainted or commanding slot", () => {

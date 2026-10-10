@@ -9,6 +9,7 @@ import { createRosterState } from "@/app/(app)/calculator/roster-data";
 import { createMatchup, swapMatchup, updateMatchupBuild, type BattleSide, type PreparedMatchup } from "@/app/(app)/calculator/roster-prep";
 import { createBuild, validateBuild } from "@/app/lib/battle/model";
 import type { BuildIssue } from "@/app/lib/battle/types";
+import { positionalIn } from "../fixtures/naming";
 
 // Real SSR and hooks, recording host button props for DOM-free callback checks.
 const host = vi.hoisted(() => ({ capture: false, buttons: [] as ComponentProps<"button">[] }));
@@ -45,7 +46,6 @@ vi.mock("@/app/(app)/calculator/roster-prep", async (original) => {
 afterEach(() => { state.matchup = null; });
 
 const issue = (field: string): BuildIssue => ({ field, message: `${field} is invalid.` });
-const position = (side: BattleSide) => side === "attacker" ? "left" : "right";
 
 function sections(matchup: PreparedMatchup, open: Record<BattleSide, boolean>, onToggle = { attacker: vi.fn(), defender: vi.fn() }) {
   host.buttons = [];
@@ -134,7 +134,8 @@ describe("Build settings under the summary", () => {
       expect(toggle).toContain('type="button"');
       expect(toggle).toContain(`aria-expanded="${open}"`);
       expect(toggle).toContain(`aria-controls="${id}"`);
-      expect(toggle).toContain(`<span class="sr-only">${name} ${position(side)} </span>Build settings`);
+      expect(toggle).toContain(`<span class="sr-only">${name} </span>Build settings`);
+      expect(positionalIn(toggle)).toEqual([]);
       expect(toggle).not.toContain("settings to check");
       const toggleId = toggle.match(/\bid="([^"]+)"/)![1];
       const region = html.match(new RegExp(`<div id="${id}"[^>]*>`))![0];

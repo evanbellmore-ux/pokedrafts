@@ -195,7 +195,7 @@ describe("target rules with an empty slot", () => {
   });
 });
 
-/** Garchomp's Dragon Claw at `target`, the opponent's left slot empty. */
+/** Garchomp's Dragon Claw at `target`, the opponent-left slot empty. */
 const at = (target: DoublesSlotId) => turn(championsRuntime, {
   "own-left": { id: "garchomp", ability: "sandveil", move: "dragonclaw", target }, "own-right": idle("venusaur"), "opponent-left": null, "opponent-right": idle("blastoise"),
 });

@@ -1,9 +1,9 @@
 import { replaceSlots } from "../actions/choice-builder";
 import type { LogTurn, TrainingBattle } from "../model/view-types";
 
-/** "Replace Abomasnow (your left)" at the end of a turn; "Switch in for Incineroar (your left)" mid-turn (U-turn, Eject Button). */
-export function replaceLegend(label: string, midTurn: boolean) {
-  return midTurn ? `Switch in for ${label}` : `Replace ${label}`;
+/** "Replace Abomasnow" at the end of a turn; "Switch in for Incineroar" mid-turn (U-turn, Eject Button). */
+export function replaceLegend(name: string, midTurn: boolean) {
+  return midTurn ? `Switch in for ${name}` : `Replace ${name}`;
 }
 
 // The single live region's text (one sr-only aria-live="polite" region per battle screen) and the plain-text log.
@@ -45,7 +45,7 @@ export function announcement(battle: TrainingBattle, { heard = null }: { heard?:
     case "choose": return phase.error ? `Choice not accepted: ${phase.error}` : join(recap, `Turn ${battle.board?.turn ?? 1}.`);
     case "switch": {
       if (phase.error) return `Choice not accepted: ${phase.error}`;
-      const flagged = battle.board ? replaceSlots(phase.request, battle.board).filter((slot) => slot.flagged).map((slot) => replaceLegend(slot.label, phase.request.midTurn)) : [];
+      const flagged = battle.board ? replaceSlots(phase.request, battle.board).filter((slot) => slot.flagged).map((slot) => replaceLegend(slot.name, phase.request.midTurn)) : [];
       return join(recap, ...flagged.map((text) => `${text}.`));
     }
     case "waiting": return phase.reason === "opponent-switch" ? join(recap, "Opponent choosing a replacement…") : `Simulating turn ${Math.max(1, battle.board?.turn ?? 1)}…`;

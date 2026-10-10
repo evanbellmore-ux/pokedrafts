@@ -2,7 +2,7 @@
 import { createRandom } from "@/app/(app)/training/model/random";
 import type { TrainingTeam } from "@/app/(app)/training/model/view-types";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
-import { fixturesIn, fixtureTeam, type TeamFixture, type TeamPool } from "@/tests/fixtures/training-teams";
+import { fixturesIn, fixtureTeam, ILLUSION_TRANSFORM, type TeamFixture, type TeamPool } from "@/tests/fixtures/training-teams";
 
 export type TeamPair = { p1: { id: string; team: TrainingTeam }; p2: { id: string; team: TrainingTeam } };
 
@@ -31,6 +31,11 @@ export function teamPair(run: string, index: number, pools: readonly TeamPool[],
   const a = fixtures[first];
   const b = fixtures[other >= first ? other + 1 : other];
   return { p1: { id: a.id, team: teamOf(a, runtime) }, p2: { id: b.id, team: teamOf(b, runtime) } };
+}
+
+/** The Illusion and Transform slice's teams (ILLUSION_TRANSFORM: the AI's Zoroark and Ditto, your Garchomp and Ditto). */
+export function illusionTransformPair(runtime: BattleRuntime = championsRuntime): TeamPair {
+  return { p1: { id: ILLUSION_TRANSFORM.own.id, team: teamOf(ILLUSION_TRANSFORM.own, runtime) }, p2: { id: ILLUSION_TRANSFORM.opponent.id, team: teamOf(ILLUSION_TRANSFORM.opponent, runtime) } };
 }
 
 /**

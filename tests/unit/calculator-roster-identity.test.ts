@@ -276,7 +276,7 @@ describe("league roster names from the Pool Builder", () => {
       const choice = (speciesId: string) => ({ key: speciesId, name: championsRuntime.speciesById.get(speciesId)!.name, speciesId, source: null, reason: null });
       renderToStaticMarkup(createElement(RosterPicker, {
         panel: { status: "ready", teamName: "Pasted team", message: null, choices: [choice("florgeswhite"), choice("alcremiesaltedcream"), choice("charizardmegax"), choice("vivillonfancy")] },
-        role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: championsRuntime,
+        role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: championsRuntime,
       }));
       expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Florges", "Alcremie", "Charizard-Mega-X", "Vivillon-Fancy"]);
       // Minior's cores keep their own artwork: the family's plain Minior is the Meteor Form's.
@@ -287,7 +287,7 @@ describe("league roster names from the Pool Builder", () => {
           { key: "miniorblue", name: "Minior-Blue", speciesId: "miniorblue", source: null, reason: null },
           { key: "minior", name: "Minior", speciesId: "minior", source: null, reason: null },
         ] },
-        role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
+        role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
       }));
       // Showdown's plain Minior is the Red Core.
       expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Minior-Blue", "Minior-Red"]);
@@ -302,13 +302,13 @@ describe("league roster names from the Pool Builder", () => {
     const sprite = vi.spyOn(pokemonSprite, "default");
     try {
       const html = renderToStaticMarkup(createElement(RosterPicker, {
-        state, role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
+        state, role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
       }));
       expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Calyrex (Shadow Rider)", "Minior"]);
       sprite.mockClear();
       // Duplicate league names are not selectable but still show the roster name's sprite.
       renderToStaticMarkup(createElement(RosterPicker, {
-        state: rosterState(["Maushold", "Maushold", "Mega Meowstic"]), role: "own", side: "attacker", activeSource: null,
+        state: rosterState(["Maushold", "Maushold", "Mega Meowstic"]), role: "own", side: "attacker", occupant: "Charizard", activeSource: null,
         onSelect: () => undefined, variant: "rail", runtime: championsRuntime,
       }));
       expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Maushold", "Maushold", "Mega Meowstic"]);

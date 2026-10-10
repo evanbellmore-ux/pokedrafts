@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import { createElement, type ChangeEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
+import { positionalIn } from "../fixtures/naming";
 import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import { MyTeamPicker, OpponentPicker, RosterPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import * as pokemonSprite from "@/app/components/PokemonSprite";
 import * as selectControl from "@/app/components/ui/Select";
 import {
-  activateMoveSlot, createMatchup, createSpeciesResolver, getMoveOwner, getRosterPanel, reconcileRosters, replaceMatchupMove, resetMatchup,
+  activateMoveSlot, createMatchup, createSpeciesResolver, getMoveOwner, getRosterPanel, matchupNames, reconcileRosters, replaceMatchupMove, resetMatchup,
   resolveRosterSpecies, rosterChoices, selectMatchupMove, selectRosterPokemon, swapMatchup, toggleMatchupMega, updateMatchupBuild, updateMatchupHP,
   type PreparedMatchup,
 } from "@/app/(app)/calculator/roster-prep";
@@ -506,7 +507,7 @@ describe("calculator prep transitions", () => {
     const restored = selectRosterPokemon(different, "attacker", own[0]);
     expect(restored.notice).toContain("Your session build edits were restored");
     expect(selectRosterPokemon(restored, "attacker", own[0])).toBe(restored);
-    expect(swapMatchup(restored).notice).toBe("Charizard and Charizard swapped with their roster shortcuts and side conditions. Shared field settings are unchanged; move hit counts cleared.");
+    expect(swapMatchup(restored).notice).toBe("Charizard (yours) and Charizard (opponent's) swapped with their roster shortcuts and side conditions. Shared field settings are unchanged; move hit counts cleared.");
     expect(swapMatchup(different).notice).toMatch(/^Blastoise and Charizard swapped/);
     expect(swapMatchup(swapMatchup(different)).notice).toMatch(/^Charizard and Blastoise swapped/);
     expect(resetMatchup(restored).notice).toContain("Session build edits cleared");
@@ -684,7 +685,7 @@ describe("Mega roster preparation", () => {
     const current = prepared();
     const mega = toggleMatchupMega(current, getMoveOwner(current.attacker), "charizardmegax");
     const html = renderToStaticMarkup(createElement(RosterPicker, {
-      state: loaded(), role: "own", side: "attacker", activeSource: mega.attacker.source, onSelect: () => undefined, variant,
+      state: loaded(), role: "own", side: "attacker", occupant: "Charizard-Mega-X", activeSource: mega.attacker.source, onSelect: () => undefined, variant,
     }));
     const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
     expect(buttons.filter((button) => button.includes('aria-pressed="true"'))).toEqual([buttons[0]]);
@@ -944,11 +945,12 @@ describe("league matchup UI", () => {
     const state = loaded();
     state.data!.teams[0].pokemon.push({ name: "Custom mascot", points: 2, tier: 1 }, { name: "Vivillon-Garden", points: 20, tier: 1 });
     const own = getRosterPanel(state, "own", unsupportedSpeciesRuntime).choices;
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: () => undefined, variant, runtime: unsupportedSpeciesRuntime }));
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", occupant: "Charizard", activeSource: own[0].source, onSelect: () => undefined, variant, runtime: unsupportedSpeciesRuntime }));
     assertLabels(html);
     expect([...html.matchAll(/aria-pressed="true"/g)]).toHaveLength(1);
-    expect(html).toContain("Your team");
-    expect(html).toContain("Left Pokémon");
+    // The heading names the team, and for screen readers the Pokémon a pick replaces.
+    expect(html).toContain("Your team<span class=\"sr-only\"> · Charizard</span>");
+    expect(positionalIn(html)).toEqual([]);
     expect(html).toMatch(/<button\b[^>]*disabled=""[^>]*aria-pressed="false"[^>]*aria-label="Use Custom mascot/);
     const unsupported = html.match(/<button\b[^>]*aria-label="Use Vivillon-Garden[^>]*>/)?.[0];
     expect(unsupported).toBeDefined();
@@ -958,11 +960,11 @@ describe("league matchup UI", () => {
   });
 
   it("defaults to the unchanged compact inline layout without sprites", () => {
-    const props = { state: loaded(), role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined };
+    const props = { state: loaded(), role: "own" as const, side: "attacker" as const, occupant: "Charizard", activeSource: null, onSelect: () => undefined };
     const html = renderToStaticMarkup(createElement(RosterPicker, props));
     expect(html).toBe(renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "inline" })));
     expect(html).toContain('class="mt-4 rounded-lg border border-line bg-bg p-3"');
-    expect(html).toContain('<ul aria-label="Your team left roster" class="mt-3 grid gap-2 sm:grid-cols-2">');
+    expect(html).toContain('<ul aria-label="Your team roster for Charizard" class="mt-3 grid gap-2 sm:grid-cols-2">');
     expect(html).toMatch(/<button\b[^>]*><span class="flex flex-wrap items-baseline justify-between gap-1">/);
     expect(html).not.toContain("h-10 w-10");
     assertLabels(html);
@@ -976,8 +978,8 @@ describe("league matchup UI", () => {
     const own = getRosterPanel(state, "own", unsupportedSpeciesRuntime).choices;
     const other = getRosterPanel(state, "opponent", unsupportedSpeciesRuntime).choices;
     const html = renderToStaticMarkup(createElement("div", null,
-      createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: null, onSelect: () => undefined, pickerId: "attacker-roster", variant, runtime: unsupportedSpeciesRuntime }),
-      createElement(RosterPicker, { state, role: "opponent", side: "defender", activeSource: null, onSelect: () => undefined, pickerId: "defender-roster", variant, runtime: unsupportedSpeciesRuntime }),
+      createElement(RosterPicker, { state, role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, pickerId: "attacker-roster", variant, runtime: unsupportedSpeciesRuntime }),
+      createElement(RosterPicker, { state, role: "opponent", side: "defender", occupant: "Blastoise", activeSource: null, onSelect: () => undefined, pickerId: "defender-roster", variant, runtime: unsupportedSpeciesRuntime }),
     ));
     expect(html).toContain('<div id="attacker-roster" data-calculator-roster="attacker"');
     expect(html).toContain('<div id="defender-roster" data-calculator-roster="defender"');
@@ -997,10 +999,10 @@ describe("league matchup UI", () => {
     const rosterName = "AnExtremelyLongUnresolvedRosterNameThatMustAlsoWrap";
     state.data!.members[0].team_name = teamName;
     state.data!.teams[0].pokemon.push({ name: rosterName, points: 1, tier: 1 });
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: choices(state).own[0].source, onSelect: () => undefined, variant: "rail" }));
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", occupant: "Charizard", activeSource: choices(state).own[0].source, onSelect: () => undefined, variant: "rail" }));
     expect(html).toContain('class="min-w-0 rounded-lg border border-line bg-bg p-3"');
     expect(html).not.toContain("mt-4");
-    expect(html).toContain('<ul aria-label="Your team left roster" class="mt-3 grid grid-cols-1 gap-2">');
+    expect(html).toContain('<ul aria-label="Your team roster for Charizard" class="mt-3 grid grid-cols-1 gap-2">');
     expect(html).not.toContain("sm:grid-cols-2");
     expect(html).toContain(`<span class="max-w-full wrap-anywhere text-xs text-muted">${teamName}</span>`);
     expect(html).toContain(`<span class="wrap-anywhere font-medium">${rosterName}</span>`);
@@ -1016,7 +1018,7 @@ describe("league matchup UI", () => {
     const state = loaded();
     state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Charizard-Mega-X"]);
     const own = choices(state).own;
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", activeSource: own[1].source, onSelect: () => undefined, variant }));
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", occupant: "Charizard", activeSource: own[1].source, onSelect: () => undefined, variant }));
     const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
     expect(buttons).toHaveLength(2);
     expect(buttons[0]).toContain('aria-pressed="false"');
@@ -1029,7 +1031,7 @@ describe("league matchup UI", () => {
   it("uses decorative 40px sprite fallbacks only for resolved rail species, including unsupported forms", () => {
     const state = loaded();
     state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Vivillon-Garden", "Custom mascot"]);
-    const props = { state, role: "own" as const, side: "attacker" as const, activeSource: null, onSelect: () => undefined, runtime: unsupportedSpeciesRuntime };
+    const props = { state, role: "own" as const, side: "attacker" as const, occupant: "Charizard", activeSource: null, onSelect: () => undefined, runtime: unsupportedSpeciesRuntime };
     const sprite = vi.spyOn(pokemonSprite, "default");
     try {
       renderToStaticMarkup(createElement(RosterPicker, props));
@@ -1068,9 +1070,11 @@ describe("league matchup UI", () => {
     const state = loaded();
     state.data!.teams[1].pokemon.push({ name: "Unknown opponent form", points: 1, tier: 1 });
     const current = swapMatchup(prepared());
-    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: current.attacker.role, side: "attacker", activeSource: null, onSelect: () => undefined }));
-    expect(html).toContain("Opponent&#x27;s team");
-    expect(html).toContain("Left Pokémon");
+    const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: current.attacker.role, side: "attacker", occupant: matchupNames(current).attacker, activeSource: null, onSelect: () => undefined }));
+    // After Swap the attacker card holds the opponent's Charizard (a mirror): its team and its full name, no side.
+    expect(html).toContain("Opponent&#x27;s team<span class=\"sr-only\"> · Charizard (opponent&#x27;s)</span>");
+    expect(html).toContain('aria-label="Use Venusaur from opponent&#x27;s team in place of Charizard (opponent&#x27;s)"');
+    expect(positionalIn(html)).toEqual([]);
     expect(html).not.toContain('aria-pressed="true"');
     assertLabels(html);
   });

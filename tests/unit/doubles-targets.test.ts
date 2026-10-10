@@ -10,7 +10,7 @@ import type { BattleBuild, BattleConditions, MoveContext } from "@/app/lib/battl
  * The choice-time target rule of a move from each slot (SPEC §3.3), mapped from the pinned Showdown move target
  * (sim/side.ts chooseMove, sim/battle-actions.ts targetTypeChoices: normal, any, adjacentAlly, adjacentAllyOrSelf and
  * adjacentFoe take a chosen target). Doubles has one ally, so adjacentAlly is automatic (SPEC C6). Options list the present
- * slots as left foe, right foe, ally, itself; automatic hits list the foes screen-left first, then the ally.
+ * slots as its foes in slot order, its ally, itself; automatic hits list the foes in slot order, then the ally.
  */
 type Slot = { id: string; build?: Partial<BattleBuild>; contexts?: Record<string, MoveContext> } | null;
 function input(runtime: BattleRuntime, slots: Partial<Record<DoublesSlotId, Slot>>, field: Partial<BattleConditions> = {}): DoublesTurnInput {
@@ -36,7 +36,7 @@ describe("doublesTargetRule: the dex target from each slot", () => {
     expect(rule(turn, "own-right", "flamethrower")).toEqual({ kind: "choose", options: ["opponent-left", "opponent-right", "own-left"] });
     expect(rule(turn, "own-left", "dragonclaw")).toEqual({ kind: "choose", options: ["opponent-left", "opponent-right", "own-right"] });
     expect(rule(turn, "own-right", "airslash")).toEqual({ kind: "choose", options: ["opponent-left", "opponent-right", "own-left"] });
-    // From the far side the foes are your left and right Pokémon, screen-left first.
+    // From the far side the foes are own-left and own-right, in slot order.
     expect(rule(turn, "opponent-left", "psychocut")).toEqual({ kind: "choose", options: ["own-left", "own-right", "opponent-right"] });
   });
 

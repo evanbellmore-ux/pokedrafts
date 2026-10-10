@@ -1,9 +1,10 @@
 import { useId } from "react";
 import TypeBadge from "@/app/components/TypeBadge";
-import { SLOT_POSITION, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import PokemonName from "@/app/(app)/calculator/PokemonName";
+import { nameText, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
 import type { PokemonView } from "../model/view-types";
 import { pointsText } from "../setup/team-export";
-import { boostLabel, boostText, capitalize, hpFraction, hpText, hpTone, hpValueText, itemText, statusLabel } from "./board-format";
+import { boostLabel, boostText, hpFraction, hpText, hpTone, hpValueText, itemText, statusLabel } from "./board-format";
 import { HP_ANIMATION_MS } from "./playback";
 import styles from "./board.module.css";
 
@@ -16,7 +17,7 @@ export type CardTarget = {
   /** The active slot's move can be aimed here; clicking the frame picks it. */
   eligible: boolean;
   selected: boolean;
-  /** "Target Blastoise (left foe) with Garchomp's Dragon Claw". */
+  /** "Target Blastoise with Garchomp's Dragon Claw". */
   label: string;
   /** "Target of Garchomp's Dragon Claw", one per of your moves aimed here. */
   chips: string[];
@@ -39,17 +40,20 @@ export function abilityText(mon: PokemonView) {
   return mon.ability ? `Ability: ${mon.ability.name}` : "Ability: not shown";
 }
 
-export default function BattleCard({ mon, slot, target, play }: { mon: PokemonView | null; slot: DoublesSlotId; target?: CardTarget | null; play?: CardPlay | null }) {
+/**
+ * `name`: the card's name parts (board-format boardNameParts): the heading shows the name and its number, the side word for
+ * screen readers only (the card sits in its labelled side group); the meter names it in full ("Garchomp (yours) HP").
+ */
+export default function BattleCard({ mon, slot, name, target, play }: { mon: PokemonView | null; slot: DoublesSlotId; name: NameParts; target?: CardTarget | null; play?: CardPlay | null }) {
   const id = useId();
-  const position = capitalize(SLOT_POSITION[slot]);
   if (!mon) {
     return (
-      <article data-training-card={slot} aria-label={`${position}: empty`} className="min-w-0 p-2 sm:p-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted">{position}</p>
-        <p className="mt-1 text-sm text-muted">Empty</p>
+      <article data-training-card={slot} aria-label="Empty" className="min-w-0 p-2 sm:p-3">
+        <p className="text-sm text-muted">Empty</p>
       </article>
     );
   }
+  const parts: NameParts = name.base ? name : { base: mon.name, side: null, number: null };
   const tone = hpTone(mon.hp);
   const fraction = mon.fainted ? 0 : hpFraction(mon.hp);
   const boosts = boostText(mon.boosts);
@@ -73,9 +77,8 @@ export default function BattleCard({ mon, slot, target, play }: { mon: PokemonVi
           className="absolute inset-0 z-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus" />
       )}
       <div className={pickable ? "pointer-events-none relative z-10" : undefined}>
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">{position}</p>
-      <div className="mt-0.5 flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
-        <h3 id={`${id}-name`} className="min-w-0 wrap-anywhere font-semibold text-text">{mon.name}<span className="sr-only"> ({SLOT_POSITION[slot]})</span></h3>
+      <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+        <h3 id={`${id}-name`} className="min-w-0 wrap-anywhere font-semibold text-text"><PokemonName parts={parts} /></h3>
         {mon.mega && <span className="rounded border border-accent-border px-1.5 text-xs font-semibold text-accent-text">Mega</span>}
       </div>
       {!!target?.chips.length && <p data-training-card-chips className="mt-0.5 wrap-anywhere text-xs font-semibold text-accent-text">{target.chips.join(" · ")}</p>}
@@ -87,7 +90,7 @@ export default function BattleCard({ mon, slot, target, play }: { mon: PokemonVi
         <p className="mt-1 tabular-nums text-sm text-text">{hpText(mon.hp)}</p>
       )}
       <div className="relative">
-        <div role="meter" aria-label={`${mon.name} (${SLOT_POSITION[slot]}) HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={value}
+        <div role="meter" aria-label={`${nameText(parts)} HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={value}
           aria-valuetext={mon.fainted ? "Fainted" : hpValueText(mon.hp)} className="mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
           <div data-training-hp-bar className={`h-full rounded-full ${TONE_CLASS[tone]}`}
             style={{ width: `${fraction * 100}%`, ...(play?.animate ? { transition: `width ${HP_ANIMATION_MS}ms ease-out` } : {}) }} />

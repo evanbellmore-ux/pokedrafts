@@ -61,9 +61,9 @@ const LIVE: HabitsData = parseHabits({"v":1,"battles":3,"classes":{"high|false|f
 
 /**
  * The same browser's record after a fourth battle (PokePaste on both sides, forfeited during turn 5's Parting Shot switch). Its
- * log: T1 Fake Out -> Garchomp (right foe), Heat Wave (spread), no Mega; T2 a switch, Charizard Mega Evolves and flinches; T3
- * Rock Slide (spread), Charizard faints before moving; T4 Protect, Flare Blitz -> Garchomp (right); T5 Protect (failed), Parting
- * Shot -> Incineroar (left foe). 8 actions.
+ * log: T1 Fake Out -> Garchomp (opponent-right), Heat Wave (spread), no Mega; T2 a switch, Charizard Mega Evolves and flinches; T3
+ * Rock Slide (spread), Charizard faints before moving; T4 Protect, Flare Blitz -> Garchomp (opponent-right); T5 Protect (failed), Parting
+ * Shot -> Incineroar (opponent-left). 8 actions.
  */
 const LIVE_AFTER: HabitsData = parseHabits({"v":1,"battles":4,"classes":{"high|false|false":{"protect":2.458,"speed-control":0.7290000000000001,"attack-best":0.7290000000000001,"switch":1,"attack-spread":1,"attack-ko":1,"status-other":1},"*":{"protect":6.707000000000001,"status-other":4.807,"speed-control":1.539,"switch":2.458,"attack-best":2.1870000000000003,"attack-other":3.249,"attack-ko":5.159,"attack-spread":1.81,"fake-out":1},"high|true|false":{"protect":2.439,"switch":0.7290000000000001,"attack-best":0.7290000000000001,"attack-ko":2.5389999999999997,"attack-other":2.52,"status-other":0.81,"fake-out":1},"high|false|true":{"status-other":0.7290000000000001,"protect":1},"mid|true|false":{"status-other":1.4580000000000002,"attack-best":0.7290000000000001,"protect":0.81,"speed-control":0.81},"low|true|false":{"switch":0.7290000000000001,"attack-ko":1.62},"high|true|true":{"attack-other":0.7290000000000001,"attack-spread":0.81},"mid|true|true":{"status-other":0.81}},"targets":{"status-other":{"other":2.5389999999999997,"threat":1.539,"weak":0.7290000000000001},"attack-best":{"threat":2.1870000000000003},"attack-other":{"other":0.7290000000000001,"threat":1.71},"attack-ko":{"other":0.81,"threat":1},"fake-out":{"threat":1}},"moves":{"altaria":{"protect":0.7290000000000001,"willowisp":2.1870000000000003,"tailwind":0.7290000000000001},"ampharos":{"protect":0.7290000000000001},"alcremie":{"mysticalfire":2.1870000000000003},"absol":{"detect":0.7290000000000001,"closecombat":0.7290000000000001,"suckerpunch":0.7290000000000001},"charizard":{"solarbeam":0.81,"protect":0.9,"heatwave":1},"incineroar":{"flareblitz":2.71,"protect":0.81,"partingshot":1.81,"fakeout":1},"garchomp":{"protect":2.81,"rockslide":1.81,"earthquake":1.62},"whimsicott":{"encore":0.81,"moonblast":0.81,"tailwind":0.81}},"brings":{"altaria":0.7290000000000001,"ampharos":0.7290000000000001,"absol":0.7290000000000001,"alcremie":0.7290000000000001,"charizard":2.71,"incineroar":2.71,"garchomp":1.81,"whimsicott":0.81},"leads":{"altaria+ampharos":0.7290000000000001,"charizard+incineroar":2.71},"mega":{"*":{"yes":1.9,"no":2.62},"first|true":{"yes":0.9,"no":1.81},"later|true":{"yes":0,"no":0.81},"later|false":{"yes":1,"no":0}},"aims":{"status-other":{"left":3.3489999999999998,"right":1.4580000000000002},"attack-best":{"right":0.7290000000000001,"left":1.4580000000000002},"attack-other":{"left":1.539,"right":0.9},"attack-ko":{"left":0.81,"right":1},"fake-out":{"right":1}}});
 
@@ -87,7 +87,7 @@ describe("habit trends (the helper)", () => {
     expect(texts(view.targets.lines)).toEqual([
       "The biggest threat: 72% (13 of 18 moves aimed at a foe)", "The lower-HP foe: 11% (2 of 18 moves aimed at a foe)", "Other: 17% (3 of 18 moves aimed at a foe)",
     ]);
-    expect(texts(view.aims.lines)).toEqual(["Left foe: 58% (11 of 19 aimed moves)", "Right foe: 37% (7 of 19 aimed moves)", "Your partner: 5% (1 of 19 aimed moves)"]);
+    expect(texts(view.aims.lines)).toEqual(["A foe: 95% (18 of 19 aimed moves)", "Your partner: 5% (1 of 19 aimed moves)"]);
     // Species by total; top 3 by count; a species under 3 moves states no shares; unknown ids keep their id.
     expect(view.moves.map((species) => [species.name, Math.round(species.total)])).toEqual([
       ["Garchomp", 25], ["Sinistcha", 7], ["Rillaboom", 6], ["Whimsicott", 5], ["Charizard", 4], ["missingno", 3], ["Gyarados", 3], ["Incineroar", 2],
@@ -154,7 +154,7 @@ describe("habit trends (the helper)", () => {
     expect(texts(view.targets.lines)).toEqual([
       "The biggest threat: 59% (6 of 10 moves aimed at a foe)", "The lower-HP foe: 8% (1 of 10 moves aimed at a foe)", "Other: 33% (3 of 10 moves aimed at a foe)",
     ]);
-    expect(texts(view.aims.lines)).toEqual(["Left foe: 67% (7 of 10 aimed moves)", "Right foe: 33% (3 of 10 aimed moves)", "Your partner: 0% (0 of 10 aimed moves)"]);
+    expect(texts(view.aims.lines)).toEqual(["A foe: 100% (10 of 10 aimed moves)", "Your partner: 0% (0 of 10 aimed moves)"]);
     expect(view.moves.map((species) => [species.name, Math.round(species.total), species.moves?.map((move) => `${move.name} ${Math.round(move.count)} (${move.percent}%)`).join(" · ") ?? null])).toEqual([
       ["Altaria", 4, "Will-O-Wisp 2 (60%) · Protect 1 (20%) · Tailwind 1 (20%)"],
       ["Incineroar", 4, "Flare Blitz 2 (51%) · Parting Shot 1 (24%) · Protect 1 (24%)"],

@@ -9,7 +9,7 @@ import { MyTeamPicker, OpponentPicker, RosterPicker } from "@/app/(app)/calculat
 import * as selectControl from "@/app/components/ui/Select";
 import {
   activateMoveSlot, applyTeamPaste, changeTeamSource, createMatchup, getAttackView,
-  getMoveOwner, getRosterPanel, getTeamPanel, getTeamSourceOwner, reconcileRosters,
+  getMoveOwner, getRosterPanel, getTeamPanel, getTeamSourceOwner, matchupNames, reconcileRosters,
   removeTeamPaste, replaceMatchupMove, resetMatchup, selectRosterPokemon, swapMatchup,
   toggleMatchupMega, updateMatchupBuild, updateMatchupHP, updateMatchupMoveContext,
   type BattleSide, type Combatant, type PasteImport, type PreparedMatchup, type RosterRole,
@@ -778,7 +778,7 @@ describe("team import SSR: shared source panels and league context", () => {
     const onSelect = vi.fn();
     const html = renderToStaticMarkup(createElement(RosterPicker, {
       state: { ...loaded(), teamsStatus: "error", data: null }, panel,
-      role: "own", side: "attacker", activeSource: current.attacker.source, onSelect, variant,
+      role: "own", side: "attacker", occupant: "Raichu", activeSource: current.attacker.source, onSelect, variant,
     }));
     const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
     expect(buttons).toHaveLength(3);
@@ -800,12 +800,14 @@ describe("team import SSR: shared source panels and league context", () => {
     const before = bind();
     const current = changeTeamSource(before, getTeamSourceOwner(before, "own"), "paste");
     const html = renderToStaticMarkup(createElement(RosterPicker, {
-      state: loaded(), panel: getTeamPanel(current, loaded(), "own"), role: "own", side: "attacker",
+      state: loaded(), panel: getTeamPanel(current, loaded(), "own"), role: "own", side: "attacker", occupant: "Charizard",
       activeSource: null, onSelect: vi.fn(),
     }));
     expect(html).toContain(">No team imported.</p>");
     expect(html).not.toContain("data-roster-choice");
-    expect(html).not.toContain("Charizard");
+    // No league entry: the only name is the Pokémon a pick would replace, in the heading.
+    expect(html).not.toContain("<li");
+    expect(html.replace("<span class=\"sr-only\"> · Charizard</span>", "")).not.toContain("Charizard");
     assertLabels(html);
   });
 
@@ -818,8 +820,10 @@ describe("team import SSR: shared source panels and league context", () => {
     const html = renderToStaticMarkup(createElement(MatchupSummary, { ...props, rosterState: state, rosterPanels: panels }));
     expect(props.onRosterSelect).not.toHaveBeenCalled();
     expect(chooser).toHaveBeenCalledTimes(2);
-    for (const [chooserProps] of chooser.mock.calls) {
-      const side = chooserProps.side;
+    // The choosers render in card order: the attacker card's, then the defender card's.
+    const names = matchupNames(current);
+    for (const [index, [chooserProps]] of chooser.mock.calls.entries()) {
+      const side = (["attacker", "defender"] as const)[index];
       const slot = current[side];
       const roster = chooserProps.roster;
       expect(isValidElement(roster)).toBe(true);
@@ -828,6 +832,7 @@ describe("team import SSR: shared source panels and league context", () => {
       expect(roster.props.panel).toBe(panels[slot.role]);
       expect(roster.props.role).toBe(slot.role);
       expect(roster.props.side).toBe(side);
+      expect(roster.props.occupant).toBe(names[side]);
       expect(roster.props.activeSource).toBe(slot.source);
       const choice = panels[slot.role].choices[1];
       roster.props.onSelect(choice);
@@ -835,11 +840,13 @@ describe("team import SSR: shared source panels and league context", () => {
     }
     expect(html.match(/>Team Pokémon<\/button>/g)).toHaveLength(2);
     expect(html.match(/Imported from team paste/g)).toHaveLength(4);
-    for (const position of ["left", "right"]) {
-      expect(html).toContain(`aria-label="Raichu ${position} move 1: Protect"`);
-      expect(html).toContain(`aria-label="Raichu ${position} move 2: Thunderbolt"`);
-      expect(html).toContain(`aria-label="Raichu ${position} move 3: No move"`);
-      expect(html).toContain(`aria-label="Raichu ${position} move 4: No move"`);
+    // A mirror: each card's labels name its team (after Swap the attacker card holds the opponent's Raichu).
+    expect(names).toEqual({ attacker: "Raichu (opponent's)", defender: "Raichu (yours)" });
+    for (const name of ["Raichu (opponent&#x27;s)", "Raichu (yours)"]) {
+      expect(html).toContain(`aria-label="${name} move 1: Protect"`);
+      expect(html).toContain(`aria-label="${name} move 2: Thunderbolt"`);
+      expect(html).toContain(`aria-label="${name} move 3: No move"`);
+      expect(html).toContain(`aria-label="${name} move 4: No move"`);
     }
     expect(html).not.toContain("data-roster-choice"); // Closed choosers do not duplicate the inline/rail entries.
     assertLabels(html);

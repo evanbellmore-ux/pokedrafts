@@ -217,7 +217,7 @@ describe("native training and set controls", () => {
     build.native.evs.spa = 252;
     const onChange = vi.fn();
     const onClose = vi.fn();
-    const rendered = capture(() => renderToStaticMarkup(createElement(PokemonChooser, { runtime, side: "attacker", build, open: true, onChange, onClose })));
+    const rendered = capture(() => renderToStaticMarkup(createElement(PokemonChooser, { runtime, build, open: true, onChange, onClose })));
     expect(rendered.html).toContain("of 2 Pokémon");
     expect(rendered.html).toContain("Mew");
     expect(rendered.html).not.toContain("Alcremie");
@@ -236,9 +236,9 @@ describe("native summary mechanics and health", () => {
     const onBuildChange = vi.fn();
     const rendered = capture(() => summary(matchup, { onToggleMechanic, onBuildChange }));
     expect([...rendered.html.matchAll(/data-move-slot=/g)]).toHaveLength(8);
-    const left = rendered.buttons.find((button) => button["aria-label"] === "Charizard left Tera")!;
-    expect(left.disabled).toBe(false);
-    left.onClick!({} as MouseEvent<HTMLButtonElement>);
+    const tera = rendered.buttons.find((button) => button["aria-label"] === "Charizard Tera")!;
+    expect(tera.disabled).toBe(false);
+    tera.onClick!({} as MouseEvent<HTMLButtonElement>);
     expect(onToggleMechanic).toHaveBeenCalledExactlyOnceWith(getMoveOwner(matchup.attacker), "tera");
     rendered.selects.find((select) => select.id?.endsWith("-tera-type"))!.onChange!(selectChange("Stellar"));
     expect(onBuildChange).toHaveBeenCalledExactlyOnceWith(matchup.attacker.key, { ...matchup.attacker.build, configuration: { teraType: "Stellar" } });
@@ -248,7 +248,7 @@ describe("native summary mechanics and health", () => {
 
   it("shows only legal mechanics and explains missing factors or excluded species", () => {
     const build = native(swsh);
-    const render = (build: BattleBuild, runtime = swsh) => capture(() => renderToStaticMarkup(createElement(MechanicControls, { build, runtime, position: "right", onToggle: vi.fn() })));
+    const render = (build: BattleBuild, runtime = swsh) => capture(() => renderToStaticMarkup(createElement(MechanicControls, { build, runtime, onToggle: vi.fn() })));
     const controls = render(build);
     expect(controls.buttons.find((button) => button["data-battle-mechanic"] === "dynamax")!.disabled).toBe(false);
     expect(controls.buttons.find((button) => button["data-battle-mechanic"] === "gigantamax")!.disabled).toBe(true);
@@ -286,8 +286,9 @@ describe("native summary mechanics and health", () => {
     matchup.attacker.megaBase = { speciesId: base.speciesId, abilityId: base.abilityId, abilityActive: base.abilityActive, itemId: base.itemId };
     matchup.defender.build = native(usum, "kyogre");
     const html = summary(matchup);
-    expect(html).toContain('aria-label="Necrozma-Dawn-Wings left Ultra Burst"');
-    expect(html).toContain('aria-label="Kyogre right Primal"');
+    // Each card's toggles are named after the form it shows.
+    expect(html).toContain(`aria-label="${usum.speciesById.get("necrozmaultra")!.name} Ultra Burst"`);
+    expect(html).toContain('aria-label="Kyogre Primal"');
     expect(html).not.toContain("Mega Z");
   });
 
@@ -395,7 +396,7 @@ describe("native attack context and effective metadata", () => {
     matchup.attack = { owner: getMoveOwner(matchup.attacker), moveId: "flamethrower" };
     const selectedRow = row("flamethrower", { effectiveName: "G-Max Wildfire", effectiveType: "Fire", effectivePower: 130, effectiveCategory: "Special" });
     const html = summary(matchup, { selectedRow });
-    expect(html).toContain('aria-label="Charizard left move 1: G-Max Wildfire (from Flamethrower)"');
+    expect(html).toContain('aria-label="Charizard move 1: G-Max Wildfire (from Flamethrower)"');
     expect(html).toContain("After G-Max Wildfire");
     expect(html).toContain("Power 130");
     expect(matchup.attacker.moves[0].moveId).toBe("flamethrower");

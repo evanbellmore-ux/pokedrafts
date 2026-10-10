@@ -5,6 +5,8 @@ import type { HabitsRecord, MegaPolicy } from "@/app/(app)/training/model/decisi
 import type { TrainingDifficulty } from "@/app/(app)/training/model/view-types";
 import { createHabitBotProvider, createMaxDamageProvider, createRandomLegalProvider } from "@/app/(app)/training/ai/baselines";
 import { createEngineProvider } from "@/app/(app)/training/ai/engine-provider";
+import { identName } from "@/app/(app)/training/sim/choices";
+import type { DecisionProvider } from "@/app/(app)/training/model/decision";
 import { createRandomSeat } from "./random-provider";
 import type { Seat } from "./match";
 
@@ -15,6 +17,27 @@ export function isSeatName(name: string): name is SeatName { return (SEAT_NAMES 
 /** Kept for the scripts' start-up order; every factory is a static import. */
 export async function ensureSeats(names: readonly string[]): Promise<void> {
   for (const name of names) if (!isSeatName(name)) throw new Error(`Unknown seat ${name} (${SEAT_NAMES.join(", ")}).`);
+}
+
+/** Forced AI choices for a slice with fixed teams: its team preview order (1-based) and the member it sends in for one Pokémon while that member is on its bench. */
+export type ForcedChoices = { aiOrder?: readonly number[]; aiReplaceWith?: string };
+
+/** `provider` with the forced choices of a slice (the Illusion and Transform teams); its own decisions otherwise. */
+export function forcedProvider(provider: DecisionProvider, forced: ForcedChoices | undefined): DecisionProvider {
+  const { aiOrder: order, aiReplaceWith: member } = forced ?? {};
+  if (!order && !member) return provider;
+  return {
+    ...provider,
+    ...(order ? { async teamPreview(context, options) { return { ...(await provider.teamPreview(context, options)), order: [...order] }; } } satisfies Partial<DecisionProvider> : {}),
+    ...(member ? {
+      async chooseReplacements(context, options) {
+        const bench = context.inputs.request.side.pokemon.filter((each) => !each.active && !each.condition.endsWith(" fnt"))
+          .map((each) => context.inputs.own.find((entry) => entry.set.name === identName(each.ident))?.key);
+        if (context.slots.length === 1 && bench.includes(member)) return { action: { [context.slots[0]]: { kind: "switch", to: member } } };
+        return provider.chooseReplacements(context, options);
+      },
+    } satisfies Partial<DecisionProvider> : {}),
+  };
 }
 
 /** A fresh seat; `habits` is the record the previous battle of this shard left (habits carry over, SPEC §14.2). */

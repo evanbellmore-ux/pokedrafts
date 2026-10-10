@@ -144,9 +144,13 @@ export function boardView(overrides: Partial<BoardView> = {}): BoardView {
       sides: { own: [{ id: "tailwind", name: "Tailwind", turns: 1 }], opponent: [] },
     },
     megaUsed: { own: false, opponent: true },
+    mirrored: [],
     ...overrides,
   };
 }
+
+/** The fixture board's members in each slot (LogTurn.occupants). */
+export const OCCUPANTS: NonNullable<LogTurn["occupants"]> = { "own-left": "own-garchomp", "own-right": "own-gyarados", "opponent-left": "ai-ampharos", "opponent-right": "ai-absol" };
 
 export function report(overrides: Partial<DecisionReport> = {}): DecisionReport {
   return {
@@ -172,21 +176,23 @@ export function report(overrides: Partial<DecisionReport> = {}): DecisionReport 
 
 export function logTurns(): LogTurn[] {
   return [
-    { turn: 0, lines: [{ text: "Garchomp (your left) sent out.", kind: "switch", slots: ["own-left"] }], actions: null, read: null },
+    { turn: 0, lines: [{ text: "Garchomp sent out.", kind: "switch", slots: ["own-left"] }], actions: null, read: null },
     {
       turn: 1,
       lines: [
-        { text: "Absol (opponent's right) Mega Evolved (Absolite).", kind: "form", slots: ["opponent-right"] },
-        { text: "Garchomp (your left) used Rock Slide → both foes.", kind: "move", slots: ["own-left", "opponent-left", "opponent-right"] },
+        { text: "Absol Mega Evolved (Absolite).", kind: "form", slots: ["opponent-right"] },
+        { text: "Garchomp used Rock Slide → both foes.", kind: "move", slots: ["own-left", "opponent-left", "opponent-right"] },
       ],
       actions: { own: { "own-left": { kind: "move", moveId: "rockslide", target: null } }, opponent: {} },
       read: report({ turn: 1 }),
+      occupants: { ...OCCUPANTS },
     },
     {
       turn: 2,
-      lines: [{ text: "Ampharos (opponent's left) fainted.", kind: "faint", slots: ["opponent-left"] }],
+      lines: [{ text: "Ampharos fainted.", kind: "faint", slots: ["opponent-left"] }],
       actions: { own: { "own-left": { kind: "move", moveId: "rockslide", target: null }, "own-right": { kind: "move", moveId: "protect", target: null } }, opponent: {} },
       read: report(),
+      occupants: { ...OCCUPANTS },
     },
   ];
 }

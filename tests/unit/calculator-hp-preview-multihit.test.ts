@@ -123,8 +123,13 @@ function summary(runtime: BattleRuntime, attacker: BattleBuild, moveId: string, 
 const text = (html: string) => html.replace(/<(\w+)\b[^>]*\bclass="[^"]*\bsr-only\b[^"]*"[^>]*>[\s\S]*?<\/\1>/g, " ")
   .replace(/<[^>]+>/g, " ").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
 
-function meter(html: string, position: "left" | "right") {
-  const found = html.match(new RegExp(`<div role="meter" aria-label="[^"]* ${position} [^"]*"[^>]*>[\\s\\S]*?</div>(?:<div data-hp-range[^>]*></div>)?</div>`))?.[0];
+/** The HP meter on one side's summary card. */
+function meter(html: string, side: "attacker" | "defender") {
+  const start = html.indexOf(`data-summary-combatant="${side}"`);
+  expect(start).toBeGreaterThan(-1);
+  const rest = html.slice(start + 1);
+  const end = rest.indexOf("data-summary-combatant=");
+  const found = (end < 0 ? rest : rest.slice(0, end)).match(/<div role="meter" aria-label="[^"]*"[^>]*>[\s\S]*?<\/div>(?:<div data-hp-range[^>]*><\/div>)?<\/div>/)?.[0];
   expect(found).toBeDefined();
   return found!;
 }
@@ -228,8 +233,8 @@ describe("one-use HP preview from afterUse", () => {
     for (const mode of modes) expect(previewRemainingHP(typed, row, mode, championsRuntime, stale).status).toBe("unavailable");
     expect(previewRemainingHP(typed, row, "low", championsRuntime)).toMatchObject({ status: "ready", current: 136, remaining: 1 });
     const html = summary(championsRuntime, maushold, "populationbomb", row, { defender: typed, settledHP: { defender: stale } });
-    expect(meter(html, "right")).toContain('aria-valuenow="136"');
-    expect(meter(html, "right")).toContain('aria-label="Garchomp right current HP"');
+    expect(meter(html, "defender")).toContain('aria-valuenow="136"');
+    expect(meter(html, "defender")).toContain('aria-label="Garchomp current HP"');
   });
 
   it("starts from the HP the target has after a berry it ate before the move", () => {
@@ -276,8 +281,8 @@ describe("selected-move summary with a one-use preview", () => {
     const html = summary(championsRuntime, maushold, "populationbomb", cutBomb);
     expect(text(html)).toContain("141 damage · Average estimate 135–162 damage range, 9 of 10 hits · One-use KO: 0% (all rolls)");
     expect(text(html)).toContain("Garchomp HP remaining: 42 / 183");
-    const bar = meter(html, "right");
-    expect(bar).toContain('aria-label="Garchomp right projected HP"');
+    const bar = meter(html, "defender");
+    expect(bar).toContain('aria-label="Garchomp projected HP"');
     expect(bar).toContain('aria-valuenow="42"');
     expect(bar).toContain('aria-valuetext="42 of 183 HP after Population Bomb, Average estimate (21–48). Current HP: 183."');
     expect(bar).toContain(`width:${42 / 183 * 100}%`);
@@ -307,13 +312,13 @@ describe("selected-move summary with a one-use preview", () => {
     expect(text(html)).toContain(`${136 - average} damage · Average estimate`);
     expect(text(html)).toContain(`After Population Bomb · Average estimate ${average} / 183 HP Sitrus Berry: 91 → 136 HP`);
     expect(text(html)).not.toContain("Current HP: 91");
-    expect(meter(html, "right")).toContain("Current HP: 91. Sitrus Berry: 91 → 136 HP.");
+    expect(meter(html, "defender")).toContain("Current HP: 91. Sitrus Berry: 91 → 136 HP.");
     // A status move has no preview: the bar shows the HP the move starts with.
     const status: MoveDamageResult = { ...cutBomb, kind: "status", min: null, max: null, rolls: null, hits: null, afterUse: undefined };
     const resting = summary(championsRuntime, maushold, "populationbomb", status, { defender: hurt, settledHP });
-    expect(meter(resting, "right")).toContain('aria-label="Garchomp right current HP"');
-    expect(meter(resting, "right")).toContain('aria-valuenow="136"');
-    expect(meter(resting, "right")).not.toContain("data-hp-range");
+    expect(meter(resting, "defender")).toContain('aria-label="Garchomp current HP"');
+    expect(meter(resting, "defender")).toContain('aria-valuenow="136"');
+    expect(meter(resting, "defender")).not.toContain("data-hp-range");
     expect(text(resting)).toContain("Current HP 136 / 183 HP Sitrus Berry: 91 → 136 HP");
   });
 
@@ -323,24 +328,24 @@ describe("selected-move summary with a one-use preview", () => {
     const settledHP = { attacker: { hp: 111, entered: 74, maxHP: max, item: "Sitrus Berry" } };
     const html = summary(championsRuntime, hurt, "populationbomb", cutBomb, { settledHP });
     expect(max).toBe(149);
-    expect(meter(html, "left")).toContain('aria-valuenow="111"');
-    expect(meter(html, "left")).toContain('aria-valuetext="111 of 149 HP. Sitrus Berry: 74 → 111 HP."');
+    expect(meter(html, "attacker")).toContain('aria-valuenow="111"');
+    expect(meter(html, "attacker")).toContain('aria-valuetext="111 of 149 HP. Sitrus Berry: 74 → 111 HP."');
     expect(text(html)).toContain("Current HP 111 / 149 HP Sitrus Berry: 74 → 111 HP");
-    // The right Pokémon attacking the left: the move's user is the result's attacker.
+    // The defender card's Pokémon attacking the attacker card's: the move's user is the result's attacker.
     const reverse = summary(championsRuntime, hurt, "earthquake", undefined, { reverse: true, settledHP: { defender: settledHP.attacker } });
-    expect(meter(reverse, "left")).toContain('aria-valuenow="111"');
-    expect(meter(reverse, "right")).toContain('aria-valuenow="183"');
+    expect(meter(reverse, "attacker")).toContain('aria-valuenow="111"');
+    expect(meter(reverse, "defender")).toContain('aria-valuenow="183"');
   });
 
   it("ignores settled HP for another entered HP, a blocked result or another pair", () => {
     const hurt = build("garchomp", "roughskin", championsRuntime, { currentHP: 90, itemId: "sitrusberry" });
     const stale = { defender: { hp: 136, entered: 91, maxHP: 183, item: "Sitrus Berry" } };
     expect(getSettledHealth(hurt, stale.defender)).toBeNull();
-    expect(meter(summary(championsRuntime, maushold, "populationbomb", undefined, { defender: hurt, settledHP: stale }), "right")).toContain('aria-valuenow="90"');
+    expect(meter(summary(championsRuntime, maushold, "populationbomb", undefined, { defender: hurt, settledHP: stale }), "defender")).toContain('aria-valuenow="90"');
     const fresh = { defender: { ...stale.defender, entered: 90, hp: 135 } };
-    expect(meter(summary(championsRuntime, maushold, "populationbomb", undefined, { defender: hurt, settledHP: fresh }), "right")).toContain('aria-valuenow="135"');
+    expect(meter(summary(championsRuntime, maushold, "populationbomb", undefined, { defender: hurt, settledHP: fresh }), "defender")).toContain('aria-valuenow="135"');
     const blocked = summary(championsRuntime, maushold, "populationbomb", undefined, { defender: hurt, settledHP: fresh, blockedReason: "Fix invalid settings." });
-    expect(meter(blocked, "right")).toContain('aria-valuenow="90"');
+    expect(meter(blocked, "defender")).toContain('aria-valuenow="90"');
     expect(blocked).not.toContain("Sitrus Berry:");
   });
 

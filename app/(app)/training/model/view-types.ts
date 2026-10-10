@@ -129,6 +129,11 @@ export type BoardView = {
   team: Record<DoublesSideId, PokemonView[]>;
   field: FieldView;
   megaUsed: Record<DoublesSideId, boolean>;
+  /**
+   * Member keys (both sides) whose battle name is on both teams (the two sixes of the team preview, so fixed for the battle):
+   * their cards and the text that names them carry "(yours)" / "(opponent's)".
+   */
+  mirrored: string[];
 };
 
 // ---------- Actions ----------
@@ -139,7 +144,7 @@ export type SlotAction =
   | { kind: "pass" };
 /** Slots in engine orientation: for the board and the worker protocol, own = you (p1), opponent = the AI (p2). */
 export type JointAction = Partial<Record<DoublesSlotId, SlotAction>>;
-/** team: 1-based indices into setup.own.members, maxChosenTeamSize entries, the first two lead (left, right). */
+/** team: 1-based indices into setup.own.members, maxChosenTeamSize entries, the first two lead. */
 export type PlayerChoice = { kind: "team"; order: number[] } | { kind: "action"; action: JointAction };
 
 export function slotActionKey(action: SlotAction): string {
@@ -268,6 +273,17 @@ export type LogTurn = {
   actions: { own: JointAction; opponent: JointAction } | null;
   /** Only once the turn resolved (the store also strips an early one). */
   read: DecisionReport | null;
+  /**
+   * The member (TrainingMember.key) in each slot when the turn's actions were chosen: yours from your request, the AI's as
+   * your log showed them. The AI's read and the actions name each slot by it. Absent in battles saved before it existed.
+   */
+  occupants?: Partial<Record<DoublesSlotId, string>>;
+  /**
+   * Each occupant's full name on the board the turn's actions were chosen on ("Ditto", "Garchomp (yours, 2)": occupantNames),
+   * so the AI's read and the actions keep that turn's names after a later Transform, Mega Evolution or switch. Absent in
+   * battles saved before it existed (the occupants then name the slots).
+   */
+  names?: Partial<Record<DoublesSlotId, string>>;
 };
 
 // ---------- Session snapshot ----------

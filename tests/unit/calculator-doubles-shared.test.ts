@@ -14,6 +14,7 @@ import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { createBattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, MoveDamageResult, NativeCatalog } from "@/app/lib/battle/types";
 import svCatalog from "@/data/battle/scarlet_violet/catalog.json";
+import { positionalIn } from "../fixtures/naming";
 
 // The shared components' 2v2 props: each is optional, so 1v1 (which passes none) renders exactly as before.
 
@@ -48,25 +49,27 @@ describe("PokemonPanel 2v2 props", () => {
     side: "attacker", build, issues: validateBuild(build), onChange: vi.fn(), hpInput: "", onHPChange: vi.fn(), ...props,
   }));
 
-  it("keeps the 1v1 labels without them", () => {
+  it("names the Pokémon by its species without them", () => {
     const html = panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn() });
-    expect(html).toContain("left Attack Stat Points");
-    expect(html).toContain('aria-label="Left Pokémon stats and Stat Points"');
+    expect(html).toContain("Incineroar Attack Stat Points");
+    expect(html).toContain('aria-label="Incineroar stats and Stat Points"');
+    expect(positionalIn(html)).toEqual([]);
     // No side in the text: 1v1 passes the other Pokémon's name ("Apply Intimidate to Blastoise").
     expect(html).toContain(">Apply Intimidate</button>");
     expect(panel(usual("incineroar", "intimidate"), { side: "defender", onApplyIntimidate: vi.fn() })).toContain(">Apply Intimidate</button>");
     expect(panel(usual("gardevoir", "trace"))).toContain("<option value=\"\" selected=\"\">The other Pokémon’s ability</option>");
     // The props' 1v1 values give the same markup.
-    expect(panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn(), position: "left", intimidateLabel: "Apply Intimidate" })).toBe(html);
+    expect(panel(usual("incineroar", "intimidate"), { onApplyIntimidate: vi.fn(), label: "Incineroar", intimidateLabel: "Apply Intimidate" })).toBe(html);
     expect(panel(usual("charizard", "plus"), { abilityActivationFact: null })).toBe(panel(usual("charizard", "plus")));
     expect(panel(usual("gardevoir", "trace"), { tracedUnsetLabel: "The other Pokémon’s ability" })).toBe(panel(usual("gardevoir", "trace")));
   });
 
-  it("names the slot, the Intimidate targets, the Trace choice and the ally's Plus / Minus", () => {
-    const html = panel(usual("incineroar", "intimidate"), { position: "your left", intimidateLabel: "Apply Intimidate to both foes", onApplyIntimidate: vi.fn() });
-    expect(html).toContain("your left Attack Stat Points");
-    expect(html).toContain("your left Speed stage");
-    expect(html).toContain('aria-label="Your left Pokémon stats and Stat Points"');
+  it("names the Pokémon by its full name, the Intimidate targets, the Trace choice and the ally's Plus / Minus", () => {
+    const html = panel(usual("incineroar", "intimidate"), { label: "Incineroar (yours)", intimidateLabel: "Apply Intimidate to both foes", onApplyIntimidate: vi.fn() });
+    expect(html).toContain("Incineroar (yours) Attack Stat Points");
+    expect(html).toContain("Incineroar (yours) Speed stage");
+    expect(html).toContain('aria-label="Incineroar (yours) stats and Stat Points"');
+    expect(positionalIn(html)).toEqual([]);
     expect(html).toContain("Apply Intimidate to both foes");
     expect(html).not.toContain("Apply Intimidate to the");
     expect(panel(usual("gardevoir", "trace"), { tracedUnsetLabel: "Not chosen" })).toContain("<option value=\"\" selected=\"\">Not chosen</option>");
@@ -80,31 +83,28 @@ describe("PokemonPanel 2v2 props", () => {
 
 describe("PokemonChooser and MechanicControls 2v2 props", () => {
   const chooser = (props: Partial<ComponentProps<typeof PokemonChooser>> = {}) => render(createElement(PokemonChooser, {
-    side: "attacker", build: usual("charizard"), open: true, onClose: vi.fn(), onChange: vi.fn(), ...props,
+    build: usual("charizard"), open: true, onClose: vi.fn(), onChange: vi.fn(), ...props,
   }));
 
-  it("names the Pokémon, not its side, in 1v1 visible text, keeps the side in accessible names, and names the slot with the props", () => {
+  it("names the Pokémon in its title, and no side or place anywhere", () => {
     const html = chooser();
     expect(text(html)).toContain("Change Charizard");
     expect(text(html)).toContain("Find Pokémon");
     expect(text(html)).not.toMatch(/\b(left|right|Left|Right)\b/);
-    expect(html).toContain('aria-label="Left Pokémon choices"');
-    expect(html).toContain('aria-label="Next left Pokémon page"');
-    expect(chooser({ label: "Left Pokémon" })).toBe(html);
-    const right = chooser({ side: "defender" });
-    expect(text(right)).toContain("Change Charizard");
-    expect(right).toContain('aria-label="Right Pokémon choices"');
-    const slot = chooser({ position: "opponent's right", label: "Opponent's right Pokémon" });
-    expect(text(slot)).toContain("Change opponent's right Pokémon");
-    expect(text(slot)).toContain("Find opponent's right Pokémon");
-    expect(slot).toContain('aria-label="Opponent&#x27;s right Pokémon choices"');
-    expect(slot).toContain('aria-label="Next opponent&#x27;s right Pokémon page"');
+    expect(positionalIn(html)).toEqual([]);
+    expect(html).toContain('aria-label="Pokémon choices"');
+    expect(html).toContain('aria-label="Previous Pokémon page"');
+    expect(html).toContain('aria-label="Next Pokémon page"');
+    // 2v2 passes the full name for its change notice only (empty until a change): the dialog is the same.
+    expect(chooser({ label: "Charizard (yours)" })).toBe(html);
   });
 
-  it("labels the battle mechanics with the slot", () => {
+  it("labels the battle mechanics with the Pokémon's name", () => {
     const build = withUsualAbility(createBuild("garchomp", sv), usualAbility("garchomp", "Doubles", sv));
-    expect(render(createElement(MechanicControls, { build, runtime: sv, position: "your left", onToggle: vi.fn() }))).toContain('aria-label="Garchomp your left Tera"');
-    expect(render(createElement(MechanicControls, { build, runtime: sv, position: "right", onToggle: vi.fn() }))).toContain('aria-label="Garchomp right Tera"');
+    const plain = render(createElement(MechanicControls, { build, runtime: sv, onToggle: vi.fn() }));
+    expect(plain).toContain('aria-label="Garchomp Tera"');
+    expect(plain).toContain('aria-label="Garchomp battle mechanics"');
+    expect(render(createElement(MechanicControls, { build, runtime: sv, label: "Garchomp (opponent's)", onToggle: vi.fn() }))).toContain('aria-label="Garchomp (opponent&#x27;s) Tera"');
   });
 });
 
@@ -112,55 +112,87 @@ describe("RosterPicker 2v2 props", () => {
   const state = loaded();
   const own = getRosterPanel(state, "own").choices;
   const picker = (props: Partial<ComponentProps<typeof RosterPicker>> = {}) => render(createElement(RosterPicker, {
-    state, role: "own", side: "attacker", activeSource: own[0].source, onSelect: vi.fn(), ...props,
-  }));
+    state, role: "own", side: "attacker", occupant: "Charizard", activeSource: own[0].source, onSelect: vi.fn(), ...props,
+  } as ComponentProps<typeof RosterPicker>));
 
-  it("keeps the 1v1 labels without them", () => {
+  it("names the Pokémon a pick replaces in 1v1", () => {
     const html = picker();
-    expect(html).toContain('aria-label="Use Garchomp as the left Pokémon from your team"');
-    expect(html).toContain("<span class=\"sr-only\"> · Left Pokémon</span>");
-    expect(html).toContain('aria-label="Your team left roster"');
+    expect(html).toContain('aria-label="Use Garchomp from your team in place of Charizard"');
+    expect(html).toContain('aria-label="Charizard from your team, active"');
+    expect(html).toContain("<span class=\"sr-only\"> · Charizard</span>");
+    expect(html).toContain('aria-label="Your team roster for Charizard"');
     expect(html).toContain('data-calculator-roster="attacker"');
+    expect(positionalIn(html)).toEqual([]);
     expect(picker({ isDisabled: () => null })).toBe(html);
     expect(picker({ variant: "rail", isDisabled: () => null })).toBe(picker({ variant: "rail" }));
   });
 
-  it("names a 2v2 slot and disables the ally's active choice with its reason", () => {
-    const html = picker({ side: "own-right", position: "your right", label: "Your right Pokémon", activeSource: own[1].source,
-      isDisabled: (choice) => choice.source?.key === own[0].source?.key ? "Active as your left Pokémon." : null });
+  it("names the Pokémon a 2v2 pick replaces and disables the ally's active choice with its reason", () => {
+    const html = picker({ side: "own-right", occupant: "Venusaur", activeSource: own[2].source,
+      isDisabled: (choice) => choice.source?.key === own[0].source?.key ? "Active as Venusaur's ally." : null });
     expect(html).toContain('data-calculator-roster="own-right"');
-    expect(html).toContain('aria-label="Use Garchomp as your right Pokémon from your team"');
-    expect(html).toContain("<span class=\"sr-only\"> · Your right Pokémon</span>");
-    expect(html).toContain('aria-label="Your team roster for your right"');
+    expect(html).toContain('aria-label="Use Garchomp from your team in place of Venusaur"');
+    expect(html).toContain('aria-label="Venusaur from your team, active"');
+    expect(html).toContain("<span class=\"sr-only\"> · Venusaur</span>");
+    expect(html).toContain('aria-label="Your team roster for Venusaur"');
     const charizard = html.match(/<button[^>]*data-roster-choice="[^"]+"[^>]*aria-label="Use Charizard[^"]*"[^>]*>/)?.[0];
     expect(charizard).toMatch(/disabled=""/);
     const reason = charizard?.match(/aria-describedby="([^"]+)"/)?.[1];
-    expect(html).toContain(`<p id="${reason}" class="mt-1 wrap-anywhere text-xs text-muted">Active as your left Pokémon.</p>`);
+    expect(html).toContain(`<p id="${reason}" class="mt-1 wrap-anywhere text-xs text-muted">Active as Venusaur&#x27;s ally.</p>`);
     expect(html.match(/<button[^>]*aria-label="Use Garchomp[^"]*"[^>]*>/)?.[0]).not.toMatch(/disabled=""/);
+    expect(positionalIn(html)).toEqual([]);
   });
 
-  it("gives each choice one button per slot on the 2v2 rail", () => {
+  /** The rail's slot buttons: [choice, slot, accessible name, visible text, pressed, disabled]. */
+  const railButtons = (html: string) => [...html.matchAll(/<button([^>]*)><span[^>]*>([^<]*)<\/span><\/button>/g)].map(([, tag, label]) => [
+    tag.match(/data-roster-choice="own-([^"]+)"/)?.[1] ?? tag.match(/data-roster-choice="([^"]+)"/)?.[1], tag.match(/data-roster-slot="([^"]+)"/)?.[1],
+    tag.match(/aria-label="([^"]+)"/)?.[1], label, /aria-pressed="true"/.test(tag), /disabled=""/.test(tag),
+  ]);
+
+  it("gives each choice one button per slot on the 2v2 rail, named by the card it replaces", () => {
     const onLeft = vi.fn();
     const onRight = vi.fn();
-    const html = picker({ variant: "rail", side: "own", pickerId: "own-rail", slots: [
-      { id: "own-left", position: "your left", activeSource: own[0].source, onSelect: onLeft },
-      { id: "own-right", position: "your right", activeSource: own[1].source, onSelect: onRight },
+    const html = picker({ variant: "rail", side: "own", pickerId: "own-rail", occupant: undefined, slots: [
+      { id: "own-left", occupant: "Charizard", card: "Charizard", activeSource: own[0].source, onSelect: onLeft },
+      { id: "own-right", occupant: "Venusaur", card: "Venusaur", activeSource: own[2].source, onSelect: onRight },
     ] });
     expect(html).toMatch(/^<div id="own-rail" data-calculator-roster="own"/);
-    const buttons = [...html.matchAll(/<button[^>]*>/g)].map((match) => match[0]);
+    const buttons = railButtons(html);
     expect(buttons).toHaveLength(6);
-    expect(buttons.map((tag) => [tag.match(/aria-label="Use (\w+) as ([^"]+) Pokémon from your team"/)?.slice(1), tag.match(/data-roster-slot="([^"]+)"/)?.[1], /aria-pressed="true"/.test(tag), /disabled=""/.test(tag)]))
-      .toEqual([
-        [["Charizard", "your left"], "own-left", true, false], [["Charizard", "your right"], "own-right", false, true],
-        [["Garchomp", "your left"], "own-left", false, true], [["Garchomp", "your right"], "own-right", true, false],
-        [["Venusaur", "your left"], "own-left", false, false], [["Venusaur", "your right"], "own-right", false, false],
-      ]);
-    expect(buttons.every((tag) => /data-roster-choice="[^"]+"/.test(tag))).toBe(true);
-    expect(text(html)).toContain("Active as your left Pokémon.");
-    expect(text(html)).toContain("Active as your right Pokémon.");
+    expect(buttons.map(([, slot, name, label, pressed, disabled]) => [slot, name, label, pressed, disabled])).toEqual([
+      ["own-left", "Active: Charizard from your team", "Active", true, false],
+      ["own-right", "Replace Venusaur with Charizard from your team", "Replace Venusaur", false, true],
+      ["own-left", "Replace Charizard with Garchomp from your team", "Replace Charizard", false, false],
+      ["own-right", "Replace Venusaur with Garchomp from your team", "Replace Venusaur", false, false],
+      ["own-left", "Replace Charizard with Venusaur from your team", "Replace Charizard", false, true],
+      ["own-right", "Active: Venusaur from your team", "Active", true, false],
+    ]);
+    // Label in name: each button's accessible name holds its visible text.
+    for (const [, , name, label] of buttons) expect(String(name)).toContain(String(label));
+    expect(buttons.every(([choice]) => !!choice)).toBe(true);
+    // Each entry's group is named after its buttons, never by a bare species name a card or Field conditions group also has (review CALC-3).
+    expect([...html.matchAll(/role="group" aria-label="([^"]+)"/g)].map((match) => match[1])).toEqual(["Charizard from your team", "Garchomp from your team", "Venusaur from your team"]);
+    expect(text(html)).not.toContain("Active as");
+    expect(positionalIn(html)).toEqual([]);
     expect(html.match(/<span class="block wrap-anywhere font-medium text-text">Charizard<\/span>/g)).toHaveLength(1);
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
     for (const [, id] of html.matchAll(/aria-(?:describedby|labelledby)="([^"]+)"/g)) expect(ids).toContain(id);
+  });
+
+  it("names a rail's buttons by the cards' numbers when one side shows a species twice", () => {
+    const html = picker({ variant: "rail", side: "own", pickerId: "own-rail", occupant: undefined, slots: [
+      { id: "own-left", occupant: "Garchomp (yours, 1)", card: "Garchomp (1)", activeSource: null, onSelect: vi.fn() },
+      { id: "own-right", occupant: "Garchomp (yours, 2)", card: "Garchomp (2)", activeSource: null, onSelect: vi.fn() },
+    ] });
+    const charizard = railButtons(html).filter(([, , name]) => String(name).endsWith("with Charizard from your team"));
+    expect(charizard.map(([, , name, label]) => [name, label])).toEqual([
+      ["Replace Garchomp (1) with Charizard from your team", "Replace Garchomp (1)"],
+      ["Replace Garchomp (2) with Charizard from your team", "Replace Garchomp (2)"],
+    ]);
+    // The rail is one team's: its buttons need no side word, and each still differs.
+    const names = railButtons(html).map(([, , name]) => name);
+    expect(new Set(names).size).toBe(names.length);
+    expect(positionalIn(html)).toEqual([]);
   });
 });
 
@@ -179,19 +211,21 @@ describe("MoveResults 2v2 props", () => {
     for (const wide of [false, true]) {
       viewport.wide = wide;
       const html = results();
-      // 1v1 names the two Pokémon only (no left/right); positions (2v2 slots, a 1v1 mirror's teams) follow the names.
+      // 1v1 names the two Pokémon only; a 1v1 mirror's full names (roster-prep matchupNames) carry their teams.
       expect(text(html)).toContain("Magnezone → Blastoise (154 current HP).");
       expect(text(html)).toContain("Turn order for Analytic");
       expect(results({ turnOrderFromTurn: false })).toBe(html);
-      expect(text(results({ positions: { source: "yours", receiver: "opponent's" } }))).toContain("Magnezone (yours) → Blastoise (opponent's) (154 current HP).");
+      expect(text(results({ attackerName: "Magnezone (yours)", defenderName: "Magnezone (opponent's)" }))).toContain("Magnezone (yours) → Magnezone (opponent's) (154 current HP).");
     }
     viewport.wide = false;
   });
 
-  it("names the 2v2 slots and leaves the order to the turn", () => {
+  it("names the 2v2 Pokémon by their full names and leaves the order to the turn", () => {
     expect(results({ heading: "Moves" })).toBe(results());
-    const html = results({ positions: { source: "your left", receiver: "left foe" }, turnOrderFromTurn: true, heading: "Moves" });
-    expect(text(html)).toContain("Magnezone (your left) → Blastoise (left foe) (154 current HP).");
+    const html = results({ attackerName: "Magnezone", defenderName: "Blastoise", turnOrderFromTurn: true, heading: "Moves" });
+    expect(text(html)).toContain("Magnezone → Blastoise (154 current HP).");
+    expect(text(results({ attackerName: "Magnezone (yours)", defenderName: "Magnezone (opponent's)", turnOrderFromTurn: true }))).toContain("Magnezone (yours) → Magnezone (opponent's) (154 current HP).");
+    expect(positionalIn(html)).toEqual([]);
     expect(html).toMatch(/<h2 id="[^"]+-heading"[^>]*>Moves<\/h2>/);
     expect(html).not.toContain("Turn order for Analytic");
     expect(html).not.toMatch(/-turn-order"/);
@@ -209,6 +243,18 @@ describe("BattleConditions 2v2 variant", () => {
     for (const key of ["game-type", "spread", "fairyAura", "attackerSide-helpingHand", "defenderSide-friendGuard", "attackerSide-priorityShield", "defenderSide-protect", "attackerSide-charge"]) {
       expect(html).toMatch(new RegExp(`id="[^"]+-${key}"`));
     }
+  });
+
+  it("names each 1v1 side after its Pokémon, with no position", () => {
+    const legends = (html: string) => [...html.matchAll(/<legend class="px-1 text-xs font-semibold text-text">([^<]*)<\/legend>/g)].map((match) => match[1]);
+    const named = conditions({ names: { attackerSide: "Charizard", defenderSide: "Blastoise" } });
+    expect(legends(named)).toEqual(["Shared field effects", "Charizard’s side", "Blastoise’s side"]);
+    expect(legends(conditions())).toEqual(["Shared field effects", "Pokémon’s side", "Pokémon’s side"]);
+    // A mirror's legends come from CalculatorClient (sideLegends), which names each one's team.
+    expect(legends(conditions({ names: { attackerSide: "Charizard", defenderSide: "Charizard" }, sideLegends: { attackerSide: "Charizard’s side (yours)", defenderSide: "Charizard’s side (opponent's)" } })))
+      .toEqual(["Shared field effects", "Charizard’s side (yours)", "Charizard’s side (opponent&#x27;s)"]);
+    expect(positionalIn(named)).toEqual([]);
+    expect(positionalIn(conditions())).toEqual([]);
   });
 
   it("leaves out what the four Pokémon and their moves decide, with a Charge per Pokémon in its side", () => {
