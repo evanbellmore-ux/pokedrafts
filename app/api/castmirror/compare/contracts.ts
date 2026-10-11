@@ -277,7 +277,8 @@ export function assertUpstreamData(document: string, value: unknown): void {
     requireData(report.masterData.actors.every((a) => record(a) && (a.name == null || string(a.name, 128)) && (!/\bid\b/.test(selection) || positiveID(a.id))), 'upstream.report.actors');
     if (document.includes('abilities {')) {
       requireData(Array.isArray(report.masterData.abilities), 'upstream.report.abilities');
-      requireData(report.masterData.abilities.every((a) => record(a) && (a.gameID === 0 || positiveID(a.gameID)) && (a.name == null || string(a.name))), 'upstream.report.abilities');
+      // WCL gameID is Float: numeric lookup keys are not actor/fight Int IDs.
+      requireData(report.masterData.abilities.every((a) => record(a) && finite(a.gameID) && (a.name == null || string(a.name))), 'upstream.report.abilities');
     }
   }
   if (document.includes('fights(')) {
@@ -302,7 +303,7 @@ export function assertUpstreamData(document: string, value: unknown): void {
     if (document.includes('dataType: Casts')) {
       // The core skips null/untyped snapshots and accepts signed resource keys.
       // Typed evidence remains numeric; optional maxima are never filled/coerced.
-      requireData(events.data.every((e) => record(e) && (e.type !== 'cast' || (finite(e.timestamp) && positiveID(e.abilityGameID)
+      requireData(events.data.every((e) => record(e) && (e.type !== 'cast' || (finite(e.timestamp) && finite(e.abilityGameID)
         && (e.classResources == null || (Array.isArray(e.classResources) && e.classResources.every((r) => r === null || (record(r)
           && (r.type == null || (resourceType(r.type) && nonnegative(r.amount) && (r.max == null || nonnegative(r.max))))))))))), 'upstream.casts.evidence');
     }
