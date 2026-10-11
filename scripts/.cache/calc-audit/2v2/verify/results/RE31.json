@@ -1,0 +1,1546 @@
+{
+ "id": "RE31",
+ "title": "A Grass move aimed at the Ally Switch user's place, Rage Powder partner",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Rage Powder does not redirect a Grass user; the aimed position now holds Amoonguss.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 258,
+   "classes": 17,
+   "ms": 623,
+   "decisions": {
+    "tie2": 770,
+    "fail:": 144,
+    "roll": 144,
+    "secondary": 144
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       171,
+       0.1875
+      ],
+      [
+       172,
+       0.25
+      ],
+      [
+       173,
+       0.375
+      ],
+      [
+       174,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 172.5625,
+     "min": 171,
+     "max": 174,
+     "modeTieUp": 173,
+     "modeTieDown": 173,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-15": 0.1875,
+       "damage:-16": 0.375,
+       "damage:-17": 0.25,
+       "damage:-18": 0.1875
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -18,
+       "max": -15
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -18,
+       "max": -15,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 0.5,
+      "|-singleturn|p2b: Amoonguss|move: Rage Powder": 0.5
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:ragepowder": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 256,
+    "classes": 8,
+    "ms": 623,
+    "decisions": {
+     "tie2": 512
+    },
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        171,
+        0.1875
+       ],
+       [
+        172,
+        0.25
+       ],
+       [
+        173,
+        0.375
+       ],
+       [
+        174,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 172.5625,
+      "min": 171,
+      "max": 174,
+      "modeTieUp": 173,
+      "modeTieDown": 173,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 82,
+   "classes": 11,
+   "ms": 196,
+   "decisions": {
+    "tie2": 242,
+    "fail:": 16,
+    "roll": 16,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       174,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 174,
+     "min": 174,
+     "max": 174,
+     "modeTieUp": 174,
+     "modeTieDown": 174,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-15": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -15,
+       "max": -15
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -15,
+       "max": -15,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 0.5,
+      "|-singleturn|p2b: Amoonguss|move: Rage Powder": 0.5
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:ragepowder": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 2,
+    "ms": 196,
+    "decisions": {
+     "tie2": 128
+    },
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        174,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 174,
+      "min": 174,
+      "max": 174,
+      "modeTieUp": 174,
+      "modeTieDown": 174,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 82,
+   "classes": 11,
+   "ms": 175,
+   "decisions": {
+    "tie2": 242,
+    "fail:": 16,
+    "roll": 16,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       171,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 171,
+     "min": 171,
+     "max": 171,
+     "modeTieUp": 171,
+     "modeTieDown": 171,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-18": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -18,
+       "max": -18
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "orderMoved": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 0.5,
+      "|-singleturn|p2b: Amoonguss|move: Rage Powder": 0.5
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:ragepowder": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 2,
+    "ms": 175,
+    "decisions": {
+     "tie2": 128
+    },
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        171,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 171,
+      "min": 171,
+      "max": 171,
+      "modeTieUp": 171,
+      "modeTieDown": 171,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 174,
+   "high": 171,
+   "average": 172.5625,
+   "min": 171,
+   "max": 174,
+   "koChance": 0,
+   "dist": [
+    [
+     171,
+     0.1875
+    ],
+    [
+     172,
+     0.25
+    ],
+    [
+     173,
+     0.375
+    ],
+    [
+     174,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: opponent-left and opponent-right (50)"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 174,
+   "high": 171,
+   "average": 172.5625,
+   "min": 171,
+   "max": 174,
+   "koChance": 0,
+   "dist": [
+    [
+     171,
+     0.1875
+    ],
+    [
+     172,
+     0.25
+    ],
+    [
+     173,
+     0.375
+    ],
+    [
+     174,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

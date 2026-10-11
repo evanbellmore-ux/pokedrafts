@@ -1,0 +1,316 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dig",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Dig: Marowak-Alola charges this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Thunderbolt misses Marowak-Alola (Dig).",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Lightning Rod: Marowak-Alola takes Thunderbolt.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dig",
+     "effectiveName": "Dig",
+     "effectiveType": "Ground",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 15.319148936170212,
+     "maxPercent": 18.29787234042553,
+     "rolls": [
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Dig: 36–43 HP (15.3–18.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.5734195113182068,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 199,
+      "high": 192,
+      "average": 195.75,
+      "min": 192,
+      "max": 199,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Thunderbolt: 0–0 HP (0.0–0.0% of maximum HP). Applied: Lightning Rod.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 135,
+      "high": 135,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    },
+    "fact": "Lightning Rod: Marowak-Alola takes Thunderbolt."
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Marowak-Alola did not charge Dig last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.9767000000001644,
+ "preflight": []
+}

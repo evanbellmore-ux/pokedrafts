@@ -1,0 +1,384 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 67,
+      "max": 81,
+      "minPercent": 28.510638297872344,
+      "maxPercent": 34.46808510638298,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 67,
+       "max": 81,
+       "minPercent": 28.510638297872344,
+       "maxPercent": 34.46808510638298,
+       "rolls": [
+        67,
+        69,
+        69,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        81
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 67–81 HP (28.5–34.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "crushgrip",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 48,
+      "max": 61,
+      "minPercent": 20.425531914893615,
+      "maxPercent": 25.957446808510635,
+      "koChance": 0,
+      "row": {
+       "moveId": "crushgrip",
+       "effectiveName": "Crush Grip",
+       "effectiveType": "Normal",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 72,
+       "max": 85,
+       "minPercent": 30.638297872340424,
+       "maxPercent": 36.17021276595745,
+       "rolls": [
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        82,
+        84,
+        85
+       ],
+       "ohkoChance": 0,
+       "description": "Crush Grip: 72–85 HP (30.6–36.2% of maximum HP). Applied: Slow Start.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Slow Start is still active — yes.",
+        "Move power: 120."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 8,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 185,
+    "maximum": 185,
+    "low": 185,
+    "average": 185,
+    "high": 185,
+    "min": 185,
+    "max": 185,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 175,
+    "average": 164.9921875,
+    "high": 155,
+    "min": 155,
+    "max": 175,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +58 HP."
+    ]
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 67,
+     "max": 81,
+     "minPercent": 28.510638297872344,
+     "maxPercent": 34.46808510638298,
+     "rolls": [
+      67,
+      69,
+      69,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      81
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 67–81 HP (28.5–34.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.659820556640625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 168,
+      "high": 154,
+      "average": 161.0625,
+      "min": 154,
+      "max": 168,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 81,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "crushgrip",
+     "effectiveName": "Crush Grip",
+     "effectiveType": "Normal",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 72,
+     "max": 85,
+     "minPercent": 30.638297872340424,
+     "maxPercent": 36.17021276595745,
+     "rolls": [
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      82,
+      84,
+      85
+     ],
+     "ohkoChance": 0,
+     "description": "Crush Grip: 72–85 HP (30.6–36.2% of maximum HP). Applied: Slow Start.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Slow Start is still active — yes.",
+      "Move power: 120."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": 8,
+      "chance": 0.038040809566155076,
+      "limit": 8,
+      "limitReason": "pp",
+      "needed": 11,
+      "carried": [
+       "Crush Grip's power falls with the target's HP.",
+       "Slow Start ends after 5 turns.",
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": [
+       "Assumes Slow Start started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 163,
+      "high": 150,
+      "average": 156.8125,
+      "min": 150,
+      "max": 163,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 72,
+        "heals": []
+       },
+       "high": {
+        "dealt": 85,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 13.625699999999597,
+ "preflight": []
+}

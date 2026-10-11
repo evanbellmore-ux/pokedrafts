@@ -1,0 +1,1423 @@
+{
+ "id": "RE06",
+ "title": "Rock Slide with Life Orb into a Substitute and another foe",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Life Orb once per move.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 300,
+   "classes": 39,
+   "ms": 469,
+   "decisions": {
+    "sample": 272,
+    "accuracy": 512,
+    "fail:substitute": 256,
+    "roll": 512,
+    "fail:": 256,
+    "secondary": 512
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       158,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 158,
+     "min": 158,
+     "max": 158,
+     "modeTieUp": 158,
+     "modeTieDown": 158,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       145,
+       0.0625
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       149,
+       0.125
+      ],
+      [
+       152,
+       0.125
+      ],
+      [
+       153,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.1875
+      ],
+      [
+       160,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 153.25,
+     "min": 145,
+     "max": 160,
+     "modeTieUp": 157,
+     "modeTieDown": 157,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 90,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 90,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 58,
+        "takenMax": 58,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1
+      },
+      "opponent-right": {
+       "damage:-75": 0.125,
+       "damage:-78": 0.1875,
+       "damage:-79": 0.125,
+       "damage:-82": 0.125,
+       "damage:-83": 0.125,
+       "damage:-86": 0.125,
+       "damage:-87": 0.125,
+       "damage:-90": 0.0625
+      },
+      "own-left": {
+       "damage:lifeorb:-17": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -17,
+       "max": -17
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -90,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -90,
+       "max": -75,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 16,
+    "classes": 16,
+    "ms": 469,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        158,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 158,
+      "min": 158,
+      "max": 158,
+      "modeTieUp": 158,
+      "modeTieDown": 158,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        145,
+        0.0625
+       ],
+       [
+        148,
+        0.125
+       ],
+       [
+        149,
+        0.125
+       ],
+       [
+        152,
+        0.125
+       ],
+       [
+        153,
+        0.125
+       ],
+       [
+        156,
+        0.125
+       ],
+       [
+        157,
+        0.1875
+       ],
+       [
+        160,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 153.25,
+      "min": 145,
+      "max": 160,
+      "modeTieUp": 157,
+      "modeTieDown": 157,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 29,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:substitute": 4,
+    "roll": 8,
+    "fail:": 4,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       158,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 158,
+     "min": 158,
+     "max": 158,
+     "modeTieUp": 158,
+     "modeTieDown": 158,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 58,
+        "takenMax": 58,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1
+      },
+      "opponent-right": {
+       "damage:-75": 1
+      },
+      "own-left": {
+       "damage:lifeorb:-17": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -17,
+       "max": -17
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -75,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -75,
+       "max": -75,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 29,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        158,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 158,
+      "min": 158,
+      "max": 158,
+      "modeTieUp": 158,
+      "modeTieDown": 158,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        160,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 160,
+      "min": 160,
+      "max": 160,
+      "modeTieUp": 160,
+      "modeTieDown": 160,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 24,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:substitute": 4,
+    "roll": 8,
+    "fail:": 4,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       158,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 158,
+     "min": 158,
+     "max": 158,
+     "modeTieUp": 158,
+     "modeTieDown": 158,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 90,
+       "dmgMax": 90,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 90,
+       "dmgMax": 90,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 58,
+        "takenMax": 58,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1
+      },
+      "opponent-right": {
+       "damage:-90": 1
+      },
+      "own-left": {
+       "damage:lifeorb:-17": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -17,
+       "max": -17
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -90,
+       "max": -90
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -90,
+       "max": -90,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 24,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        158,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 158,
+      "min": 158,
+      "max": 158,
+      "modeTieUp": 158,
+      "modeTieDown": 158,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 158,
+   "high": 158,
+   "average": 158,
+   "min": 158,
+   "max": 158,
+   "koChance": 0,
+   "dist": [
+    [
+     158,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 145,
+   "average": 153.25,
+   "min": 145,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     149,
+     0.125
+    ],
+    [
+     152,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.1875
+    ],
+    [
+     160,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 158,
+   "high": 158,
+   "average": 158,
+   "min": 158,
+   "max": 158,
+   "koChance": 0,
+   "dist": [
+    [
+     158,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 145,
+   "average": 153.25,
+   "min": 145,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     149,
+     0.125
+    ],
+    [
+     152,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.1875
+    ],
+    [
+     160,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

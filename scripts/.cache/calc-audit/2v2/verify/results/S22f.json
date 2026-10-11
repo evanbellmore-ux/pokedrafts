@@ -1,0 +1,1243 @@
+{
+ "id": "S22f",
+ "title": "Shore Up in sand",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Shore Up heals 2/3 in sand; sand damage to Smeargle at the end of turn.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 30,
+     "maximum": 130,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garganacl",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shoreup",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:87": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 87,
+       "max": 87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 87,
+       "max": 87,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garganacl",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 30,
+     "maximum": 130,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garganacl",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shoreup",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:87": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 87,
+       "max": 87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 87,
+       "max": 87,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garganacl",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 30,
+     "maximum": 130,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garganacl",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shoreup",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:87": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 87,
+       "max": 87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 87,
+       "max": 87,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garganacl",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 30,
+   "maximum": 130,
+   "low": 117,
+   "high": 117,
+   "average": 117,
+   "min": 117,
+   "max": 117,
+   "koChance": 0,
+   "dist": [
+    [
+     117,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 30,
+   "maximum": 130,
+   "low": 109,
+   "high": 109,
+   "average": 109,
+   "min": 109,
+   "max": 109,
+   "koChance": 0,
+   "dist": [
+    [
+     109,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -8,
+   "max": -8,
+   "koChance": 0,
+   "facts": {},
+   "index": 5
+  }
+ ]
+}

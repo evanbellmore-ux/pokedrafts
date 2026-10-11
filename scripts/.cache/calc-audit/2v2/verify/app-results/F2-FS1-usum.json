@@ -1,0 +1,586 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "own-right": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "foresight",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Foresight: Normal and Fighting moves can hit it.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "closecombat",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 65,
+      "minPercent": 40,
+      "maxPercent": 48.148148148148145,
+      "koChance": 0,
+      "row": {
+       "moveId": "closecombat",
+       "effectiveName": "Close Combat",
+       "effectiveType": "Fighting",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 54,
+       "max": 65,
+       "minPercent": 40,
+       "maxPercent": 48.148148148148145,
+       "rolls": [
+        54,
+        55,
+        56,
+        57,
+        57,
+        58,
+        59,
+        60,
+        60,
+        60,
+        61,
+        62,
+        63,
+        63,
+        64,
+        65
+       ],
+       "ohkoChance": 0,
+       "description": "Close Combat: 54–65 HP (40.0–48.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 81,
+    "average": 75.375,
+    "high": 70,
+    "min": 70,
+    "max": 81,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Foresight.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Close Combat: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 135,
+      "high": 135,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 81,
+     "average": 75.375,
+     "high": 70,
+     "min": 70,
+     "max": 81,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Foresight.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.60740000000078,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "own-right": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 154,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "blastoise",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 145,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "lucario",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": -1,
+        "spa": 0,
+        "spd": -1,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 70,
+        "chance": 0.0625
+       },
+       {
+        "hp": 71,
+        "chance": 0.0625
+       },
+       {
+        "hp": 72,
+        "chance": 0.125
+       },
+       {
+        "hp": 73,
+        "chance": 0.0625
+       },
+       {
+        "hp": 74,
+        "chance": 0.0625
+       },
+       {
+        "hp": 75,
+        "chance": 0.1875
+       },
+       {
+        "hp": 76,
+        "chance": 0.0625
+       },
+       {
+        "hp": 77,
+        "chance": 0.0625
+       },
+       {
+        "hp": 78,
+        "chance": 0.125
+       },
+       {
+        "hp": 79,
+        "chance": 0.0625
+       },
+       {
+        "hp": 80,
+        "chance": 0.0625
+       },
+       {
+        "hp": 81,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "gengar",
+       "nature": "Serious",
+       "abilityId": "cursedbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "foresight"
+      ]
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

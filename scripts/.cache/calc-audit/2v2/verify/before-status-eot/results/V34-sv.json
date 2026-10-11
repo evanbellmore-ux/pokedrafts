@@ -1,0 +1,528 @@
+{
+ "id": "V34-sv",
+ "title": "Trick Room with Speed 3324 (SV real format: 13-bit wrap)",
+ "game": "sv",
+ "format": "gen9vgc2025regi",
+ "checks": "10000 - 3324 = 6676 against Snorlax's 9950 % 8192 = 1758 (sim/pokemon.ts:641-649): Regieleki moves first despite Trick Room.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 122,
+   "classes": 27,
+   "ms": 106,
+   "decisions": {
+    "fail:": 104,
+    "roll": 104,
+    "secondary": 104
+   },
+   "slots": {
+    "own-left": {
+     "species": "Regieleki",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       169,
+       0.0625
+      ],
+      [
+       171,
+       0.125
+      ],
+      [
+       172,
+       0.125
+      ],
+      [
+       174,
+       0.125
+      ],
+      [
+       175,
+       0.1875
+      ],
+      [
+       177,
+       0.125
+      ],
+      [
+       178,
+       0.125
+      ],
+      [
+       180,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 174.875,
+     "min": 169,
+     "max": 180,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 90,
+       "dmgMax": 106,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Regieleki",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 90,
+       "dmgMax": 90,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Regieleki",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       169,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 169,
+     "min": 169,
+     "max": 169,
+     "modeTieUp": 169,
+     "modeTieDown": 169
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 106,
+       "dmgMax": 106,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 1,
+   "maximum": 155,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 180,
+   "high": 169,
+   "average": 174.875,
+   "min": 169,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     169,
+     0.0625
+    ],
+    [
+     171,
+     0.125
+    ],
+    [
+     172,
+     0.125
+    ],
+    [
+     174,
+     0.125
+    ],
+    [
+     175,
+     0.1875
+    ],
+    [
+     177,
+     0.125
+    ],
+    [
+     178,
+     0.125
+    ],
+    [
+     180,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

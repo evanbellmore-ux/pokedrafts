@@ -1,0 +1,828 @@
+{
+ "id": "MV11",
+ "title": "Max Ooze from Sludge Bomb: no poison, +1 Sp. Atk for the partner's Dark Pulse",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "+1 SpA.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1051,
+   "classes": 172,
+   "ms": 780,
+   "decisions": {
+    "fail:": 968,
+    "roll": 968,
+    "secondary": 960
+   },
+   "slots": {
+    "own-left": {
+     "species": "Salazzle",
+     "start": 286,
+     "maximum": 286,
+     "dist": [
+      [
+       193,
+       0.0625
+      ],
+      [
+       195,
+       0.0625
+      ],
+      [
+       196,
+       0.125
+      ],
+      [
+       198,
+       0.0625
+      ],
+      [
+       199,
+       0.125
+      ],
+      [
+       201,
+       0.125
+      ],
+      [
+       202,
+       0.0625
+      ],
+      [
+       204,
+       0.125
+      ],
+      [
+       205,
+       0.0625
+      ],
+      [
+       207,
+       0.125
+      ],
+      [
+       208,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 200.9375,
+     "min": 193,
+     "max": 208,
+     "modeTieUp": 207,
+     "modeTieDown": 196
+    },
+    "own-right": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       84,
+       0.00390625
+      ],
+      [
+       85,
+       0.0078125
+      ],
+      [
+       86,
+       0.00390625
+      ],
+      [
+       87,
+       0.0234375
+      ],
+      [
+       88,
+       0.02734375
+      ],
+      [
+       89,
+       0.015625
+      ],
+      [
+       90,
+       0.0546875
+      ],
+      [
+       91,
+       0.04296875
+      ],
+      [
+       92,
+       0.03125
+      ],
+      [
+       93,
+       0.08984375
+      ],
+      [
+       94,
+       0.0546875
+      ],
+      [
+       95,
+       0.04296875
+      ],
+      [
+       96,
+       0.10546875
+      ],
+      [
+       97,
+       0.05859375
+      ],
+      [
+       98,
+       0.046875
+      ],
+      [
+       99,
+       0.09765625
+      ],
+      [
+       100,
+       0.05078125
+      ],
+      [
+       101,
+       0.0390625
+      ],
+      [
+       102,
+       0.07421875
+      ],
+      [
+       103,
+       0.03125
+      ],
+      [
+       104,
+       0.0234375
+      ],
+      [
+       105,
+       0.04296875
+      ],
+      [
+       106,
+       0.0078125
+      ],
+      [
+       107,
+       0.015625
+      ],
+      [
+       108,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 96.625,
+     "min": 84,
+     "max": 108,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Ooze": 1,
+      "|-boost|p1a: Salazzle|spa|1": 1,
+      "|-boost|p1b: Hydreigon|spa|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 90,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 78,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 10,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Salazzle",
+     "start": 286,
+     "maximum": 286,
+     "dist": [
+      [
+       208,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 208,
+     "min": 208,
+     "max": 208,
+     "modeTieUp": 208,
+     "modeTieDown": 208
+    },
+    "own-right": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Ooze": 1,
+      "|-boost|p1a: Salazzle|spa|1": 1,
+      "|-boost|p1b: Hydreigon|spa|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 76,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 78,
+       "dmgMax": 78,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Salazzle",
+     "start": 286,
+     "maximum": 286,
+     "dist": [
+      [
+       193,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 193,
+     "min": 193,
+     "max": 193,
+     "modeTieUp": 193,
+     "modeTieDown": 193
+    },
+    "own-right": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Ooze": 1,
+      "|-boost|p1a: Salazzle|spa|1": 1,
+      "|-boost|p1b: Hydreigon|spa|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 90,
+       "dmgMax": 90,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 286,
+   "maximum": 286,
+   "low": 208,
+   "high": 193,
+   "average": 200.9375,
+   "min": 193,
+   "max": 208,
+   "koChance": 0,
+   "dist": [
+    [
+     193,
+     0.0625
+    ],
+    [
+     195,
+     0.0625
+    ],
+    [
+     196,
+     0.125
+    ],
+    [
+     198,
+     0.0625
+    ],
+    [
+     199,
+     0.125
+    ],
+    [
+     201,
+     0.125
+    ],
+    [
+     202,
+     0.0625
+    ],
+    [
+     204,
+     0.125
+    ],
+    [
+     205,
+     0.0625
+    ],
+    [
+     207,
+     0.125
+    ],
+    [
+     208,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 167,
+   "maximum": 167,
+   "low": 167,
+   "high": 167,
+   "average": 167,
+   "min": 167,
+   "max": 167,
+   "koChance": 0,
+   "dist": [
+    [
+     167,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 108,
+   "high": 84,
+   "average": 96.625,
+   "min": 84,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.00390625
+    ],
+    [
+     85,
+     0.0078125
+    ],
+    [
+     86,
+     0.00390625
+    ],
+    [
+     87,
+     0.0234375
+    ],
+    [
+     88,
+     0.02734375
+    ],
+    [
+     89,
+     0.015625
+    ],
+    [
+     90,
+     0.0546875
+    ],
+    [
+     91,
+     0.04296875
+    ],
+    [
+     92,
+     0.03125
+    ],
+    [
+     93,
+     0.08984375
+    ],
+    [
+     94,
+     0.0546875
+    ],
+    [
+     95,
+     0.04296875
+    ],
+    [
+     96,
+     0.10546875
+    ],
+    [
+     97,
+     0.05859375
+    ],
+    [
+     98,
+     0.046875
+    ],
+    [
+     99,
+     0.09765625
+    ],
+    [
+     100,
+     0.05078125
+    ],
+    [
+     101,
+     0.0390625
+    ],
+    [
+     102,
+     0.07421875
+    ],
+    [
+     103,
+     0.03125
+    ],
+    [
+     104,
+     0.0234375
+    ],
+    [
+     105,
+     0.04296875
+    ],
+    [
+     106,
+     0.0078125
+    ],
+    [
+     107,
+     0.015625
+    ],
+    [
+     108,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

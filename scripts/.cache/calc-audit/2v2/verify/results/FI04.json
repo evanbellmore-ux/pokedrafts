@@ -1,0 +1,1265 @@
+{
+ "id": "FI04",
+ "title": "Close Combat into an intact Eiscue in Snow: neutral, with the Ice type's 1.5x Defense (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Snow's Defense boost reads Eiscue's Ice type; the effectiveness is neutral.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 12,
+   "classes": 6,
+   "ms": 22,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7,
+    "secondary": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:iceface": 1,
+       "damage:0": 1,
+       "forme:eiscuenoice": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 22,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Eiscue",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:snowscape": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 46,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:iceface": 1,
+       "damage:0": 1,
+       "forme:eiscuenoice": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Eiscue",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:snowscape": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:iceface": 1,
+       "damage:0": 1,
+       "forme:eiscuenoice": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Eiscue",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:snowscape": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

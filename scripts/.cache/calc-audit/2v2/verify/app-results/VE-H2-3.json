@@ -1,0 +1,315 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sandattack",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Mirror Armor: the drop goes back to Garchomp.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Garchomp: −1 accuracy.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodypress",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 40,
+      "minPercent": 18.579234972677597,
+      "maxPercent": 21.85792349726776,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodypress",
+       "effectiveName": "Body Press",
+       "effectiveType": "Fighting",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 40,
+       "minPercent": 18.579234972677597,
+       "maxPercent": 21.85792349726776,
+       "rolls": [
+        34,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        38,
+        38,
+        39,
+        39,
+        40
+       ],
+       "ohkoChance": 0,
+       "description": "Body Press: 34–40 HP (18.6–21.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Gravity: accuracy changes are not simulated."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 149,
+    "average": 146.375,
+    "high": 143,
+    "min": 143,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 173,
+    "maximum": 173,
+    "low": 152,
+    "average": 152,
+    "high": 152,
+    "min": 152,
+    "max": 152,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodypress",
+     "effectiveName": "Body Press",
+     "effectiveType": "Fighting",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 40,
+     "minPercent": 18.579234972677597,
+     "maxPercent": 21.85792349726776,
+     "rolls": [
+      34,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      38,
+      39,
+      39,
+      40
+     ],
+     "ohkoChance": 0,
+     "description": "Body Press: 34–40 HP (18.6–21.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Gravity: accuracy changes are not simulated."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.5552988052368164,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Gravity lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 149,
+      "high": 143,
+      "average": 146.375,
+      "min": 143,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 40,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 149,
+     "average": 146.375,
+     "high": 143,
+     "min": 143,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 173,
+     "maximum": 173,
+     "low": 152,
+     "average": 152,
+     "high": 152,
+     "min": 152,
+     "max": 152,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.143500000000131,
+ "preflight": []
+}

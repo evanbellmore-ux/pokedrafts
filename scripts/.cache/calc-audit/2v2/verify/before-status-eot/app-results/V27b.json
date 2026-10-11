@@ -1,0 +1,227 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 153,
+    "maximum": 153
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "flashcannon",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 50,
+      "minPercent": 27.450980392156865,
+      "maxPercent": 32.6797385620915,
+      "koChance": 0,
+      "row": {
+       "moveId": "flashcannon",
+       "effectiveName": "Flash Cannon",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 42,
+       "max": 50,
+       "minPercent": 27.450980392156865,
+       "maxPercent": 32.6797385620915,
+       "rolls": [
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        48,
+        49,
+        50
+       ],
+       "ohkoChance": 0,
+       "description": "Flash Cannon: 42–50 HP (27.5–32.7% of maximum HP). Applied: Analytic.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Analytic: boosted, moves last.",
+        "Attacker: the target switches before this attack — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 111,
+    "average": 107.3125,
+    "high": 103,
+    "min": 103,
+    "max": 111,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flashcannon",
+     "effectiveName": "Flash Cannon",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 42,
+     "max": 50,
+     "minPercent": 27.450980392156865,
+     "maxPercent": 32.6797385620915,
+     "rolls": [
+      42,
+      42,
+      43,
+      43,
+      44,
+      45,
+      45,
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      48,
+      49,
+      50
+     ],
+     "ohkoChance": 0,
+     "description": "Flash Cannon: 42–50 HP (27.5–32.7% of maximum HP). Applied: Analytic.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Analytic: boosted, moves last.",
+      "Attacker: the target switches before this attack — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 111,
+      "high": 103,
+      "average": 107.3125,
+      "min": 103,
+      "max": 111,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 42,
+        "heals": []
+       },
+       "high": {
+        "dealt": 50,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.3197999999999865,
+ "preflight": []
+}

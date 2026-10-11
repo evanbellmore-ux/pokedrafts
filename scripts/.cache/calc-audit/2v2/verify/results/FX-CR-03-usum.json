@@ -1,0 +1,1348 @@
+{
+ "id": "FX-CR-03-usum",
+ "title": "USUM: Jump Kick into a Protect user: crash",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Jump Kick (USUM only) has hasCrashDamage too.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 62,
+   "classes": 11,
+   "ms": 75,
+   "decisions": {
+    "tie2": 166
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       166,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 166,
+     "min": 166,
+     "max": 166,
+     "modeTieUp": 166,
+     "modeTieDown": 166,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Dragonite|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "jumpkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Dragonite|move: Protect": 1,
+      "|-damage|p2b: Hitmonlee|hp|[from] jumpkick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:protect": 1
+      },
+      "opponent-left": {
+       "damage:jumpkick:-62": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -62,
+       "max": -62
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -62,
+       "max": -62,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 2,
+    "ms": 75,
+    "decisions": {
+     "tie2": 128
+    },
+    "slots": {
+     "own-left": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        166,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 166,
+      "min": 166,
+      "max": 166,
+      "modeTieUp": 166,
+      "modeTieDown": 166,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        63,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 63,
+      "min": 63,
+      "max": 63,
+      "modeTieUp": 63,
+      "modeTieDown": 63,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 62,
+   "classes": 11,
+   "ms": 65,
+   "decisions": {
+    "tie2": 166
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       166,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 166,
+     "min": 166,
+     "max": 166,
+     "modeTieUp": 166,
+     "modeTieDown": 166,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Dragonite|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "jumpkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Dragonite|move: Protect": 1,
+      "|-damage|p2b: Hitmonlee|hp|[from] jumpkick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:protect": 1
+      },
+      "opponent-left": {
+       "damage:jumpkick:-62": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -62,
+       "max": -62
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -62,
+       "max": -62,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 2,
+    "ms": 65,
+    "decisions": {
+     "tie2": 128
+    },
+    "slots": {
+     "own-left": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        166,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 166,
+      "min": 166,
+      "max": 166,
+      "modeTieUp": 166,
+      "modeTieDown": 166,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        63,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 63,
+      "min": 63,
+      "max": 63,
+      "modeTieUp": 63,
+      "modeTieDown": 63,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 62,
+   "classes": 11,
+   "ms": 72,
+   "decisions": {
+    "tie2": 166
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       166,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 166,
+     "min": 166,
+     "max": 166,
+     "modeTieUp": 166,
+     "modeTieDown": 166,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Dragonite|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "jumpkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Dragonite|move: Protect": 1,
+      "|-damage|p2b: Hitmonlee|hp|[from] jumpkick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:protect": 1
+      },
+      "opponent-left": {
+       "damage:jumpkick:-62": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -62,
+       "max": -62
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -62,
+       "max": -62,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 2,
+    "ms": 72,
+    "decisions": {
+     "tie2": 128
+    },
+    "slots": {
+     "own-left": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        166,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 166,
+      "min": 166,
+      "max": 166,
+      "modeTieUp": 166,
+      "modeTieDown": 166,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        63,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 63,
+      "min": 63,
+      "max": 63,
+      "modeTieUp": 63,
+      "modeTieDown": 63,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 166,
+   "maximum": 166,
+   "low": 166,
+   "high": 166,
+   "average": 166,
+   "min": 166,
+   "max": 166,
+   "koChance": 0,
+   "dist": [
+    [
+     166,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 63,
+   "high": 63,
+   "average": 63,
+   "min": 63,
+   "max": 63,
+   "koChance": 0,
+   "dist": [
+    [
+     63,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: own-right and opponent-right (51)"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 166,
+   "maximum": 166,
+   "low": 166,
+   "high": 166,
+   "average": 166,
+   "min": 166,
+   "max": 166,
+   "koChance": 0,
+   "dist": [
+    [
+     166,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 63,
+   "high": 63,
+   "average": 63,
+   "min": 63,
+   "max": 63,
+   "koChance": 0,
+   "dist": [
+    [
+     63,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

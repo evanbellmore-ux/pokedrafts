@@ -1,0 +1,523 @@
+{
+ "id": "M04b",
+ "title": "Snipe Shot ignores Follow Me (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "As M04a in Champions.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 26,
+   "classes": 18,
+   "ms": 17,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       120,
+       0.0625
+      ],
+      [
+       121,
+       0.125
+      ],
+      [
+       122,
+       0.25
+      ],
+      [
+       123,
+       0.125
+      ],
+      [
+       124,
+       0.125
+      ],
+      [
+       125,
+       0.25
+      ],
+      [
+       126,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 123.125,
+     "min": 120,
+     "max": 126,
+     "modeTieUp": 125,
+     "modeTieDown": 122
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 126,
+   "high": 120,
+   "average": 123.125,
+   "min": 120,
+   "max": 126,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.125
+    ],
+    [
+     122,
+     0.25
+    ],
+    [
+     123,
+     0.125
+    ],
+    [
+     124,
+     0.125
+    ],
+    [
+     125,
+     0.25
+    ],
+    [
+     126,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

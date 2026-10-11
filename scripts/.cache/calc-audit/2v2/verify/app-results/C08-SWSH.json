@@ -1,0 +1,577 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 69,
+      "max": 82,
+      "minPercent": 44.8051948051948,
+      "maxPercent": 53.246753246753244,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 69,
+       "max": 82,
+       "minPercent": 44.8051948051948,
+       "maxPercent": 53.246753246753244,
+       "rolls": [
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        82
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 69–82 HP (44.8–53.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 52,
+      "max": 63,
+      "minPercent": 33.76623376623377,
+      "maxPercent": 40.909090909090914,
+      "koChance": 0.08203125,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 52,
+       "max": 63,
+       "minPercent": 33.76623376623377,
+       "maxPercent": 40.909090909090914,
+       "rolls": [
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        58,
+        60,
+        60,
+        61,
+        61,
+        63
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 0.91796875,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.08203125
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.91796875,
+      "kind": "calculated",
+      "min": 42,
+      "max": 49,
+      "minPercent": 17.872340425531917,
+      "maxPercent": 20.851063829787233,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 28,
+       "max": 34,
+       "minPercent": 11.914893617021278,
+       "maxPercent": 14.468085106382977,
+       "rolls": [
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        31,
+        33,
+        33,
+        33,
+        33,
+        34
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 28–34 HP (11.9–14.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 193,
+    "average": 193.63403320312503,
+    "high": 235,
+    "min": 186,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 140,
+    "maximum": 154,
+    "low": 19,
+    "average": 7.49609375,
+    "high": 0,
+    "min": 0,
+    "max": 19,
+    "koChance": 0.08203125,
+    "heals": [],
+    "faintsBeforeMoving": 0.08203125
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 52,
+     "max": 63,
+     "minPercent": 33.76623376623377,
+     "maxPercent": 40.909090909090914,
+     "rolls": [
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      58,
+      60,
+      60,
+      61,
+      61,
+      63
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Tailwind lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 88,
+      "high": 77,
+      "average": 82.6875,
+      "min": 77,
+      "max": 88,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 52,
+        "heals": []
+       },
+       "high": {
+        "dealt": 63,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 69,
+     "max": 82,
+     "minPercent": 44.8051948051948,
+     "maxPercent": 53.246753246753244,
+     "rolls": [
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      82
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 69–82 HP (44.8–53.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.98046875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Tailwind lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 71,
+      "high": 58,
+      "average": 64.6875,
+      "min": 58,
+      "max": 71,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 69,
+        "heals": []
+       },
+       "high": {
+        "dealt": 82,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 28,
+     "max": 34,
+     "minPercent": 11.914893617021278,
+     "maxPercent": 14.468085106382977,
+     "rolls": [
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      31,
+      33,
+      33,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 28–34 HP (11.9–14.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 7,
+      "fasterChance": 0.9976213499903679,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Tailwind lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 207,
+      "high": 201,
+      "average": 204,
+      "min": 201,
+      "max": 207,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 28,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Blastoise has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 193,
+     "average": 193.63403320312503,
+     "high": 235,
+     "min": 186,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 140,
+     "maximum": 154,
+     "low": 19,
+     "average": 7.49609375,
+     "high": 0,
+     "min": 0,
+     "max": 19,
+     "koChance": 0.08203125,
+     "heals": [],
+     "faintsBeforeMoving": 0.08203125
+    },
+    "opponent-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.024799999999914,
+ "preflight": []
+}

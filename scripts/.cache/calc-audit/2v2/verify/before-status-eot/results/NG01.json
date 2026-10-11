@@ -1,0 +1,576 @@
+{
+ "id": "NG01",
+ "title": "Gas Weezing idle: Charizard's Flamethrower into a Thick Fat Snorlax (full damage), Snorlax's Body Slam into Weezing (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Thick Fat suppressed",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 82,
+   "classes": 27,
+   "ms": 65,
+   "decisions": {
+    "fail:": 64,
+    "roll": 64,
+    "secondary": 64
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       86,
+       0.0625
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       91,
+       0.1875
+      ],
+      [
+       92,
+       0.1875
+      ],
+      [
+       94,
+       0.125
+      ],
+      [
+       95,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 91,
+     "min": 86,
+     "max": 95,
+     "modeTieUp": 92,
+     "modeTieDown": 89
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       174,
+       0.0625
+      ],
+      [
+       175,
+       0.125
+      ],
+      [
+       177,
+       0.125
+      ],
+      [
+       178,
+       0.1875
+      ],
+      [
+       180,
+       0.125
+      ],
+      [
+       181,
+       0.1875
+      ],
+      [
+       183,
+       0.125
+      ],
+      [
+       184,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 179.0625,
+     "min": 174,
+     "max": 184,
+     "modeTieUp": 181,
+     "modeTieDown": 178
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       95,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 95,
+     "min": 95,
+     "max": 95,
+     "modeTieUp": 95,
+     "modeTieDown": 95
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       184,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 184,
+     "min": 184,
+     "max": 184,
+     "modeTieUp": 184,
+     "modeTieDown": 184
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       86,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 86,
+     "min": 86,
+     "max": 86,
+     "modeTieUp": 86,
+     "modeTieDown": 86
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       174,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 174,
+     "min": 174,
+     "max": 174,
+     "modeTieUp": 174,
+     "modeTieDown": 174
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 95,
+   "high": 86,
+   "average": 91,
+   "min": 86,
+   "max": 95,
+   "koChance": 0,
+   "dist": [
+    [
+     86,
+     0.0625
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     91,
+     0.1875
+    ],
+    [
+     92,
+     0.1875
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     95,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 184,
+   "high": 174,
+   "average": 179.0625,
+   "min": 174,
+   "max": 184,
+   "koChance": 0,
+   "dist": [
+    [
+     174,
+     0.0625
+    ],
+    [
+     175,
+     0.125
+    ],
+    [
+     177,
+     0.125
+    ],
+    [
+     178,
+     0.1875
+    ],
+    [
+     180,
+     0.125
+    ],
+    [
+     181,
+     0.1875
+    ],
+    [
+     183,
+     0.125
+    ],
+    [
+     184,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

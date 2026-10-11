@@ -1,0 +1,1252 @@
+{
+ "id": "E20-StickyBarb",
+ "title": "Trick Sticky Barb; the end of turn reads the new holder",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Garchomp holds Sticky Barb at the end of turn.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 12,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "stickybarb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Garchomp": 1,
+      "|-item|p2b: Garchomp|Sticky Barb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Sticky Barb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:stickybarb": 1
+      },
+      "opponent-left": {
+       "item:stickybarb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 12,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        128,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 128,
+      "min": 128,
+      "max": 128,
+      "modeTieUp": 128,
+      "modeTieDown": 128,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "stickybarb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Sticky Barb",
+      "chance": 1,
+      "min": -22,
+      "max": -22,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "stickybarb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Garchomp": 1,
+      "|-item|p2b: Garchomp|Sticky Barb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Sticky Barb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:stickybarb": 1
+      },
+      "opponent-left": {
+       "item:stickybarb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        128,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 128,
+      "min": 128,
+      "max": 128,
+      "modeTieUp": 128,
+      "modeTieDown": 128,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "stickybarb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Sticky Barb",
+      "chance": 1,
+      "min": -22,
+      "max": -22,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 18,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "stickybarb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Garchomp": 1,
+      "|-item|p2b: Garchomp|Sticky Barb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Sticky Barb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:stickybarb": 1
+      },
+      "opponent-left": {
+       "item:stickybarb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 18,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        128,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 128,
+      "min": 128,
+      "max": 128,
+      "modeTieUp": 128,
+      "modeTieDown": 128,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "stickybarb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Sticky Barb",
+      "chance": 1,
+      "min": -22,
+      "max": -22,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 183,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 183,
+   "low": 128,
+   "high": 128,
+   "average": 128,
+   "min": 128,
+   "max": 128,
+   "koChance": 0,
+   "dist": [
+    [
+     128,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "opponent-left",
+   "effect": "Sticky Barb",
+   "chance": 1,
+   "min": -22,
+   "max": -22,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  }
+ ]
+}

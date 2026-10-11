@@ -1,0 +1,534 @@
+{
+ "id": "VG64",
+ "title": "Stalwart suppressed: Clefable's Follow Me draws Duraludon's Flash Cannon from Snorlax",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "redirection back",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 27,
+   "classes": 20,
+   "ms": 20,
+   "decisions": {
+    "fail:": 8,
+    "roll": 8,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Duraludon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       32,
+       0.0625
+      ],
+      [
+       36,
+       0.125
+      ],
+      [
+       38,
+       0.125
+      ],
+      [
+       42,
+       0.125
+      ],
+      [
+       44,
+       0.125
+      ],
+      [
+       48,
+       0.125
+      ],
+      [
+       50,
+       0.1875
+      ],
+      [
+       54,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 44.125,
+     "min": 32,
+     "max": 54,
+     "modeTieUp": 50,
+     "modeTieDown": 50
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 138,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Duraludon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       54,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 54,
+     "min": 54,
+     "max": 54,
+     "modeTieUp": 54,
+     "modeTieDown": 54
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Duraludon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       32,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 32,
+     "max": 32,
+     "modeTieUp": 32,
+     "modeTieDown": 32
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 138,
+       "dmgMax": 138,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Clefable|move: Follow Me": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 54,
+   "high": 32,
+   "average": 44.125,
+   "min": 32,
+   "max": 54,
+   "koChance": 0,
+   "dist": [
+    [
+     32,
+     0.0625
+    ],
+    [
+     36,
+     0.125
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     42,
+     0.125
+    ],
+    [
+     44,
+     0.125
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     50,
+     0.1875
+    ],
+    [
+     54,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,1367 @@
+{
+ "id": "S15b",
+ "title": "Charm into Mirror Armor; Fake Tears into Competitive",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Mirror Armor sends −2 Attack back to Clefable; Competitive: −2 Sp. Def, +2 Sp. Atk.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Whimsicott",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spa:2": 1,
+      "spd:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "charm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Clefable|atk|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:atk:-2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "faketears",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Milotic|spd|2": 1,
+      "|-ability|p2a: Milotic|Competitive|boost": 1,
+      "|-boost|p2a: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:spd:-2": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Whimsicott",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        173,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 173,
+      "min": 173,
+      "max": 173,
+      "modeTieUp": 173,
+      "modeTieDown": 173,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spa:2": 1,
+       "spd:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Whimsicott",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spa:2": 1,
+      "spd:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "charm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Clefable|atk|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:atk:-2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "faketears",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Milotic|spd|2": 1,
+      "|-ability|p2a: Milotic|Competitive|boost": 1,
+      "|-boost|p2a: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:spd:-2": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Whimsicott",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        173,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 173,
+      "min": 173,
+      "max": 173,
+      "modeTieUp": 173,
+      "modeTieDown": 173,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spa:2": 1,
+       "spd:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Whimsicott",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spa:2": 1,
+      "spd:-2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "charm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Clefable|atk|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:atk:-2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "faketears",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Milotic|spd|2": 1,
+      "|-ability|p2a: Milotic|Competitive|boost": 1,
+      "|-boost|p2a: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:spd:-2": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Whimsicott",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        173,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 173,
+      "min": 173,
+      "max": 173,
+      "modeTieUp": 173,
+      "modeTieDown": 173,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spa:2": 1,
+       "spd:-2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 173,
+   "maximum": 173,
+   "low": 173,
+   "high": 173,
+   "average": 173,
+   "min": 173,
+   "max": 173,
+   "koChance": 0,
+   "dist": [
+    [
+     173,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 173,
+   "maximum": 173,
+   "low": 173,
+   "high": 173,
+   "average": 173,
+   "min": 173,
+   "max": 173,
+   "koChance": 0,
+   "dist": [
+    [
+     173,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

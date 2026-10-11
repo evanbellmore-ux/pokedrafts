@@ -1,0 +1,775 @@
+{
+ "id": "V31a",
+ "title": "Max Airstream raises both allies' Speed (re-sort)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Garchomp +1 (183) moves before Weavile (145) after Max Airstream.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1995,
+   "classes": 1072,
+   "ms": 1023,
+   "decisions": {
+    "fail:": 1068,
+    "roll": 1068
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       125,
+       0.0625
+      ],
+      [
+       126,
+       0.125
+      ],
+      [
+       128,
+       0.1875
+      ],
+      [
+       129,
+       0.125
+      ],
+      [
+       131,
+       0.1875
+      ],
+      [
+       132,
+       0.125
+      ],
+      [
+       134,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 129.875,
+     "min": 125,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 128
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       31,
+       0.0625
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       34,
+       0.125
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       37,
+       0.125
+      ],
+      [
+       39,
+       0.0625
+      ],
+      [
+       40,
+       0.125
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       43,
+       0.125
+      ],
+      [
+       45,
+       0.125
+      ],
+      [
+       46,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 39.0625,
+     "min": 31,
+     "max": 46,
+     "modeTieUp": 45,
+     "modeTieDown": 34
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       127,
+       0.0625
+      ],
+      [
+       129,
+       0.0625
+      ],
+      [
+       130,
+       0.0625
+      ],
+      [
+       132,
+       0.125
+      ],
+      [
+       133,
+       0.0625
+      ],
+      [
+       135,
+       0.0625
+      ],
+      [
+       136,
+       0.125
+      ],
+      [
+       138,
+       0.0625
+      ],
+      [
+       139,
+       0.125
+      ],
+      [
+       141,
+       0.0625
+      ],
+      [
+       142,
+       0.0625
+      ],
+      [
+       144,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 136.0625,
+     "min": 127,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 132
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 108,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Charizard|spe|1": 1,
+      "|-boost|p1b: Garchomp|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Weavile|hp|[from] ability: Rough Skin|[of] p1b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 6,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       134,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 134,
+     "min": 134,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 134
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       46,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 46,
+     "min": 46,
+     "max": 46,
+     "modeTieUp": 46,
+     "modeTieDown": 46
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Charizard|spe|1": 1,
+      "|-boost|p1b: Garchomp|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Weavile|hp|[from] ability: Rough Skin|[of] p1b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 5,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       31,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 31,
+     "min": 31,
+     "max": 31,
+     "modeTieUp": 31,
+     "modeTieDown": 31
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       127,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 127,
+     "min": 127,
+     "max": 127,
+     "modeTieUp": 127,
+     "modeTieDown": 127
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Charizard|spe|1": 1,
+      "|-boost|p1b: Garchomp|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Weavile|hp|[from] ability: Rough Skin|[of] p1b: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 306,
+   "maximum": 306,
+   "low": 306,
+   "high": 306,
+   "average": 306,
+   "min": 306,
+   "max": 306,
+   "koChance": 0,
+   "dist": [
+    [
+     306,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 134,
+   "high": 125,
+   "average": 129.875,
+   "min": 125,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     0.0625
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     128,
+     0.1875
+    ],
+    [
+     129,
+     0.125
+    ],
+    [
+     131,
+     0.1875
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     134,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 46,
+   "high": 31,
+   "average": 39.0625,
+   "min": 31,
+   "max": 46,
+   "koChance": 0,
+   "dist": [
+    [
+     31,
+     0.0625
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     34,
+     0.125
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     37,
+     0.125
+    ],
+    [
+     39,
+     0.0625
+    ],
+    [
+     40,
+     0.125
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     43,
+     0.125
+    ],
+    [
+     45,
+     0.125
+    ],
+    [
+     46,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 144,
+   "high": 127,
+   "average": 136.0625,
+   "min": 127,
+   "max": 144,
+   "koChance": 0,
+   "dist": [
+    [
+     127,
+     0.0625
+    ],
+    [
+     129,
+     0.0625
+    ],
+    [
+     130,
+     0.0625
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     133,
+     0.0625
+    ],
+    [
+     135,
+     0.0625
+    ],
+    [
+     136,
+     0.125
+    ],
+    [
+     138,
+     0.0625
+    ],
+    [
+     139,
+     0.125
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.0625
+    ],
+    [
+     144,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

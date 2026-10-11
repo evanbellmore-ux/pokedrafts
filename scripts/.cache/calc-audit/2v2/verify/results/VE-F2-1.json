@@ -1,0 +1,1247 @@
+{
+ "id": "VE-F2-1",
+ "title": "USUM: confused Berry Juice holder hurts itself below half beside a foe's Unnerve",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Berry Juice is used, not eaten: Unnerve does not stop it.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 48,
+   "classes": 24,
+   "ms": 56,
+   "decisions": {
+    "chance:confusion": 28,
+    "roll": 24
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 125,
+     "maximum": 235,
+     "dist": [
+      [
+       117,
+       0.020625
+      ],
+      [
+       118,
+       0.061875
+      ],
+      [
+       119,
+       0.0825
+      ],
+      [
+       120,
+       0.061875
+      ],
+      [
+       121,
+       0.0825
+      ],
+      [
+       122,
+       0.020625
+      ],
+      [
+       125,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 123.20562499999998,
+     "min": 117,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999999
+     },
+     "boosts": {},
+     "item": {
+      "": 0.32999999999999996,
+      "berryjuice": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 0.9999999999999999,
+      "damage:confusion:-23": 0.020625,
+      "enditem:berryjuice": 0.32999999999999996,
+      "heal:berryjuice:20": 0.32999999999999996,
+      "damage:confusion:-24": 0.0825,
+      "damage:confusion:-25": 0.061875,
+      "damage:confusion:-26": 0.0825,
+      "damage:confusion:-27": 0.061875,
+      "damage:confusion:-28": 0.020625
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 28,
+    "classes": 4,
+    "ms": 56,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        117,
+        0.020625
+       ],
+       [
+        118,
+        0.061875
+       ],
+       [
+        119,
+        0.0825
+       ],
+       [
+        120,
+        0.061875
+       ],
+       [
+        121,
+        0.0825
+       ],
+       [
+        122,
+        0.020625
+       ],
+       [
+        125,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 123.20562499999998,
+      "min": 117,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999999
+      },
+      "boosts": {},
+      "item": {
+       "": 0.32999999999999996,
+       "berryjuice": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 28,
+   "classes": 24,
+   "ms": 54,
+   "decisions": {
+    "chance:confusion": 8,
+    "roll": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 125,
+     "maximum": 235,
+     "dist": [
+      [
+       122,
+       0.33
+      ],
+      [
+       125,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 124.00999999999999,
+     "min": 122,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 0.33,
+      "berryjuice": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 1,
+      "damage:confusion:-23": 0.33,
+      "enditem:berryjuice": 0.33,
+      "heal:berryjuice:20": 0.33
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 4,
+    "ms": 54,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        122,
+        0.33
+       ],
+       [
+        125,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 124.00999999999999,
+      "min": 122,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 0.33,
+       "berryjuice": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 28,
+   "classes": 24,
+   "ms": 41,
+   "decisions": {
+    "chance:confusion": 8,
+    "roll": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 125,
+     "maximum": 235,
+     "dist": [
+      [
+       117,
+       0.33
+      ],
+      [
+       125,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.35999999999999,
+     "min": 117,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 0.33,
+      "berryjuice": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 1,
+      "damage:confusion:-28": 0.33,
+      "enditem:berryjuice": 0.33,
+      "heal:berryjuice:20": 0.33
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 4,
+    "ms": 41,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        117,
+        0.33
+       ],
+       [
+        125,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.35999999999999,
+      "min": 117,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 0.33,
+       "berryjuice": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 125,
+   "maximum": 235,
+   "low": 125,
+   "high": 125,
+   "average": 123.20562499999998,
+   "min": 117,
+   "max": 125,
+   "koChance": 0,
+   "dist": [
+    [
+     117,
+     0.020625
+    ],
+    [
+     118,
+     0.061875
+    ],
+    [
+     119,
+     0.0825
+    ],
+    [
+     120,
+     0.061875
+    ],
+    [
+     121,
+     0.0825
+    ],
+    [
+     122,
+     0.020625
+    ],
+    [
+     125,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 125,
+   "maximum": 235,
+   "low": 125,
+   "high": 125,
+   "average": 123.20562499999998,
+   "min": 117,
+   "max": 125,
+   "koChance": 0,
+   "dist": [
+    [
+     117,
+     0.020625
+    ],
+    [
+     118,
+     0.061875
+    ],
+    [
+     119,
+     0.0825
+    ],
+    [
+     120,
+     0.061875
+    ],
+    [
+     121,
+     0.0825
+    ],
+    [
+     122,
+     0.020625
+    ],
+    [
+     125,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "hidden": [
+  {
+   "label": "own-left confusion 2",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 3",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 4",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 5",
+   "weight": 0.25
+  }
+ ]
+}

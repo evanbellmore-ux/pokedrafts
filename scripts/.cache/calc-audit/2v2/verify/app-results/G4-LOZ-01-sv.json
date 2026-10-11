@@ -1,0 +1,596 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 195,
+    "maximum": 195
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "psychicnoise",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 92,
+      "max": 110,
+      "minPercent": 59.354838709677416,
+      "maxPercent": 70.96774193548387,
+      "koChance": 0,
+      "row": {
+       "moveId": "psychicnoise",
+       "effectiveName": "Psychic Noise",
+       "effectiveType": "Psychic",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 92,
+       "max": 110,
+       "minPercent": 59.354838709677416,
+       "maxPercent": 70.96774193548387,
+       "rolls": [
+        92,
+        92,
+        96,
+        96,
+        96,
+        98,
+        98,
+        102,
+        102,
+        102,
+        104,
+        104,
+        104,
+        108,
+        108,
+        110
+       ],
+       "ohkoChance": 0,
+       "description": "Psychic Noise: 92–110 HP (59.4–71.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 63,
+    "average": 54.25,
+    "high": 45,
+    "min": 45,
+    "max": 63,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Leech Seed.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "psychicnoise",
+     "effectiveName": "Psychic Noise",
+     "effectiveType": "Psychic",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 92,
+     "max": 110,
+     "minPercent": 59.354838709677416,
+     "maxPercent": 70.96774193548387,
+     "rolls": [
+      92,
+      92,
+      96,
+      96,
+      96,
+      98,
+      98,
+      102,
+      102,
+      102,
+      104,
+      104,
+      104,
+      108,
+      108,
+      110
+     ],
+     "ohkoChance": 0,
+     "description": "Psychic Noise: 92–110 HP (59.4–71.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 63,
+      "high": 45,
+      "average": 54.25,
+      "min": 45,
+      "max": 63,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 92,
+        "heals": []
+       },
+       "high": {
+        "dealt": 110,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 44,
+     "average": 35.25,
+     "high": 26,
+     "min": 26,
+     "max": 44,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 136,
+     "average": 136,
+     "high": 136,
+     "min": 136,
+     "max": 136,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Leech Seed.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Liquid Ooze",
+     "other": "opponent-left",
+     "chance": 1,
+     "min": -19,
+     "max": -19,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Leech Seed",
+     "other": "own-left",
+     "chance": 1,
+     "min": -19,
+     "max": -19,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 3.2192999999988388,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 195,
+    "maximum": 195
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 26,
+        "chance": 0.0625
+       },
+       {
+        "hp": 28,
+        "chance": 0.125
+       },
+       {
+        "hp": 32,
+        "chance": 0.1875
+       },
+       {
+        "hp": 34,
+        "chance": 0.1875
+       },
+       {
+        "hp": 38,
+        "chance": 0.125
+       },
+       {
+        "hp": 40,
+        "chance": 0.1875
+       },
+       {
+        "hp": 44,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "venusaur",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 136,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "tentacruel",
+       "nature": "Serious",
+       "abilityId": "liquidooze",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "leechseed"
+      ]
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 195,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "farigiraf",
+       "nature": "Serious",
+       "abilityId": "armortail",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,573 @@
+{
+ "id": "M22b",
+ "title": "Revenge after the other foe hit its user (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Weavile (the other foe) hit Hariyama: Revenge into Venusaur is not doubled.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 104,
+   "classes": 33,
+   "ms": 38,
+   "decisions": {
+    "fail:": 82,
+    "roll": 82
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       168,
+       0.0625
+      ],
+      [
+       169,
+       0.0625
+      ],
+      [
+       170,
+       0.0625
+      ],
+      [
+       171,
+       0.1875
+      ],
+      [
+       172,
+       0.125
+      ],
+      [
+       173,
+       0.0625
+      ],
+      [
+       174,
+       0.1875
+      ],
+      [
+       175,
+       0.125
+      ],
+      [
+       176,
+       0.0625
+      ],
+      [
+       177,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 172.625,
+     "min": 168,
+     "max": 177,
+     "modeTieUp": 174,
+     "modeTieDown": 171
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       128,
+       0.1875
+      ],
+      [
+       129,
+       0.1875
+      ],
+      [
+       130,
+       0.1875
+      ],
+      [
+       131,
+       0.3125
+      ],
+      [
+       132,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 128,
+     "max": 132,
+     "modeTieUp": 131,
+     "modeTieDown": 131
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 23,
+       "dmgMax": 27,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       177,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 177,
+     "min": 177,
+     "max": 177,
+     "modeTieUp": 177,
+     "modeTieDown": 177
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       132,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 132,
+     "min": 132,
+     "max": 132,
+     "modeTieUp": 132,
+     "modeTieDown": 132
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 23,
+       "dmgMax": 23,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       168,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 168,
+     "min": 168,
+     "max": 168,
+     "modeTieUp": 168,
+     "modeTieDown": 168
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       128,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 128,
+     "min": 128,
+     "max": 128,
+     "modeTieUp": 128,
+     "modeTieDown": 128
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 27,
+       "dmgMax": 27,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 219,
+   "maximum": 219,
+   "low": 177,
+   "high": 168,
+   "average": 172.625,
+   "min": 168,
+   "max": 177,
+   "koChance": 0,
+   "dist": [
+    [
+     168,
+     0.0625
+    ],
+    [
+     169,
+     0.0625
+    ],
+    [
+     170,
+     0.0625
+    ],
+    [
+     171,
+     0.1875
+    ],
+    [
+     172,
+     0.125
+    ],
+    [
+     173,
+     0.0625
+    ],
+    [
+     174,
+     0.1875
+    ],
+    [
+     175,
+     0.125
+    ],
+    [
+     176,
+     0.0625
+    ],
+    [
+     177,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 132,
+   "high": 128,
+   "average": 130,
+   "min": 128,
+   "max": 132,
+   "koChance": 0,
+   "dist": [
+    [
+     128,
+     0.1875
+    ],
+    [
+     129,
+     0.1875
+    ],
+    [
+     130,
+     0.1875
+    ],
+    [
+     131,
+     0.3125
+    ],
+    [
+     132,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

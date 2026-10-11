@@ -1,0 +1,1468 @@
+{
+ "id": "VE-H2-11",
+ "title": "Mud-Slap into a White Herb Unburden Hitmonlee, which then outspeeds Gengar",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "White Herb used after Mud-Slap: Unburden doubles Hitmonlee's Speed (107 → 214), so it moves before Gengar (130).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 26,
+   "classes": 9,
+   "ms": 40,
+   "decisions": {
+    "fail:": 20,
+    "roll": 20,
+    "secondary": 2,
+    "fail:cursedbody": 18
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gengar",
+     "start": 60,
+     "maximum": 135,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       116,
+       0.0625
+      ],
+      [
+       118,
+       0.9375
+      ]
+     ],
+     "koChance": 0,
+     "average": 117.875,
+     "min": 116,
+     "max": 118,
+     "modeTieUp": 118,
+     "modeTieDown": 118,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "mudslap",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 9,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Hitmonlee|accuracy|1": 1,
+      "|-enditem|p2b: Hitmonlee|White Herb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-7": 0.9375,
+       "boost:accuracy:-1": 1,
+       "enditem:whiteherb": 1,
+       "clearnegativeboost": 1,
+       "damage:-9": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -9,
+       "max": -7
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -9,
+       "max": -7,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 88,
+       "dmgMax": 104,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-60": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -60,
+       "max": -60
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -60,
+       "max": -60,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 40,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Excadrill",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        116,
+        0.0625
+       ],
+       [
+        118,
+        0.9375
+       ]
+      ],
+      "koChance": 0,
+      "average": 117.875,
+      "min": 116,
+      "max": 118,
+      "modeTieUp": 118,
+      "modeTieDown": 118,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1,
+    "fail:cursedbody": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gengar",
+     "start": 60,
+     "maximum": 135,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       118,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 118,
+     "min": 118,
+     "max": 118,
+     "modeTieUp": 118,
+     "modeTieDown": 118,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "mudslap",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 7,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Hitmonlee|accuracy|1": 1,
+      "|-enditem|p2b: Hitmonlee|White Herb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-7": 1,
+       "boost:accuracy:-1": 1,
+       "enditem:whiteherb": 1,
+       "clearnegativeboost": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -7,
+       "max": -7
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -7,
+       "max": -7,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-60": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -60,
+       "max": -60
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -60,
+       "max": -60,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Excadrill",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        118,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 118,
+      "min": 118,
+      "max": 118,
+      "modeTieUp": 118,
+      "modeTieDown": 118,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1,
+    "fail:cursedbody": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gengar",
+     "start": 60,
+     "maximum": 135,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Hitmonlee",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       116,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 116,
+     "min": 116,
+     "max": 116,
+     "modeTieUp": 116,
+     "modeTieDown": 116,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "mudslap",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 9,
+       "dmgMax": 9,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Hitmonlee|accuracy|1": 1,
+      "|-enditem|p2b: Hitmonlee|White Herb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-9": 1,
+       "boost:accuracy:-1": 1,
+       "enditem:whiteherb": 1,
+       "clearnegativeboost": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -9,
+       "max": -9
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -9,
+       "max": -9,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 104,
+       "dmgMax": 104,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-60": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -60,
+       "max": -60
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -60,
+       "max": -60,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Excadrill",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-left": {
+      "species": "Hitmonlee",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        116,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 116,
+      "min": 116,
+      "max": 116,
+      "modeTieUp": 116,
+      "modeTieDown": 116,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 60,
+   "maximum": 135,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 118,
+   "high": 116,
+   "average": 117.875,
+   "min": 116,
+   "max": 118,
+   "koChance": 0,
+   "dist": [
+    [
+     116,
+     0.0625
+    ],
+    [
+     118,
+     0.9375
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 60,
+   "maximum": 135,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 118,
+   "high": 116,
+   "average": 117.875,
+   "min": 116,
+   "max": 118,
+   "koChance": 0,
+   "dist": [
+    [
+     116,
+     0.0625
+    ],
+    [
+     118,
+     0.9375
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

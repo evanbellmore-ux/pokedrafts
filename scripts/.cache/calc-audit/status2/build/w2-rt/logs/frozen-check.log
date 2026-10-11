@@ -1,0 +1,32 @@
+
+> pokedrafts@0.1.0 check
+> npm run lint && npm run typecheck && npm run test
+
+
+> pokedrafts@0.1.0 lint
+> eslint
+
+
+> pokedrafts@0.1.0 typecheck
+> tsc --noEmit
+
+
+> pokedrafts@0.1.0 test
+> vitest run --config vitest.unit.config.ts
+
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.unit.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+ RUN  v5.0.0 C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/frozen
+
+
+ Test Files  257 passed (257)
+      Tests  7732 passed | 1 skipped (7733)
+   Start at  16:33:58
+   Duration  64.20s (tests 76%, import 17%, transform 8%)
+
+
+real	1m38.882s
+user	0m0.090s
+sys	0m0.076s

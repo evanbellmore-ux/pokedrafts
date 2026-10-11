@@ -1,0 +1,430 @@
+{
+ "id": "BB13",
+ "title": "The target's Unnerve does not stop the user eating its Berry (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "The Eat runs no TryEatItem, so Unnerve (onFoeTryEatItem) stops nothing (sd-probe unnerve-target): 96.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 14,
+   "classes": 6,
+   "ms": 12,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       155,
+       0.1875
+      ],
+      [
+       156,
+       0.25
+      ],
+      [
+       157,
+       0.375
+      ],
+      [
+       158,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 156.5625,
+     "min": 155,
+     "max": 158,
+     "modeTieUp": 157,
+     "modeTieDown": 157
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Corviknight|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       158,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 158,
+     "min": 158,
+     "max": 158,
+     "modeTieUp": 158,
+     "modeTieDown": 158
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Corviknight|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Corviknight|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 60,
+   "maximum": 145,
+   "low": 96,
+   "high": 96,
+   "average": 96,
+   "min": 96,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 173,
+   "maximum": 173,
+   "low": 158,
+   "high": 155,
+   "average": 156.5625,
+   "min": 155,
+   "max": 158,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.1875
+    ],
+    [
+     156,
+     0.25
+    ],
+    [
+     157,
+     0.375
+    ],
+    [
+     158,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

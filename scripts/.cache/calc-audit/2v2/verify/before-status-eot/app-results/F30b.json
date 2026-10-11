@@ -1,0 +1,225 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 120,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "crunch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 82,
+      "max": 97,
+      "minPercent": 34.8936170212766,
+      "maxPercent": 41.27659574468085,
+      "koChance": 0,
+      "row": {
+       "moveId": "crunch",
+       "effectiveName": "Crunch",
+       "effectiveType": "Dark",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 82,
+       "max": 97,
+       "minPercent": 34.8936170212766,
+       "maxPercent": 41.27659574468085,
+       "rolls": [
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94,
+        94,
+        96,
+        97
+       ],
+       "ohkoChance": 0,
+       "description": "Crunch: 82–97 HP (34.9–41.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 120,
+    "maximum": 235,
+    "low": 96,
+    "average": 88.8125,
+    "high": 81,
+    "min": 81,
+    "max": 96,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +58 HP."
+    ]
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "crunch",
+     "effectiveName": "Crunch",
+     "effectiveType": "Dark",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 82,
+     "max": 97,
+     "minPercent": 34.8936170212766,
+     "maxPercent": 41.27659574468085,
+     "rolls": [
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94,
+      94,
+      96,
+      97
+     ],
+     "ohkoChance": 0,
+     "description": "Crunch: 82–97 HP (34.9–41.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 120,
+      "low": 38,
+      "high": 23,
+      "average": 30.8125,
+      "min": 23,
+      "max": 38,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 82,
+        "heals": []
+       },
+       "high": {
+        "dealt": 97,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.40520000000015,
+ "preflight": []
+}

@@ -1,0 +1,225 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 330,
+    "maximum": 330
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bide",
+    "effectiveName": "Breakneck Blitz",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 21,
+      "max": 25,
+      "minPercent": 8.936170212765958,
+      "maxPercent": 10.638297872340425,
+      "koChance": 0,
+      "row": {
+       "moveId": "bide",
+       "effectiveName": "Breakneck Blitz",
+       "effectiveType": "Normal",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 21,
+       "max": 25,
+       "minPercent": 8.936170212765958,
+       "maxPercent": 10.638297872340425,
+       "rolls": [
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        22,
+        22,
+        24,
+        24,
+        24,
+        24,
+        24,
+        25
+       ],
+       "ohkoChance": 0,
+       "description": "Breakneck Blitz: 21–25 HP (8.9–10.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 214,
+    "average": 212.4375,
+    "high": 210,
+    "min": 210,
+    "max": 214,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bide",
+     "effectiveName": "Breakneck Blitz",
+     "effectiveType": "Normal",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 21,
+     "max": 25,
+     "minPercent": 8.936170212765958,
+     "maxPercent": 10.638297872340425,
+     "rolls": [
+      21,
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      22,
+      22,
+      22,
+      24,
+      24,
+      24,
+      24,
+      24,
+      25
+     ],
+     "ohkoChance": 0,
+     "description": "Breakneck Blitz: 21–25 HP (8.9–10.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 214,
+      "high": 210,
+      "average": 212.4375,
+      "min": 210,
+      "max": 214,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 21,
+        "heals": []
+       },
+       "high": {
+        "dealt": 25,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.6809000000002925,
+ "preflight": []
+}

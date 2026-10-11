@@ -1,0 +1,1784 @@
+{
+ "id": "VT-VE11",
+ "title": "Pickup when a foe's Sitrus is eaten at the weather's Update (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Every active Pokémon is adjacent in doubles: Pickup takes the foe's Sitrus: the app is not estimated.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Diggersby",
+     "start": 100,
+     "maximum": 160,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Ground": 1
+     },
+     "ability": {
+      "pickup": 1
+     },
+     "forme": {
+      "diggersby": 1
+     },
+     "stored": {
+      "76/97/70/97/98": 1
+     },
+     "weight": {
+      "424": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "own-left": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 6,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Diggersby",
+      "start": null,
+      "maximum": 160,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Ground": 1
+      },
+      "ability": {
+       "pickup": 1
+      },
+      "forme": {
+       "diggersby": 1
+      },
+      "stored": {
+       "76/97/70/97/98": 1
+      },
+      "weight": {
+       "424": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        146,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 146,
+      "min": 146,
+      "max": 146,
+      "modeTieUp": 146,
+      "modeTieDown": 146,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        164,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 164,
+      "min": 164,
+      "max": 164,
+      "modeTieUp": 164,
+      "modeTieDown": 164,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sitrus Berry",
+      "chance": 1,
+      "min": 58,
+      "max": 58,
+      "koChance": 0,
+      "facts": {
+       "enditem:sitrusberry:eat": 1
+      },
+      "index": 12
+     },
+     {
+      "slot": "own-left",
+      "effect": "Pickup",
+      "chance": 1,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "item:sitrusberry": 1
+      },
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    },
+    "pseudo": {
+     "weather:sandstorm:4": 1
+    },
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Diggersby",
+     "start": 100,
+     "maximum": 160,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Ground": 1
+     },
+     "ability": {
+      "pickup": 1
+     },
+     "forme": {
+      "diggersby": 1
+     },
+     "stored": {
+      "76/97/70/97/98": 1
+     },
+     "weight": {
+      "424": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "own-left": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Diggersby",
+      "start": null,
+      "maximum": 160,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Ground": 1
+      },
+      "ability": {
+       "pickup": 1
+      },
+      "forme": {
+       "diggersby": 1
+      },
+      "stored": {
+       "76/97/70/97/98": 1
+      },
+      "weight": {
+       "424": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        146,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 146,
+      "min": 146,
+      "max": 146,
+      "modeTieUp": 146,
+      "modeTieDown": 146,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        164,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 164,
+      "min": 164,
+      "max": 164,
+      "modeTieUp": 164,
+      "modeTieDown": 164,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sitrus Berry",
+      "chance": 1,
+      "min": 58,
+      "max": 58,
+      "koChance": 0,
+      "facts": {
+       "enditem:sitrusberry:eat": 1
+      },
+      "index": 12
+     },
+     {
+      "slot": "own-left",
+      "effect": "Pickup",
+      "chance": 1,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "item:sitrusberry": 1
+      },
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    },
+    "pseudo": {
+     "weather:sandstorm:4": 1
+    },
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Diggersby",
+     "start": 100,
+     "maximum": 160,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Ground": 1
+     },
+     "ability": {
+      "pickup": 1
+     },
+     "forme": {
+      "diggersby": 1
+     },
+     "stored": {
+      "76/97/70/97/98": 1
+     },
+     "weight": {
+      "424": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "own-left": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Diggersby",
+      "start": null,
+      "maximum": 160,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Ground": 1
+      },
+      "ability": {
+       "pickup": 1
+      },
+      "forme": {
+       "diggersby": 1
+      },
+      "stored": {
+       "76/97/70/97/98": 1
+      },
+      "weight": {
+       "424": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        146,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 146,
+      "min": 146,
+      "max": 146,
+      "modeTieUp": 146,
+      "modeTieDown": 146,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        164,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 164,
+      "min": 164,
+      "max": 164,
+      "modeTieUp": 164,
+      "modeTieDown": 164,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sitrus Berry",
+      "chance": 1,
+      "min": 58,
+      "max": 58,
+      "koChance": 0,
+      "facts": {
+       "enditem:sitrusberry:eat": 1
+      },
+      "index": 12
+     },
+     {
+      "slot": "own-left",
+      "effect": "Pickup",
+      "chance": 1,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "item:sitrusberry": 1
+      },
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    },
+    "pseudo": {
+     "weather:sandstorm:4": 1
+    },
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 100,
+   "maximum": 160,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 120,
+   "maximum": 235,
+   "low": 120,
+   "high": 120,
+   "average": 120,
+   "min": 120,
+   "max": 120,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 100,
+   "maximum": 160,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 146,
+   "high": 146,
+   "average": 146,
+   "min": 146,
+   "max": 146,
+   "koChance": 0,
+   "dist": [
+    [
+     146,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 120,
+   "maximum": 235,
+   "low": 164,
+   "high": 164,
+   "average": 164,
+   "min": 164,
+   "max": 164,
+   "koChance": 0,
+   "dist": [
+    [
+     164,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-right",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -9,
+   "max": -9,
+   "koChance": 0,
+   "facts": {},
+   "index": 5
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -14,
+   "max": -14,
+   "koChance": 0,
+   "facts": {},
+   "index": 10
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Sitrus Berry",
+   "chance": 1,
+   "min": 58,
+   "max": 58,
+   "koChance": 0,
+   "facts": {
+    "enditem:sitrusberry:eat": 1
+   },
+   "index": 12
+  },
+  {
+   "slot": "own-left",
+   "effect": "Pickup",
+   "chance": 1,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "item:sitrusberry": 1
+   },
+   "index": 16
+  }
+ ]
+}

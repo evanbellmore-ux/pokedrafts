@@ -1,0 +1,641 @@
+{
+ "id": "ZS20",
+ "title": "Clangorous Soulblaze into a lone foe, then that foe's Sludge Bomb (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "One target (no spread modifier); Kommo-o +1 Sp. Def for the Sludge Bomb.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 184,
+   "classes": 101,
+   "ms": 103,
+   "decisions": {
+    "fail:": 98,
+    "roll": 98,
+    "secondary": 98
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kommo-o",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       110,
+       0.0625
+      ],
+      [
+       111,
+       0.1875
+      ],
+      [
+       113,
+       0.25
+      ],
+      [
+       114,
+       0.25
+      ],
+      [
+       116,
+       0.1875
+      ],
+      [
+       117,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 113.5,
+     "min": 110,
+     "max": 117,
+     "modeTieUp": 114,
+     "modeTieDown": 113
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       31,
+       0.0625
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       34,
+       0.0625
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       37,
+       0.0625
+      ],
+      [
+       38,
+       0.125
+      ],
+      [
+       40,
+       0.0625
+      ],
+      [
+       41,
+       0.0625
+      ],
+      [
+       43,
+       0.0625
+      ],
+      [
+       44,
+       0.0625
+      ],
+      [
+       46,
+       0.125
+      ],
+      [
+       47,
+       0.0625
+      ],
+      [
+       49,
+       0.0625
+      ],
+      [
+       50,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 40.6875,
+     "min": 31,
+     "max": 50,
+     "modeTieUp": 46,
+     "modeTieDown": 38
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 0,
+     "maximum": 330,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clangingscales",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Clangorous Soulblaze": 1,
+      "|-boost|p1a: Kommo-o|atk|1": 1,
+      "|-boost|p1a: Kommo-o|def|1": 1,
+      "|-boost|p1a: Kommo-o|spa|1": 1,
+      "|-boost|p1a: Kommo-o|spd|1": 1,
+      "|-boost|p1a: Kommo-o|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kommo-o",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       50,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 50,
+     "min": 50,
+     "max": 50,
+     "modeTieUp": 50,
+     "modeTieDown": 50
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 0,
+     "maximum": 330,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clangingscales",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 105,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Clangorous Soulblaze": 1,
+      "|-boost|p1a: Kommo-o|atk|1": 1,
+      "|-boost|p1a: Kommo-o|def|1": 1,
+      "|-boost|p1a: Kommo-o|spa|1": 1,
+      "|-boost|p1a: Kommo-o|spd|1": 1,
+      "|-boost|p1a: Kommo-o|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kommo-o",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       110,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 110,
+     "min": 110,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       31,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 31,
+     "min": 31,
+     "max": 31,
+     "modeTieUp": 31,
+     "modeTieDown": 31
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 0,
+     "maximum": 330,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clangingscales",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 124,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Clangorous Soulblaze": 1,
+      "|-boost|p1a: Kommo-o|atk|1": 1,
+      "|-boost|p1a: Kommo-o|def|1": 1,
+      "|-boost|p1a: Kommo-o|spa|1": 1,
+      "|-boost|p1a: Kommo-o|spd|1": 1,
+      "|-boost|p1a: Kommo-o|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 117,
+   "high": 110,
+   "average": 113.5,
+   "min": 110,
+   "max": 117,
+   "koChance": 0,
+   "dist": [
+    [
+     110,
+     0.0625
+    ],
+    [
+     111,
+     0.1875
+    ],
+    [
+     113,
+     0.25
+    ],
+    [
+     114,
+     0.25
+    ],
+    [
+     116,
+     0.1875
+    ],
+    [
+     117,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 50,
+   "high": 31,
+   "average": 40.6875,
+   "min": 31,
+   "max": 50,
+   "koChance": 0,
+   "dist": [
+    [
+     31,
+     0.0625
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     34,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     37,
+     0.0625
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     40,
+     0.0625
+    ],
+    [
+     41,
+     0.0625
+    ],
+    [
+     43,
+     0.0625
+    ],
+    [
+     44,
+     0.0625
+    ],
+    [
+     46,
+     0.125
+    ],
+    [
+     47,
+     0.0625
+    ],
+    [
+     49,
+     0.0625
+    ],
+    [
+     50,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 0,
+   "maximum": 330,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 84 whole-turn replays"
+ ]
+}

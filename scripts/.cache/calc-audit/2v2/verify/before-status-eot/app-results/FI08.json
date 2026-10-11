@@ -1,0 +1,175 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 161,
+    "maximum": 161
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbuzz",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 57,
+      "max": 67,
+      "minPercent": 43.84615384615385,
+      "maxPercent": 51.53846153846153,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbuzz",
+       "effectiveName": "Bug Buzz",
+       "effectiveType": "Bug",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 57,
+       "max": 67,
+       "minPercent": 43.84615384615385,
+       "maxPercent": 51.53846153846153,
+       "rolls": [
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Buzz: 57–67 HP (43.8–51.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Disguise: Mimikyu takes no damage.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 161,
+    "maximum": 161,
+    "low": 161,
+    "average": 161,
+    "high": 161,
+    "min": 161,
+    "max": 161,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 114,
+    "average": 114,
+    "high": 114,
+    "min": 114,
+    "max": 114,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbuzz",
+     "effectiveName": "Bug Buzz",
+     "effectiveType": "Bug",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 10% chance to lower the target's Special Defense by 1 stage.",
+     "assumptions": [],
+     "reason": "Intact Disguise takes the first hit.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.311200000000099,
+ "preflight": []
+}

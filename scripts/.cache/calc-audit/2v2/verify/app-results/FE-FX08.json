@@ -1,0 +1,386 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": null,
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": null
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "strugglebug",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 12,
+      "max": 14,
+      "minPercent": 7.741935483870968,
+      "maxPercent": 9.032258064516128,
+      "koChance": 0,
+      "row": {
+       "moveId": "strugglebug",
+       "effectiveName": "Struggle Bug",
+       "effectiveType": "Bug",
+       "effectivePower": 50,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 12,
+       "max": 14,
+       "minPercent": 7.741935483870968,
+       "maxPercent": 9.032258064516128,
+       "rolls": [
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        13,
+        13,
+        13,
+        13,
+        13,
+        14
+       ],
+       "ohkoChance": 0,
+       "description": "Struggle Bug: 12–14 HP (7.7–9.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "sparklingaria",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 70,
+      "max": 84,
+      "minPercent": 45.16129032258064,
+      "maxPercent": 54.19354838709678,
+      "koChance": 0,
+      "row": {
+       "moveId": "sparklingaria",
+       "effectiveName": "Sparkling Aria",
+       "effectiveType": "Water",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 70,
+       "max": 84,
+       "minPercent": 45.16129032258064,
+       "maxPercent": 54.19354838709678,
+       "rolls": [
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Sparkling Aria: 70–84 HP (45.2–54.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 143,
+    "average": 142.5625,
+    "high": 141,
+    "min": 141,
+    "max": 143,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": null,
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 85,
+    "average": 78.25,
+    "high": 71,
+    "min": 71,
+    "max": 85,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": null
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "sparklingaria",
+     "effectiveName": "Sparkling Aria",
+     "effectiveType": "Water",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 106,
+     "max": 126,
+     "minPercent": 68.38709677419355,
+     "maxPercent": 81.29032258064515,
+     "rolls": [
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      117,
+      118,
+      120,
+      121,
+      123,
+      124,
+      126
+     ],
+     "ohkoChance": 0,
+     "description": "Sparkling Aria: 106–126 HP (68.4–81.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the target at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 49,
+      "high": 29,
+      "average": 39.375,
+      "min": 29,
+      "max": 49,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 106,
+        "heals": []
+       },
+       "high": {
+        "dealt": 126,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "strugglebug",
+     "effectiveName": "Struggle Bug",
+     "effectiveType": "Bug",
+     "effectivePower": 50,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 12,
+     "max": 14,
+     "minPercent": 7.741935483870968,
+     "maxPercent": 9.032258064516128,
+     "rolls": [
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      13,
+      13,
+      13,
+      13,
+      13,
+      14
+     ],
+     "ohkoChance": 0,
+     "description": "Struggle Bug: 12–14 HP (7.7–9.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 13,
+      "fewest": 12,
+      "fasterChance": 0.010427249590549081,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 143,
+      "high": 141,
+      "average": 142.5625,
+      "min": 141,
+      "max": 143,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 12,
+        "heals": []
+       },
+       "high": {
+        "dealt": 14,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 143,
+     "average": 142.5625,
+     "high": 141,
+     "min": 141,
+     "max": 143,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": null,
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 76,
+     "average": 69.25,
+     "high": 62,
+     "min": 62,
+     "max": 76,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": null
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.091500000000451,
+ "preflight": []
+}

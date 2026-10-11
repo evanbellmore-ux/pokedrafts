@@ -1,0 +1,583 @@
+{
+ "id": "MV15",
+ "title": "Max Strike from Extreme Speed keeps its +2: before a faster foe",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Arcanine first.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 43,
+   "classes": 31,
+   "ms": 36,
+   "decisions": {
+    "fail:": 13,
+    "roll": 13
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       79,
+       0.0625
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       81,
+       0.0625
+      ],
+      [
+       82,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       88,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 82.25,
+     "min": 76,
+     "max": 88,
+     "modeTieUp": 87,
+     "modeTieDown": 80
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 65,
+       "dmgMax": 77,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Charizard|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Arcanine|ability: Flash Fire": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 6,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 65,
+       "dmgMax": 65,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Charizard|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Arcanine|ability: Flash Fire": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 6,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       76,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 76,
+     "min": 76,
+     "max": 76,
+     "modeTieUp": 76,
+     "modeTieDown": 76
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 77,
+       "dmgMax": 77,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Charizard|spe|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Arcanine|ability: Flash Fire": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 88,
+   "high": 76,
+   "average": 82.25,
+   "min": 76,
+   "max": 88,
+   "koChance": 0,
+   "dist": [
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     79,
+     0.0625
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.0625
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     88,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

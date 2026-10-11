@@ -1,0 +1,475 @@
+{
+ "id": "V39",
+ "title": "Spiky Shield hurts a contact attacker",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Dragon Claw is blocked; Garchomp loses 1/8 of its HP.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Garchomp|hp|[from] Spiky Shield|[of] p2a: Chesnaught": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Chesnaught|move: Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Garchomp|hp|[from] Spiky Shield|[of] p2a: Chesnaught": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Chesnaught|move: Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Garchomp|hp|[from] Spiky Shield|[of] p2a: Chesnaught": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Chesnaught|move: Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 161,
+   "high": 161,
+   "average": 161,
+   "min": 161,
+   "max": 161,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

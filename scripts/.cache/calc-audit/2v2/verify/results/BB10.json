@@ -1,0 +1,1340 @@
+{
+ "id": "BB10",
+ "title": "Bug Bite that may knock the Sitrus holder out still heals the user (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Politoed at 90/165 faints at the higher rolls; either way Scizor eats the Sitrus Berry: 96 (sd-probe ko-sitrus).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 16,
+   "classes": 6,
+   "ms": 25,
+   "decisions": {
+    "fail:": 11,
+    "roll": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 90,
+     "maximum": 165,
+     "dist": [
+      [
+       0,
+       0.4375
+      ],
+      [
+       2,
+       0.0625
+      ],
+      [
+       3,
+       0.125
+      ],
+      [
+       5,
+       0.0625
+      ],
+      [
+       6,
+       0.125
+      ],
+      [
+       8,
+       0.125
+      ],
+      [
+       9,
+       0.0625
+      ]
+     ],
+     "koChance": 0.4375,
+     "average": 3.125,
+     "min": 0,
+     "max": 9,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.4375,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 0.0625,
+       "enditem:sitrusberry": 1,
+       "damage:-82": 0.125,
+       "damage:-84": 0.125,
+       "damage:-85": 0.0625,
+       "damage:-87": 0.125,
+       "damage:-88": 0.0625,
+       "damage:-90": 0.4375,
+       "faint": 0.4375
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "opponent-left": {
+       "min": -90,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -90,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 11,
+    "classes": 1,
+    "ms": 25,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Politoed",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        0,
+        0.4375
+       ],
+       [
+        2,
+        0.0625
+       ],
+       [
+        3,
+        0.125
+       ],
+       [
+        5,
+        0.0625
+       ],
+       [
+        6,
+        0.125
+       ],
+       [
+        8,
+        0.125
+       ],
+       [
+        9,
+        0.0625
+       ]
+      ],
+      "koChance": 0.4375,
+      "average": 3.125,
+      "min": 0,
+      "max": 9,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.5625,
+       "fnt": 0.4375
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.4375
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 27,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 90,
+     "maximum": 165,
+     "dist": [
+      [
+       9,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 9,
+     "min": 9,
+     "max": 9,
+     "modeTieUp": 9,
+     "modeTieDown": 9,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 1,
+       "enditem:sitrusberry": 1
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -81,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 27,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Politoed",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        9,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 9,
+      "min": 9,
+      "max": 9,
+      "modeTieUp": 9,
+      "modeTieDown": 9,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 60,
+     "maximum": 145,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 90,
+     "maximum": 165,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-90": 1,
+       "enditem:sitrusberry": 1,
+       "faint": 1
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "opponent-left": {
+       "min": -90,
+       "max": -90
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -90,
+       "max": -90,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Politoed",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 60,
+   "maximum": 145,
+   "low": 96,
+   "high": 96,
+   "average": 96,
+   "min": 96,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 90,
+   "maximum": 165,
+   "low": 9,
+   "high": 0,
+   "average": 3.125,
+   "min": 0,
+   "max": 9,
+   "koChance": 0.4375,
+   "dist": [
+    [
+     0,
+     0.4375
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     3,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     6,
+     0.125
+    ],
+    [
+     8,
+     0.125
+    ],
+    [
+     9,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 60,
+   "maximum": 145,
+   "low": 96,
+   "high": 96,
+   "average": 96,
+   "min": 96,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 90,
+   "maximum": 165,
+   "low": 9,
+   "high": 0,
+   "average": 3.125,
+   "min": 0,
+   "max": 9,
+   "koChance": 0.4375,
+   "dist": [
+    [
+     0,
+     0.4375
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     3,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     6,
+     0.125
+    ],
+    [
+     8,
+     0.125
+    ],
+    [
+     9,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

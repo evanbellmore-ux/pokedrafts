@@ -1,0 +1,1482 @@
+{
+ "id": "VG14",
+ "title": "Justified suppressed: Weavile's Knock Off into Lucario, then Lucario's Close Combat into Weavile at +0",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "no Justified boost",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 106,
+   "classes": 21,
+   "ms": 178,
+   "decisions": {
+    "fail:": 92,
+    "roll": 92,
+    "secondary": 84
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.25
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       114,
+       0.125
+      ],
+      [
+       115,
+       0.3125
+      ],
+      [
+       116,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 113.75,
+     "min": 111,
+     "max": 116,
+     "modeTieUp": 115,
+     "modeTieDown": 115,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-29": 0.125,
+       "damage:-30": 0.3125,
+       "damage:-31": 0.125,
+       "damage:-32": 0.125,
+       "damage:-33": 0.25,
+       "damage:-34": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -34,
+       "max": -29
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -34,
+       "max": -29,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 412,
+       "dmgMax": 492,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Lucario|def|1": 1,
+      "|-unboost|p2b: Lucario|spd|1": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-145": 1,
+       "faint": 1
+      },
+      "opponent-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -145,
+       "max": -145
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -145,
+       "max": -145,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 178,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        111,
+        0.0625
+       ],
+       [
+        112,
+        0.25
+       ],
+       [
+        113,
+        0.125
+       ],
+       [
+        114,
+        0.125
+       ],
+       [
+        115,
+        0.3125
+       ],
+       [
+        116,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 113.75,
+      "min": 111,
+      "max": 116,
+      "modeTieUp": 115,
+      "modeTieDown": 115,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Weezing-Galar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       116,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 116,
+     "min": 116,
+     "max": 116,
+     "modeTieUp": 116,
+     "modeTieDown": 116,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-29": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -29,
+       "max": -29
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -29,
+       "max": -29,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 412,
+       "dmgMax": 412,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Lucario|def|1": 1,
+      "|-unboost|p2b: Lucario|spd|1": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-145": 1,
+       "faint": 1
+      },
+      "opponent-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -145,
+       "max": -145
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -145,
+       "max": -145,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        116,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 116,
+      "min": 116,
+      "max": 116,
+      "modeTieUp": 116,
+      "modeTieDown": 116,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Weezing-Galar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       111,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 111,
+     "min": 111,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 111,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-34": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -34,
+       "max": -34
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -34,
+       "max": -34,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 492,
+       "dmgMax": 492,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Lucario|def|1": 1,
+      "|-unboost|p2b: Lucario|spd|1": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-145": 1,
+       "faint": 1
+      },
+      "opponent-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -145,
+       "max": -145
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -145,
+       "max": -145,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        111,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 111,
+      "min": 111,
+      "max": 111,
+      "modeTieUp": 111,
+      "modeTieDown": 111,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Weezing-Galar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 116,
+   "high": 111,
+   "average": 113.75,
+   "min": 111,
+   "max": 116,
+   "koChance": 0,
+   "dist": [
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.25
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.3125
+    ],
+    [
+     116,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 116,
+   "high": 111,
+   "average": 113.75,
+   "min": 111,
+   "max": 116,
+   "koChance": 0,
+   "dist": [
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.25
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.3125
+    ],
+    [
+     116,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

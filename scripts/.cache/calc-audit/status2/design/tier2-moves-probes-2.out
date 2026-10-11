@@ -1,0 +1,452 @@
+
+== T2-VS01-sv sv: Howl (its ally's Attack rises too) first; Torkoal's Burning Jealousy burns both; the burned foe's later Body Slam is halved; end of turn burn
+  |move|p2a: Arc|Howl|p2a: Arc|[spread] p2a,p2b
+  |-boost|p2a: Arc|atk|1
+  |-boost|p2b: Slammer|atk|1
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Tork|Burning Jealousy|p2a: Arc|[spread] p2a,p2b
+  |-resisted|p2a: Arc
+  |-damage|p2a: Arc|150/165
+  |-damage|p2a: Arc|150/165
+  |-damage|p2b: Slammer|223/235
+  |-damage|p2b: Slammer|223/235
+  |-status|p2b: Slammer|brn
+  |move|p2b: Slammer|Body Slam|p1a: Tork
+  |-damage|p1a: Tork|112/145
+  |-damage|p1a: Tork|112/145
+  |-damage|p2b: Slammer|209/235 brn|[from] brn
+  |-damage|p2b: Slammer|209/235 brn|[from] brn
+  |turn|2
+
+== T2-VS01-swsh swsh: Howl (its ally's Attack rises too) first; Torkoal's Burning Jealousy burns both; the burned foe's later Body Slam is halved; end of turn burn
+  |move|p2a: Arc|Howl|p2a: Arc|[spread] p2a,p2b
+  |-boost|p2a: Arc|atk|1
+  |-boost|p2b: Slammer|atk|1
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Tork|Burning Jealousy|p2a: Arc|[spread] p2a,p2b
+  |-resisted|p2a: Arc
+  |-damage|p2a: Arc|150/165
+  |-damage|p2a: Arc|150/165
+  |-damage|p2b: Slammer|223/235
+  |-damage|p2b: Slammer|223/235
+  |-status|p2b: Slammer|brn
+  |move|p2b: Slammer|Body Slam|p1a: Tork
+  |-damage|p1a: Tork|112/145
+  |-damage|p1a: Tork|112/145
+  |-damage|p2b: Slammer|209/235 brn|[from] brn
+  |-damage|p2b: Slammer|209/235 brn|[from] brn
+  |turn|2
+
+== T2-VS01c sv: control: no Howl (Splash); the same Burning Jealousy and Body Slam
+  |move|p2a: Arc|Splash|p2a: Arc
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Tork|Burning Jealousy|p2a: Arc|[spread] p2a,p2b
+  |-resisted|p2a: Arc
+  |-damage|p2a: Arc|150/165
+  |-damage|p2a: Arc|150/165
+  |-damage|p2b: Slammer|223/235
+  |-damage|p2b: Slammer|223/235
+  |move|p2b: Slammer|Body Slam|p1a: Tork
+  |-damage|p1a: Tork|102/145
+  |-damage|p1a: Tork|102/145
+  |turn|2
+
+### T2-VS02 sv: a foe's Howl raises both foes; Sylveon's Alluring Voice confuses the slower one; its later Body Slam (a third self-hit chance)  (64 runs)
+ turn 1 after moves: p1a Syl [49:1] | p1b Lax1 [235:1] | p2a Arc [165:1] | p2b Slammer [189:1]
+ turn 1 end of turn: p1a Syl [49:1] | p1b Lax1 [235:1] | p2a Arc [165:1] | p2b Slammer [189:1]
+   [1] T1 end: p1a:Syl(49/170 cutecharm) atk-1 [-] | p1b:Lax1(235/235 thickfat) atk-1 [-] | p2a:Arc(165/165 intimidate) atk+1 [-] | p2b:Slammer(189/235 thickfat) atk+1 [confusion]
+   [1] T1 moves: p1a:Syl(49/170 cutecharm) atk-1 [-] | p1b:Lax1(235/235 thickfat) atk-1 [-] | p2a:Arc(165/165 intimidate) atk+1 [-] | p2b:Slammer(189/235 thickfat) atk+1 [confusion]
+   1  |move|p2a: Arc|Howl|p2a: Arc|[spread] p2a,p2b
+   1  |-boost|p2a: Arc|atk|1
+   1  |-boost|p2b: Slammer|atk|1
+   1  |move|p1a: Syl|Alluring Voice|p2b: Slammer
+   1  |-damage|p2b: Slammer|189/235
+   1  |-start|p2b: Slammer|confusion
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |-activate|p2b: Slammer|confusion
+   1  |move|p2b: Slammer|Body Slam|p1a: Syl
+   1  |-damage|p1a: Syl|49/170
+   1  |turn|2
+
+== T2-VS03 swsh: Marshadow's Spectral Thief into a +2 Attack Lucario (a Ghost hit), which then uses Close Combat
+  |move|p1a: Shadow|Spectral Thief||[still]
+  |-clearpositiveboost|p2a: Luke|p1a: Shadow|move: Spectral Thief
+  |-boost|p1a: Shadow|atk|2
+  |-boost|p1a: Shadow|evasion|1
+  |-damage|p2a: Luke|0 fnt
+  |-damage|p2a: Luke|0 fnt
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-VS03b usum: the same Spectral Thief through the target's Substitute (bypasssub) and a foe Opportunist? (gen 7: none) ; the target's later Close Combat
+  |move|p1a: Shadow|Spectral Thief||[still]
+  |-clearpositiveboost|p2a: Luke|p1a: Shadow|move: Spectral Thief
+  |-boost|p1a: Shadow|atk|2
+  |-damage|p2a: Luke|0 fnt
+  |-damage|p2a: Luke|0 fnt
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-VS04 usum, Trick Room: Bronzong (Levitate) moves first; Zygarde's Core Enforcer suppresses it; Rotom-Wash still to move keeps Levitate; a later Earthquake hits Bronzong only
+  |move|p2a: Gong|Splash|p2a: Gong
+  |move|p1a: Zyg|Core Enforcer|p2a: Gong|[spread] p2a,p2b
+  |-damage|p2a: Gong|127/142
+  |-damage|p2a: Gong|127/142
+  |-damage|p2b: Rotom|92/125
+  |-damage|p2b: Rotom|92/125
+  |-endability|p2a: Gong
+  |move|p2b: Rotom|Splash|p2b: Rotom
+  |move|p1b: Chomp|Earthquake|p2a: Gong|[spread] p1a,p2a
+  |-immune|p2b: Rotom|[from] ability: Levitate
+  |-damage|p1a: Zyg|138/183
+  |-damage|p1a: Zyg|138/183
+  |-damage|p2a: Gong|35/142
+  |-damage|p2a: Gong|35/142
+  |turn|2
+
+== T2-SE01 champions: Garchomp's Rock Slide into Scovillain-Mega (Spicy Spray) and Snorlax: one burn
+  |move|p1a: Chomp|Rock Slide|p2a: Scov|[spread] p2a,p2b
+  |-supereffective|p2a: Scov|1
+  |-damage|p2a: Scov|78/140
+  |-damage|p2a: Scov|78/140
+  |-damage|p2b: Lax2|197/235
+  |-damage|p2b: Lax2|197/235
+  |-status|p1a: Chomp|brn|[from] ability: Spicy Spray|[of] p2a: Scov
+  |move|p2a: Scov|Splash|p2a: Scov
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-damage|p1a: Chomp|172/183 brn|[from] brn
+  |-damage|p1a: Chomp|172/183 brn|[from] brn
+  |turn|2
+
+== T2-SE02 champions: Kingambit (Defiant) Breaking Swipe (contact) into Goodra and Hisuian Goodra (Gooey): Spe −1 twice, Defiant +2 twice; Kingambit's later move
+  |move|p1a: King|Breaking Swipe|p2a: Goo|[spread] p2a,p2b
+  |-supereffective|p2a: Goo|1
+  |-damage|p2a: Goo|107/165
+  |-damage|p2a: Goo|107/165
+  |-damage|p2b: Hgoo|133/155
+  |-damage|p2b: Hgoo|133/155
+  |-unboost|p2a: Goo|atk|1
+  |-unboost|p2b: Hgoo|atk|1
+  |-ability|p2a: Goo|Gooey
+  |-unboost|p1a: King|spe|1
+  |-ability|p1a: King|Defiant|boost
+  |-boost|p1a: King|atk|2
+  |-ability|p2b: Hgoo|Gooey
+  |-unboost|p1a: King|spe|1
+  |-ability|p1a: King|Defiant|boost
+  |-boost|p1a: King|atk|2
+  |move|p2a: Goo|Splash|p2a: Goo
+  |move|p2b: Hgoo|Splash|p2b: Hgoo
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SE03 champions: Kingambit at Spe −6 Breaking Swipe into two Gooey Goodra: each drop fails, Defiant does not rise
+  |move|p2a: Goo|Splash|p2a: Goo
+  |move|p2b: Hgoo|Splash|p2b: Hgoo
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: King|Breaking Swipe|p2a: Goo|[spread] p2a,p2b
+  |-supereffective|p2a: Goo|1
+  |-damage|p2a: Goo|107/165
+  |-damage|p2a: Goo|107/165
+  |-damage|p2b: Hgoo|133/155
+  |-damage|p2b: Hgoo|133/155
+  |-unboost|p2a: Goo|atk|1
+  |-unboost|p2b: Hgoo|atk|1
+  |-ability|p2a: Goo|Gooey
+  |-unboost|p1a: King|spe|0
+  |-ability|p2b: Hgoo|Gooey
+  |-unboost|p1a: King|spe|0
+  |turn|2
+
+== T2-SE04 sv: a White Herb Kingambit's Breaking Swipe into two Gooey Goodra: both drops, then White Herb restores at the Update after the hits
+  |move|p2a: Goo|Splash|p2a: Goo
+  |move|p2b: Hgoo|Splash|p2b: Hgoo
+  |move|p1a: King|Breaking Swipe|p2a: Goo|[spread] p2a,p2b
+  |-supereffective|p2a: Goo
+  |-damage|p2a: Goo|107/165
+  |-damage|p2a: Goo|107/165
+  |-damage|p2b: Hgoo|133/155
+  |-damage|p2b: Hgoo|133/155
+  |-unboost|p2a: Goo|atk|1
+  |-unboost|p2b: Hgoo|atk|1
+  |-ability|p2a: Goo|Gooey
+  |-unboost|p1a: King|spe|1
+  |-ability|p2b: Hgoo|Gooey
+  |-unboost|p1a: King|spe|1
+  |-enditem|p1a: King|White Herb
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SCK01 champions: Garchomp at 20 HP Breaking Swipe into a Spiky Shield Chesnaught and a Snorlax: Garchomp faints to the shield before the hits
+  |move|p2a: Ches|Spiky Shield|p2a: Ches
+  |move|p1a: Chomp|Breaking Swipe|p2a: Ches|[spread] p2b
+  |-activate|p2a: Ches|move: Protect
+  |-damage|p1a: Chomp|0 fnt|[from] Spiky Shield|[of] p2a: Ches
+  |-damage|p1a: Chomp|0 fnt|[from] Spiky Shield|[of] p2a: Ches
+  |-damage|p2b: Lax2|190/235
+  |-damage|p2b: Lax2|190/235
+  |-unboost|p2b: Lax2|atk|1
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-CD01 swsh: Garchomp's Dual Chop? Dragon Claw into Eldegoss (Cotton Down): Spe −1 on Garchomp, its ally and Eldegoss's ally; a Mirror Armor Corviknight reflects
+  |move|p1a: Chomp|Dragon Claw|p2a: Goss
+  |-damage|p2a: Goss|72/135
+  |-damage|p2a: Goss|72/135
+  |-ability|p2a: Goss|Cotton Down
+  |-unboost|p1a: Chomp|spe|1
+  |-ability|p1b: Corv|Mirror Armor
+  |-unboost|p2a: Goss|spe|1
+  |-unboost|p2b: Lax2|spe|1
+  |move|p1b: Corv|Splash|p1b: Corv
+  |move|p2a: Goss|Splash|p2a: Goss
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== T2-CD02 swsh: a two-hit Dual Wingbeat into Eldegoss: two rounds of drops; its Defiant ally Bisharp +2 Atk twice
+  |move|p1a: Nite|Dual Wingbeat|p2a: Goss
+  |-supereffective|p2a: Goss
+  |-damage|p2a: Goss|69/135
+  |-damage|p2a: Goss|69/135
+  |-ability|p2a: Goss|Cotton Down
+  |-unboost|p1a: Nite|spe|1
+  |-unboost|p1b: Shar|spe|1
+  |-ability|p1b: Shar|Defiant|boost
+  |-boost|p1b: Shar|atk|2
+  |-unboost|p2b: Lax2|spe|1
+  |-supereffective|p2a: Goss
+  |-damage|p2a: Goss|3/135
+  |-damage|p2a: Goss|3/135
+  |-ability|p2a: Goss|Cotton Down
+  |-unboost|p1a: Nite|spe|1
+  |-unboost|p1b: Shar|spe|1
+  |-ability|p1b: Shar|Defiant|boost
+  |-boost|p1b: Shar|atk|2
+  |-unboost|p2b: Lax2|spe|1
+  |move|p2a: Goss|Splash|p2a: Goss
+  |move|p1b: Shar|Splash|p1b: Shar
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== T2-FV01 sv: Snarl (100% SpA −1) into a Grass Comfey? no: into Flower Veil Comfey's Grass ally Venusaur and Comfey itself
+  |move|p2a: Comf|Splash|p2a: Comf
+  |move|p1a: Roar|Snarl|p2a: Comf|[spread] p2a,p2b
+  |-resisted|p2a: Comf
+  |-damage|p2a: Comf|117/126
+  |-damage|p2a: Comf|117/126
+  |-damage|p2b: Saur|136/155
+  |-damage|p2b: Saur|136/155
+  |-unboost|p2a: Comf|spa|1
+  |move|p2b: Saur|Splash|p2b: Saur
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-FV02 sv: a Mold Breaker Excadrill's Rock Tomb? no: Bulldoze (100% Spe −1, spread) into Flower Veil's Grass side: Mold Breaker passes the veil
+  |move|p1b: Lax|Protect|p1b: Lax
+  |move|p1a: Drill|Bulldoze|p2a: Comf|[spread] p2a,p2b
+  |-activate|p1b: Lax|move: Protect
+  |-damage|p2a: Comf|90/126
+  |-damage|p2a: Comf|90/126
+  |-damage|p2b: Saur|116/155
+  |-damage|p2b: Saur|116/155
+  |-unboost|p2a: Comf|spe|1
+  |-unboost|p2b: Saur|spe|1
+  |move|p2a: Comf|Splash|p2a: Comf
+  |move|p2b: Saur|Splash|p2b: Saur
+  |turn|2
+
+== T2-FV03 swsh: Pastel Veil Galarian Ponyta's ally hit by a 100% poison move (Poison Fang? no: Toxic Spikes? : use Mortal Spin is sv) — swsh: Nidoking's Poison Jab forced? (Barb Barrage absent): Pastel Veil with a Sludge Bomb forced 30% poison
+  |move|p1a: King|Sludge Bomb|p2b: Ally
+  |-damage|p2b: Ally|193/235
+  |-damage|p2b: Ally|193/235
+  |move|p2a: Pony|Splash|p2a: Pony
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Ally|Splash|p2b: Ally
+  |turn|2
+
+== T2-AF01 sv: Garchomp at full HP with Sitrus Berry: Dragon Claw knocks out a 1 HP Drifblim (Aftermath); a quarter, Sitrus at the hit's Update; then Life Orb? (no item swap: Sitrus)
+  |move|p1a: Chomp|Dragon Claw|p2a: Blim
+  |-damage|p2a: Blim|0 fnt
+  |-damage|p2a: Blim|0 fnt
+  |-damage|p1a: Chomp|65/183|[from] ability: Aftermath|[of] p2a: Blim
+  |-damage|p1a: Chomp|65/183|[from] ability: Aftermath|[of] p2a: Blim
+  |-enditem|p1a: Chomp|Sitrus Berry|[eat]
+  |-heal|p1a: Chomp|110/183|[from] item: Sitrus Berry
+  |-heal|p1a: Chomp|110/183|[from] item: Sitrus Berry
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-AF02 sv: the same knockout with a Damp Politoed? (sv: Damp Bellibolt) on the field: no Aftermath
+  |move|p1a: Chomp|Dragon Claw|p2a: Blim
+  |-damage|p2a: Blim|0 fnt
+  |-damage|p2a: Blim|0 fnt
+  |move|p2b: Damp|Splash|p2b: Damp
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-AF03 sv: Flare Blitz (recoil) knocks out a 30 HP Electrode (Aftermath): Aftermath before the recoil
+  |move|p2a: Bolt|Splash|p2a: Bolt
+  |move|p1a: Arc|Flare Blitz|p2a: Bolt
+  |-damage|p2a: Bolt|0 fnt
+  |-damage|p2a: Bolt|0 fnt
+  |-damage|p1a: Arc|124/165|[from] ability: Aftermath|[of] p2a: Bolt
+  |-damage|p1a: Arc|124/165|[from] ability: Aftermath|[of] p2a: Bolt
+  |-damage|p1a: Arc|114/165|[from] Recoil
+  |-damage|p1a: Arc|114/165|[from] Recoil
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-IO01 swsh: Garchomp's Dual Chop? Dragon Claw knocks out Pyukumuku at 40 HP (Innards Out: 40 to Garchomp)
+  |move|p1a: Chomp|Dragon Claw|p2a: Pyuk
+  |-damage|p2a: Pyuk|0 fnt
+  |-damage|p2a: Pyuk|0 fnt
+  |-damage|p1a: Chomp|143/183|[from] ability: Innards Out|[of] p2a: Pyuk
+  |-damage|p1a: Chomp|143/183|[from] ability: Innards Out|[of] p2a: Pyuk
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-IO02 swsh: a two-hit Dual Wingbeat knocks out Pyukumuku at 60 HP on the second hit: Innards Out deals the HP it had at the move's start (60)
+  |move|p1a: Nite|Dual Wingbeat|p2a: Pyuk
+  |-damage|p2a: Pyuk|20/130
+  |-damage|p2a: Pyuk|20/130
+  |-damage|p2a: Pyuk|0 fnt
+  |-damage|p2a: Pyuk|0 fnt
+  |-damage|p1a: Nite|121/166|[from] ability: Innards Out|[of] p2a: Pyuk
+  |-damage|p1a: Nite|121/166|[from] ability: Innards Out|[of] p2a: Pyuk
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-IO03 champions: Rock Slide knocks out Victreebel-Mega (Innards Out) at 30 HP and hits its ally: 30 to the attacker
+  |move|p1a: Chomp|Rock Slide|p2a: Bell|[spread] p2a,p2b
+  |-damage|p2a: Bell|0 fnt
+  |-damage|p2a: Bell|0 fnt
+  |-damage|p2b: Lax2|197/235
+  |-damage|p2b: Lax2|197/235
+  |-damage|p1a: Chomp|153/183|[from] ability: Innards Out|[of] p2a: Bell
+  |-damage|p1a: Chomp|153/183|[from] ability: Innards Out|[of] p2a: Bell
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-BB01 sv: Greninja-Bond's Dark Pulse knocks out a foe; then its ally's later move (bondTriggered once)
+  |move|p1a: Gren|Dark Pulse|p2a: Zam
+  |-supereffective|p2a: Zam
+  |-damage|p2a: Zam|0 fnt
+  |-damage|p2a: Zam|0 fnt
+  |-ability|p1a: Gren|Battle Bond|boost
+  |-boost|p1a: Gren|atk|1
+  |-boost|p1a: Gren|spa|1
+  |-boost|p1a: Gren|spe|1
+  |-activate|p1a: Gren|ability: Battle Bond
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-BB02 usum: Greninja-Bond knocks out a foe: Ash form (stats); its later Water Shuriken? (next turn) — the form and a later hit into it
+  |move|p1a: Gren|Dark Pulse|p2a: Zam
+  |-damage|p2a: Zam|0 fnt
+  |-damage|p2a: Zam|0 fnt
+  |-activate|p1a: Gren|ability: Battle Bond
+  |detailschange|p1a: Gren|Greninja-Ash, L50, M
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Slammer|Body Slam|p1a: Gren
+  |-damage|p1a: Gren|75/147
+  |-damage|p1a: Gren|75/147
+  |turn|2
+
+== T2-BB03 sv: Greninja-Bond knocks out the foe side's last Pokémon on the field with no bench: no boost (foePokemonLeft 0)
+  |move|p1a: Gren|Dark Pulse|p2a: Zam
+  |-supereffective|p2a: Zam
+  |-damage|p2a: Zam|0 fnt
+  |-damage|p2a: Zam|0 fnt
+
+== T2-RC01 sv: Passimian (Receiver) beside Incineroar (Intimidate) at 1 HP; a foe knocks Incineroar out; Passimian gets Intimidate, which acts
+  |move|p2a: Chomp|Dragon Claw|p1a: Roar
+  |-damage|p1a: Roar|0 fnt
+  |-damage|p1a: Roar|0 fnt
+  |-ability|p1b: Pass|Intimidate|Receiver|[from] ability: Receiver|[of] p1a: Roar
+  |-ability|p1b: Pass|Intimidate|boost
+  |-unboost|p2a: Chomp|atk|1
+  |-unboost|p2b: Lax2|atk|1
+  |move|p1b: Pass|Splash|p1b: Pass
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== T2-RC02 usum: Alolan Muk (Power of Alchemy) beside a 1 HP Mimikyu (Disguise: noreceiver)? use Levitate Gengar? (usum Gengar Levitate) knocked out: Muk gets Levitate; a later Earthquake
+  |move|p2a: Chomp|Dragon Claw|p1a: Gar
+  |-damage|p1a: Gar|0 fnt
+  |-damage|p1a: Gar|0 fnt
+  |faint|p1a: Gar
+  |-ability|p1b: Muk|Levitate|Power of Alchemy|[from] ability: Power of Alchemy|[of] p1a: Gar
+  |move|p2b: Drill|Earthquake|p1b: Muk|[spread] p2a
+  |-immune|p1b: Muk|[from] ability: Levitate
+  |-damage|p2a: Chomp|125/183
+  |-damage|p2a: Chomp|125/183
+  |move|p1b: Muk|Splash|p1b: Muk
+  |turn|2
+
+== T2-UN01 sv: Tyranitar (Unnerve) beside Garchomp; Garchomp's Dragon Claw into a Haban Berry Dragonite: no Berry (a third Pokémon's Unnerve)
+  |move|p1b: Chomp|Dragon Claw|p2a: Nite
+  |-supereffective|p2a: Nite
+  |-damage|p2a: Nite|50/166
+  |-damage|p2a: Nite|50/166
+  |move|p2a: Nite|Splash|p2a: Nite
+  |move|p1a: Tar|Splash|p1a: Tar
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== T2-UN01c sv: control: Garchomp's Dragon Claw into the Haban Berry Dragonite with no Unnerve on the field
+  |move|p1b: Chomp|Dragon Claw|p2a: Nite
+  |-supereffective|p2a: Nite
+  |-enditem|p2a: Nite|Haban Berry|[eat]
+  |-enditem|p2a: Nite|Haban Berry|[weaken]
+  |-damage|p2a: Nite|108/166
+  |-damage|p2a: Nite|108/166
+  |move|p2a: Nite|Splash|p2a: Nite
+  |move|p1a: Tar|Splash|p1a: Tar
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |-damage|p2a: Nite|98/166|[from] Sandstorm
+  |-damage|p2a: Nite|98/166|[from] Sandstorm
+  |-damage|p2b: Lax2|221/235|[from] Sandstorm
+  |-damage|p2b: Lax2|221/235|[from] Sandstorm
+  |turn|2
+
+== T2-UN02 sv: Tyranitar (Unnerve)'s Earthquake hits its Shuca Berry ally Magnezone? (Ground into Steel/Electric 4x): its own Unnerve does not stop its ally's Berry
+  |move|p1a: Tar|Earthquake|p2a: Lax4|[spread] p1b,p2a,p2b
+  |-supereffective|p1b: Zone
+  |-enditem|p1b: Zone|Shuca Berry|[eat]
+  |-enditem|p1b: Zone|Shuca Berry|[weaken]
+  |-damage|p1b: Zone|79/145
+  |-damage|p1b: Zone|79/145
+  |-damage|p2a: Lax4|184/235
+  |-damage|p2a: Lax4|184/235
+  |-damage|p2b: Lax8|184/235
+  |-damage|p2b: Lax8|184/235
+  |move|p1b: Zone|Splash|p1b: Zone
+  |move|p2b: Lax8|Splash|p2b: Lax8
+  |move|p2a: Lax4|Splash|p2a: Lax4
+  |turn|2
+
+== T2-UN03 sv: Arcanine (Sitrus at 90/166?) Flare Blitz knocks out a 1 HP Tyranitar (Unnerve): the hit's Update (Unnerve gone) before the recoil
+  |move|p1a: Arc|Flare Blitz|p2a: Tar
+  |-resisted|p2a: Tar
+  |-damage|p2a: Tar|0 fnt
+  |-damage|p2a: Tar|0 fnt
+  |-damage|p1a: Arc|73/165|[from] item: Rocky Helmet|[of] p2a: Tar
+  |-damage|p1a: Arc|73/165|[from] item: Rocky Helmet|[of] p2a: Tar
+  |-enditem|p1a: Arc|Sitrus Berry|[eat]
+  |-heal|p1a: Arc|114/165|[from] item: Sitrus Berry
+  |-heal|p1a: Arc|114/165|[from] item: Sitrus Berry
+  |-damage|p1a: Arc|112/165|[from] Recoil
+  |-damage|p1a: Arc|112/165|[from] Recoil
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2

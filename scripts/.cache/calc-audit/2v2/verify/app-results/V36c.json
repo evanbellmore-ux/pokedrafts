@@ -1,0 +1,318 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "taunt",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Taunted.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 31,
+      "minPercent": 16.883116883116884,
+      "maxPercent": 20.12987012987013,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 26,
+       "max": 31,
+       "minPercent": 16.883116883116884,
+       "maxPercent": 20.12987012987013,
+       "rolls": [
+        26,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 26–31 HP (16.9–20.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 128,
+    "average": 125.5625,
+    "high": 123,
+    "min": 123,
+    "max": 128,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Taunted.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 16.883116883116884,
+     "maxPercent": 20.12987012987013,
+     "rolls": [
+      26,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 26–31 HP (16.9–20.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.00002002716064453125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 128,
+      "high": 123,
+      "average": 125.5625,
+      "min": 123,
+      "max": 128,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 128,
+     "average": 125.5625,
+     "high": 123,
+     "min": 123,
+     "max": 128,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Taunted.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.6704999999999472,
+ "preflight": []
+}

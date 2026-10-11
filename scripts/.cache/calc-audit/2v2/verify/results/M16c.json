@@ -1,0 +1,1495 @@
+{
+ "id": "M16c",
+ "title": "Tera Shell resists every hit of a multi-hit move",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "terashell effectState.resisted keeps every Scale Shot hit not very effective; Close Combat after it super effective.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 2370,
+   "classes": 219,
+   "ms": 3532,
+   "decisions": {
+    "accuracy": 1360,
+    "hits": 1360,
+    "fail:": 7232,
+    "roll": 7232,
+    "secondary": 864
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 0.9999999999999999,
+      "spe:1": 0.9999999999999999
+     },
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 0.9999999999999999,
+      "spd:-1": 0.9999999999999999
+     },
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Terapagos",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0.9999999999999999,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "3": 0.3499999999999999,
+      "4": 0.34999999999999987,
+      "5": 0.15000000000000002,
+      "6": 0.14999999999999997
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "scaleshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 20,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Terapagos|ability: Tera Shell": 1,
+      "|-unboost|p1a: Garchomp|def|1": 1,
+      "|-boost|p1a: Garchomp|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:terashell": 1,
+       "damage:-10": 0.5724121093749991,
+       "hitcount:2": 0.35,
+       "damage:-11": 0.7406387329101562,
+       "damage:-12": 0.7406387329101562,
+       "hitcount:3": 0.35,
+       "hitcount:4": 0.14999999999999997,
+       "hitcount:5": 0.14999999999999997
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spe:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -60,
+       "max": -20
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -60,
+       "max": -20,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 0.9999999999999999
+     },
+     "orderMoved": {
+      "2": 0.9999999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0.9999999999999999,
+       "dmgMin": 168,
+       "dmgMax": 200,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Lucario|def|1": 0.9999999999999999,
+      "|-unboost|p1b: Lucario|spd|1": 0.9999999999999999
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-150": 0.021874999999999995,
+       "faint": 0.9999999999999999,
+       "damage:-149": 0.06562499999999999,
+       "damage:-148": 0.11484374999999998,
+       "damage:-147": 0.0984375,
+       "damage:-146": 0.04921874999999999,
+       "damage:-140": 0.005468749999999999,
+       "damage:-139": 0.024609375,
+       "damage:-138": 0.06152343749999997,
+       "damage:-137": 0.09228515625000004,
+       "damage:-136": 0.09228515624999994,
+       "damage:-135": 0.05537109374999996,
+       "damage:-134": 0.018457031249999995,
+       "damage:-130": 0.0005859375,
+       "damage:-129": 0.0035156250000000005,
+       "damage:-128": 0.01142578125,
+       "damage:-127": 0.02373046875,
+       "damage:-126": 0.03460693359375,
+       "damage:-125": 0.03559570312500001,
+       "damage:-124": 0.0257080078125,
+       "damage:-123": 0.011865234374999993,
+       "damage:-122": 0.0029663085937500005,
+       "damage:-120": 0.000146484375,
+       "damage:-119": 0.0010986328124999996,
+       "damage:-118": 0.00439453125,
+       "damage:-117": 0.01153564453125,
+       "damage:-116": 0.0218353271484375,
+       "damage:-115": 0.030775451660156262,
+       "damage:-114": 0.032752990722656236,
+       "damage:-113": 0.025955200195312497,
+       "damage:-112": 0.014831542968750002,
+       "damage:-111": 0.0055618286132812465,
+       "damage:-110": 0.00111236572265625
+      },
+      "own-right": {
+       "boost:def:-1": 0.9999999999999999,
+       "boost:spd:-1": 0.9999999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -150,
+       "max": -110
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -150,
+       "max": -110,
+       "mass": 0.9999999999999999
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 72,
+    "classes": 72,
+    "ms": 3532,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 0.9999999999999999,
+       "spe:1": 0.9999999999999999
+      },
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 0.9999999999999999,
+       "spd:-1": 0.9999999999999999
+      },
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Terapagos",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0.9999999999999999,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "3": 0.3499999999999999,
+       "4": 0.34999999999999987,
+       "5": 0.15000000000000002,
+       "6": 0.14999999999999997
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.9999999999999999
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 1,
+    "hits": 1,
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spe:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Terapagos",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "3": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "scaleshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 20,
+       "dmgMax": 20,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Terapagos|ability: Tera Shell": 1,
+      "|-unboost|p1a: Garchomp|def|1": 1,
+      "|-boost|p1a: Garchomp|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:terashell": 1,
+       "damage:-10": 1,
+       "hitcount:2": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spe:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -20,
+       "max": -20
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -20,
+       "max": -20,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 168,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Lucario|def|1": 1,
+      "|-unboost|p1b: Lucario|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-150": 1,
+       "faint": 1
+      },
+      "own-right": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -150,
+       "max": -150
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -150,
+       "max": -150,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spe:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Terapagos",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "3": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 1,
+    "hits": 1,
+    "fail:": 6,
+    "roll": 6,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spe:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Terapagos",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "6": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "scaleshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Terapagos|ability: Tera Shell": 1,
+      "|-unboost|p1a: Garchomp|def|1": 1,
+      "|-boost|p1a: Garchomp|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:terashell": 1,
+       "damage:-12": 1,
+       "hitcount:5": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spe:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -60,
+       "max": -60
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -60,
+       "max": -60,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 200,
+       "dmgMax": 200,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Lucario|def|1": 1,
+      "|-unboost|p1b: Lucario|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-110": 1,
+       "faint": 1
+      },
+      "own-right": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -110,
+       "max": -110
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -110,
+       "max": -110,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spe:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Terapagos",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "6": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 0.9999999999999999,
+   "dist": [
+    [
+     0,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "opponent-left: Showdown species Terapagos-Terastal"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 0.9999999999999999,
+   "dist": [
+    [
+     0,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

@@ -1,0 +1,926 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "beakblast",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 0.875,
+    "skipped": [
+     {
+      "text": "Fully paralysed.",
+      "chance": 0.125
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 0.875,
+      "kind": "calculated",
+      "min": 84,
+      "max": 99,
+      "minPercent": 45.90163934426229,
+      "maxPercent": 54.09836065573771,
+      "koChance": 0,
+      "row": {
+       "moveId": "beakblast",
+       "effectiveName": "Beak Blast",
+       "effectiveType": "Flying",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 84,
+       "max": 99,
+       "minPercent": 45.90163934426229,
+       "maxPercent": 54.09836065573771,
+       "rolls": [
+        84,
+        84,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96,
+        96,
+        97,
+        99
+       ],
+       "ohkoChance": 0,
+       "description": "Beak Blast: 84–99 HP (45.9–54.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "dragontail",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 64,
+      "minPercent": 34.83870967741935,
+      "maxPercent": 41.29032258064516,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragontail",
+       "effectiveName": "Dragon Tail",
+       "effectiveType": "Dragon",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 54,
+       "max": 64,
+       "minPercent": 34.83870967741935,
+       "maxPercent": 41.29032258064516,
+       "rolls": [
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        58,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Tail: 54–64 HP (34.8–41.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Beak Blast: Garchomp is burned.",
+        "chance": 0.125
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 101,
+    "average": 96.375,
+    "high": 91,
+    "min": 91,
+    "max": 101,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 99,
+    "average": 103.484375,
+    "high": 84,
+    "min": 84,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 0.125
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "beakblast",
+     "effectiveName": "Beak Blast",
+     "effectiveType": "Flying",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 99,
+     "minPercent": 45.90163934426229,
+     "maxPercent": 54.09836065573771,
+     "rolls": [
+      84,
+      84,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93,
+      93,
+      94,
+      96,
+      96,
+      97,
+      99
+     ],
+     "ohkoChance": 0,
+     "description": "Beak Blast: 84–99 HP (45.9–54.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.47265625,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the paralysed attacker is never fully paralysed."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 99,
+      "high": 84,
+      "average": 92.125,
+      "min": 84,
+      "max": 99,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 84,
+        "heals": []
+       },
+       "high": {
+        "dealt": 99,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragontail",
+     "effectiveName": "Dragon Tail",
+     "effectiveType": "Dragon",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 54,
+     "max": 64,
+     "minPercent": 34.83870967741935,
+     "maxPercent": 41.29032258064516,
+     "rolls": [
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      58,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Tail: 54–64 HP (34.8–41.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 101,
+      "high": 91,
+      "average": 96.375,
+      "min": 91,
+      "max": 101,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 54,
+        "heals": []
+       },
+       "high": {
+        "dealt": 64,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 101,
+     "average": 96.375,
+     "high": 91,
+     "min": 91,
+     "max": 101,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 99,
+     "average": 102.109375,
+     "high": 84,
+     "min": 84,
+     "max": 172,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 0.125
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-right",
+     "effect": "Burn",
+     "chance": 0.125,
+     "min": -11,
+     "max": -11,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.216599999999744,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.125,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 91,
+        "chance": 0.0625
+       },
+       {
+        "hp": 92,
+        "chance": 0.125
+       },
+       {
+        "hp": 94,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.125
+       },
+       {
+        "hp": 97,
+        "chance": 0.1875
+       },
+       {
+        "hp": 98,
+        "chance": 0.125
+       },
+       {
+        "hp": 100,
+        "chance": 0.125
+       },
+       {
+        "hp": 101,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "toucannon",
+       "nature": "Serious",
+       "abilityId": "keeneye",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "par",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 172,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "brn",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.875,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 91,
+        "chance": 0.0625
+       },
+       {
+        "hp": 92,
+        "chance": 0.125
+       },
+       {
+        "hp": 94,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.125
+       },
+       {
+        "hp": 97,
+        "chance": 0.1875
+       },
+       {
+        "hp": 98,
+        "chance": 0.125
+       },
+       {
+        "hp": 100,
+        "chance": 0.125
+       },
+       {
+        "hp": 101,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "toucannon",
+       "nature": "Serious",
+       "abilityId": "keeneye",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "par",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 84,
+        "chance": 0.0625
+       },
+       {
+        "hp": 86,
+        "chance": 0.0625
+       },
+       {
+        "hp": 87,
+        "chance": 0.125
+       },
+       {
+        "hp": 89,
+        "chance": 0.0625
+       },
+       {
+        "hp": 90,
+        "chance": 0.125
+       },
+       {
+        "hp": 92,
+        "chance": 0.0625
+       },
+       {
+        "hp": 93,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.0625
+       },
+       {
+        "hp": 96,
+        "chance": 0.125
+       },
+       {
+        "hp": 98,
+        "chance": 0.0625
+       },
+       {
+        "hp": 99,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,363 @@
+
+== A1 Shell Smash copied (positives only), before the next action
+  |move|p2a: Espathra|Splash|p2a: Espathra
+  |move|p1a: Cloyster|Shell Smash|p1a: Cloyster
+  |-unboost|p1a: Cloyster|def|1
+  |-unboost|p1a: Cloyster|spd|1
+  |-boost|p1a: Cloyster|atk|2
+  |-boost|p1a: Cloyster|spa|2
+  |-boost|p1a: Cloyster|spe|2
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|atk|2
+  |-boost|p2a: Espathra|spa|2
+  |-boost|p2a: Espathra|spe|2
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Tackle|p1a: Cloyster
+  |-damage|p1a: Cloyster|113/125
+  |-damage|p1a: Cloyster|113/125
+  |turn|2
+
+== A2 Howl on two foes: the copy is the sum
+  |move|p1a: Arcanine|Howl|p1a: Arcanine|[spread] p1a,p1b
+  |-boost|p1a: Arcanine|atk|1
+  |-boost|p1b: Snorlax|atk|1
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|atk|2
+  |move|p2a: Espathra|Splash|p2a: Espathra
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |turn|2
+
+== A3 Defiant's rise copied by the Icy Wind user's partner
+  |move|p1a: Glalie|Icy Wind|p2a: Kingambit|[spread] p2a,p2b
+  |-damage|p2a: Kingambit|163/175
+  |-damage|p2a: Kingambit|163/175
+  |-damage|p2b: Snorlax|226/235
+  |-damage|p2b: Snorlax|226/235
+  |-unboost|p2a: Kingambit|spe|1
+  |-ability|p2a: Kingambit|Defiant|boost
+  |-boost|p2a: Kingambit|atk|2
+  |-unboost|p2b: Snorlax|spe|1
+  |-ability|p1b: Espathra|Opportunist|boost
+  |-boost|p1b: Espathra|atk|2
+  |move|p1b: Espathra|Splash|p1b: Espathra
+  |move|p2a: Kingambit|Splash|p2a: Kingambit
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |turn|2
+
+== A4 Weakness Policy rise and a drop in one hit
+  |move|p1a: Garchomp|Breaking Swipe|p2a: Dragonite|[spread] p2a,p2b
+  |-damage|p2a: Dragonite|100/166
+  |-damage|p2a: Dragonite|100/166
+  |-damage|p2b: Snorlax|190/235
+  |-damage|p2b: Snorlax|190/235
+  |-unboost|p2a: Dragonite|atk|1
+  |-unboost|p2b: Snorlax|atk|1
+  |-enditem|p2a: Dragonite|Weakness Policy
+  |-boost|p2a: Dragonite|atk|2|[from] item: Weakness Policy
+  |-boost|p2a: Dragonite|spa|2|[from] item: Weakness Policy
+  |-ability|p1b: Espathra|Opportunist|boost
+  |-boost|p1b: Espathra|atk|2
+  |-boost|p1b: Espathra|spa|2
+  |move|p1b: Espathra|Splash|p1b: Espathra
+  |move|p2a: Dragonite|Splash|p2a: Dragonite
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |turn|2
+
+== A5 Mirror Herb with Contrary
+  |move|p1a: Garchomp|Swords Dance|p1a: Garchomp
+  |-boost|p1a: Garchomp|atk|2
+  |-enditem|p2a: Malamar|Mirror Herb
+  |-unboost|p2a: Malamar|atk|2|[from] item: Mirror Herb
+  |move|p2a: Malamar|Splash|p2a: Malamar
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |turn|2
+
+== A6 capped rise copied as capped
+  |move|p1a: Garchomp|Swords Dance|p1a: Garchomp
+  |-boost|p1a: Garchomp|atk|1
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|atk|1
+  |move|p2a: Espathra|Splash|p2a: Espathra
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |turn|2
+
+== A7 Flame Charge into its own Opportunist ally: only the foe copies
+  |move|p1a: Arcanine|Flame Charge|p1b: EspathraAlly
+  |-damage|p1b: EspathraAlly|124/170
+  |-damage|p1b: EspathraAlly|124/170
+  |-boost|p1a: Arcanine|spe|1
+  |-ability|p2a: EspathraFoe|Opportunist|boost
+  |-boost|p2a: EspathraFoe|spe|1
+  |move|p2a: EspathraFoe|Splash|p2a: EspathraFoe
+  |move|p1b: EspathraAlly|Splash|p1b: EspathraAlly
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+
+== A8 two Opportunists: no copy of a copy
+  |move|p1a: EspA|Calm Mind|p1a: EspA
+  |-boost|p1a: EspA|spa|1
+  |-boost|p1a: EspA|spd|1
+  |-ability|p2a: EspB|Opportunist|boost
+  |-boost|p2a: EspB|spa|1
+  |-boost|p2a: EspB|spd|1
+  |move|p2a: EspB|Splash|p2a: EspB
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+
+== A9 Speed Boost copied at the end of turn
+  |move|p1a: Ninjask|Splash|p1a: Ninjask
+  |move|p2a: Espathra|Splash|p2a: Espathra
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-ability|p1a: Ninjask|Speed Boost|boost
+  |-boost|p1a: Ninjask|spe|1
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|spe|1
+  |turn|2
+
+== A10 a start Berry's rise: copied at the first AfterMove (Espathra moves first)
+  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+  |move|p1a: Espathra|Stored Power|p2a: Garchomp
+  |-damage|p2a: Garchomp|25/183
+  |-damage|p2a: Garchomp|25/183
+  |-ability|p1a: Espathra|Opportunist|boost
+  |-boost|p1a: Espathra|atk|1
+  |move|p2a: Garchomp|Splash|p2a: Garchomp
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+
+(Champions: Venusaurite nonstandard null; Espathra nonstandard null; Opportunist null)
+
+== A10b the same with a Mega Evolution this turn (Champions): copied at AfterMega, before any move
+  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+  |detailschange|p1b: Venusaur|Venusaur-Mega, L50, F
+  |-mega|p1b: Venusaur|Venusaur|Venusaurite
+  |-ability|p1a: Espathra|Opportunist|boost
+  |-boost|p1a: Espathra|atk|1
+  |move|p1a: Espathra|Stored Power|p2a: Garchomp
+  |-damage|p2a: Garchomp|13/183
+  |-damage|p2a: Garchomp|13/183
+  |move|p2a: Garchomp|Splash|p2a: Garchomp
+  |move|p1b: Venusaur|Splash|p1b: Venusaur
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+
+== A11 a rise at the final Update: copied at the next turn's first AfterMove
+  |move|p1a: Espathra|Splash|p1a: Espathra
+  |move|p2a: Garchomp|Splash|p2a: Garchomp
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-damage|p2a: Garchomp|39/183 brn|[from] brn
+  |-damage|p2a: Garchomp|39/183 brn|[from] brn
+  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+  |turn|2
+  |move|p1a: Espathra|Splash|p1a: Espathra
+  |-ability|p1a: Espathra|Opportunist|boost
+  |-boost|p1a: Espathra|atk|1
+  |move|p2a: Garchomp|Splash|p2a: Garchomp
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-damage|p2a: Garchomp|28/183 brn|[from] brn
+  |-damage|p2a: Garchomp|28/183 brn|[from] brn
+  |turn|3
+
+== B1 two Eject Packs from one Icy Wind
+  |move|p1a: Glalie|Icy Wind|p2a: PackA|[spread] p2a,p2b
+  |-damage|p2a: PackA|226/235
+  |-damage|p2a: PackA|226/235
+  |-damage|p2b: PackB|133/145
+  |-damage|p2b: PackB|133/145
+  |-unboost|p2a: PackA|spe|1
+  |-unboost|p2b: PackB|spe|1
+  |-enditem|p2a: PackA|Eject Pack
+  |switch|p2a: BenchA|Snorlax, L50, F|235/235
+  |switch|p2a: BenchA|Snorlax, L50, F|235/235
+  |-enditem|p2b: PackB|Eject Pack
+  |switch|p2b: PackA|Snorlax, L50, M|226/235
+  |switch|p2b: PackA|Snorlax, L50, M|226/235
+  |move|p1b: Venusaur|Tackle|p2a: BenchA
+  |-damage|p2a: BenchA|216/235
+  |-damage|p2a: BenchA|216/235
+  |turn|2
+
+== B2 U-turn into an Intimidate replacement
+  |move|p1a: Rillaboom|U-turn|p2a: Garchomp
+  |-damage|p2a: Garchomp|149/183
+  |-damage|p2a: Garchomp|149/183
+  |-damage|p1a: Rillaboom|154/175|[from] ability: Rough Skin|[of] p2a: Garchomp
+  |-damage|p1a: Rillaboom|154/175|[from] ability: Rough Skin|[of] p2a: Garchomp
+  |switch|p1a: Incin|Incineroar, L50, F|170/170|[from] U-turn
+  |switch|p1a: Incin|Incineroar, L50, F|170/170|[from] U-turn
+  |-ability|p1a: Incin|Intimidate|boost
+  |-unboost|p2a: Garchomp|atk|1
+  |-unboost|p2b: Snorlax|atk|1
+  |move|p2a: Garchomp|Dragon Claw|p2b: Snorlax
+  |-damage|p2b: Snorlax|181/235
+  |-damage|p2b: Snorlax|181/235
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-heal|p2a: Garchomp|160/183|[from] Grassy Terrain
+  |-heal|p2a: Garchomp|160/183|[from] Grassy Terrain
+  |-heal|p2b: Snorlax|195/235|[from] Grassy Terrain
+  |-heal|p2b: Snorlax|195/235|[from] Grassy Terrain
+  |turn|2
+
+== B3 Stealth Rock on the replacement mid-turn
+  |move|p1a: Rillaboom|U-turn|p2a: Snorlax
+  |-damage|p2a: Snorlax|190/235
+  |-damage|p2a: Snorlax|190/235
+  |switch|p1a: Zard|Charizard, L50, F|153/153|[from] U-turn
+  |switch|p1a: Zard|Charizard, L50, F|153/153|[from] U-turn
+  |-damage|p1a: Zard|77/153|[from] Stealth Rock
+  |-damage|p1a: Zard|77/153|[from] Stealth Rock
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2a: Snorlax|Splash|p2a: Snorlax
+  |move|p2b: Torkoal|Splash|p2b: Torkoal
+  |-heal|p2a: Snorlax|204/235|[from] Grassy Terrain
+  |-heal|p2a: Snorlax|204/235|[from] Grassy Terrain
+  |turn|2
+
+### B4a Baton Pass with +2 Attack and +1 evasion  (1 runs)
+   [1] T1 end: Bench {"atk":2,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":1}
+   [1] T1 moves: Bench {"atk":2,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":1}
+   1  |move|p1a: Espathra|Baton Pass|p1a: Espathra
+   1  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] Baton Pass
+   1  |move|p2a: Lax12|Splash|p2a: Lax12
+   1  |move|p1b: Lax4|Splash|p1b: Lax4
+   1  |move|p2b: Torkoal|Splash|p2b: Torkoal
+   1  |turn|2
+
+### B4b Shed Tail passes its Substitute (Tackle into it)  (1 runs)
+ turn 1 after moves: p1a Bench [235:1] | p1b Lax4 [235:1] | p2a Lax12 [235:1] | p2b Torkoal [145:1]
+ turn 1 end of turn: p1a Bench [235:1] | p1b Lax4 [235:1] | p2a Lax12 [235:1] | p2b Torkoal [145:1]
+   [1] T1 end: Bench sub=17 hp=235
+   [1] T1 moves: Bench sub=17 hp=235
+   1  |move|p1a: Cyclizar|Shed Tail|p1a: Cyclizar
+   1  |-start|p1a: Cyclizar|Substitute|[from] move: Shed Tail
+   1  |-damage|p1a: Cyclizar|72/145
+   1  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] Shed Tail
+   1  |move|p2a: Lax12|Splash|p2a: Lax12
+   1  |move|p1b: Lax4|Splash|p1b: Lax4
+   1  |move|p2b: Torkoal|Tackle|p1a: Bench
+   1  |-activate|p1a: Bench|move: Substitute|[damage]
+   1  |turn|2
+
+### B5 Roar with two bench Pokémon: uniform  (2 runs)
+   [0.5] T1 end: p2 active BenchA,Torkoal
+   [0.5] T1 end: p2 active BenchB,Torkoal
+   [0.5] T1 moves: p2 active BenchA,Torkoal
+   [0.5] T1 moves: p2 active BenchB,Torkoal
+
+### B6 Regenerator on the leaver (U-turn at 80 HP, paralysed: full paralysis branch enumerated)  (2 runs)
+   [0.75] T1 end: Bench 235/235 - in, Lax4 235/235 - in, Rillaboom 138/175 par bench
+   [0.25] T1 end: Rillaboom 80/175 par in, Lax4 235/235 - in, Bench 235/235 - bench
+   [0.75] T1 moves: Bench 235/235 - in, Lax4 235/235 - in, Rillaboom 138/175 par bench
+   [0.25] T1 moves: Rillaboom 80/175 par in, Lax4 235/235 - in, Bench 235/235 - bench
+
+== B7 (sv) U-turn into Drought: Chlorophyll's later order
+  |move|p1a: Jolteon|U-turn|p2a: Chomp
+  |switch|p1a: Drought|Torkoal, L50, F|145/145|[from] U-turn
+  |switch|p1a: Drought|Torkoal, L50, F|145/145|[from] U-turn
+  |-weather|SunnyDay|[from] ability: Drought|[of] p1a: Drought
+  |move|p1b: Saur|Tackle|p2a: Chomp
+  |move|p2a: Chomp|Splash|p2a: Chomp
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-weather|SunnyDay|[upkeep]
+
+== B7 (usum) U-turn into Drought: Chlorophyll's later order
+  |move|p1a: Jolteon|U-turn|p2a: Chomp
+  |switch|p1a: Drought|Torkoal, L50, F|145/145|[from] U-turn
+  |switch|p1a: Drought|Torkoal, L50, F|145/145|[from] U-turn
+  |-weather|SunnyDay|[from] ability: Drought|[of] p1a: Drought
+  |move|p2a: Chomp|Splash|p2a: Chomp
+  |move|p1b: Saur|Tackle|p2a: Chomp
+  |move|p2b: Snorlax|Splash|p2b: Snorlax
+  |-weather|SunnyDay|[upkeep]
+
+== B8 U-turn into an Eject Button holder
+  |move|p1a: Rillaboom|U-turn|p2a: Snorlax
+  |-damage|p2a: Snorlax|190/235
+  |-damage|p2a: Snorlax|190/235
+  |-enditem|p2a: Snorlax|Eject Button
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2b: Torkoal|Tackle|p1a: Rillaboom
+  |-damage|p1a: Rillaboom|160/175
+  |-damage|p1a: Rillaboom|160/175
+  |-heal|p1a: Rillaboom|170/175|[from] Grassy Terrain
+  |-heal|p1a: Rillaboom|170/175|[from] Grassy Terrain
+  |turn|2
+
+### B9 Red Card with two bench Pokémon on the attacker's side  (2 runs)
+   [0.5] T1 end: p1 active BenchA,Lax4
+   [0.5] T1 end: p1 active BenchB,Lax4
+   [0.5] T1 moves: p1 active BenchA,Lax4
+   [0.5] T1 moves: p1 active BenchB,Lax4
+
+== B10 (swsh) Emergency Exit with a later action
+  |move|p1a: Garchomp|Earthquake|p2a: Golisopod|[spread] p1b,p2a,p2b
+  |-damage|p1b: Snorlax|144/235
+  |-damage|p1b: Snorlax|144/235
+  |-damage|p2a: Golisopod|56/150
+  |-damage|p2a: Golisopod|56/150
+  |-damage|p2b: Torkoal|47/145
+  |-damage|p2b: Torkoal|47/145
+  |-activate|p2a: Golisopod|ability: Emergency Exit
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |move|p1b: Snorlax|Tackle|p2a: Bench
+  |-damage|p2a: Bench|201/235
+  |-damage|p2a: Bench|201/235
+  |move|p2b: Torkoal|Splash|p2b: Torkoal
+  |turn|2
+
+== B11 the newcomer meets a later spread move
+  |move|p1a: Rillaboom|U-turn|p2a: Garchomp
+  |-damage|p2a: Garchomp|149/183
+  |-damage|p2a: Garchomp|149/183
+  |-damage|p1a: Rillaboom|154/175|[from] ability: Rough Skin|[of] p2a: Garchomp
+  |-damage|p1a: Rillaboom|154/175|[from] ability: Rough Skin|[of] p2a: Garchomp
+  |switch|p1a: Peli|Pelipper, L50, F|135/135|[from] U-turn
+  |switch|p1a: Peli|Pelipper, L50, F|135/135|[from] U-turn
+  |-weather|RainDance|[from] ability: Drizzle|[of] p1a: Peli
+  |move|p2a: Garchomp|Rock Slide|p1a: Peli|[spread] p1a,p1b
+  |-damage|p1a: Peli|81/135
+  |-damage|p1a: Peli|81/135
+  |-damage|p1b: Snorlax|197/235
+  |-damage|p1b: Snorlax|197/235
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Splash|p2b: Torkoal
+  |-weather|RainDance|[upkeep]
+  |-heal|p2a: Garchomp|160/183|[from] Grassy Terrain
+  |-heal|p2a: Garchomp|160/183|[from] Grassy Terrain
+  |-heal|p1b: Snorlax|211/235|[from] Grassy Terrain
+  |-heal|p1b: Snorlax|211/235|[from] Grassy Terrain
+  |turn|2
+
+== B12 Parting Shot into an Eject Pack holder
+  |move|p1a: Incineroar|Parting Shot|p2a: Snorlax
+  |-unboost|p2a: Snorlax|atk|1
+  |-unboost|p2a: Snorlax|spa|1
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] Parting Shot
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] Parting Shot
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2a: Snorlax|Splash|p2a: Snorlax
+  |move|p2b: Torkoal|Splash|p2b: Torkoal
+  |turn|2
+
+== B13 U-turn by a Neutralizing Gas holder: the foe's Intimidate starts
+  |move|p1a: Weezing|U-turn|p2a: Incineroar
+  |-end|p1a: Weezing|ability: Neutralizing Gas
+  |-ability|p2a: Incineroar|Intimidate|boost
+  |-unboost|p1a: Weezing|atk|1
+  |-unboost|p1b: Snorlax|atk|1
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |move|p2a: Incineroar|Splash|p2a: Incineroar
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Splash|p2b: Torkoal

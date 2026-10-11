@@ -1,0 +1,526 @@
+{
+ "id": "V07c",
+ "title": "Rage Powder does not redirect a Grass attacker",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Energy Ball still hits Blastoise (probe 3b; SV: Amoonguss is not in the Champions catalog).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 24,
+   "classes": 18,
+   "ms": 16,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7,
+    "secondary": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       34,
+       0.0625
+      ],
+      [
+       38,
+       0.125
+      ],
+      [
+       40,
+       0.1875
+      ],
+      [
+       44,
+       0.125
+      ],
+      [
+       46,
+       0.1875
+      ],
+      [
+       50,
+       0.125
+      ],
+      [
+       52,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 44.5,
+     "min": 34,
+     "max": 52,
+     "modeTieUp": 52,
+     "modeTieDown": 40
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       189,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 189,
+     "min": 189,
+     "max": 189,
+     "modeTieUp": 189,
+     "modeTieDown": 189
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 102,
+       "dmgMax": 120,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       52,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 52,
+     "min": 52,
+     "max": 52,
+     "modeTieUp": 52,
+     "modeTieDown": 52
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       189,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 189,
+     "min": 189,
+     "max": 189,
+     "modeTieUp": 189,
+     "modeTieDown": 189
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 102,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       34,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 34,
+     "min": 34,
+     "max": 34,
+     "modeTieUp": 34,
+     "modeTieDown": 34
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       189,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 189,
+     "min": 189,
+     "max": 189,
+     "modeTieUp": 189,
+     "modeTieDown": 189
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 120,
+       "dmgMax": 120,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 52,
+   "high": 34,
+   "average": 44.5,
+   "min": 34,
+   "max": 52,
+   "koChance": 0,
+   "dist": [
+    [
+     34,
+     0.0625
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     40,
+     0.1875
+    ],
+    [
+     44,
+     0.125
+    ],
+    [
+     46,
+     0.1875
+    ],
+    [
+     50,
+     0.125
+    ],
+    [
+     52,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 189,
+   "high": 189,
+   "average": 189,
+   "min": 189,
+   "max": 189,
+   "koChance": 0,
+   "dist": [
+    [
+     189,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

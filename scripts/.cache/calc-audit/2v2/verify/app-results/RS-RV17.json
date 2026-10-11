@@ -1,0 +1,419 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "mudslap",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 14,
+      "max": 20,
+      "minPercent": 8,
+      "maxPercent": 11.428571428571429,
+      "koChance": 0,
+      "row": {
+       "moveId": "mudslap",
+       "effectiveName": "Mud-Slap",
+       "effectiveType": "Ground",
+       "effectivePower": 20,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 14,
+       "max": 20,
+       "minPercent": 8,
+       "maxPercent": 11.428571428571429,
+       "rolls": [
+        14,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        20
+       ],
+       "ohkoChance": 0,
+       "description": "Mud-Slap: 14–20 HP (8.0–11.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "ironhead",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 87,
+      "max": 103,
+      "minPercent": 47.02702702702703,
+      "maxPercent": 55.67567567567567,
+      "koChance": 0,
+      "row": {
+       "moveId": "ironhead",
+       "effectiveName": "Iron Head",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 87,
+       "max": 103,
+       "minPercent": 47.02702702702703,
+       "maxPercent": 55.67567567567567,
+       "rolls": [
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96,
+        96,
+        98,
+        99,
+        99,
+        101,
+        102,
+        103
+       ],
+       "ohkoChance": 0,
+       "description": "Iron Head: 87–103 HP (47.0–55.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 185,
+    "maximum": 185,
+    "low": 98,
+    "average": 90,
+    "high": 82,
+    "min": 82,
+    "max": 98,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 161,
+    "average": 157.125,
+    "high": 155,
+    "min": 155,
+    "max": 161,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "mudslap",
+     "effectiveName": "Mud-Slap",
+     "effectiveType": "Ground",
+     "effectivePower": 20,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 14,
+     "max": 20,
+     "minPercent": 8,
+     "maxPercent": 11.428571428571429,
+     "rolls": [
+      14,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      20
+     ],
+     "ohkoChance": 0,
+     "description": "Mud-Slap: 14–20 HP (8.0–11.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 13,
+      "fewest": 9,
+      "fasterChance": 0.999999999999357,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 161,
+      "high": 155,
+      "average": 157.125,
+      "min": 155,
+      "max": 161,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 14,
+        "heals": []
+       },
+       "high": {
+        "dealt": 20,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "ironhead",
+     "effectiveName": "Iron Head",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 44,
+     "max": 52,
+     "minPercent": 23.783783783783786,
+     "maxPercent": 28.10810810810811,
+     "rolls": [
+      44,
+      45,
+      45,
+      45,
+      46,
+      47,
+      47,
+      48,
+      48,
+      48,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Iron Head: 44–52 HP (23.8–28.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.9274444580078125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 185,
+      "low": 141,
+      "high": 133,
+      "average": 137.125,
+      "min": 133,
+      "max": 141,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 44,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 185,
+     "maximum": 185,
+     "low": 98,
+     "average": 90,
+     "high": 82,
+     "min": 82,
+     "max": 98,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 161,
+     "average": 157.125,
+     "high": 155,
+     "min": 155,
+     "max": 161,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.602299999999559,
+ "preflight": []
+}

@@ -1,0 +1,3216 @@
+{
+ "id": "T2P-AST-01-usum",
+ "title": "Assist calls one of the party's moves (the ally's Body Slam, a bench Arcanine's Flamethrower, a bench Snorlax's Ice Beam) at random",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "moves.ts assist onHit: every move slot of the other party members but noassist ones, sample; the called move at a random foe.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 444,
+   "classes": 105,
+   "ms": 377,
+   "decisions": {
+    "sample": 68,
+    "fail:assist": 34,
+    "roll": 374,
+    "secondary": 374,
+    "fail:?": 340
+   },
+   "slots": {
+    "own-left": {
+     "species": "Liepard",
+     "start": 139,
+     "maximum": 139,
+     "dist": [
+      [
+       139,
+       1.0000000000000002
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139,
+     "status": {
+      "": 1.0000000000000002
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000002
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000002
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark": 1.0000000000000002
+     },
+     "ability": {
+      "limber": 1.0000000000000002
+     },
+     "forme": {
+      "liepard": 1.0000000000000002
+     },
+     "stored": {
+      "108/70/108/70/126": 1.0000000000000002
+     },
+     "weight": {
+      "375": 1.0000000000000002
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1.0000000000000002
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1.0000000000000002
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1.0000000000000002
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000002
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000002
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1.0000000000000002
+     },
+     "ability": {
+      "thickfat": 1.0000000000000002
+     },
+     "forme": {
+      "snorlax": 1.0000000000000002
+     },
+     "stored": {
+      "130/85/85/130/51": 1.0000000000000002
+     },
+     "weight": {
+      "4600": 1.0000000000000002
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1.0000000000000002
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       98,
+       0.0006510416666666666
+      ],
+      [
+       99,
+       0.001953125
+      ],
+      [
+       100,
+       0.0026041666666666665
+      ],
+      [
+       101,
+       0.00390625
+      ],
+      [
+       102,
+       0.006510416666666666
+      ],
+      [
+       103,
+       0.0078125
+      ],
+      [
+       104,
+       0.008463541666666666
+      ],
+      [
+       105,
+       0.010416666666666668
+      ],
+      [
+       106,
+       0.011067708333333332
+      ],
+      [
+       107,
+       0.011067708333333334
+      ],
+      [
+       108,
+       0.012369791666666664
+      ],
+      [
+       109,
+       0.01171875
+      ],
+      [
+       110,
+       0.010416666666666668
+      ],
+      [
+       111,
+       0.01171875
+      ],
+      [
+       112,
+       0.012369791666666666
+      ],
+      [
+       113,
+       0.010416666666666666
+      ],
+      [
+       114,
+       0.009114583333333332
+      ],
+      [
+       115,
+       0.0078125
+      ],
+      [
+       116,
+       0.005859375
+      ],
+      [
+       117,
+       0.005208333333333333
+      ],
+      [
+       118,
+       0.00390625
+      ],
+      [
+       119,
+       0.0013020833333333333
+      ],
+      [
+       129,
+       0.0013020833333333333
+      ],
+      [
+       130,
+       0.007812499999999999
+      ],
+      [
+       131,
+       0.014322916666666664
+      ],
+      [
+       132,
+       0.015625
+      ],
+      [
+       133,
+       0.020833333333333332
+      ],
+      [
+       134,
+       0.02864583333333333
+      ],
+      [
+       135,
+       0.02734375
+      ],
+      [
+       136,
+       0.019531249999999997
+      ],
+      [
+       137,
+       0.020833333333333332
+      ],
+      [
+       138,
+       0.023437499999999997
+      ],
+      [
+       139,
+       0.024739583333333332
+      ],
+      [
+       140,
+       0.022135416666666664
+      ],
+      [
+       141,
+       0.020833333333333332
+      ],
+      [
+       142,
+       0.020833333333333332
+      ],
+      [
+       143,
+       0.02864583333333333
+      ],
+      [
+       144,
+       0.026041666666666664
+      ],
+      [
+       145,
+       0.010416666666666666
+      ],
+      [
+       147,
+       0.03125
+      ],
+      [
+       148,
+       0.03125
+      ],
+      [
+       150,
+       0.0625
+      ],
+      [
+       151,
+       0.0625
+      ],
+      [
+       153,
+       0.03125
+      ],
+      [
+       154,
+       0.0625
+      ],
+      [
+       156,
+       0.0625
+      ],
+      [
+       157,
+       0.03125
+      ],
+      [
+       159,
+       0.0625
+      ],
+      [
+       160,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 141.16666666666669,
+     "min": 98,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 150,
+     "status": {
+      "": 1.0000000000000002
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000002
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1.0000000000000002
+     },
+     "ability": {
+      "thickfat": 1.0000000000000002
+     },
+     "forme": {
+      "snorlax": 1.0000000000000002
+     },
+     "stored": {
+      "130/85/85/130/54": 1.0000000000000002
+     },
+     "weight": {
+      "4600": 1.0000000000000002
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1.0000000000000002
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       186,
+       0.010416666666666664
+      ],
+      [
+       187,
+       0.02083333333333333
+      ],
+      [
+       188,
+       0.02083333333333333
+      ],
+      [
+       189,
+       0.02083333333333333
+      ],
+      [
+       190,
+       0.02083333333333333
+      ],
+      [
+       191,
+       0.02083333333333333
+      ],
+      [
+       192,
+       0.02083333333333333
+      ],
+      [
+       193,
+       0.02083333333333333
+      ],
+      [
+       194,
+       0.010416666666666664
+      ],
+      [
+       217,
+       0.020833333333333332
+      ],
+      [
+       218,
+       0.10416666666666666
+      ],
+      [
+       219,
+       0.125
+      ],
+      [
+       220,
+       0.08333333333333333
+      ],
+      [
+       235,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 222.10416666666666,
+     "min": 186,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1.0000000000000002
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000002
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1.0000000000000002
+     },
+     "ability": {
+      "thickfat": 1.0000000000000002
+     },
+     "forme": {
+      "snorlax": 1.0000000000000002
+     },
+     "stored": {
+      "130/85/85/130/53": 1.0000000000000002
+     },
+     "weight": {
+      "4600": 1.0000000000000002
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1.0000000000000002
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "assist",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 49,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1a: Liepard|Body Slam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Body Slam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666
+     },
+     "effects": {
+      "own-left": {
+       "usedmove:bodyslam:assist": 0.3333333333333333,
+       "usedmove:flamethrower:assist": 0.3333333333333333,
+       "usedmove:icebeam:assist": 0.3333333333333333
+      },
+      "opponent-right": {
+       "damage:-41": 0.010416666666666666,
+       "damage:-42": 0.020833333333333332,
+       "damage:-43": 0.020833333333333332,
+       "damage:-44": 0.020833333333333332,
+       "damage:-45": 0.020833333333333332,
+       "damage:-46": 0.020833333333333332,
+       "damage:-47": 0.020833333333333332,
+       "damage:-48": 0.020833333333333332,
+       "damage:-49": 0.010416666666666666,
+       "damage:-15": 0.08333333333333333,
+       "damage:-16": 0.125,
+       "damage:-17": 0.10416666666666666,
+       "damage:-18": 0.020833333333333332
+      },
+      "opponent-left": {
+       "damage:-41": 0.010416666666666666,
+       "damage:-42": 0.020833333333333332,
+       "damage:-43": 0.020833333333333332,
+       "damage:-44": 0.020833333333333332,
+       "damage:-45": 0.020833333333333332,
+       "damage:-46": 0.020833333333333332,
+       "damage:-47": 0.020833333333333332,
+       "damage:-48": 0.020833333333333332,
+       "damage:-49": 0.010416666666666666,
+       "damage:-15": 0.08333333333333333,
+       "damage:-16": 0.125,
+       "damage:-17": 0.10416666666666666,
+       "damage:-18": 0.020833333333333332
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -49,
+       "max": -15
+      },
+      "opponent-left": {
+       "min": -49,
+       "max": -15
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -49,
+       "max": -15,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -49,
+       "max": -15,
+       "mass": 0.5
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1.0000000000000002,
+     "faintedAtPick": 0,
+     "moved": 1.0000000000000002,
+     "cant": {},
+     "orderAll": {
+      "2": 1.0000000000000002
+     },
+     "orderMoved": {
+      "2": 1.0000000000000002
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1.0000000000000002,
+       "landed": 1.0000000000000002,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-75": 0.12499999999999999,
+       "damage:-76": 0.12499999999999999,
+       "damage:-78": 0.06249999999999999,
+       "damage:-79": 0.12499999999999999,
+       "damage:-81": 0.12499999999999999,
+       "damage:-82": 0.06249999999999999,
+       "damage:-84": 0.12499999999999999,
+       "damage:-85": 0.12499999999999999,
+       "damage:-87": 0.06249999999999999,
+       "damage:-88": 0.06249999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -88,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -88,
+       "max": -75,
+       "mass": 1.0000000000000002
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 340,
+    "classes": 34,
+    "ms": 377,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Liepard",
+      "start": null,
+      "maximum": 139,
+      "dist": [
+       [
+        139,
+        1.0000000000000002
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1.0000000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000002
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000002
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark": 1.0000000000000002
+      },
+      "ability": {
+       "limber": 1.0000000000000002
+      },
+      "forme": {
+       "liepard": 1.0000000000000002
+      },
+      "stored": {
+       "108/70/108/70/126": 1.0000000000000002
+      },
+      "weight": {
+       "375": 1.0000000000000002
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1.0000000000000002
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1.0000000000000002
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1.0000000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000002
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000002
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1.0000000000000002
+      },
+      "ability": {
+       "thickfat": 1.0000000000000002
+      },
+      "forme": {
+       "snorlax": 1.0000000000000002
+      },
+      "stored": {
+       "130/85/85/130/51": 1.0000000000000002
+      },
+      "weight": {
+       "4600": 1.0000000000000002
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1.0000000000000002
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        98,
+        0.0006510416666666666
+       ],
+       [
+        99,
+        0.001953125
+       ],
+       [
+        100,
+        0.0026041666666666665
+       ],
+       [
+        101,
+        0.00390625
+       ],
+       [
+        102,
+        0.006510416666666666
+       ],
+       [
+        103,
+        0.0078125
+       ],
+       [
+        104,
+        0.008463541666666666
+       ],
+       [
+        105,
+        0.010416666666666668
+       ],
+       [
+        106,
+        0.011067708333333332
+       ],
+       [
+        107,
+        0.011067708333333334
+       ],
+       [
+        108,
+        0.012369791666666664
+       ],
+       [
+        109,
+        0.01171875
+       ],
+       [
+        110,
+        0.010416666666666668
+       ],
+       [
+        111,
+        0.01171875
+       ],
+       [
+        112,
+        0.012369791666666666
+       ],
+       [
+        113,
+        0.010416666666666666
+       ],
+       [
+        114,
+        0.009114583333333332
+       ],
+       [
+        115,
+        0.0078125
+       ],
+       [
+        116,
+        0.005859375
+       ],
+       [
+        117,
+        0.005208333333333333
+       ],
+       [
+        118,
+        0.00390625
+       ],
+       [
+        119,
+        0.0013020833333333333
+       ],
+       [
+        129,
+        0.0013020833333333333
+       ],
+       [
+        130,
+        0.007812499999999999
+       ],
+       [
+        131,
+        0.014322916666666664
+       ],
+       [
+        132,
+        0.015625
+       ],
+       [
+        133,
+        0.020833333333333332
+       ],
+       [
+        134,
+        0.02864583333333333
+       ],
+       [
+        135,
+        0.02734375
+       ],
+       [
+        136,
+        0.019531249999999997
+       ],
+       [
+        137,
+        0.020833333333333332
+       ],
+       [
+        138,
+        0.023437499999999997
+       ],
+       [
+        139,
+        0.024739583333333332
+       ],
+       [
+        140,
+        0.022135416666666664
+       ],
+       [
+        141,
+        0.020833333333333332
+       ],
+       [
+        142,
+        0.020833333333333332
+       ],
+       [
+        143,
+        0.02864583333333333
+       ],
+       [
+        144,
+        0.026041666666666664
+       ],
+       [
+        145,
+        0.010416666666666666
+       ],
+       [
+        147,
+        0.03125
+       ],
+       [
+        148,
+        0.03125
+       ],
+       [
+        150,
+        0.0625
+       ],
+       [
+        151,
+        0.0625
+       ],
+       [
+        153,
+        0.03125
+       ],
+       [
+        154,
+        0.0625
+       ],
+       [
+        156,
+        0.0625
+       ],
+       [
+        157,
+        0.03125
+       ],
+       [
+        159,
+        0.0625
+       ],
+       [
+        160,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 141.16666666666669,
+      "min": 98,
+      "max": 160,
+      "modeTieUp": 160,
+      "modeTieDown": 150,
+      "status": {
+       "": 1.0000000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000002
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5,
+       "2": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1.0000000000000002
+      },
+      "ability": {
+       "thickfat": 1.0000000000000002
+      },
+      "forme": {
+       "snorlax": 1.0000000000000002
+      },
+      "stored": {
+       "130/85/85/130/54": 1.0000000000000002
+      },
+      "weight": {
+       "4600": 1.0000000000000002
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1.0000000000000002
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        186,
+        0.010416666666666664
+       ],
+       [
+        187,
+        0.02083333333333333
+       ],
+       [
+        188,
+        0.02083333333333333
+       ],
+       [
+        189,
+        0.02083333333333333
+       ],
+       [
+        190,
+        0.02083333333333333
+       ],
+       [
+        191,
+        0.02083333333333333
+       ],
+       [
+        192,
+        0.02083333333333333
+       ],
+       [
+        193,
+        0.02083333333333333
+       ],
+       [
+        194,
+        0.010416666666666664
+       ],
+       [
+        217,
+        0.020833333333333332
+       ],
+       [
+        218,
+        0.10416666666666666
+       ],
+       [
+        219,
+        0.125
+       ],
+       [
+        220,
+        0.08333333333333333
+       ],
+       [
+        235,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 222.10416666666666,
+      "min": 186,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1.0000000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000002
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1.0000000000000002
+      },
+      "ability": {
+       "thickfat": 1.0000000000000002
+      },
+      "forme": {
+       "snorlax": 1.0000000000000002
+      },
+      "stored": {
+       "130/85/85/130/53": 1.0000000000000002
+      },
+      "weight": {
+       "4600": 1.0000000000000002
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1.0000000000000002
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1.0000000000000002,
+     "weather:": 1.0000000000000002
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {}
+   },
+   "replaced": {},
+   "entered": {}
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 26,
+   "classes": 21,
+   "ms": 37,
+   "decisions": {
+    "sample": 12,
+    "fail:assist": 6,
+    "roll": 12,
+    "secondary": 12,
+    "fail:?": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Liepard",
+     "start": 139,
+     "maximum": 139,
+     "dist": [
+      [
+       139,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark": 0.9999999999999999
+     },
+     "ability": {
+      "limber": 0.9999999999999999
+     },
+     "forme": {
+      "liepard": 0.9999999999999999
+     },
+     "stored": {
+      "108/70/108/70/126": 0.9999999999999999
+     },
+     "weight": {
+      "375": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/51": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       119,
+       0.16666666666666666
+      ],
+      [
+       145,
+       0.3333333333333333
+      ],
+      [
+       160,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 148.16666666666666,
+     "min": 119,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/54": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       194,
+       0.16666666666666666
+      ],
+      [
+       220,
+       0.3333333333333333
+      ],
+      [
+       235,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 223.16666666666666,
+     "min": 194,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/53": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "assist",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 41,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 41,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1a: Liepard|Body Slam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Body Slam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666
+     },
+     "effects": {
+      "own-left": {
+       "usedmove:bodyslam:assist": 0.3333333333333333,
+       "usedmove:flamethrower:assist": 0.3333333333333333,
+       "usedmove:icebeam:assist": 0.3333333333333333
+      },
+      "opponent-right": {
+       "damage:-41": 0.16666666666666666,
+       "damage:-15": 0.3333333333333333
+      },
+      "opponent-left": {
+       "damage:-41": 0.16666666666666666,
+       "damage:-15": 0.3333333333333333
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -41,
+       "max": -15
+      },
+      "opponent-left": {
+       "min": -41,
+       "max": -15
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -41,
+       "max": -15,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -41,
+       "max": -15,
+       "mass": 0.5
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 0.9999999999999999
+     },
+     "orderMoved": {
+      "2": 0.9999999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-75": 0.9999999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -75,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -75,
+       "max": -75,
+       "mass": 0.9999999999999999
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 37,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Liepard",
+      "start": null,
+      "maximum": 139,
+      "dist": [
+       [
+        139,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark": 0.9999999999999999
+      },
+      "ability": {
+       "limber": 0.9999999999999999
+      },
+      "forme": {
+       "liepard": 0.9999999999999999
+      },
+      "stored": {
+       "108/70/108/70/126": 0.9999999999999999
+      },
+      "weight": {
+       "375": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/51": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        119,
+        0.16666666666666666
+       ],
+       [
+        145,
+        0.3333333333333333
+       ],
+       [
+        160,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 148.16666666666666,
+      "min": 119,
+      "max": 160,
+      "modeTieUp": 160,
+      "modeTieDown": 160,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5,
+       "2": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/54": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        194,
+        0.16666666666666666
+       ],
+       [
+        220,
+        0.3333333333333333
+       ],
+       [
+        235,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 223.16666666666666,
+      "min": 194,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/53": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {}
+   },
+   "replaced": {},
+   "entered": {}
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 26,
+   "classes": 21,
+   "ms": 26,
+   "decisions": {
+    "sample": 12,
+    "fail:assist": 6,
+    "roll": 12,
+    "secondary": 12,
+    "fail:?": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Liepard",
+     "start": 139,
+     "maximum": 139,
+     "dist": [
+      [
+       139,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark": 0.9999999999999999
+     },
+     "ability": {
+      "limber": 0.9999999999999999
+     },
+     "forme": {
+      "liepard": 0.9999999999999999
+     },
+     "stored": {
+      "108/70/108/70/126": 0.9999999999999999
+     },
+     "weight": {
+      "375": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/51": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       98,
+       0.16666666666666666
+      ],
+      [
+       129,
+       0.3333333333333333
+      ],
+      [
+       147,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 132.83333333333331,
+     "min": 98,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 0.5,
+      "2": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/54": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       186,
+       0.16666666666666666
+      ],
+      [
+       217,
+       0.3333333333333333
+      ],
+      [
+       235,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 220.83333333333331,
+     "min": 186,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 0.9999999999999999
+     },
+     "ability": {
+      "thickfat": 0.9999999999999999
+     },
+     "forme": {
+      "snorlax": 0.9999999999999999
+     },
+     "stored": {
+      "130/85/85/130/53": 0.9999999999999999
+     },
+     "weight": {
+      "4600": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "assist",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 49,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1a: Liepard|Body Slam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Body Slam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Flamethrower|p2b: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2a: Snorlax|[from] move: Assist": 0.16666666666666666,
+      "|move|p1a: Liepard|Ice Beam|p2b: Snorlax|[from] move: Assist": 0.16666666666666666
+     },
+     "effects": {
+      "own-left": {
+       "usedmove:bodyslam:assist": 0.3333333333333333,
+       "usedmove:flamethrower:assist": 0.3333333333333333,
+       "usedmove:icebeam:assist": 0.3333333333333333
+      },
+      "opponent-right": {
+       "damage:-49": 0.16666666666666666,
+       "damage:-18": 0.3333333333333333
+      },
+      "opponent-left": {
+       "damage:-49": 0.16666666666666666,
+       "damage:-18": 0.3333333333333333
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -49,
+       "max": -18
+      },
+      "opponent-left": {
+       "min": -49,
+       "max": -18
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -49,
+       "max": -18,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -49,
+       "max": -18,
+       "mass": 0.5
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 0.9999999999999999
+     },
+     "orderMoved": {
+      "2": 0.9999999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-88": 0.9999999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -88,
+       "max": -88
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -88,
+       "max": -88,
+       "mass": 0.9999999999999999
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 26,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Liepard",
+      "start": null,
+      "maximum": 139,
+      "dist": [
+       [
+        139,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark": 0.9999999999999999
+      },
+      "ability": {
+       "limber": 0.9999999999999999
+      },
+      "forme": {
+       "liepard": 0.9999999999999999
+      },
+      "stored": {
+       "108/70/108/70/126": 0.9999999999999999
+      },
+      "weight": {
+       "375": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/51": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        98,
+        0.16666666666666666
+       ],
+       [
+        129,
+        0.3333333333333333
+       ],
+       [
+        147,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 132.83333333333331,
+      "min": 98,
+      "max": 147,
+      "modeTieUp": 147,
+      "modeTieDown": 147,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5,
+       "2": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/54": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        186,
+        0.16666666666666666
+       ],
+       [
+        217,
+        0.3333333333333333
+       ],
+       [
+        235,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 220.83333333333331,
+      "min": 186,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.9999999999999999
+      },
+      "ability": {
+       "thickfat": 0.9999999999999999
+      },
+      "forme": {
+       "snorlax": 0.9999999999999999
+      },
+      "stored": {
+       "130/85/85/130/53": 0.9999999999999999
+      },
+      "weight": {
+       "4600": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {}
+   },
+   "replaced": {},
+   "entered": {}
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 139,
+   "maximum": 139,
+   "low": 139,
+   "high": 139,
+   "average": 139,
+   "min": 139,
+   "max": 139,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     1.0000000000000002
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1.0000000000000002
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 147,
+   "average": 141.16666666666669,
+   "min": 98,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     0.0006510416666666666
+    ],
+    [
+     99,
+     0.001953125
+    ],
+    [
+     100,
+     0.0026041666666666665
+    ],
+    [
+     101,
+     0.00390625
+    ],
+    [
+     102,
+     0.006510416666666666
+    ],
+    [
+     103,
+     0.0078125
+    ],
+    [
+     104,
+     0.008463541666666666
+    ],
+    [
+     105,
+     0.010416666666666668
+    ],
+    [
+     106,
+     0.011067708333333332
+    ],
+    [
+     107,
+     0.011067708333333334
+    ],
+    [
+     108,
+     0.012369791666666664
+    ],
+    [
+     109,
+     0.01171875
+    ],
+    [
+     110,
+     0.010416666666666668
+    ],
+    [
+     111,
+     0.01171875
+    ],
+    [
+     112,
+     0.012369791666666666
+    ],
+    [
+     113,
+     0.010416666666666666
+    ],
+    [
+     114,
+     0.009114583333333332
+    ],
+    [
+     115,
+     0.0078125
+    ],
+    [
+     116,
+     0.005859375
+    ],
+    [
+     117,
+     0.005208333333333333
+    ],
+    [
+     118,
+     0.00390625
+    ],
+    [
+     119,
+     0.0013020833333333333
+    ],
+    [
+     129,
+     0.0013020833333333333
+    ],
+    [
+     130,
+     0.007812499999999999
+    ],
+    [
+     131,
+     0.014322916666666664
+    ],
+    [
+     132,
+     0.015625
+    ],
+    [
+     133,
+     0.020833333333333332
+    ],
+    [
+     134,
+     0.02864583333333333
+    ],
+    [
+     135,
+     0.02734375
+    ],
+    [
+     136,
+     0.019531249999999997
+    ],
+    [
+     137,
+     0.020833333333333332
+    ],
+    [
+     138,
+     0.023437499999999997
+    ],
+    [
+     139,
+     0.024739583333333332
+    ],
+    [
+     140,
+     0.022135416666666664
+    ],
+    [
+     141,
+     0.020833333333333332
+    ],
+    [
+     142,
+     0.020833333333333332
+    ],
+    [
+     143,
+     0.02864583333333333
+    ],
+    [
+     144,
+     0.026041666666666664
+    ],
+    [
+     145,
+     0.010416666666666666
+    ],
+    [
+     147,
+     0.03125
+    ],
+    [
+     148,
+     0.03125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.0625
+    ],
+    [
+     153,
+     0.03125
+    ],
+    [
+     154,
+     0.0625
+    ],
+    [
+     156,
+     0.0625
+    ],
+    [
+     157,
+     0.03125
+    ],
+    [
+     159,
+     0.0625
+    ],
+    [
+     160,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 222.10416666666666,
+   "min": 186,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     186,
+     0.010416666666666664
+    ],
+    [
+     187,
+     0.02083333333333333
+    ],
+    [
+     188,
+     0.02083333333333333
+    ],
+    [
+     189,
+     0.02083333333333333
+    ],
+    [
+     190,
+     0.02083333333333333
+    ],
+    [
+     191,
+     0.02083333333333333
+    ],
+    [
+     192,
+     0.02083333333333333
+    ],
+    [
+     193,
+     0.02083333333333333
+    ],
+    [
+     194,
+     0.010416666666666664
+    ],
+    [
+     217,
+     0.020833333333333332
+    ],
+    [
+     218,
+     0.10416666666666666
+    ],
+    [
+     219,
+     0.125
+    ],
+    [
+     220,
+     0.08333333333333333
+    ],
+    [
+     235,
+     0.5
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 139,
+   "maximum": 139,
+   "low": 139,
+   "high": 139,
+   "average": 139,
+   "min": 139,
+   "max": 139,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     1.0000000000000002
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1.0000000000000002
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 147,
+   "average": 141.16666666666669,
+   "min": 98,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     0.0006510416666666666
+    ],
+    [
+     99,
+     0.001953125
+    ],
+    [
+     100,
+     0.0026041666666666665
+    ],
+    [
+     101,
+     0.00390625
+    ],
+    [
+     102,
+     0.006510416666666666
+    ],
+    [
+     103,
+     0.0078125
+    ],
+    [
+     104,
+     0.008463541666666666
+    ],
+    [
+     105,
+     0.010416666666666668
+    ],
+    [
+     106,
+     0.011067708333333332
+    ],
+    [
+     107,
+     0.011067708333333334
+    ],
+    [
+     108,
+     0.012369791666666664
+    ],
+    [
+     109,
+     0.01171875
+    ],
+    [
+     110,
+     0.010416666666666668
+    ],
+    [
+     111,
+     0.01171875
+    ],
+    [
+     112,
+     0.012369791666666666
+    ],
+    [
+     113,
+     0.010416666666666666
+    ],
+    [
+     114,
+     0.009114583333333332
+    ],
+    [
+     115,
+     0.0078125
+    ],
+    [
+     116,
+     0.005859375
+    ],
+    [
+     117,
+     0.005208333333333333
+    ],
+    [
+     118,
+     0.00390625
+    ],
+    [
+     119,
+     0.0013020833333333333
+    ],
+    [
+     129,
+     0.0013020833333333333
+    ],
+    [
+     130,
+     0.007812499999999999
+    ],
+    [
+     131,
+     0.014322916666666664
+    ],
+    [
+     132,
+     0.015625
+    ],
+    [
+     133,
+     0.020833333333333332
+    ],
+    [
+     134,
+     0.02864583333333333
+    ],
+    [
+     135,
+     0.02734375
+    ],
+    [
+     136,
+     0.019531249999999997
+    ],
+    [
+     137,
+     0.020833333333333332
+    ],
+    [
+     138,
+     0.023437499999999997
+    ],
+    [
+     139,
+     0.024739583333333332
+    ],
+    [
+     140,
+     0.022135416666666664
+    ],
+    [
+     141,
+     0.020833333333333332
+    ],
+    [
+     142,
+     0.020833333333333332
+    ],
+    [
+     143,
+     0.02864583333333333
+    ],
+    [
+     144,
+     0.026041666666666664
+    ],
+    [
+     145,
+     0.010416666666666666
+    ],
+    [
+     147,
+     0.03125
+    ],
+    [
+     148,
+     0.03125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.0625
+    ],
+    [
+     153,
+     0.03125
+    ],
+    [
+     154,
+     0.0625
+    ],
+    [
+     156,
+     0.0625
+    ],
+    [
+     157,
+     0.03125
+    ],
+    [
+     159,
+     0.0625
+    ],
+    [
+     160,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 222.10416666666666,
+   "min": 186,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     186,
+     0.010416666666666664
+    ],
+    [
+     187,
+     0.02083333333333333
+    ],
+    [
+     188,
+     0.02083333333333333
+    ],
+    [
+     189,
+     0.02083333333333333
+    ],
+    [
+     190,
+     0.02083333333333333
+    ],
+    [
+     191,
+     0.02083333333333333
+    ],
+    [
+     192,
+     0.02083333333333333
+    ],
+    [
+     193,
+     0.02083333333333333
+    ],
+    [
+     194,
+     0.010416666666666664
+    ],
+    [
+     217,
+     0.020833333333333332
+    ],
+    [
+     218,
+     0.10416666666666666
+    ],
+    [
+     219,
+     0.125
+    ],
+    [
+     220,
+     0.08333333333333333
+    ],
+    [
+     235,
+     0.5
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "expectedReplaced": {},
+ "expectedEntered": {},
+ "afterTurnReplaced": {},
+ "afterTurnEntered": {}
+}

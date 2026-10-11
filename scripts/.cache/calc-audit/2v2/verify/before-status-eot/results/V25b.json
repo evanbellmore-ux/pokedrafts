@@ -1,0 +1,481 @@
+{
+ "id": "V25b",
+ "title": "A resist Berry used by the first attack",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Occa halves the first Flamethrower; the second is full.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 112,
+   "classes": 33,
+   "ms": 81,
+   "decisions": {
+    "fail:": 90,
+    "roll": 90,
+    "secondary": 90
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Venusaur|Occa Berry|[eat]": 1,
+      "|-enditem|p2a: Venusaur|Occa Berry|[weaken]": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 102,
+       "dmgMax": 122,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Venusaur|Occa Berry|[eat]": 1,
+      "|-enditem|p2a: Venusaur|Occa Berry|[weaken]": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 102,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Venusaur|Occa Berry|[eat]": 1,
+      "|-enditem|p2a: Venusaur|Occa Berry|[weaken]": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 122,
+       "dmgMax": 122,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,649 @@
+{
+ "id": "MV08",
+ "title": "Max Knuckle from Focus Punch has no focus: used after a faster hit",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Knuckle lands.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 283,
+   "classes": 154,
+   "ms": 260,
+   "decisions": {
+    "fail:": 140,
+    "roll": 140
+   },
+   "slots": {
+    "own-left": {
+     "species": "Machamp",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       249,
+       0.0625
+      ],
+      [
+       251,
+       0.0625
+      ],
+      [
+       252,
+       0.125
+      ],
+      [
+       254,
+       0.125
+      ],
+      [
+       255,
+       0.125
+      ],
+      [
+       257,
+       0.125
+      ],
+      [
+       258,
+       0.125
+      ],
+      [
+       260,
+       0.0625
+      ],
+      [
+       261,
+       0.125
+      ],
+      [
+       263,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 256.0625,
+     "min": 249,
+     "max": 263,
+     "modeTieUp": 261,
+     "modeTieDown": 252
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       0.0625
+      ],
+      [
+       1,
+       0.0625
+      ],
+      [
+       5,
+       0.0625
+      ],
+      [
+       7,
+       0.0625
+      ],
+      [
+       11,
+       0.125
+      ],
+      [
+       13,
+       0.0625
+      ],
+      [
+       17,
+       0.0625
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       23,
+       0.125
+      ],
+      [
+       25,
+       0.0625
+      ],
+      [
+       29,
+       0.0625
+      ],
+      [
+       31,
+       0.0625
+      ],
+      [
+       35,
+       0.125
+      ]
+     ],
+     "koChance": 0.0625,
+     "average": 17.8125,
+     "min": 0,
+     "max": 35,
+     "modeTieUp": 35,
+     "modeTieDown": 11
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.0625,
+       "dmgMin": 200,
+       "dmgMax": 236,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Machamp|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Machamp",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       263,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 263,
+     "min": 263,
+     "max": 263,
+     "modeTieUp": 263,
+     "modeTieDown": 263
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       35,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 35,
+     "min": 35,
+     "max": 35,
+     "modeTieUp": 35,
+     "modeTieDown": 35
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 200,
+       "dmgMax": 200,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Machamp|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Machamp",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       249,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 249,
+     "min": 249,
+     "max": 249,
+     "modeTieUp": 249,
+     "modeTieDown": 249
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 236,
+       "dmgMax": 236,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Machamp|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 263,
+   "high": 249,
+   "average": 256.0625,
+   "min": 249,
+   "max": 263,
+   "koChance": 0,
+   "dist": [
+    [
+     249,
+     0.0625
+    ],
+    [
+     251,
+     0.0625
+    ],
+    [
+     252,
+     0.125
+    ],
+    [
+     254,
+     0.125
+    ],
+    [
+     255,
+     0.125
+    ],
+    [
+     257,
+     0.125
+    ],
+    [
+     258,
+     0.125
+    ],
+    [
+     260,
+     0.0625
+    ],
+    [
+     261,
+     0.125
+    ],
+    [
+     263,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 35,
+   "high": 0,
+   "average": 17.8125,
+   "min": 0,
+   "max": 35,
+   "koChance": 0.0625,
+   "dist": [
+    [
+     0,
+     0.0625
+    ],
+    [
+     1,
+     0.0625
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     7,
+     0.0625
+    ],
+    [
+     11,
+     0.125
+    ],
+    [
+     13,
+     0.0625
+    ],
+    [
+     17,
+     0.0625
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     23,
+     0.125
+    ],
+    [
+     25,
+     0.0625
+    ],
+    [
+     29,
+     0.0625
+    ],
+    [
+     31,
+     0.0625
+    ],
+    [
+     35,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

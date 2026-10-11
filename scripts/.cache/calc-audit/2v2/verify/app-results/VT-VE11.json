@@ -1,0 +1,384 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 160,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 120,
+    "maximum": 235,
+    "low": 120,
+    "average": 120,
+    "high": 120,
+    "min": 120,
+    "max": 120,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Sandstorm does not end this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 160,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds Sitrus Berry.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 146,
+     "average": 146,
+     "high": 146,
+     "min": 146,
+     "max": 146,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 120,
+     "maximum": 235,
+     "low": 164,
+     "average": 164,
+     "high": 164,
+     "min": 164,
+     "max": 164,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Sitrus Berry",
+     "chance": 1,
+     "min": 58,
+     "max": 58,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Pickup",
+     "other": "opponent-left",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Pickup: picks up Sitrus Berry.",
+       "chance": 1
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 1.454899999999725,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 100,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "diggersby",
+       "nature": "Serious",
+       "abilityId": "pickup",
+       "abilityActive": false,
+       "itemId": "sitrusberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 146,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "venusaur",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 164,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "Sand",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

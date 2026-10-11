@@ -1,0 +1,1436 @@
+{
+ "id": "IN-SW01-sv",
+ "title": "sv: an asleep Snorlax switches in and is hit by Kowtow Cleave: no BeforeMove, its counter stays (TR02)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "PS/sim/battle-queue.ts: a switch is no move action: the newcomer runs no BeforeMove (no wake roll); E2 sleep counter kept.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 120,
+   "classes": 87,
+   "ms": 80,
+   "decisions": {
+    "fail:": 36,
+    "roll": 36
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       130,
+       0.0625
+      ],
+      [
+       132,
+       0.0625
+      ],
+      [
+       133,
+       0.0625
+      ],
+      [
+       135,
+       0.125
+      ],
+      [
+       136,
+       0.0625
+      ],
+      [
+       138,
+       0.125
+      ],
+      [
+       139,
+       0.0625
+      ],
+      [
+       141,
+       0.125
+      ],
+      [
+       142,
+       0.0625
+      ],
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.125
+      ],
+      [
+       147,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 138.8125,
+     "min": 130,
+     "max": 147,
+     "modeTieUp": 145,
+     "modeTieDown": 135,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.33333333333333326,
+      "2": 0.33333333333333326,
+      "3": 0.33333333333333326
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "kowtowcleave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 105,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-88": 0.0625,
+       "damage:-90": 0.125,
+       "damage:-91": 0.0625,
+       "damage:-93": 0.0625,
+       "damage:-94": 0.125,
+       "damage:-96": 0.0625,
+       "damage:-97": 0.125,
+       "damage:-99": 0.0625,
+       "damage:-100": 0.125,
+       "damage:-102": 0.0625,
+       "damage:-103": 0.0625,
+       "damage:-105": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -105,
+       "max": -88
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -105,
+       "max": -88,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 36,
+    "classes": 36,
+    "ms": 80,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        130,
+        0.0625
+       ],
+       [
+        132,
+        0.0625
+       ],
+       [
+        133,
+        0.0625
+       ],
+       [
+        135,
+        0.125
+       ],
+       [
+        136,
+        0.0625
+       ],
+       [
+        138,
+        0.125
+       ],
+       [
+        139,
+        0.0625
+       ],
+       [
+        141,
+        0.125
+       ],
+       [
+        142,
+        0.0625
+       ],
+       [
+        144,
+        0.0625
+       ],
+       [
+        145,
+        0.125
+       ],
+       [
+        147,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 138.8125,
+      "min": 130,
+      "max": 147,
+      "modeTieUp": 145,
+      "modeTieDown": 135,
+      "status": {
+       "slp": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.33333333333333326,
+       "2": 0.33333333333333326,
+       "3": 0.33333333333333326
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 21,
+   "classes": 21,
+   "ms": 16,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "kowtowcleave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-88": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -88,
+       "max": -88
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -88,
+       "max": -88,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 3,
+    "classes": 3,
+    "ms": 16,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        147,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 147,
+      "min": 147,
+      "max": 147,
+      "modeTieUp": 147,
+      "modeTieDown": 147,
+      "status": {
+       "slp": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.3333333333333333,
+       "2": 0.3333333333333333,
+       "3": 0.3333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 21,
+   "classes": 21,
+   "ms": 17,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "kowtowcleave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 105,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-105": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -105,
+       "max": -105
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -105,
+       "max": -105,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 3,
+    "classes": 3,
+    "ms": 17,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "slp": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.3333333333333333,
+       "2": 0.3333333333333333,
+       "3": 0.3333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 147,
+   "high": 130,
+   "average": 138.8125,
+   "min": 130,
+   "max": 147,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     0.0625
+    ],
+    [
+     132,
+     0.0625
+    ],
+    [
+     133,
+     0.0625
+    ],
+    [
+     135,
+     0.125
+    ],
+    [
+     136,
+     0.0625
+    ],
+    [
+     138,
+     0.125
+    ],
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.125
+    ],
+    [
+     142,
+     0.0625
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 147,
+   "high": 130,
+   "average": 138.8125,
+   "min": 130,
+   "max": 147,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     0.0625
+    ],
+    [
+     132,
+     0.0625
+    ],
+    [
+     133,
+     0.0625
+    ],
+    [
+     135,
+     0.125
+    ],
+    [
+     136,
+     0.0625
+    ],
+    [
+     138,
+     0.125
+    ],
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.125
+    ],
+    [
+     142,
+     0.0625
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "hidden": [
+  {
+   "label": "own-left sleep 2",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-left sleep 3",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-left sleep 4",
+   "weight": 0.3333333333333333
+  }
+ ]
+}

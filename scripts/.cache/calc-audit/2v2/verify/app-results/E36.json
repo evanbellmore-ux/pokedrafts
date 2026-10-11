@@ -1,0 +1,302 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 149,
+    "maximum": 149
+   },
+   "own-right": {
+    "hp": 330,
+    "maximum": 330
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "superfang",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "superfang",
+       "effectiveName": "Super Fang",
+       "effectiveType": "Normal",
+       "effectivePower": 0,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 117,
+       "max": 117,
+       "minPercent": 49.787234042553195,
+       "maxPercent": 49.787234042553195,
+       "rolls": 117,
+       "ohkoChance": 0,
+       "description": "Super Fang: 117–117 HP (49.8–49.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Fixed damage: half the defender's current HP (235), rounded down, at least 1."
+       ],
+       "reason": null,
+       "hits": 1
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 117,
+       "max": 117,
+       "breaks": 0
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "seismictoss",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "seismictoss",
+       "effectiveName": "Seismic Toss",
+       "effectiveType": "Fighting",
+       "effectivePower": 0,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 50,
+       "max": 50,
+       "minPercent": 21.27659574468085,
+       "maxPercent": 21.27659574468085,
+       "rolls": 50,
+       "ohkoChance": 0,
+       "description": "Seismic Toss: 50–50 HP (21.3–21.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 30,
+       "max": 30,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 149,
+    "maximum": 149,
+    "low": 149,
+    "average": 149,
+    "high": 149,
+    "min": 149,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 183 HP.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "superfang",
+     "effectiveName": "Super Fang",
+     "effectiveType": "Normal",
+     "effectivePower": 0,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Deals damage to the target equal to half of its current HP, rounded down, but not less than 1 HP.",
+     "assumptions": [],
+     "reason": "Snorlax (1) is behind a Substitute.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "seismictoss",
+     "effectiveName": "Seismic Toss",
+     "effectiveType": "Fighting",
+     "effectivePower": 0,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Deals damage to the target equal to the user's level.",
+     "assumptions": [],
+     "reason": "Snorlax (2) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 149,
+     "maximum": 149,
+     "low": 149,
+     "average": 149,
+     "high": 149,
+     "min": 149,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 330,
+     "maximum": 330,
+     "low": 330,
+     "average": 330,
+     "high": 330,
+     "min": 330,
+     "max": 330,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 183 HP.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.483600000000479,
+ "preflight": []
+}

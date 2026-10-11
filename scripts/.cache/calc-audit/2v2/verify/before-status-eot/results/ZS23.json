@@ -1,0 +1,453 @@
+{
+ "id": "ZS23",
+ "title": "Max Darkness from Sucker Punch has no onTry: it hits a target that does not attack (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Darkness lands on the idle Slowbro (and lowers its Sp. Def).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 430,
+   "classes": 33,
+   "ms": 363,
+   "decisions": {
+    "tie2": 1410,
+    "fail:": 208,
+    "roll": 208
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.5625
+      ],
+      [
+       2,
+       0.0625
+      ],
+      [
+       6,
+       0.125
+      ],
+      [
+       8,
+       0.0625
+      ],
+      [
+       12,
+       0.125
+      ],
+      [
+       14,
+       0.0625
+      ]
+     ],
+     "koChance": 0.5625,
+     "average": 3.75,
+     "min": 0,
+     "max": 14,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.5625,
+       "dmgMin": 156,
+       "dmgMax": 186,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1,
+      "|-unboost|p2b: Slowbro|spd|1": 0.4375
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 122,
+   "classes": 13,
+   "ms": 110,
+   "decisions": {
+    "tie2": 418,
+    "fail:": 32,
+    "roll": 32
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       14,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 14,
+     "min": 14,
+     "max": 14,
+     "modeTieUp": 14,
+     "modeTieDown": 14
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 156,
+       "dmgMax": 156,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1,
+      "|-unboost|p2b: Slowbro|spd|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 70,
+   "classes": 13,
+   "ms": 59,
+   "decisions": {
+    "tie2": 210,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 186,
+       "dmgMax": 186,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 280,
+   "maximum": 280,
+   "low": 280,
+   "high": 280,
+   "average": 280,
+   "min": 280,
+   "max": 280,
+   "koChance": 0,
+   "dist": [
+    [
+     280,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 14,
+   "high": 0,
+   "average": 3.75,
+   "min": 0,
+   "max": 14,
+   "koChance": 0.5625,
+   "dist": [
+    [
+     0,
+     0.5625
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     6,
+     0.125
+    ],
+    [
+     8,
+     0.0625
+    ],
+    [
+     12,
+     0.125
+    ],
+    [
+     14,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: opponent-left and opponent-right (50)"
+ ]
+}

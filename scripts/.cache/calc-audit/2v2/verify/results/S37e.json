@@ -1,0 +1,1464 @@
+{
+ "id": "S37e",
+ "title": "A Stalwart user against Follow Me",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Stalwart ignores Follow Me: Flash Cannon hits Azumarill.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 30,
+   "classes": 22,
+   "ms": 35,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9,
+    "secondary": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Archaludon",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       99,
+       0.125
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       102,
+       0.125
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       105,
+       0.125
+      ],
+      [
+       106,
+       0.125
+      ],
+      [
+       108,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 102.4375,
+     "min": 96,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-67": 0.125,
+       "damage:-69": 0.125,
+       "damage:-70": 0.125,
+       "damage:-72": 0.125,
+       "damage:-73": 0.125,
+       "damage:-75": 0.125,
+       "damage:-76": 0.125,
+       "damage:-78": 0.0625,
+       "damage:-79": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -79,
+       "max": -67
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -79,
+       "max": -67,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:followme": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 9,
+    "classes": 9,
+    "ms": 35,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Archaludon",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Azumarill",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        96,
+        0.0625
+       ],
+       [
+        97,
+        0.0625
+       ],
+       [
+        99,
+        0.125
+       ],
+       [
+        100,
+        0.125
+       ],
+       [
+        102,
+        0.125
+       ],
+       [
+        103,
+        0.125
+       ],
+       [
+        105,
+        0.125
+       ],
+       [
+        106,
+        0.125
+       ],
+       [
+        108,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 102.4375,
+      "min": 96,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Archaludon",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-67": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -67,
+       "max": -67
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -67,
+       "max": -67,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:followme": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Archaludon",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Azumarill",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Archaludon",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flashcannon",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-79": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -79,
+       "max": -79
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -79,
+       "max": -79,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "followme",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Clefable|move: Follow Me": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "singleturn:followme": 1
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Archaludon",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Azumarill",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 108,
+   "high": 96,
+   "average": 102.4375,
+   "min": 96,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     102,
+     0.125
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     108,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 108,
+   "high": 96,
+   "average": 102.4375,
+   "min": 96,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     102,
+     0.125
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     108,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

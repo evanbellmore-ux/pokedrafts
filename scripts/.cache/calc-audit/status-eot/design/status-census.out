@@ -1,0 +1,272 @@
+status moves: 271 {"before-guard":188,"calling":8,"hp-guard":33,"modelled":29,"no-effect":8,"presence":1,"switch":4}
+before-guard acidarmor          champions:20 sv:43 swsh:38 usum:35           self p0 flags:snatch boosts:{"def":2}
+before-guard acupressure        champions:8 sv:20 swsh:19 usum:17            adjacentAllyOrSelf p0 fn:onHit
+before-guard afteryou           champions:18 sv:32 swsh:84 usum:121          normal p0 flags:bypasssub,allyanim fn:onHit
+before-guard agility            champions:105 sv:281 swsh:185 usum:182       self p0 flags:snatch boosts:{"spe":2}
+before-guard allyswitch         champions:31 sv:32 swsh:164 usum:190         self p2 fn:onHit,onPrepareHit cond:duration,onStart,onRestart
+before-guard amnesia            champions:46 sv:117 swsh:123 usum:127        self p0 flags:snatch boosts:{"spd":2}
+before-guard aquaring           champions:13 sv:47 swsh:47 usum:63           self p0 flags:snatch volatile:aquaring cond:onStart,onResidualOrder,onResidual
+before-guard aromatherapy       swsh:54 usum:86                              allyTeam p0 flags:snatch fn:onHit
+before-guard aromaticmist       champions:14 sv:25 swsh:29 usum:9            adjacentAlly p0 flags:bypasssub boosts:{"spd":1}
+before-guard attract            champions:116 sv:24 swsh:623 usum:851        normal p0 flags:protect,reflectable,bypasssub volatile:attract fn:onTryImmunity cond:onStart,onUpdate,onBeforeMovePriority,onBeforeMove,onEnd
+before-guard autotomize         swsh:27 usum:47                              self p0 flags:snatch boosts:{"spe":2} fn:onTryHit,onHit
+before-guard babydolleyes       champions:41 sv:51 swsh:46 usum:53           normal p1 flags:protect,reflectable,allyanim boosts:{"atk":-1}
+before-guard barrier            usum:47                                      self p0 flags:snatch boosts:{"def":2}
+before-guard bestow             usum:43                                      normal p0 flags:bypasssub,allyanim fn:onHit
+before-guard block              champions:19 sv:43 swsh:110 usum:143         normal p0 flags:reflectable fn:onHit
+before-guard bulkup             champions:74 sv:137 swsh:90 usum:116         self p0 flags:snatch boosts:{"atk":1,"def":1}
+before-guard calmmind           champions:122 sv:253 swsh:177 usum:261       self p0 flags:snatch boosts:{"spa":1,"spd":1}
+before-guard camouflage         usum:50                                      self p0 flags:snatch fn:onHit
+before-guard captivate          usum:541                                     allAdjacentFoes p0 flags:protect,reflectable boosts:{"spa":-2} fn:onTryImmunity
+before-guard charge             champions:30 sv:81 swsh:55 usum:51           self p0 flags:snatch boosts:{"spd":1} volatile:charge cond:onStart,onRestart,onBasePowerPriority,onBasePower,onMoveAborted,onAfterMove,onEnd
+before-guard charm              champions:111 sv:238 swsh:159 usum:168       normal p0 flags:protect,reflectable,allyanim boosts:{"atk":-2}
+before-guard coaching           champions:38 sv:57 swsh:53                   adjacentAlly p0 flags:bypasssub,allyanim boosts:{"atk":1,"def":1}
+before-guard coil               champions:7 sv:17 swsh:9 usum:17             self p0 flags:snatch boosts:{"atk":1,"def":1,"accuracy":1}
+before-guard confide            sv:4 swsh:640 usum:1013                      normal p0 flags:reflectable,sound,bypasssub boosts:{"spa":-1}
+before-guard confuseray         champions:94 sv:200 swsh:97 usum:119         normal p0 flags:protect,reflectable volatile:confusion
+before-guard conversion         sv:4 swsh:3 usum:4                           self p0 flags:snatch fn:onHit
+before-guard conversion2        sv:4 swsh:3 usum:4                           normal p0 flags:bypasssub fn:onHit
+before-guard corrosivegas       champions:7 swsh:17                          allAdjacent p0 flags:protect,reflectable,allyanim fn:onHit
+before-guard cosmicpower        champions:14 sv:42 swsh:28 usum:57           self p0 flags:snatch boosts:{"def":1,"spd":1}
+before-guard cottonguard        champions:18 sv:11 swsh:11 usum:29           self p0 flags:snatch boosts:{"def":3}
+before-guard cottonspore        champions:5 sv:11 swsh:9 usum:18             allAdjacentFoes p0 flags:protect,reflectable,powder boosts:{"spe":-2}
+before-guard courtchange        champions:1 sv:2 swsh:1                      all p0 fn:onHitField
+before-guard craftyshield       swsh:7 usum:6                                allySide p3 side:craftyshield fn:onTry cond:duration,onSideStart,onTryHitPriority,onTryHit
+before-guard darkvoid           sv:1 usum:2                                  allAdjacentFoes p0 flags:protect,reflectable status:slp fn:onTry
+before-guard decorate           champions:9 sv:10 swsh:9                     normal p0 flags:allyanim boosts:{"atk":2,"spa":2}
+before-guard defendorder        sv:2 swsh:1 usum:2                           self p0 flags:snatch boosts:{"def":1,"spd":1}
+before-guard defensecurl        sv:80 swsh:142 usum:219                      self p0 flags:snatch boosts:{"def":1} volatile:defensecurl cond:onRestart
+before-guard defog              champions:15 sv:50 swsh:134 usum:229         normal p0 flags:protect,reflectable,bypasssub fn:onHit
+before-guard disable            champions:46 sv:79 swsh:79 usum:103          normal p0 flags:protect,reflectable,bypasssub volatile:disable fn:onTryHit cond:duration,onStart,onResidualOrder,onEnd,onBeforeMovePriority,onBeforeMove,onDisableMove
+before-guard doodle             sv:2                                         adjacentFoe p0 fn:onHit
+before-guard doubleteam         champions:58 sv:74 swsh:643 usum:1012        self p0 flags:snatch boosts:{"evasion":1}
+before-guard dragoncheer        champions:34 sv:63                           adjacentAlly p0 flags:bypasssub,allyanim,sound volatile:dragoncheer cond:onStart,onModifyCritRatio
+before-guard dragondance        champions:35 sv:84 swsh:63 usum:52           self p0 flags:snatch,dance boosts:{"atk":1,"spe":1}
+before-guard eerieimpulse       champions:29 sv:71 swsh:40 usum:20           normal p0 flags:protect,reflectable boosts:{"spa":-2}
+before-guard electrify          champions:1 swsh:3 usum:3                    normal p0 flags:protect,allyanim volatile:electrify fn:onTryHit cond:duration,onStart,onModifyTypePriority,onModifyType
+before-guard embargo            usum:118                                     normal p0 flags:protect,reflectable volatile:embargo cond:duration,onStart,onResidualOrder,onEnd
+before-guard encore             champions:81 sv:182 swsh:132 usum:108        normal p0 flags:protect,reflectable,bypasssub volatile:encore cond:duration,onStart,onOverrideAction,onResidualOrder,onResidual,onEnd,onDisableMove
+before-guard endure             champions:395 sv:914 swsh:769 usum:631       self p4 volatile:endure fn:onHit,onPrepareHit cond:duration,onStart,onDamagePriority,onDamage
+before-guard entrainment        champions:22 sv:35 swsh:26 usum:30           normal p0 flags:protect,reflectable,allyanim fn:onTryHit,onHit
+before-guard extremeevoboost    usum:0                                       self p0 boosts:{"atk":2,"def":2,"spa":2,"spd":2,"spe":2} z/max
+before-guard fairylock          champions:1 sv:2 swsh:1 usum:2               all p0 flags:bypasssub pseudo:fairylock cond:duration,onFieldStart,onTrapPokemon
+before-guard faketears          champions:80 sv:145 swsh:97 usum:83          normal p0 flags:protect,reflectable,allyanim boosts:{"spd":-2}
+before-guard featherdance       champions:25 sv:62 swsh:22 usum:47           normal p0 flags:protect,reflectable,dance,allyanim boosts:{"atk":-2}
+before-guard flash              usum:418                                     normal p0 flags:protect,reflectable boosts:{"accuracy":-1}
+before-guard flatter            champions:18 sv:46 swsh:29 usum:36           normal p0 flags:protect,reflectable,allyanim boosts:{"spa":1} volatile:confusion
+before-guard flowershield       swsh:4 usum:11                               all p0 fn:onHitField
+before-guard focusenergy        champions:67 sv:92 swsh:120 usum:122         self p0 flags:snatch volatile:focusenergy cond:onStart,onModifyCritRatio
+before-guard foresight          usum:88                                      normal p0 flags:protect,reflectable,bypasssub volatile:foresight fn:onTryHit cond:onStart,onNegateImmunity,onModifyBoost
+before-guard forestscurse       champions:1 sv:3 swsh:2 usum:3               normal p0 flags:protect,reflectable,allyanim fn:onHit
+before-guard gastroacid         champions:8 sv:20 swsh:29 usum:49            normal p0 flags:protect,reflectable,allyanim volatile:gastroacid fn:onTryHit cond:onStart,onCopy
+before-guard gearup             swsh:3 usum:3                                allySide p0 flags:snatch,bypasssub fn:onHitSide
+before-guard geomancy           swsh:1 usum:2                                self p0 boosts:{"spa":2,"spd":2,"spe":2}
+before-guard glare              champions:6 sv:12 swsh:10 usum:15            normal p0 flags:protect,reflectable status:par
+before-guard grasswhistle       usum:49                                      normal p0 flags:protect,reflectable,sound,bypasssub status:slp
+before-guard growl              sv:174 swsh:138 usum:207                     allAdjacentFoes p0 flags:protect,reflectable,sound,bypasssub boosts:{"atk":-1}
+before-guard growth             champions:24 sv:79 swsh:47 usum:67           self p0 flags:snatch boosts:{"atk":1,"spa":1} fn:onModifyMove
+before-guard grudge             swsh:30 usum:33                              self p0 flags:bypasssub volatile:grudge cond:onStart,onFaint,onBeforeMovePriority,onBeforeMove
+before-guard guardsplit         champions:7 sv:12 swsh:24 usum:28            normal p0 flags:protect,allyanim fn:onHit
+before-guard guardswap          champions:24 sv:12 swsh:64 usum:37           normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard happyhour          sv:2 swsh:15 usum:18                         allySide p0 fn:onTryHit
+before-guard harden             sv:69 swsh:71 usum:112                       self p0 flags:snatch boosts:{"def":1}
+before-guard haze               champions:39 sv:101 swsh:81 usum:90          all p0 flags:bypasssub fn:onHitField
+before-guard healbell           champions:2 sv:5 swsh:58 usum:101            allyTeam p0 flags:snatch,sound,bypasssub fn:onHit
+before-guard healblock          usum:47                                      allAdjacentFoes p0 flags:protect,reflectable volatile:healblock cond:duration,onStart,onDisableMove,onBeforeMovePriority,onBeforeMove,onModifyMove,onResidualOrder,onEnd,onTryHeal,onRestart
+before-guard heartswap          sv:2 usum:3                                  normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard holdhands          swsh:4 usum:8                                adjacentAlly p0 flags:bypasssub
+before-guard honeclaws          sv:49 swsh:141 usum:206                      self p0 flags:snatch boosts:{"atk":1,"accuracy":1}
+before-guard howl               champions:23 sv:44 swsh:37 usum:44           allies p0 flags:snatch,sound,bypasssub boosts:{"atk":1}
+before-guard hypnosis           champions:30 sv:58 swsh:65 usum:74           normal p0 flags:protect,reflectable status:slp
+before-guard imprison           champions:73 sv:172 swsh:153 usum:85         self p0 flags:snatch,bypasssub volatile:imprison cond:onStart,onFoeDisableMove,onFoeBeforeMovePriority,onFoeBeforeMove
+before-guard ingrain            champions:13 sv:36 swsh:35 usum:50           self p0 flags:snatch volatile:ingrain cond:onStart,onResidualOrder,onResidual,onTrapPokemon,onDragOut
+before-guard iondeluge          usum:11                                      all p1 pseudo:iondeluge cond:duration,onFieldStart,onModifyTypePriority,onModifyType
+before-guard irondefense        champions:113 sv:210 swsh:225 usum:267       self p0 flags:snatch boosts:{"def":2}
+before-guard kinesis            swsh:2 usum:4                                normal p0 flags:protect,reflectable boosts:{"accuracy":-1}
+before-guard laserfocus         swsh:183 usum:283                            self p0 flags:snatch volatile:laserfocus cond:duration,onStart,onRestart,onModifyCritRatio,onEnd
+before-guard leer               sv:189 swsh:179 usum:220                     allAdjacentFoes p0 flags:protect,reflectable boosts:{"def":-1}
+before-guard lockon             champions:1 sv:17 swsh:26 usum:26            normal p0 flags:protect fn:onTryHit,onHit cond:duration,onSourceInvulnerabilityPriority,onSourceInvulnerability,onSourceAccuracy
+before-guard lovelykiss         swsh:1 usum:2                                normal p0 flags:protect,reflectable status:slp
+before-guard luckychant         usum:74                                      allySide p0 flags:snatch side:luckychant cond:duration,onSideStart,onCriticalHit,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+before-guard magiccoat          swsh:155 usum:239                            self p4 volatile:magiccoat cond:duration,onStart,onTryHitPriority,onTryHit,onAllyTryHitSide
+before-guard magicpowder        champions:1 sv:2 swsh:1                      normal p0 flags:protect,reflectable,allyanim,powder fn:onHit
+before-guard magicroom          champions:35 sv:11 swsh:66 usum:74           all p0 pseudo:magicroom cond:duration,onFieldStart,onFieldRestart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+before-guard magneticflux       champions:3 sv:10 swsh:4 usum:8              allySide p0 flags:snatch,bypasssub fn:onHitSide
+before-guard magnetrise         champions:8 sv:17 swsh:87 usum:128           self p0 flags:snatch volatile:magnetrise fn:onTry cond:duration,onStart,onImmunity,onResidualOrder,onEnd
+before-guard matblock           swsh:1 usum:5                                allySide p0 flags:snatch side:matblock fn:onTry cond:duration,onSideStart,onTryHitPriority,onTryHit
+before-guard maxguard           swsh:0                                       self p4 volatile:maxguard fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit z/max
+before-guard meanlook           champions:22 sv:42 swsh:40 usum:57           normal p0 flags:reflectable fn:onHit
+before-guard meditate           usum:23                                      self p0 flags:snatch boosts:{"atk":1}
+before-guard metalsound         champions:29 sv:61 swsh:64 usum:62           normal p0 flags:protect,reflectable,sound,bypasssub,allyanim boosts:{"spd":-2}
+before-guard mimic              sv:13 swsh:279 usum:466                      normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard mindreader         swsh:22 usum:34                              normal p0 flags:protect fn:onTryHit,onHit
+before-guard minimize           champions:7 sv:15 swsh:16 usum:17            self p0 flags:snatch boosts:{"evasion":2} volatile:minimize cond:onRestart,onSourceModifyDamage,onAccuracy
+before-guard miracleeye         usum:21                                      normal p0 flags:protect,reflectable,bypasssub volatile:miracleeye fn:onTryHit cond:onStart,onNegateImmunity,onModifyBoost
+before-guard mist               sv:68 swsh:73 usum:74                        allySide p0 flags:snatch side:mist cond:duration,onTryBoost,onSideStart,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+before-guard mudsport           usum:90                                      all p0 pseudo:mudsport cond:duration,onFieldStart,onBasePowerPriority,onBasePower,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+before-guard nastyplot          champions:85 sv:167 swsh:133 usum:99         self p0 flags:snatch boosts:{"spa":2}
+before-guard nightmare          usum:103                                     normal p0 flags:protect volatile:nightmare cond:onStart,onResidualOrder,onResidual
+before-guard nobleroar          champions:6 sv:21 swsh:13 usum:14            normal p0 flags:protect,reflectable,sound,bypasssub boosts:{"atk":-1,"spa":-1}
+before-guard noretreat          champions:2 sv:2 swsh:1                      self p0 flags:snatch boosts:{"atk":1,"def":1,"spa":1,"spd":1,"spe":1} volatile:noretreat fn:onTry cond:onStart,onTrapPokemon
+before-guard octolock           champions:1 swsh:1                           normal p0 flags:protect volatile:octolock fn:onTryImmunity cond:onStart,onResidualOrder,onResidual,onTrapPokemon
+before-guard odorsleuth         usum:72                                      normal p0 flags:protect,reflectable,bypasssub,allyanim volatile:foresight fn:onTryHit
+before-guard playnice           sv:34 swsh:31 usum:38                        normal p0 flags:reflectable,bypasssub boosts:{"atk":-1}
+before-guard poisongas          sv:20 swsh:12 usum:18                        allAdjacentFoes p0 flags:protect,reflectable status:psn
+before-guard poisonpowder       champions:28 sv:54 swsh:21 usum:60           normal p0 flags:protect,reflectable,powder status:psn
+before-guard powder             usum:23                                      normal p1 flags:protect,reflectable,bypasssub,powder volatile:powder cond:duration,onStart,onTryMovePriority,onTryMove
+before-guard powershift         champions:0                                  self p0 flags:snatch volatile:powershift cond:onStart,onCopy,onEnd,onRestart
+before-guard powersplit         champions:8 sv:14 swsh:23 usum:26            normal p0 flags:protect,allyanim fn:onHit
+before-guard powerswap          champions:21 sv:8 swsh:69 usum:34            normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard powertrick         champions:5 sv:5 swsh:13 usum:22             self p0 flags:snatch volatile:powertrick cond:onStart,onCopy,onEnd,onRestart
+before-guard psychoshift        swsh:18 usum:27                              normal p0 flags:protect fn:onTryHit
+before-guard psychup            champions:92 sv:241 swsh:216 usum:346        normal p0 flags:bypasssub,allyanim fn:onHit
+before-guard quash              champions:9 sv:15 swsh:26 usum:59            normal p0 flags:protect fn:onHit
+before-guard quiverdance        champions:21 sv:33 swsh:8 usum:37            self p0 flags:snatch,dance boosts:{"spa":1,"spd":1,"spe":1}
+before-guard recycle            champions:13 sv:22 swsh:90 usum:140          self p0 flags:snatch fn:onHit
+before-guard reflecttype        champions:4 sv:8 swsh:12 usum:19             normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard refresh            usum:141                                     self p0 flags:snatch fn:onHit
+before-guard roar               champions:105 sv:213 swsh:165 usum:266       normal p-6 flags:reflectable,sound,bypasssub,allyanim forceSwitch
+before-guard rockpolish         champions:9 sv:35 swsh:95 usum:130           self p0 flags:snatch boosts:{"spe":2}
+before-guard roleplay           champions:15 sv:14 swsh:97 usum:170          normal p0 flags:bypasssub,allyanim fn:onTryHit,onHit
+before-guard rototiller         usum:27                                      all p0 fn:onHitField
+before-guard safeguard          champions:109 sv:71 swsh:240 usum:360        allySide p0 flags:snatch side:safeguard cond:duration,onSetStatus,onTryAddVolatile,onSideStart,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+before-guard sandattack         sv:82 swsh:90 usum:122                       normal p0 flags:protect,reflectable boosts:{"accuracy":-1}
+before-guard scaryface          champions:162 sv:382 swsh:193 usum:167       normal p0 flags:protect,reflectable,allyanim boosts:{"spe":-2}
+before-guard screech            champions:72 sv:119 swsh:169 usum:169        normal p0 flags:protect,reflectable,sound,bypasssub,allyanim boosts:{"def":-2}
+before-guard sharpen            usum:10                                      self p0 flags:snatch boosts:{"atk":1}
+before-guard shellsmash         champions:8 sv:25 swsh:20 usum:26            self p0 flags:snatch boosts:{"def":-1,"spd":-1,"atk":2,"spa":2,"spe":2}
+before-guard shelter            champions:1 sv:3                             self p0 flags:snatch boosts:{"def":2}
+before-guard shiftgear          champions:1 sv:6 swsh:11 usum:10             self p0 flags:snatch boosts:{"spe":2,"atk":1}
+before-guard simplebeam         champions:4 sv:6 swsh:22 usum:23             normal p0 flags:protect,reflectable,allyanim fn:onTryHit,onHit
+before-guard sing               champions:9 sv:28 swsh:47 usum:67            normal p0 flags:protect,reflectable,sound,bypasssub status:slp
+before-guard sketch             sv:1 usum:1                                  normal p0 flags:bypasssub,allyanim fn:onHit
+before-guard skillswap          champions:71 sv:133 swsh:104 usum:131        normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard sleeppowder        champions:26 sv:42 swsh:22 usum:51           normal p0 flags:protect,reflectable,powder status:slp
+before-guard smokescreen        sv:33 swsh:27 usum:33                        normal p0 flags:protect,reflectable boosts:{"accuracy":-1}
+before-guard snatch             usum:180                                     self p4 flags:bypasssub volatile:snatch cond:duration,onStart,onAnyPrepareHitPriority,onAnyPrepareHit
+before-guard soak               champions:10 sv:40 swsh:30 usum:30           normal p0 flags:protect,reflectable,allyanim fn:onHit
+before-guard speedswap          champions:4 sv:2 swsh:28 usum:6              normal p0 flags:protect,bypasssub,allyanim fn:onHit
+before-guard spicyextract       champions:2 sv:2                             normal p0 flags:protect,reflectable boosts:{"atk":2,"def":-2}
+before-guard spiderweb          usum:8                                       normal p0 flags:protect,reflectable fn:onHit
+before-guard spite              champions:74 sv:158 swsh:130 usum:168        normal p0 flags:protect,reflectable,bypasssub fn:onHit
+before-guard spore              champions:0 sv:8 swsh:4 usum:9               normal p0 flags:protect,reflectable,powder status:slp
+before-guard stockpile          champions:18 sv:61 swsh:41 usum:61           self p0 flags:snatch volatile:stockpile fn:onTry cond:onStart,onRestart,onEnd
+before-guard stringshot         champions:25 sv:36 swsh:34 usum:93           allAdjacentFoes p0 flags:protect,reflectable boosts:{"spe":-2}
+before-guard stunspore          champions:27 sv:62 swsh:26 usum:62           normal p0 flags:protect,reflectable,powder status:par
+before-guard supersonic         sv:70 swsh:59 usum:97                        normal p0 flags:protect,reflectable,sound,bypasssub volatile:confusion
+before-guard swagger            champions:68 sv:80 swsh:652 usum:1009        normal p0 flags:protect,reflectable,allyanim boosts:{"atk":2} volatile:confusion
+before-guard sweetkiss          champions:24 sv:47 swsh:49 usum:42           normal p0 flags:protect,reflectable volatile:confusion
+before-guard sweetscent         champions:29 sv:68 swsh:68 usum:94           allAdjacentFoes p0 flags:protect,reflectable boosts:{"evasion":-2}
+before-guard switcheroo         champions:26 sv:49 swsh:28 usum:42           normal p0 flags:protect,allyanim fn:onHit,onTryImmunity
+before-guard swordsdance        champions:116 sv:264 swsh:196 usum:288       self p0 flags:snatch,dance boosts:{"atk":2}
+before-guard tailglow           sv:3 usum:4                                  self p0 flags:snatch boosts:{"spa":3}
+before-guard tailwhip           sv:99 swsh:84 usum:112                       allAdjacentFoes p0 flags:protect,reflectable boosts:{"def":-1}
+before-guard takeheart          sv:3                                         self p0 flags:snatch fn:onHit
+before-guard tarshot            sv:2 swsh:1                                  normal p0 flags:protect,reflectable boosts:{"spe":-1} volatile:tarshot cond:onStart,onEffectivenessPriority,onEffectiveness
+before-guard taunt              champions:135 sv:338 swsh:225 usum:294       normal p0 flags:protect,reflectable,bypasssub volatile:taunt cond:duration,onStart,onResidualOrder,onEnd,onDisableMove,onBeforeMovePriority,onBeforeMove
+before-guard tearfullook        champions:13 sv:27 swsh:12 usum:25           normal p0 flags:reflectable boosts:{"atk":-1,"spa":-1}
+before-guard teeterdance        champions:6 sv:22 swsh:24 usum:37            allAdjacent p0 flags:protect,dance volatile:confusion
+before-guard telekinesis        usum:218                                     normal p0 flags:protect,reflectable,allyanim volatile:telekinesis fn:onTry cond:duration,onStart,onAccuracyPriority,onAccuracy,onImmunity,onUpdate,onResidualOrder,onEnd
+before-guard thunderwave        champions:121 sv:249 swsh:237 usum:319       normal p0 flags:protect,reflectable status:par
+before-guard tickle             champions:40 sv:77 swsh:90 usum:99           normal p0 flags:protect,reflectable,allyanim boosts:{"atk":-1,"def":-1}
+before-guard tidyup             champions:2 sv:7                             self p0 fn:onHit
+before-guard topsyturvy         champions:3 sv:3 swsh:3 usum:3               normal p0 flags:protect,reflectable,allyanim fn:onHit
+before-guard torment            champions:31 sv:44 swsh:137 usum:209         normal p0 flags:protect,reflectable,bypasssub volatile:torment cond:onStart,onEnd,onDisableMove
+before-guard toxic              champions:39 sv:96 swsh:643 usum:1014        normal p0 flags:protect,reflectable status:tox
+before-guard toxicthread        champions:1 sv:3 usum:3                      normal p0 flags:protect,reflectable boosts:{"spe":-2} status:psn
+before-guard transform          champions:1 sv:3 swsh:2 usum:3               normal p0 flags:allyanim fn:onHit
+before-guard trick              champions:86 sv:176 swsh:142 usum:177        normal p0 flags:protect,allyanim fn:onHit,onTryImmunity
+before-guard trickortreat       champions:4 swsh:8 usum:9                    normal p0 flags:protect,reflectable,allyanim fn:onHit
+before-guard venomdrench        swsh:48 usum:42                              allAdjacentFoes p0 flags:protect,reflectable fn:onHit
+before-guard victorydance       sv:2                                         self p0 flags:snatch,dance boosts:{"atk":1,"def":1,"spe":1}
+before-guard watersport         usum:73                                      all p0 pseudo:watersport cond:duration,onFieldStart,onBasePowerPriority,onBasePower,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+before-guard whirlwind          champions:37 sv:41 swsh:36 usum:64           normal p-6 flags:reflectable,bypasssub,allyanim,wind forceSwitch
+before-guard willowisp          champions:75 sv:141 swsh:112 usum:154        normal p0 flags:protect,reflectable status:brn
+before-guard withdraw           sv:29 swsh:28 usum:26                        self p0 flags:snatch boosts:{"def":1}
+before-guard wonderroom         champions:52 sv:13 swsh:108 usum:106         all p0 pseudo:wonderroom cond:duration,onModifyMove,onFieldStart,onFieldRestart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+before-guard workup             sv:34 swsh:211 usum:342                      self p0 flags:snatch boosts:{"atk":1,"spa":1}
+before-guard worryseed          champions:18 sv:61 swsh:73 usum:134          normal p0 flags:protect,reflectable,allyanim fn:onTryHit,onHit,onTryImmunity
+before-guard yawn               champions:47 sv:89 swsh:74 usum:104          normal p0 flags:protect,reflectable volatile:yawn fn:onTryHit cond:duration,onStart,onResidualOrder,onEnd
+calling      assist             usum:24                                      self p0 fn:onHit
+calling      copycat            champions:41 sv:70 swsh:45 usum:60           self p0 fn:onHit
+calling      instruct           champions:1 sv:2 swsh:1 usum:2               normal p0 flags:protect,bypasssub,allyanim fn:onHit
+calling      mefirst            usum:57                                      adjacentFoe p0 flags:protect,bypasssub fn:onTryHit cond:duration,onBasePowerPriority,onBasePower
+calling      metronome          sv:146 swsh:69 usum:71                       self p0 fn:onHit
+calling      mirrormove         usum:43                                      normal p0 fn:onTryHit
+calling      naturepower        swsh:98 usum:171                             normal p0 fn:onTryHit
+calling      sleeptalk          champions:395 sv:917 swsh:767 usum:1014      self p0 fn:onTry,onHit
+hp-guard     bellydrum          champions:14 sv:40 swsh:47 usum:51           self p0 flags:snatch fn:onHit
+hp-guard     clangoroussoul     champions:1 sv:2 swsh:1                      self p0 flags:snatch,sound,dance boosts:{"atk":1,"def":1,"spa":1,"spd":1,"spe":1} fn:onTry,onTryHit,onHit
+hp-guard     curse              champions:132 sv:283 swsh:296 usum:413       normal p0 flags:bypasssub volatile:curse fn:onTryHit,onHit,onModifyMove cond:onStart,onResidualOrder,onResidual
+hp-guard     filletaway         sv:2                                         self p0 flags:snatch boosts:{"atk":2,"spa":2,"spe":2} fn:onTry,onTryHit,onHit
+hp-guard     floralhealing      sv:2 swsh:1 usum:2                           normal p0 flags:protect,reflectable,heal,allyanim fn:onHit
+hp-guard     healingwish        champions:15 sv:43 swsh:29 usum:30           self p0 flags:snatch,heal slot:healingwish fn:onTryHit cond:onSwitchIn,onSwap
+hp-guard     healorder          usum:2                                       self p0 flags:snatch,heal heal:1/2
+hp-guard     healpulse          champions:25 sv:37 swsh:42 usum:46           any p0 flags:protect,reflectable,heal,allyanim fn:onHit
+hp-guard     junglehealing      sv:3 swsh:2                                  allies p0 flags:heal,bypasssub,allyanim fn:onHit
+hp-guard     lifedew            champions:21 sv:39 swsh:41                   allies p0 flags:snatch,heal,bypasssub heal:1/4
+hp-guard     lunarblessing      sv:2                                         allies p0 flags:snatch,heal fn:onHit
+hp-guard     lunardance         sv:2 swsh:1 usum:2                           self p0 flags:snatch,dance,heal slot:lunardance fn:onTryHit cond:onSwitchIn,onSwap
+hp-guard     memento            champions:23 sv:81 swsh:46 usum:49           normal p0 flags:protect boosts:{"atk":-2,"spa":-2}
+hp-guard     milkdrink          champions:1 sv:3 swsh:1 usum:4               adjacentAllyOrSelf p0 flags:snatch,heal heal:1/2
+hp-guard     moonlight          champions:6 sv:20 swsh:22 usum:28            self p0 flags:snatch,heal fn:onHit
+hp-guard     morningsun         champions:5 sv:19 swsh:29 usum:37            self p0 flags:snatch,heal fn:onHit
+hp-guard     painsplit          champions:72 sv:137 swsh:108 usum:139        normal p0 flags:protect,allyanim fn:onHit
+hp-guard     purify             swsh:1 usum:2                                normal p0 flags:protect,reflectable,heal fn:onHit
+hp-guard     recover            champions:29 sv:81 swsh:56 usum:76           self p0 flags:snatch,heal heal:1/2
+hp-guard     rest               champions:395 sv:915 swsh:769 usum:1008      self p0 flags:snatch,heal fn:onTry,onHit
+hp-guard     revivalblessing    champions:1 sv:2                             self p0 flags:heal slot:revivalblessing selfSwitch:true fn:onTryHit cond:duration
+hp-guard     roost              champions:39 sv:67 swsh:80 usum:146          self p0 flags:snatch,heal heal:1/2 cond:duration,onResidualOrder,onStart,onTypePriority,onType
+hp-guard     shedtail           champions:4 sv:4                             self p0 volatile:substitute selfSwitch:shedtail fn:onTryHit,onHit
+hp-guard     shoreup            sv:3 swsh:2 usum:3                           self p0 flags:snatch,heal fn:onHit
+hp-guard     slackoff           champions:10 sv:19 swsh:9 usum:13            self p0 flags:snatch,heal heal:1/2
+hp-guard     softboiled         champions:0 sv:3 swsh:9 usum:10              self p0 flags:snatch,heal heal:1/2
+hp-guard     strengthsap        champions:8 sv:21 swsh:13 usum:13            normal p0 flags:protect,reflectable,heal fn:onHit
+hp-guard     stuffcheeks        champions:4 sv:8 swsh:2                      self p0 flags:snatch fn:onTry,onHit
+hp-guard     substitute         champions:395 sv:916 swsh:769 usum:1015      self p0 flags:snatch volatile:substitute fn:onTryHit,onHit cond:onStart,onTryPrimaryHitPriority,onTryPrimaryHit,onEnd
+hp-guard     swallow            champions:15 sv:54 swsh:38 usum:58           self p0 flags:snatch,heal fn:onTry,onHit
+hp-guard     synthesis          champions:27 sv:102 swsh:66 usum:128         self p0 flags:snatch,heal fn:onHit
+hp-guard     teatime            champions:2 sv:3 swsh:2                      all p0 flags:bypasssub fn:onHitField
+hp-guard     wish               champions:39 sv:66 swsh:62 usum:93           self p0 flags:snatch,heal slot:Wish cond:onStart,onResidualOrder,onResidual,onEnd
+modelled     auroraveil         champions:9 sv:14 swsh:25 usum:14            allySide p0 flags:snatch side:auroraveil fn:onTry cond:duration,onAnyModifyDamage,onSideStart,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+modelled     banefulbunker      champions:1 sv:2 swsh:1 usum:2               self p4 volatile:banefulbunker fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     burningbulwark     sv:2                                         self p4 volatile:burningbulwark fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     destinybond        champions:35 sv:52 swsh:56 usum:66           self p0 flags:bypasssub volatile:destinybond fn:onPrepareHit cond:onStart,onFaint,onBeforeMovePriority,onBeforeMove,onMoveAborted
+modelled     detect             champions:41 sv:56 swsh:120 usum:171         self p4 volatile:protect fn:onHit,onPrepareHit
+modelled     electricterrain    champions:29 sv:103 swsh:40 usum:21          all p0 terrain:electricterrain cond:duration,onSetStatus,onTryAddVolatile,onBasePowerPriority,onBasePower,onFieldStart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     followme           champions:5 sv:23 swsh:21 usum:26            self p2 volatile:followme fn:onTry cond:duration,onStart,onFoeRedirectTargetPriority,onFoeRedirectTarget
+modelled     grassyterrain      champions:37 sv:155 swsh:41 usum:64          all p0 terrain:grassyterrain cond:duration,onBasePowerPriority,onBasePower,onFieldStart,onResidualOrder,onResidualSubOrder,onResidual,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     gravity            champions:33 sv:128 swsh:95 usum:149         all p0 pseudo:gravity cond:duration,onFieldStart,onModifyAccuracy,onDisableMove,onBeforeMovePriority,onBeforeMove,onModifyMove,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     hail               swsh:176 usum:223                            all p0 weather:hail
+modelled     helpinghand        champions:259 sv:579 swsh:273 usum:296       adjacentAlly p5 flags:bypasssub volatile:helpinghand fn:onTryHit cond:duration,onStart,onRestart,onBasePowerPriority,onBasePower
+modelled     kingsshield        champions:2 swsh:2 usum:3                    self p4 volatile:kingsshield fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     lightscreen        champions:161 sv:337 swsh:260 usum:356       allySide p0 flags:snatch side:lightscreen cond:duration,onAnyModifyDamage,onSideStart,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+modelled     mistyterrain       champions:44 sv:94 swsh:45 usum:44           all p0 terrain:mistyterrain cond:duration,onSetStatus,onTryAddVolatile,onBasePowerPriority,onBasePower,onFieldStart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     obstruct           swsh:1                                       self p4 volatile:obstruct fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     protect            champions:395 sv:917 swsh:769 usum:1018      self p4 volatile:protect fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit
+modelled     psychicterrain     champions:32 sv:83 swsh:40 usum:17           all p0 terrain:psychicterrain cond:duration,onTryHitPriority,onTryHit,onBasePowerPriority,onBasePower,onFieldStart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     quickguard         champions:33 sv:53 swsh:56 usum:63           allySide p3 flags:snatch side:quickguard fn:onTry,onHitSide cond:duration,onSideStart,onTryHitPriority,onTryHit
+modelled     ragepowder         champions:26 sv:42 swsh:6 usum:37            self p2 flags:powder volatile:ragepowder fn:onTry cond:duration,onStart,onFoeRedirectTargetPriority,onFoeRedirectTarget
+modelled     raindance          champions:294 sv:653 swsh:478 usum:703       all p0 weather:RainDance
+modelled     reflect            champions:101 sv:247 swsh:257 usum:323       allySide p0 flags:snatch side:reflect cond:duration,onAnyModifyDamage,onSideStart,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+modelled     sandstorm          champions:88 sv:243 swsh:190 usum:261        all p0 flags:wind weather:Sandstorm
+modelled     silktrap           sv:2                                         self p4 volatile:silktrap fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     snowscape          champions:47 sv:109                          all p0 weather:snowscape
+modelled     spikyshield        champions:4 sv:12 swsh:2 usum:8              self p4 volatile:spikyshield fn:onHit,onPrepareHit cond:duration,onStart,onTryHitPriority,onTryHit,onHit
+modelled     sunnyday           champions:294 sv:643 swsh:438 usum:702       all p0 weather:sunnyday
+modelled     tailwind           champions:52 sv:147 swsh:102 usum:193        allySide p0 flags:snatch,wind side:tailwind cond:duration,onSideStart,onModifySpe,onSideResidualOrder,onSideResidualSubOrder,onSideEnd
+modelled     trickroom          champions:64 sv:143 swsh:118 usum:157        all p-7 pseudo:trickroom cond:duration,onFieldStart,onFieldRestart,onFieldResidualOrder,onFieldResidualSubOrder,onFieldEnd
+modelled     wideguard          champions:28 sv:50 swsh:51 usum:73           allySide p3 flags:snatch side:wideguard fn:onTry,onHitSide cond:duration,onSideStart,onTryHitPriority,onTryHit
+no-effect    celebrate          sv:32 swsh:46 usum:44                        self p0 fn:onTryHit
+no-effect    leechseed          champions:30 sv:96 swsh:63 usum:94           normal p0 flags:protect,reflectable volatile:leechseed fn:onTryImmunity cond:onStart,onResidualOrder,onResidual
+no-effect    perishsong         champions:11 sv:46 swsh:24 usum:54           all p0 flags:sound,bypasssub fn:onHitField cond:duration,onEnd,onResidualOrder,onResidual
+no-effect    spikes             champions:33 sv:75 swsh:38 usum:45           foeSide p0 flags:reflectable side:spikes cond:onSideStart,onSideRestart,onSwitchIn
+no-effect    splash             sv:39 swsh:37 usum:50                        self p0 fn:onTry,onTryHit
+no-effect    stealthrock        champions:68 sv:196 swsh:143 usum:211        foeSide p0 flags:reflectable side:stealthrock cond:onSideStart,onSwitchIn
+no-effect    stickyweb          champions:3 sv:19 swsh:14 usum:17            foeSide p0 flags:reflectable side:stickyweb cond:onSideStart,onSwitchIn
+no-effect    toxicspikes        champions:34 sv:63 swsh:41 usum:44           foeSide p0 flags:reflectable side:toxicspikes cond:onSideStart,onSideRestart,onSwitchIn
+presence     spotlight          usum:8                                       normal p3 flags:protect,reflectable,allyanim volatile:spotlight fn:onTryHit cond:duration,onStart,onFoeRedirectTargetPriority,onFoeRedirectTarget
+switch       batonpass          champions:79 sv:183 swsh:106 usum:111        self p0 selfSwitch:copyvolatile fn:onHit
+switch       chillyreception    champions:2 sv:3                             all p0 weather:snowscape selfSwitch:true fn:priorityChargeCallback cond:duration,onBeforeMovePriority,onBeforeMove
+switch       partingshot        champions:11 sv:22 swsh:31 usum:23           normal p0 flags:protect,reflectable,sound,bypasssub selfSwitch:true fn:onHit
+switch       teleport           sv:13 swsh:49 usum:64                        self p-6 selfSwitch:true fn:onTry

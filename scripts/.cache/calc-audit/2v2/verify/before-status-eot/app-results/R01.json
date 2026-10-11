@@ -1,0 +1,191 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Confusion is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 150,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 97,
+     "max": 115,
+     "minPercent": 41.27659574468085,
+     "maxPercent": 48.93617021276596,
+     "rolls": [
+      97,
+      99,
+      99,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.015625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Figy Berry heals it once, at a quarter of its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 131,
+      "high": 113,
+      "average": 122.125,
+      "min": 113,
+      "max": 131,
+      "koChance": 0,
+      "heals": [
+       "Figy Berry: +78 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 97,
+        "heals": [
+         "Figy Berry: +78 HP."
+        ]
+       },
+       "high": {
+        "dealt": 115,
+        "heals": [
+         "Figy Berry: +78 HP."
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 55,
+     "max": 66,
+     "minPercent": 35.483870967741936,
+     "maxPercent": 42.58064516129032,
+     "rolls": [
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 55–66 HP (35.5–42.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 100,
+      "high": 89,
+      "average": 94.875,
+      "min": 89,
+      "max": 100,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 55,
+        "heals": []
+       },
+       "high": {
+        "dealt": 66,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.855000000000018,
+ "preflight": []
+}

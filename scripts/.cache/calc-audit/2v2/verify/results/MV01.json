@@ -1,0 +1,1591 @@
+{
+ "id": "MV01",
+ "title": "Max Knuckle from Close Combat lowers nothing: a slower foe's Body Slam meets full Defense",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "No -1 Def.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 57,
+   "classes": 16,
+   "ms": 96,
+   "decisions": {
+    "fail:": 46,
+    "roll": 46,
+    "secondary": 40
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       248,
+       0.0625
+      ],
+      [
+       249,
+       0.0625
+      ],
+      [
+       250,
+       0.125
+      ],
+      [
+       251,
+       0.25
+      ],
+      [
+       252,
+       0.0625
+      ],
+      [
+       253,
+       0.125
+      ],
+      [
+       254,
+       0.25
+      ],
+      [
+       255,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 251.875,
+     "min": 248,
+     "max": 255,
+     "modeTieUp": 254,
+     "modeTieDown": 251,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       101,
+       0.25
+      ],
+      [
+       102,
+       0.1875
+      ],
+      [
+       103,
+       0.1875
+      ],
+      [
+       104,
+       0.375
+      ]
+     ],
+     "koChance": 0,
+     "average": 102.6875,
+     "min": 101,
+     "max": 104,
+     "modeTieUp": 104,
+     "modeTieDown": 104,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 24,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Lucario|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-21": 0.375,
+       "damage:-22": 0.1875,
+       "damage:-23": 0.1875,
+       "damage:-24": 0.25
+      },
+      "own-left": {
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "boost:atk:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -24,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-35": 0.0625,
+       "damage:-36": 0.25,
+       "damage:-37": 0.125,
+       "damage:-38": 0.0625,
+       "damage:-39": 0.25,
+       "damage:-40": 0.125,
+       "damage:-41": 0.0625,
+       "damage:-42": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -42,
+       "max": -35
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -42,
+       "max": -35,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 40,
+    "classes": 4,
+    "ms": 96,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 290,
+      "dist": [
+       [
+        248,
+        0.0625
+       ],
+       [
+        249,
+        0.0625
+       ],
+       [
+        250,
+        0.125
+       ],
+       [
+        251,
+        0.25
+       ],
+       [
+        252,
+        0.0625
+       ],
+       [
+        253,
+        0.125
+       ],
+       [
+        254,
+        0.25
+       ],
+       [
+        255,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 251.875,
+      "min": 248,
+      "max": 255,
+      "modeTieUp": 254,
+      "modeTieDown": 251,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        101,
+        0.25
+       ],
+       [
+        102,
+        0.1875
+       ],
+       [
+        103,
+        0.1875
+       ],
+       [
+        104,
+        0.375
+       ]
+      ],
+      "koChance": 0,
+      "average": 102.6875,
+      "min": 101,
+      "max": 104,
+      "modeTieUp": 104,
+      "modeTieDown": 104,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 12,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       255,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 255,
+     "min": 255,
+     "max": 255,
+     "modeTieUp": 255,
+     "modeTieDown": 255,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       104,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 104,
+     "min": 104,
+     "max": 104,
+     "modeTieUp": 104,
+     "modeTieDown": 104,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 21,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Lucario|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-21": 1
+      },
+      "own-left": {
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "boost:atk:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -21,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-35": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -35,
+       "max": -35
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -35,
+       "max": -35,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 12,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 290,
+      "dist": [
+       [
+        255,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 255,
+      "min": 255,
+      "max": 255,
+      "modeTieUp": 255,
+      "modeTieDown": 255,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        104,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 104,
+      "min": 104,
+      "max": 104,
+      "modeTieUp": 104,
+      "modeTieDown": 104,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 11,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       248,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 248,
+     "min": 248,
+     "max": 248,
+     "modeTieUp": 248,
+     "modeTieDown": 248,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       101,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 101,
+     "min": 101,
+     "max": 101,
+     "modeTieUp": 101,
+     "modeTieDown": 101,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 24,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-boost|p1a: Lucario|atk|1": 1,
+      "|-boost|p1b: Blastoise|atk|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-24": 1
+      },
+      "own-left": {
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "boost:atk:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -24,
+       "max": -24,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-42": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -42,
+       "max": -42
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -42,
+       "max": -42,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 290,
+      "dist": [
+       [
+        248,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 248,
+      "min": 248,
+      "max": 248,
+      "modeTieUp": 248,
+      "modeTieDown": 248,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        101,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 101,
+      "min": 101,
+      "max": 101,
+      "modeTieUp": 101,
+      "modeTieDown": 101,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 290,
+   "maximum": 290,
+   "low": 255,
+   "high": 248,
+   "average": 251.875,
+   "min": 248,
+   "max": 255,
+   "koChance": 0,
+   "dist": [
+    [
+     248,
+     0.0625
+    ],
+    [
+     249,
+     0.0625
+    ],
+    [
+     250,
+     0.125
+    ],
+    [
+     251,
+     0.25
+    ],
+    [
+     252,
+     0.0625
+    ],
+    [
+     253,
+     0.125
+    ],
+    [
+     254,
+     0.25
+    ],
+    [
+     255,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 104,
+   "high": 101,
+   "average": 102.6875,
+   "min": 101,
+   "max": 104,
+   "koChance": 0,
+   "dist": [
+    [
+     101,
+     0.25
+    ],
+    [
+     102,
+     0.1875
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     104,
+     0.375
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 290,
+   "maximum": 290,
+   "low": 255,
+   "high": 248,
+   "average": 251.875,
+   "min": 248,
+   "max": 255,
+   "koChance": 0,
+   "dist": [
+    [
+     248,
+     0.0625
+    ],
+    [
+     249,
+     0.0625
+    ],
+    [
+     250,
+     0.125
+    ],
+    [
+     251,
+     0.25
+    ],
+    [
+     252,
+     0.0625
+    ],
+    [
+     253,
+     0.125
+    ],
+    [
+     254,
+     0.25
+    ],
+    [
+     255,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 104,
+   "high": 101,
+   "average": 102.6875,
+   "min": 101,
+   "max": 104,
+   "koChance": 0,
+   "dist": [
+    [
+     101,
+     0.25
+    ],
+    [
+     102,
+     0.1875
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     104,
+     0.375
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

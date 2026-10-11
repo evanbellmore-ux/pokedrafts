@@ -1,0 +1,1882 @@
+{
+ "id": "E19b",
+ "title": "Unburden loses its item, then gets one back",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The first Trick takes Drifblim's Sitrus Berry (Unburden 200); the second gives it Leftovers: no doubling while it holds one (Speed 100 again).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 183,
+   "classes": 24,
+   "ms": 339,
+   "decisions": {
+    "accuracy": 10,
+    "fail:": 170,
+    "roll": 170,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       0,
+       0.75
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       38,
+       0.0625
+      ]
+     ],
+     "koChance": 0.75,
+     "average": 8.875,
+     "min": 0,
+     "max": 38,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.25,
+      "sitrusberry": 0.75
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       45,
+       0.0625
+      ],
+      [
+       46,
+       0.0625
+      ],
+      [
+       48,
+       0.125
+      ],
+      [
+       49,
+       0.125
+      ],
+      [
+       51,
+       0.125
+      ],
+      [
+       52,
+       0.0625
+      ],
+      [
+       54,
+       0.125
+      ],
+      [
+       55,
+       0.125
+      ],
+      [
+       57,
+       0.125
+      ],
+      [
+       58,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 51.8125,
+     "min": 45,
+     "max": 58,
+     "modeTieUp": 57,
+     "modeTieDown": 48,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       225,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 225,
+     "min": 225,
+     "max": 225,
+     "modeTieUp": 225,
+     "modeTieDown": 225,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "leftovers": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-enditem|p2b: Drifblim|Sitrus Berry|[silent]|[from] move: Trick": 1,
+      "|-item|p1a: Smeargle|Sitrus Berry|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "item:sitrusberry": 1
+      },
+      "opponent-left": {
+       "enditem:sitrusberry": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-item|p2b: Drifblim|Leftovers|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Leftovers|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:leftovers": 1
+      },
+      "opponent-left": {
+       "item:leftovers": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-72": 0.0625,
+       "damage:-73": 0.125,
+       "damage:-75": 0.125,
+       "damage:-76": 0.125,
+       "damage:-78": 0.0625,
+       "damage:-79": 0.125,
+       "damage:-81": 0.125,
+       "damage:-82": 0.125,
+       "damage:-84": 0.0625,
+       "damage:-85": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -85,
+       "max": -72
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -85,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "4": 1
+     },
+     "orderMoved": {
+      "4": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.75,
+       "dmgMin": 124,
+       "dmgMax": 147,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p1a: Smeargle|Sitrus Berry|[eat]": 0.25,
+      "|-heal|p1a: Smeargle|hp|[from] item: Sitrus Berry": 0.25
+     },
+     "effects": {
+      "own-left": {
+       "damage:-124": 0.0625,
+       "enditem:sitrusberry:eat": 0.25,
+       "heal:sitrusberry:32": 0.25,
+       "damage:-126": 0.0625,
+       "damage:-127": 0.0625,
+       "damage:-129": 0.0625,
+       "damage:-130": 0.75,
+       "faint": 0.75
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -130,
+       "max": -92
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -130,
+       "max": -124,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 160,
+    "classes": 10,
+    "ms": 339,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        0,
+        0.75
+       ],
+       [
+        33,
+        0.0625
+       ],
+       [
+        35,
+        0.0625
+       ],
+       [
+        36,
+        0.0625
+       ],
+       [
+        38,
+        0.0625
+       ]
+      ],
+      "koChance": 0.75,
+      "average": 8.875,
+      "min": 0,
+      "max": 38,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.25,
+       "fnt": 0.75
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.25,
+       "sitrusberry": 0.75
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.75
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        45,
+        0.0625
+       ],
+       [
+        46,
+        0.0625
+       ],
+       [
+        48,
+        0.125
+       ],
+       [
+        49,
+        0.125
+       ],
+       [
+        51,
+        0.125
+       ],
+       [
+        52,
+        0.0625
+       ],
+       [
+        54,
+        0.125
+       ],
+       [
+        55,
+        0.125
+       ],
+       [
+        57,
+        0.125
+       ],
+       [
+        58,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 51.8125,
+      "min": 45,
+      "max": 58,
+      "modeTieUp": 57,
+      "modeTieDown": 48,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        225,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 225,
+      "min": 225,
+      "max": 225,
+      "modeTieUp": 225,
+      "modeTieDown": 225,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "leftovers": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 12,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       38,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 38,
+     "min": 38,
+     "max": 38,
+     "modeTieUp": 38,
+     "modeTieDown": 38,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       58,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 58,
+     "min": 58,
+     "max": 58,
+     "modeTieUp": 58,
+     "modeTieDown": 58,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       225,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 225,
+     "min": 225,
+     "max": 225,
+     "modeTieUp": 225,
+     "modeTieDown": 225,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "leftovers": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-enditem|p2b: Drifblim|Sitrus Berry|[silent]|[from] move: Trick": 1,
+      "|-item|p1a: Smeargle|Sitrus Berry|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "item:sitrusberry": 1
+      },
+      "opponent-left": {
+       "enditem:sitrusberry": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-item|p2b: Drifblim|Leftovers|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Leftovers|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:leftovers": 1
+      },
+      "opponent-left": {
+       "item:leftovers": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-72": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -72,
+       "max": -72
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -72,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "4": 1
+     },
+     "orderMoved": {
+      "4": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 124,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p1a: Smeargle|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Smeargle|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-124": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:32": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -92,
+       "max": -92
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -124,
+       "max": -124,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        38,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 38,
+      "min": 38,
+      "max": 38,
+      "modeTieUp": 38,
+      "modeTieDown": 38,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        58,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 58,
+      "min": 58,
+      "max": 58,
+      "modeTieUp": 58,
+      "modeTieDown": 58,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        225,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 225,
+      "min": 225,
+      "max": 225,
+      "modeTieUp": 225,
+      "modeTieDown": 225,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "leftovers": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 15,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       45,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 45,
+     "min": 45,
+     "max": 45,
+     "modeTieUp": 45,
+     "modeTieDown": 45,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       225,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 225,
+     "min": 225,
+     "max": 225,
+     "modeTieUp": 225,
+     "modeTieDown": 225,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "leftovers": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-enditem|p2b: Drifblim|Sitrus Berry|[silent]|[from] move: Trick": 1,
+      "|-item|p1a: Smeargle|Sitrus Berry|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "item:sitrusberry": 1
+      },
+      "opponent-left": {
+       "enditem:sitrusberry": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2b: Drifblim": 1,
+      "|-item|p2b: Drifblim|Leftovers|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Leftovers|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:leftovers": 1
+      },
+      "opponent-left": {
+       "item:leftovers": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 85,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-85": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -85,
+       "max": -85
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -85,
+       "max": -85,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "4": 1
+     },
+     "orderMoved": {
+      "4": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 147,
+       "dmgMax": 147,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-130": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -130,
+       "max": -130
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -130,
+       "max": -130,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 15,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        45,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 45,
+      "min": 45,
+      "max": 45,
+      "modeTieUp": 45,
+      "modeTieDown": 45,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        225,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 225,
+      "min": 225,
+      "max": 225,
+      "modeTieUp": 225,
+      "modeTieDown": 225,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "leftovers": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 38,
+   "high": 0,
+   "average": 8.875,
+   "min": 0,
+   "max": 38,
+   "koChance": 0.75,
+   "dist": [
+    [
+     0,
+     0.75
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     38,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 58,
+   "high": 45,
+   "average": 51.8125,
+   "min": 45,
+   "max": 58,
+   "koChance": 0,
+   "dist": [
+    [
+     45,
+     0.0625
+    ],
+    [
+     46,
+     0.0625
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     49,
+     0.125
+    ],
+    [
+     51,
+     0.125
+    ],
+    [
+     52,
+     0.0625
+    ],
+    [
+     54,
+     0.125
+    ],
+    [
+     55,
+     0.125
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     58,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 225,
+   "maximum": 225,
+   "low": 225,
+   "high": 225,
+   "average": 225,
+   "min": 225,
+   "max": 225,
+   "koChance": 0,
+   "dist": [
+    [
+     225,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 38,
+   "high": 0,
+   "average": 8.875,
+   "min": 0,
+   "max": 38,
+   "koChance": 0.75,
+   "dist": [
+    [
+     0,
+     0.75
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     38,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 58,
+   "high": 45,
+   "average": 51.8125,
+   "min": 45,
+   "max": 58,
+   "koChance": 0,
+   "dist": [
+    [
+     45,
+     0.0625
+    ],
+    [
+     46,
+     0.0625
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     49,
+     0.125
+    ],
+    [
+     51,
+     0.125
+    ],
+    [
+     52,
+     0.0625
+    ],
+    [
+     54,
+     0.125
+    ],
+    [
+     55,
+     0.125
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     58,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 225,
+   "maximum": 225,
+   "low": 225,
+   "high": 225,
+   "average": 225,
+   "min": 225,
+   "max": 225,
+   "koChance": 0,
+   "dist": [
+    [
+     225,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

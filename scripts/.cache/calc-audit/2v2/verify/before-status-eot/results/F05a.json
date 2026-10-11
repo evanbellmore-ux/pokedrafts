@@ -1,0 +1,549 @@
+{
+ "id": "F05a",
+ "title": "Bolt Beak into a target using a priority move",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Azumarill's Aqua Jet (+1) comes first: Bolt Beak is not doubled though Dracozolt is faster.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 47,
+   "classes": 15,
+   "ms": 26,
+   "decisions": {
+    "fail:": 37,
+    "roll": 37
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracozolt",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       137,
+       0.3125
+      ],
+      [
+       138,
+       0.25
+      ],
+      [
+       139,
+       0.25
+      ],
+      [
+       140,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 138.3125,
+     "min": 137,
+     "max": 140,
+     "modeTieUp": 137,
+     "modeTieDown": 137
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       37,
+       0.0625
+      ],
+      [
+       41,
+       0.125
+      ],
+      [
+       43,
+       0.125
+      ],
+      [
+       47,
+       0.125
+      ],
+      [
+       49,
+       0.125
+      ],
+      [
+       53,
+       0.125
+      ],
+      [
+       55,
+       0.1875
+      ],
+      [
+       59,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 49.125,
+     "min": 37,
+     "max": 59,
+     "modeTieUp": 55,
+     "modeTieDown": 55
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "boltbeak",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 138,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "aquajet",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracozolt",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       59,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 59,
+     "min": 59,
+     "max": 59,
+     "modeTieUp": 59,
+     "modeTieDown": 59
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "boltbeak",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "aquajet",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracozolt",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       137,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 137,
+     "min": 137,
+     "max": 137,
+     "modeTieUp": 137,
+     "modeTieDown": 137
+    },
+    "opponent-left": {
+     "species": "Azumarill",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       37,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 37,
+     "min": 37,
+     "max": 37,
+     "modeTieUp": 37,
+     "modeTieDown": 37
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "boltbeak",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 138,
+       "dmgMax": 138,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "aquajet",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 140,
+   "high": 137,
+   "average": 138.3125,
+   "min": 137,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.3125
+    ],
+    [
+     138,
+     0.25
+    ],
+    [
+     139,
+     0.25
+    ],
+    [
+     140,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 59,
+   "high": 37,
+   "average": 49.125,
+   "min": 37,
+   "max": 59,
+   "koChance": 0,
+   "dist": [
+    [
+     37,
+     0.0625
+    ],
+    [
+     41,
+     0.125
+    ],
+    [
+     43,
+     0.125
+    ],
+    [
+     47,
+     0.125
+    ],
+    [
+     49,
+     0.125
+    ],
+    [
+     53,
+     0.125
+    ],
+    [
+     55,
+     0.1875
+    ],
+    [
+     59,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

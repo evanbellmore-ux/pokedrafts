@@ -1,0 +1,117 @@
+
+### Q15 sv: Teeter Dance (Jolteon) hits Chansey, Snorlax, Smeargle (Own Tempo)  (1024 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Smeargle 130/130
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [309:0.33 325:0.67] | p2a Snorlax [212:0.33 235:0.67] | p2b Smeargle [130:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [309:0.33 325:0.67] | p2a Snorlax [212:0.33 235:0.67] | p2b Smeargle [130:1]
+   1  |-start|p1b: Chansey|confusion
+   1  |-start|p2a: Snorlax|confusion
+   1  |-immune|p2b: Smeargle|confusion|[from] ability: Own Tempo
+   1  |-activate|p1b: Chansey|confusion
+   1  |-activate|p2a: Snorlax|confusion
+
+### Q16 sv: Jolteon Endure, Snorlax (+6 Atk) Body Slam into it  (2 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [1:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [1:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Endure|p1a: Jolteon
+   1  |-singleturn|p1a: Jolteon|move: Endure
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Body Slam|p1a: Jolteon
+   1  |-activate|p1a: Jolteon|move: Endure
+   1  |-damage|p1a: Jolteon|1/140
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q17 usum: Chansey Crafty Shield; its ally Jolteon Heal Pulses it; Lapras Thunder Waves it  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 97/325 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [97:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [97:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p1b: Chansey|Crafty Shield|p1b: Chansey
+   1  |-singleturn|p1b: Chansey|Crafty Shield
+   1  |move|p1a: Jolteon|Heal Pulse|p1b: Chansey
+   1  |-activate|p1b: Chansey|move: Crafty Shield
+   1  |move|p2a: Lapras|Thunder Wave|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q18 sv: Lapras Body Slams Chansey, then Shuckle Instructs Lapras  (1 runs)
+ start: p1a Blissey 330/330 | p1b Chansey 325/325 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [330:1] | p1b Chansey [55:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [330:1] | p1b Chansey [55:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p2a: Lapras|Body Slam|p1b: Chansey
+   1  |-damage|p1b: Chansey|190/325
+   1  |move|p1a: Blissey|Splash|p1a: Blissey
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Instruct|p2a: Lapras
+   1  |-damage|p1b: Chansey|55/325
+
+### Q19 sv: Encore (Shuckle) into Lapras after Lapras's Body Slam  (1 runs)
+ start: p1a Blissey 330/330 | p1b Chansey 325/325 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [330:1] | p1b Chansey [190:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [330:1] | p1b Chansey [190:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p2a: Lapras|Body Slam|p1b: Chansey
+   1  |move|p1a: Blissey|Splash|p1a: Blissey
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Encore|p1a: Blissey
+   1  |-start|p1a: Blissey|Encore
+
+### Q20 usum: Heal Block (Jolteon, spread) then Lapras is hit below half: Sitrus not eaten  (8 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 123/205 | p2b Shuckle 47/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [60:1] | p2b Shuckle [47:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [60:1] | p2b Shuckle [47:1]
+   1  |-start|p2a: Lapras|move: Heal Block
+   1  |-start|p2b: Shuckle|move: Heal Block
+   1  |move|p2a: Lapras|Splash|p2a: Lapras
+   1  |move|p1b: Snorlax|Body Slam|p2a: Lapras
+   1  |-damage|p2a: Lapras|60/205
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   0.5  |move|p1a: Jolteon|Heal Block|p2a: Lapras|[spread] p2a,p2b
+   0.5  |move|p1a: Jolteon|Heal Block|p2b: Shuckle|[spread] p2a,p2b
+
+### Q21 sv: Snorlax Focus Energy with Scope Lens, Body Slam next turn: crit certain  (1 runs)
+ start: p1a Blissey 330/330 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 after moves: p1a Blissey [122:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 end of turn: p1a Blissey [122:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |-start|p2a: Snorlax|move: Focus Energy
+
+### Q22 sv: Snorlax (poisoned, 1/3 HP) Rests  (3 runs)
+ start: p1a Blissey 330/330 | p1b Chansey 325/325 | p2a Snorlax 77/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Blissey|Splash|p1a: Blissey
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Rest|p2a: Snorlax
+   1  |-status|p2a: Snorlax|slp|[from] move: Rest
+   1  |-heal|p2a: Snorlax|235/235 slp|[silent]
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q22b sv: Toxic into Synchronize Umbreon passes bad poison to the user; both take 1/16 at the end of the turn  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Umbreon 170/170 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Umbreon [170:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [132:1] | p1b Chansey [325:1] | p2a Umbreon [160:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Toxic|p2a: Umbreon
+   1  |-status|p2a: Umbreon|tox
+   1  |-activate|p2a: Umbreon|ability: Synchronize
+   1  |-status|p1a: Jolteon|tox
+   1  |move|p2a: Umbreon|Splash|p2a: Umbreon
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-damage|p1a: Jolteon|132/140 tox|[from] psn
+   1  |-damage|p2a: Umbreon|160/170 tox|[from] psn
+C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:163
+    if (++res.runs > (probe.maxRuns ?? 50_000)) throw new Error("too many runs");
+                                                      ^
+
+Error: too many runs
+    at enumerate (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:163:55)
+    at <anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:227:97)
+    at Object.<anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:272:4)
+    at Module._compile (node:internal/modules/cjs/loader:1854:14)
+    at Object.transformer (C:\Users\evanb\OneDrive\pokedrafts\node_modules\tsx\dist\register-BOkp8V6j.cjs:9:3176)
+    at Module.load (node:internal/modules/cjs/loader:1577:32)
+    at Module._load (node:internal/modules/cjs/loader:1379:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+
+Node.js v24.16.0

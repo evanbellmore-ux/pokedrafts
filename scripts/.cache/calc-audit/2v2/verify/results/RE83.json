@@ -1,0 +1,1349 @@
+{
+ "id": "RE83",
+ "title": "Trick a Toxic Orb onto a Poison type and a Flame Orb onto a Fire type",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The Orbs read the new holder at the end of turn: neither can be statused.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "toxicorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "flameorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Gengar": 1,
+      "|-item|p2b: Gengar|Toxic Orb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Toxic Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:toxicorb": 1
+      },
+      "opponent-left": {
+       "item:toxicorb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2a: Charizard": 1,
+      "|-item|p2a: Charizard|Flame Orb|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Flame Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:flameorb": 1
+      },
+      "opponent-right": {
+       "item:flameorb": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "toxicorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        153,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 153,
+      "min": 153,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "flameorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "toxicorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "flameorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Gengar": 1,
+      "|-item|p2b: Gengar|Toxic Orb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Toxic Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:toxicorb": 1
+      },
+      "opponent-left": {
+       "item:toxicorb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2a: Charizard": 1,
+      "|-item|p2a: Charizard|Flame Orb|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Flame Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:flameorb": 1
+      },
+      "opponent-right": {
+       "item:flameorb": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 5,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "toxicorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        153,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 153,
+      "min": 153,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "flameorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "toxicorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "flameorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1a: Smeargle|move: Trick|[of] p2b: Gengar": 1,
+      "|-item|p2b: Gengar|Toxic Orb|[from] move: Trick": 1,
+      "|-enditem|p1a: Smeargle|Toxic Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-left": {
+       "activate:trick": 1,
+       "enditem:toxicorb": 1
+      },
+      "opponent-left": {
+       "item:toxicorb": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "trick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Smeargle|move: Trick|[of] p2a: Charizard": 1,
+      "|-item|p2a: Charizard|Flame Orb|[from] move: Trick": 1,
+      "|-enditem|p1b: Smeargle|Flame Orb|[silent]|[from] move: Trick": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:trick": 1,
+       "enditem:flameorb": 1
+      },
+      "opponent-right": {
+       "item:flameorb": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 4,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "toxicorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        153,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 153,
+      "min": 153,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "flameorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

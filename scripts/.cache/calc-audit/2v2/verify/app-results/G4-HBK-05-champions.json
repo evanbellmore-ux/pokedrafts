@@ -1,0 +1,624 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 80,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "psychicnoise",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 43,
+      "max": 52,
+      "minPercent": 18.29787234042553,
+      "maxPercent": 22.127659574468083,
+      "koChance": 0,
+      "row": {
+       "moveId": "psychicnoise",
+       "effectiveName": "Psychic Noise",
+       "effectiveType": "Psychic",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 43,
+       "max": 52,
+       "minPercent": 18.29787234042553,
+       "maxPercent": 22.127659574468083,
+       "rolls": [
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        52
+       ],
+       "ohkoChance": 0,
+       "description": "Psychic Noise: 43–52 HP (18.3–22.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "pollenpuff",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Pollen Puff fails: Snorlax (opponent's) cannot heal.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 80,
+    "maximum": 235,
+    "low": 37,
+    "average": 32.4375,
+    "high": 28,
+    "min": 28,
+    "max": 37,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "psychicnoise",
+     "effectiveName": "Psychic Noise",
+     "effectiveType": "Psychic",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 43,
+     "max": 52,
+     "minPercent": 18.29787234042553,
+     "maxPercent": 22.127659574468083,
+     "rolls": [
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Psychic Noise: 43–52 HP (18.3–22.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 80,
+      "low": 37,
+      "high": 28,
+      "average": 32.4375,
+      "min": 28,
+      "max": 37,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 43,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "pollenpuff",
+     "effectiveName": "Pollen Puff",
+     "effectiveType": "Bug",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 35,
+     "max": 42,
+     "minPercent": 14.893617021276595,
+     "maxPercent": 17.872340425531917,
+     "rolls": [
+      35,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      41,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Pollen Puff: 35–42 HP (14.9–17.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.18359375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 80,
+      "low": 45,
+      "high": 38,
+      "average": 41.625,
+      "min": 38,
+      "max": 45,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 35,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 80,
+     "maximum": 235,
+     "low": 37,
+     "average": 32.4375,
+     "high": 28,
+     "min": 28,
+     "max": 37,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.1622999999999593,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 80,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 195,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "farigiraf",
+       "nature": "Serious",
+       "abilityId": "armortail",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 153,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "florges",
+       "nature": "Serious",
+       "abilityId": "flowerveil",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 28,
+        "chance": 0.0625
+       },
+       {
+        "hp": 29,
+        "chance": 0.125
+       },
+       {
+        "hp": 31,
+        "chance": 0.1875
+       },
+       {
+        "hp": 32,
+        "chance": 0.1875
+       },
+       {
+        "hp": 34,
+        "chance": 0.1875
+       },
+       {
+        "hp": 35,
+        "chance": 0.1875
+       },
+       {
+        "hp": 37,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

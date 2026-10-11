@@ -1,0 +1,107 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Attract needs Arcanine's gender.",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 165,
+    "maximum": 165
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 43,
+     "max": 52,
+     "minPercent": 30.714285714285715,
+     "maxPercent": 37.142857142857146,
+     "rolls": [
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 43–52 HP (30.7–37.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.762451171875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 97,
+      "high": 88,
+      "average": 92.4375,
+      "min": 88,
+      "max": 97,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 43,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.8253999999997177,
+ "preflight": []
+}

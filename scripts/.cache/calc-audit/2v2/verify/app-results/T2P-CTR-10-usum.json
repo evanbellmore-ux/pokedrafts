@@ -1,0 +1,107 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Counter with Parental Bond is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 212,
+    "maximum": 212
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 21.22641509433962,
+     "maxPercent": 25.471698113207548,
+     "rolls": [
+      45,
+      45,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      51,
+      52,
+      52,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 45–54 HP (21.2–25.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0006866455078125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 212,
+      "low": 167,
+      "high": 158,
+      "average": 163,
+      "min": 158,
+      "max": 167,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 2.289200000001074,
+ "preflight": []
+}

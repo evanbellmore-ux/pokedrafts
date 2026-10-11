@@ -1,0 +1,626 @@
+{
+ "id": "ZS08",
+ "title": "Z-Fake Out (Breakneck Blitz, +3) flinches nothing: the target still moves (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Snorlax's Body Slam lands on Kangaskhan.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 134,
+   "classes": 36,
+   "ms": 67,
+   "decisions": {
+    "fail:": 110,
+    "roll": 110,
+    "secondary": 99
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       105,
+       0.0625
+      ],
+      [
+       107,
+       0.125
+      ],
+      [
+       108,
+       0.125
+      ],
+      [
+       110,
+       0.125
+      ],
+      [
+       111,
+       0.125
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       114,
+       0.125
+      ],
+      [
+       116,
+       0.125
+      ],
+      [
+       117,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 111.25,
+     "min": 105,
+     "max": 117,
+     "modeTieUp": 116,
+     "modeTieDown": 107
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.0625
+      ],
+      [
+       147,
+       0.125
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       159,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 151.375,
+     "min": 144,
+     "max": 159,
+     "modeTieUp": 156,
+     "modeTieDown": 147
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 91,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Breakneck Blitz": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       159,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 159,
+     "min": 159,
+     "max": 159,
+     "modeTieUp": 159,
+     "modeTieDown": 159
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 76,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Breakneck Blitz": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Breakneck Blitz": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 117,
+   "high": 105,
+   "average": 111.25,
+   "min": 105,
+   "max": 117,
+   "koChance": 0,
+   "dist": [
+    [
+     105,
+     0.0625
+    ],
+    [
+     107,
+     0.125
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     110,
+     0.125
+    ],
+    [
+     111,
+     0.125
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     117,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 159,
+   "high": 144,
+   "average": 151.375,
+   "min": 144,
+   "max": 159,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.0625
+    ],
+    [
+     147,
+     0.125
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     159,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 99 whole-turn replays"
+ ]
+}

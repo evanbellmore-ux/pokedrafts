@@ -1,0 +1,123 @@
+
+### ER41b: Pickup after an item was used this turn (stored: Pickup is not modelled in 2v2.)
+  oracle residual own-right Pickup: 1 null..null {"item:sitrusberry":1}
+  oracle own-left Garchomp: [183–183] avg 183.000 items {"":1} lastItem {"":1}
+  oracle own-right Dedenne: [142–142] avg 142.000 items {"sitrusberry":1} lastItem {"":1}
+  oracle opponent-left Snorlax: [112–127] avg 120.063 items {"":1} lastItem {"":1}
+  oracle opponent-right Blastoise: [154–154] avg 154.000 items {"":1} lastItem {"":1}
+  app residual own-right Pickup (opponent-left): 1 null..null [{"text":"Pickup: picks up Sitrus Berry.","chance":1}]
+compare.ts: E2 types not compared (call loadRuntimes() first)
+  mismatches: 0
+
+### ER41c: Harvest with no item (stored: Harvest is not modelled in 2v2.)
+  oracle own-left Exeggutor: [170–170] avg 170.000 items {"":1} lastItem {"":1}
+  oracle own-right Snorlax: [235–235] avg 235.000 items {"":1} lastItem {"":1}
+  oracle opponent-left Garchomp: [183–183] avg 183.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Blastoise: [154–154] avg 154.000 items {"":1} lastItem {"":1}
+  app: ready Harvest needs Exeggutor's item from an earlier turn.
+  mismatches: 1
+    endOfTurn status: expected "ready", got "not-estimated" (Harvest needs Exeggutor's item from an earlier turn.)
+
+### RT-RV21: Harvest after a Sitrus Berry eaten at the weather's Update (the holder had its Berry after the moves) (stored: Harvest is not modelled in 2v2.)
+  oracle residual opponent-left Sandstorm: 1 -8..-8 {}
+  oracle residual own-right Sandstorm: 1 -9..-9 {}
+  oracle residual own-left Sandstorm: 1 -10..-10 {}
+  oracle residual opponent-right Sandstorm: 1 -14..-14 {}
+  oracle residual own-left Sitrus Berry: 1 42..84 {"enditem:sitrusberry:eat":1}
+  oracle residual own-left psn: 1 -21..-21 {}
+  oracle residual own-left Salt Cure: 1 -21..-21 {}
+  oracle residual own-left Harvest: 0.5 null..null {"item:sitrusberry":0.5}
+  oracle own-left Exeggutor: [80–122] avg 101.000 items {"":1} lastItem {"sitrusberry":1}
+  oracle own-right Venusaur: [146–146] avg 146.000 items {"":1} lastItem {"":1}
+  oracle opponent-left Jolteon: [132–132] avg 132.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Snorlax: [221–221] avg 221.000 items {"":1} lastItem {"":1}
+  app residual opponent-left Sandstorm: 1 -8..-8 []
+  app residual own-right Sandstorm: 1 -9..-9 []
+  app residual own-left Sandstorm: 1 -10..-10 []
+  app residual opponent-right Sandstorm: 1 -14..-14 []
+  app residual own-left Sitrus Berry: 1 42..84 []
+  app residual own-left Poison: 1 -21..-21 []
+  app residual own-left Salt Cure: 1 -21..-21 []
+  app residual own-left Harvest: 0.5 null..null [{"text":"Harvest: Sitrus Berry back.","chance":0.5}]
+  mismatches: 0
+
+### RT-RV22: Pickup takes a Sitrus Berry eaten at the weather's Update (stored: Pickup is not modelled in 2v2.)
+  oracle residual opponent-left Sandstorm: 1 -8..-8 {}
+  oracle residual own-right Sandstorm: 1 -9..-9 {}
+  oracle residual own-left Sandstorm: 1 -14..-14 {}
+  oracle residual own-left Sitrus Berry: 1 58..58 {"enditem:sitrusberry:eat":1}
+  oracle residual own-right Pickup: 1 null..null {"item:sitrusberry":1}
+  oracle residual own-right Sitrus Berry: 1 37..37 {"enditem:sitrusberry:eat":1}
+  oracle own-left Snorlax: [164–164] avg 164.000 items {"":1} lastItem {"":1}
+  oracle own-right Ambipom: [103–103] avg 103.000 items {"":1} lastItem {"sitrusberry":1}
+  oracle opponent-left Jolteon: [132–132] avg 132.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Garchomp: [183–183] avg 183.000 items {"":1} lastItem {"":1}
+  app residual opponent-left Sandstorm: 1 -8..-8 []
+  app residual own-right Sandstorm: 1 -9..-9 []
+  app residual own-left Sandstorm: 1 -14..-14 []
+  app residual own-left Sitrus Berry: 1 58..58 []
+  app residual own-right Pickup (own-left): 1 null..null [{"text":"Pickup: picks up Sitrus Berry.","chance":1}]
+  app residual own-right Sitrus Berry: 1 37..37 []
+  mismatches: 0
+
+### VT-VE07: Harvest in sun with a Lum Berry eaten at a carried Yawn's sleep (stored: Harvest is not modelled in 2v2.)
+  oracle residual own-left Yawn: 1 null..null {"end:yawn":1,"status:slp":1,"curestatus:slp":1}
+  oracle residual own-left Lum Berry: 1 null..null {"enditem:lumberry:eat":1}
+  oracle residual own-left Harvest: 1 null..null {"item:lumberry":1}
+  oracle own-left Exeggutor: [170–170] avg 170.000 items {"lumberry":1} lastItem {"":1}
+  oracle own-right Venusaur: [155–155] avg 155.000 items {"":1} lastItem {"":1}
+  oracle opponent-left Jolteon: [140–140] avg 140.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Snorlax: [235–235] avg 235.000 items {"":1} lastItem {"":1}
+  app residual own-left Yawn: 1 null..null [{"text":"Falls asleep.","chance":1}]
+  app residual own-left Lum Berry: 1 null..null [{"text":"Cures its sleep.","chance":1}]
+  app residual own-left Harvest: 1 null..null [{"text":"Harvest: Lum Berry back.","chance":1}]
+  mismatches: 0
+
+### VT-VE10: Pickup after a Lum Berry eaten at a carried Yawn's sleep (stored: Pickup is not modelled in 2v2.)
+  oracle residual own-left Yawn: 1 null..null {"end:yawn":1,"status:slp":1,"curestatus:slp":1}
+  oracle residual own-left Lum Berry: 1 null..null {"enditem:lumberry:eat":1}
+  oracle residual own-right Pickup: 1 null..null {"item:lumberry":1}
+  oracle own-left Snorlax: [235–235] avg 235.000 items {"":1} lastItem {"":1}
+  oracle own-right Ambipom: [75–75] avg 75.000 items {"lumberry":1} lastItem {"":1}
+  oracle opponent-left Jolteon: [140–140] avg 140.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Garchomp: [183–183] avg 183.000 items {"":1} lastItem {"":1}
+  app residual own-left Yawn: 1 null..null [{"text":"Falls asleep.","chance":1}]
+  app residual own-left Lum Berry: 1 null..null [{"text":"Cures its sleep.","chance":1}]
+  app residual own-right Pickup (own-left): 1 null..null [{"text":"Pickup: picks up Lum Berry.","chance":1}]
+  mismatches: 0
+
+### VT-VE11: Pickup when a foe's Sitrus is eaten at the weather's Update (Champions) (stored: Pickup is not modelled in 2v2.)
+  oracle residual own-right Sandstorm: 1 -9..-9 {}
+  oracle residual opponent-left Sandstorm: 1 -14..-14 {}
+  oracle residual opponent-left Sitrus Berry: 1 58..58 {"enditem:sitrusberry:eat":1}
+  oracle residual own-left Pickup: 1 null..null {"item:sitrusberry":1}
+  oracle own-left Diggersby: [100–100] avg 100.000 items {"sitrusberry":1} lastItem {"":1}
+  oracle own-right Venusaur: [146–146] avg 146.000 items {"":1} lastItem {"":1}
+  oracle opponent-left Snorlax: [164–164] avg 164.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Garchomp: [183–183] avg 183.000 items {"":1} lastItem {"":1}
+  app residual own-right Sandstorm: 1 -9..-9 []
+  app residual opponent-left Sandstorm: 1 -14..-14 []
+  app residual opponent-left Sitrus Berry: 1 58..58 []
+  app residual own-left Pickup (opponent-left): 1 null..null [{"text":"Pickup: picks up Sitrus Berry.","chance":1}]
+  mismatches: 0
+
+### VT-VE18: Harvest after a Sitrus eaten at the weather's Update (Champions, Trevenant) (stored: Harvest is not modelled in 2v2.)
+  oracle residual opponent-left Sandstorm: 1 -8..-8 {}
+  oracle residual own-right Sandstorm: 1 -9..-9 {}
+  oracle residual own-left Sandstorm: 1 -10..-10 {}
+  oracle residual opponent-right Sandstorm: 1 -14..-14 {}
+  oracle residual own-left Sitrus Berry: 1 40..40 {"enditem:sitrusberry:eat":1}
+  oracle residual own-left Harvest: 0.5 null..null {"item:sitrusberry":0.5}
+  oracle own-left Trevenant: [120–120] avg 120.000 items {"":0.5,"sitrusberry":0.5} lastItem {"":0.5,"sitrusberry":0.5}
+  oracle own-right Venusaur: [146–146] avg 146.000 items {"":1} lastItem {"":1}
+  oracle opponent-left Jolteon: [132–132] avg 132.000 items {"":1} lastItem {"":1}
+  oracle opponent-right Snorlax: [221–221] avg 221.000 items {"":1} lastItem {"":1}
+  app residual opponent-left Sandstorm: 1 -8..-8 []
+  app residual own-right Sandstorm: 1 -9..-9 []
+  app residual own-left Sandstorm: 1 -10..-10 []
+  app residual opponent-right Sandstorm: 1 -14..-14 []
+  app residual own-left Sitrus Berry: 1 40..40 []
+  app residual own-left Harvest: 0.5 null..null [{"text":"Harvest: Sitrus Berry back.","chance":0.5}]
+  mismatches: 0
+
+7/8 agree.

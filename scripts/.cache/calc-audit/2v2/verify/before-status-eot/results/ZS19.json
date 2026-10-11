@@ -1,0 +1,605 @@
+{
+ "id": "ZS19",
+ "title": "Genesis Supernova replaces Grassy Terrain: the partner's later Giga Drain is not boosted (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Psychic Terrain replaces Grassy Terrain before Venusaur's Giga Drain.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 211,
+   "classes": 146,
+   "ms": 113,
+   "decisions": {
+    "fail:": 77,
+    "roll": 77,
+    "secondary": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mew",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       233,
+       0.0625
+      ],
+      [
+       234,
+       0.0625
+      ],
+      [
+       236,
+       0.125
+      ],
+      [
+       237,
+       0.0625
+      ],
+      [
+       239,
+       0.125
+      ],
+      [
+       240,
+       0.0625
+      ],
+      [
+       242,
+       0.125
+      ],
+      [
+       243,
+       0.0625
+      ],
+      [
+       245,
+       0.125
+      ],
+      [
+       246,
+       0.0625
+      ],
+      [
+       248,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 240.8125,
+     "min": 233,
+     "max": 248,
+     "modeTieUp": 248,
+     "modeTieDown": 236
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       56,
+       0.0625
+      ],
+      [
+       58,
+       0.1875
+      ],
+      [
+       62,
+       0.1875
+      ],
+      [
+       64,
+       0.1875
+      ],
+      [
+       68,
+       0.1875
+      ],
+      [
+       70,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 63.875,
+     "min": 56,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 58
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Genesis Supernova": 1,
+      "|-fieldstart|move: Psychic Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 98,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mew",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       248,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 248,
+     "min": 248,
+     "max": 248,
+     "modeTieUp": 248,
+     "modeTieDown": 248
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Genesis Supernova": 1,
+      "|-fieldstart|move: Psychic Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mew",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       233,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 233,
+     "min": 233,
+     "max": 233,
+     "modeTieUp": 233,
+     "modeTieDown": 233
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       56,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 56,
+     "min": 56,
+     "max": 56,
+     "modeTieUp": 56,
+     "modeTieDown": 56
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Genesis Supernova": 1,
+      "|-fieldstart|move: Psychic Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 98,
+       "dmgMax": 98,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 248,
+   "high": 233,
+   "average": 240.8125,
+   "min": 233,
+   "max": 248,
+   "koChance": 0,
+   "dist": [
+    [
+     233,
+     0.0625
+    ],
+    [
+     234,
+     0.0625
+    ],
+    [
+     236,
+     0.125
+    ],
+    [
+     237,
+     0.0625
+    ],
+    [
+     239,
+     0.125
+    ],
+    [
+     240,
+     0.0625
+    ],
+    [
+     242,
+     0.125
+    ],
+    [
+     243,
+     0.0625
+    ],
+    [
+     245,
+     0.125
+    ],
+    [
+     246,
+     0.0625
+    ],
+    [
+     248,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 70,
+   "high": 56,
+   "average": 63.875,
+   "min": 56,
+   "max": 70,
+   "koChance": 0,
+   "dist": [
+    [
+     56,
+     0.0625
+    ],
+    [
+     58,
+     0.1875
+    ],
+    [
+     62,
+     0.1875
+    ],
+    [
+     64,
+     0.1875
+    ],
+    [
+     68,
+     0.1875
+    ],
+    [
+     70,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 66 whole-turn replays"
+ ]
+}

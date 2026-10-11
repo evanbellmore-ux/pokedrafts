@@ -1,0 +1,542 @@
+{
+ "id": "V16e",
+ "title": "Fake Out into a Ghost",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Gengar is immune and attacks.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 30,
+   "classes": 22,
+   "ms": 17,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9,
+    "secondary": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       75,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       87,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 81.875,
+     "min": 75,
+     "max": 87,
+     "modeTieUp": 87,
+     "modeTieDown": 78
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2a: Gengar": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 78,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       87,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 87,
+     "min": 87,
+     "max": 87,
+     "modeTieUp": 87,
+     "modeTieDown": 87
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2a: Gengar": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       75,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 75,
+     "min": 75,
+     "max": 75,
+     "modeTieUp": 75,
+     "modeTieDown": 75
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2a: Gengar": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 78,
+       "dmgMax": 78,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 87,
+   "high": 75,
+   "average": 81.875,
+   "min": 75,
+   "max": 87,
+   "koChance": 0,
+   "dist": [
+    [
+     75,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

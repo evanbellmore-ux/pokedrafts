@@ -1,0 +1,529 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "iciclespear",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "iciclespear",
+       "effectiveName": "Icicle Spear",
+       "effectiveType": "Ice",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 320,
+       "max": 380,
+       "minPercent": 174.86338797814207,
+       "maxPercent": 207.65027322404373,
+       "rolls": [
+        [
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         76
+        ],
+        [
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         76
+        ],
+        [
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         76
+        ],
+        [
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         76
+        ],
+        [
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         64,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         72,
+         76
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Icicle Spear: 320–380 HP (174.9–207.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Skill Link: 5 hits.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 5,
+        "reason": "Skill Link: 5 hits."
+       }
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 320,
+       "max": 380,
+       "breaks": 0
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 50,
+       "max": 50,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 125,
+    "average": 125,
+    "high": 125,
+    "min": 125,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 80 HP.",
+      "chance": 0.03125
+     },
+     {
+      "text": "Substitute: 72 HP.",
+      "chance": 0.13671875
+     },
+     {
+      "text": "Substitute: 68 HP.",
+      "chance": 0.01953125
+     },
+     {
+      "text": "Substitute: 64 HP.",
+      "chance": 0.2392578125
+     },
+     {
+      "text": "Substitute: 60 HP.",
+      "chance": 0.068359375
+     },
+     {
+      "text": "Substitute: 56 HP.",
+      "chance": 0.2142333984375
+     },
+     {
+      "text": "Substitute: 52 HP.",
+      "chance": 0.0897216796875
+     },
+     {
+      "text": "Substitute: 48 HP.",
+      "chance": 0.10440826416015625
+     },
+     {
+      "text": "Substitute: 44 HP.",
+      "chance": 0.052947998046875
+     },
+     {
+      "text": "Substitute: 40 HP.",
+      "chance": 0.027243614196777344
+     },
+     {
+      "text": "Substitute: 36 HP.",
+      "chance": 0.012516975402832031
+     },
+     {
+      "text": "Substitute: 32 HP.",
+      "chance": 0.0033092498779296875
+     },
+     {
+      "text": "Substitute: 28 HP.",
+      "chance": 0.0004673004150390625
+     },
+     {
+      "text": "Substitute: 24 HP.",
+      "chance": 0.00003337860107421875
+     },
+     {
+      "text": "Substitute: 20 HP.",
+      "chance": 9.5367431640625e-7
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "iciclespear",
+     "effectiveName": "Icicle Spear",
+     "effectiveType": "Ice",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+     "assumptions": [],
+     "reason": "Garchomp is behind a Substitute.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 30% chance to paralyze the target. Damage doubles and no accuracy check is done if the target has used Minimize while active.",
+     "assumptions": [],
+     "reason": "Snorlax (opponent's) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (opponent's) has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 125,
+     "average": 125,
+     "high": 125,
+     "min": 125,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 80 HP.",
+       "chance": 0.03125
+      },
+      {
+       "text": "Substitute: 72 HP.",
+       "chance": 0.13671875
+      },
+      {
+       "text": "Substitute: 68 HP.",
+       "chance": 0.01953125
+      },
+      {
+       "text": "Substitute: 64 HP.",
+       "chance": 0.2392578125
+      },
+      {
+       "text": "Substitute: 60 HP.",
+       "chance": 0.068359375
+      },
+      {
+       "text": "Substitute: 56 HP.",
+       "chance": 0.2142333984375
+      },
+      {
+       "text": "Substitute: 52 HP.",
+       "chance": 0.0897216796875
+      },
+      {
+       "text": "Substitute: 48 HP.",
+       "chance": 0.10440826416015625
+      },
+      {
+       "text": "Substitute: 44 HP.",
+       "chance": 0.052947998046875
+      },
+      {
+       "text": "Substitute: 40 HP.",
+       "chance": 0.027243614196777344
+      },
+      {
+       "text": "Substitute: 36 HP.",
+       "chance": 0.012516975402832031
+      },
+      {
+       "text": "Substitute: 32 HP.",
+       "chance": 0.0033092498779296875
+      },
+      {
+       "text": "Substitute: 28 HP.",
+       "chance": 0.0004673004150390625
+      },
+      {
+       "text": "Substitute: 24 HP.",
+       "chance": 0.00003337860107421875
+      },
+      {
+       "text": "Substitute: 20 HP.",
+       "chance": 9.5367431640625e-7
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.382599999999911,
+ "preflight": []
+}

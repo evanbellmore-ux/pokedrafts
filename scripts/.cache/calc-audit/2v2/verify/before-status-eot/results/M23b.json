@@ -1,0 +1,621 @@
+{
+ "id": "M23b",
+ "title": "Fishious Rend after its target moved",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Weavile (145) moves first: Fishious Rend is not doubled.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 130,
+   "classes": 27,
+   "ms": 48,
+   "decisions": {
+    "fail:": 112,
+    "roll": 112
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       91,
+       0.0625
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.125
+      ],
+      [
+       95,
+       0.125
+      ],
+      [
+       97,
+       0.1875
+      ],
+      [
+       98,
+       0.125
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 96.375,
+     "min": 91,
+     "max": 101,
+     "modeTieUp": 97,
+     "modeTieDown": 97
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       34,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       37,
+       0.0625
+      ],
+      [
+       39,
+       0.125
+      ],
+      [
+       40,
+       0.0625
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       43,
+       0.125
+      ],
+      [
+       45,
+       0.0625
+      ],
+      [
+       46,
+       0.0625
+      ],
+      [
+       48,
+       0.125
+      ],
+      [
+       49,
+       0.0625
+      ],
+      [
+       51,
+       0.0625
+      ],
+      [
+       52,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 43.25,
+     "min": 34,
+     "max": 52,
+     "modeTieUp": 48,
+     "modeTieDown": 39
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 111,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       101,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 101,
+     "min": 101,
+     "max": 101,
+     "modeTieUp": 101,
+     "modeTieDown": 101
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       52,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 52,
+     "min": 52,
+     "max": 52,
+     "modeTieUp": 52,
+     "modeTieDown": 52
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       91,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 91,
+     "min": 91,
+     "max": 91,
+     "modeTieUp": 91,
+     "modeTieDown": 91
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       34,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 34,
+     "min": 34,
+     "max": 34,
+     "modeTieUp": 34,
+     "modeTieDown": 34
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 111,
+       "dmgMax": 111,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 101,
+   "high": 91,
+   "average": 96.375,
+   "min": 91,
+   "max": 101,
+   "koChance": 0,
+   "dist": [
+    [
+     91,
+     0.0625
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     97,
+     0.1875
+    ],
+    [
+     98,
+     0.125
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 52,
+   "high": 34,
+   "average": 43.25,
+   "min": 34,
+   "max": 52,
+   "koChance": 0,
+   "dist": [
+    [
+     34,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     37,
+     0.0625
+    ],
+    [
+     39,
+     0.125
+    ],
+    [
+     40,
+     0.0625
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     43,
+     0.125
+    ],
+    [
+     45,
+     0.0625
+    ],
+    [
+     46,
+     0.0625
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     49,
+     0.0625
+    ],
+    [
+     51,
+     0.0625
+    ],
+    [
+     52,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

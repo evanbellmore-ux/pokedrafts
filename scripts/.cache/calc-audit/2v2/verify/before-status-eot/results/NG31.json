@@ -1,0 +1,512 @@
+{
+ "id": "NG31",
+ "title": "Core Enforcer into the gas holder (Weezing, 80) before it moves: no suppression, the gas stays (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "willMove: no gastroacid",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 428,
+   "classes": 257,
+   "ms": 320,
+   "decisions": {
+    "sample": 180,
+    "fail:": 336,
+    "roll": 336
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       83,
+       0.0625
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.1875
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       91,
+       0.1875
+      ],
+      [
+       92,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 88.1875,
+     "min": 83,
+     "max": 92,
+     "modeTieUp": 91,
+     "modeTieDown": 86
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       195,
+       0.0625
+      ],
+      [
+       196,
+       0.1875
+      ],
+      [
+       198,
+       0.25
+      ],
+      [
+       199,
+       0.25
+      ],
+      [
+       201,
+       0.1875
+      ],
+      [
+       202,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 198.5,
+     "min": 195,
+     "max": 202,
+     "modeTieUp": 199,
+     "modeTieDown": 198
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 44,
+   "decisions": {
+    "sample": 16,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       92,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 92,
+     "min": 92,
+     "max": 92,
+     "modeTieUp": 92,
+     "modeTieDown": 92
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       202,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 202,
+     "min": 202,
+     "max": 202,
+     "modeTieUp": 202,
+     "modeTieDown": 202
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 22,
+   "decisions": {
+    "sample": 16,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 92,
+   "high": 83,
+   "average": 88.1875,
+   "min": 83,
+   "max": 92,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.1875
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     91,
+     0.1875
+    ],
+    [
+     92,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 202,
+   "high": 195,
+   "average": 198.5,
+   "min": 195,
+   "max": 202,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     0.0625
+    ],
+    [
+     196,
+     0.1875
+    ],
+    [
+     198,
+     0.25
+    ],
+    [
+     199,
+     0.25
+    ],
+    [
+     201,
+     0.1875
+    ],
+    [
+     202,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

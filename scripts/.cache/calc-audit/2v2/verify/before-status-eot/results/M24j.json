@@ -1,0 +1,585 @@
+{
+ "id": "M24j",
+ "title": "Max Lightning's Electric Terrain and a third Pokémon's Electric Seed",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Electric Seed (onTerrainChange: useItem, +1 Def): Body Slam into Blastoise at +1 Def.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 86,
+   "classes": 31,
+   "ms": 38,
+   "decisions": {
+    "fail:": 65,
+    "roll": 65,
+    "secondary": 54
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.1875
+      ],
+      [
+       114,
+       0.1875
+      ],
+      [
+       115,
+       0.25
+      ],
+      [
+       117,
+       0.1875
+      ],
+      [
+       118,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 114.75,
+     "min": 111,
+     "max": 118,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       108,
+       0.0625
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       110,
+       0.1875
+      ],
+      [
+       111,
+       0.125
+      ],
+      [
+       112,
+       0.0625
+      ],
+      [
+       113,
+       0.25
+      ],
+      [
+       114,
+       0.0625
+      ],
+      [
+       115,
+       0.125
+      ],
+      [
+       116,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 112.0625,
+     "min": 108,
+     "max": 116,
+     "modeTieUp": 113,
+     "modeTieDown": 113
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 47
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1,
+      "|-enditem|p2b: Blastoise|Electric Seed": 1,
+      "|-boost|p2b: Blastoise|def|1|[from] item: Electric Seed": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 36,
+       "dmgMax": 43
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       118,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 118,
+     "min": 118,
+     "max": 118,
+     "modeTieUp": 118,
+     "modeTieDown": 118
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       116,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 116,
+     "min": 116,
+     "max": 116,
+     "modeTieUp": 116,
+     "modeTieDown": 116
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1,
+      "|-enditem|p2b: Blastoise|Electric Seed": 1,
+      "|-boost|p2b: Blastoise|def|1|[from] item: Electric Seed": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 36,
+       "dmgMax": 36
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       111,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 111,
+     "min": 111,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 111
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 47,
+       "dmgMax": 47
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1,
+      "|-enditem|p2b: Blastoise|Electric Seed": 1,
+      "|-boost|p2b: Blastoise|def|1|[from] item: Electric Seed": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 43,
+       "dmgMax": 43
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 280,
+   "maximum": 280,
+   "low": 280,
+   "high": 280,
+   "average": 280,
+   "min": 280,
+   "max": 280,
+   "koChance": 0,
+   "dist": [
+    [
+     280,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 118,
+   "high": 111,
+   "average": 114.75,
+   "min": 111,
+   "max": 118,
+   "koChance": 0,
+   "dist": [
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.1875
+    ],
+    [
+     114,
+     0.1875
+    ],
+    [
+     115,
+     0.25
+    ],
+    [
+     117,
+     0.1875
+    ],
+    [
+     118,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 116,
+   "high": 108,
+   "average": 112.0625,
+   "min": 108,
+   "max": 116,
+   "koChance": 0,
+   "dist": [
+    [
+     108,
+     0.0625
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     110,
+     0.1875
+    ],
+    [
+     111,
+     0.125
+    ],
+    [
+     112,
+     0.0625
+    ],
+    [
+     113,
+     0.25
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     115,
+     0.125
+    ],
+    [
+     116,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

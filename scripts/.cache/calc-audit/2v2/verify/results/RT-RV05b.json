@@ -1,0 +1,1383 @@
+{
+ "id": "RT-RV05b",
+ "title": "Psychic Noise as the last action heal-blocks a Leech Seed seeder",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Snorlax loses 29; Venusaur's heal fails (healblock onTryHeal).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 11,
+   "classes": 6,
+   "ms": 20,
+   "decisions": {
+    "fail:": 6,
+    "roll": 6,
+    "secondary": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 120,
+     "maximum": 155,
+     "dist": [
+      [
+       34,
+       0.0625
+      ],
+      [
+       36,
+       0.1875
+      ],
+      [
+       40,
+       0.1875
+      ],
+      [
+       42,
+       0.25
+      ],
+      [
+       46,
+       0.1875
+      ],
+      [
+       48,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 41.5,
+     "min": 34,
+     "max": 48,
+     "modeTieUp": 42,
+     "modeTieDown": 42,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 86,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-72": 0.125,
+       "start:healblock": 1,
+       "damage:-74": 0.1875,
+       "damage:-78": 0.25,
+       "damage:-80": 0.1875,
+       "damage:-84": 0.1875,
+       "damage:-86": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -86,
+       "max": -72
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -86,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 1,
+    "ms": 20,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        34,
+        0.0625
+       ],
+       [
+        36,
+        0.1875
+       ],
+       [
+        40,
+        0.1875
+       ],
+       [
+        42,
+        0.25
+       ],
+       [
+        46,
+        0.1875
+       ],
+       [
+        48,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 41.5,
+      "min": 34,
+      "max": 48,
+      "modeTieUp": 42,
+      "modeTieDown": 42,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 121,
+      "min": 121,
+      "max": 121,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-right",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 13,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 120,
+     "maximum": 155,
+     "dist": [
+      [
+       48,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 48,
+     "min": 48,
+     "max": 48,
+     "modeTieUp": 48,
+     "modeTieDown": 48,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-72": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -72,
+       "max": -72
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -72,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        48,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 48,
+      "min": 48,
+      "max": 48,
+      "modeTieUp": 48,
+      "modeTieDown": 48,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 121,
+      "min": 121,
+      "max": 121,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-right",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 14,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 120,
+     "maximum": 155,
+     "dist": [
+      [
+       34,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 34,
+     "min": 34,
+     "max": 34,
+     "modeTieUp": 34,
+     "modeTieDown": 34,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-left": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 86,
+       "dmgMax": 86,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-86": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -86,
+       "max": -86
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -86,
+       "max": -86,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 14,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        34,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 34,
+      "min": 34,
+      "max": 34,
+      "modeTieUp": 34,
+      "modeTieDown": 34,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 121,
+      "min": 121,
+      "max": 121,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-right",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 120,
+   "maximum": 155,
+   "low": 48,
+   "high": 34,
+   "average": 41.5,
+   "min": 34,
+   "max": 48,
+   "koChance": 0,
+   "dist": [
+    [
+     34,
+     0.0625
+    ],
+    [
+     36,
+     0.1875
+    ],
+    [
+     40,
+     0.1875
+    ],
+    [
+     42,
+     0.25
+    ],
+    [
+     46,
+     0.1875
+    ],
+    [
+     48,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 142,
+   "maximum": 142,
+   "low": 142,
+   "high": 142,
+   "average": 142,
+   "min": 142,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 235,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 120,
+   "maximum": 155,
+   "low": 48,
+   "high": 34,
+   "average": 41.5,
+   "min": 34,
+   "max": 48,
+   "koChance": 0,
+   "dist": [
+    [
+     34,
+     0.0625
+    ],
+    [
+     36,
+     0.1875
+    ],
+    [
+     40,
+     0.1875
+    ],
+    [
+     42,
+     0.25
+    ],
+    [
+     46,
+     0.1875
+    ],
+    [
+     48,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 142,
+   "maximum": 142,
+   "low": 142,
+   "high": 142,
+   "average": 142,
+   "min": 142,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 235,
+   "low": 121,
+   "high": 121,
+   "average": 121,
+   "min": 121,
+   "max": 121,
+   "koChance": 0,
+   "dist": [
+    [
+     121,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "opponent-right",
+   "effect": "Leech Seed",
+   "other": "own-left",
+   "chance": 1,
+   "min": -29,
+   "max": -29,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  }
+ ]
+}

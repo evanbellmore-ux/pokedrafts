@@ -1,0 +1,302 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 60,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "doublehit",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 80,
+      "max": 138,
+      "minPercent": 34.04255319148936,
+      "maxPercent": 58.723404255319146,
+      "koChance": 1,
+      "row": {
+       "moveId": "doublehit",
+       "effectiveName": "Double Hit",
+       "effectiveType": "Normal",
+       "effectivePower": 35,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 116,
+       "max": 138,
+       "minPercent": 49.361702127659576,
+       "maxPercent": 58.723404255319146,
+       "rolls": [
+        [
+         58,
+         58,
+         60,
+         60,
+         60,
+         61,
+         61,
+         63,
+         63,
+         64,
+         64,
+         66,
+         66,
+         67,
+         67,
+         69
+        ],
+        [
+         58,
+         58,
+         60,
+         60,
+         60,
+         61,
+         61,
+         63,
+         63,
+         64,
+         64,
+         66,
+         66,
+         67,
+         67,
+         69
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Double Hit: 116–138 HP (49.4–58.7% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Snorlax (opponent's, 2) eats its Ganlon Berry after hit 1: +1 Defense.",
+        "chance": 0.125
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 60,
+    "maximum": 235,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "doublehit",
+     "effectiveName": "Double Hit",
+     "effectiveType": "Normal",
+     "effectivePower": 35,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 116,
+     "max": 138,
+     "minPercent": 49.361702127659576,
+     "maxPercent": 58.723404255319146,
+     "rolls": [
+      [
+       58,
+       58,
+       60,
+       60,
+       60,
+       61,
+       61,
+       63,
+       63,
+       64,
+       64,
+       66,
+       66,
+       67,
+       67,
+       69
+      ],
+      [
+       58,
+       58,
+       60,
+       60,
+       60,
+       61,
+       61,
+       63,
+       63,
+       64,
+       64,
+       66,
+       66,
+       67,
+       67,
+       69
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Double Hit: 116–138 HP (49.4–58.7% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Ganlon Berry raises its Defense at a quarter of its HP."
+      ],
+      "notes": []
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 60,
+     "maximum": 235,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.7483000000001994,
+ "preflight": []
+}

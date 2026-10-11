@@ -1,0 +1,544 @@
+{
+ "id": "V16h",
+ "title": "Shield Dust: no flinch",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Shield Dust blocks Fake Out's flinch.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 100,
+   "classes": 45,
+   "ms": 53,
+   "decisions": {
+    "fail:": 63,
+    "roll": 63,
+    "secondary": 56
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       137,
+       0.0625
+      ],
+      [
+       138,
+       0.375
+      ],
+      [
+       139,
+       0.3125
+      ],
+      [
+       140,
+       0.25
+      ]
+     ],
+     "koChance": 0,
+     "average": 138.75,
+     "min": 137,
+     "max": 140,
+     "modeTieUp": 138,
+     "modeTieDown": 138
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Vivillon",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       120,
+       0.0625
+      ],
+      [
+       121,
+       0.125
+      ],
+      [
+       122,
+       0.1875
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       124,
+       0.1875
+      ],
+      [
+       125,
+       0.1875
+      ],
+      [
+       126,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 123.125,
+     "min": 120,
+     "max": 126,
+     "modeTieUp": 125,
+     "modeTieDown": 122
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bugbuzz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Vivillon",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bugbuzz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 13,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       137,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 137,
+     "min": 137,
+     "max": 137,
+     "modeTieUp": 137,
+     "modeTieDown": 137
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Vivillon",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "bugbuzz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 140,
+   "high": 137,
+   "average": 138.75,
+   "min": 137,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.0625
+    ],
+    [
+     138,
+     0.375
+    ],
+    [
+     139,
+     0.3125
+    ],
+    [
+     140,
+     0.25
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 126,
+   "high": 120,
+   "average": 123.125,
+   "min": 120,
+   "max": 126,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.125
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.1875
+    ],
+    [
+     125,
+     0.1875
+    ],
+    [
+     126,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

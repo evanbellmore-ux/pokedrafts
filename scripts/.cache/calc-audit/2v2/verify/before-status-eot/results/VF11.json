@@ -1,0 +1,591 @@
+{
+ "id": "VF11",
+ "title": "Dynamax Conkeldurr's Max Knuckle into an intact Eiscue: neutral; +1 Attack for Snorlax's Body Slam into Eiscue-Noice (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Move face hit",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 28,
+   "classes": 7,
+   "ms": 28,
+   "decisions": {
+    "fail:": 23,
+    "roll": 23,
+    "secondary": 14
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 360,
+     "maximum": 360,
+     "dist": [
+      [
+       360,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 360,
+     "min": 360,
+     "max": 360,
+     "modeTieUp": 360,
+     "modeTieDown": 360
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       26,
+       0.0625
+      ],
+      [
+       27,
+       0.0625
+      ],
+      [
+       29,
+       0.0625
+      ],
+      [
+       30,
+       0.0625
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       33,
+       0.125
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       38,
+       0.0625
+      ],
+      [
+       39,
+       0.0625
+      ],
+      [
+       41,
+       0.125
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       44,
+       0.0625
+      ],
+      [
+       45,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 35.6875,
+     "min": 26,
+     "max": 45,
+     "modeTieUp": 41,
+     "modeTieDown": 33
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-boost|p1a: Conkeldurr|atk|1": 1,
+      "|-boost|p1b: Snorlax|atk|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 360,
+     "maximum": 360,
+     "dist": [
+      [
+       360,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 360,
+     "min": 360,
+     "max": 360,
+     "modeTieUp": 360,
+     "modeTieDown": 360
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       45,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 45,
+     "min": 45,
+     "max": 45,
+     "modeTieUp": 45,
+     "modeTieDown": 45
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-boost|p1a: Conkeldurr|atk|1": 1,
+      "|-boost|p1b: Snorlax|atk|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 105,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 360,
+     "maximum": 360,
+     "dist": [
+      [
+       360,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 360,
+     "min": 360,
+     "max": 360,
+     "modeTieUp": 360,
+     "modeTieDown": 360
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       26,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 26,
+     "min": 26,
+     "max": 26,
+     "modeTieUp": 26,
+     "modeTieDown": 26
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Knuckle": 1,
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-boost|p1a: Conkeldurr|atk|1": 1,
+      "|-boost|p1b: Snorlax|atk|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 124,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 360,
+   "maximum": 360,
+   "low": 360,
+   "high": 360,
+   "average": 360,
+   "min": 360,
+   "max": 360,
+   "koChance": 0,
+   "dist": [
+    [
+     360,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 45,
+   "high": 26,
+   "average": 35.6875,
+   "min": 26,
+   "max": 45,
+   "koChance": 0,
+   "dist": [
+    [
+     26,
+     0.0625
+    ],
+    [
+     27,
+     0.0625
+    ],
+    [
+     29,
+     0.0625
+    ],
+    [
+     30,
+     0.0625
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.125
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     38,
+     0.0625
+    ],
+    [
+     39,
+     0.0625
+    ],
+    [
+     41,
+     0.125
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     44,
+     0.0625
+    ],
+    [
+     45,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

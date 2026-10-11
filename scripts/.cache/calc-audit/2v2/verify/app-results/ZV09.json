@@ -1,0 +1,275 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "explosion",
+    "effectiveName": "Breakneck Blitz",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 124,
+      "max": 146,
+      "minPercent": 52.76595744680851,
+      "maxPercent": 62.12765957446808,
+      "koChance": 0,
+      "row": {
+       "moveId": "explosion",
+       "effectiveName": "Breakneck Blitz",
+       "effectiveType": "Normal",
+       "effectivePower": 200,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 124,
+       "max": 146,
+       "minPercent": 52.76595744680851,
+       "maxPercent": 62.12765957446808,
+       "rolls": [
+        124,
+        125,
+        127,
+        128,
+        129,
+        131,
+        132,
+        134,
+        135,
+        137,
+        138,
+        140,
+        141,
+        143,
+        144,
+        146
+       ],
+       "ohkoChance": 0,
+       "description": "Breakneck Blitz: 124–146 HP (52.8–62.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 111,
+    "average": 100.375,
+    "high": 89,
+    "min": 89,
+    "max": 111,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "explosion",
+     "effectiveName": "Breakneck Blitz",
+     "effectiveType": "Normal",
+     "effectivePower": 200,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 124,
+     "max": 146,
+     "minPercent": 52.76595744680851,
+     "maxPercent": 62.12765957446808,
+     "rolls": [
+      124,
+      125,
+      127,
+      128,
+      129,
+      131,
+      132,
+      134,
+      135,
+      137,
+      138,
+      140,
+      141,
+      143,
+      144,
+      146
+     ],
+     "ohkoChance": 0,
+     "description": "Breakneck Blitz: 124–146 HP (52.8–62.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 111,
+      "high": 89,
+      "average": 100.375,
+      "min": 89,
+      "max": 111,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 124,
+        "heals": []
+       },
+       "high": {
+        "dealt": 146,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 111,
+     "average": 100.375,
+     "high": 89,
+     "min": 89,
+     "max": 111,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.476600000000417,
+ "preflight": []
+}

@@ -1,0 +1,431 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "doubleshock",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 188,
+      "max": 224,
+      "minPercent": 122.07792207792207,
+      "maxPercent": 145.45454545454547,
+      "koChance": 1,
+      "row": {
+       "moveId": "doubleshock",
+       "effectiveName": "Double Shock",
+       "effectiveType": "Electric",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 188,
+       "max": 224,
+       "minPercent": 122.07792207792207,
+       "maxPercent": 145.45454545454547,
+       "rolls": [
+        188,
+        192,
+        194,
+        198,
+        198,
+        200,
+        204,
+        206,
+        206,
+        210,
+        212,
+        216,
+        216,
+        218,
+        222,
+        224
+       ],
+       "ohkoChance": 1,
+       "description": "Double Shock: 188–224 HP (122.1–145.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Double Shock: Pawmot becomes ???/Fighting type.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "earthpower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 64,
+      "max": 76,
+      "minPercent": 44.13793103448276,
+      "maxPercent": 52.41379310344828,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthpower",
+       "effectiveName": "Earth Power",
+       "effectiveType": "Ground",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 64,
+       "max": 76,
+       "minPercent": 44.13793103448276,
+       "maxPercent": 52.41379310344828,
+       "rolls": [
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        76
+       ],
+       "ohkoChance": 0,
+       "description": "Earth Power: 64–76 HP (44.1–52.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 81,
+    "average": 75.4375,
+    "high": 69,
+    "min": 69,
+    "max": 81,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: ???/Fighting.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "doubleshock",
+     "effectiveName": "Double Shock",
+     "effectiveType": "Electric",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 188,
+     "max": 224,
+     "minPercent": 122.07792207792207,
+     "maxPercent": 145.45454545454547,
+     "rolls": [
+      188,
+      192,
+      194,
+      198,
+      198,
+      200,
+      204,
+      206,
+      206,
+      210,
+      212,
+      216,
+      216,
+      218,
+      222,
+      224
+     ],
+     "ohkoChance": 1,
+     "description": "Double Shock: 188–224 HP (122.1–145.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Double Shock removes its Electric type",
+      "koChance": 1
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 154,
+        "heals": []
+       },
+       "high": {
+        "dealt": 154,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthpower",
+     "effectiveName": "Earth Power",
+     "effectiveType": "Ground",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 128,
+     "max": 152,
+     "minPercent": 88.27586206896552,
+     "maxPercent": 104.82758620689656,
+     "rolls": [
+      128,
+      128,
+      132,
+      132,
+      134,
+      134,
+      138,
+      138,
+      140,
+      140,
+      144,
+      144,
+      146,
+      146,
+      150,
+      152
+     ],
+     "ohkoChance": 0.25,
+     "description": "Earth Power: 128–152 HP (88.3–104.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.25,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 17,
+      "high": 0,
+      "average": 6.75,
+      "min": 0,
+      "max": 17,
+      "koChance": 0.25,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 128,
+        "heals": []
+       },
+       "high": {
+        "dealt": 145,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 81,
+     "average": 75.4375,
+     "high": 69,
+     "min": 69,
+     "max": 81,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: ???/Fighting.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.7117000000002918,
+ "preflight": []
+}

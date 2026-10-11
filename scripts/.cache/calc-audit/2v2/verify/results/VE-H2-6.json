@@ -1,0 +1,1588 @@
+{
+ "id": "VE-H2-6",
+ "title": "USUM: Kinesis into a Competitive foe that attacks later",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Accuracy −1: Competitive +2 Sp. Atk for Scald.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 554,
+   "classes": 47,
+   "ms": 831,
+   "decisions": {
+    "tie2": 1650,
+    "accuracy": 224,
+    "fail:": 208,
+    "roll": 208,
+    "secondary": 208
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alakazam",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       18,
+       0.0625
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       21,
+       0.0625
+      ],
+      [
+       22,
+       0.125
+      ],
+      [
+       24,
+       0.0625
+      ],
+      [
+       25,
+       0.0625
+      ],
+      [
+       27,
+       0.125
+      ],
+      [
+       28,
+       0.0625
+      ],
+      [
+       30,
+       0.0625
+      ],
+      [
+       31,
+       0.125
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       34,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 26.75,
+     "min": 18,
+     "max": 36,
+     "modeTieUp": 31,
+     "modeTieDown": 22,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1,
+      "spa:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "kinesis",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Milotic|accuracy|1": 1,
+      "|-ability|p2b: Milotic|Competitive|boost": 1,
+      "|-boost|p2b: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:accuracy:-1": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "scald",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 94,
+       "dmgMax": 112,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-94": 0.0625,
+       "damage:-96": 0.0625,
+       "damage:-97": 0.0625,
+       "damage:-99": 0.125,
+       "damage:-100": 0.0625,
+       "damage:-102": 0.0625,
+       "damage:-103": 0.125,
+       "damage:-105": 0.0625,
+       "damage:-106": 0.0625,
+       "damage:-108": 0.125,
+       "damage:-109": 0.0625,
+       "damage:-111": 0.0625,
+       "damage:-112": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -112,
+       "max": -94
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -112,
+       "max": -94,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 416,
+    "classes": 26,
+    "ms": 831,
+    "decisions": {
+     "tie2": 416
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alakazam",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        18,
+        0.0625
+       ],
+       [
+        19,
+        0.0625
+       ],
+       [
+        21,
+        0.0625
+       ],
+       [
+        22,
+        0.125
+       ],
+       [
+        24,
+        0.0625
+       ],
+       [
+        25,
+        0.0625
+       ],
+       [
+        27,
+        0.125
+       ],
+       [
+        28,
+        0.0625
+       ],
+       [
+        30,
+        0.0625
+       ],
+       [
+        31,
+        0.125
+       ],
+       [
+        33,
+        0.0625
+       ],
+       [
+        34,
+        0.0625
+       ],
+       [
+        36,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 26.75,
+      "min": 18,
+      "max": 36,
+      "modeTieUp": 31,
+      "modeTieDown": 22,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1,
+       "spa:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 74,
+   "classes": 11,
+   "ms": 108,
+   "decisions": {
+    "tie2": 210,
+    "accuracy": 32,
+    "fail:": 16,
+    "roll": 16,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alakazam",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       36,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 36,
+     "min": 36,
+     "max": 36,
+     "modeTieUp": 36,
+     "modeTieDown": 36,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1,
+      "spa:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "kinesis",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Milotic|accuracy|1": 1,
+      "|-ability|p2b: Milotic|Competitive|boost": 1,
+      "|-boost|p2b: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:accuracy:-1": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "scald",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 94,
+       "dmgMax": 94,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-94": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -94,
+       "max": -94
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -94,
+       "max": -94,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 32,
+    "classes": 2,
+    "ms": 108,
+    "decisions": {
+     "tie2": 32
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alakazam",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        36,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 36,
+      "min": 36,
+      "max": 36,
+      "modeTieUp": 36,
+      "modeTieDown": 36,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1,
+       "spa:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 74,
+   "classes": 11,
+   "ms": 111,
+   "decisions": {
+    "tie2": 210,
+    "accuracy": 32,
+    "fail:": 16,
+    "roll": 16,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alakazam",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       18,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 18,
+     "min": 18,
+     "max": 18,
+     "modeTieUp": 18,
+     "modeTieDown": 18,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1,
+      "spa:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "kinesis",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2b: Milotic|accuracy|1": 1,
+      "|-ability|p2b: Milotic|Competitive|boost": 1,
+      "|-boost|p2b: Milotic|spa|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:accuracy:-1": 1,
+       "ability:competitive": 1,
+       "boost:spa:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "scald",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 112,
+       "dmgMax": 112,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-112": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -112,
+       "max": -112
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -112,
+       "max": -112,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 32,
+    "classes": 2,
+    "ms": 111,
+    "decisions": {
+     "tie2": 32
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alakazam",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        18,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 18,
+      "min": 18,
+      "max": 18,
+      "modeTieUp": 18,
+      "modeTieDown": 18,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1,
+       "spa:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 36,
+   "high": 18,
+   "average": 26.75,
+   "min": 18,
+   "max": 36,
+   "koChance": 0,
+   "dist": [
+    [
+     18,
+     0.0625
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     21,
+     0.0625
+    ],
+    [
+     22,
+     0.125
+    ],
+    [
+     24,
+     0.0625
+    ],
+    [
+     25,
+     0.0625
+    ],
+    [
+     27,
+     0.125
+    ],
+    [
+     28,
+     0.0625
+    ],
+    [
+     30,
+     0.0625
+    ],
+    [
+     31,
+     0.125
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     34,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: own-right and opponent-left (101)"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 36,
+   "high": 18,
+   "average": 26.75,
+   "min": 18,
+   "max": 36,
+   "koChance": 0,
+   "dist": [
+    [
+     18,
+     0.0625
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     21,
+     0.0625
+    ],
+    [
+     22,
+     0.125
+    ],
+    [
+     24,
+     0.0625
+    ],
+    [
+     25,
+     0.0625
+    ],
+    [
+     27,
+     0.125
+    ],
+    [
+     28,
+     0.0625
+    ],
+    [
+     30,
+     0.0625
+    ],
+    [
+     31,
+     0.125
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     34,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

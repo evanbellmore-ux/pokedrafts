@@ -1,0 +1,259 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "crunch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 64,
+      "minPercent": 36,
+      "maxPercent": 42.66666666666667,
+      "koChance": 0,
+      "row": {
+       "moveId": "crunch",
+       "effectiveName": "Crunch",
+       "effectiveType": "Dark",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 54,
+       "max": 64,
+       "minPercent": 36,
+       "maxPercent": 42.66666666666667,
+       "rolls": [
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        58,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64
+       ],
+       "ohkoChance": 0,
+       "description": "Crunch: 54–64 HP (36.0–42.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Ice Face: Eiscue takes no damage.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Body Slam has no effect on Eiscue.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "crunch",
+     "effectiveName": "Crunch",
+     "effectiveType": "Dark",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 20% chance to lower the target's Defense by 1 stage.",
+     "assumptions": [],
+     "reason": "Intact Ice Face takes the first physical hit.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Body Slam: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 150,
+      "high": 150,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.644800000000032,
+ "preflight": []
+}

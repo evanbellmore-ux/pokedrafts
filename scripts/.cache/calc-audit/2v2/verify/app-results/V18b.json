@@ -1,0 +1,438 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 170
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.7
+     },
+     {
+      "position": 2,
+      "chance": 0.3
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 72,
+      "max": 85,
+      "minPercent": 42.35294117647059,
+      "maxPercent": 50,
+      "koChance": 1,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 72,
+       "max": 85,
+       "minPercent": 42.35294117647059,
+       "maxPercent": 50,
+       "rolls": [
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        82,
+        84,
+        85
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 72–85 HP (42.4–50.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "sludgebomb",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.3
+     },
+     {
+      "position": 2,
+      "chance": 0.7
+     }
+    ],
+    "moves": 0.3,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.7
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 0.3,
+      "kind": "calculated",
+      "min": 29,
+      "max": 35,
+      "minPercent": 15.846994535519126,
+      "maxPercent": 19.12568306010929,
+      "koChance": 0,
+      "row": {
+       "moveId": "sludgebomb",
+       "effectiveName": "Sludge Bomb",
+       "effectiveType": "Poison",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 15.846994535519126,
+       "maxPercent": 19.12568306010929,
+       "rolls": [
+        29,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        32,
+        32,
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Sludge Bomb: 29–35 HP (15.8–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Quick Draw: Slowbro-Galar moves first in its priority bracket.",
+      "chance": 0.3
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 170,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": [],
+    "faintsBeforeMoving": 0.7
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 173.4375,
+    "high": 183,
+    "min": 148,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "sludgebomb",
+     "effectiveName": "Sludge Bomb",
+     "effectiveType": "Poison",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 29,
+     "max": 35,
+     "minPercent": 15.846994535519126,
+     "maxPercent": 19.12568306010929,
+     "rolls": [
+      29,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35
+     ],
+     "ohkoChance": 0,
+     "description": "Sludge Bomb: 29–35 HP (15.8–19.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9826021790504456,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 154,
+      "high": 148,
+      "average": 151.125,
+      "min": 148,
+      "max": 154,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 35,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 72,
+     "max": 85,
+     "minPercent": 42.35294117647059,
+     "maxPercent": 50,
+     "rolls": [
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      82,
+      84,
+      85
+     ],
+     "ohkoChance": 1,
+     "description": "Dragon Claw: 72–85 HP (42.4–50.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 60,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": [],
+     "faintsBeforeMoving": 0.7
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 173.4375,
+     "high": 183,
+     "min": 148,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.494300000000067,
+ "preflight": []
+}

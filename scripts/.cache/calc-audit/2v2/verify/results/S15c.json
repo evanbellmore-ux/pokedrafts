@@ -1,0 +1,1343 @@
+{
+ "id": "S15c",
+ "title": "Screech into Contrary and Simple",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Contrary: Defense +2. Simple: Defense −4.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Malamar",
+     "start": 161,
+     "maximum": 161,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Numel",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-4": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Malamar|def|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:def:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Numel|def|4": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:def:-4": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Malamar",
+      "start": null,
+      "maximum": 161,
+      "dist": [
+       [
+        161,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 161,
+      "min": 161,
+      "max": 161,
+      "modeTieUp": 161,
+      "modeTieDown": 161,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Numel",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-4": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Malamar",
+     "start": 161,
+     "maximum": 161,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Numel",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-4": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Malamar|def|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:def:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Numel|def|4": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:def:-4": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Malamar",
+      "start": null,
+      "maximum": 161,
+      "dist": [
+       [
+        161,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 161,
+      "min": 161,
+      "max": 161,
+      "modeTieUp": 161,
+      "modeTieDown": 161,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Numel",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-4": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Malamar",
+     "start": 161,
+     "maximum": 161,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Numel",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-4": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Malamar|def|2": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:def:2": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "screech",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Numel|def|4": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:def:-4": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Malamar",
+      "start": null,
+      "maximum": 161,
+      "dist": [
+       [
+        161,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 161,
+      "min": 161,
+      "max": 161,
+      "modeTieUp": 161,
+      "modeTieDown": 161,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Numel",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-4": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 161,
+   "maximum": 161,
+   "low": 161,
+   "high": 161,
+   "average": 161,
+   "min": 161,
+   "max": 161,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 161,
+   "maximum": 161,
+   "low": 161,
+   "high": 161,
+   "average": 161,
+   "min": 161,
+   "max": 161,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

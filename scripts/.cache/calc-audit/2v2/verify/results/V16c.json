@@ -1,0 +1,1576 @@
+{
+ "id": "V16c",
+ "title": "Inner Focus: no flinch",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Dragonite takes Fake Out and still attacks.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 67,
+   "classes": 18,
+   "ms": 66,
+   "decisions": {
+    "fail:": 55,
+    "roll": 55,
+    "secondary": 5
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       68,
+       0.0625
+      ],
+      [
+       69,
+       0.0625
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       75,
+       0.0625
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       81,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 74.8125,
+     "min": 68,
+     "max": 81,
+     "modeTieUp": 80,
+     "modeTieDown": 71,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.25
+      ],
+      [
+       146,
+       0.3125
+      ],
+      [
+       147,
+       0.25
+      ],
+      [
+       148,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 146.125,
+     "min": 144,
+     "max": 148,
+     "modeTieUp": 146,
+     "modeTieDown": 146,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-18": 0.125,
+       "damage:-19": 0.25,
+       "damage:-20": 0.3125,
+       "damage:-21": 0.25,
+       "damage:-22": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -22,
+       "max": -18
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -22,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-72": 0.0625,
+       "damage:-73": 0.125,
+       "damage:-75": 0.125,
+       "damage:-76": 0.125,
+       "damage:-78": 0.0625,
+       "damage:-79": 0.125,
+       "damage:-81": 0.125,
+       "damage:-82": 0.125,
+       "damage:-84": 0.0625,
+       "damage:-85": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -85,
+       "max": -72
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -85,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 50,
+    "classes": 5,
+    "ms": 66,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        68,
+        0.0625
+       ],
+       [
+        69,
+        0.0625
+       ],
+       [
+        71,
+        0.125
+       ],
+       [
+        72,
+        0.125
+       ],
+       [
+        74,
+        0.125
+       ],
+       [
+        75,
+        0.0625
+       ],
+       [
+        77,
+        0.125
+       ],
+       [
+        78,
+        0.125
+       ],
+       [
+        80,
+        0.125
+       ],
+       [
+        81,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 74.8125,
+      "min": 68,
+      "max": 81,
+      "modeTieUp": 80,
+      "modeTieDown": 71,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        144,
+        0.0625
+       ],
+       [
+        145,
+        0.25
+       ],
+       [
+        146,
+        0.3125
+       ],
+       [
+        147,
+        0.25
+       ],
+       [
+        148,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 146.125,
+      "min": 144,
+      "max": 148,
+      "modeTieUp": 146,
+      "modeTieDown": 146,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       81,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 81,
+     "min": 81,
+     "max": 81,
+     "modeTieUp": 81,
+     "modeTieDown": 81,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       148,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 148,
+     "min": 148,
+     "max": 148,
+     "modeTieUp": 148,
+     "modeTieDown": 148,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-18": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -18,
+       "max": -18
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-72": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -72,
+       "max": -72
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -72,
+       "max": -72,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        81,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 81,
+      "min": 81,
+      "max": 81,
+      "modeTieUp": 81,
+      "modeTieDown": 81,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        148,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 148,
+      "min": 148,
+      "max": 148,
+      "modeTieUp": 148,
+      "modeTieDown": 148,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       68,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 68,
+     "min": 68,
+     "max": 68,
+     "modeTieUp": 68,
+     "modeTieDown": 68,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 22,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-22": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -22,
+       "max": -22
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -22,
+       "max": -22,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 85,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-85": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -85,
+       "max": -85
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -85,
+       "max": -85,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        68,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 68,
+      "min": 68,
+      "max": 68,
+      "modeTieUp": 68,
+      "modeTieDown": 68,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Dragonite",
+      "start": null,
+      "maximum": 166,
+      "dist": [
+       [
+        144,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 144,
+      "min": 144,
+      "max": 144,
+      "modeTieUp": 144,
+      "modeTieDown": 144,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 81,
+   "high": 68,
+   "average": 74.8125,
+   "min": 68,
+   "max": 81,
+   "koChance": 0,
+   "dist": [
+    [
+     68,
+     0.0625
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 166,
+   "maximum": 166,
+   "low": 148,
+   "high": 144,
+   "average": 146.125,
+   "min": 144,
+   "max": 148,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.25
+    ],
+    [
+     146,
+     0.3125
+    ],
+    [
+     147,
+     0.25
+    ],
+    [
+     148,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 81,
+   "high": 68,
+   "average": 74.8125,
+   "min": 68,
+   "max": 81,
+   "koChance": 0,
+   "dist": [
+    [
+     68,
+     0.0625
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 166,
+   "maximum": 166,
+   "low": 148,
+   "high": 144,
+   "average": 146.125,
+   "min": 144,
+   "max": 148,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.25
+    ],
+    [
+     146,
+     0.3125
+    ],
+    [
+     147,
+     0.25
+    ],
+    [
+     148,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

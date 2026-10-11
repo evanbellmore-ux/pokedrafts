@@ -1,0 +1,309 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 120,
+    "maximum": 120
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "inferno",
+    "effectiveName": "Inferno Overdrive",
+    "effectiveType": "Fire",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 51,
+      "max": 60,
+      "minPercent": 21.70212765957447,
+      "maxPercent": 25.53191489361702,
+      "koChance": 0,
+      "row": {
+       "moveId": "inferno",
+       "effectiveName": "Inferno Overdrive",
+       "effectiveType": "Fire",
+       "effectivePower": 180,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 51,
+       "max": 60,
+       "minPercent": 21.70212765957447,
+       "maxPercent": 25.53191489361702,
+       "rolls": [
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60
+       ],
+       "ohkoChance": 0,
+       "description": "Inferno Overdrive: 51–60 HP (21.7–25.5% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "hex",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Hex has no effect on Snorlax.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 120,
+    "maximum": 120,
+    "low": 120,
+    "average": 120,
+    "high": 120,
+    "min": 120,
+    "max": 120,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 184,
+    "average": 180.25,
+    "high": 175,
+    "min": 175,
+    "max": 184,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "inferno",
+     "effectiveName": "Inferno Overdrive",
+     "effectiveType": "Fire",
+     "effectivePower": 180,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 51,
+     "max": 60,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.53191489361702,
+     "rolls": [
+      51,
+      51,
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60
+     ],
+     "ohkoChance": 0,
+     "description": "Inferno Overdrive: 51–60 HP (21.7–25.5% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 184,
+      "high": 175,
+      "average": 180.25,
+      "min": 175,
+      "max": 184,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "hex",
+     "effectiveName": "Hex",
+     "effectiveType": "Ghost",
+     "effectivePower": 65,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Hex: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 235,
+      "high": 235,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 4.921400000000176,
+ "preflight": []
+}

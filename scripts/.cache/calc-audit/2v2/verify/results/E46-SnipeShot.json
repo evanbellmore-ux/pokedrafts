@@ -1,0 +1,1491 @@
+{
+ "id": "E46-SnipeShot",
+ "title": "Snipe Shot at its own ally, which Ally Switches",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "A tracking move keeps its chosen Pokémon: it hits Reuniclus, no failure (K4).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 30,
+   "classes": 22,
+   "ms": 37,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       110,
+       0.0625
+      ],
+      [
+       112,
+       0.125
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       115,
+       0.125
+      ],
+      [
+       116,
+       0.125
+      ],
+      [
+       118,
+       0.125
+      ],
+      [
+       119,
+       0.125
+      ],
+      [
+       121,
+       0.125
+      ],
+      [
+       122,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 116.25,
+     "min": 110,
+     "max": 122,
+     "modeTieUp": 121,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-63": 0.0625,
+       "damage:-64": 0.125,
+       "damage:-66": 0.125,
+       "damage:-67": 0.125,
+       "damage:-69": 0.125,
+       "damage:-70": 0.125,
+       "damage:-72": 0.125,
+       "damage:-73": 0.125,
+       "damage:-75": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -75,
+       "max": -63
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -75,
+       "max": -63,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p1b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "own-left": {
+       "swap": 1
+      },
+      "own-right": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "own": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 9,
+    "classes": 9,
+    "ms": 37,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Inteleon",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        110,
+        0.0625
+       ],
+       [
+        112,
+        0.125
+       ],
+       [
+        113,
+        0.125
+       ],
+       [
+        115,
+        0.125
+       ],
+       [
+        116,
+        0.125
+       ],
+       [
+        118,
+        0.125
+       ],
+       [
+        119,
+        0.125
+       ],
+       [
+        121,
+        0.125
+       ],
+       [
+        122,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 116.25,
+      "min": 110,
+      "max": 122,
+      "modeTieUp": 121,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       122,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 122,
+     "min": 122,
+     "max": 122,
+     "modeTieUp": 122,
+     "modeTieDown": 122,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-63": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -63,
+       "max": -63
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -63,
+       "max": -63,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p1b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "own-left": {
+       "swap": 1
+      },
+      "own-right": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "own": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Inteleon",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        122,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 122,
+      "min": 122,
+      "max": 122,
+      "modeTieUp": 122,
+      "modeTieDown": 122,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Inteleon",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       110,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 110,
+     "min": 110,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "snipeshot",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-75": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -75,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -75,
+       "max": -75,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p1b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "own-left": {
+       "swap": 1
+      },
+      "own-right": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "swapped": {
+    "own": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Inteleon",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        110,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 110,
+      "min": 110,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 110,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 185,
+   "maximum": 185,
+   "low": 122,
+   "high": 110,
+   "average": 116.25,
+   "min": 110,
+   "max": 122,
+   "koChance": 0,
+   "dist": [
+    [
+     110,
+     0.0625
+    ],
+    [
+     112,
+     0.125
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     115,
+     0.125
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     118,
+     0.125
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     121,
+     0.125
+    ],
+    [
+     122,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 185,
+   "maximum": 185,
+   "low": 122,
+   "high": 110,
+   "average": 116.25,
+   "min": 110,
+   "max": 122,
+   "koChance": 0,
+   "dist": [
+    [
+     110,
+     0.0625
+    ],
+    [
+     112,
+     0.125
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     115,
+     0.125
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     118,
+     0.125
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     121,
+     0.125
+    ],
+    [
+     122,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

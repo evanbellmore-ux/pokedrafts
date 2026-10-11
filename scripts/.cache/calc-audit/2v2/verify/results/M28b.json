@@ -1,0 +1,2108 @@
+{
+ "id": "M28b",
+ "title": "A spread contact move into Baneful Bunker poisons its user",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Sandaconda is poisoned by the blocked hit: Amoonguss's later Venoshock into it at 130.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1092,
+   "classes": 151,
+   "ms": 5400,
+   "decisions": {
+    "sample": 160,
+    "fail:": 1152,
+    "roll": 1152
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       99,
+       0.1875
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.0625
+      ],
+      [
+       102,
+       0.1875
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       104,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 100.625,
+     "min": 96,
+     "max": 105,
+     "modeTieUp": 102,
+     "modeTieDown": 99,
+     "status": {
+      "psn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       204,
+       0.0625
+      ],
+      [
+       205,
+       0.1875
+      ],
+      [
+       206,
+       0.1875
+      ],
+      [
+       207,
+       0.1875
+      ],
+      [
+       208,
+       0.1875
+      ],
+      [
+       209,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 206.8125,
+     "min": 204,
+     "max": 209,
+     "modeTieUp": 209,
+     "modeTieDown": 205,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       160,
+       0.0625
+      ],
+      [
+       161,
+       0.1875
+      ],
+      [
+       162,
+       0.1875
+      ],
+      [
+       163,
+       0.25
+      ],
+      [
+       164,
+       0.1875
+      ],
+      [
+       165,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 162.6875,
+     "min": 160,
+     "max": 165,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 26,
+       "dmgMax": 31,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 29,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Toxapex|move: Protect": 1,
+      "|-status|p1a: Sandaconda|psn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:psn": 1
+      },
+      "own-right": {
+       "damage:-26": 0.1875,
+       "damage:-27": 0.1875,
+       "damage:-28": 0.1875,
+       "damage:-29": 0.1875,
+       "damage:-30": 0.1875,
+       "damage:-31": 0.0625
+      },
+      "opponent-right": {
+       "damage:-24": 0.125,
+       "damage:-25": 0.1875,
+       "damage:-26": 0.25,
+       "damage:-27": 0.1875,
+       "damage:-28": 0.1875,
+       "damage:-29": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -31,
+       "max": -26
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -29,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -31,
+       "max": -26,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -29,
+       "max": -24,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "banefulbunker",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "venoshock",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-42": 0.0625,
+       "damage:-43": 0.0625,
+       "damage:-44": 0.125,
+       "damage:-45": 0.1875,
+       "damage:-46": 0.0625,
+       "damage:-47": 0.125,
+       "damage:-48": 0.1875,
+       "damage:-49": 0.0625,
+       "damage:-50": 0.0625,
+       "damage:-51": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -51,
+       "max": -42
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -51,
+       "max": -42,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 3456,
+    "classes": 72,
+    "ms": 5401,
+    "decisions": {
+     "tie2": 3456,
+     "chance:shedskin": 3456
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        78,
+        0.041874999999999905
+       ],
+       [
+        79,
+        0.041874999999999905
+       ],
+       [
+        80,
+        0.041874999999999905
+       ],
+       [
+        81,
+        0.12562499999999963
+       ],
+       [
+        82,
+        0.08374999999999981
+       ],
+       [
+        83,
+        0.041874999999999905
+       ],
+       [
+        84,
+        0.12562499999999963
+       ],
+       [
+        85,
+        0.08374999999999981
+       ],
+       [
+        86,
+        0.041874999999999905
+       ],
+       [
+        87,
+        0.041874999999999905
+       ],
+       [
+        96,
+        0.020625000000000032
+       ],
+       [
+        97,
+        0.020625000000000032
+       ],
+       [
+        98,
+        0.020625000000000032
+       ],
+       [
+        99,
+        0.06187500000000025
+       ],
+       [
+        100,
+        0.041250000000000064
+       ],
+       [
+        101,
+        0.020625000000000032
+       ],
+       [
+        102,
+        0.06187500000000025
+       ],
+       [
+        103,
+        0.041250000000000064
+       ],
+       [
+        104,
+        0.020625000000000032
+       ],
+       [
+        105,
+        0.020625000000000032
+       ]
+      ],
+      "koChance": 0,
+      "average": 88.56500000000005,
+      "min": 78,
+      "max": 105,
+      "modeTieUp": 84,
+      "modeTieDown": 81,
+      "status": {
+       "": 0.3299999999999947,
+       "psn": 0.6700000000000147
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        204,
+        0.0625
+       ],
+       [
+        205,
+        0.1875
+       ],
+       [
+        206,
+        0.1875
+       ],
+       [
+        207,
+        0.1875
+       ],
+       [
+        208,
+        0.1875
+       ],
+       [
+        209,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 206.8125,
+      "min": 204,
+      "max": 209,
+      "modeTieUp": 209,
+      "modeTieDown": 205,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        125,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 125,
+      "min": 125,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        160,
+        0.0625
+       ],
+       [
+        161,
+        0.1875
+       ],
+       [
+        162,
+        0.1875
+       ],
+       [
+        163,
+        0.25
+       ],
+       [
+        164,
+        0.1875
+       ],
+       [
+        165,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 162.6875,
+      "min": 160,
+      "max": 165,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 0.6700000000000147,
+      "min": -18,
+      "max": -18,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.3299999999999947,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.3299999999999947,
+       "curestatus:psn": 0.3299999999999947
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 49,
+   "decisions": {
+    "sample": 20,
+    "fail:": 10,
+    "roll": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "psn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       209,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 209,
+     "min": 209,
+     "max": 209,
+     "modeTieUp": 209,
+     "modeTieDown": 209,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 26,
+       "dmgMax": 26,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 24,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Toxapex|move: Protect": 1,
+      "|-status|p1a: Sandaconda|psn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:psn": 1
+      },
+      "own-right": {
+       "damage:-26": 1
+      },
+      "opponent-right": {
+       "damage:-24": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -26,
+       "max": -26
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -24,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -26,
+       "max": -26,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -24,
+       "max": -24,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "banefulbunker",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "venoshock",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-42": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -42,
+       "max": -42
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -42,
+       "max": -42,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 2,
+    "ms": 49,
+    "decisions": {
+     "tie2": 8,
+     "chance:shedskin": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        87,
+        0.6699999999999999
+       ],
+       [
+        105,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 92.94,
+      "min": 87,
+      "max": 105,
+      "modeTieUp": 87,
+      "modeTieDown": 87,
+      "status": {
+       "": 0.33,
+       "psn": 0.6699999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        209,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 209,
+      "min": 209,
+      "max": 209,
+      "modeTieUp": 209,
+      "modeTieDown": 209,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        125,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 125,
+      "min": 125,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 0.6699999999999999,
+      "min": -18,
+      "max": -18,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.33,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.33,
+       "curestatus:psn": 0.33
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 49,
+   "decisions": {
+    "sample": 20,
+    "fail:": 10,
+    "roll": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "psn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       204,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 204,
+     "min": 204,
+     "max": 204,
+     "modeTieUp": 204,
+     "modeTieDown": 204,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 31,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Toxapex|move: Protect": 1,
+      "|-status|p1a: Sandaconda|psn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:psn": 1
+      },
+      "own-right": {
+       "damage:-31": 1
+      },
+      "opponent-right": {
+       "damage:-29": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -31,
+       "max": -31
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -29,
+       "max": -29
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -31,
+       "max": -31,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -29,
+       "max": -29,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "banefulbunker",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "venoshock",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-51": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -51,
+       "max": -51
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -51,
+       "max": -51,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 2,
+    "ms": 50,
+    "decisions": {
+     "tie2": 8,
+     "chance:shedskin": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        78,
+        0.6699999999999999
+       ],
+       [
+        96,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 83.94,
+      "min": 78,
+      "max": 96,
+      "modeTieUp": 78,
+      "modeTieDown": 78,
+      "status": {
+       "": 0.33,
+       "psn": 0.6699999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        204,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 204,
+      "min": 204,
+      "max": 204,
+      "modeTieUp": 204,
+      "modeTieDown": 204,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        125,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 125,
+      "min": 125,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Amoonguss",
+      "start": null,
+      "maximum": 189,
+      "dist": [
+       [
+        160,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 160,
+      "min": 160,
+      "max": 160,
+      "modeTieUp": 160,
+      "modeTieDown": 160,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 0.6699999999999999,
+      "min": -18,
+      "max": -18,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.33,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.33,
+       "curestatus:psn": 0.33
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 105,
+   "high": 96,
+   "average": 100.625,
+   "min": 96,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.1875
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.0625
+    ],
+    [
+     102,
+     0.1875
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     104,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 209,
+   "high": 204,
+   "average": 206.8125,
+   "min": 204,
+   "max": 209,
+   "koChance": 0,
+   "dist": [
+    [
+     204,
+     0.0625
+    ],
+    [
+     205,
+     0.1875
+    ],
+    [
+     206,
+     0.1875
+    ],
+    [
+     207,
+     0.1875
+    ],
+    [
+     208,
+     0.1875
+    ],
+    [
+     209,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 125,
+   "high": 125,
+   "average": 125,
+   "min": 125,
+   "max": 125,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 165,
+   "high": 160,
+   "average": 162.6875,
+   "min": 160,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     160,
+     0.0625
+    ],
+    [
+     161,
+     0.1875
+    ],
+    [
+     162,
+     0.1875
+    ],
+    [
+     163,
+     0.25
+    ],
+    [
+     164,
+     0.1875
+    ],
+    [
+     165,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 87,
+   "high": 78,
+   "average": 88.56500000000005,
+   "min": 78,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     78,
+     0.041874999999999905
+    ],
+    [
+     79,
+     0.041874999999999905
+    ],
+    [
+     80,
+     0.041874999999999905
+    ],
+    [
+     81,
+     0.12562499999999963
+    ],
+    [
+     82,
+     0.08374999999999981
+    ],
+    [
+     83,
+     0.041874999999999905
+    ],
+    [
+     84,
+     0.12562499999999963
+    ],
+    [
+     85,
+     0.08374999999999981
+    ],
+    [
+     86,
+     0.041874999999999905
+    ],
+    [
+     87,
+     0.041874999999999905
+    ],
+    [
+     96,
+     0.020625000000000032
+    ],
+    [
+     97,
+     0.020625000000000032
+    ],
+    [
+     98,
+     0.020625000000000032
+    ],
+    [
+     99,
+     0.06187500000000025
+    ],
+    [
+     100,
+     0.041250000000000064
+    ],
+    [
+     101,
+     0.020625000000000032
+    ],
+    [
+     102,
+     0.06187500000000025
+    ],
+    [
+     103,
+     0.041250000000000064
+    ],
+    [
+     104,
+     0.020625000000000032
+    ],
+    [
+     105,
+     0.020625000000000032
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 209,
+   "high": 204,
+   "average": 206.8125,
+   "min": 204,
+   "max": 209,
+   "koChance": 0,
+   "dist": [
+    [
+     204,
+     0.0625
+    ],
+    [
+     205,
+     0.1875
+    ],
+    [
+     206,
+     0.1875
+    ],
+    [
+     207,
+     0.1875
+    ],
+    [
+     208,
+     0.1875
+    ],
+    [
+     209,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 125,
+   "high": 125,
+   "average": 125,
+   "min": 125,
+   "max": 125,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 165,
+   "high": 160,
+   "average": 162.6875,
+   "min": 160,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     160,
+     0.0625
+    ],
+    [
+     161,
+     0.1875
+    ],
+    [
+     162,
+     0.1875
+    ],
+    [
+     163,
+     0.25
+    ],
+    [
+     164,
+     0.1875
+    ],
+    [
+     165,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "psn",
+   "chance": 0.6700000000000147,
+   "min": -18,
+   "max": -18,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "own-left",
+   "effect": "Shed Skin",
+   "chance": 0.3299999999999947,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "activate:shedskin": 0.3299999999999947,
+    "curestatus:psn": 0.3299999999999947
+   },
+   "index": 2
+  }
+ ]
+}

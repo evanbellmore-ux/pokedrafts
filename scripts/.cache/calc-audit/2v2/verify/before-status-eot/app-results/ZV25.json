@@ -1,0 +1,290 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 219,
+    "maximum": 219
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "protect",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "phantomforce",
+    "effectiveName": "Never-Ending Nightmare",
+    "effectiveType": "Ghost",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Phantom Force has no effect on Snorlax.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "closecombat",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Protect blocks Close Combat.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 219,
+    "maximum": 219,
+    "low": 219,
+    "average": 219,
+    "high": 219,
+    "min": 219,
+    "max": 219,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "phantomforce",
+     "effectiveName": "Never-Ending Nightmare",
+     "effectiveType": "Ghost",
+     "effectivePower": 175,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Never-Ending Nightmare: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 235,
+      "high": 235,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 222,
+     "max": 264,
+     "minPercent": 94.46808510638299,
+     "maxPercent": 112.3404255319149,
+     "rolls": [
+      222,
+      224,
+      228,
+      230,
+      234,
+      236,
+      240,
+      240,
+      242,
+      246,
+      248,
+      252,
+      254,
+      258,
+      260,
+      264
+     ],
+     "ohkoChance": 0.6875,
+     "description": "Close Combat: 222–264 HP (94.5–112.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.6875,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 13,
+      "high": 0,
+      "average": 2.3125,
+      "min": 0,
+      "max": 13,
+      "koChance": 0.6875,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 222,
+        "heals": []
+       },
+       "high": {
+        "dealt": 235,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes no protecting move was used last turn."
+  ]
+ },
+ "ms": 2.2024999999998727,
+ "preflight": []
+}

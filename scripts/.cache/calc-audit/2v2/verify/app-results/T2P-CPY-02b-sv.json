@@ -1,0 +1,106 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Copycat needs the last move used before this turn.",
+  "start": {
+   "own-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 67,
+     "max": 81,
+     "minPercent": 39.411764705882355,
+     "maxPercent": 47.647058823529406,
+     "rolls": [
+      67,
+      69,
+      69,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      81
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 67–81 HP (39.4–47.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 103,
+      "high": 89,
+      "average": 96.0625,
+      "min": 89,
+      "max": 103,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 81,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.6545999999998457,
+ "preflight": []
+}

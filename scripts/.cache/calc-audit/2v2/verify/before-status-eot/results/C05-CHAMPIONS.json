@@ -1,0 +1,720 @@
+{
+ "id": "C05-CHAMPIONS",
+ "title": "Intimidate applied before two attacks into one slot (champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Incineroar's Intimidate leaves Garchomp at -1 Atk; Metagross's Clear Body keeps it at 0.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 961,
+   "classes": 458,
+   "ms": 459,
+   "decisions": {
+    "fail:": 567,
+    "roll": 567,
+    "secondary": 560
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       19,
+       0.0625
+      ],
+      [
+       23,
+       0.125
+      ],
+      [
+       27,
+       0.125
+      ],
+      [
+       31,
+       0.1875
+      ],
+      [
+       35,
+       0.125
+      ],
+      [
+       39,
+       0.1875
+      ],
+      [
+       43,
+       0.125
+      ],
+      [
+       47,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 33.25,
+     "min": 19,
+     "max": 47,
+     "modeTieUp": 39,
+     "modeTieDown": 31
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       64,
+       0.00390625
+      ],
+      [
+       65,
+       0.015625
+      ],
+      [
+       66,
+       0.03125
+      ],
+      [
+       67,
+       0.05078125
+      ],
+      [
+       68,
+       0.05859375
+      ],
+      [
+       69,
+       0.1015625
+      ],
+      [
+       70,
+       0.11328125
+      ],
+      [
+       71,
+       0.08203125
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       73,
+       0.12890625
+      ],
+      [
+       74,
+       0.06640625
+      ],
+      [
+       75,
+       0.0859375
+      ],
+      [
+       76,
+       0.0703125
+      ],
+      [
+       77,
+       0.02734375
+      ],
+      [
+       78,
+       0.03125
+      ],
+      [
+       79,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 71.75,
+     "min": 64,
+     "max": 79,
+     "modeTieUp": 73,
+     "modeTieDown": 73
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "icebeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 164,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       47,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 47,
+     "min": 47,
+     "max": 47,
+     "modeTieUp": 47,
+     "modeTieDown": 47
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       79,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 79,
+     "min": 79,
+     "max": 79,
+     "modeTieUp": 79,
+     "modeTieDown": 79
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 46,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "icebeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 136,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       19,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 19,
+     "min": 19,
+     "max": 19,
+     "modeTieUp": 19,
+     "modeTieDown": 19
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       64,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 64,
+     "min": 64,
+     "max": 64,
+     "modeTieUp": 64,
+     "modeTieDown": 64
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "icebeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 164,
+       "dmgMax": 164,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 47,
+   "high": 19,
+   "average": 33.25,
+   "min": 19,
+   "max": 47,
+   "koChance": 0,
+   "dist": [
+    [
+     19,
+     0.0625
+    ],
+    [
+     23,
+     0.125
+    ],
+    [
+     27,
+     0.125
+    ],
+    [
+     31,
+     0.1875
+    ],
+    [
+     35,
+     0.125
+    ],
+    [
+     39,
+     0.1875
+    ],
+    [
+     43,
+     0.125
+    ],
+    [
+     47,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 79,
+   "high": 64,
+   "average": 71.75,
+   "min": 64,
+   "max": 79,
+   "koChance": 0,
+   "dist": [
+    [
+     64,
+     0.00390625
+    ],
+    [
+     65,
+     0.015625
+    ],
+    [
+     66,
+     0.03125
+    ],
+    [
+     67,
+     0.05078125
+    ],
+    [
+     68,
+     0.05859375
+    ],
+    [
+     69,
+     0.1015625
+    ],
+    [
+     70,
+     0.11328125
+    ],
+    [
+     71,
+     0.08203125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     73,
+     0.12890625
+    ],
+    [
+     74,
+     0.06640625
+    ],
+    [
+     75,
+     0.0859375
+    ],
+    [
+     76,
+     0.0703125
+    ],
+    [
+     77,
+     0.02734375
+    ],
+    [
+     78,
+     0.03125
+    ],
+    [
+     79,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,648 @@
+{
+ "id": "M23a",
+ "title": "Fishious Rend before its target moves",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Dracovish (95) before Snorlax (51): Fishious Rend doubles.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 148,
+   "classes": 21,
+   "ms": 59,
+   "decisions": {
+    "fail:": 144,
+    "roll": 144,
+    "secondary": 128
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       102,
+       0.0625
+      ],
+      [
+       104,
+       0.125
+      ],
+      [
+       105,
+       0.125
+      ],
+      [
+       107,
+       0.1875
+      ],
+      [
+       108,
+       0.125
+      ],
+      [
+       110,
+       0.125
+      ],
+      [
+       111,
+       0.1875
+      ],
+      [
+       113,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 107.6875,
+     "min": 102,
+     "max": 113,
+     "modeTieUp": 111,
+     "modeTieDown": 107
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       15,
+       0.0625
+      ],
+      [
+       18,
+       0.0625
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       22,
+       0.0625
+      ],
+      [
+       24,
+       0.0625
+      ],
+      [
+       27,
+       0.0625
+      ],
+      [
+       28,
+       0.0625
+      ],
+      [
+       31,
+       0.0625
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       37,
+       0.0625
+      ],
+      [
+       40,
+       0.0625
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       45,
+       0.0625
+      ],
+      [
+       46,
+       0.0625
+      ],
+      [
+       49,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 15,
+     "max": 49,
+     "modeTieUp": 49,
+     "modeTieDown": 15
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 186,
+       "dmgMax": 220,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       113,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 113,
+     "min": 113,
+     "max": 113,
+     "modeTieUp": 113,
+     "modeTieDown": 113
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       49,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 49,
+     "min": 49,
+     "max": 49,
+     "modeTieUp": 49,
+     "modeTieDown": 49
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 186,
+       "dmgMax": 186,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 52,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dracovish",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       102,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 102,
+     "min": 102,
+     "max": 102,
+     "modeTieUp": 102,
+     "modeTieDown": 102
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       15,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 15,
+     "min": 15,
+     "max": 15,
+     "modeTieUp": 15,
+     "modeTieDown": 15
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fishiousrend",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 220,
+       "dmgMax": 220,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 113,
+   "high": 102,
+   "average": 107.6875,
+   "min": 102,
+   "max": 113,
+   "koChance": 0,
+   "dist": [
+    [
+     102,
+     0.0625
+    ],
+    [
+     104,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ],
+    [
+     107,
+     0.1875
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     110,
+     0.125
+    ],
+    [
+     111,
+     0.1875
+    ],
+    [
+     113,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 49,
+   "high": 15,
+   "average": 32,
+   "min": 15,
+   "max": 49,
+   "koChance": 0,
+   "dist": [
+    [
+     15,
+     0.0625
+    ],
+    [
+     18,
+     0.0625
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     22,
+     0.0625
+    ],
+    [
+     24,
+     0.0625
+    ],
+    [
+     27,
+     0.0625
+    ],
+    [
+     28,
+     0.0625
+    ],
+    [
+     31,
+     0.0625
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     37,
+     0.0625
+    ],
+    [
+     40,
+     0.0625
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     45,
+     0.0625
+    ],
+    [
+     46,
+     0.0625
+    ],
+    [
+     49,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

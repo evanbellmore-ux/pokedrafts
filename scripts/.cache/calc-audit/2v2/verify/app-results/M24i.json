@@ -1,0 +1,421 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 280,
+    "maximum": 280
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 184,
+    "maximum": 184
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "thunderbolt",
+    "effectiveName": "Max Lightning",
+    "effectiveType": "Electric",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Max Lightning",
+       "effectiveType": "Electric",
+       "effectivePower": 130,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Max Lightning: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Mimicry: Stunfisk-Galar becomes Electric type.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 51,
+      "minPercent": 22.82608695652174,
+      "maxPercent": 27.717391304347828,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Thunderbolt",
+       "effectiveType": "Electric",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 42,
+       "max": 51,
+       "minPercent": 22.82608695652174,
+       "maxPercent": 27.717391304347828,
+       "rolls": [
+        42,
+        43,
+        44,
+        44,
+        45,
+        45,
+        45,
+        46,
+        47,
+        47,
+        48,
+        48,
+        48,
+        49,
+        50,
+        51
+       ],
+       "ohkoChance": 0,
+       "description": "Thunderbolt: 42–51 HP (22.8–27.7% of maximum HP). Applied: Electric.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 280,
+    "maximum": 280,
+    "low": 280,
+    "average": 280,
+    "high": 280,
+    "min": 280,
+    "max": 280,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 184,
+    "maximum": 184,
+    "low": 142,
+    "average": 137.625,
+    "high": 133,
+    "min": 133,
+    "max": 142,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: Electric.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 160,
+    "average": 154.0625,
+    "high": 147,
+    "min": 147,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Max Lightning",
+     "effectiveType": "Electric",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Max Lightning: 75–88 HP (31.9–37.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Max Lightning changes the field.",
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Thunderbolt: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 184,
+      "low": 184,
+      "high": 184,
+      "average": 184,
+      "min": 184,
+      "max": 184,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 280,
+     "maximum": 280,
+     "low": 280,
+     "average": 280,
+     "high": 280,
+     "min": 280,
+     "max": 280,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 184,
+     "maximum": 184,
+     "low": 142,
+     "average": 137.625,
+     "high": 133,
+     "min": 133,
+     "max": 142,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: Electric.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 154.0625,
+     "high": 147,
+     "min": 147,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.099999999999909,
+ "preflight": []
+}

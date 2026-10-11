@@ -1,0 +1,1657 @@
+{
+ "id": "BB08",
+ "title": "Sticky Hold keeps its Kee Berry against Bug Bite (SV, Trick Room)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Sticky Hold keeps the Berry: Gastrodon's own Kee Berry acts on the physical hit; Scizor's Defense stays.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 123,
+   "classes": 28,
+   "ms": 184,
+   "decisions": {
+    "fail:": 108,
+    "roll": 108
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.25
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       114,
+       0.125
+      ],
+      [
+       115,
+       0.3125
+      ],
+      [
+       116,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 113.75,
+     "min": 111,
+     "max": 116,
+     "modeTieUp": 115,
+     "modeTieDown": 115,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       83,
+       0.0625
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       90,
+       0.125
+      ],
+      [
+       92,
+       0.0625
+      ],
+      [
+       93,
+       0.125
+      ],
+      [
+       95,
+       0.0625
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       99,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 91.125,
+     "min": 83,
+     "max": 99,
+     "modeTieUp": 96,
+     "modeTieDown": 87,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 87,
+       "dmgMax": 103,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gastrodon|ability: Sticky Hold": 1,
+      "|-enditem|p2b: Gastrodon|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Gastrodon|def|1|[from] item: Kee Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-87": 0.0625,
+       "activate:stickyhold": 1,
+       "enditem:keeberry:eat": 1,
+       "boost:def:1": 1,
+       "damage:-88": 0.0625,
+       "damage:-90": 0.125,
+       "damage:-91": 0.0625,
+       "damage:-93": 0.125,
+       "damage:-94": 0.0625,
+       "damage:-96": 0.125,
+       "damage:-97": 0.0625,
+       "damage:-99": 0.125,
+       "damage:-100": 0.0625,
+       "damage:-102": 0.0625,
+       "damage:-103": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -103,
+       "max": -87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -103,
+       "max": -87,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-29": 0.125,
+       "damage:-30": 0.3125,
+       "damage:-31": 0.125,
+       "damage:-32": 0.125,
+       "damage:-33": 0.25,
+       "damage:-34": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -34,
+       "max": -29
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -34,
+       "max": -29,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 96,
+    "classes": 12,
+    "ms": 184,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        111,
+        0.0625
+       ],
+       [
+        112,
+        0.25
+       ],
+       [
+        113,
+        0.125
+       ],
+       [
+        114,
+        0.125
+       ],
+       [
+        115,
+        0.3125
+       ],
+       [
+        116,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 113.75,
+      "min": 111,
+      "max": 116,
+      "modeTieUp": 115,
+      "modeTieDown": 115,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        83,
+        0.0625
+       ],
+       [
+        84,
+        0.0625
+       ],
+       [
+        86,
+        0.0625
+       ],
+       [
+        87,
+        0.125
+       ],
+       [
+        89,
+        0.0625
+       ],
+       [
+        90,
+        0.125
+       ],
+       [
+        92,
+        0.0625
+       ],
+       [
+        93,
+        0.125
+       ],
+       [
+        95,
+        0.0625
+       ],
+       [
+        96,
+        0.125
+       ],
+       [
+        98,
+        0.0625
+       ],
+       [
+        99,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 91.125,
+      "min": 83,
+      "max": 99,
+      "modeTieUp": 96,
+      "modeTieDown": 87,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       116,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 116,
+     "min": 116,
+     "max": 116,
+     "modeTieUp": 116,
+     "modeTieDown": 116,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 87,
+       "dmgMax": 87,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gastrodon|ability: Sticky Hold": 1,
+      "|-enditem|p2b: Gastrodon|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Gastrodon|def|1|[from] item: Kee Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-87": 1,
+       "activate:stickyhold": 1,
+       "enditem:keeberry:eat": 1,
+       "boost:def:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -87,
+       "max": -87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -87,
+       "max": -87,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-29": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -29,
+       "max": -29
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -29,
+       "max": -29,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        116,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 116,
+      "min": 116,
+      "max": 116,
+      "modeTieUp": 116,
+      "modeTieDown": 116,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        99,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 99,
+      "min": 99,
+      "max": 99,
+      "modeTieUp": 99,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 13,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       111,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 111,
+     "min": 111,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 111,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 103,
+       "dmgMax": 103,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gastrodon|ability: Sticky Hold": 1,
+      "|-enditem|p2b: Gastrodon|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Gastrodon|def|1|[from] item: Kee Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-103": 1,
+       "activate:stickyhold": 1,
+       "enditem:keeberry:eat": 1,
+       "boost:def:1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -103,
+       "max": -103
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -103,
+       "max": -103,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-34": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -34,
+       "max": -34
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -34,
+       "max": -34,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        111,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 111,
+      "min": 111,
+      "max": 111,
+      "modeTieUp": 111,
+      "modeTieDown": 111,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        83,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 83,
+      "min": 83,
+      "max": 83,
+      "modeTieUp": 83,
+      "modeTieDown": 83,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 116,
+   "high": 111,
+   "average": 113.75,
+   "min": 111,
+   "max": 116,
+   "koChance": 0,
+   "dist": [
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.25
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.3125
+    ],
+    [
+     116,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 186,
+   "maximum": 186,
+   "low": 99,
+   "high": 83,
+   "average": 91.125,
+   "min": 83,
+   "max": 99,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.125
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 116,
+   "high": 111,
+   "average": 113.75,
+   "min": 111,
+   "max": 116,
+   "koChance": 0,
+   "dist": [
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.25
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.3125
+    ],
+    [
+     116,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 186,
+   "maximum": 186,
+   "low": 99,
+   "high": 83,
+   "average": 91.125,
+   "min": 83,
+   "max": 99,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.125
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

@@ -1,0 +1,453 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 60,
+    "maximum": 142
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "substitute",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Substitute: 35 HP.",
+        "chance": 1
+       },
+       {
+        "text": "Lansat Berry: Focus Energy, +2 critical-hit stages.",
+        "chance": 1
+       }
+      ],
+      "change": {
+       "min": -35,
+       "max": -35
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "hypervoice",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 25,
+      "max": 31,
+      "minPercent": 16.233766233766232,
+      "maxPercent": 20.12987012987013,
+      "koChance": 0,
+      "row": {
+       "moveId": "hypervoice",
+       "effectiveName": "Hyper Voice",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 25,
+       "max": 31,
+       "minPercent": 16.233766233766232,
+       "maxPercent": 20.12987012987013,
+       "rolls": [
+        25,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Hyper Voice: 25–31 HP (16.2–20.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 37,
+      "max": 45,
+      "minPercent": 26.056338028169012,
+      "maxPercent": 31.690140845070424,
+      "koChance": 0,
+      "row": {
+       "moveId": "hypervoice",
+       "effectiveName": "Hyper Voice",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 37,
+       "max": 45,
+       "minPercent": 26.056338028169012,
+       "maxPercent": 31.690140845070424,
+       "rolls": [
+        37,
+        37,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43,
+        43,
+        43,
+        45
+       ],
+       "ohkoChance": 0,
+       "description": "Hyper Voice: 37–45 HP (26.1–31.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 130,
+    "average": 130,
+    "high": 130,
+    "min": 130,
+    "max": 130,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 60,
+    "maximum": 142,
+    "low": 35,
+    "average": 31.3125,
+    "high": 27,
+    "min": 27,
+    "max": 35,
+    "koChance": 0,
+    "heals": [
+     "Cheek Pouch: +47 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     },
+     {
+      "text": "Substitute: 35 HP.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 129,
+    "average": 125.8125,
+    "high": 123,
+    "min": 123,
+    "max": 129,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "hypervoice",
+     "effectiveName": "Hyper Voice",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 37,
+     "max": 45,
+     "minPercent": 26.056338028169012,
+     "maxPercent": 31.690140845070424,
+     "rolls": [
+      37,
+      37,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "Hyper Voice: 37–45 HP (26.1–31.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "hypervoice",
+     "effectiveName": "Hyper Voice",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 25,
+     "max": 31,
+     "minPercent": 16.233766233766232,
+     "maxPercent": 20.12987012987013,
+     "rolls": [
+      25,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Hyper Voice: 25–31 HP (16.2–20.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 5,
+      "fasterChance": 0.9999963641166687,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 129,
+      "high": 123,
+      "average": 125.8125,
+      "min": 123,
+      "max": 129,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 25,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 130,
+     "maximum": 130,
+     "low": 130,
+     "average": 130,
+     "high": 130,
+     "min": 130,
+     "max": 130,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 60,
+     "maximum": 142,
+     "low": 35,
+     "average": 31.3125,
+     "high": 27,
+     "min": 27,
+     "max": 35,
+     "koChance": 0,
+     "heals": [
+      "Cheek Pouch: +47 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      },
+      {
+       "text": "Substitute: 35 HP.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 129,
+     "average": 125.8125,
+     "high": 123,
+     "min": 123,
+     "max": 129,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.6130000000002838,
+ "preflight": []
+}

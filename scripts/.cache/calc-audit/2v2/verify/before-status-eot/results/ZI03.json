@@ -1,0 +1,629 @@
+{
+ "id": "ZI03",
+ "title": "Z-Knock Off, then the partner's Dragon Claw into the healed holder (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Weavile (145) moves before Garchomp (123): the Sitrus Berry heals Garchomp before the Dragon Claw lands.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 190,
+   "classes": 92,
+   "ms": 125,
+   "decisions": {
+    "fail:": 110,
+    "roll": 110
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       0,
+       0.71484375
+      ],
+      [
+       1,
+       0.0234375
+      ],
+      [
+       2,
+       0.0078125
+      ],
+      [
+       3,
+       0.03125
+      ],
+      [
+       4,
+       0.015625
+      ],
+      [
+       5,
+       0.0078125
+      ],
+      [
+       6,
+       0.0234375
+      ],
+      [
+       7,
+       0.0234375
+      ],
+      [
+       8,
+       0.0078125
+      ],
+      [
+       9,
+       0.03125
+      ],
+      [
+       10,
+       0.015625
+      ],
+      [
+       11,
+       0.0078125
+      ],
+      [
+       12,
+       0.0234375
+      ],
+      [
+       13,
+       0.01953125
+      ],
+      [
+       14,
+       0.0078125
+      ],
+      [
+       15,
+       0.01953125
+      ],
+      [
+       16,
+       0.0078125
+      ],
+      [
+       18,
+       0.00390625
+      ],
+      [
+       19,
+       0.0078125
+      ]
+     ],
+     "koChance": 0.71484375,
+     "average": 2.40625,
+     "min": 0,
+     "max": 19,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1,
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 0.4375,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 0.4375
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.71484375,
+       "dmgMin": 116,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1b: Garchomp|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 13,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1b: Garchomp|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 99,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1,
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1b: Garchomp|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 161,
+   "high": 161,
+   "average": 161,
+   "min": 161,
+   "max": 161,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 0,
+   "high": 0,
+   "average": 2.40625,
+   "min": 0,
+   "max": 19,
+   "koChance": 0.71484375,
+   "dist": [
+    [
+     0,
+     0.71484375
+    ],
+    [
+     1,
+     0.0234375
+    ],
+    [
+     2,
+     0.0078125
+    ],
+    [
+     3,
+     0.03125
+    ],
+    [
+     4,
+     0.015625
+    ],
+    [
+     5,
+     0.0078125
+    ],
+    [
+     6,
+     0.0234375
+    ],
+    [
+     7,
+     0.0234375
+    ],
+    [
+     8,
+     0.0078125
+    ],
+    [
+     9,
+     0.03125
+    ],
+    [
+     10,
+     0.015625
+    ],
+    [
+     11,
+     0.0078125
+    ],
+    [
+     12,
+     0.0234375
+    ],
+    [
+     13,
+     0.01953125
+    ],
+    [
+     14,
+     0.0078125
+    ],
+    [
+     15,
+     0.01953125
+    ],
+    [
+     16,
+     0.0078125
+    ],
+    [
+     18,
+     0.00390625
+    ],
+    [
+     19,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

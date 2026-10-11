@@ -1,0 +1,309 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "smackdown",
+    "effectiveName": "Continental Crush",
+    "effectiveType": "Rock",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 55,
+      "max": 66,
+      "minPercent": 39.285714285714285,
+      "maxPercent": 47.14285714285714,
+      "koChance": 0,
+      "row": {
+       "moveId": "smackdown",
+       "effectiveName": "Continental Crush",
+       "effectiveType": "Rock",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 55,
+       "max": 66,
+       "minPercent": 39.285714285714285,
+       "maxPercent": 47.14285714285714,
+       "rolls": [
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66
+       ],
+       "ohkoChance": 0,
+       "description": "Continental Crush: 55–66 HP (39.3–47.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "earthpower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Earth Power has no effect on Skarmory.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 85,
+    "average": 79.875,
+    "high": 74,
+    "min": 74,
+    "max": 85,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "smackdown",
+     "effectiveName": "Continental Crush",
+     "effectiveType": "Rock",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 55,
+     "max": 66,
+     "minPercent": 39.285714285714285,
+     "maxPercent": 47.14285714285714,
+     "rolls": [
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66
+     ],
+     "ohkoChance": 0,
+     "description": "Continental Crush: 55–66 HP (39.3–47.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 85,
+      "high": 74,
+      "average": 79.875,
+      "min": 74,
+      "max": 85,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 55,
+        "heals": []
+       },
+       "high": {
+        "dealt": 66,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "earthpower",
+     "effectiveName": "Earth Power",
+     "effectiveType": "Ground",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Earth Power: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 140,
+      "high": 140,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 4.31919999999991,
+ "preflight": []
+}

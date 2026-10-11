@@ -1,0 +1,420 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "multiattack",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 42,
+      "minPercent": 14.468085106382977,
+      "maxPercent": 17.872340425531917,
+      "koChance": 0,
+      "row": {
+       "moveId": "multiattack",
+       "effectiveName": "Multi-Attack",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 42,
+       "minPercent": 14.468085106382977,
+       "maxPercent": 17.872340425531917,
+       "rolls": [
+        34,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42
+       ],
+       "ohkoChance": 0,
+       "description": "Multi-Attack: 34–42 HP (14.5–17.9% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Effective move type: Fire."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 66,
+      "max": 78,
+      "minPercent": 38.82352941176471,
+      "maxPercent": 45.88235294117647,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 66,
+       "max": 78,
+       "minPercent": 38.82352941176471,
+       "maxPercent": 45.88235294117647,
+       "rolls": [
+        66,
+        66,
+        66,
+        66,
+        68,
+        68,
+        68,
+        68,
+        72,
+        72,
+        72,
+        72,
+        74,
+        74,
+        74,
+        78
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 66–78 HP (38.8–45.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 104,
+    "average": 99.75,
+    "high": 92,
+    "min": 92,
+    "max": 104,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 201,
+    "average": 197.0625,
+    "high": 193,
+    "min": 193,
+    "max": 201,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "multiattack",
+     "effectiveName": "Multi-Attack",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 42,
+     "minPercent": 14.468085106382977,
+     "maxPercent": 17.872340425531917,
+     "rolls": [
+      34,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      37,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Multi-Attack: 34–42 HP (14.5–17.9% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Effective move type: Fire."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.08585286140441895,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 201,
+      "high": 193,
+      "average": 197.0625,
+      "min": 193,
+      "max": 201,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 66,
+     "max": 78,
+     "minPercent": 38.82352941176471,
+     "maxPercent": 45.88235294117647,
+     "rolls": [
+      66,
+      66,
+      66,
+      66,
+      68,
+      68,
+      68,
+      68,
+      72,
+      72,
+      72,
+      72,
+      74,
+      74,
+      74,
+      78
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 66–78 HP (38.8–45.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 104,
+      "high": 92,
+      "average": 99.75,
+      "min": 92,
+      "max": 104,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 66,
+        "heals": []
+       },
+       "high": {
+        "dealt": 78,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 170,
+     "maximum": 170,
+     "low": 104,
+     "average": 99.75,
+     "high": 92,
+     "min": 92,
+     "max": 104,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 201,
+     "average": 197.0625,
+     "high": 193,
+     "min": 193,
+     "max": 201,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.5703000000003158,
+ "preflight": []
+}

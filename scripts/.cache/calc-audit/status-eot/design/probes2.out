@@ -1,0 +1,69 @@
+
+### F1. Fire Spin into Gengar (Ghost) and Clefable (Magic Guard)
+ start:       {"p1a Charizard":"153/153","p1b Volcarona":"160/160","p2a Gengar":"135/135","p2b Clefable":"170/170"}
+ [turn 1] after moves: {"p1a Charizard":"153/153","p1b Volcarona":"160/160","p2a Gengar":"108/135","p2b Clefable":"142/170"}
+ [turn 1] after turn:  {"p1a Charizard":"153/153","p1b Volcarona":"160/160","p2a Gengar":"92/135","p2b Clefable":"142/170"} 
+     |-damage|p2a: Gengar|92/135|[from] move: Fire Spin|[partiallytrapped]
+     |upkeep
+     |turn|2
+ random calls: cursedbody:3/10
+
+### F2. Moody USUM samples
+ start:       {"p1a Smeargle":"130/130","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Smeargle":"130/130","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Smeargle":"130/130","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-boost|p1a: Smeargle|spa|2
+     |-unboost|p1a: Smeargle|accuracy|1
+     |upkeep
+     |turn|2
+ random calls: sample:moody[7] sample:moody[6]
+
+### F3. Toxic stage 3 carried
+ start:       {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"179/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"} 
+     |-damage|p1a: Snorlax|179/235 tox|[from] psn
+     |upkeep
+     |turn|2
+
+### F4. Wish from last turn
+ start:       {"p1a Snorlax":"50/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"50/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"50/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"} 
+     |upkeep
+     |turn|2
+ [turn 2] after moves: {"p1a Snorlax":"50/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 2] after turn:  {"p1a Snorlax":"167/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"} 
+     |-heal|p1a: Snorlax|167/235|[from] move: Wish|[wisher] Snorlax
+     |upkeep
+     |turn|3
+
+### F5. Sticky Barb and Black Sludge
+ start:       {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Gengar":"100/135","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Gengar":"100/135","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"206/235","p1b Garchomp":"161/183","p2a Gengar":"108/135","p2b Toxapex":"125/125"} 
+     |-heal|p2a: Gengar|108/135|[from] item: Black Sludge
+     |-damage|p1b: Garchomp|161/183|[from] item: Black Sludge
+     |-damage|p1a: Snorlax|206/235|[from] item: Sticky Barb
+     |upkeep
+     |turn|2
+
+### F6. Emergency Exit after the final Update (Sitrus back above half)
+ start:       {"p1a Golisopod":"77/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Golisopod":"77/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Golisopod":"105/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-damage|p1a: Golisopod|68/150 brn|[from] brn
+     |upkeep
+     |-enditem|p1a: Golisopod|Sitrus Berry|[eat]
+     |-heal|p1a: Golisopod|105/150 brn|[from] item: Sitrus Berry
+     |turn|2
+
+### F7. Sun: Solar Power, Dry Skin, Umbrella
+ start:       {"p1a Charizard":"153/153","p1b Toxicroak":"158/158","p2a Heliolisk":"137/137","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Charizard":"153/153","p1b Toxicroak":"158/158","p2a Heliolisk":"137/137","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Charizard":"134/153","p1b Toxicroak":"139/158","p2a Heliolisk":"137/137","p2b Toxapex":"125/125"} 
+     |-weather|SunnyDay|[upkeep]
+     |-damage|p1a: Charizard|134/153|[from] ability: Solar Power|[of] p1a: Charizard
+     |-damage|p1b: Toxicroak|139/158|[from] ability: Dry Skin|[of] p1b: Toxicroak
+     |upkeep
+     |turn|2

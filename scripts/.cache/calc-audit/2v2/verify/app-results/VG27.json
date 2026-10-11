@@ -1,0 +1,278 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 190,
+    "maximum": 190
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "headlongrush",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 120,
+      "max": 142,
+      "minPercent": 51.06382978723404,
+      "maxPercent": 60.42553191489362,
+      "koChance": 0,
+      "row": {
+       "moveId": "headlongrush",
+       "effectiveName": "Headlong Rush",
+       "effectiveType": "Ground",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 120,
+       "max": 142,
+       "minPercent": 51.06382978723404,
+       "maxPercent": 60.42553191489362,
+       "rolls": [
+        120,
+        121,
+        123,
+        124,
+        126,
+        127,
+        129,
+        130,
+        132,
+        133,
+        135,
+        136,
+        138,
+        139,
+        141,
+        142
+       ],
+       "ohkoChance": 0,
+       "description": "Headlong Rush: 120–142 HP (51.1–60.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 190,
+    "maximum": 190,
+    "low": 190,
+    "average": 190,
+    "high": 190,
+    "min": 190,
+    "max": 190,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 140,
+    "high": 140,
+    "min": 140,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 115,
+    "average": 104,
+    "high": 93,
+    "min": 93,
+    "max": 115,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "headlongrush",
+     "effectiveName": "Headlong Rush",
+     "effectiveType": "Ground",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 120,
+     "max": 142,
+     "minPercent": 51.06382978723404,
+     "maxPercent": 60.42553191489362,
+     "rolls": [
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130,
+      132,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141,
+      142
+     ],
+     "ohkoChance": 0,
+     "description": "Headlong Rush: 120–142 HP (51.1–60.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Great Tusk's Protosynthesis is suppressed by Neutralizing Gas.",
+      "Snorlax's Thick Fat is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 115,
+      "high": 93,
+      "average": 104,
+      "min": 93,
+      "max": 115,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 120,
+        "heals": []
+       },
+       "high": {
+        "dealt": 142,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Great Tusk, Venusaur and Snorlax."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 190,
+     "maximum": 190,
+     "low": 190,
+     "average": 190,
+     "high": 190,
+     "min": 190,
+     "max": 190,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 140,
+     "average": 140,
+     "high": 140,
+     "min": 140,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 115,
+     "average": 104,
+     "high": 93,
+     "min": 93,
+     "max": 115,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.0634000000000015,
+ "preflight": []
+}

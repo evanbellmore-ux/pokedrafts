@@ -1,0 +1,467 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 350
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "firelash",
+    "effectiveName": "G-Max Centiferno",
+    "effectiveType": "Fire",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 70,
+      "minPercent": 24.680851063829788,
+      "maxPercent": 29.78723404255319,
+      "koChance": 0,
+      "row": {
+       "moveId": "firelash",
+       "effectiveName": "G-Max Centiferno",
+       "effectiveType": "Fire",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 58,
+       "max": 70,
+       "minPercent": 24.680851063829788,
+       "maxPercent": 29.78723404255319,
+       "rolls": [
+        58,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70
+       ],
+       "ohkoChance": 0,
+       "description": "G-Max Centiferno: 58–70 HP (24.7–29.8% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack.",
+        "Attacker: Flash Fire has been activated — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "stoneedge",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 292,
+      "max": 348,
+      "minPercent": 83.42857142857143,
+      "maxPercent": 99.42857142857143,
+      "koChance": 1,
+      "row": {
+       "moveId": "stoneedge",
+       "effectiveName": "Stone Edge",
+       "effectiveType": "Rock",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 292,
+       "max": 348,
+       "minPercent": 83.42857142857143,
+       "maxPercent": 99.42857142857143,
+       "rolls": [
+        292,
+        296,
+        300,
+        304,
+        308,
+        312,
+        316,
+        320,
+        320,
+        324,
+        328,
+        332,
+        336,
+        340,
+        344,
+        348
+       ],
+       "ohkoChance": 0,
+       "description": "Stone Edge: 292–348 HP (83.4–99.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 350,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Trapped by G-Max Centiferno.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 177,
+    "average": 170.75,
+    "high": 165,
+    "min": 165,
+    "max": 177,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Trapped by G-Max Centiferno.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "firelash",
+     "effectiveName": "G-Max Centiferno",
+     "effectiveType": "Fire",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 58,
+     "max": 70,
+     "minPercent": 24.680851063829788,
+     "maxPercent": 29.78723404255319,
+     "rolls": [
+      58,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70
+     ],
+     "ohkoChance": 0,
+     "description": "G-Max Centiferno: 58–70 HP (24.7–29.8% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack.",
+      "Attacker: Flash Fire has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Its trap lasts 4 or 5 turns at random"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 177,
+      "high": 165,
+      "average": 170.75,
+      "min": 165,
+      "max": 177,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 70,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "stoneedge",
+     "effectiveName": "Stone Edge",
+     "effectiveType": "Rock",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 292,
+     "max": 348,
+     "minPercent": 83.42857142857143,
+     "maxPercent": 99.42857142857143,
+     "rolls": [
+      292,
+      296,
+      300,
+      304,
+      308,
+      312,
+      316,
+      320,
+      320,
+      324,
+      328,
+      332,
+      336,
+      340,
+      344,
+      348
+     ],
+     "ohkoChance": 1,
+     "description": "Stone Edge: 292–348 HP (83.4–99.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 60,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 350,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 161,
+     "average": 161,
+     "high": 161,
+     "min": 161,
+     "max": 161,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Trapped by G-Max Centiferno.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 148,
+     "average": 141.75,
+     "high": 136,
+     "min": 136,
+     "max": 148,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Trapped by G-Max Centiferno.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "G-Max Centiferno",
+     "other": "own-left",
+     "chance": 1,
+     "min": -22,
+     "max": -22,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "G-Max Centiferno",
+     "other": "own-left",
+     "chance": 1,
+     "min": -29,
+     "max": -29,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 5.165600000000268,
+ "preflight": []
+}

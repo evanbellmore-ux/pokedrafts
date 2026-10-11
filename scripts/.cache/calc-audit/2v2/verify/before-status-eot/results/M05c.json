@@ -1,0 +1,586 @@
+{
+ "id": "M05c",
+ "title": "Tera Starstorm is physical when Terapagos-Stellar's Attack is higher",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "terastarstorm onModifyMove: Physical when getStat('atk') > getStat('spa'); both foes at 0.75.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 843,
+   "classes": 364,
+   "ms": 643,
+   "decisions": {
+    "sample": 960,
+    "fail:": 960,
+    "roll": 960
+   },
+   "slots": {
+    "own-left": {
+     "species": "Terapagos",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       75,
+       0.0625
+      ],
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       79,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       82,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       87,
+       0.0625
+      ],
+      [
+       88,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 81.375,
+     "min": 75,
+     "max": 88,
+     "modeTieUp": 85,
+     "modeTieDown": 78
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       84,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       90,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       93,
+       0.125
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       95,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 90.1875,
+     "min": 84,
+     "max": 95,
+     "modeTieUp": 95,
+     "modeTieDown": 87
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "terastarstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 59,
+       "dmgMax": 70,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 80,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 10,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "sample": 8,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Terapagos",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       95,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 95,
+     "min": 95,
+     "max": 95,
+     "modeTieUp": 95,
+     "modeTieDown": 95
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "terastarstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 59,
+       "dmgMax": 59,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 10,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "sample": 8,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Terapagos",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       75,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 75,
+     "min": 75,
+     "max": 75,
+     "modeTieUp": 75,
+     "modeTieDown": 75
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "terastarstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 70,
+       "dmgMax": 70,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 80,
+       "dmgMax": 80,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 88,
+   "high": 75,
+   "average": 81.375,
+   "min": 75,
+   "max": 88,
+   "koChance": 0,
+   "dist": [
+    [
+     75,
+     0.0625
+    ],
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     79,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     88,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 95,
+   "high": 84,
+   "average": 90.1875,
+   "min": 84,
+   "max": 95,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "own-left: Showdown species Terapagos-Terastal"
+ ]
+}

@@ -1,0 +1,531 @@
+{
+ "id": "V22b",
+ "title": "Dragon Darts into a Protecting foe",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Both darts hit Salamence (probe 9b).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 63,
+   "classes": 28,
+   "ms": 44,
+   "decisions": {
+    "fail:": 72,
+    "roll": 72
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Salamence",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.7890625
+      ],
+      [
+       2,
+       0.03515625
+      ],
+      [
+       4,
+       0.0703125
+      ],
+      [
+       6,
+       0.0703125
+      ],
+      [
+       10,
+       0.03515625
+      ]
+     ],
+     "koChance": 0.7890625,
+     "average": 1.125,
+     "min": 0,
+     "max": 10,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.7890625,
+       "dmgMin": 160,
+       "dmgMax": 192,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Garchomp|Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Salamence",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       10,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 10,
+     "min": 10,
+     "max": 10,
+     "modeTieUp": 10,
+     "modeTieDown": 10
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 160,
+       "dmgMax": 160,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Garchomp|Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Salamence",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 192,
+       "dmgMax": 192,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Garchomp|Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 10,
+   "high": 0,
+   "average": 1.125,
+   "min": 0,
+   "max": 10,
+   "koChance": 0.7890625,
+   "dist": [
+    [
+     0,
+     0.7890625
+    ],
+    [
+     2,
+     0.03515625
+    ],
+    [
+     4,
+     0.0703125
+    ],
+    [
+     6,
+     0.0703125
+    ],
+    [
+     10,
+     0.03515625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

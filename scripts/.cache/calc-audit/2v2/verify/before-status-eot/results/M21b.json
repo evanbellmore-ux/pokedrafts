@@ -1,0 +1,493 @@
+{
+ "id": "M21b",
+ "title": "A third Pokémon's As One (Spectrier) stops the target's Sitrus Berry",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Calyrex-Shadow is Snorlax's foe: no Sitrus Berry after Dragon Claw.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 42,
+   "classes": 30,
+   "ms": 21,
+   "decisions": {
+    "fail:": 13,
+    "roll": 13
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Shadow",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       85,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       88,
+       0.0625
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.0625
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       95,
+       0.125
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       100,
+       0.0625
+      ],
+      [
+       101,
+       0.125
+      ],
+      [
+       103,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 94.125,
+     "min": 85,
+     "max": 103,
+     "modeTieUp": 101,
+     "modeTieDown": 91
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Shadow",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       103,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 103,
+     "min": 103,
+     "max": 103,
+     "modeTieUp": 103,
+     "modeTieDown": 103
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Shadow",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       85,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 85,
+     "min": 85,
+     "max": 85,
+     "modeTieUp": 85,
+     "modeTieDown": 85
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 200,
+   "maximum": 235,
+   "low": 103,
+   "high": 85,
+   "average": 94.125,
+   "min": 85,
+   "max": 103,
+   "koChance": 0,
+   "dist": [
+    [
+     85,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     88,
+     0.0625
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     100,
+     0.0625
+    ],
+    [
+     101,
+     0.125
+    ],
+    [
+     103,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

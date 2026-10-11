@@ -1,0 +1,225 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "closecombat",
+    "effectiveName": "All-Out Pummeling",
+    "effectiveType": "Fighting",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 135,
+      "max": 160,
+      "minPercent": 73.77049180327869,
+      "maxPercent": 87.43169398907104,
+      "koChance": 0,
+      "row": {
+       "moveId": "closecombat",
+       "effectiveName": "All-Out Pummeling",
+       "effectiveType": "Fighting",
+       "effectivePower": 190,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 135,
+       "max": 160,
+       "minPercent": 73.77049180327869,
+       "maxPercent": 87.43169398907104,
+       "rolls": [
+        135,
+        138,
+        139,
+        141,
+        142,
+        144,
+        145,
+        147,
+        148,
+        150,
+        151,
+        153,
+        154,
+        156,
+        157,
+        160
+       ],
+       "ohkoChance": 0,
+       "description": "All-Out Pummeling: 135–160 HP (73.8–87.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 48,
+    "average": 35.5,
+    "high": 23,
+    "min": 23,
+    "max": 48,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "All-Out Pummeling",
+     "effectiveType": "Fighting",
+     "effectivePower": 190,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 135,
+     "max": 160,
+     "minPercent": 73.77049180327869,
+     "maxPercent": 87.43169398907104,
+     "rolls": [
+      135,
+      138,
+      139,
+      141,
+      142,
+      144,
+      145,
+      147,
+      148,
+      150,
+      151,
+      153,
+      154,
+      156,
+      157,
+      160
+     ],
+     "ohkoChance": 0,
+     "description": "All-Out Pummeling: 135–160 HP (73.8–87.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 48,
+      "high": 23,
+      "average": 35.5,
+      "min": 23,
+      "max": 48,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 135,
+        "heals": []
+       },
+       "high": {
+        "dealt": 160,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.6592000000000553,
+ "preflight": []
+}

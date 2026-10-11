@@ -1,0 +1,288 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbite",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 81,
+      "max": 96,
+      "minPercent": 49.09090909090909,
+      "maxPercent": 58.18181818181818,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbite",
+       "effectiveName": "Bug Bite",
+       "effectiveType": "Bug",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 81,
+       "max": 96,
+       "minPercent": 49.09090909090909,
+       "maxPercent": 58.18181818181818,
+       "rolls": [
+        81,
+        82,
+        82,
+        84,
+        84,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Bite: 81–96 HP (49.1–58.2% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 84,
+    "average": 77.0625,
+    "high": 69,
+    "min": 69,
+    "max": 84,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbite",
+     "effectiveName": "Bug Bite",
+     "effectiveType": "Bug",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 81,
+     "max": 96,
+     "minPercent": 49.09090909090909,
+     "maxPercent": 58.18181818181818,
+     "rolls": [
+      81,
+      82,
+      82,
+      84,
+      84,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93,
+      93,
+      94,
+      96
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Bite: 81–96 HP (49.1–58.2% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.96484375,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [
+       "Bug Bite takes the target's item."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 84,
+      "high": 69,
+      "average": 77.0625,
+      "min": 69,
+      "max": 84,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 81,
+        "heals": []
+       },
+       "high": {
+        "dealt": 96,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 84,
+     "average": 77.0625,
+     "high": 69,
+     "min": 69,
+     "max": 84,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.451000000000022,
+ "preflight": []
+}

@@ -1,0 +1,1635 @@
+{
+ "id": "VE-F1-2",
+ "title": "Gluttony Lansat eaten at half after a hit (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Gluttony eats Lansat at half: focusenergy for Body Slam (ratio 3: 1/2 crit, not certain).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 92,
+   "classes": 30,
+   "ms": 108,
+   "decisions": {
+    "fail:": 72,
+    "roll": 72,
+    "secondary": 63
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       125,
+       0.0625
+      ],
+      [
+       126,
+       0.125
+      ],
+      [
+       128,
+       0.1875
+      ],
+      [
+       129,
+       0.125
+      ],
+      [
+       131,
+       0.1875
+      ],
+      [
+       132,
+       0.125
+      ],
+      [
+       134,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 129.875,
+     "min": 125,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 128,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Greedent",
+     "start": 150,
+     "maximum": 195,
+     "dist": [
+      [
+       56,
+       0.0625
+      ],
+      [
+       57,
+       0.125
+      ],
+      [
+       59,
+       0.125
+      ],
+      [
+       60,
+       0.125
+      ],
+      [
+       62,
+       0.125
+      ],
+      [
+       63,
+       0.125
+      ],
+      [
+       65,
+       0.125
+      ],
+      [
+       66,
+       0.125
+      ],
+      [
+       68,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 61.75,
+     "min": 56,
+     "max": 68,
+     "modeTieUp": 66,
+     "modeTieDown": 57,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "focusenergy": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 70,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Greedent|Lansat Berry|[eat]": 1,
+      "|-start|p2b: Greedent|move: Focus Energy": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-58": 0.0625,
+       "enditem:lansatberry:eat": 1,
+       "start:focusenergy": 1,
+       "damage:-60": 0.125,
+       "damage:-61": 0.125,
+       "damage:-63": 0.125,
+       "damage:-64": 0.125,
+       "damage:-66": 0.125,
+       "damage:-67": 0.125,
+       "damage:-69": 0.125,
+       "damage:-70": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -70,
+       "max": -58
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -70,
+       "max": -58,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Greedent|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-49": 0.1875,
+       "damage:-51": 0.125,
+       "damage:-52": 0.1875,
+       "damage:-54": 0.125,
+       "damage:-55": 0.1875,
+       "damage:-57": 0.125,
+       "damage:-58": 0.0625
+      },
+      "opponent-left": {
+       "damage:roughskin:-24": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -58,
+       "max": -49
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -58,
+       "max": -49,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 63,
+    "classes": 9,
+    "ms": 108,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        125,
+        0.0625
+       ],
+       [
+        126,
+        0.125
+       ],
+       [
+        128,
+        0.1875
+       ],
+       [
+        129,
+        0.125
+       ],
+       [
+        131,
+        0.1875
+       ],
+       [
+        132,
+        0.125
+       ],
+       [
+        134,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 129.875,
+      "min": 125,
+      "max": 134,
+      "modeTieUp": 134,
+      "modeTieDown": 128,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Greedent",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        56,
+        0.0625
+       ],
+       [
+        57,
+        0.125
+       ],
+       [
+        59,
+        0.125
+       ],
+       [
+        60,
+        0.125
+       ],
+       [
+        62,
+        0.125
+       ],
+       [
+        63,
+        0.125
+       ],
+       [
+        65,
+        0.125
+       ],
+       [
+        66,
+        0.125
+       ],
+       [
+        68,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 61.75,
+      "min": 56,
+      "max": 68,
+      "modeTieUp": 66,
+      "modeTieDown": 57,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "focusenergy": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       134,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 134,
+     "min": 134,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 134,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Greedent",
+     "start": 150,
+     "maximum": 195,
+     "dist": [
+      [
+       68,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 68,
+     "min": 68,
+     "max": 68,
+     "modeTieUp": 68,
+     "modeTieDown": 68,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "focusenergy": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Greedent|Lansat Berry|[eat]": 1,
+      "|-start|p2b: Greedent|move: Focus Energy": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-58": 1,
+       "enditem:lansatberry:eat": 1,
+       "start:focusenergy": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -58,
+       "max": -58
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -58,
+       "max": -58,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Greedent|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-49": 1
+      },
+      "opponent-left": {
+       "damage:roughskin:-24": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -49,
+       "max": -49
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -49,
+       "max": -49,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        134,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 134,
+      "min": 134,
+      "max": 134,
+      "modeTieUp": 134,
+      "modeTieDown": 134,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Greedent",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        68,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 68,
+      "min": 68,
+      "max": 68,
+      "modeTieUp": 68,
+      "modeTieDown": 68,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "focusenergy": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Greedent",
+     "start": 150,
+     "maximum": 195,
+     "dist": [
+      [
+       56,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 56,
+     "min": 56,
+     "max": 56,
+     "modeTieUp": 56,
+     "modeTieDown": 56,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "focusenergy": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 70,
+       "dmgMax": 70,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Greedent|Lansat Berry|[eat]": 1,
+      "|-start|p2b: Greedent|move: Focus Energy": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-70": 1,
+       "enditem:lansatberry:eat": 1,
+       "start:focusenergy": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -70,
+       "max": -70
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -70,
+       "max": -70,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Greedent|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-58": 1
+      },
+      "opponent-left": {
+       "damage:roughskin:-24": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -58,
+       "max": -58
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": -24
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -58,
+       "max": -58,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        125,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 125,
+      "min": 125,
+      "max": 125,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Greedent",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        56,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 56,
+      "min": 56,
+      "max": 56,
+      "modeTieUp": 56,
+      "modeTieDown": 56,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "focusenergy": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 134,
+   "high": 125,
+   "average": 129.875,
+   "min": 125,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     0.0625
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     128,
+     0.1875
+    ],
+    [
+     129,
+     0.125
+    ],
+    [
+     131,
+     0.1875
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     134,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 195,
+   "low": 68,
+   "high": 56,
+   "average": 61.75,
+   "min": 56,
+   "max": 68,
+   "koChance": 0,
+   "dist": [
+    [
+     56,
+     0.0625
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     59,
+     0.125
+    ],
+    [
+     60,
+     0.125
+    ],
+    [
+     62,
+     0.125
+    ],
+    [
+     63,
+     0.125
+    ],
+    [
+     65,
+     0.125
+    ],
+    [
+     66,
+     0.125
+    ],
+    [
+     68,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 134,
+   "high": 125,
+   "average": 129.875,
+   "min": 125,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     0.0625
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     128,
+     0.1875
+    ],
+    [
+     129,
+     0.125
+    ],
+    [
+     131,
+     0.1875
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     134,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 195,
+   "low": 68,
+   "high": 56,
+   "average": 61.75,
+   "min": 56,
+   "max": 68,
+   "koChance": 0,
+   "dist": [
+    [
+     56,
+     0.0625
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     59,
+     0.125
+    ],
+    [
+     60,
+     0.125
+    ],
+    [
+     62,
+     0.125
+    ],
+    [
+     63,
+     0.125
+    ],
+    [
+     65,
+     0.125
+    ],
+    [
+     66,
+     0.125
+    ],
+    [
+     68,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

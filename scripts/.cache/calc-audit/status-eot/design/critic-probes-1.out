@@ -1,0 +1,357 @@
+
+### K1 sv: Skill Link Cloyster Icicle Spear (5 hits) into Annihilape behind a 30-HP Substitute (breaks on hit 1 or 2); Annihilape then Rage Fist into its ally Shuckle  (1 runs)
+  start: p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 185/185 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 137/185 | p2b Shuckle 2/95
+  turn 1 end:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 137/185 | p2b Shuckle 2/95
+  inspect #1:
+     1  after moves: Cloyster 125/125, Blissey 330/330, Annihilape 137/185, Shuckle 2/95 | Annihilape timesAttacked 5
+  inspect #2:
+     1  end of turn: Cloyster 125/125, Blissey 330/330, Annihilape 137/185, Shuckle 2/95 | Annihilape timesAttacked 5
+  lines:
+     1  |move|p1a: Cloyster|Icicle Spear|p2a: Annihilape
+     1  |-activate|p2a: Annihilape|move: Substitute|[damage]
+     1  |-end|p2a: Annihilape|Substitute
+     1  |-damage|p2a: Annihilape|169/185
+     1  |-damage|p2a: Annihilape|153/185
+     1  |-damage|p2a: Annihilape|137/185
+     1  |-hitcount|p2a: Annihilape|5
+     1  |move|p2a: Annihilape|Rage Fist|p2b: Shuckle
+     1  |-damage|p2b: Shuckle|2/95
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K1 sv: Skill Link Cloyster Icicle Spear (5 hits) into Annihilape behind a 300-HP Substitute (never breaks); Annihilape then Rage Fist into its ally Shuckle  (1 runs)
+  start: p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 185/185 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 185/185 | p2b Shuckle 79/95
+  turn 1 end:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 185/185 | p2b Shuckle 79/95
+  inspect #1:
+     1  after moves: Cloyster 125/125, Blissey 330/330, Annihilape 185/185 (sub 220), Shuckle 79/95 | Annihilape timesAttacked 0
+  inspect #2:
+     1  end of turn: Cloyster 125/125, Blissey 330/330, Annihilape 185/185 (sub 220), Shuckle 79/95 | Annihilape timesAttacked 0
+  lines:
+     1  |move|p1a: Cloyster|Icicle Spear|p2a: Annihilape
+     1  |-activate|p2a: Annihilape|move: Substitute|[damage]
+     1  |-hitcount|p2a: Annihilape|5
+     1  |move|p2a: Annihilape|Rage Fist|p2b: Shuckle
+     1  |-damage|p2b: Shuckle|79/95
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K1 sv: Skill Link Cloyster Icicle Spear (5 hits) into Annihilape behind a no Substitute; Annihilape then Rage Fist into its ally Shuckle  (1 runs)
+  start: p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 185/185 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 105/185 | p2b Shuckle 2/95
+  turn 1 end:
+     1  p1a Cloyster 125/125 | p1b Blissey 330/330 | p2a Annihilape 105/185 | p2b Shuckle 2/95
+  inspect #1:
+     1  after moves: Cloyster 125/125, Blissey 330/330, Annihilape 105/185, Shuckle 2/95 | Annihilape timesAttacked 5
+  inspect #2:
+     1  end of turn: Cloyster 125/125, Blissey 330/330, Annihilape 105/185, Shuckle 2/95 | Annihilape timesAttacked 5
+  lines:
+     1  |move|p1a: Cloyster|Icicle Spear|p2a: Annihilape
+     1  |-damage|p2a: Annihilape|169/185
+     1  |-damage|p2a: Annihilape|153/185
+     1  |-damage|p2a: Annihilape|137/185
+     1  |-damage|p2a: Annihilape|121/185
+     1  |-damage|p2a: Annihilape|105/185
+     1  |-hitcount|p2a: Annihilape|5
+     1  |move|p2a: Annihilape|Rage Fist|p2b: Shuckle
+     1  |-damage|p2b: Shuckle|2/95
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K2 sv: Sylveon (Big Root, 40 HP) Draining Kiss into Liquid Ooze Tentacruel's 23-HP Substitute  (1 runs)
+  start: p1a Sylveon 40/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Sylveon 30/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Sylveon 30/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Sylveon 30/170 [bigroot], Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Sylveon 30/170 [bigroot], Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  lines:
+     1  |move|p2a: Tentacruel|Splash|p2a: Tentacruel
+     1  |move|p1a: Sylveon|Draining Kiss|p2a: Tentacruel
+     1  |-activate|p2a: Tentacruel|move: Substitute|[damage]
+     1  |-damage|p1a: Sylveon|30/170|[from] ability: Liquid Ooze|[of] p2a: Tentacruel
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K2 sv: Sylveon (no item, full HP) Draining Kiss into Liquid Ooze Tentacruel's 23-HP Substitute  (1 runs)
+  start: p1a Sylveon 170/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Sylveon 160/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Sylveon 160/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Sylveon 160/170, Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Sylveon 160/170, Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  lines:
+     1  |move|p2a: Tentacruel|Splash|p2a: Tentacruel
+     1  |move|p1a: Sylveon|Draining Kiss|p2a: Tentacruel
+     1  |-activate|p2a: Tentacruel|move: Substitute|[damage]
+     1  |-damage|p1a: Sylveon|160/170|[from] ability: Liquid Ooze|[of] p2a: Tentacruel
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K2 sv: Sylveon (Big Root, full HP) Draining Kiss into Liquid Ooze Tentacruel's 23-HP Substitute  (1 runs)
+  start: p1a Sylveon 170/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Sylveon 160/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Sylveon 160/170 | p1b Blissey 330/330 | p2a Tentacruel 155/155 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Sylveon 160/170 [bigroot], Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Sylveon 160/170 [bigroot], Blissey 330/330, Tentacruel 155/155 (sub 10), Shuckle 95/95
+  lines:
+     1  |move|p2a: Tentacruel|Splash|p2a: Tentacruel
+     1  |move|p1a: Sylveon|Draining Kiss|p2a: Tentacruel
+     1  |-activate|p2a: Tentacruel|move: Substitute|[damage]
+     1  |-damage|p1a: Sylveon|160/170|[from] ability: Liquid Ooze|[of] p2a: Tentacruel
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K4 sv: Inteleon (Torrent, p1a) Snipe Shot at its ally Lapras (-2); Lapras Ally Switches first  (1 runs)
+  start: p1a Inteleon 145/145 | p1b Lapras 205/205 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Lapras 176/205 | p1b Inteleon 145/145 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Lapras 176/205 | p1b Inteleon 145/145 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: p1: Lapras 176/205, Inteleon 145/145
+  inspect #2:
+     1  end of turn: p1: Lapras 176/205, Inteleon 145/145
+  lines:
+     1  |move|p1b: Lapras|Ally Switch|p1b: Lapras
+     1  |swap|p1b: Lapras|0|[from] move: Ally Switch
+     1  |move|p1b: Inteleon|Snipe Shot|p1a: Lapras
+     1  |-damage|p1a: Lapras|176/205
+     1  |move|p2a: Blissey|Splash|p2a: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K4 sv: Duraludon (Stalwart, p1a) Flash Cannon at its ally Lapras (-2); Lapras Ally Switches first  (1 runs)
+  start: p1a Duraludon 145/145 | p1b Lapras 205/205 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Lapras 150/205 | p1b Duraludon 145/145 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Lapras 150/205 | p1b Duraludon 145/145 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: p1: Lapras 150/205, Duraludon 145/145
+  inspect #2:
+     1  end of turn: p1: Lapras 150/205, Duraludon 145/145
+  lines:
+     1  |move|p1b: Lapras|Ally Switch|p1b: Lapras
+     1  |swap|p1b: Lapras|0|[from] move: Ally Switch
+     1  |move|p1b: Duraludon|Flash Cannon|p1a: Lapras
+     1  |-damage|p1a: Lapras|150/205
+     1  |move|p2a: Blissey|Splash|p2a: Blissey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K4 sv: Snorlax (Thick Fat, p1a) Body Slam at its ally Lapras (-2); Lapras Ally Switches first  (1 runs)
+  start: p1a Snorlax 235/235 | p1b Lapras 205/205 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Lapras 205/205 | p1b Snorlax 235/235 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Lapras 205/205 | p1b Snorlax 235/235 | p2a Blissey 330/330 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: p1: Lapras 205/205, Snorlax 235/235
+  inspect #2:
+     1  end of turn: p1: Lapras 205/205, Snorlax 235/235
+  lines:
+     1  |move|p1b: Lapras|Ally Switch|p1b: Lapras
+     1  |swap|p1b: Lapras|0|[from] move: Ally Switch
+     1  |move|p2a: Blissey|Splash|p2a: Blissey
+     1  |move|p1b: Snorlax|Body Slam|null|[notarget]
+     1  |-fail|p1b: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K5 sv: Technician Scizor Dual Wingbeat (lowest rolls) into Mummy Cofagrigus, 300-HP Substitute  (1 runs)
+  start: p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Scizor 145/145, Blissey 330/330, Cofagrigus 133/133 (sub 256), Shuckle 95/95 | Scizor ability technician
+  inspect #2:
+     1  end of turn: Scizor 145/145, Blissey 330/330, Cofagrigus 133/133 (sub 256), Shuckle 95/95 | Scizor ability technician
+  lines:
+     1  |move|p1a: Scizor|Dual Wingbeat|p2a: Cofagrigus
+     1  |-activate|p2a: Cofagrigus|move: Substitute|[damage]
+     1  |-hitcount|p2a: Cofagrigus|2
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Cofagrigus|Splash|p2a: Cofagrigus
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K5 sv: Technician Scizor Dual Wingbeat (lowest rolls) into Mummy Cofagrigus, no Substitute  (1 runs)
+  start: p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 96/133 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 96/133 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Scizor 145/145, Blissey 330/330, Cofagrigus 96/133, Shuckle 95/95 | Scizor ability mummy
+  inspect #2:
+     1  end of turn: Scizor 145/145, Blissey 330/330, Cofagrigus 96/133, Shuckle 95/95 | Scizor ability mummy
+  lines:
+     1  |move|p1a: Scizor|Dual Wingbeat|p2a: Cofagrigus
+     1  |-damage|p2a: Cofagrigus|111/133
+     1  |-activate|p2a: Cofagrigus|ability: Mummy|p1a: Scizor|[ability] Technician
+     1  |-damage|p2a: Cofagrigus|96/133
+     1  |-hitcount|p2a: Cofagrigus|2
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Cofagrigus|Splash|p2a: Cofagrigus
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K5b sv: Technician Scizor Dual Wingbeat (lowest rolls) into Cofagrigus with Run Away in place of Mummy, 300-HP Substitute  (1 runs)
+  start: p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Cofagrigus 133/133 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Scizor 145/145, Blissey 330/330, Cofagrigus 133/133 (sub 256), Shuckle 95/95 | Scizor ability technician
+  inspect #2:
+     1  end of turn: Scizor 145/145, Blissey 330/330, Cofagrigus 133/133 (sub 256), Shuckle 95/95 | Scizor ability technician
+  lines:
+     1  |move|p1a: Scizor|Dual Wingbeat|p2a: Cofagrigus
+     1  |-activate|p2a: Cofagrigus|move: Substitute|[damage]
+     1  |-hitcount|p2a: Cofagrigus|2
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Cofagrigus|Splash|p2a: Cofagrigus
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K6 sv: Snorlax Knock Off (lowest roll) into Alakazam holding Colbur Berry behind a 300-HP Substitute  (1 runs)
+  start: p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 [colburberry] (sub 154), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 [colburberry] (sub 154), Shuckle 95/95
+  lines:
+     1  |move|p2a: Alakazam|Splash|p2a: Alakazam
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p1a: Snorlax|Knock Off|p2a: Alakazam
+     1  |-activate|p2a: Alakazam|move: Substitute|[damage]
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K6 sv: Snorlax Knock Off (lowest roll) into Alakazam holding Leftovers behind a 300-HP Substitute  (1 runs)
+  start: p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 [leftovers] (sub 154), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 [leftovers] (sub 154), Shuckle 95/95
+  lines:
+     1  |move|p2a: Alakazam|Splash|p2a: Alakazam
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p1a: Snorlax|Knock Off|p2a: Alakazam
+     1  |-activate|p2a: Alakazam|move: Substitute|[damage]
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K6 sv: Snorlax Knock Off (lowest roll) into Alakazam (no item) behind a 300-HP Substitute  (1 runs)
+  start: p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Snorlax 235/235 | p1b Blissey 330/330 | p2a Alakazam 130/130 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 (sub 200), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Snorlax 235/235, Blissey 330/330, Alakazam 130/130 (sub 200), Shuckle 95/95
+  lines:
+     1  |move|p2a: Alakazam|Splash|p2a: Alakazam
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p1a: Snorlax|Knock Off|p2a: Alakazam
+     1  |-activate|p2a: Alakazam|move: Substitute|[damage]
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K7 sv: Steel Beam, 300-HP Substitute  (1 runs)
+  start: p1a Metagross 139/155 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Metagross 61/155 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Metagross 61/155 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Metagross 61/155, Blissey 330/330, Snorlax 235/235 (sub 230), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Metagross 61/155, Blissey 330/330, Snorlax 235/235 (sub 230), Shuckle 95/95
+  lines:
+     1  |move|p1a: Metagross|Steel Beam|p2a: Snorlax
+     1  |-activate|p2a: Snorlax|move: Substitute|[damage]
+     1  |-damage|p1a: Metagross|61/155|[from] steelbeam
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K7 sv: Brave Bird with Shell Bell, 300-HP Substitute  (1 runs)
+  start: p1a Talonflame 137/153 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Talonflame 110/153 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Talonflame 110/153 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Talonflame 110/153 [shellbell], Blissey 330/330, Snorlax 235/235 (sub 219), Shuckle 95/95
+  inspect #2:
+     1  end of turn: Talonflame 110/153 [shellbell], Blissey 330/330, Snorlax 235/235 (sub 219), Shuckle 95/95
+  lines:
+     1  |move|p1a: Talonflame|Brave Bird|p2a: Snorlax
+     1  |-activate|p2a: Snorlax|move: Substitute|[damage]
+     1  |-damage|p1a: Talonflame|110/153|[from] Recoil
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K8 sv: Technician Scizor Dual Wingbeat (lowest rolls) into Rocky Helmet Snorlax behind a 10-HP Substitute  (1 runs)
+  start: p1a Scizor 145/145 | p1b Blissey 330/330 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Scizor 121/145 | p1b Blissey 330/330 | p2a Snorlax 195/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Scizor 121/145 | p1b Blissey 330/330 | p2a Snorlax 195/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Scizor 121/145, Blissey 330/330, Snorlax 195/235 [rockyhelmet], Shuckle 95/95
+  inspect #2:
+     1  end of turn: Scizor 121/145, Blissey 330/330, Snorlax 195/235 [rockyhelmet], Shuckle 95/95
+  lines:
+     1  |move|p1a: Scizor|Dual Wingbeat|p2a: Snorlax
+     1  |-end|p2a: Snorlax|Substitute
+     1  |-damage|p2a: Snorlax|195/235
+     1  |-damage|p1a: Scizor|121/145|[from] item: Rocky Helmet|[of] p2a: Snorlax
+     1  |-hitcount|p2a: Snorlax|2
+     1  |move|p1b: Blissey|Splash|p1b: Blissey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### K3 sv: Cyclizar (252 HP EVs) Shed Tail, Shedinja comes in
+  Cyclizar maxhp 177 (quarter 44); Shedinja maxhp 1; Shedinja substitute hp 44
+  lines:
+     |switch|p1a: Cyclizar|Cyclizar, L50, M|177/177
+     |switch|p1a: Cyclizar|Cyclizar, L50, M|177/177
+     |switch|p1b: Blissey|Blissey, L50, F|362/362
+     |switch|p1b: Blissey|Blissey, L50, F|362/362
+     |switch|p2a: Lapras|Lapras, L50, F|237/237
+     |switch|p2a: Lapras|Lapras, L50, F|237/237
+     |switch|p2b: Shuckle|Shuckle, L50, F|127/127
+     |switch|p2b: Shuckle|Shuckle, L50, F|127/127
+     |move|p1a: Cyclizar|Shed Tail|p1a: Cyclizar
+     |-start|p1a: Cyclizar|Substitute|[from] move: Shed Tail
+     |-damage|p1a: Cyclizar|88/177
+     |-damage|p1a: Cyclizar|88/177
+     |switch|p1a: Shedinja|Shedinja, L50|1/1|[from] Shed Tail
+     |switch|p1a: Shedinja|Shedinja, L50|1/1|[from] Shed Tail
+     |move|p2a: Lapras|Splash|p2a: Lapras
+     |move|p1b: Blissey|Splash|p1b: Blissey
+     |move|p2b: Shuckle|Splash|p2b: Shuckle

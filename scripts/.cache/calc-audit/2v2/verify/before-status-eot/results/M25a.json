@@ -1,0 +1,630 @@
+{
+ "id": "M25a",
+ "title": "Hail used in generation 7: no Slush Rush re-sort",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Gen 7 keeps the order of the turn's start: Venusaur (101) before Beartic (70, 140 in hail).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 156,
+   "classes": 67,
+   "ms": 82,
+   "decisions": {
+    "fail:": 99,
+    "roll": 99,
+    "secondary": 99,
+    "accuracy": 90
+   },
+   "slots": {
+    "own-left": {
+     "species": "Froslass",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Beartic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       97,
+       0.0625
+      ],
+      [
+       98,
+       0.125
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.125
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       104,
+       0.125
+      ],
+      [
+       106,
+       0.125
+      ],
+      [
+       107,
+       0.125
+      ],
+      [
+       109,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 102.75,
+     "min": 97,
+     "max": 109,
+     "modeTieUp": 107,
+     "modeTieDown": 98
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       3,
+       0.0625
+      ],
+      [
+       5,
+       0.125
+      ],
+      [
+       9,
+       0.125
+      ],
+      [
+       11,
+       0.125
+      ],
+      [
+       15,
+       0.0625
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 4.25,
+     "min": 0,
+     "max": 15,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hail",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Hail": 1
+     }
+    },
+    "own-right": {
+     "moveId": "iciclecrash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.5,
+       "dmgMin": 140,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Froslass",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Beartic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       109,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 109,
+     "min": 109,
+     "max": 109,
+     "modeTieUp": 109,
+     "modeTieDown": 109
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       15,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 15,
+     "min": 15,
+     "max": 15,
+     "modeTieUp": 15,
+     "modeTieDown": 15
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hail",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Hail": 1
+     }
+    },
+    "own-right": {
+     "moveId": "iciclecrash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Froslass",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Beartic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       97,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 97,
+     "max": 97,
+     "modeTieUp": 97,
+     "modeTieDown": 97
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hail",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Hail": 1
+     }
+    },
+    "own-right": {
+     "moveId": "iciclecrash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 168,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 73,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 109,
+   "high": 97,
+   "average": 102.75,
+   "min": 97,
+   "max": 109,
+   "koChance": 0,
+   "dist": [
+    [
+     97,
+     0.0625
+    ],
+    [
+     98,
+     0.125
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.125
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     104,
+     0.125
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     107,
+     0.125
+    ],
+    [
+     109,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 15,
+   "high": 0,
+   "average": 4.25,
+   "min": 0,
+   "max": 15,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     3,
+     0.0625
+    ],
+    [
+     5,
+     0.125
+    ],
+    [
+     9,
+     0.125
+    ],
+    [
+     11,
+     0.125
+    ],
+    [
+     15,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,544 @@
+{
+ "id": "V56",
+ "title": "Super Fang after the target was hit",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Super Fang halves Snorlax's HP after Dragon Claw (sim data/moves.ts superfang damageCallback: target.getUndynamaxedHP() / 2).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 54,
+   "classes": 42,
+   "ms": 28,
+   "decisions": {
+    "fail:": 13,
+    "roll": 13,
+    "accuracy": 13
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Granbull",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       60,
+       0.0625
+      ],
+      [
+       61,
+       0.0625
+      ],
+      [
+       62,
+       0.125
+      ],
+      [
+       63,
+       0.125
+      ],
+      [
+       64,
+       0.0625
+      ],
+      [
+       65,
+       0.1875
+      ],
+      [
+       66,
+       0.0625
+      ],
+      [
+       67,
+       0.0625
+      ],
+      [
+       68,
+       0.1875
+      ],
+      [
+       69,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 64.75,
+     "min": 60,
+     "max": 69,
+     "modeTieUp": 68,
+     "modeTieDown": 65
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "superfang",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Granbull",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       69,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 69,
+     "min": 69,
+     "max": 69,
+     "modeTieUp": 69,
+     "modeTieDown": 69
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "superfang",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Granbull",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       60,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 60,
+     "min": 60,
+     "max": 60,
+     "modeTieUp": 60,
+     "modeTieDown": 60
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "superfang",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 69,
+   "high": 60,
+   "average": 64.75,
+   "min": 60,
+   "max": 69,
+   "koChance": 0,
+   "dist": [
+    [
+     60,
+     0.0625
+    ],
+    [
+     61,
+     0.0625
+    ],
+    [
+     62,
+     0.125
+    ],
+    [
+     63,
+     0.125
+    ],
+    [
+     64,
+     0.0625
+    ],
+    [
+     65,
+     0.1875
+    ],
+    [
+     66,
+     0.0625
+    ],
+    [
+     67,
+     0.0625
+    ],
+    [
+     68,
+     0.1875
+    ],
+    [
+     69,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

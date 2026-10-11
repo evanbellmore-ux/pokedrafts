@@ -1,0 +1,516 @@
+{
+ "id": "M29b",
+ "title": "A spread move KOs the Unnerve holder: the other target eats its Sitrus Berry",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Rock Slide KOs Tyranitar and takes Snorlax under half: the Update after the hits finds no Unnerve.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 9712,
+   "classes": 129,
+   "ms": 9269,
+   "decisions": {
+    "sample": 9040,
+    "tie2": 37960,
+    "accuracy": 17920,
+    "fail:": 17920,
+    "roll": 17920,
+    "secondary": 17920
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.0625
+      ],
+      [
+       146,
+       0.125
+      ],
+      [
+       147,
+       0.125
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       149,
+       0.125
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.0625
+      ],
+      [
+       152,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 148.5625,
+     "min": 144,
+     "max": 153,
+     "modeTieUp": 152,
+     "modeTieDown": 146
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 54,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 30,
+       "dmgMax": 36,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 268,
+   "classes": 21,
+   "ms": 214,
+   "decisions": {
+    "sample": 208,
+    "tie2": 904,
+    "accuracy": 256,
+    "fail:": 256,
+    "roll": 256,
+    "secondary": 256
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 30,
+       "dmgMax": 30,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 268,
+   "classes": 21,
+   "ms": 199,
+   "decisions": {
+    "sample": 208,
+    "tie2": 904,
+    "accuracy": 256,
+    "fail:": 256,
+    "roll": 256,
+    "secondary": 256
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 36,
+       "dmgMax": 36,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 1,
+   "maximum": 175,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 235,
+   "low": 153,
+   "high": 144,
+   "average": 148.5625,
+   "min": 144,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.0625
+    ],
+    [
+     146,
+     0.125
+    ],
+    [
+     147,
+     0.125
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     149,
+     0.125
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.0625
+    ],
+    [
+     152,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: own-right and opponent-right (51)"
+ ]
+}

@@ -1,0 +1,778 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "rockslide",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 14–17 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 33,
+      "max": 39,
+      "minPercent": 21.428571428571427,
+      "maxPercent": 25.324675324675322,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 33,
+       "max": 39,
+       "minPercent": 21.428571428571427,
+       "maxPercent": 25.324675324675322,
+       "rolls": [
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        34,
+        34,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        37,
+        39
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 33–39 HP (21.4–25.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 37,
+      "max": 45,
+      "minPercent": 23.870967741935484,
+      "maxPercent": 29.03225806451613,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 37,
+       "max": 45,
+       "minPercent": 23.870967741935484,
+       "maxPercent": 29.03225806451613,
+       "rolls": [
+        37,
+        37,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43,
+        43,
+        43,
+        45
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 37–45 HP (23.9–29.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 80,
+    "maximum": 145,
+    "low": 80,
+    "average": 74.988125,
+    "high": 80,
+    "min": 63,
+    "max": 80,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     },
+     {
+      "text": "Leech Seed.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 118,
+    "average": 127.73937500000002,
+    "high": 110,
+    "min": 110,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 121,
+    "average": 130.46625,
+    "high": 115,
+    "min": 115,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 37,
+     "max": 45,
+     "minPercent": 23.870967741935484,
+     "maxPercent": 29.03225806451613,
+     "rolls": [
+      37,
+      37,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 37–45 HP (23.9–29.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.97216796875,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 118,
+      "high": 110,
+      "average": 114.3125,
+      "min": 110,
+      "max": 118,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 37,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 21.428571428571427,
+     "maxPercent": 25.324675324675322,
+     "rolls": [
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      34,
+      34,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      37,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 33–39 HP (21.4–25.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0001983642578125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 121,
+      "high": 115,
+      "average": 118.875,
+      "min": 115,
+      "max": 121,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 80,
+     "maximum": 145,
+     "low": 98,
+     "average": 92.98812500000001,
+     "high": 98,
+     "min": 81,
+     "max": 98,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      },
+      {
+       "text": "Leech Seed.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 136,
+     "average": 139.79937500000003,
+     "high": 128,
+     "min": 128,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 121,
+     "average": 130.46625,
+     "high": 115,
+     "min": 115,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Leech Seed",
+     "other": "opponent-left",
+     "chance": 1,
+     "min": -18,
+     "max": -18,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Leech Seed",
+     "other": "own-left",
+     "chance": 0.67,
+     "min": 18,
+     "max": 18,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Sitrus Berry",
+     "chance": 1,
+     "min": 36,
+     "max": 36,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.358400000000074,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 81,
+        "chance": 0.020625
+       },
+       {
+        "hp": 82,
+        "chance": 0.10312500000000001
+       },
+       {
+        "hp": 83,
+        "chance": 0.12375
+       },
+       {
+        "hp": 84,
+        "chance": 0.0825
+       },
+       {
+        "hp": 98,
+        "chance": 0.67
+       }
+      ],
+      "build": {
+       "speciesId": "klawf",
+       "nature": "Serious",
+       "abilityId": "angershell",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion",
+       "leechseed"
+      ]
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 128,
+        "chance": 0.041875
+       },
+       {
+        "hp": 130,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 131,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 133,
+        "chance": 0.1675
+       },
+       {
+        "hp": 134,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 136,
+        "chance": 0.08375
+       },
+       {
+        "hp": 155,
+        "chance": 0.33
+       }
+      ],
+      "build": {
+       "speciesId": "venusaur",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 115,
+        "chance": 0.041875
+       },
+       {
+        "hp": 117,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 118,
+        "chance": 0.1675
+       },
+       {
+        "hp": 120,
+        "chance": 0.1675
+       },
+       {
+        "hp": 121,
+        "chance": 0.1675
+       },
+       {
+        "hp": 154,
+        "chance": 0.33
+       }
+      ],
+      "build": {
+       "speciesId": "blastoise",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

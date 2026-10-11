@@ -1,0 +1,108 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Sleep wears off at random.",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 153,
+    "maximum": 153
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 28,
+     "max": 34,
+     "minPercent": 11.914893617021278,
+     "maxPercent": 14.468085106382977,
+     "rolls": [
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      31,
+      33,
+      33,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 28–34 HP (11.9–14.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 7,
+      "fasterChance": 0.9976213499903679,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 207,
+      "high": 201,
+      "average": 204,
+      "min": 201,
+      "max": 207,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 28,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 1.4409999999998035,
+ "preflight": []
+}

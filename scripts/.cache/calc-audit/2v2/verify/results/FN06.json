@@ -1,0 +1,1359 @@
+{
+ "id": "FN06",
+ "title": "Sand from before with no turn count, Rain Dance, then Sandstorm: no assumption fact",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The sand up at the end of turn was set this turn, so its damage needs no assumption about the old sand's turns.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Pelipper",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 150,
+     "maximum": 155,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "raindance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|RainDance": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "sandstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Sandstorm": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sandstorm": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 6,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Pelipper",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        127,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 127,
+      "min": 127,
+      "max": 127,
+      "modeTieUp": 127,
+      "modeTieDown": 127,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        141,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 141,
+      "min": 141,
+      "max": 141,
+      "modeTieUp": 141,
+      "modeTieDown": 141,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Pelipper",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 150,
+     "maximum": 155,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "raindance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|RainDance": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "sandstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Sandstorm": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sandstorm": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 5,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Pelipper",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        127,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 127,
+      "min": 127,
+      "max": 127,
+      "modeTieUp": 127,
+      "modeTieDown": 127,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        141,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 141,
+      "min": 141,
+      "max": 141,
+      "modeTieUp": 141,
+      "modeTieDown": 141,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Pelipper",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 150,
+     "maximum": 155,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "raindance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|RainDance": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "sandstorm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|Sandstorm": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sandstorm": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 6,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Pelipper",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        127,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 127,
+      "min": 127,
+      "max": 127,
+      "modeTieUp": 127,
+      "modeTieDown": 127,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tyranitar",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        141,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 141,
+      "min": 141,
+      "max": 141,
+      "modeTieUp": 141,
+      "modeTieDown": 141,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -8,
+      "max": -8,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 235,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 155,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 127,
+   "high": 127,
+   "average": 127,
+   "min": 127,
+   "max": 127,
+   "koChance": 0,
+   "dist": [
+    [
+     127,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 235,
+   "low": 136,
+   "high": 136,
+   "average": 136,
+   "min": 136,
+   "max": 136,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 155,
+   "low": 141,
+   "high": 141,
+   "average": 141,
+   "min": 141,
+   "max": 141,
+   "koChance": 0,
+   "dist": [
+    [
+     141,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -8,
+   "max": -8,
+   "koChance": 0,
+   "facts": {},
+   "index": 3
+  },
+  {
+   "slot": "opponent-right",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -9,
+   "max": -9,
+   "koChance": 0,
+   "facts": {},
+   "index": 6
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -14,
+   "max": -14,
+   "koChance": 0,
+   "facts": {},
+   "index": 11
+  }
+ ]
+}

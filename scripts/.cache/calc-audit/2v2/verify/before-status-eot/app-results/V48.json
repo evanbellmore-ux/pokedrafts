@@ -1,0 +1,319 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "nightslash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 24,
+      "max": 29,
+      "minPercent": 13.333333333333334,
+      "maxPercent": 16.11111111111111,
+      "koChance": 0,
+      "row": {
+       "moveId": "nightslash",
+       "effectiveName": "Night Slash",
+       "effectiveType": "Dark",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 24,
+       "max": 29,
+       "minPercent": 13.333333333333334,
+       "maxPercent": 16.11111111111111,
+       "rolls": [
+        24,
+        24,
+        24,
+        25,
+        25,
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        29
+       ],
+       "ohkoChance": 0,
+       "description": "Night Slash: 24–29 HP (13.3–16.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "focuspunch",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "Loses its focus (Focus Punch).",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 180,
+    "maximum": 180,
+    "low": 156,
+    "average": 153.75,
+    "high": 151,
+    "min": 151,
+    "max": 156,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "focuspunch",
+     "effectiveName": "Focus Punch",
+     "effectiveType": "Fighting",
+     "effectivePower": 150,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 768,
+     "max": 904,
+     "minPercent": 529.6551724137931,
+     "maxPercent": 623.448275862069,
+     "rolls": [
+      768,
+      772,
+      784,
+      792,
+      804,
+      808,
+      820,
+      828,
+      840,
+      844,
+      856,
+      864,
+      876,
+      880,
+      892,
+      904
+     ],
+     "ohkoChance": 1,
+     "description": "Focus Punch: 768–904 HP (529.7–623.4% of maximum HP). Applied: Iron Fist.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes Focus Punch is not interrupted."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pressure",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 145,
+        "heals": []
+       },
+       "high": {
+        "dealt": 145,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "nightslash",
+     "effectiveName": "Night Slash",
+     "effectiveType": "Dark",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 24,
+     "max": 29,
+     "minPercent": 13.333333333333334,
+     "maxPercent": 16.11111111111111,
+     "rolls": [
+      24,
+      24,
+      24,
+      25,
+      25,
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      29
+     ],
+     "ohkoChance": 0,
+     "description": "Night Slash: 24–29 HP (13.3–16.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.8590408712625504,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 180,
+      "low": 156,
+      "high": 151,
+      "average": 153.75,
+      "min": 151,
+      "max": 156,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 24,
+        "heals": []
+       },
+       "high": {
+        "dealt": 29,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.6211000000000695,
+ "preflight": []
+}

@@ -1,0 +1,1464 @@
+{
+ "id": "NG31",
+ "title": "Core Enforcer into the gas holder (Weezing, 80) before it moves: no suppression, the gas stays (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "willMove: no gastroacid",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 428,
+   "classes": 257,
+   "ms": 750,
+   "decisions": {
+    "sample": 180,
+    "fail:": 336,
+    "roll": 336
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       83,
+       0.0625
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.1875
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       91,
+       0.1875
+      ],
+      [
+       92,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 88.1875,
+     "min": 83,
+     "max": 92,
+     "modeTieUp": 91,
+     "modeTieDown": 86,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       195,
+       0.0625
+      ],
+      [
+       196,
+       0.1875
+      ],
+      [
+       198,
+       0.25
+      ],
+      [
+       199,
+       0.25
+      ],
+      [
+       201,
+       0.1875
+      ],
+      [
+       202,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 198.5,
+     "min": 195,
+     "max": 202,
+     "modeTieUp": 199,
+     "modeTieDown": 198,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-33": 0.0625,
+       "damage:-34": 0.1875,
+       "damage:-36": 0.25,
+       "damage:-37": 0.25,
+       "damage:-39": 0.1875,
+       "damage:-40": 0.0625
+      },
+      "opponent-left": {
+       "damage:-48": 0.125,
+       "damage:-49": 0.1875,
+       "damage:-51": 0.1875,
+       "damage:-52": 0.125,
+       "damage:-54": 0.1875,
+       "damage:-55": 0.125,
+       "damage:-57": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -57,
+       "max": -48
+      },
+      "opponent-right": {
+       "min": -40,
+       "max": -33
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -40,
+       "max": -33,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -57,
+       "max": -48,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 84,
+    "classes": 84,
+    "ms": 750,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Weezing",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        83,
+        0.0625
+       ],
+       [
+        85,
+        0.125
+       ],
+       [
+        86,
+        0.1875
+       ],
+       [
+        88,
+        0.125
+       ],
+       [
+        89,
+        0.1875
+       ],
+       [
+        91,
+        0.1875
+       ],
+       [
+        92,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 88.1875,
+      "min": 83,
+      "max": 92,
+      "modeTieUp": 91,
+      "modeTieDown": 86,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        195,
+        0.0625
+       ],
+       [
+        196,
+        0.1875
+       ],
+       [
+        198,
+        0.25
+       ],
+       [
+        199,
+        0.25
+       ],
+       [
+        201,
+        0.1875
+       ],
+       [
+        202,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 198.5,
+      "min": 195,
+      "max": 202,
+      "modeTieUp": 199,
+      "modeTieDown": 198,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 33,
+   "decisions": {
+    "sample": 16,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       92,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 92,
+     "min": 92,
+     "max": 92,
+     "modeTieUp": 92,
+     "modeTieDown": 92,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       202,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 202,
+     "min": 202,
+     "max": 202,
+     "modeTieUp": 202,
+     "modeTieDown": 202,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-33": 1
+      },
+      "opponent-left": {
+       "damage:-48": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -48,
+       "max": -48
+      },
+      "opponent-right": {
+       "min": -33,
+       "max": -33
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -33,
+       "max": -33,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -48,
+       "max": -48,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 33,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Weezing",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        92,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 92,
+      "min": 92,
+      "max": 92,
+      "modeTieUp": 92,
+      "modeTieDown": 92,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        202,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 202,
+      "min": 202,
+      "max": 202,
+      "modeTieUp": 202,
+      "modeTieDown": 202,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 32,
+   "decisions": {
+    "sample": 16,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-40": 1
+      },
+      "opponent-left": {
+       "damage:-57": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -57,
+       "max": -57
+      },
+      "opponent-right": {
+       "min": -40,
+       "max": -40
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -40,
+       "max": -40,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -57,
+       "max": -57,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 32,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Weezing",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        83,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 83,
+      "min": 83,
+      "max": 83,
+      "modeTieUp": 83,
+      "modeTieDown": 83,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 92,
+   "high": 83,
+   "average": 88.1875,
+   "min": 83,
+   "max": 92,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.1875
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     91,
+     0.1875
+    ],
+    [
+     92,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 202,
+   "high": 195,
+   "average": 198.5,
+   "min": 195,
+   "max": 202,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     0.0625
+    ],
+    [
+     196,
+     0.1875
+    ],
+    [
+     198,
+     0.25
+    ],
+    [
+     199,
+     0.25
+    ],
+    [
+     201,
+     0.1875
+    ],
+    [
+     202,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 92,
+   "high": 83,
+   "average": 88.1875,
+   "min": 83,
+   "max": 92,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.1875
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     91,
+     0.1875
+    ],
+    [
+     92,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 202,
+   "high": 195,
+   "average": 198.5,
+   "min": 195,
+   "max": 202,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     0.0625
+    ],
+    [
+     196,
+     0.1875
+    ],
+    [
+     198,
+     0.25
+    ],
+    [
+     199,
+     0.25
+    ],
+    [
+     201,
+     0.1875
+    ],
+    [
+     202,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

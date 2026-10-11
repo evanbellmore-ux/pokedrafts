@@ -1,0 +1,241 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-right": {
+    "hp": 330,
+    "maximum": 330
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "spikyshield",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "gigaimpact",
+    "effectiveName": "Pulverizing Pancake",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 27,
+      "max": 32,
+      "minPercent": 16.56441717791411,
+      "maxPercent": 19.631901840490798,
+      "koChance": 0,
+      "row": {
+       "moveId": "gigaimpact",
+       "effectiveName": "Pulverizing Pancake",
+       "effectiveType": "Normal",
+       "effectivePower": 210,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 27,
+       "max": 32,
+       "minPercent": 16.56441717791411,
+       "maxPercent": 19.631901840490798,
+       "rolls": [
+        27,
+        27,
+        28,
+        28,
+        28,
+        29,
+        29,
+        29,
+        29,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32
+       ],
+       "ohkoChance": 0,
+       "description": "Pulverizing Pancake: 27–32 HP (16.6–19.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle.",
+        "Protect: Pulverizing Pancake breaks through at 1/4 damage."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 206,
+    "average": 206,
+    "high": 206,
+    "min": 206,
+    "max": 206,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 136,
+    "average": 133.5625,
+    "high": 131,
+    "min": 131,
+    "max": 136,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "gigaimpact",
+     "effectiveName": "Pulverizing Pancake",
+     "effectiveType": "Normal",
+     "effectivePower": 210,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 109,
+     "max": 129,
+     "minPercent": 66.87116564417178,
+     "maxPercent": 79.14110429447852,
+     "rolls": [
+      109,
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      118,
+      118,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129
+     ],
+     "ohkoChance": 0,
+     "description": "Pulverizing Pancake: 109–129 HP (66.9–79.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 163,
+      "low": 54,
+      "high": 34,
+      "average": 44.6875,
+      "min": 34,
+      "max": 54,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 109,
+        "heals": []
+       },
+       "high": {
+        "dealt": 129,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes no protecting move was used last turn."
+  ]
+ },
+ "ms": 4.846399999999903,
+ "preflight": []
+}

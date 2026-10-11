@@ -1,0 +1,40 @@
+
+### APP-colorchange usum: Jolteon Thunderbolt into Kecleon (Color Change); Garchomp Earthquake
+  step own-left thunderbolt moves 1: 
+    hit opponent-left calculated 48..57 ko 0 
+  step opponent-right earthquake moves 1: 
+    hit opponent-left calculated 70..84 ko 0.1289 
+    hit own-left calculated 158..188 ko 1 
+    hit own-right calculated 253..298 ko 0 
+  hp own-left 0..0 avg 0 ko 1
+  hp own-right 27..72 avg 49.5 ko 0
+  hp opponent-left 0..17 avg 6.63 ko 0.1289
+  hp opponent-right 183..183 avg 183 ko 0
+  end of turn: ready
+
+### APP-soak sv: Jolteon Soak into Gyarados; Lapras Thunderbolt into Gyarados
+  preflight: own-left: Jolteon does not learn soak in scarlet_violet
+  issues: {"pokemon":{},"field":[],"actions":[{"slot":"own-left","message":"This Pokémon does not learn that move."}]}
+
+### APP-protean sv: Greninja (Protean) Ice Beam into Snorlax; Arcanine Flamethrower into Greninja
+  not-estimated: Protean changes Greninja's type: later moves are not modelled.
+
+### APP-attract champions: Jolteon (M) Attract into Snorlax (F); Snorlax Body Slam into Chansey
+  preflight: own-left: Jolteon does not learn attract in champions
+  issues: {"pokemon":{},"field":[],"actions":[{"slot":"own-left","message":"This Pokémon does not learn that move."}]}
+
+### APP-psychicnoise sv: Farigiraf Psychic Noise into Snorlax (Sitrus, 150 HP); Garchomp Earthquake
+  not-estimated: Psychic Noise is not modelled in 2v2.
+
+### APP-roost sv: Corviknight (100 HP) Roost; Garchomp Earthquake
+  step opponent-left earthquake moves 1: 
+    hit opponent-right calculated 75..88 ko 0 
+    hit own-left no-damage null..null ko 0 Earthquake has no effect on Corviknight.
+    hit own-right calculated 253..298 ko 0 
+  step own-left roost moves 1: 
+    hit own-left effect null..null ko 0 
+  hp own-left 173..173 avg 173 ko 0
+  hp own-right 27..72 avg 49.5 ko 0
+  hp opponent-left 183..183 avg 183 ko 0
+  hp opponent-right 147..160 avg 154.06 ko 0
+  end of turn: ready

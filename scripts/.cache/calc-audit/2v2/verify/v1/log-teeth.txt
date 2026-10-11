@@ -1,0 +1,92 @@
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.unit.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+ RUN  v5.0.0 C:/Users/evanb/OneDrive/pokedrafts
+
+ ❯ |unit| tests/unit/v1-teeth.tmp.test.ts (5 tests | 5 failed) 357ms
+   ❯ the 2v2 turn against pinned Showdown (5)
+     × IN-ACC-01-sv: A Pokémon at evasion +6 (earlier turns) uses Acupressure on itself: six stats, 1/6 each (IN-P16) 309ms
+     × SAT-STK-1-sv: Swalot with 2 layers (+2/+2, counts −2/−2) Stockpiles a third 5ms
+     × SAT-GAS-1-sv: Gastro Acid on a Levitate Bronzong, then its foe's Earthquake hits it (K7) 30ms
+     × F2-TS1-sv: Coalossal's Tar Shot into Forretress (−1 Speed); Arcanine's Flamethrower then 8x (TV11; SV has no Ferrothorn) 8ms
+     × G4-PKP-05-champions: Champions: Dedenne's Pickup after a foe's Sitrus Berry 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |unit| tests/unit/v1-teeth.tmp.test.ts > the 2v2 turn against pinned Showdown > IN-ACC-01-sv: A Pokémon at evasion +6 (earlier turns) uses Acupressure on itself: six stats, 1/6 each (IN-P16)
+AssertionError: IN-ACC-01-sv own-right stage accuracy:2: expected 0.166666666666667 to be less than or equal to 1e-9
+ ❯ close tests/unit/v1-teeth.tmp.test.ts:213:103
+    211|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+    212|       const digits = c.exact ? 9 : 1;
+    213|       const close = (got: number, want: number, label: string) => expe…
+       |                                                                                                       ^
+    214|       for (const slot of SLOTS) {
+    215|         const want = c.hp[slot], got = result.hp[slot];
+ ❯ checkState2 tests/unit/v1-teeth.tmp.test.ts:190:42
+ ❯ tests/unit/v1-teeth.tmp.test.ts:307:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  |unit| tests/unit/v1-teeth.tmp.test.ts > the 2v2 turn against pinned Showdown > SAT-STK-1-sv: Swalot with 2 layers (+2/+2, counts −2/−2) Stockpiles a third
+AssertionError: SAT-STK-1-sv own-left volatile stockpile: expected 1 to be less than or equal to 1e-9
+ ❯ close tests/unit/v1-teeth.tmp.test.ts:213:103
+    211|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+    212|       const digits = c.exact ? 9 : 1;
+    213|       const close = (got: number, want: number, label: string) => expe…
+       |                                                                                                       ^
+    214|       for (const slot of SLOTS) {
+    215|         const want = c.hp[slot], got = result.hp[slot];
+ ❯ checkState2 tests/unit/v1-teeth.tmp.test.ts:185:56
+ ❯ tests/unit/v1-teeth.tmp.test.ts:307:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  |unit| tests/unit/v1-teeth.tmp.test.ts > the 2v2 turn against pinned Showdown > SAT-GAS-1-sv: Gastro Acid on a Levitate Bronzong, then its foe's Earthquake hits it (K7)
+AssertionError: SAT-GAS-1-sv opponent-right ability levitate: expected 1 to be less than or equal to 1e-9
+ ❯ close tests/unit/v1-teeth.tmp.test.ts:213:103
+    211|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+    212|       const digits = c.exact ? 9 : 1;
+    213|       const close = (got: number, want: number, label: string) => expe…
+       |                                                                                                       ^
+    214|       for (const slot of SLOTS) {
+    215|         const want = c.hp[slot], got = result.hp[slot];
+ ❯ both tests/unit/v1-teeth.tmp.test.ts:160:71
+ ❯ checkState2 tests/unit/v1-teeth.tmp.test.ts:164:3
+ ❯ tests/unit/v1-teeth.tmp.test.ts:307:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  |unit| tests/unit/v1-teeth.tmp.test.ts > the 2v2 turn against pinned Showdown > F2-TS1-sv: Coalossal's Tar Shot into Forretress (−1 Speed); Arcanine's Flamethrower then 8x (TV11; SV has no Ferrothorn)
+AssertionError: F2-TS1-sv opponent-right volatile tarshot: expected 1 to be less than or equal to 1e-9
+ ❯ close tests/unit/v1-teeth.tmp.test.ts:213:103
+    211|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+    212|       const digits = c.exact ? 9 : 1;
+    213|       const close = (got: number, want: number, label: string) => expe…
+       |                                                                                                       ^
+    214|       for (const slot of SLOTS) {
+    215|         const want = c.hp[slot], got = result.hp[slot];
+ ❯ checkState2 tests/unit/v1-teeth.tmp.test.ts:185:56
+ ❯ tests/unit/v1-teeth.tmp.test.ts:307:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  |unit| tests/unit/v1-teeth.tmp.test.ts > the 2v2 turn against pinned Showdown > G4-PKP-05-champions: Champions: Dedenne's Pickup after a foe's Sitrus Berry
+AssertionError: G4-PKP-05-champions own-left item sitrusberry: expected 1 to be less than or equal to 1e-9
+ ❯ close tests/unit/v1-teeth.tmp.test.ts:213:103
+    211|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+    212|       const digits = c.exact ? 9 : 1;
+    213|       const close = (got: number, want: number, label: string) => expe…
+       |                                                                                                       ^
+    214|       for (const slot of SLOTS) {
+    215|         const want = c.hp[slot], got = result.hp[slot];
+ ❯ tests/unit/v1-teeth.tmp.test.ts:301:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  06:02:51
+   Duration  1.48s (transform 57%, tests 26%, import 16%)
+

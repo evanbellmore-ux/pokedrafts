@@ -1,0 +1,434 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 147,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "icebeam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 32,
+      "max": 38,
+      "minPercent": 20.77922077922078,
+      "maxPercent": 24.675324675324674,
+      "koChance": 0,
+      "row": {
+       "moveId": "icebeam",
+       "effectiveName": "Ice Beam",
+       "effectiveType": "Ice",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 32,
+       "max": 38,
+       "minPercent": 20.77922077922078,
+       "maxPercent": 24.675324675324674,
+       "rolls": [
+        32,
+        32,
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        36,
+        37,
+        38
+       ],
+       "ohkoChance": 0,
+       "description": "Ice Beam: 32–38 HP (20.8–24.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Protean unused since switch-in — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 146,
+      "max": 174,
+      "minPercent": 99.31972789115646,
+      "maxPercent": 118.36734693877551,
+      "koChance": 0.875,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 146,
+       "max": 174,
+       "minPercent": 99.31972789115646,
+       "maxPercent": 118.36734693877551,
+       "rolls": [
+        146,
+        146,
+        150,
+        152,
+        152,
+        156,
+        156,
+        158,
+        158,
+        162,
+        164,
+        164,
+        168,
+        168,
+        170,
+        174
+       ],
+       "ohkoChance": 0.875,
+       "description": "Flamethrower: 146–174 HP (99.3–118.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Target: Protean unused since switch-in — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 147,
+    "maximum": 147,
+    "low": 1,
+    "average": 0.125,
+    "high": 0,
+    "min": 0,
+    "max": 1,
+    "koChance": 0.875,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: Ice.",
+      "chance": 0.125
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 122,
+    "average": 119.4375,
+    "high": 116,
+    "min": 116,
+    "max": 122,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "icebeam",
+     "effectiveName": "Ice Beam",
+     "effectiveType": "Ice",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 32,
+     "max": 38,
+     "minPercent": 20.77922077922078,
+     "maxPercent": 24.675324675324674,
+     "rolls": [
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      38
+     ],
+     "ohkoChance": 0,
+     "description": "Ice Beam: 32–38 HP (20.8–24.7% of maximum HP). Applied: Protean.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Protean unused since switch-in — yes."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 5,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 122,
+      "high": 116,
+      "average": 119.4375,
+      "min": 116,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 32,
+        "heals": []
+       },
+       "high": {
+        "dealt": 38,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 24.489795918367346,
+     "maxPercent": 29.25170068027211,
+     "rolls": [
+      36,
+      36,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      39,
+      40,
+      41,
+      41,
+      42,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 36–43 HP (24.5–29.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Protean unused since switch-in — yes."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.9979248046875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 147,
+      "low": 111,
+      "high": 104,
+      "average": 107.5,
+      "min": 104,
+      "max": 111,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 147,
+     "maximum": 147,
+     "low": 1,
+     "average": 0.125,
+     "high": 0,
+     "min": 0,
+     "max": 1,
+     "koChance": 0.875,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: Ice.",
+       "chance": 0.125
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 122,
+     "average": 119.4375,
+     "high": 116,
+     "min": 116,
+     "max": 122,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.198499999999967,
+ "preflight": []
+}

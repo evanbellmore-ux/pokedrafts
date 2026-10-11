@@ -1,0 +1,1287 @@
+{
+ "id": "RT-RV11",
+ "title": "Healer cures the ally's sleep before Bad Dreams",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Healer at 5.3 (3/10) cures Snorlax's sleep: no Bad Dreams then; otherwise −29.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 18,
+   "classes": 18,
+   "ms": 29,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Alomomola",
+     "start": 240,
+     "maximum": 240,
+     "dist": [
+      [
+       240,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 240,
+     "min": 240,
+     "max": 240,
+     "modeTieUp": 240,
+     "modeTieDown": 240,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Darkrai",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {
+     "own-right": {
+      "cant:slp": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 3,
+    "ms": 29,
+    "decisions": {
+     "chance:healer": 6
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alomomola",
+      "start": null,
+      "maximum": 240,
+      "dist": [
+       [
+        240,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 240,
+      "min": 240,
+      "max": 240,
+      "modeTieUp": 240,
+      "modeTieDown": 240,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        0.7
+       ],
+       [
+        150,
+        0.3
+       ]
+      ],
+      "koChance": 0,
+      "average": 129.7,
+      "min": 121,
+      "max": 150,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 0.3,
+       "slp": 0.7
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.2333333333333333,
+       "2": 0.2333333333333333,
+       "3": 0.2333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Darkrai",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.3
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Bad Dreams",
+      "other": "opponent-left",
+      "chance": 0.7,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:slp": 0.3
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 18,
+   "ms": 29,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Alomomola",
+     "start": 240,
+     "maximum": 240,
+     "dist": [
+      [
+       240,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 240,
+     "min": 240,
+     "max": 240,
+     "modeTieUp": 240,
+     "modeTieDown": 240,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Darkrai",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {
+     "own-right": {
+      "cant:slp": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 3,
+    "ms": 29,
+    "decisions": {
+     "chance:healer": 6
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alomomola",
+      "start": null,
+      "maximum": 240,
+      "dist": [
+       [
+        240,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 240,
+      "min": 240,
+      "max": 240,
+      "modeTieUp": 240,
+      "modeTieDown": 240,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        0.7
+       ],
+       [
+        150,
+        0.3
+       ]
+      ],
+      "koChance": 0,
+      "average": 129.7,
+      "min": 121,
+      "max": 150,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 0.3,
+       "slp": 0.7
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.2333333333333333,
+       "2": 0.2333333333333333,
+       "3": 0.2333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Darkrai",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.3
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Bad Dreams",
+      "other": "opponent-left",
+      "chance": 0.7,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:slp": 0.3
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 18,
+   "ms": 33,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Alomomola",
+     "start": 240,
+     "maximum": 240,
+     "dist": [
+      [
+       240,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 240,
+     "min": 240,
+     "max": 240,
+     "modeTieUp": 240,
+     "modeTieDown": 240,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "slp": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Darkrai",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {},
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {
+     "own-right": {
+      "cant:slp": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 3,
+    "ms": 33,
+    "decisions": {
+     "chance:healer": 6
+    },
+    "slots": {
+     "own-left": {
+      "species": "Alomomola",
+      "start": null,
+      "maximum": 240,
+      "dist": [
+       [
+        240,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 240,
+      "min": 240,
+      "max": 240,
+      "modeTieUp": 240,
+      "modeTieDown": 240,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        121,
+        0.7
+       ],
+       [
+        150,
+        0.3
+       ]
+      ],
+      "koChance": 0,
+      "average": 129.7,
+      "min": 121,
+      "max": 150,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 0.3,
+       "slp": 0.7
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.2333333333333333,
+       "2": 0.2333333333333333,
+       "3": 0.2333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Darkrai",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.3
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Bad Dreams",
+      "other": "opponent-left",
+      "chance": 0.7,
+      "min": -29,
+      "max": -29,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.3,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:slp": 0.3
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 240,
+   "maximum": 240,
+   "low": 240,
+   "high": 240,
+   "average": 240,
+   "min": 240,
+   "max": 240,
+   "koChance": 0,
+   "dist": [
+    [
+     240,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 150,
+   "maximum": 235,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 240,
+   "maximum": 240,
+   "low": 240,
+   "high": 240,
+   "average": 240,
+   "min": 240,
+   "max": 240,
+   "koChance": 0,
+   "dist": [
+    [
+     240,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 150,
+   "maximum": 235,
+   "low": 121,
+   "high": 121,
+   "average": 129.7,
+   "min": 121,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     121,
+     0.7
+    ],
+    [
+     150,
+     0.3
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Healer",
+   "chance": 0.3,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "activate:healer": 0.3
+   },
+   "index": 1
+  },
+  {
+   "slot": "own-right",
+   "effect": "Bad Dreams",
+   "other": "opponent-left",
+   "chance": 0.7,
+   "min": -29,
+   "max": -29,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "own-right",
+   "effect": "Healer",
+   "other": "own-left",
+   "chance": 0.3,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "curestatus:slp": 0.3
+   },
+   "index": 2
+  }
+ ],
+ "hidden": [
+  {
+   "label": "own-right sleep 2",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-right sleep 3",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-right sleep 4",
+   "weight": 0.3333333333333333
+  }
+ ]
+}

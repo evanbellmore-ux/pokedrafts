@@ -1,0 +1,94 @@
+
+== U1-CMD-1 sv: Commander at the lead; the foes' Opportunist and Mirror Herb copy
+  p1a Tatsugiri [0] item=- ability=commander v:commanding
+  p1b Dondozo [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=oblivious v:commanded
+  p2a Espathra [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=opportunist v:
+  p2b Kingambit [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=defiant v:
+  |-activate|p1a: Tatsugiri|ability: Commander|[of] p1b: Dondozo
+  |-boost|p1b: Dondozo|atk|2
+  |-boost|p1b: Dondozo|spa|2
+  |-boost|p1b: Dondozo|spe|2
+  |-boost|p1b: Dondozo|def|2
+  |-boost|p1b: Dondozo|spd|2
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|atk|2
+  |-boost|p2a: Espathra|spa|2
+  |-boost|p2a: Espathra|spe|2
+  |-boost|p2a: Espathra|def|2
+  |-boost|p2a: Espathra|spd|2
+  |-enditem|p2b: Kingambit|Mirror Herb
+  |-boost|p2b: Kingambit|atk|2|[from] item: Mirror Herb
+  |-boost|p2b: Kingambit|spa|2|[from] item: Mirror Herb
+  |-boost|p2b: Kingambit|spe|2|[from] item: Mirror Herb
+  |-boost|p2b: Kingambit|def|2|[from] item: Mirror Herb
+  |-boost|p2b: Kingambit|spd|2|[from] item: Mirror Herb
+
+== U1-CMD-2 sv: a foe's Neutralizing Gas: no Commander
+  p1a Tatsugiri [0] item=- ability=commander v:
+  p1b Dondozo [0] item=- ability=oblivious v:
+  p2a Weezing [0] item=- ability=neutralizinggas v:
+  p2b Espathra [0] item=- ability=opportunist v:
+  |-ability|p2a: Weezing|Neutralizing Gas
+
+== U1-CMD-3 sv: Tatsugiri's Ability Shield under a foe's Neutralizing Gas: Commander; Opportunist suppressed
+  p1a Tatsugiri [0] item=abilityshield ability=commander v:commanding
+  p1b Dondozo [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=oblivious v:commanded
+  p2a Weezing [0] item=- ability=neutralizinggas v:
+  p2b Espathra [0] item=- ability=opportunist v:
+  |-ability|p2a: Weezing|Neutralizing Gas
+  |-block|p1a: Tatsugiri|item: Ability Shield
+  |-activate|p1a: Tatsugiri|ability: Commander|[of] p1b: Dondozo
+  |-boost|p1b: Dondozo|atk|2
+  |-boost|p1b: Dondozo|spa|2
+  |-boost|p1b: Dondozo|spe|2
+  |-boost|p1b: Dondozo|def|2
+  |-boost|p1b: Dondozo|spd|2
+
+== U1-CMD-4 sv: a Simple Mirror Herb holder copies through its own boost()
+  p1a Tatsugiri [0] item=- ability=commander v:commanding
+  p1b Dondozo [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=oblivious v:commanded
+  p2a Swoobat [atk+4 def+4 spa+4 spd+4 spe+4] item=- ability=simple v:
+  p2b Espathra [atk+2 def+2 spa+2 spd+2 spe+2] item=- ability=opportunist v:
+  |-activate|p1a: Tatsugiri|ability: Commander|[of] p1b: Dondozo
+  |-boost|p1b: Dondozo|atk|2
+  |-boost|p1b: Dondozo|spa|2
+  |-boost|p1b: Dondozo|spe|2
+  |-boost|p1b: Dondozo|def|2
+  |-boost|p1b: Dondozo|spd|2
+  |-enditem|p2a: Swoobat|Mirror Herb
+  |-boost|p2a: Swoobat|atk|4|[from] item: Mirror Herb
+  |-boost|p2a: Swoobat|spa|4|[from] item: Mirror Herb
+  |-boost|p2a: Swoobat|spe|4|[from] item: Mirror Herb
+  |-boost|p2a: Swoobat|def|4|[from] item: Mirror Herb
+  |-boost|p2a: Swoobat|spd|4|[from] item: Mirror Herb
+  |-ability|p2b: Espathra|Opportunist|boost
+  |-boost|p2b: Espathra|atk|2
+  |-boost|p2b: Espathra|spa|2
+  |-boost|p2b: Espathra|spe|2
+  |-boost|p2b: Espathra|def|2
+  |-boost|p2b: Espathra|spd|2
+
+== U1-TRC-1 sv: Trace copies Intimidate from two Intimidate foes
+  p1a Gardevoir [atk-2] item=- ability=intimidate v:
+  p1b Snorlax [atk-2] item=- ability=thickfat v:
+  p2a Incineroar [atk-1] item=- ability=intimidate v:
+  p2b Gyarados [atk-1] item=- ability=intimidate v:
+  |-ability|p2b: Gyarados|Intimidate|boost
+  |-unboost|p1a: Gardevoir|atk|1
+  |-unboost|p1b: Snorlax|atk|1
+  |-ability|p1a: Gardevoir|Intimidate|Trace|[from] ability: Trace|[of] p2a: Incineroar
+  |-ability|p1a: Gardevoir|Intimidate|boost
+  |-unboost|p2a: Incineroar|atk|1
+  |-unboost|p2b: Gyarados|atk|1
+  |-ability|p2a: Incineroar|Intimidate|boost
+  |-unboost|p1a: Gardevoir|atk|1
+  |-unboost|p1b: Snorlax|atk|1
+
+== U1-TRC-2 sv: Trace with its own Ability Shield copies nothing
+  p1a Gardevoir [atk-2] item=abilityshield ability=trace v:
+  p1b Snorlax [atk-2] item=- ability=thickfat v:
+  p2a Incineroar [0] item=- ability=intimidate v:
+  p2b Gyarados [0] item=- ability=intimidate v:
+  |-ability|p2b: Gyarados|Intimidate|boost
+  |-unboost|p1a: Gardevoir|atk|1
+  |-u

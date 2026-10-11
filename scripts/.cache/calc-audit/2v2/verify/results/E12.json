@@ -1,0 +1,1666 @@
+{
+ "id": "E12",
+ "title": "Sucker Punch at a position whose occupant changed",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Reuniclus swaps into Blastoise's position... Sucker Punch aimed at Reuniclus's old place hits Blastoise, which has a damaging move queued: it works.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 59,
+   "classes": 20,
+   "ms": 65,
+   "decisions": {
+    "fail:": 48,
+    "roll": 48,
+    "secondary": 40
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       137,
+       0.3125
+      ],
+      [
+       138,
+       0.25
+      ],
+      [
+       139,
+       0.25
+      ],
+      [
+       140,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 138.3125,
+     "min": 137,
+     "max": 140,
+     "modeTieUp": 137,
+     "modeTieDown": 137,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       93,
+       0.0625
+      ],
+      [
+       94,
+       0.125
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       97,
+       0.1875
+      ],
+      [
+       99,
+       0.125
+      ],
+      [
+       100,
+       0.1875
+      ],
+      [
+       102,
+       0.125
+      ],
+      [
+       103,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 98.0625,
+     "min": 93,
+     "max": 103,
+     "modeTieUp": 100,
+     "modeTieDown": 97,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-51": 0.0625,
+       "damage:-52": 0.125,
+       "damage:-54": 0.1875,
+       "damage:-55": 0.125,
+       "damage:-57": 0.1875,
+       "damage:-58": 0.125,
+       "damage:-60": 0.125,
+       "damage:-61": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -61,
+       "max": -51
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -61,
+       "max": -51,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-15": 0.1875,
+       "damage:-16": 0.25,
+       "damage:-17": 0.25,
+       "damage:-18": 0.3125
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -18,
+       "max": -15
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -18,
+       "max": -15,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 40,
+    "classes": 8,
+    "ms": 65,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        137,
+        0.3125
+       ],
+       [
+        138,
+        0.25
+       ],
+       [
+        139,
+        0.25
+       ],
+       [
+        140,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 138.3125,
+      "min": 137,
+      "max": 140,
+      "modeTieUp": 137,
+      "modeTieDown": 137,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        93,
+        0.0625
+       ],
+       [
+        94,
+        0.125
+       ],
+       [
+        96,
+        0.125
+       ],
+       [
+        97,
+        0.1875
+       ],
+       [
+        99,
+        0.125
+       ],
+       [
+        100,
+        0.1875
+       ],
+       [
+        102,
+        0.125
+       ],
+       [
+        103,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 98.0625,
+      "min": 93,
+      "max": 103,
+      "modeTieUp": 100,
+      "modeTieDown": 97,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       103,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 103,
+     "min": 103,
+     "max": 103,
+     "modeTieUp": 103,
+     "modeTieDown": 103,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-51": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -51,
+       "max": -51
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -51,
+       "max": -51,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-15": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -15,
+       "max": -15
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -15,
+       "max": -15,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        103,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 103,
+      "min": 103,
+      "max": 103,
+      "modeTieUp": 103,
+      "modeTieDown": 103,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       137,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 137,
+     "min": 137,
+     "max": 137,
+     "modeTieUp": 137,
+     "modeTieDown": 137,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Reuniclus",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "allyswitch": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       93,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 93,
+     "min": 93,
+     "max": 93,
+     "modeTieUp": 93,
+     "modeTieDown": 93,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 1,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-61": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -61,
+       "max": -61
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -61,
+       "max": -61,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "allyswitch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|swap|p2b: Reuniclus|0|[from] move: Ally Switch": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "swap": 1
+      },
+      "opponent-left": {
+       "swap": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-18": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -18,
+       "max": -18
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "swapped": {
+    "opponent": 1
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Kingambit",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        175,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 175,
+      "min": 175,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        137,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 137,
+      "min": 137,
+      "max": 137,
+      "modeTieUp": 137,
+      "modeTieDown": 137,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Reuniclus",
+      "start": null,
+      "maximum": 185,
+      "dist": [
+       [
+        185,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 185,
+      "min": 185,
+      "max": 185,
+      "modeTieUp": 185,
+      "modeTieDown": 185,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "allyswitch": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        93,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 93,
+      "min": 93,
+      "max": 93,
+      "modeTieUp": 93,
+      "modeTieDown": 93,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 1,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 140,
+   "high": 137,
+   "average": 138.3125,
+   "min": 137,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.3125
+    ],
+    [
+     138,
+     0.25
+    ],
+    [
+     139,
+     0.25
+    ],
+    [
+     140,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 103,
+   "high": 93,
+   "average": 98.0625,
+   "min": 93,
+   "max": 103,
+   "koChance": 0,
+   "dist": [
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     97,
+     0.1875
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.1875
+    ],
+    [
+     102,
+     0.125
+    ],
+    [
+     103,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 140,
+   "high": 137,
+   "average": 138.3125,
+   "min": 137,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.3125
+    ],
+    [
+     138,
+     0.25
+    ],
+    [
+     139,
+     0.25
+    ],
+    [
+     140,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 103,
+   "high": 93,
+   "average": 98.0625,
+   "min": 93,
+   "max": 103,
+   "koChance": 0,
+   "dist": [
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     97,
+     0.1875
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.1875
+    ],
+    [
+     102,
+     0.125
+    ],
+    [
+     103,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

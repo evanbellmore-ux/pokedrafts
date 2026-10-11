@@ -1,0 +1,1350 @@
+{
+ "id": "HL05",
+ "title": "Cheek Pouch heals as the attacker eats its Liechi Berry after Rough Skin (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Dedenne 40 - 17 = 23 (a quarter: 35): Liechi +1 Attack, Cheek Pouch +47: 70.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 21,
+   "classes": 16,
+   "ms": 39,
+   "decisions": {
+    "accuracy": 6,
+    "fail:": 6,
+    "roll": 6,
+    "secondary": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 40,
+     "maximum": 142,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       0.0625
+      ],
+      [
+       103,
+       0.1875
+      ],
+      [
+       105,
+       0.25
+      ],
+      [
+       109,
+       0.1875
+      ],
+      [
+       111,
+       0.25
+      ],
+      [
+       115,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 107.125,
+     "min": 99,
+     "max": 115,
+     "modeTieUp": 111,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Dedenne|atk|1|[from] item: Liechi Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-68": 0.0625,
+       "damage:-72": 0.25,
+       "damage:-74": 0.1875,
+       "damage:-78": 0.25,
+       "damage:-80": 0.1875,
+       "damage:-84": 0.0625
+      },
+      "own-left": {
+       "damage:roughskin:-17": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1,
+       "heal:cheekpouch:47": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 30,
+       "max": 30
+      },
+      "opponent-left": {
+       "min": -84,
+       "max": -68
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -84,
+       "max": -68,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 39,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dedenne",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        70,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 70,
+      "min": 70,
+      "max": 70,
+      "modeTieUp": 70,
+      "modeTieDown": 70,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        99,
+        0.0625
+       ],
+       [
+        103,
+        0.1875
+       ],
+       [
+        105,
+        0.25
+       ],
+       [
+        109,
+        0.1875
+       ],
+       [
+        111,
+        0.25
+       ],
+       [
+        115,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 107.125,
+      "min": 99,
+      "max": 115,
+      "modeTieUp": 111,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 13,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 40,
+     "maximum": 142,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       115,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 115,
+     "min": 115,
+     "max": 115,
+     "modeTieUp": 115,
+     "modeTieDown": 115,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 68,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Dedenne|atk|1|[from] item: Liechi Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-68": 1
+      },
+      "own-left": {
+       "damage:roughskin:-17": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1,
+       "heal:cheekpouch:47": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 30,
+       "max": 30
+      },
+      "opponent-left": {
+       "min": -68,
+       "max": -68
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -68,
+       "max": -68,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dedenne",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        70,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 70,
+      "min": 70,
+      "max": 70,
+      "modeTieUp": 70,
+      "modeTieDown": 70,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        115,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 115,
+      "min": 115,
+      "max": 115,
+      "modeTieUp": 115,
+      "modeTieDown": 115,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 40,
+     "maximum": 142,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Dedenne|atk|1|[from] item: Liechi Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-84": 1
+      },
+      "own-left": {
+       "damage:roughskin:-17": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1,
+       "heal:cheekpouch:47": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 30,
+       "max": 30
+      },
+      "opponent-left": {
+       "min": -84,
+       "max": -84
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -84,
+       "max": -84,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dedenne",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        70,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 70,
+      "min": 70,
+      "max": 70,
+      "modeTieUp": 70,
+      "modeTieDown": 70,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        99,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 99,
+      "min": 99,
+      "max": 99,
+      "modeTieUp": 99,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 40,
+   "maximum": 142,
+   "low": 70,
+   "high": 70,
+   "average": 70,
+   "min": 70,
+   "max": 70,
+   "koChance": 0,
+   "dist": [
+    [
+     70,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 115,
+   "high": 99,
+   "average": 107.125,
+   "min": 99,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     105,
+     0.25
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     111,
+     0.25
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 40,
+   "maximum": 142,
+   "low": 70,
+   "high": 70,
+   "average": 70,
+   "min": 70,
+   "max": 70,
+   "koChance": 0,
+   "dist": [
+    [
+     70,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 115,
+   "high": 99,
+   "average": 107.125,
+   "min": 99,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     105,
+     0.25
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     111,
+     0.25
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

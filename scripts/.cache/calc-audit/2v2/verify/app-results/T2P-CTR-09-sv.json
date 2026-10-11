@@ -1,0 +1,743 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "allyswitch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Cresselia and Garchomp swap places.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 67,
+      "max": 81,
+      "minPercent": 36.21621621621622,
+      "maxPercent": 43.78378378378379,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 67,
+       "max": 81,
+       "minPercent": 36.21621621621622,
+       "maxPercent": 43.78378378378379,
+       "rolls": [
+        67,
+        69,
+        69,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        81
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 67–81 HP (36.2–43.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "counter",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 134,
+      "max": 162,
+      "minPercent": 73.224043715847,
+      "maxPercent": 88.52459016393442,
+      "koChance": 0,
+      "row": {
+       "moveId": "counter",
+       "effectiveName": "Counter",
+       "effectiveType": "Fighting",
+       "effectivePower": 0,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 138,
+       "max": 138,
+       "minPercent": 75.40983606557377,
+       "maxPercent": 75.40983606557377,
+       "rolls": 138,
+       "ohkoChance": 0,
+       "description": "Counter: 138–138 HP (75.4–75.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Fixed damage: 138 HP."
+       ],
+       "reason": null,
+       "hits": 1
+      },
+      "cases": 10,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Counter: twice the 67 HP Annihilape took.",
+      "chance": 0.0625
+     },
+     {
+      "text": "Counter: twice the 69 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 70 HP Annihilape took.",
+      "chance": 0.0625
+     },
+     {
+      "text": "Counter: twice the 72 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 73 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 75 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 76 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 78 HP Annihilape took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Counter: twice the 79 HP Annihilape took.",
+      "chance": 0.0625
+     },
+     {
+      "text": "Counter: twice the 81 HP Annihilape took.",
+      "chance": 0.0625
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 185,
+    "maximum": 185,
+    "low": 95,
+    "average": 88.0625,
+    "high": 81,
+    "min": 81,
+    "max": 95,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Garchomp.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 49,
+    "average": 35.125,
+    "high": 21,
+    "min": 21,
+    "max": 49,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Cresselia.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 67,
+     "max": 81,
+     "minPercent": 36.21621621621622,
+     "maxPercent": 43.78378378378379,
+     "rolls": [
+      67,
+      69,
+      69,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      81
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 67–81 HP (36.2–43.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 185,
+      "low": 118,
+      "high": 104,
+      "average": 111.0625,
+      "min": 104,
+      "max": 118,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 81,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Cresselia did not use Ally Switch last turn."
+  ],
+  "swapped": {
+   "opponent": 1
+  },
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 185,
+     "maximum": 185,
+     "low": 95,
+     "average": 88.0625,
+     "high": 81,
+     "min": 81,
+     "max": 95,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Garchomp.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 49,
+     "average": 35.125,
+     "high": 21,
+     "min": 21,
+     "max": 49,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Cresselia.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.511499999998705,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 81,
+        "chance": 0.0625
+       },
+       {
+        "hp": 83,
+        "chance": 0.0625
+       },
+       {
+        "hp": 84,
+        "chance": 0.125
+       },
+       {
+        "hp": 86,
+        "chance": 0.125
+       },
+       {
+        "hp": 87,
+        "chance": 0.125
+       },
+       {
+        "hp": 89,
+        "chance": 0.125
+       },
+       {
+        "hp": 90,
+        "chance": 0.125
+       },
+       {
+        "hp": 92,
+        "chance": 0.0625
+       },
+       {
+        "hp": 93,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "annihilape",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 195,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "cresselia",
+       "nature": "Serious",
+       "abilityId": "levitate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 100
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "allyswitch"
+      ],
+      "allySwitch": 3
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 21,
+        "chance": 0.0625
+       },
+       {
+        "hp": 25,
+        "chance": 0.0625
+       },
+       {
+        "hp": 27,
+        "chance": 0.125
+       },
+       {
+        "hp": 31,
+        "chance": 0.125
+       },
+       {
+        "hp": 33,
+        "chance": 0.125
+       },
+       {
+        "hp": 37,
+        "chance": 0.125
+       },
+       {
+        "hp": 39,
+        "chance": 0.125
+       },
+       {
+        "hp": 43,
+        "chance": 0.0625
+       },
+       {
+        "hp": 45,
+        "chance": 0.125
+       },
+       {
+        "hp": 49,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "swapped"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

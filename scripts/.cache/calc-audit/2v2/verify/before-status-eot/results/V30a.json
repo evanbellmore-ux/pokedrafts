@@ -1,0 +1,592 @@
+{
+ "id": "V30a",
+ "title": "Expanding Force spreads on Psychic Terrain",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Both foes at ×1.5 power and 0.75.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 795,
+   "classes": 268,
+   "ms": 601,
+   "decisions": {
+    "sample": 1056,
+    "fail:": 1056,
+    "roll": 1056
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gardevoir",
+     "start": 143,
+     "maximum": 143,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       63,
+       0.0625
+      ],
+      [
+       64,
+       0.0625
+      ],
+      [
+       66,
+       0.125
+      ],
+      [
+       67,
+       0.0625
+      ],
+      [
+       69,
+       0.125
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       73,
+       0.125
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       76,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 70.375,
+     "min": 63,
+     "max": 78,
+     "modeTieUp": 75,
+     "modeTieDown": 66
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       75,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       81,
+       0.0625
+      ],
+      [
+       83,
+       0.0625
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       90,
+       0.0625
+      ],
+      [
+       92,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 84.0625,
+     "min": 75,
+     "max": 92,
+     "modeTieUp": 92,
+     "modeTieDown": 80
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "expandingforce",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 108,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 91,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 9,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "sample": 8,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gardevoir",
+     "start": 143,
+     "maximum": 143,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       78,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 78,
+     "min": 78,
+     "max": 78,
+     "modeTieUp": 78,
+     "modeTieDown": 78
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       92,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 92,
+     "min": 92,
+     "max": 92,
+     "modeTieUp": 92,
+     "modeTieDown": 92
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "expandingforce",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 76,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 9,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "sample": 8,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gardevoir",
+     "start": 143,
+     "maximum": 143,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       75,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 75,
+     "min": 75,
+     "max": 75,
+     "modeTieUp": 75,
+     "modeTieDown": 75
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "expandingforce",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 143,
+   "maximum": 143,
+   "low": 143,
+   "high": 143,
+   "average": 143,
+   "min": 143,
+   "max": 143,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 78,
+   "high": 63,
+   "average": 70.375,
+   "min": 63,
+   "max": 78,
+   "koChance": 0,
+   "dist": [
+    [
+     63,
+     0.0625
+    ],
+    [
+     64,
+     0.0625
+    ],
+    [
+     66,
+     0.125
+    ],
+    [
+     67,
+     0.0625
+    ],
+    [
+     69,
+     0.125
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     73,
+     0.125
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     76,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 92,
+   "high": 75,
+   "average": 84.0625,
+   "min": 75,
+   "max": 92,
+   "koChance": 0,
+   "dist": [
+    [
+     75,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.0625
+    ],
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     92,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

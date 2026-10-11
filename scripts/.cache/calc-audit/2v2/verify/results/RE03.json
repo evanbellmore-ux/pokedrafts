@@ -1,0 +1,1461 @@
+{
+ "id": "RE03",
+ "title": "Dragon Darts into a Substitute and the other foe",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "One dart each: one into Snorlax's Substitute, one into Garchomp.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 170,
+   "classes": 129,
+   "ms": 264,
+   "decisions": {
+    "fail:substitute": 42,
+    "roll": 84,
+    "fail:": 42
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "substitute": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [
+      [
+       1,
+       0.0625
+      ],
+      [
+       3,
+       0.125
+      ],
+      [
+       4,
+       0.1875
+      ],
+      [
+       6,
+       0.125
+      ],
+      [
+       7,
+       0.1875
+      ],
+      [
+       9,
+       0.1875
+      ],
+      [
+       10,
+       0.125
+      ]
+     ],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       0.0625
+      ],
+      [
+       103,
+       0.1875
+      ],
+      [
+       105,
+       0.25
+      ],
+      [
+       109,
+       0.1875
+      ],
+      [
+       111,
+       0.25
+      ],
+      [
+       115,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 107.125,
+     "min": 99,
+     "max": 115,
+     "modeTieUp": 111,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 48,
+        "takenMax": 57,
+        "breaks": 0
+       }
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      },
+      "opponent-right": {
+       "damage:-68": 0.0625,
+       "damage:-72": 0.25,
+       "damage:-74": 0.1875,
+       "damage:-78": 0.25,
+       "damage:-80": 0.1875,
+       "damage:-84": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -84,
+       "max": -68
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -84,
+       "max": -68,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 42,
+    "classes": 42,
+    "ms": 264,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "substitute": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [
+       [
+        1,
+        0.0625
+       ],
+       [
+        3,
+        0.125
+       ],
+       [
+        4,
+        0.1875
+       ],
+       [
+        6,
+        0.125
+       ],
+       [
+        7,
+        0.1875
+       ],
+       [
+        9,
+        0.1875
+       ],
+       [
+        10,
+        0.125
+       ]
+      ],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        99,
+        0.0625
+       ],
+       [
+        103,
+        0.1875
+       ],
+       [
+        105,
+        0.25
+       ],
+       [
+        109,
+        0.1875
+       ],
+       [
+        111,
+        0.25
+       ],
+       [
+        115,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 107.125,
+      "min": 99,
+      "max": 115,
+      "modeTieUp": 111,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 2,
+    "fail:": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "substitute": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [
+      [
+       10,
+       1
+      ]
+     ],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       115,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 115,
+     "min": 115,
+     "max": 115,
+     "modeTieUp": 115,
+     "modeTieDown": 115,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 48,
+        "takenMax": 48,
+        "breaks": 0
+       }
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 68,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      },
+      "opponent-right": {
+       "damage:-68": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -68,
+       "max": -68
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -68,
+       "max": -68,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "substitute": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [
+       [
+        10,
+        1
+       ]
+      ],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        115,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 115,
+      "min": 115,
+      "max": 115,
+      "modeTieUp": 115,
+      "modeTieDown": 115,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 2,
+    "fail:": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "substitute": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [
+      [
+       1,
+       1
+      ]
+     ],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragondarts",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 57,
+        "takenMax": 57,
+        "breaks": 0
+       }
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      },
+      "opponent-right": {
+       "damage:-84": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -84,
+       "max": -84
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -84,
+       "max": -84,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 12,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "substitute": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [
+       [
+        1,
+        1
+       ]
+      ],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        99,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 99,
+      "min": 99,
+      "max": 99,
+      "modeTieUp": 99,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 115,
+   "high": 99,
+   "average": 107.125,
+   "min": 99,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     105,
+     0.25
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     111,
+     0.25
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 115,
+   "high": 99,
+   "average": 107.125,
+   "min": 99,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     105,
+     0.25
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     111,
+     0.25
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

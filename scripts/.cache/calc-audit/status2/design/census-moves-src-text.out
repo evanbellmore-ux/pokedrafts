@@ -1,0 +1,2756 @@
+L moves: 73
+## acupressure games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:137-167
+--- base 137
+	acupressure: {
+		num: 367,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Acupressure",
+		pp: 30,
+		priority: 0,
+		flags: { metronome: 1 },
+		onHit(target) {
+			const stats: BoostID[] = [];
+			let stat: BoostID;
+			for (stat in target.boosts) {
+				if (target.boosts[stat] < 6) {
+					stats.push(stat);
+				}
+			}
+			if (stats.length) {
+				const randomStat = this.sample(stats);
+				const boost: SparseBoostsTable = {};
+				boost[randomStat] = 2;
+				this.boost(boost);
+			} else {
+				return false;
+			}
+		},
+		target: "adjacentAllyOrSelf",
+		type: "Normal",
+		zMove: { effect: 'crit2' },
+		contestType: "Tough",
+	},
+## aromatherapy games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:556-590 | gen8 data/mods/gen8/moves.ts:11-14
+--- base 556
+	aromatherapy: {
+		num: 312,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Aromatherapy",
+		pp: 5,
+		priority: 0,
+		flags: { snatch: 1, distance: 1, metronome: 1 },
+		onHit(target, source, move) {
+			this.add('-activate', source, 'move: Aromatherapy');
+			let success = false;
+			const allies = [...target.side.pokemon, ...target.side.allySide?.pokemon || []];
+			for (const ally of allies) {
+				if (ally !== source && !this.suppressingAbility(ally)) {
+					if (ally.hasAbility('sapsipper')) {
+						this.add('-immune', ally, '[from] ability: Sap Sipper');
+						continue;
+					}
+					if (ally.hasAbility('goodasgold')) {
+						this.add('-immune', ally, '[from] ability: Good as Gold');
+						continue;
+					}
+					if (ally.volatiles['substitute'] && !move.infiltrates) continue;
+				}
+				if (ally.cureStatus()) success = true;
+			}
+			return success;
+		},
+		target: "allyTeam",
+		type: "Grass",
+		zMove: { effect: 'heal' },
+		contestType: "Clever",
+	},
+--- gen8 11
+	aromatherapy: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## attract games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:706-761
+--- base 706
+	attract: {
+		num: 213,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Attract",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, metronome: 1 },
+		volatileStatus: 'attract',
+		condition: {
+			noCopy: true, // doesn't get copied by Baton Pass
+			onStart(pokemon, source, effect) {
+				if (!(pokemon.gender === 'M' && source.gender === 'F') && !(pokemon.gender === 'F' && source.gender === 'M')) {
+					this.debug('incompatible gender');
+					return false;
+				}
+				if (!this.runEvent('Attract', pokemon, source)) {
+					this.debug('Attract event failed');
+					return false;
+				}
+
+				if (effect.name === 'Cute Charm') {
+					this.add('-start', pokemon, 'Attract', '[from] ability: Cute Charm', `[of] ${source}`);
+				} else if (effect.name === 'Destiny Knot') {
+					this.add('-start', pokemon, 'Attract', '[from] item: Destiny Knot', `[of] ${source}`);
+				} else {
+					this.add('-start', pokemon, 'Attract');
+				}
+			},
+			onUpdate(pokemon) {
+				if (this.effectState.source && !this.effectState.source.isActive && pokemon.volatiles['attract']) {
+					this.debug(`Removing Attract volatile on ${pokemon}`);
+					pokemon.removeVolatile('attract');
+				}
+			},
+			onBeforeMovePriority: 2,
+			onBeforeMove(pokemon, target, move) {
+				this.add('-activate', pokemon, 'move: Attract', '[of] ' + this.effectState.source);
+				if (this.randomChance(1, 2)) {
+					this.add('cant', pokemon, 'Attract');
+					return false;
+				}
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Attract', '[silent]');
+			},
+		},
+		onTryImmunity(target, source) {
+			return (target.gender === 'M' && source.gender === 'F') || (target.gender === 'F' && source.gender === 'M');
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Cute",
+	},
+## autotomize games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:878-907 | gen8 data/mods/gen8/moves.ts:25-28
+--- base 878
+	autotomize: {
+		num: 475,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Autotomize",
+		pp: 15,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onTryHit(pokemon) {
+			const hasContrary = pokemon.hasAbility('contrary');
+			if ((!hasContrary && pokemon.boosts.spe === 6) || (hasContrary && pokemon.boosts.spe === -6)) {
+				return false;
+			}
+		},
+		boosts: {
+			spe: 2,
+		},
+		onHit(pokemon) {
+			if (pokemon.weighthg > 1) {
+				pokemon.weighthg = Math.max(1, pokemon.weighthg - 1000);
+				this.add('-start', pokemon, 'Autotomize');
+			}
+		},
+		target: "self",
+		type: "Steel",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Beautiful",
+	},
+--- gen8 25
+	autotomize: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## bestow games=ultra_sun_ultra_moon :: base data/moves.ts:1237-1263 | gen7 data/mods/gen7/moves.ts:35-38
+--- base 1237
+	bestow: {
+		num: 516,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Bestow",
+		pp: 15,
+		priority: 0,
+		flags: { mirror: 1, bypasssub: 1, allyanim: 1, noassist: 1, failcopycat: 1 },
+		onHit(target, source, move) {
+			if (target.item) {
+				return false;
+			}
+			const myItem = source.takeItem();
+			if (!myItem) return false;
+			if (!this.singleEvent('TakeItem', myItem, source.itemState, target, source, move, myItem) || !target.setItem(myItem)) {
+				source.item = myItem.id;
+				return false;
+			}
+			this.add('-item', target, myItem.name, '[from] move: Bestow', `[of] ${source}`);
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { spe: 2 } },
+		contestType: "Cute",
+	},
+--- gen7 35
+	bestow: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## camouflage games=ultra_sun_ultra_moon :: base data/moves.ts:2154-2183 | gen7 data/mods/gen7/moves.ts:73-76
+--- base 2154
+	camouflage: {
+		num: 293,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Camouflage",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onHit(target) {
+			let newType = 'Normal';
+			if (this.field.isTerrain('electricterrain')) {
+				newType = 'Electric';
+			} else if (this.field.isTerrain('grassyterrain')) {
+				newType = 'Grass';
+			} else if (this.field.isTerrain('mistyterrain')) {
+				newType = 'Fairy';
+			} else if (this.field.isTerrain('psychicterrain')) {
+				newType = 'Psychic';
+			}
+
+			if (target.getTypes().join() === newType || !target.setType(newType)) return false;
+			this.add('-start', target, 'typechange', newType);
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { boost: { evasion: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 73
+	camouflage: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## captivate games=ultra_sun_ultra_moon :: base data/moves.ts:2184-2204 | gen7 data/mods/gen7/moves.ts:77-80
+--- base 2184
+	captivate: {
+		num: 445,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Captivate",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1 },
+		onTryImmunity(pokemon, source) {
+			return (pokemon.gender === 'M' && source.gender === 'F') || (pokemon.gender === 'F' && source.gender === 'M');
+		},
+		boosts: {
+			spa: -2,
+		},
+		target: "allAdjacentFoes",
+		type: "Normal",
+		zMove: { boost: { spd: 2 } },
+		contestType: "Cute",
+	},
+--- gen7 77
+	captivate: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## conversion games=scarlet_violet,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:2795-2813 | champions data/mods/champions/moves.ts:141-144
+--- base 2795
+	conversion: {
+		num: 160,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Conversion",
+		pp: 30,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onHit(target) {
+			const type = this.dex.moves.get(target.moveSlots[0].id).type;
+			if (target.hasType(type) || !target.setType(type)) return false;
+			this.add('-start', target, 'typechange', type);
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		contestType: "Beautiful",
+	},
+--- champions 141
+	conversion: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+## conversion2 games=scarlet_violet,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:2814-2848 | champions data/mods/champions/moves.ts:145-148
+--- base 2814
+	conversion2: {
+		num: 176,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Conversion 2",
+		pp: 30,
+		priority: 0,
+		flags: { bypasssub: 1, metronome: 1 },
+		onHit(target, source) {
+			if (!target.lastMoveUsed) {
+				return false;
+			}
+			const possibleTypes = [];
+			const attackType = target.lastMoveUsed.type;
+			for (const typeName of this.dex.types.names()) {
+				if (source.hasType(typeName)) continue;
+				const typeCheck = this.dex.types.get(typeName).damageTaken[attackType];
+				if (typeCheck === 2 || typeCheck === 3) {
+					possibleTypes.push(typeName);
+				}
+			}
+			if (!possibleTypes.length) {
+				return false;
+			}
+			const randomType = this.sample(possibleTypes);
+
+			if (!source.setType(randomType)) return false;
+			this.add('-start', source, 'typechange', randomType);
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Beautiful",
+	},
+--- champions 145
+	conversion2: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+## corrosivegas games=champions,sword_shield :: base data/moves.ts:2914-2934 | champions data/mods/champions/moves.ts:149-152 | gen8 data/mods/gen8/moves.ts:90-93
+--- base 2914
+	corrosivegas: {
+		num: 810,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Unobtainable",
+		name: "Corrosive Gas",
+		pp: 40,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const item = target.takeItem(source);
+			if (item) {
+				this.add('-enditem', target, item.name, '[from] move: Corrosive Gas', `[of] ${source}`);
+			} else {
+				this.add('-fail', target, 'move: Corrosive Gas');
+			}
+		},
+		target: "allAdjacent",
+		type: "Poison",
+	},
+--- champions 149
+	corrosivegas: {
+		inherit: true,
+		isNonstandard: null,
+	},
+--- gen8 90
+	corrosivegas: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## courtchange games=scarlet_violet,champions,sword_shield :: base data/moves.ts:3032-3098
+--- base 3032
+	courtchange: {
+		num: 756,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Court Change",
+		pp: 10,
+		priority: 0,
+		flags: { mirror: 1, metronome: 1 },
+		onHitField(target, source) {
+			const sideConditions = [
+				'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'luckychant', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire', 'gmaxvolcalith',
+			];
+			let success = false;
+			if (this.gameType === 'freeforall') {
+				// the list of all sides in clockwise order
+				const sides = [this.sides[0], this.sides[3]!, this.sides[1], this.sides[2]!];
+				const temp: { [k: number]: typeof source.side.sideConditions } = { 0: {}, 1: {}, 2: {}, 3: {} };
+				for (const side of sides) {
+					for (const id in side.sideConditions) {
+						if (!sideConditions.includes(id)) continue;
+						temp[side.n][id] = side.sideConditions[id];
+						delete side.sideConditions[id];
+						success = true;
+					}
+				}
+				for (let i = 0; i < 4; i++) {
+					const sourceSideConditions = temp[sides[i].n];
+					const targetSide = sides[(i + 1) % 4]; // the next side in rotation
+					for (const id in sourceSideConditions) {
+						targetSide.sideConditions[id] = sourceSideConditions[id];
+						targetSide.sideConditions[id].target = targetSide;
+					}
+				}
+			} else {
+				const sourceSideConditions = source.side.sideConditions;
+				const targetSideConditions = source.side.foe.sideConditions;
+				const sourceTemp: typeof sourceSideConditions = {};
+				const targetTemp: typeof targetSideConditions = {};
+				for (const id in sourceSideConditions) {
+					if (!sideConditions.includes(id)) continue;
+					sourceTemp[id] = sourceSideConditions[id];
+					delete sourceSideConditions[id];
+					success = true;
+				}
+				for (const id in targetSideConditions) {
+					if (!sideConditions.includes(id)) continue;
+					targetTemp[id] = targetSideConditions[id];
+					delete targetSideConditions[id];
+					success = true;
+				}
+				for (const id in sourceTemp) {
+					targetSideConditions[id] = sourceTemp[id];
+					targetSideConditions[id].target = source.side.foe;
+				}
+				for (const id in targetTemp) {
+					sourceSideConditions[id] = targetTemp[id];
+					sourceSideConditions[id].target = source.side;
+				}
+			}
+			if (!success) return false;
+			this.add('-swapsideconditions');
+			this.add('-activate', source, 'move: Court Change');
+		},
+		target: "all",
+		type: "Normal",
+	},
+## craftyshield games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:3143-3173 | gen8 data/mods/gen8/moves.ts:94-97
+--- base 3143
+	craftyshield: {
+		num: 578,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Crafty Shield",
+		pp: 10,
+		priority: 3,
+		flags: {},
+		sideCondition: 'craftyshield',
+		onTry() {
+			return !!this.queue.willAct();
+		},
+		condition: {
+			duration: 1,
+			onSideStart(target, source) {
+				this.add('-singleturn', source, 'Crafty Shield');
+			},
+			onTryHitPriority: 3,
+			onTryHit(target, source, move) {
+				if (['self', 'all'].includes(move.target) || move.category !== 'Status') return;
+				this.add('-activate', target, 'move: Crafty Shield');
+				return this.NOT_FAIL;
+			},
+		},
+		target: "allySide",
+		type: "Fairy",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Clever",
+	},
+--- gen8 94
+	craftyshield: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## defog games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:3448-3482 | gen7 data/mods/gen7/moves.ts:125-147
+--- base 3448
+	defog: {
+		num: 432,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Defog",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, metronome: 1 },
+		onHit(target, source, move) {
+			let success = false;
+			if (!target.volatiles['substitute'] || move.infiltrates) success = !!this.boost({ evasion: -1 });
+			const removeAll = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
+			const removeTarget = ['reflect', 'lightscreen', 'auroraveil', 'safeguard', 'mist', ...removeAll];
+			for (const targetCondition of removeTarget) {
+				if (target.side.removeSideCondition(targetCondition)) {
+					if (!removeAll.includes(targetCondition)) continue;
+					this.add('-sideend', target.side, this.dex.conditions.get(targetCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			for (const sideCondition of removeAll) {
+				if (source.side.removeSideCondition(sideCondition)) {
+					this.add('-sideend', source.side, this.dex.conditions.get(sideCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			this.field.clearTerrain();
+			return success;
+		},
+		target: "normal",
+		type: "Flying",
+		zMove: { boost: { accuracy: 1 } },
+		contestType: "Cool",
+	},
+--- gen7 125
+	defog: {
+		inherit: true,
+		onHit(target, source, move) {
+			let success = false;
+			if (!target.volatiles['substitute'] || move.infiltrates) success = !!this.boost({ evasion: -1 });
+			const removeAll = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'];
+			const removeTarget = ['reflect', 'lightscreen', 'auroraveil', 'safeguard', 'mist', ...removeAll];
+			for (const targetCondition of removeTarget) {
+				if (target.side.removeSideCondition(targetCondition)) {
+					if (!removeAll.includes(targetCondition)) continue;
+					this.add('-sideend', target.side, this.dex.conditions.get(targetCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			for (const sideCondition of removeAll) {
+				if (source.side.removeSideCondition(sideCondition)) {
+					this.add('-sideend', source.side, this.dex.conditions.get(sideCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			return success;
+		},
+	},
+## doodle games=scarlet_violet :: base data/moves.ts:3814-3846 | champions data/mods/champions/moves.ts:212-215
+--- base 3814
+	doodle: {
+		num: 867,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Doodle",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		onHit(target, source, move) {
+			let success: boolean | null = false;
+			if (!target.getAbility().flags['failroleplay']) {
+				for (const pokemon of source.alliesAndSelf()) {
+					if (pokemon.ability === target.ability || pokemon.getAbility().flags['cantsuppress']) continue;
+					const oldAbility = pokemon.setAbility(target.ability, null, move);
+					if (oldAbility) {
+						success = true;
+					} else if (!success && oldAbility === null) {
+						success = null;
+					}
+				}
+			}
+			if (!success) {
+				if (success === false) {
+					this.add('-fail', source);
+				}
+				this.attrLastMove('[still]');
+				return this.NOT_FAIL;
+			}
+		},
+		target: "adjacentFoe",
+		type: "Normal",
+	},
+--- champions 212
+	doodle: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+## electrify games=champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:4557-4588 | champions data/mods/champions/moves.ts:265-268 | gen8 data/mods/gen8/moves.ts:128-131
+--- base 4557
+	electrify: {
+		num: 582,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Electrify",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		volatileStatus: 'electrify',
+		onTryHit(target) {
+			if (!this.queue.willMove(target) && target.activeTurns) return false;
+		},
+		condition: {
+			duration: 1,
+			onStart(target) {
+				this.add('-singleturn', target, 'move: Electrify');
+			},
+			onModifyTypePriority: -2,
+			onModifyType(move) {
+				if (move.id !== 'struggle') {
+					this.debug('Electrify making move type electric');
+					move.type = 'Electric';
+				}
+			},
+		},
+		target: "normal",
+		type: "Electric",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- champions 265
+	electrify: {
+		inherit: true,
+		isNonstandard: null,
+	},
+--- gen8 128
+	electrify: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## embargo games=ultra_sun_ultra_moon :: base data/moves.ts:4680-4707 | gen7 data/mods/gen7/moves.ts:194-197
+--- base 4680
+	embargo: {
+		num: 373,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Embargo",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1 },
+		volatileStatus: 'embargo',
+		condition: {
+			duration: 5,
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Embargo');
+				this.singleEvent('End', pokemon.getItem(), pokemon.itemState, pokemon);
+			},
+			// Item suppression implemented in Pokemon.ignoringItem() within sim/pokemon.js
+			onResidualOrder: 21,
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Embargo');
+			},
+		},
+		target: "normal",
+		type: "Dark",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 194
+	embargo: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## entrainment games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:4860-4888
+--- base 4860
+	entrainment: {
+		num: 494,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Entrainment",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onTryHit(target, source) {
+			if (target === source || target.volatiles['dynamax']) return false;
+			if (
+				target.ability === source.ability ||
+				target.getAbility().flags['cantsuppress'] || target.ability === 'truant' ||
+				source.getAbility().flags['noentrain']
+			) {
+				return false;
+			}
+		},
+		onHit(target, source) {
+			const oldAbility = target.setAbility(source.ability, source);
+			if (!oldAbility) return oldAbility as false | null;
+			if (!target.isAlly(source)) target.volatileStaleness = 'external';
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Cute",
+	},
+## flowershield games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:5849-5881 | gen8 data/mods/gen8/moves.ts:141-144
+--- base 5849
+	flowershield: {
+		num: 579,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Flower Shield",
+		pp: 10,
+		priority: 0,
+		flags: { distance: 1, metronome: 1 },
+		onHitField(t, source, move) {
+			const targets: Pokemon[] = [];
+			for (const pokemon of this.getAllActive()) {
+				if (
+					pokemon.hasType('Grass') &&
+					(!pokemon.volatiles['maxguard'] ||
+						this.runEvent('TryHit', pokemon, source, move))
+				) {
+					// This move affects every Grass-type Pokemon in play.
+					targets.push(pokemon);
+				}
+			}
+			let success = false;
+			for (const target of targets) {
+				success = this.boost({ def: 1 }, target, source, move) || success;
+			}
+			return success;
+		},
+		target: "all",
+		type: "Fairy",
+		zMove: { boost: { def: 1 } },
+		contestType: "Beautiful",
+	},
+--- gen8 141
+	flowershield: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## foresight games=ultra_sun_ultra_moon :: base data/moves.ts:6093-6125 | gen7 data/mods/gen7/moves.ts:247-250
+--- base 6093
+	foresight: {
+		num: 193,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Foresight",
+		pp: 40,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, metronome: 1 },
+		volatileStatus: 'foresight',
+		onTryHit(target) {
+			if (target.volatiles['miracleeye']) return false;
+		},
+		condition: {
+			noCopy: true,
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Foresight');
+			},
+			onNegateImmunity(pokemon, type) {
+				if (pokemon.hasType('Ghost') && ['Normal', 'Fighting'].includes(type)) return false;
+			},
+			onModifyBoost(boosts) {
+				if (boosts.evasion && boosts.evasion > 0) {
+					boosts.evasion = 0;
+				}
+			},
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'crit2' },
+		contestType: "Clever",
+	},
+--- gen7 247
+	foresight: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## forestscurse games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:6126-6144
+--- base 6126
+	forestscurse: {
+		num: 571,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Forest's Curse",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onHit(target) {
+			if (target.hasType('Grass')) return false;
+			if (!target.addType('Grass')) return false;
+			this.add('-start', target, 'typeadd', 'Grass', '[from] move: Forest\'s Curse');
+		},
+		target: "normal",
+		type: "Grass",
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		contestType: "Clever",
+	},
+## gastroacid games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:6427-6461
+--- base 6427
+	gastroacid: {
+		num: 380,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Gastro Acid",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		volatileStatus: 'gastroacid',
+		onTryHit(target) {
+			if (target.getAbility().flags['cantsuppress']) {
+				return false;
+			}
+			if (target.hasItem('Ability Shield')) {
+				this.add('-block', target, 'item: Ability Shield');
+				return null;
+			}
+		},
+		condition: {
+			// Ability suppression implemented in Pokemon.ignoringAbility() within sim/pokemon.ts
+			onStart(pokemon) {
+				if (pokemon.hasItem('Ability Shield')) return false;
+				this.add('-endability', pokemon);
+				this.singleEvent('End', pokemon.getAbility(), pokemon.abilityState, pokemon, pokemon, 'gastroacid');
+			},
+			onCopy(pokemon) {
+				if (pokemon.getAbility().flags['cantsuppress']) pokemon.removeVolatile('gastroacid');
+			},
+		},
+		target: "normal",
+		type: "Poison",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Tough",
+	},
+## gearup games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:6479-6505 | gen8 data/mods/gen8/moves.ts:178-181
+--- base 6479
+	gearup: {
+		num: 674,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Gear Up",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, bypasssub: 1, metronome: 1 },
+		onHitSide(side, source, move) {
+			const targets = side.allies().filter(target => (
+				target.hasAbility(['plus', 'minus']) &&
+				(!target.volatiles['maxguard'] || this.runEvent('TryHit', target, source, move))
+			));
+			if (!targets.length) return false;
+			let didSomething = false;
+			for (const target of targets) {
+				didSomething = this.boost({ atk: 1, spa: 1 }, target, source, move, false, true) || didSomething;
+			}
+			return didSomething;
+		},
+		target: "allySide",
+		type: "Steel",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- gen8 178
+	gearup: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## geomancy games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:6529-6559 | gen8 data/mods/gen8/moves.ts:182-185
+--- base 6529
+	geomancy: {
+		num: 601,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Geomancy",
+		pp: 10,
+		priority: 0,
+		flags: { charge: 1, nonsky: 1, metronome: 1, nosleeptalk: 1, failinstruct: 1 },
+		onTryMove(attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-prepare', attacker, move.name);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+		boosts: {
+			spa: 2,
+			spd: 2,
+			spe: 2,
+		},
+		target: "self",
+		type: "Fairy",
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		contestType: "Beautiful",
+	},
+--- gen8 182
+	geomancy: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## guardsplit games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:7950-7972
+--- base 7950
+	guardsplit: {
+		num: 470,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Guard Split",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const newdef = Math.floor((target.storedStats.def + source.storedStats.def) / 2);
+			target.storedStats.def = newdef;
+			source.storedStats.def = newdef;
+			const newspd = Math.floor((target.storedStats.spd + source.storedStats.spd) / 2);
+			target.storedStats.spd = newspd;
+			source.storedStats.spd = newspd;
+			this.add('-activate', source, 'move: Guard Split', `[of] ${target}`);
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## guardswap games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:7973-8001
+--- base 7973
+	guardswap: {
+		num: 385,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Guard Swap",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const targetBoosts: SparseBoostsTable = {};
+			const sourceBoosts: SparseBoostsTable = {};
+
+			const defSpd: BoostID[] = ['def', 'spd'];
+			for (const stat of defSpd) {
+				targetBoosts[stat] = target.boosts[stat];
+				sourceBoosts[stat] = source.boosts[stat];
+			}
+
+			source.setBoost(targetBoosts);
+			target.setBoost(sourceBoosts);
+
+			this.add('-swapboost', source, target, 'def, spd', '[from] move: Guard Swap');
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## healbell games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:8241-8273 | gen7 data/mods/gen7/moves.ts:303-318
+--- base 8241
+	healbell: {
+		num: 215,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Heal Bell",
+		pp: 5,
+		priority: 0,
+		flags: { snatch: 1, sound: 1, distance: 1, bypasssub: 1, metronome: 1 },
+		onHit(target, source) {
+			this.add('-activate', source, 'move: Heal Bell');
+			let success = false;
+			const allies = [...target.side.pokemon, ...target.side.allySide?.pokemon || []];
+			for (const ally of allies) {
+				if (ally !== source && !this.suppressingAbility(ally)) {
+					if (ally.hasAbility('soundproof')) {
+						this.add('-immune', ally, '[from] ability: Soundproof');
+						continue;
+					}
+					if (ally.hasAbility('goodasgold')) {
+						this.add('-immune', ally, '[from] ability: Good as Gold');
+						continue;
+					}
+				}
+				if (ally.cureStatus()) success = true;
+			}
+			return success;
+		},
+		target: "allyTeam",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Beautiful",
+	},
+--- gen7 303
+	healbell: {
+		inherit: true,
+		onHit(target, source) {
+			this.add('-activate', source, 'move: Heal Bell');
+			let success = false;
+			const allies = [...target.side.pokemon, ...target.side.allySide?.pokemon || []];
+			for (const ally of allies) {
+				if (ally.hasAbility('soundproof') && !this.suppressingAbility(ally)) {
+					this.add('-immune', ally, '[from] ability: Soundproof');
+					continue;
+				}
+				if (ally.cureStatus()) success = true;
+			}
+			return success;
+		},
+	},
+## healblock games=ultra_sun_ultra_moon :: base data/moves.ts:8274-8348 | gen7 data/mods/gen7/moves.ts:319-322
+--- base 8274
+	healblock: {
+		num: 377,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Heal Block",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1 },
+		volatileStatus: 'healblock',
+		condition: {
+			duration: 5,
+			durationCallback(target, source, effect) {
+				if (effect?.name === "Psychic Noise") {
+					return 2;
+				}
+				if (source?.hasAbility('persistent')) {
+					this.add('-activate', source, 'ability: Persistent', '[move] Heal Block');
+					return 7;
+				}
+				return 5;
+			},
+			onStart(pokemon, source) {
+				this.add('-start', pokemon, 'move: Heal Block');
+				source.moveThisTurnResult = true;
+			},
+			onDisableMove(pokemon) {
+				for (const moveSlot of pokemon.moveSlots) {
+					if (this.dex.moves.get(moveSlot.id).flags['heal']) {
+						pokemon.disableMove(moveSlot.id);
+					}
+				}
+			},
+			onBeforeMovePriority: 6,
+			onBeforeMove(pokemon, target, move) {
+				if (move.flags['heal'] && !move.isZ && !move.isMax) {
+					this.add('cant', pokemon, 'move: Heal Block', move);
+					return false;
+				}
+			},
+			onModifyMove(move, pokemon) {
+				if (move.flags['heal'] && !move.isZ && !move.isMax) {
+					this.add('cant', pokemon, 'move: Heal Block', move);
+					return false;
+				}
+			},
+			onResidualOrder: 20,
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'move: Heal Block');
+			},
+			onTryHeal(damage, target, source, effect) {
+				if (effect && (effect.id === 'zpower' || (effect as Move).isZ)) return damage;
+				if (source && target !== source && target.hp !== target.maxhp && effect.name === "Pollen Puff") {
+					this.attrLastMove('[still]');
+					// FIXME: Wrong error message, correct one not supported yet
+					this.add('cant', source, 'move: Heal Block', effect);
+					return null;
+				}
+				return false;
+			},
+			onRestart(target, source, effect) {
+				if (effect?.name === 'Psychic Noise') return;
+
+				this.add('-fail', target, 'move: Heal Block'); // Succeeds to suppress downstream messages
+				if (!source.moveThisTurnResult) {
+					source.moveThisTurnResult = false;
+				}
+			},
+		},
+		target: "allAdjacentFoes",
+		type: "Psychic",
+		zMove: { boost: { spa: 2 } },
+		contestType: "Clever",
+	},
+--- gen7 319
+	healblock: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## heartswap games=scarlet_violet,ultra_sun_ultra_moon :: base data/moves.ts:8448-8476 | champions data/mods/champions/moves.ts:460-463 | gen8 data/mods/gen8/moves.ts:338-341 | gen7 data/mods/gen7/moves.ts:364-367
+--- base 8448
+	heartswap: {
+		num: 391,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Heart Swap",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const targetBoosts: SparseBoostsTable = {};
+			const sourceBoosts: SparseBoostsTable = {};
+
+			let i: BoostID;
+			for (i in target.boosts) {
+				targetBoosts[i] = target.boosts[i];
+				sourceBoosts[i] = source.boosts[i];
+			}
+
+			target.setBoost(sourceBoosts);
+			source.setBoost(targetBoosts);
+
+			this.add('-swapboost', source, target, '[from] move: Heart Swap');
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { effect: 'crit2' },
+		contestType: "Clever",
+	},
+--- champions 460
+	heartswap: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+--- gen8 338
+	heartswap: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+--- gen7 364
+	heartswap: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## iondeluge games=ultra_sun_ultra_moon :: base data/moves.ts:9676-9705 | gen7 data/mods/gen7/moves.ts:480-483
+--- base 9676
+	iondeluge: {
+		num: 569,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Ion Deluge",
+		pp: 25,
+		priority: 1,
+		flags: { metronome: 1 },
+		pseudoWeather: 'iondeluge',
+		condition: {
+			duration: 1,
+			onFieldStart(target, source, sourceEffect) {
+				this.add('-fieldactivate', 'move: Ion Deluge');
+				this.hint(`Normal-type moves become Electric-type after using ${sourceEffect}.`);
+			},
+			onModifyTypePriority: -2,
+			onModifyType(move) {
+				if (move.type === 'Normal') {
+					move.type = 'Electric';
+					this.debug(move.name + "'s type changed to Electric");
+				}
+			},
+		},
+		target: "all",
+		type: "Electric",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Beautiful",
+	},
+--- gen7 480
+	iondeluge: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## luckychant games=ultra_sun_ultra_moon :: base data/moves.ts:10502-10529 | gen7 data/mods/gen7/moves.ts:538-541
+--- base 10502
+	luckychant: {
+		num: 381,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Lucky Chant",
+		pp: 30,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		sideCondition: 'luckychant',
+		condition: {
+			duration: 5,
+			onSideStart(side) {
+				this.add('-sidestart', side, 'move: Lucky Chant'); // "The Lucky Chant shielded [side.name]'s team from critical hits!"
+			},
+			onCriticalHit: false,
+			onSideResidualOrder: 26,
+			onSideResidualSubOrder: 6,
+			onSideEnd(side) {
+				this.add('-sideend', side, 'move: Lucky Chant'); // "[side.name]'s team's Lucky Chant wore off!"
+			},
+		},
+		target: "allySide",
+		type: "Normal",
+		zMove: { boost: { evasion: 1 } },
+		contestType: "Cute",
+	},
+--- gen7 538
+	luckychant: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## magiccoat games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:10692-10738 | gen8 data/mods/gen8/moves.ts:396-399
+--- base 10692
+	magiccoat: {
+		num: 277,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Magic Coat",
+		pp: 15,
+		priority: 4,
+		flags: { metronome: 1 },
+		volatileStatus: 'magiccoat',
+		condition: {
+			duration: 1,
+			onStart(target, source, effect) {
+				this.add('-singleturn', target, 'move: Magic Coat');
+				if (effect?.effectType === 'Move') {
+					this.effectState.pranksterBoosted = effect.pranksterBoosted;
+				}
+			},
+			onTryHitPriority: 2,
+			onTryHit(target, source, move) {
+				if (target === source || move.hasBounced || !move.flags['reflectable'] || target.isSemiInvulnerable()) {
+					return;
+				}
+				const newMove = this.dex.getActiveMove(move.id);
+				newMove.hasBounced = true;
+				newMove.pranksterBoosted = this.effectState.pranksterBoosted;
+				this.actions.useMove(newMove, target, { target: source });
+				return null;
+			},
+			onAllyTryHitSide(target, source, move) {
+				if (target.isAlly(source) || move.hasBounced || !move.flags['reflectable'] || target.isSemiInvulnerable()) {
+					return;
+				}
+				const newMove = this.dex.getActiveMove(move.id);
+				newMove.hasBounced = true;
+				newMove.pranksterBoosted = false;
+				this.actions.useMove(newMove, this.effectState.target, { target: source });
+				move.hasBounced = true; // only bounce once in free-for-all battles
+				return null;
+			},
+		},
+		target: "self",
+		type: "Psychic",
+		zMove: { boost: { spd: 2 } },
+		contestType: "Beautiful",
+	},
+--- gen8 396
+	magiccoat: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## magicpowder games=scarlet_violet,champions,sword_shield :: base data/moves.ts:10739-10754
+--- base 10739
+	magicpowder: {
+		num: 750,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Magic Powder",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1, powder: 1 },
+		onHit(target) {
+			if (target.getTypes().join() === 'Psychic' || !target.setType('Psychic')) return false;
+			this.add('-start', target, 'typechange', 'Psychic');
+		},
+		target: "normal",
+		type: "Psychic",
+	},
+## magicroom games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:10755-10798
+--- base 10755
+	magicroom: {
+		num: 478,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Magic Room",
+		pp: 10,
+		priority: 0,
+		flags: { mirror: 1, metronome: 1 },
+		pseudoWeather: 'magicroom',
+		condition: {
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-activate', source, 'ability: Persistent', '[move] Magic Room');
+					return 7;
+				}
+				return 5;
+			},
+			onFieldStart(target, source) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-fieldstart', 'move: Magic Room', `[of] ${source}`, '[persistent]');
+				} else {
+					this.add('-fieldstart', 'move: Magic Room', `[of] ${source}`);
+				}
+				for (const mon of this.getAllActive()) {
+					this.singleEvent('End', mon.getItem(), mon.itemState, mon);
+				}
+			},
+			onFieldRestart(target, source) {
+				this.field.removePseudoWeather('magicroom');
+			},
+			// Item suppression implemented in Pokemon.ignoringItem() within sim/pokemon.js
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 6,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Magic Room', '[of] ' + this.effectState.source);
+			},
+		},
+		target: "all",
+		type: "Psychic",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Clever",
+	},
+## magneticflux games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:10827-10853
+--- base 10827
+	magneticflux: {
+		num: 602,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Magnetic Flux",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, distance: 1, bypasssub: 1, metronome: 1 },
+		onHitSide(side, source, move) {
+			const targets = side.allies().filter(ally => (
+				ally.hasAbility(['plus', 'minus']) &&
+				(!ally.volatiles['maxguard'] || this.runEvent('TryHit', ally, source, move))
+			));
+			if (!targets.length) return false;
+
+			let didSomething = false;
+			for (const target of targets) {
+				didSomething = this.boost({ def: 1, spd: 1 }, target, source, move, false, true) || didSomething;
+			}
+			return didSomething;
+		},
+		target: "allySide",
+		type: "Electric",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Clever",
+	},
+## matblock games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:10984-11027 | gen8 data/mods/gen8/moves.ts:400-403
+--- base 10984
+	matblock: {
+		num: 561,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Mat Block",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, nonsky: 1, noassist: 1, failcopycat: 1 },
+		stallingMove: true,
+		sideCondition: 'matblock',
+		onTry(source) {
+			if (source.activeMoveActions > 1) {
+				this.hint("Mat Block only works on your first turn out.");
+				return false;
+			}
+			return !!this.queue.willAct();
+		},
+		condition: {
+			duration: 1,
+			onSideStart(target, source) {
+				this.add('-singleturn', source, 'Mat Block');
+			},
+			onTryHitPriority: 3,
+			onTryHit(target, source, move) {
+				if (move.target === 'self') return;
+				if (this.checkMoveBypassesProtect(move, source, target, false)) return;
+				this.add('-activate', target, 'move: Mat Block', move.name);
+				const lockedmove = source.getVolatile('lockedmove');
+				if (lockedmove) {
+					// Outrage counter is reset
+					if (source.volatiles['lockedmove'].duration === 2) {
+						delete source.volatiles['lockedmove'];
+					}
+				}
+				return this.NOT_FAIL;
+			},
+		},
+		target: "allySide",
+		type: "Fighting",
+		zMove: { boost: { def: 1 } },
+		contestType: "Cool",
+	},
+--- gen8 400
+	matblock: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## minimize games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:11918-11950
+--- base 11918
+	minimize: {
+		num: 107,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Minimize",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		volatileStatus: 'minimize',
+		condition: {
+			noCopy: true,
+			onRestart: () => null,
+			onSourceModifyDamage(damage, source, target, move) {
+				if (move.flags['minimize']) {
+					return this.chainModify(2);
+				}
+			},
+			onAccuracy(accuracy, target, source, move) {
+				if (move.flags['minimize']) {
+					return true;
+				}
+				return accuracy;
+			},
+		},
+		boosts: {
+			evasion: 2,
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Cute",
+	},
+## miracleeye games=ultra_sun_ultra_moon :: base data/moves.ts:11951-11983 | gen7 data/mods/gen7/moves.ts:583-586
+--- base 11951
+	miracleeye: {
+		num: 357,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Miracle Eye",
+		pp: 40,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, metronome: 1 },
+		volatileStatus: 'miracleeye',
+		onTryHit(target) {
+			if (target.volatiles['foresight']) return false;
+		},
+		condition: {
+			noCopy: true,
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Miracle Eye');
+			},
+			onNegateImmunity(pokemon, type) {
+				if (pokemon.hasType('Dark') && type === 'Psychic') return false;
+			},
+			onModifyBoost(boosts) {
+				if (boosts.evasion && boosts.evasion > 0) {
+					boosts.evasion = 0;
+				}
+			},
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 583
+	miracleeye: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## mist games=scarlet_violet,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:12072-12113 | champions data/mods/champions/moves.ts:624-627
+--- base 12072
+	mist: {
+		num: 54,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Mist",
+		pp: 30,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		sideCondition: 'mist',
+		condition: {
+			duration: 5,
+			onTryBoost(boost, target, source, effect) {
+				if (effect.effectType === 'Move' && effect.infiltrates && !target.isAlly(source)) return;
+				if (source && target !== source) {
+					let showMsg = false;
+					let i: BoostID;
+					for (i in boost) {
+						if (boost[i]! < 0) {
+							delete boost[i];
+							showMsg = true;
+						}
+					}
+					if (showMsg && !(effect as ActiveMove).secondaries) {
+						this.add('-activate', target, 'move: Mist');
+					}
+				}
+			},
+			onSideStart(side) {
+				this.add('-sidestart', side, 'Mist');
+			},
+			onSideResidualOrder: 26,
+			onSideResidualSubOrder: 4,
+			onSideEnd(side) {
+				this.add('-sideend', side, 'Mist');
+			},
+		},
+		target: "allySide",
+		type: "Ice",
+		zMove: { effect: 'heal' },
+		contestType: "Beautiful",
+	},
+--- champions 624
+	mist: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+## mudsport games=ultra_sun_ultra_moon :: base data/moves.ts:12456-12489 | gen7 data/mods/gen7/moves.ts:651-654
+--- base 12456
+	mudsport: {
+		num: 300,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Mud Sport",
+		pp: 15,
+		priority: 0,
+		flags: { nonsky: 1, metronome: 1 },
+		pseudoWeather: 'mudsport',
+		condition: {
+			duration: 5,
+			onFieldStart(field, source) {
+				this.add('-fieldstart', 'move: Mud Sport', `[of] ${source}`);
+			},
+			onBasePowerPriority: 1,
+			onBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Electric') {
+					this.debug('mud sport weaken');
+					return this.chainModify([1352, 4096]);
+				}
+			},
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 4,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Mud Sport');
+			},
+		},
+		target: "all",
+		type: "Ground",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Cute",
+	},
+--- gen7 651
+	mudsport: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## nightmare games=ultra_sun_ultra_moon :: base data/moves.ts:12697-12725 | gen7 data/mods/gen7/moves.ts:675-678
+--- base 12697
+	nightmare: {
+		num: 171,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Nightmare",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		volatileStatus: 'nightmare',
+		condition: {
+			noCopy: true,
+			onStart(pokemon) {
+				if (pokemon.status !== 'slp' && !pokemon.hasAbility('comatose')) {
+					return false;
+				}
+				this.add('-start', pokemon, 'Nightmare');
+			},
+			onResidualOrder: 11,
+			onResidual(pokemon) {
+				this.damage(pokemon.baseMaxhp / 4);
+			},
+		},
+		target: "normal",
+		type: "Ghost",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 675
+	nightmare: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## noretreat games=scarlet_violet,champions,sword_shield :: base data/moves.ts:12788-12821
+--- base 12788
+	noretreat: {
+		num: 748,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "No Retreat",
+		pp: 5,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		volatileStatus: 'noretreat',
+		onTry(source, target, move) {
+			if (source.volatiles['noretreat']) return false;
+			if (source.volatiles['trapped']) {
+				delete move.volatileStatus;
+			}
+		},
+		condition: {
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'move: No Retreat');
+			},
+			onTrapPokemon(pokemon) {
+				pokemon.tryTrap();
+			},
+		},
+		boosts: {
+			atk: 1,
+			def: 1,
+			spa: 1,
+			spd: 1,
+			spe: 1,
+		},
+		target: "self",
+		type: "Fighting",
+	},
+## octolock games=champions,sword_shield :: base data/moves.ts:12961-12995 | champions data/mods/champions/moves.ts:673-676 | gen8 data/mods/gen8/moves.ts:543-546
+--- base 12961
+	octolock: {
+		num: 753,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Octolock",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		onTryImmunity(target) {
+			return this.dex.getImmunity('trapped', target);
+		},
+		volatileStatus: 'octolock',
+		condition: {
+			onStart(pokemon, source) {
+				this.add('-start', pokemon, 'move: Octolock', `[of] ${source}`);
+			},
+			onResidualOrder: 14,
+			onResidual(pokemon) {
+				const source = this.effectState.source;
+				if (source && (!source.isActive || source.hp <= 0 || !source.activeTurns)) {
+					delete pokemon.volatiles['octolock'];
+					this.add('-end', pokemon, 'Octolock', '[partiallytrapped]', '[silent]');
+					return;
+				}
+				this.boost({ def: -1, spd: -1 }, pokemon, source, this.dex.getActiveMove('octolock'));
+			},
+			onTrapPokemon(pokemon) {
+				if (this.effectState.source?.isActive) pokemon.tryTrap();
+			},
+		},
+		target: "normal",
+		type: "Fighting",
+	},
+--- champions 673
+	octolock: {
+		inherit: true,
+		isNonstandard: null,
+	},
+--- gen8 543
+	octolock: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## odorsleuth games=ultra_sun_ultra_moon :: base data/moves.ts:12996-13014 | gen7 data/mods/gen7/moves.ts:683-686
+--- base 12996
+	odorsleuth: {
+		num: 316,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Odor Sleuth",
+		pp: 40,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		volatileStatus: 'foresight',
+		onTryHit(target) {
+			if (target.volatiles['miracleeye']) return false;
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { atk: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 683
+	odorsleuth: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## powder games=ultra_sun_ultra_moon :: base data/moves.ts:13660-13690 | gen7 data/mods/gen7/moves.ts:703-706
+--- base 13660
+	powder: {
+		num: 600,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Powder",
+		pp: 20,
+		priority: 1,
+		flags: { protect: 1, reflectable: 1, mirror: 1, bypasssub: 1, metronome: 1, powder: 1 },
+		volatileStatus: 'powder',
+		condition: {
+			duration: 1,
+			onStart(target) {
+				this.add('-singleturn', target, 'Powder');
+			},
+			onTryMovePriority: -1,
+			onTryMove(pokemon, target, move) {
+				if (move.type === 'Fire') {
+					this.add('-activate', pokemon, 'move: Powder', `[move] ${move.name}`);
+					this.damage(this.clampIntRange(Math.round(pokemon.maxhp / 4), 1));
+					this.attrLastMove('[still]');
+					return false;
+				}
+			},
+		},
+		target: "normal",
+		type: "Bug",
+		zMove: { boost: { spd: 2 } },
+		contestType: "Clever",
+	},
+--- gen7 703
+	powder: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## powershift games=champions :: base data/moves.ts:13721-13759 | champions data/mods/champions/moves.ts:717-720
+--- base 13721
+	powershift: {
+		num: 829,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Unobtainable",
+		name: "Power Shift",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1 },
+		volatileStatus: 'powershift',
+		condition: {
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Power Shift');
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onCopy(pokemon) {
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Power Shift');
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onRestart(pokemon) {
+				pokemon.removeVolatile('Power Shift');
+			},
+		},
+		target: "self",
+		type: "Normal",
+	},
+--- champions 717
+	powershift: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## powersplit games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:13760-13782
+--- base 13760
+	powersplit: {
+		num: 471,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Power Split",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const newatk = Math.floor((target.storedStats.atk + source.storedStats.atk) / 2);
+			target.storedStats.atk = newatk;
+			source.storedStats.atk = newatk;
+			const newspa = Math.floor((target.storedStats.spa + source.storedStats.spa) / 2);
+			target.storedStats.spa = newspa;
+			source.storedStats.spa = newspa;
+			this.add('-activate', source, 'move: Power Split', `[of] ${target}`);
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## powerswap games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:13783-13811
+--- base 13783
+	powerswap: {
+		num: 384,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Power Swap",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const targetBoosts: SparseBoostsTable = {};
+			const sourceBoosts: SparseBoostsTable = {};
+
+			const atkSpa: BoostID[] = ['atk', 'spa'];
+			for (const stat of atkSpa) {
+				targetBoosts[stat] = target.boosts[stat];
+				sourceBoosts[stat] = source.boosts[stat];
+			}
+
+			source.setBoost(targetBoosts);
+			target.setBoost(sourceBoosts);
+
+			this.add('-swapboost', source, target, 'atk, spa', '[from] move: Power Swap');
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## powertrick games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:13812-13851
+--- base 13812
+	powertrick: {
+		num: 379,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Power Trick",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		volatileStatus: 'powertrick',
+		condition: {
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Power Trick');
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onCopy(pokemon) {
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Power Trick');
+				const newatk = pokemon.storedStats.def;
+				const newdef = pokemon.storedStats.atk;
+				pokemon.storedStats.atk = newatk;
+				pokemon.storedStats.def = newdef;
+			},
+			onRestart(pokemon) {
+				pokemon.removeVolatile('Power Trick');
+			},
+		},
+		target: "self",
+		type: "Psychic",
+		zMove: { boost: { atk: 1 } },
+		contestType: "Clever",
+	},
+## psychoshift games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:14188-14211 | gen8 data/mods/gen8/moves.ts:559-562
+--- base 14188
+	psychoshift: {
+		num: 375,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Psycho Shift",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		onTryHit(target, source, move) {
+			if (!source.status) return false;
+			move.status = source.status;
+		},
+		self: {
+			onHit(pokemon) {
+				pokemon.cureStatus();
+			},
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spa: 2 } },
+		contestType: "Clever",
+	},
+--- gen8 559
+	psychoshift: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## psychup games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:14212-14244
+--- base 14212
+	psychup: {
+		num: 244,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Psych Up",
+		pp: 10,
+		priority: 0,
+		flags: { bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			let i: BoostID;
+			for (i in target.boosts) {
+				source.boosts[i] = target.boosts[i];
+			}
+
+			const volatilesToCopy = ['dragoncheer', 'focusenergy', 'gmaxchistrike', 'laserfocus'];
+			// we need to remove all crit stage volatiles first; otherwise copying e.g. dragoncheer onto a mon with focusenergy
+			// will crash the server (since addVolatile fails due to overlap, leaving the source mon with no hasDragonType to set)
+			for (const volatile of volatilesToCopy) source.removeVolatile(volatile);
+			for (const volatile of volatilesToCopy) {
+				if (target.volatiles[volatile]) {
+					source.addVolatile(volatile);
+					if (volatile === 'gmaxchistrike') source.volatiles[volatile].layers = target.volatiles[volatile].layers;
+					if (volatile === 'dragoncheer') source.volatiles[volatile].hasDragonType = target.volatiles[volatile].hasDragonType;
+				}
+			}
+			this.add('-copyboost', source, target, '[from] move: Psych Up');
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Clever",
+	},
+## purify games=sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:14347-14369 | champions data/mods/champions/moves.ts:757-760 | gen8 data/mods/gen8/moves.ts:563-566 | gen7 data/mods/gen7/moves.ts:739-745
+--- base 14347
+	purify: {
+		num: 685,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Purify",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, heal: 1, metronome: 1 },
+		onHit(target, source) {
+			if (!target.cureStatus()) {
+				this.add('-fail', source);
+				this.attrLastMove('[still]');
+				return this.NOT_FAIL;
+			}
+			this.heal(Math.ceil(source.maxhp * 0.5), source);
+		},
+		target: "normal",
+		type: "Poison",
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		contestType: "Beautiful",
+	},
+--- champions 757
+	purify: {
+		inherit: true,
+		pp: 5,
+	},
+--- gen8 563
+	purify: {
+		inherit: true,
+		isNonstandard: null,
+	},
+--- gen7 739
+	purify: {
+		inherit: true,
+		onHit(target, source) {
+			if (!target.cureStatus()) return false;
+			this.heal(Math.ceil(source.maxhp * 0.5), source);
+		},
+	},
+## recycle games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:14822-14842
+--- base 14822
+	recycle: {
+		num: 278,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Recycle",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onHit(pokemon, source, move) {
+			if (pokemon.item || !pokemon.lastItem) return false;
+			const item = pokemon.lastItem;
+			pokemon.lastItem = '';
+			this.add('-item', pokemon, this.dex.items.get(item), '[from] move: Recycle');
+			pokemon.setItem(item, source, move);
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { boost: { spe: 2 } },
+		contestType: "Clever",
+	},
+## reflecttype games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:14884-14915
+--- base 14884
+	reflecttype: {
+		num: 513,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Reflect Type",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			if (source.species && (source.species.num === 493 || source.species.num === 773)) return false;
+			if (source.terastallized) return false;
+			const oldApparentType = source.apparentType;
+			let newBaseTypes = target.getTypes(true).filter(type => type !== '???');
+			if (!newBaseTypes.length) {
+				if (target.addedType) {
+					newBaseTypes = ['Normal'];
+				} else {
+					return false;
+				}
+			}
+			this.add('-start', source, 'typechange', '[from] move: Reflect Type', `[of] ${target}`);
+			source.setType(newBaseTypes);
+			source.addedType = target.addedType;
+			source.knownType = target.isAlly(source) && target.knownType;
+			if (!source.knownType) source.apparentType = oldApparentType;
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+## roleplay games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:15324-15345
+--- base 15324
+	roleplay: {
+		num: 272,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Role Play",
+		pp: 10,
+		priority: 0,
+		flags: { bypasssub: 1, allyanim: 1, metronome: 1 },
+		onTryHit(target, source) {
+			if (target.ability === source.ability) return false;
+			if (target.getAbility().flags['failroleplay'] || source.getAbility().flags['cantsuppress']) return false;
+		},
+		onHit(target, source) {
+			const oldAbility = source.setAbility(target.ability, target);
+			if (!oldAbility) return oldAbility as false | null;
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Cute",
+	},
+## rototiller games=ultra_sun_ultra_moon :: base data/moves.ts:15465-15498 | gen7 data/mods/gen7/moves.ts:805-808
+--- base 15465
+	rototiller: {
+		num: 563,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Rototiller",
+		pp: 10,
+		priority: 0,
+		flags: { distance: 1, nonsky: 1, metronome: 1 },
+		onHitField(target, source) {
+			const targets: Pokemon[] = [];
+			let anyAirborne = false;
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon.runImmunity('Ground')) {
+					this.add('-immune', pokemon);
+					anyAirborne = true;
+					continue;
+				}
+				if (pokemon.hasType('Grass')) {
+					// This move affects every grounded Grass-type Pokemon in play.
+					targets.push(pokemon);
+				}
+			}
+			if (!targets.length && !anyAirborne) return false; // Fails when there are no grounded Grass types or airborne Pokemon
+			for (const pokemon of targets) {
+				this.boost({ atk: 1, spa: 1 }, pokemon, source);
+			}
+		},
+		target: "all",
+		type: "Ground",
+		zMove: { boost: { atk: 1 } },
+		contestType: "Tough",
+	},
+--- gen7 805
+	rototiller: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## simplebeam games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:16483-16505
+--- base 16483
+	simplebeam: {
+		num: 493,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Simple Beam",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onTryHit(target) {
+			if (target.getAbility().flags['cantsuppress'] || target.ability === 'simple' || target.ability === 'truant') {
+				return false;
+			}
+		},
+		onHit(target, source) {
+			const oldAbility = target.setAbility('simple');
+			if (!oldAbility) return oldAbility as false | null;
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Cute",
+	},
+## skillswap games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:16591-16607
+--- base 16591
+	skillswap: {
+		num: 285,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Skill Swap",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source, move) {
+			return this.skillSwap(source, target);
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## snatch games=ultra_sun_ultra_moon :: base data/moves.ts:17105-17138 | gen7 data/mods/gen7/moves.ts:887-890
+--- base 17105
+	snatch: {
+		num: 289,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Snatch",
+		pp: 10,
+		priority: 4,
+		flags: { bypasssub: 1, mustpressure: 1, noassist: 1, failcopycat: 1 },
+		volatileStatus: 'snatch',
+		condition: {
+			duration: 1,
+			onStart(pokemon) {
+				this.add('-singleturn', pokemon, 'Snatch');
+			},
+			onAnyPrepareHitPriority: -1,
+			onAnyPrepareHit(source, target, move) {
+				const snatchUser = this.effectState.source;
+				if (snatchUser.isSkyDropped()) return;
+				if (!move || move.isZ || move.isMax || !move.flags['snatch'] || move.sourceEffect === 'snatch') {
+					return;
+				}
+				snatchUser.removeVolatile('snatch');
+				this.add('-activate', snatchUser, 'move: Snatch', `[of] ${source}`);
+				this.actions.useMove(move.id, snatchUser);
+				return null;
+			},
+		},
+		target: "self",
+		type: "Dark",
+		zMove: { boost: { spe: 2 } },
+		contestType: "Clever",
+	},
+--- gen7 887
+	snatch: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## soak games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:17187-17209
+--- base 17187
+	soak: {
+		num: 487,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Soak",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onHit(target) {
+			if (target.getTypes().join() === 'Water' || !target.setType('Water')) {
+				// Soak should animate even when it fails.
+				// Returning false would suppress the animation.
+				this.add('-fail', target);
+				return null;
+			}
+			this.add('-start', target, 'typechange', 'Water');
+		},
+		target: "normal",
+		type: "Water",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Cute",
+	},
+## speedswap games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:17431-17450
+--- base 17431
+	speedswap: {
+		num: 683,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Speed Swap",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, bypasssub: 1, allyanim: 1, metronome: 1 },
+		onHit(target, source) {
+			const targetSpe = target.storedStats.spe;
+			target.storedStats.spe = source.storedStats.spe;
+			source.storedStats.spe = targetSpe;
+			this.add('-activate', source, 'move: Speed Swap', `[of] ${target}`);
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},
+## stockpile games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:17961-18013
+--- base 17961
+	stockpile: {
+		num: 254,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Stockpile",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onTry(source) {
+			if (source.volatiles['stockpile'] && source.volatiles['stockpile'].layers >= 3) return false;
+		},
+		volatileStatus: 'stockpile',
+		condition: {
+			noCopy: true,
+			onStart(target) {
+				this.effectState.layers = 1;
+				this.effectState.def = 0;
+				this.effectState.spd = 0;
+				this.add('-start', target, 'stockpile' + this.effectState.layers);
+				const [curDef, curSpD] = [target.boosts.def, target.boosts.spd];
+				this.boost({ def: 1, spd: 1 }, target, target);
+				if (curDef !== target.boosts.def) this.effectState.def--;
+				if (curSpD !== target.boosts.spd) this.effectState.spd--;
+			},
+			onRestart(target) {
+				if (this.effectState.layers >= 3) return false;
+				this.effectState.layers++;
+				this.add('-start', target, 'stockpile' + this.effectState.layers);
+				const curDef = target.boosts.def;
+				const curSpD = target.boosts.spd;
+				this.boost({ def: 1, spd: 1 }, target, target);
+				if (curDef !== target.boosts.def) this.effectState.def--;
+				if (curSpD !== target.boosts.spd) this.effectState.spd--;
+			},
+			onEnd(target) {
+				if (this.effectState.def || this.effectState.spd) {
+					const boosts: SparseBoostsTable = {};
+					if (this.effectState.def) boosts.def = this.effectState.def;
+					if (this.effectState.spd) boosts.spd = this.effectState.spd;
+					this.boost(boosts, target, target);
+				}
+				this.add('-end', target, 'Stockpile');
+				if (this.effectState.def !== this.effectState.layers * -1 || this.effectState.spd !== this.effectState.layers * -1) {
+					this.hint("In Gen 7, Stockpile keeps track of how many times it successfully altered each stat individually.");
+				}
+			},
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Tough",
+	},
+## stuffcheeks games=scarlet_violet,champions,sword_shield :: base data/moves.ts:18253-18274 | champions data/mods/champions/moves.ts:953-956
+--- base 18253
+	stuffcheeks: {
+		num: 747,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Stuff Cheeks",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onDisableMove(pokemon) {
+			if (!pokemon.getItem().isBerry) pokemon.disableMove('stuffcheeks');
+		},
+		onTry(source) {
+			return source.getItem().isBerry;
+		},
+		onHit(pokemon) {
+			if (!this.boost({ def: 2 })) return null;
+			pokemon.eatItem(true);
+		},
+		target: "self",
+		type: "Normal",
+	},
+--- champions 953
+	stuffcheeks: {
+		inherit: true,
+		onDisableMove: undefined, // no inherit
+	},
+## swallow games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:18574-18599 | gen7 data/mods/gen7/moves.ts:941-951
+--- base 18574
+	swallow: {
+		num: 256,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Swallow",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, heal: 1, metronome: 1 },
+		onTry(source, target, move) {
+			if (move.sourceEffect === 'snatch') return;
+			return !!source.volatiles['stockpile'];
+		},
+		onHit(pokemon) {
+			const layers = pokemon.volatiles['stockpile']?.layers || 1;
+			const healAmount = [0.25, 0.5, 1];
+			const success = !!this.heal(this.modify(pokemon.maxhp, healAmount[layers - 1]));
+			if (!success) this.add('-fail', pokemon, 'heal');
+			pokemon.removeVolatile('stockpile');
+			return success || this.NOT_FAIL;
+		},
+		target: "self",
+		type: "Normal",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Tough",
+	},
+--- gen7 941
+	swallow: {
+		inherit: true,
+		onHit(pokemon) {
+			const layers = pokemon.volatiles['stockpile']?.layers || 1;
+			const healAmount = [0.25, 0.5, 1];
+			const success = !!this.heal(this.modify(pokemon.maxhp, healAmount[layers - 1]));
+			if (!success) this.add('-fail', pokemon, 'heal');
+			pokemon.removeVolatile('stockpile');
+			return success || null;
+		},
+	},
+## tarshot games=scarlet_violet,sword_shield :: base data/moves.ts:18946-18974 | champions data/mods/champions/moves.ts:1001-1004
+--- base 18946
+	tarshot: {
+		num: 749,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Tar Shot",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1 },
+		volatileStatus: 'tarshot',
+		condition: {
+			onStart(pokemon) {
+				if (pokemon.terastallized) return false;
+				this.add('-start', pokemon, 'Tar Shot');
+			},
+			onEffectivenessPriority: -2,
+			onEffectiveness(typeMod, target, type, move) {
+				if (move.type !== 'Fire') return;
+				if (!target) return;
+				if (type !== target.getTypes()[0]) return;
+				return typeMod + 1;
+			},
+		},
+		boosts: {
+			spe: -1,
+		},
+		target: "normal",
+		type: "Rock",
+	},
+--- champions 1001
+	tarshot: {
+		inherit: true,
+		isNonstandard: "Past",
+	},
+## teatime games=scarlet_violet,champions,sword_shield :: base data/moves.ts:19036-19066
+--- base 19036
+	teatime: {
+		num: 752,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Teatime",
+		pp: 10,
+		priority: 0,
+		flags: { bypasssub: 1, metronome: 1 },
+		onHitField(target, source, move) {
+			const targets: Pokemon[] = [];
+			for (const pokemon of this.getAllActive()) {
+				if (this.runEvent('Invulnerability', pokemon, source, move) === false) {
+					this.add('-miss', source, pokemon);
+				} else if (this.runEvent('TryHit', pokemon, source, move) && pokemon.getItem().isBerry) {
+					targets.push(pokemon);
+				}
+			}
+			this.add('-fieldactivate', 'move: Teatime');
+			if (!targets.length) {
+				this.add('-fail', source, 'move: Teatime');
+				this.attrLastMove('[still]');
+				return this.NOT_FAIL;
+			}
+			for (const pokemon of targets) {
+				pokemon.eatItem(true);
+			}
+		},
+		target: "all",
+		type: "Normal",
+	},
+## telekinesis games=ultra_sun_ultra_moon :: base data/moves.ts:19115-19167 | gen7 data/mods/gen7/moves.ts:1021-1024
+--- base 19115
+	telekinesis: {
+		num: 477,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Telekinesis",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, gravity: 1, allyanim: 1, metronome: 1 },
+		volatileStatus: 'telekinesis',
+		onTry(source, target, move) {
+			// Additional Gravity check for Z-move variant
+			if (this.field.getPseudoWeather('Gravity')) {
+				this.attrLastMove('[still]');
+				this.add('cant', source, 'move: Gravity', move);
+				return null;
+			}
+		},
+		condition: {
+			duration: 3,
+			onStart(target) {
+				if (['Diglett', 'Dugtrio', 'Palossand', 'Sandygast'].includes(target.baseSpecies.baseSpecies) ||
+					target.baseSpecies.name === 'Gengar-Mega') {
+					this.add('-immune', target);
+					return null;
+				}
+				if (target.volatiles['smackdown'] || target.volatiles['ingrain']) return false;
+				this.add('-start', target, 'Telekinesis');
+			},
+			onAccuracyPriority: -1,
+			onAccuracy(accuracy, target, source, move) {
+				if (move && !move.ohko) return true;
+			},
+			onImmunity(type) {
+				if (type === 'Ground') return false;
+			},
+			onUpdate(pokemon) {
+				if (pokemon.baseSpecies.name === 'Gengar-Mega') {
+					delete pokemon.volatiles['telekinesis'];
+					this.add('-end', pokemon, 'Telekinesis', '[silent]');
+				}
+			},
+			onResidualOrder: 19,
+			onEnd(target) {
+				this.add('-end', target, 'Telekinesis');
+			},
+		},
+		target: "normal",
+		type: "Psychic",
+		zMove: { boost: { spa: 1 } },
+		contestType: "Clever",
+	},
+--- gen7 1021
+	telekinesis: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## tidyup games=scarlet_violet,champions :: base data/moves.ts:19626-19655
+--- base 19626
+	tidyup: {
+		num: 882,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Tidy Up",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		onHit(pokemon) {
+			let success = false;
+			for (const active of this.getAllActive()) {
+				if (active.removeVolatile('substitute')) success = true;
+			}
+			const removeAll = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
+			const sides = [pokemon.side, ...pokemon.side.foeSidesWithConditions()];
+			for (const side of sides) {
+				for (const sideCondition of removeAll) {
+					if (side.removeSideCondition(sideCondition)) {
+						this.add('-sideend', side, this.dex.conditions.get(sideCondition).name);
+						success = true;
+					}
+				}
+			}
+			if (success) this.add('-activate', pokemon, 'move: Tidy Up');
+			return !!this.boost({ atk: 1, spe: 1 }, pokemon, pokemon, null, false, true) || success;
+		},
+		target: "self",
+		type: "Normal",
+	},
+## topsyturvy games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:19656-19680
+--- base 19656
+	topsyturvy: {
+		num: 576,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Topsy-Turvy",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onHit(target) {
+			let success = false;
+			let i: BoostID;
+			for (i in target.boosts) {
+				if (target.boosts[i] === 0) continue;
+				target.boosts[i] = -target.boosts[i];
+				success = true;
+			}
+			if (!success) return false;
+			this.add('-invertboost', target, '[from] move: Topsy-Turvy');
+		},
+		target: "normal",
+		type: "Dark",
+		zMove: { boost: { atk: 1 } },
+		contestType: "Clever",
+	},
+## transform games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:19829-19845
+--- base 19829
+	transform: {
+		num: 144,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Transform",
+		pp: 10,
+		priority: 0,
+		flags: { allyanim: 1, failencore: 1, noassist: 1, failcopycat: 1, failmimic: 1, failinstruct: 1 },
+		onHit(target, pokemon) {
+			return pokemon.transformInto(target);
+		},
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Clever",
+	},
+## trickortreat games=champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:19913-19940 | champions data/mods/champions/moves.ts:1039-1042 | gen8 data/mods/gen8/moves.ts:682-685
+--- base 19913
+	trickortreat: {
+		num: 567,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Trick-or-Treat",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onHit(target) {
+			if (target.hasType('Ghost')) return false;
+			if (!target.addType('Ghost')) return false;
+			this.add('-start', target, 'typeadd', 'Ghost', '[from] move: Trick-or-Treat');
+
+			if (target.side.active.length === 2 && target.position === 1) {
+				// Curse Glitch
+				const action = this.queue.willMove(target);
+				if (action && action.move.id === 'curse') {
+					action.targetLoc = -1;
+				}
+			}
+		},
+		target: "normal",
+		type: "Ghost",
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		contestType: "Cute",
+	},
+--- champions 1039
+	trickortreat: {
+		inherit: true,
+		isNonstandard: null,
+	},
+--- gen8 682
+	trickortreat: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## watersport games=ultra_sun_ultra_moon :: base data/moves.ts:20628-20661 | gen7 data/mods/gen7/moves.ts:1068-1071
+--- base 20628
+	watersport: {
+		num: 346,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "Water Sport",
+		pp: 15,
+		priority: 0,
+		flags: { nonsky: 1, metronome: 1 },
+		pseudoWeather: 'watersport',
+		condition: {
+			duration: 5,
+			onFieldStart(field, source) {
+				this.add('-fieldstart', 'move: Water Sport', `[of] ${source}`);
+			},
+			onBasePowerPriority: 1,
+			onBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Fire') {
+					this.debug('water sport weaken');
+					return this.chainModify([1352, 4096]);
+				}
+			},
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 3,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Water Sport');
+			},
+		},
+		target: "all",
+		type: "Water",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Cute",
+	},
+--- gen7 1068
+	watersport: {
+		inherit: true,
+		isNonstandard: null,
+	},
+## wonderroom games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:20970-21018
+--- base 20970
+	wonderroom: {
+		num: 472,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Wonder Room",
+		pp: 10,
+		priority: 0,
+		flags: { mirror: 1, metronome: 1 },
+		pseudoWeather: 'wonderroom',
+		condition: {
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-activate', source, 'ability: Persistent', '[move] Wonder Room');
+					return 7;
+				}
+				return 5;
+			},
+			onModifyMove(move, source, target) {
+				// This code is for moves that use defensive stats as the attacking stat; see below for most of the implementation
+				if (!move.overrideOffensiveStat) return;
+				const statAndBoosts = move.overrideOffensiveStat;
+				if (!['def', 'spd'].includes(statAndBoosts)) return;
+				move.overrideOffensiveStat = statAndBoosts === 'def' ? 'spd' : 'def';
+				this.hint(`${move.name} uses ${statAndBoosts === 'def' ? '' : 'Sp. '}Def boosts when Wonder Room is active.`);
+			},
+			onFieldStart(field, source) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-fieldstart', 'move: Wonder Room', `[of] ${source}`, '[persistent]');
+				} else {
+					this.add('-fieldstart', 'move: Wonder Room', `[of] ${source}`);
+				}
+			},
+			onFieldRestart(target, source) {
+				this.field.removePseudoWeather('wonderroom');
+			},
+			// Swapping defenses partially implemented in sim/pokemon.js:Pokemon#calculateStat and Pokemon#getStat
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 5,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Wonder Room');
+			},
+		},
+		target: "all",
+		type: "Psychic",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Clever",
+	},
+## worryseed games=scarlet_violet,champions,sword_shield,ultra_sun_ultra_moon :: base data/moves.ts:21051-21081
+--- base 21051
+	worryseed: {
+		num: 388,
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Worry Seed",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, reflectable: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onTryImmunity(target) {
+			// Truant and Insomnia have special treatment; they fail before
+			// checking accuracy and will double Stomping Tantrum's BP
+			if (target.ability === 'truant' || target.ability === 'insomnia') {
+				return false;
+			}
+		},
+		onTryHit(target) {
+			if (target.getAbility().flags['cantsuppress']) {
+				return false;
+			}
+		},
+		onHit(target, source) {
+			const oldAbility = target.setAbility('insomnia');
+			if (!oldAbility) return oldAbility as false | null;
+			if (target.status === 'slp') target.cureStatus();
+		},
+		target: "normal",
+		type: "Grass",
+		zMove: { boost: { spe: 1 } },
+		contestType: "Clever",
+	},

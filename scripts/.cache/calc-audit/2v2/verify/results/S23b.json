@@ -1,0 +1,1661 @@
+{
+ "id": "S23b",
+ "title": "Life Dew and Jungle Healing",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Life Dew: a quarter to both; Jungle Healing: a quarter to both and cures the paralysis.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 96,
+   "classes": 21,
+   "ms": 136,
+   "decisions": {
+    "sample": 208,
+    "chance:par": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hatterene",
+     "start": 40,
+     "maximum": 132,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       106,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97.75,
+     "min": 73,
+     "max": 106,
+     "modeTieUp": 106,
+     "modeTieDown": 106,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 40,
+     "maximum": 130,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       105,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 73,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 0.75,
+      "par": 0.25
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lifedew",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 1,
+      "|-heal|p1b: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 1
+      },
+      "own-right": {
+       "heal:33": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "junglehealing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.75,
+     "cant": {
+      "par": 0.25
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.75
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 0.75,
+      "|-heal|p1b: Smeargle|hp": 0.75,
+      "|cant|p1b: Smeargle|par": 0.25
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 0.75
+      },
+      "own-right": {
+       "heal:32": 0.75,
+       "curestatus:par": 0.75,
+       "cant:par": 0.25
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 0,
+       "max": 32
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 0.75
+      },
+      "own-right": {
+       "min": 32,
+       "max": 32,
+       "mass": 0.75
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 24,
+    "classes": 4,
+    "ms": 136,
+    "decisions": {
+     "chance:healer": 16
+    },
+    "slots": {
+     "own-left": {
+      "species": "Hatterene",
+      "start": null,
+      "maximum": 132,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        106,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97.75,
+      "min": 73,
+      "max": 106,
+      "modeTieUp": 106,
+      "modeTieDown": 106,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        105,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97,
+      "min": 73,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 0.8250000000000002,
+       "par": 0.17500000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.075
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:par": 0.075
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 96,
+   "classes": 21,
+   "ms": 143,
+   "decisions": {
+    "sample": 208,
+    "chance:par": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hatterene",
+     "start": 40,
+     "maximum": 132,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       106,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97.75,
+     "min": 73,
+     "max": 106,
+     "modeTieUp": 106,
+     "modeTieDown": 106,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 40,
+     "maximum": 130,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       105,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 73,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 0.75,
+      "par": 0.25
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lifedew",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 1,
+      "|-heal|p1b: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 1
+      },
+      "own-right": {
+       "heal:33": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "junglehealing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.75,
+     "cant": {
+      "par": 0.25
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.75
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 0.75,
+      "|-heal|p1b: Smeargle|hp": 0.75,
+      "|cant|p1b: Smeargle|par": 0.25
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 0.75
+      },
+      "own-right": {
+       "heal:32": 0.75,
+       "curestatus:par": 0.75,
+       "cant:par": 0.25
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 0,
+       "max": 32
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 0.75
+      },
+      "own-right": {
+       "min": 32,
+       "max": 32,
+       "mass": 0.75
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 24,
+    "classes": 4,
+    "ms": 144,
+    "decisions": {
+     "chance:healer": 16
+    },
+    "slots": {
+     "own-left": {
+      "species": "Hatterene",
+      "start": null,
+      "maximum": 132,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        106,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97.75,
+      "min": 73,
+      "max": 106,
+      "modeTieUp": 106,
+      "modeTieDown": 106,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        105,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97,
+      "min": 73,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 0.8250000000000002,
+       "par": 0.17500000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.075
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:par": 0.075
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 96,
+   "classes": 21,
+   "ms": 138,
+   "decisions": {
+    "sample": 208,
+    "chance:par": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hatterene",
+     "start": 40,
+     "maximum": 132,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       106,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97.75,
+     "min": 73,
+     "max": 106,
+     "modeTieUp": 106,
+     "modeTieDown": 106,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 40,
+     "maximum": 130,
+     "dist": [
+      [
+       73,
+       0.25
+      ],
+      [
+       105,
+       0.75
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 73,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 0.75,
+      "par": 0.25
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lifedew",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 1,
+      "|-heal|p1b: Smeargle|hp": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 1
+      },
+      "own-right": {
+       "heal:33": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      },
+      "own-right": {
+       "min": 33,
+       "max": 33,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "junglehealing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.75,
+     "cant": {
+      "par": 0.25
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.75
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 0.75,
+       "landed": 0.75,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Hatterene|hp": 0.75,
+      "|-heal|p1b: Smeargle|hp": 0.75,
+      "|cant|p1b: Smeargle|par": 0.25
+     },
+     "effects": {
+      "own-left": {
+       "heal:33": 0.75
+      },
+      "own-right": {
+       "heal:32": 0.75,
+       "curestatus:par": 0.75,
+       "cant:par": 0.25
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 33,
+       "max": 33
+      },
+      "own-right": {
+       "min": 0,
+       "max": 32
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 33,
+       "max": 33,
+       "mass": 0.75
+      },
+      "own-right": {
+       "min": 32,
+       "max": 32,
+       "mass": 0.75
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 24,
+    "classes": 4,
+    "ms": 138,
+    "decisions": {
+     "chance:healer": 16
+    },
+    "slots": {
+     "own-left": {
+      "species": "Hatterene",
+      "start": null,
+      "maximum": 132,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        106,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97.75,
+      "min": 73,
+      "max": 106,
+      "modeTieUp": 106,
+      "modeTieDown": 106,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        73,
+        0.25
+       ],
+       [
+        105,
+        0.75
+       ]
+      ],
+      "koChance": 0,
+      "average": 97,
+      "min": 73,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 0.8250000000000002,
+       "par": 0.17500000000000002
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Healer",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:healer": 0.075
+      },
+      "index": 1
+     },
+     {
+      "slot": "own-right",
+      "effect": "Healer",
+      "other": "own-left",
+      "chance": 0.075,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "curestatus:par": 0.075
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 40,
+   "maximum": 132,
+   "low": 106,
+   "high": 106,
+   "average": 97.75,
+   "min": 73,
+   "max": 106,
+   "koChance": 0,
+   "dist": [
+    [
+     73,
+     0.25
+    ],
+    [
+     106,
+     0.75
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 40,
+   "maximum": 130,
+   "low": 105,
+   "high": 105,
+   "average": 97,
+   "min": 73,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     73,
+     0.25
+    ],
+    [
+     105,
+     0.75
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 40,
+   "maximum": 132,
+   "low": 106,
+   "high": 106,
+   "average": 97.75,
+   "min": 73,
+   "max": 106,
+   "koChance": 0,
+   "dist": [
+    [
+     73,
+     0.25
+    ],
+    [
+     106,
+     0.75
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 40,
+   "maximum": 130,
+   "low": 105,
+   "high": 105,
+   "average": 97,
+   "min": 73,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     73,
+     0.25
+    ],
+    [
+     105,
+     0.75
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Healer",
+   "chance": 0.075,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "activate:healer": 0.075
+   },
+   "index": 1
+  },
+  {
+   "slot": "own-right",
+   "effect": "Healer",
+   "other": "own-left",
+   "chance": 0.075,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "curestatus:par": 0.075
+   },
+   "index": 2
+  }
+ ]
+}

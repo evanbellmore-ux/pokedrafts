@@ -1,0 +1,185 @@
+
+### GA1: A paralysed Trace holder that copied Limber (tracedAbility), with a move
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen. / Limber: Gardevoir is cured of its paralysis as the turn starts.
+  app step own-left psychic: moves 1 skipped [] facts []
+  app hp own-left: 143/143.000/143 [143–143] ko 0 heals []
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals []
+  app hp opponent-left: 53/45.125/37 [37–53] ko 0 heals []
+  app hp opponent-right: 140/140.000/140 [140–140] ko 0 heals []
+  app eot own-left: 143/143.000/143 [143–143]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 53/45.125/37 [37–53]
+  app eot opponent-right: 140/140.000/140 [140–140]
+  oracle own-left Gardevoir: 143/143.000/143 [143–143] ko 0 boosts {} items {"":1} status {"":1} | turn 143/143.000/143 [143–143]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Persian: 53/45.125/37 [37–53] ko 0 boosts {} items {"":1} status {"":1} | turn 53/45.125/37 [37–53]
+  oracle opponent-right Persian: 140/140.000/140 [140–140] ko 0 boosts {} items {"":1} status {"":1} | turn 140/140.000/140 [140–140]
+  oracle step own-left psychic: moved 1 cant {} lines {}
+  mismatches: 0
+
+### GA1b: An asleep Trace holder that copied Insomnia (tracedAbility), no carried sleep
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Gardevoir lost no turns to sleep before this one. / Insomnia: Gardevoir is cured of its sleep as the turn starts.
+  app step own-left psychic: moves 1 skipped [] facts []
+  app hp own-left: 143/143.000/143 [143–143] ko 0 heals []
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals []
+  app hp opponent-left: 133/130.188/127 [127–133] ko 0 heals []
+  app hp opponent-right: 160/160.000/160 [160–160] ko 0 heals []
+  app eot own-left: 143/143.000/143 [143–143]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 133/130.188/127 [127–133]
+  app eot opponent-right: 160/160.000/160 [160–160]
+  oracle own-left Gardevoir: 143/143.000/143 [143–143] ko 0 boosts {} items {"":0.9999999999999998} status {"":0.9999999999999998} | turn 143/143.000/143 [143–143]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":0.9999999999999998} status {"":0.9999999999999998} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Hypno: 133/130.188/127 [127–133] ko 0 boosts {} items {"":0.9999999999999998} status {"":0.9999999999999998} | turn 133/130.188/127 [127–133]
+  oracle opponent-right Hypno: 160/160.000/160 [160–160] ko 0 boosts {} items {"":0.9999999999999998} status {"":0.9999999999999998} | turn 160/160.000/160 [160–160]
+  oracle step own-left psychic: moved 0.9999999999999998 cant {} lines {}
+  mismatches: 0
+
+### GA5: Bulldoze into the user's own Defiant partner (an ally's drop: no Defiant)
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step own-left bulldoze: moves 1 skipped [] facts []
+  app hp own-left: 183/183.000/183 [183–183] ko 0 heals []
+  app hp own-right: 121/115.875/109 [109–121] ko 0 heals []
+  app hp opponent-left: 190/186.000/181 [181–190] ko 0 heals []
+  app hp opponent-right: 190/186.000/181 [181–190] ko 0 heals []
+  app eot own-left: 183/183.000/183 [183–183]
+  app eot own-right: 121/115.875/109 [109–121]
+  app eot opponent-left: 190/186.000/181 [181–190]
+  app eot opponent-right: 190/186.000/181 [181–190]
+  app E2 outcome 1.0000: own-left {"atk":0,"def":0,"spa":0,"spd":0,"spe":0} | own-right {"atk":2,"def":0,"spa":0,"spd":0,"spe":-1} | opponent-left {"atk":0,"def":0,"spa":0,"spd":0,"spe":-1} | opponent-right {"atk":0,"def":0,"spa":0,"spd":0,"spe":-1}
+  oracle own-left Garchomp: 183/183.000/183 [183–183] ko 0 boosts {} items {"":1} status {"":1} | turn 183/183.000/183 [183–183]
+  oracle own-right Kingambit: 121/115.875/109 [109–121] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 121/115.875/109 [109–121]
+  oracle opponent-left Snorlax: 190/186.000/181 [181–190] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 190/186.000/181 [181–190]
+  oracle opponent-right Snorlax: 190/186.000/181 [181–190] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 190/186.000/181 [181–190]
+  oracle step own-left bulldoze: moved 1 cant {} lines {"|-unboost|p1b: Kingambit|spe|1":1,"|-unboost|p2a: Snorlax|spe|1":1,"|-unboost|p2b: Snorlax|spe|1":1}
+  mismatches: 0
+
+### GA5b: Bulldoze into the user's own Defiant partner, which moves later (Kowtow Cleave)
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step own-left bulldoze: moves 1 skipped [] facts []
+  app step own-right kowtowcleave: moves 1 skipped [] facts []
+  app hp own-left: 183/183.000/183 [183–183] ko 0 heals []
+  app hp own-right: 121/115.875/109 [109–121] ko 0 heals []
+  app hp opponent-left: 15/2.246/0 [0–15] ko 0.65234375 heals []
+  app hp opponent-right: 190/186.000/181 [181–190] ko 0 heals []
+  app eot own-left: 183/183.000/183 [183–183]
+  app eot own-right: 121/115.875/109 [109–121]
+  app eot opponent-left: 15/2.246/0 [0–15]
+  app eot opponent-right: 190/186.000/181 [181–190]
+  oracle own-left Garchomp: 183/183.000/183 [183–183] ko 0 boosts {} items {"":1} status {"":1} | turn 183/183.000/183 [183–183]
+  oracle own-right Kingambit: 121/115.875/109 [109–121] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 121/115.875/109 [109–121]
+  oracle opponent-left Snorlax: 102/89.813/76 [76–102] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 102/89.813/76 [76–102]
+  oracle opponent-right Snorlax: 190/186.000/181 [181–190] ko 0 boosts {"spe:-1":1} items {"":1} status {"":1} | turn 190/186.000/181 [181–190]
+  oracle step own-left bulldoze: moved 1 cant {} lines {"|-unboost|p1b: Kingambit|spe|1":1,"|-unboost|p2a: Snorlax|spe|1":1,"|-unboost|p2b: Snorlax|spe|1":1}
+  oracle step own-right kowtowcleave: moved 1 cant {} lines {}
+  mismatches: 15
+    opponent-left low: expected 102 got 15 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    opponent-left high: expected 76 got 0 (mode of the all-highest-rolls walk, ties to the lower HP)
+    opponent-left koChance: expected 0 got 0.65234375
+    opponent-left average: expected 89.8125 got 2.24609375
+    opponent-left min: expected 76 got 0
+    opponent-left max: expected 102 got 15
+    own-right→opponent-left hit.koChance: expected 0 got 0.65234375
+    own-right→opponent-left hit.min: expected 88 got 175 (damage summed over the action's hits, uncapped)
+    own-right→opponent-left hit.max: expected 105 got 207 (damage summed over the action's hits, uncapped)
+    endOfTurn opponent-left low: expected 102 got 15 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    endOfTurn opponent-left high: expected 76 got 0 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn opponent-left koChance: expected 0 got 0.65234375
+
+### GA2: Champions: a Sheer Force Crunch on a Berserk Sitrus holder, then a later hit on it (no confusion)
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step opponent-left crunch: moves 1 skipped [] facts []
+  app step own-left dragonpulse: moves 1 skipped [] facts []
+  app step opponent-right bodyslam: moves 1 skipped [] facts []
+  app hp own-left: 59/47.938/36 [36–59] ko 0 heals ["Sitrus Berry: +38 HP."]
+  app hp own-right: 155/155.000/155 [155–155] ko 0 heals []
+  app hp opponent-left: 160/160.000/160 [160–160] ko 0 heals []
+  app hp opponent-right: 177/172.063/166 [166–177] ko 0 heals []
+  app eot own-left: 59/47.938/36 [36–59]
+  app eot own-right: 155/155.000/155 [155–155]
+  app eot opponent-left: 160/160.000/160 [160–160]
+  app eot opponent-right: 177/172.063/166 [166–177]
+  oracle own-left Drampa: 59/47.207/0 [0–59] ko 0.01953125 boosts {"spa:1":0.4375} items {"":0.98046875,"sitrusberry":0.01953125} status {"":1} | turn 59/47.207/0 [0–59]
+  oracle own-right Venusaur: 155/155.000/155 [155–155] ko 0 boosts {} items {"":1} status {"":1} | turn 155/155.000/155 [155–155]
+  oracle opponent-left Feraligatr: 160/160.000/160 [160–160] ko 0 boosts {} items {"":1} status {"":1} | turn 160/160.000/160 [160–160]
+  oracle opponent-right Snorlax: 177/172.063/166 [166–177] ko 0 boosts {} items {"":1} status {"":1} | turn 177/172.063/166 [166–177]
+  oracle step own-left dragonpulse: moved 1 cant {} lines {}
+  oracle step opponent-left crunch: moved 1 cant {} lines {}
+  oracle step opponent-right bodyslam: moved 1 cant {} lines {"|-ability|p1a: Drampa|Berserk|boost":0.4375,"|-boost|p1a: Drampa|spa|1":0.4375,"|-enditem|p1a: Drampa|Sitrus Berry|[eat]":0.98046875,"|-heal|p1a: Drampa|hp|[from] item: Sitrus Berry":0.98046875}
+  mismatches: 9
+    own-left high: expected 0 got 36 (mode of the all-highest-rolls walk, ties to the lower HP)
+    own-left koChance: expected 0.01953125 got 0
+    own-left average: expected 47.20703125 got 47.9375
+    own-left min: expected 0 got 36
+    opponent-right→own-left hit.koChance: expected 0.01953125 got 0
+    endOfTurn own-left high: expected 0 got 36 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn own-left koChance: expected 0.01953125 got 0
+    endOfTurn own-left average: expected 47.20703125 got 47.9375
+    endOfTurn own-left min: expected 0 got 36
+
+### GA2b: Champions: the same, the Berserk holder's own No move (Splash) after the Sheer Force hit
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step opponent-left crunch: moves 1 skipped [] facts []
+  app hp own-left: 81/97.063/108 [77–114] ko 0 heals ["Sitrus Berry: +38 HP."]
+  app hp own-right: 155/155.000/155 [155–155] ko 0 heals []
+  app hp opponent-left: 160/160.000/160 [160–160] ko 0 heals []
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals []
+  app eot own-left: 81/97.063/108 [77–114]
+  app eot own-right: 155/155.000/155 [155–155]
+  app eot opponent-left: 160/160.000/160 [160–160]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  oracle own-left Drampa: 81/97.063/108 [77–114] ko 0 boosts {} items {"":0.5625,"sitrusberry":0.4375} status {"":1} | turn 81/97.063/108 [77–114]
+  oracle own-right Venusaur: 155/155.000/155 [155–155] ko 0 boosts {} items {"":1} status {"":1} | turn 155/155.000/155 [155–155]
+  oracle opponent-left Feraligatr: 160/160.000/160 [160–160] ko 0 boosts {} items {"":1} status {"":1} | turn 160/160.000/160 [160–160]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle step opponent-left crunch: moved 1 cant {} lines {}
+  mismatches: 0
+
+### GA3: Flame Charge into the user's own Opportunist partner, no foe copier
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step own-left flamecharge: moves 1 skipped [] facts []
+  app hp own-left: 165/165.000/165 [165–165] ko 0 heals []
+  app hp own-right: 124/119.625/115 [115–124] ko 0 heals []
+  app hp opponent-left: 235/235.000/235 [235–235] ko 0 heals []
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals []
+  app eot own-left: 165/165.000/165 [165–165]
+  app eot own-right: 124/119.625/115 [115–124]
+  app eot opponent-left: 235/235.000/235 [235–235]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  app E2 outcome 1.0000: own-left {"atk":0,"def":0,"spa":0,"spd":0,"spe":1} | own-right {"atk":0,"def":0,"spa":0,"spd":0,"spe":1} | opponent-left {"atk":0,"def":0,"spa":0,"spd":0,"spe":0} | opponent-right {"atk":0,"def":0,"spa":0,"spd":0,"spe":0}
+  oracle own-left Arcanine: 165/165.000/165 [165–165] ko 0 boosts {"spe:1":1} items {"":1} status {"":1} | turn 165/165.000/165 [165–165]
+  oracle own-right Espathra: 124/119.625/115 [115–124] ko 0 boosts {} items {"":1} status {"":1} | turn 124/119.625/115 [115–124]
+  oracle opponent-left Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle step own-left flamecharge: moved 1 cant {} lines {"|-boost|p1a: Arcanine|spe|1":1}
+  mismatches: 0
+
+### GA4a: Leech Seed from a heal-blocked seeder into Liquid Ooze (Ooze holder faster)
+  app: not-estimated — Psychic Noise is not modelled in 2v2.
+  oracle own-left Venusaur: 63/54.250/45 [45–63] ko 0 boosts {} items {"":1} status {"":1} | turn 44/35.250/26 [26–44]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Tentacruel: 155/155.000/155 [155–155] ko 0 boosts {} items {"":1} status {"":1} | turn 136/136.000/136 [136–136]
+  oracle opponent-right Farigiraf: 195/195.000/195 [195–195] ko 0 boosts {} items {"":1} status {"":1} | turn 195/195.000/195 [195–195]
+  oracle step opponent-right psychicnoise: moved 1 cant {} lines {"|-start|p1a: Venusaur|move: Heal Block":1}
+  oracle residual opponent-left Leech Seed (own-left): 1 -19..-19 {}
+  oracle residual own-left Liquid Ooze (opponent-left): 1 -19..-19 {}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Psychic Noise is not modelled in 2v2.)
+
+### GA4b: Leech Seed from a heal-blocked seeder into Liquid Ooze (Ooze holder slower)
+  app: not-estimated — Psychic Noise is not modelled in 2v2.
+  oracle own-left Venusaur: 63/54.250/45 [45–63] ko 0 boosts {} items {"":1} status {"":1} | turn 63/54.250/45 [45–63]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} items {"":1} status {"":1} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Tentacruel: 155/155.000/155 [155–155] ko 0 boosts {} items {"":1} status {"":1} | turn 136/136.000/136 [136–136]
+  oracle opponent-right Farigiraf: 195/195.000/195 [195–195] ko 0 boosts {} items {"":1} status {"":1} | turn 195/195.000/195 [195–195]
+  oracle step opponent-right psychicnoise: moved 1 cant {} lines {"|-start|p1a: Venusaur|move: Heal Block":1}
+  oracle residual opponent-left Leech Seed (own-left): 1 -19..-19 {}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Psychic Noise is not modelled in 2v2.)

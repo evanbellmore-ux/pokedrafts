@@ -1,0 +1,303 @@
+
+### Q1 sv: Jolteon Tricks its Choice Scarf to Lapras (80 -> 120); Snorlax (50) and Lapras attack  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [195:1] | p2a Lapras [142:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [195:1] | p2a Lapras [142:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Trick|p2a: Lapras
+   1  |-item|p2a: Lapras|Choice Scarf|[from] move: Trick
+   1  |-enditem|p1a: Jolteon|Choice Scarf|[silent]|[from] move: Trick
+   1  |move|p2a: Lapras|Body Slam|p1b: Snorlax
+   1  |move|p1b: Snorlax|Body Slam|p2a: Lapras
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q2 sv: Skill Swap (Gyarados, Intimidate) <-> Snorlax (Thick Fat); Worry Seed on a sleeping foe  (1 runs)
+ start: p1a Gyarados 170/170 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Gyarados [170:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Gyarados [170:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Gyarados|Skill Swap|p2a: Snorlax
+   1  |-activate|p1a: Gyarados|Skill Swap|Thick Fat|Intimidate|[of] p2a: Snorlax
+   1  |-ability|p2a: Snorlax|Intimidate|boost
+   1  |-unboost|p1a: Gyarados|atk|1
+   1  |-unboost|p1b: Chansey|atk|1
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q2b sv: Worry Seed on a sleeping Snorlax: Insomnia cures the sleep (worryseed onHit), Snorlax then moves  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [76:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [76:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Worry Seed|p2a: Snorlax
+   1  |-ability|p2a: Snorlax|Insomnia|Thick Fat|[from] move: Worry Seed
+   1  |-curestatus|p2a: Snorlax|slp|[msg]
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Body Slam|p1b: Chansey
+   1  |-damage|p1b: Chansey|76/325
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q3 sv: Jolteon Quashes Lapras (80); order of Snorlax (50), Shuckle (25), Lapras  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   w=1 [] end=[{"p1a Jolteon":140,"p1b Snorlax":235,"p2a Lapras":205,"p2b Shuckle":95}] :: |move|p1a: Jolteon|Quash|p2a: Lapras ; |move|p1b: Snorlax|Splash|p1b: Snorlax ; |move|p2b: Shuckle|Splash|p2b: Shuckle ; |move|p2a: Lapras|Splash|p2a: Lapras
+
+### Q3b sv: Jolteon uses After You on Shuckle (25): it moves next  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   w=1 [] end=[{"p1a Jolteon":140,"p1b Snorlax":235,"p2a Lapras":205,"p2b Shuckle":95}] :: |move|p1a: Jolteon|After You|p2b: Shuckle ; |move|p2b: Shuckle|Splash|p2b: Shuckle ; |move|p2a: Lapras|Splash|p2a: Lapras ; |move|p1b: Snorlax|Splash|p1b: Snorlax
+
+### Q3 usum: Jolteon Quashes Lapras (80); order of Snorlax (50), Shuckle (25), Lapras  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   w=1 [] end=[{"p1a Jolteon":140,"p1b Snorlax":235,"p2a Lapras":205,"p2b Shuckle":95}] :: |move|p1a: Jolteon|Quash|p2a: Lapras ; |move|p1b: Snorlax|Splash|p1b: Snorlax ; |move|p2b: Shuckle|Splash|p2b: Shuckle ; |move|p2a: Lapras|Splash|p2a: Lapras
+
+### Q3b usum: Jolteon uses After You on Shuckle (25): it moves next  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   w=1 [] end=[{"p1a Jolteon":140,"p1b Snorlax":235,"p2a Lapras":205,"p2b Shuckle":95}] :: |move|p1a: Jolteon|After You|p2b: Shuckle ; |move|p2b: Shuckle|Splash|p2b: Shuckle ; |move|p2a: Lapras|Splash|p2a: Lapras ; |move|p1b: Snorlax|Splash|p1b: Snorlax
+
+### Q4 sv: Blissey (p1b) Ally Switches; Lapras Body Slams p1a's position (Jolteon before the swap)  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Blissey 330/330 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [218:1] | p1b Jolteon [140:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [218:1] | p1b Jolteon [140:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p1b: Blissey|Ally Switch|p1b: Blissey
+   1  |swap|p1b: Blissey|0|[from] move: Ally Switch
+   1  |move|p1b: Jolteon|Splash|p1b: Jolteon
+   1  |move|p2a: Lapras|Body Slam|p1a: Blissey
+   1  |-damage|p1a: Blissey|218/330
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q5a sv: Heal Pulse (Jolteon) on its ally Chansey at 1 HP; Life Dew (Lapras) at 1 HP both  (32 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 1/325 | p2a Lapras 1/205 | p2b Shuckle 1/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [164:1] | p2a Lapras [52:1] | p2b Shuckle [25:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [164:1] | p2a Lapras [52:1] | p2b Shuckle [25:1]
+   1  |move|p1a: Jolteon|Heal Pulse|p1b: Chansey
+   1  |-heal|p1b: Chansey|164/325
+   1  |move|p2a: Lapras|Life Dew|p2a: Lapras|[spread] p2a,p2b
+   1  |-heal|p2a: Lapras|52/205
+   1  |-heal|p2b: Shuckle|25/95
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q5b sv: Moonlight (Clefable) in sun, with and without Utility Umbrella; Recover (Snorlax) at 1 HP  (1 runs)
+ start: p1a Clefable 1/170 | p1b Clefable 1/170 | p2a Snorlax 1/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Clefable [114:1] | p1b Clefable [86:1] | p2a Snorlax [119:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Clefable [114:1] | p1b Clefable [86:1] | p2a Snorlax [119:1] | p2b Shuckle [95:1]
+   1  |move|p1b: Clefable|Moonlight|p1b: Clefable
+   1  |-heal|p1b: Clefable|86/170
+   1  |move|p1a: Clefable|Moonlight|p1a: Clefable
+   1  |-heal|p1a: Clefable|114/170
+   1  |move|p2a: Snorlax|Recover|p2a: Snorlax
+   1  |-heal|p2a: Snorlax|119/235
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-weather|SunnyDay|[upkeep]
+
+### Q5c sv: Strength Sap (Jolteon) on +2 Atk Snorlax; Pain Split (Shuckle) with Lapras  (1 runs)
+ start: p1a Jolteon 14/140 | p1b Chansey 325/325 | p2a Lapras 205/205 | p2b Shuckle 19/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Lapras [112:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Lapras [112:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Strength Sap|p2a: Lapras
+   1  |-unboost|p2a: Lapras|atk|1
+   1  |-heal|p1a: Jolteon|140/140
+   1  |move|p2a: Lapras|Splash|p2a: Lapras
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Pain Split|p2a: Lapras
+   1  |-sethp|p2a: Lapras|112/205|[from] move: Pain Split|[silent]
+   1  |-sethp|p2b: Shuckle|95/95|[from] move: Pain Split
+
+### Q5d sv: Floral Healing in Grassy Terrain on Chansey; Jungle Healing (Lapras) cures and heals  (32 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 1/325 | p2a Lapras 20/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [218:1] | p2a Lapras [71:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [238:1] | p2a Lapras [83:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Floral Healing|p1b: Chansey
+   1  |-heal|p1b: Chansey|218/325
+   1  |move|p2a: Lapras|Jungle Healing|p2a: Lapras|[spread] p2a,p2b
+   1  |-heal|p2a: Lapras|71/205
+   1  |-curestatus|p2b: Shuckle|psn|[msg]
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-heal|p2a: Lapras|83/205|[from] Grassy Terrain
+   1  |-heal|p1b: Chansey|238/325|[from] Grassy Terrain
+
+### Q5e sv: Roost removes Flying for the turn: Earthquake hits a Roosting Talonflame  (32 runs)
+ start: p1a Talonflame 91/153 | p1b Chansey 325/325 | p2a Garchomp 183/183 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Talonflame [15:1] | p1b Chansey [72:1] | p2a Garchomp [183:1] | p2b Shuckle [70:1]
+ turn 1 end of turn: p1a Talonflame [15:1] | p1b Chansey [72:1] | p2a Garchomp [183:1] | p2b Shuckle [70:1]
+   1  |move|p1a: Talonflame|Roost|p1a: Talonflame
+   1  |-heal|p1a: Talonflame|153/153
+   1  |-singleturn|p1a: Talonflame|move: Roost
+   1  |-damage|p2b: Shuckle|70/95
+   1  |-damage|p1a: Talonflame|15/153
+   1  |-damage|p1b: Chansey|72/325
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   0.5  |move|p2a: Garchomp|Earthquake|p1a: Talonflame|[spread] p2b,p1a,p1b
+   0.5  |move|p2a: Garchomp|Earthquake|p1b: Chansey|[spread] p2b,p1a,p1b
+
+### Q6 sv: Jolteon Substitute; Lapras Thunder Wave into it; Snorlax (p1b) Splash; Shuckle Hyper Voice  (128 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [133:1] | p1b Snorlax [229:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [133:1] | p1b Snorlax [229:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Substitute|p1a: Jolteon
+   1  |-start|p1a: Jolteon|Substitute
+   1  |-damage|p1a: Jolteon|105/140
+   1  |move|p2a: Lapras|Thunder Wave|p1a: Jolteon
+   1  |-heal|p1a: Jolteon|140/140|[from] ability: Volt Absorb|[of] p2a: Lapras
+   1  |move|p1b: Snorlax|Splash|p1b: Snorlax
+   1  |-damage|p1a: Jolteon|133/140
+   1  |-damage|p1b: Snorlax|229/235
+   0.5  |move|p2b: Shuckle|Hyper Voice|p1a: Jolteon|[spread] p1a,p1b
+   0.5  |move|p2b: Shuckle|Hyper Voice|p1b: Snorlax|[spread] p1a,p1b
+
+### Q6b sv: Jolteon Substitute; Lapras Ice Beam into it (lowest roll)  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [105:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [105:1] | p1b Snorlax [235:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Substitute|p1a: Jolteon
+   1  |-start|p1a: Jolteon|Substitute
+   1  |-damage|p1a: Jolteon|105/140
+   1  |move|p2a: Lapras|Ice Beam|p1a: Jolteon
+   1  |-end|p1a: Jolteon|Substitute
+   1  |move|p1b: Snorlax|Splash|p1b: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q7 sv: Snorlax +2 Atk with Focus Energy; Jolteon Psych Up on it; Shuckle Haze last  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Psych Up|p2a: Snorlax
+   1  |-start|p1a: Jolteon|move: Focus Energy|[silent]
+   1  |-copyboost|p1a: Jolteon|p2a: Snorlax|[from] move: Psych Up
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Haze|p2b: Shuckle
+
+### Q8 sv: Jolteon Thunder Wave into Magic Bounce Espeon  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Espeon 140/140 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Espeon [140:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Espeon [140:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Thunder Wave|p2a: Espeon
+   1  |move|p2a: Espeon|Thunder Wave|p1a: Jolteon|[from] ability: Magic Bounce
+   1  |-immune|p1a: Jolteon|[from] ability: Volt Absorb
+   1  |move|p2a: Espeon|Splash|p2a: Espeon
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q8b sv: Lapras String Shot into foes Espeon (Magic Bounce) and Shuckle: reflected onto both of Lapras's side  (32 runs)
+ start: p1a Espeon 140/140 | p1b Shuckle 95/95 | p2a Lapras 205/205 | p2b Chansey 325/325
+ turn 1 after moves: p1a Espeon [140:1] | p1b Shuckle [95:1] | p2a Lapras [205:1] | p2b Chansey [325:1]
+ turn 1 end of turn: p1a Espeon [140:1] | p1b Shuckle [95:1] | p2a Lapras [205:1] | p2b Chansey [325:1]
+   1  |move|p1a: Espeon|Splash|p1a: Espeon
+   1  |move|p1a: Espeon|String Shot|p2a: Lapras|[from] ability: Magic Bounce|[spread] p2a,p2b|[spread] p1b
+   1  |-unboost|p2a: Lapras|spe|2
+   1  |-unboost|p2b: Chansey|spe|2
+   1  |-unboost|p1b: Shuckle|spe|2
+   1  |move|p2b: Chansey|Splash|p2b: Chansey
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   0.5  |move|p2a: Lapras|String Shot|p1a: Espeon
+   0.5  |move|p2a: Lapras|String Shot|p1b: Shuckle
+
+### Q9 sv: Prankster Whimsicott Thunder Wave into Umbreon (Dark)  (1 runs)
+ start: p1a Whimsicott 135/135 | p1b Chansey 325/325 | p2a Umbreon 170/170 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Whimsicott [135:1] | p1b Chansey [325:1] | p2a Umbreon [170:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Whimsicott [135:1] | p1b Chansey [325:1] | p2a Umbreon [170:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Whimsicott|Thunder Wave|p2a: Umbreon
+   1  |-hint|Since gen 7, Dark is immune to Prankster moves.
+   1  |-immune|p2a: Umbreon
+   1  |move|p2a: Umbreon|Splash|p2a: Umbreon
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q10 sv: Hypnosis in Electric Terrain into grounded Snorlax and Confuse Ray in Misty (second turn)  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Hypnosis|p2a: Snorlax
+   1  |-activate|p2a: Snorlax|move: Electric Terrain
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q10b sv: Hypnosis into Snorlax with a Sweet Veil ally (Alcremie); Thunder Wave into Gholdengo (Good as Gold)  (2 runs)
+ start: p1a Jolteon 140/140 | p1b Raichu 135/135 | p2a Snorlax 235/235 | p2b Gholdengo 162/162
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Raichu [135:1] | p2a Snorlax [235:1] | p2b Gholdengo [162:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Raichu [135:1] | p2a Snorlax [235:1] | p2b Gholdengo [162:1]
+   1  |move|p1a: Jolteon|Hypnosis|p2a: Snorlax
+   1  |-block|p2a: Snorlax|ability: Sweet Veil|[of] p2b: Gholdengo
+   1  |move|p1b: Raichu|Thunder Wave|p2b: Gholdengo
+   1  |-status|p2b: Gholdengo|par
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   0.75  |move|p2b: Gholdengo|Splash|p2b: Gholdengo
+   0.25  |cant|p2b: Gholdengo|par
+
+### Q11 sv: Hypnosis into Chesto Berry Snorlax, then its Body Slam  (3 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [76:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [76:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Hypnosis|p2a: Snorlax
+   1  |-status|p2a: Snorlax|slp|[from] move: Hypnosis
+   1  |-enditem|p2a: Snorlax|Chesto Berry|[eat]
+   1  |-curestatus|p2a: Snorlax|slp|[msg]
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Body Slam|p1b: Chansey
+   1  |-damage|p1b: Chansey|76/325
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q12 sv: Gengar Curse into Snorlax; Belly Drum (Azumarill) at full HP  (1 runs)
+ start: p1a Gengar 135/135 | p1b Azumarill 175/175 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Gengar [68:1] | p1b Azumarill [88:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Gengar [68:1] | p1b Azumarill [88:1] | p2a Snorlax [177:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Gengar|Curse|p2a: Snorlax
+   1  |-start|p2a: Snorlax|Curse|[of] p1a: Gengar
+   1  |-damage|p1a: Gengar|68/135
+   1  |move|p1b: Azumarill|Belly Drum|p1b: Azumarill
+   1  |-damage|p1b: Azumarill|88/175
+   1  |-setboost|p1b: Azumarill|atk|6|[from] move: Belly Drum
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-damage|p2a: Snorlax|177/235|[from] Curse
+
+### Q13 sv: Jolteon Memento into Snorlax, then Snorlax Body Slams Chansey  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [0:1] | p1b Chansey [199:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [0:1] | p1b Chansey [199:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Memento|p2a: Snorlax
+   1  |-unboost|p2a: Snorlax|atk|2
+   1  |-unboost|p2a: Snorlax|spa|2
+   1  |faint|p1a: Jolteon
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Body Slam|p1b: Chansey
+   1  |-damage|p1b: Chansey|199/325
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q14 sv: Acupressure on its ally Snorlax  (7 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Blissey 330/330 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Blissey [330:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Blissey [330:1] | p2b Shuckle [95:1]
+   0.142857  |-boost|p1b: Snorlax|atk|2
+   0.142857  |-boost|p1b: Snorlax|def|2
+   0.142857  |-boost|p1b: Snorlax|spa|2
+   0.142857  |-boost|p1b: Snorlax|spd|2
+   0.142857  |-boost|p1b: Snorlax|spe|2
+   0.142857  |-boost|p1b: Snorlax|accuracy|2
+   0.142857  |-boost|p1b: Snorlax|evasion|2
+C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:163
+    if (++res.runs > (probe.maxRuns ?? 50_000)) throw new Error("too many runs");
+                                                      ^
+
+Error: too many runs
+    at enumerate (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:163:55)
+    at <anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:161:102)
+    at Object.<anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:233:4)
+    at Module._compile (node:internal/modules/cjs/loader:1854:14)
+    at Object.transformer (C:\Users\evanb\OneDrive\pokedrafts\node_modules\tsx\dist\register-BOkp8V6j.cjs:9:3176)
+    at Module.load (node:internal/modules/cjs/loader:1577:32)
+    at Module._load (node:internal/modules/cjs/loader:1379:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+
+Node.js v24.16.0

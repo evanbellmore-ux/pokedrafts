@@ -1,0 +1,983 @@
+{
+ "id": "V24a",
+ "title": "Coupling: recoil, a spread hit on both, drain and a retarget",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Incineroar's recoil and Conkeldurr's drain tie their HP to the damage; Earthquake hits Incineroar, Snorlax and Conkeldurr; Drain Punch retargets to Snorlax if Incineroar fainted.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 183092,
+   "classes": 28187,
+   "ms": 134603,
+   "decisions": {
+    "sample": 28216,
+    "fail:": 225324,
+    "roll": 225324,
+    "secondary": 44
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       159,
+       0.125
+      ],
+      [
+       160,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 154.0625,
+     "min": 147,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       21,
+       0.000244140625
+      ],
+      [
+       22,
+       0.000244140625
+      ],
+      [
+       23,
+       0.0009765625
+      ],
+      [
+       24,
+       0.00244140625
+      ],
+      [
+       25,
+       0.002197265625
+      ],
+      [
+       26,
+       0.005859375
+      ],
+      [
+       27,
+       0.008056640625
+      ],
+      [
+       28,
+       0.007568359375
+      ],
+      [
+       29,
+       0.014404296875
+      ],
+      [
+       30,
+       0.018310546875
+      ],
+      [
+       31,
+       0.01611328125
+      ],
+      [
+       32,
+       0.02685546875
+      ],
+      [
+       33,
+       0.033203125
+      ],
+      [
+       34,
+       0.028564453125
+      ],
+      [
+       35,
+       0.03955078125
+      ],
+      [
+       36,
+       0.046630859375
+      ],
+      [
+       37,
+       0.041748046875
+      ],
+      [
+       38,
+       0.04638671875
+      ],
+      [
+       39,
+       0.0556640625
+      ],
+      [
+       40,
+       0.052001953125
+      ],
+      [
+       41,
+       0.051025390625
+      ],
+      [
+       42,
+       0.056640625
+      ],
+      [
+       43,
+       0.05517578125
+      ],
+      [
+       44,
+       0.049072265625
+      ],
+      [
+       45,
+       0.048828125
+      ],
+      [
+       46,
+       0.048828125
+      ],
+      [
+       47,
+       0.041748046875
+      ],
+      [
+       48,
+       0.037109375
+      ],
+      [
+       49,
+       0.03759765625
+      ],
+      [
+       50,
+       0.029541015625
+      ],
+      [
+       51,
+       0.02294921875
+      ],
+      [
+       52,
+       0.0224609375
+      ],
+      [
+       53,
+       0.016357421875
+      ],
+      [
+       54,
+       0.009765625
+      ],
+      [
+       55,
+       0.01123046875
+      ],
+      [
+       56,
+       0.00634765625
+      ],
+      [
+       57,
+       0.0029296875
+      ],
+      [
+       58,
+       0.00439453125
+      ],
+      [
+       60,
+       0.0009765625
+      ]
+     ],
+     "koChance": 0,
+     "average": 41.4375,
+     "min": 21,
+     "max": 60,
+     "modeTieUp": 42,
+     "modeTieDown": 42
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 94,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 138,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 150,
+       "dmgMax": 176,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p2a: Conkeldurr|hp|[from] drain|[of] p1a: Incineroar": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 20,
+    "fail:": 18,
+    "roll": 18,
+    "secondary": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       60,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 60,
+     "min": 60,
+     "max": 60,
+     "modeTieUp": 60,
+     "modeTieDown": 60
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 150,
+       "dmgMax": 150,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p2a: Conkeldurr|hp|[from] drain|[of] p1a: Incineroar": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 13,
+   "decisions": {
+    "sample": 20,
+    "fail:": 18,
+    "roll": 18,
+    "secondary": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       21,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 21,
+     "min": 21,
+     "max": 21,
+     "modeTieUp": 21,
+     "modeTieDown": 21
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 94,
+       "dmgMax": 94,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 138,
+       "dmgMax": 138,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 176,
+       "dmgMax": 176,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p2a: Conkeldurr|hp|[from] drain|[of] p1a: Incineroar": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 147,
+   "average": 154.0625,
+   "min": 147,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     159,
+     0.125
+    ],
+    [
+     160,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 60,
+   "high": 21,
+   "average": 41.4375,
+   "min": 21,
+   "max": 60,
+   "koChance": 0,
+   "dist": [
+    [
+     21,
+     0.000244140625
+    ],
+    [
+     22,
+     0.000244140625
+    ],
+    [
+     23,
+     0.0009765625
+    ],
+    [
+     24,
+     0.00244140625
+    ],
+    [
+     25,
+     0.002197265625
+    ],
+    [
+     26,
+     0.005859375
+    ],
+    [
+     27,
+     0.008056640625
+    ],
+    [
+     28,
+     0.007568359375
+    ],
+    [
+     29,
+     0.014404296875
+    ],
+    [
+     30,
+     0.018310546875
+    ],
+    [
+     31,
+     0.01611328125
+    ],
+    [
+     32,
+     0.02685546875
+    ],
+    [
+     33,
+     0.033203125
+    ],
+    [
+     34,
+     0.028564453125
+    ],
+    [
+     35,
+     0.03955078125
+    ],
+    [
+     36,
+     0.046630859375
+    ],
+    [
+     37,
+     0.041748046875
+    ],
+    [
+     38,
+     0.04638671875
+    ],
+    [
+     39,
+     0.0556640625
+    ],
+    [
+     40,
+     0.052001953125
+    ],
+    [
+     41,
+     0.051025390625
+    ],
+    [
+     42,
+     0.056640625
+    ],
+    [
+     43,
+     0.05517578125
+    ],
+    [
+     44,
+     0.049072265625
+    ],
+    [
+     45,
+     0.048828125
+    ],
+    [
+     46,
+     0.048828125
+    ],
+    [
+     47,
+     0.041748046875
+    ],
+    [
+     48,
+     0.037109375
+    ],
+    [
+     49,
+     0.03759765625
+    ],
+    [
+     50,
+     0.029541015625
+    ],
+    [
+     51,
+     0.02294921875
+    ],
+    [
+     52,
+     0.0224609375
+    ],
+    [
+     53,
+     0.016357421875
+    ],
+    [
+     54,
+     0.009765625
+    ],
+    [
+     55,
+     0.01123046875
+    ],
+    [
+     56,
+     0.00634765625
+    ],
+    [
+     57,
+     0.0029296875
+    ],
+    [
+     58,
+     0.00439453125
+    ],
+    [
+     60,
+     0.0009765625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

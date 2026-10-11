@@ -1,0 +1,505 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-right": {
+    "hp": 142,
+    "maximum": 142
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "silktrap",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Silk Trap blocks Dragon Claw.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Silk Trap blocks Flamethrower.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "gyroball",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 30,
+      "max": 36,
+      "minPercent": 16.39344262295082,
+      "maxPercent": 19.672131147540984,
+      "koChance": 0,
+      "row": {
+       "moveId": "gyroball",
+       "effectiveName": "Gyro Ball",
+       "effectiveType": "Steel",
+       "effectivePower": 53,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 30,
+       "max": 36,
+       "minPercent": 16.39344262295082,
+       "maxPercent": 19.672131147540984,
+       "rolls": [
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        31,
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        34,
+        34,
+        36
+       ],
+       "ohkoChance": 0,
+       "description": "Gyro Ball: 30–36 HP (16.4–19.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 53."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 153,
+    "average": 150.625,
+    "high": 147,
+    "min": 147,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 142,
+    "maximum": 142,
+    "low": 125,
+    "average": 125,
+    "high": 125,
+    "min": 125,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 55.55555555555556,
+     "maxPercent": 65.18518518518519,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 75–88 HP (55.6–65.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 60,
+      "high": 47,
+      "average": 54.0625,
+      "min": 47,
+      "max": 60,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 156,
+     "max": 186,
+     "minPercent": 115.55555555555554,
+     "maxPercent": 137.77777777777777,
+     "rolls": [
+      156,
+      158,
+      158,
+      162,
+      164,
+      164,
+      168,
+      170,
+      170,
+      174,
+      174,
+      176,
+      180,
+      180,
+      182,
+      186
+     ],
+     "ohkoChance": 1,
+     "description": "Flamethrower: 156–186 HP (115.6–137.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 135,
+        "heals": []
+       },
+       "high": {
+        "dealt": 135,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "gyroball",
+     "effectiveName": "Gyro Ball",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 43,
+     "max": 52,
+     "minPercent": 23.497267759562842,
+     "maxPercent": 28.415300546448087,
+     "rolls": [
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Gyro Ball: 43–52 HP (23.5–28.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 80."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.940704345703125,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 140,
+      "high": 131,
+      "average": 135.4375,
+      "min": 131,
+      "max": 140,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 43,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 153,
+     "average": 150.625,
+     "high": 147,
+     "min": 147,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 142,
+     "maximum": 142,
+     "low": 125,
+     "average": 125,
+     "high": 125,
+     "min": 125,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.350200000000086,
+ "preflight": []
+}

@@ -1,0 +1,311 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 70,
+    "maximum": 142
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dualwingbeat",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 46,
+      "max": 54,
+      "minPercent": 32.3943661971831,
+      "maxPercent": 38.028169014084504,
+      "koChance": 0,
+      "row": {
+       "moveId": "dualwingbeat",
+       "effectiveName": "Dual Wingbeat",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 46,
+       "max": 54,
+       "minPercent": 32.3943661971831,
+       "maxPercent": 38.028169014084504,
+       "rolls": [
+        [
+         23,
+         23,
+         24,
+         24,
+         24,
+         24,
+         24,
+         25,
+         25,
+         25,
+         26,
+         26,
+         26,
+         27,
+         27,
+         27
+        ],
+        [
+         23,
+         23,
+         24,
+         24,
+         24,
+         24,
+         24,
+         25,
+         25,
+         25,
+         26,
+         26,
+         26,
+         27,
+         27,
+         27
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Dual Wingbeat: 46–54 HP (32.4–38.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 166,
+    "average": 166,
+    "high": 166,
+    "min": 166,
+    "max": 166,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 70,
+    "maximum": 142,
+    "low": 71,
+    "average": 67,
+    "high": 63,
+    "min": 63,
+    "max": 71,
+    "koChance": 0,
+    "heals": [
+     "Cheek Pouch: +47 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dualwingbeat",
+     "effectiveName": "Dual Wingbeat",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 46,
+     "max": 54,
+     "minPercent": 32.3943661971831,
+     "maxPercent": 38.028169014084504,
+     "rolls": [
+      [
+       23,
+       23,
+       24,
+       24,
+       24,
+       24,
+       24,
+       25,
+       25,
+       25,
+       26,
+       26,
+       26,
+       27,
+       27,
+       27
+      ],
+      [
+       23,
+       23,
+       24,
+       24,
+       24,
+       24,
+       24,
+       25,
+       25,
+       25,
+       26,
+       26,
+       26,
+       27,
+       27,
+       27
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Dual Wingbeat: 46–54 HP (32.4–38.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 166,
+     "average": 166,
+     "high": 166,
+     "min": 166,
+     "max": 166,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 70,
+     "maximum": 142,
+     "low": 71,
+     "average": 67,
+     "high": 63,
+     "min": 63,
+     "max": 71,
+     "koChance": 0,
+     "heals": [
+      "Cheek Pouch: +47 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.655299999998533,
+ "preflight": []
+}

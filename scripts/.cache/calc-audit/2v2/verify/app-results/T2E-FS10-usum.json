@@ -1,0 +1,241 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "dig",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Dig: Garchomp charges this turn.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 130,
+    "average": 130,
+    "high": 130,
+    "min": 130,
+    "max": 130,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dig",
+     "effectiveName": "Dig",
+     "effectiveType": "Ground",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 105,
+     "max": 124,
+     "minPercent": 80.76923076923077,
+     "maxPercent": 95.38461538461539,
+     "rolls": [
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      117,
+      118,
+      120,
+      121,
+      123,
+      124
+     ],
+     "ohkoChance": 0,
+     "description": "Dig: 105–124 HP (80.8–95.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 130,
+      "low": 25,
+      "high": 6,
+      "average": 15.6875,
+      "min": 6,
+      "max": 25,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 105,
+        "heals": []
+       },
+       "high": {
+        "dealt": 124,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Garchomp did not charge Dig last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 130,
+     "maximum": 130,
+     "low": 130,
+     "average": 130,
+     "high": 130,
+     "min": 130,
+     "max": 130,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-right",
+     "effect": "Future Sight",
+     "other": "own-left",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Future Sight misses Garchomp.",
+       "chance": 1
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 2.1080999999994674,
+ "preflight": []
+}

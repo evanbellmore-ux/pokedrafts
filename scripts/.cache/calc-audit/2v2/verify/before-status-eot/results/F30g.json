@@ -1,0 +1,775 @@
+{
+ "id": "F30g",
+ "title": "Self-Destruct from an Unnerve user and the targets' Sitrus Berries",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Mewtwo faints as Self-Destruct starts: its Unnerve no longer stops the foes' Sitrus Berries.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 26888,
+   "classes": 16133,
+   "ms": 23247,
+   "decisions": {
+    "sample": 10764,
+    "fail:": 32256,
+    "roll": 32256
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mewtwo",
+     "start": 181,
+     "maximum": 181,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       70,
+       0.0625
+      ],
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       73,
+       0.0625
+      ],
+      [
+       74,
+       0.0625
+      ],
+      [
+       75,
+       0.0625
+      ],
+      [
+       76,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       79,
+       0.0625
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.0625
+      ],
+      [
+       82,
+       0.125
+      ],
+      [
+       83,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 76.8125,
+     "min": 70,
+     "max": 83,
+     "modeTieUp": 82,
+     "modeTieDown": 76
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       96,
+       0.0625
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       99,
+       0.0625
+      ],
+      [
+       100,
+       0.0625
+      ],
+      [
+       101,
+       0.0625
+      ],
+      [
+       102,
+       0.0625
+      ],
+      [
+       103,
+       0.0625
+      ],
+      [
+       104,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ],
+      [
+       106,
+       0.0625
+      ],
+      [
+       107,
+       0.0625
+      ],
+      [
+       108,
+       0.0625
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       110,
+       0.0625
+      ],
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 104.4375,
+     "min": 96,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 96
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 120,
+     "maximum": 154,
+     "dist": [
+      [
+       85,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.0625
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       90,
+       0.0625
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.0625
+      ],
+      [
+       93,
+       0.0625
+      ],
+      [
+       94,
+       0.125
+      ],
+      [
+       95,
+       0.0625
+      ],
+      [
+       96,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 90.9375,
+     "min": 85,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 88
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "selfdestruct",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 85,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 62,
+       "dmgMax": 73,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 86,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Blastoise|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Blastoise|hp|[from] item: Sitrus Berry": 1,
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 13,
+   "decisions": {
+    "sample": 16,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mewtwo",
+     "start": 181,
+     "maximum": 181,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       112,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 112,
+     "min": 112,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 120,
+     "maximum": 154,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "selfdestruct",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 62,
+       "dmgMax": 62,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 86,
+       "dmgMax": 86,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Blastoise|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Blastoise|hp|[from] item: Sitrus Berry": 1,
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 16,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Mewtwo",
+     "start": 181,
+     "maximum": 181,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 140,
+     "maximum": 235,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 120,
+     "maximum": 154,
+     "dist": [
+      [
+       85,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 85,
+     "min": 85,
+     "max": 85,
+     "modeTieUp": 85,
+     "modeTieDown": 85
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "selfdestruct",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 85,
+       "dmgMax": 85,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 73,
+       "dmgMax": 73,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 102,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Blastoise|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Blastoise|hp|[from] item: Sitrus Berry": 1,
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 181,
+   "maximum": 181,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 83,
+   "high": 70,
+   "average": 76.8125,
+   "min": 70,
+   "max": 83,
+   "koChance": 0,
+   "dist": [
+    [
+     70,
+     0.0625
+    ],
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     73,
+     0.0625
+    ],
+    [
+     74,
+     0.0625
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     76,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     79,
+     0.0625
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.0625
+    ],
+    [
+     82,
+     0.125
+    ],
+    [
+     83,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 235,
+   "low": 112,
+   "high": 96,
+   "average": 104.4375,
+   "min": 96,
+   "max": 112,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.0625
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ],
+    [
+     100,
+     0.0625
+    ],
+    [
+     101,
+     0.0625
+    ],
+    [
+     102,
+     0.0625
+    ],
+    [
+     103,
+     0.0625
+    ],
+    [
+     104,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     106,
+     0.0625
+    ],
+    [
+     107,
+     0.0625
+    ],
+    [
+     108,
+     0.0625
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     110,
+     0.0625
+    ],
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 120,
+   "maximum": 154,
+   "low": 96,
+   "high": 85,
+   "average": 90.9375,
+   "min": 85,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     85,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

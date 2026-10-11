@@ -1,0 +1,1492 @@
+{
+ "id": "SA02",
+ "title": "Control: Natural Cure Blissey's Rock Smash lowers nothing (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "50% stays below 100%: Hammer Arm hits Snorlax at its full Defense.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 61,
+   "classes": 20,
+   "ms": 120,
+   "decisions": {
+    "fail:": 45,
+    "roll": 45,
+    "secondary": 45,
+    "accuracy": 42
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       0.73828125
+      ],
+      [
+       1,
+       0.01953125
+      ],
+      [
+       3,
+       0.09765625
+      ],
+      [
+       5,
+       0.0703125
+      ],
+      [
+       7,
+       0.015625
+      ],
+      [
+       9,
+       0.046875
+      ],
+      [
+       11,
+       0.01171875
+      ]
+     ],
+     "koChance": 0.73828125,
+     "average": 1.32421875,
+     "min": 0,
+     "max": 11,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-12": 0.1875,
+       "damage:-14": 0.75,
+       "damage:-16": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -16,
+       "max": -12
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -16,
+       "max": -12,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.73828125,
+       "dmgMin": 212,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-212": 0.0625,
+       "damage:-216": 0.0625,
+       "damage:-218": 0.125,
+       "damage:-222": 0.01171875,
+       "damage:-223": 0.12890625,
+       "faint": 0.73828125,
+       "damage:-221": 0.5625,
+       "damage:-219": 0.046875
+      },
+      "own-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -223,
+       "max": -212
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -223,
+       "max": -212,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 13,
+    "classes": 13,
+    "ms": 120,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Conkeldurr",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        0,
+        0.73828125
+       ],
+       [
+        1,
+        0.01953125
+       ],
+       [
+        3,
+        0.09765625
+       ],
+       [
+        5,
+        0.0703125
+       ],
+       [
+        7,
+        0.015625
+       ],
+       [
+        9,
+        0.046875
+       ],
+       [
+        11,
+        0.01171875
+       ]
+      ],
+      "koChance": 0.73828125,
+      "average": 1.32421875,
+      "min": 0,
+      "max": 11,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.26171875,
+       "fnt": 0.73828125
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.73828125
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       11,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 11,
+     "min": 11,
+     "max": 11,
+     "modeTieUp": 11,
+     "modeTieDown": 11,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 12,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-12": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -12,
+       "max": -12
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -12,
+       "max": -12,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 212,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-212": 1
+      },
+      "own-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -212,
+       "max": -212
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -212,
+       "max": -212,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Conkeldurr",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        11,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 11,
+      "min": 11,
+      "max": 11,
+      "modeTieUp": 11,
+      "modeTieDown": 11,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-16": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -16,
+       "max": -16
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -16,
+       "max": -16,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 252,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-219": 1,
+       "faint": 1
+      },
+      "own-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -219,
+       "max": -219
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -219,
+       "max": -219,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Conkeldurr",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 11,
+   "high": 0,
+   "average": 1.32421875,
+   "min": 0,
+   "max": 11,
+   "koChance": 0.73828125,
+   "dist": [
+    [
+     0,
+     0.73828125
+    ],
+    [
+     1,
+     0.01953125
+    ],
+    [
+     3,
+     0.09765625
+    ],
+    [
+     5,
+     0.0703125
+    ],
+    [
+     7,
+     0.015625
+    ],
+    [
+     9,
+     0.046875
+    ],
+    [
+     11,
+     0.01171875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 11,
+   "high": 0,
+   "average": 1.32421875,
+   "min": 0,
+   "max": 11,
+   "koChance": 0.73828125,
+   "dist": [
+    [
+     0,
+     0.73828125
+    ],
+    [
+     1,
+     0.01953125
+    ],
+    [
+     3,
+     0.09765625
+    ],
+    [
+     5,
+     0.0703125
+    ],
+    [
+     7,
+     0.015625
+    ],
+    [
+     9,
+     0.046875
+    ],
+    [
+     11,
+     0.01171875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

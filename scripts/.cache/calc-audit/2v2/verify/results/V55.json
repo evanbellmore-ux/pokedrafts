@@ -1,0 +1,1683 @@
+{
+ "id": "V55",
+ "title": "Sturdy at full HP, then a second hit",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Earthquake (Garchomp 122 first) leaves Aggron at 1 at most; Aura Sphere finishes it.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 3374,
+   "classes": 491,
+   "ms": 5379,
+   "decisions": {
+    "sample": 1812,
+    "fail:": 6588,
+    "roll": 6588
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       0.8125
+      ],
+      [
+       1,
+       0.125
+      ],
+      [
+       5,
+       0.0625
+      ]
+     ],
+     "koChance": 0.8125,
+     "average": 0.4375,
+     "min": 0,
+     "max": 5,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 87.75,
+     "min": 82,
+     "max": 94,
+     "modeTieUp": 92,
+     "modeTieDown": 83,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Aggron",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       0.1875
+      ],
+      [
+       1,
+       0.40625
+      ],
+      [
+       9,
+       0.203125
+      ],
+      [
+       13,
+       0.203125
+      ]
+     ],
+     "koChance": 0.1875,
+     "average": 4.875,
+     "min": 0,
+     "max": 13,
+     "modeTieUp": 1,
+     "modeTieDown": 1,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aurasphere",
+     "picked": 1,
+     "faintedAtPick": 0.8125,
+     "moved": 0.1875,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.1875
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.1875,
+       "landed": 0.1875,
+       "ko": 0.1875,
+       "dmgMin": 304,
+       "dmgMax": 364,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-13": 0.046875,
+       "faint": 0.1875,
+       "damage:-9": 0.046875,
+       "damage:-1": 0.09375
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -13,
+       "max": -1
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -13,
+       "max": -1,
+       "mass": 0.1875
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.8125,
+       "dmgMin": 140,
+       "dmgMax": 168,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 132,
+       "dmgMax": 156,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2a: Aggron|Sturdy": 0.25
+     },
+     "effects": {
+      "own-left": {
+       "damage:-140": 0.0625,
+       "damage:-144": 0.125,
+       "damage:-145": 0.8125,
+       "faint": 0.8125
+      },
+      "opponent-right": {
+       "damage:-132": 0.25,
+       "damage:-136": 0.25,
+       "damage:-144": 0.5,
+       "ability:sturdy": 0.25
+      },
+      "opponent-left": {
+       "damage:-61": 0.0625,
+       "damage:-63": 0.125,
+       "damage:-64": 0.125,
+       "damage:-66": 0.125,
+       "damage:-67": 0.125,
+       "damage:-69": 0.125,
+       "damage:-70": 0.125,
+       "damage:-72": 0.125,
+       "damage:-73": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -145,
+       "max": -140
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -73,
+       "max": -61
+      },
+      "opponent-right": {
+       "min": -144,
+       "max": -132
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -145,
+       "max": -140,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -144,
+       "max": -132,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -73,
+       "max": -61,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 162,
+    "classes": 162,
+    "ms": 5379,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        0.8125
+       ],
+       [
+        1,
+        0.125
+       ],
+       [
+        5,
+        0.0625
+       ]
+      ],
+      "koChance": 0.8125,
+      "average": 0.4375,
+      "min": 0,
+      "max": 5,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.1875,
+       "fnt": 0.8125
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.8125
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        82,
+        0.0625
+       ],
+       [
+        83,
+        0.125
+       ],
+       [
+        85,
+        0.125
+       ],
+       [
+        86,
+        0.125
+       ],
+       [
+        88,
+        0.125
+       ],
+       [
+        89,
+        0.125
+       ],
+       [
+        91,
+        0.125
+       ],
+       [
+        92,
+        0.125
+       ],
+       [
+        94,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 87.75,
+      "min": 82,
+      "max": 94,
+      "modeTieUp": 92,
+      "modeTieDown": 83,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Aggron",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        0.1875
+       ],
+       [
+        1,
+        0.40625
+       ],
+       [
+        9,
+        0.203125
+       ],
+       [
+        13,
+        0.203125
+       ]
+      ],
+      "koChance": 0.1875,
+      "average": 4.875,
+      "min": 0,
+      "max": 13,
+      "modeTieUp": 1,
+      "modeTieDown": 1,
+      "status": {
+       "": 0.8125,
+       "fnt": 0.1875
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.1875
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 25,
+   "decisions": {
+    "sample": 16,
+    "fail:": 14,
+    "roll": 14
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       5,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 5,
+     "min": 5,
+     "max": 5,
+     "modeTieUp": 5,
+     "modeTieDown": 5,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       94,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 94,
+     "min": 94,
+     "max": 94,
+     "modeTieUp": 94,
+     "modeTieDown": 94,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Aggron",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aurasphere",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 304,
+       "dmgMax": 304,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-13": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -13,
+       "max": -13
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -13,
+       "max": -13,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 132,
+       "dmgMax": 132,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-left": {
+       "damage:-140": 1
+      },
+      "opponent-right": {
+       "damage:-132": 1
+      },
+      "opponent-left": {
+       "damage:-61": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -140,
+       "max": -140
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -61,
+       "max": -61
+      },
+      "opponent-right": {
+       "min": -132,
+       "max": -132
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -140,
+       "max": -140,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -132,
+       "max": -132,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -61,
+       "max": -61,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 26,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        5,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 5,
+      "min": 5,
+      "max": 5,
+      "modeTieUp": 5,
+      "modeTieDown": 5,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        94,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 94,
+      "min": 94,
+      "max": 94,
+      "modeTieUp": 94,
+      "modeTieDown": 94,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Aggron",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 22,
+   "decisions": {
+    "sample": 16,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 82,
+     "min": 82,
+     "max": 82,
+     "modeTieUp": 82,
+     "modeTieDown": 82,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Aggron",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       1,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 1,
+     "min": 1,
+     "max": 1,
+     "modeTieUp": 1,
+     "modeTieDown": 1,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aurasphere",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 168,
+       "dmgMax": 168,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 156,
+       "dmgMax": 156,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 73,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2a: Aggron|Sturdy": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-145": 1,
+       "faint": 1
+      },
+      "opponent-right": {
+       "ability:sturdy": 1,
+       "damage:-144": 1
+      },
+      "opponent-left": {
+       "damage:-73": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -145,
+       "max": -145
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -73,
+       "max": -73
+      },
+      "opponent-right": {
+       "min": -144,
+       "max": -144
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -145,
+       "max": -145,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -144,
+       "max": -144,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -73,
+       "max": -73,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 22,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lucario",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        82,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 82,
+      "min": 82,
+      "max": 82,
+      "modeTieUp": 82,
+      "modeTieDown": 82,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Aggron",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        1,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 1,
+      "min": 1,
+      "max": 1,
+      "modeTieUp": 1,
+      "modeTieDown": 1,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 5,
+   "high": 0,
+   "average": 0.4375,
+   "min": 0,
+   "max": 5,
+   "koChance": 0.8125,
+   "dist": [
+    [
+     0,
+     0.8125
+    ],
+    [
+     1,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 94,
+   "high": 82,
+   "average": 87.75,
+   "min": 82,
+   "max": 94,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 0,
+   "high": 1,
+   "average": 4.875,
+   "min": 0,
+   "max": 13,
+   "koChance": 0.1875,
+   "dist": [
+    [
+     0,
+     0.1875
+    ],
+    [
+     1,
+     0.40625
+    ],
+    [
+     9,
+     0.203125
+    ],
+    [
+     13,
+     0.203125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 5,
+   "high": 0,
+   "average": 0.4375,
+   "min": 0,
+   "max": 5,
+   "koChance": 0.8125,
+   "dist": [
+    [
+     0,
+     0.8125
+    ],
+    [
+     1,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 94,
+   "high": 82,
+   "average": 87.75,
+   "min": 82,
+   "max": 94,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 0,
+   "high": 1,
+   "average": 4.875,
+   "min": 0,
+   "max": 13,
+   "koChance": 0.1875,
+   "dist": [
+    [
+     0,
+     0.1875
+    ],
+    [
+     1,
+     0.40625
+    ],
+    [
+     9,
+     0.203125
+    ],
+    [
+     13,
+     0.203125
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

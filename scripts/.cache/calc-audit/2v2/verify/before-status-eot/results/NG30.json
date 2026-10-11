@@ -1,0 +1,529 @@
+{
+ "id": "NG30",
+ "title": "Serene Grace suppressed: Blissey's Rock Smash does not lower Snorlax's Defense before Conkeldurr's Hammer Arm (SwSh; the serene-grace unit test's turn)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "doubled chance suppressed: the 50% drop does not happen",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 61,
+   "classes": 20,
+   "ms": 71,
+   "decisions": {
+    "fail:": 45,
+    "roll": 45,
+    "secondary": 45,
+    "accuracy": 42
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       0.73828125
+      ],
+      [
+       1,
+       0.01953125
+      ],
+      [
+       3,
+       0.09765625
+      ],
+      [
+       5,
+       0.0703125
+      ],
+      [
+       7,
+       0.015625
+      ],
+      [
+       9,
+       0.046875
+      ],
+      [
+       11,
+       0.01171875
+      ]
+     ],
+     "koChance": 0.73828125,
+     "average": 1.32421875,
+     "min": 0,
+     "max": 11,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.73828125,
+       "dmgMin": 212,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 28,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       11,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 11,
+     "min": 11,
+     "max": 11,
+     "modeTieUp": 11,
+     "modeTieDown": 11
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 12,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 212,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rocksmash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 252,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 11,
+   "high": 0,
+   "average": 1.32421875,
+   "min": 0,
+   "max": 11,
+   "koChance": 0.73828125,
+   "dist": [
+    [
+     0,
+     0.73828125
+    ],
+    [
+     1,
+     0.01953125
+    ],
+    [
+     3,
+     0.09765625
+    ],
+    [
+     5,
+     0.0703125
+    ],
+    [
+     7,
+     0.015625
+    ],
+    [
+     9,
+     0.046875
+    ],
+    [
+     11,
+     0.01171875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

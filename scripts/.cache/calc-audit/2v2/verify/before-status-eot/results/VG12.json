@@ -1,0 +1,470 @@
+{
+ "id": "VG12",
+ "title": "Magic Guard suppressed: Clefable's Life Orb Moonblast into Garchomp costs it HP",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Life Orb recoil through suppressed Magic Guard",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 30,
+   "classes": 22,
+   "ms": 22,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9,
+    "secondary": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       1,
+       0.0625
+      ],
+      [
+       4,
+       0.125
+      ],
+      [
+       9,
+       0.125
+      ],
+      [
+       11,
+       0.125
+      ],
+      [
+       17,
+       0.125
+      ],
+      [
+       19,
+       0.125
+      ],
+      [
+       24,
+       0.125
+      ],
+      [
+       27,
+       0.125
+      ],
+      [
+       32,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 15.9375,
+     "min": 1,
+     "max": 32,
+     "modeTieUp": 27,
+     "modeTieDown": 4
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 151,
+       "dmgMax": 182,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Clefable|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       32,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 32,
+     "max": 32,
+     "modeTieUp": 32,
+     "modeTieDown": 32
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 151,
+       "dmgMax": 151,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Clefable|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       1,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 1,
+     "min": 1,
+     "max": 1,
+     "modeTieUp": 1,
+     "modeTieDown": 1
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 182,
+       "dmgMax": 182,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Clefable|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 32,
+   "high": 1,
+   "average": 15.9375,
+   "min": 1,
+   "max": 32,
+   "koChance": 0,
+   "dist": [
+    [
+     1,
+     0.0625
+    ],
+    [
+     4,
+     0.125
+    ],
+    [
+     9,
+     0.125
+    ],
+    [
+     11,
+     0.125
+    ],
+    [
+     17,
+     0.125
+    ],
+    [
+     19,
+     0.125
+    ],
+    [
+     24,
+     0.125
+    ],
+    [
+     27,
+     0.125
+    ],
+    [
+     32,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,457 @@
+{
+ "id": "MV07",
+ "title": "Max Steelspike from Steel Beam costs no HP",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Corviknight stays at 60.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 25,
+   "classes": 19,
+   "ms": 22,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       181,
+       0.0625
+      ],
+      [
+       183,
+       0.125
+      ],
+      [
+       184,
+       0.1875
+      ],
+      [
+       186,
+       0.1875
+      ],
+      [
+       187,
+       0.1875
+      ],
+      [
+       189,
+       0.125
+      ],
+      [
+       190,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 181,
+     "max": 190,
+     "modeTieUp": 187,
+     "modeTieDown": 184
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "steelbeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Steelspike": 1,
+      "|-boost|p1a: Corviknight|def|1": 1,
+      "|-boost|p1b: Blastoise|def|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       190,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 190,
+     "min": 190,
+     "max": 190,
+     "modeTieUp": 190,
+     "modeTieDown": 190
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "steelbeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Steelspike": 1,
+      "|-boost|p1a: Corviknight|def|1": 1,
+      "|-boost|p1b: Blastoise|def|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       181,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 181,
+     "min": 181,
+     "max": 181,
+     "modeTieUp": 181,
+     "modeTieDown": 181
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "steelbeam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Steelspike": 1,
+      "|-boost|p1a: Corviknight|def|1": 1,
+      "|-boost|p1b: Blastoise|def|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 120,
+   "maximum": 346,
+   "low": 120,
+   "high": 120,
+   "average": 120,
+   "min": 120,
+   "max": 120,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 190,
+   "high": 181,
+   "average": 186,
+   "min": 181,
+   "max": 190,
+   "koChance": 0,
+   "dist": [
+    [
+     181,
+     0.0625
+    ],
+    [
+     183,
+     0.125
+    ],
+    [
+     184,
+     0.1875
+    ],
+    [
+     186,
+     0.1875
+    ],
+    [
+     187,
+     0.1875
+    ],
+    [
+     189,
+     0.125
+    ],
+    [
+     190,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

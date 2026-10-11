@@ -1,0 +1,1502 @@
+{
+ "id": "M24b",
+ "title": "Max Geyser sets rain: a later Fire move halved",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Charizard (167) first; Max Geyser's rain halves Arcanine's Flamethrower into Venusaur.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 28,
+   "classes": 10,
+   "ms": 30,
+   "decisions": {
+    "fail:": 20,
+    "roll": 20,
+    "secondary": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 272,
+     "maximum": 272,
+     "dist": [
+      [
+       272,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 272,
+     "min": 272,
+     "max": 272,
+     "modeTieUp": 272,
+     "modeTieDown": 272,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       95,
+       0.0625
+      ],
+      [
+       99,
+       0.3125
+      ],
+      [
+       101,
+       0.3125
+      ],
+      [
+       105,
+       0.3125
+      ]
+     ],
+     "koChance": 0,
+     "average": 101.25,
+     "min": 95,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 264,
+       "dmgMax": 312,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-153": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -153,
+       "max": -153
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "opponent-left": {
+       "min": -153,
+       "max": -153,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 50,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-50": 0.3125,
+       "damage:-54": 0.3125,
+       "damage:-56": 0.3125,
+       "damage:-60": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -60,
+       "max": -50
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -60,
+       "max": -50,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 4,
+    "ms": 30,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 272,
+      "dist": [
+       [
+        272,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 272,
+      "min": 272,
+      "max": 272,
+      "modeTieUp": 272,
+      "modeTieDown": 272,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        95,
+        0.0625
+       ],
+       [
+        99,
+        0.3125
+       ],
+       [
+        101,
+        0.3125
+       ],
+       [
+        105,
+        0.3125
+       ]
+      ],
+      "koChance": 0,
+      "average": 101.25,
+      "min": 95,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 272,
+     "maximum": 272,
+     "dist": [
+      [
+       272,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 272,
+     "min": 272,
+     "max": 272,
+     "modeTieUp": 272,
+     "modeTieDown": 272,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 264,
+       "dmgMax": 264,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-153": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -153,
+       "max": -153
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "opponent-left": {
+       "min": -153,
+       "max": -153,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 50,
+       "dmgMax": 50,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-50": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -50,
+       "max": -50
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -50,
+       "max": -50,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 272,
+      "dist": [
+       [
+        272,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 272,
+      "min": 272,
+      "max": 272,
+      "modeTieUp": 272,
+      "modeTieDown": 272,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        105,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 105,
+      "min": 105,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 272,
+     "maximum": 272,
+     "dist": [
+      [
+       272,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 272,
+     "min": 272,
+     "max": 272,
+     "modeTieUp": 272,
+     "modeTieDown": 272,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Arcanine",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       95,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 95,
+     "min": 95,
+     "max": 95,
+     "modeTieUp": 95,
+     "modeTieDown": 95,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 312,
+       "dmgMax": 312,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-153": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -153,
+       "max": -153
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "opponent-left": {
+       "min": -153,
+       "max": -153,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-60": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -60,
+       "max": -60
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -60,
+       "max": -60,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 272,
+      "dist": [
+       [
+        272,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 272,
+      "min": 272,
+      "max": 272,
+      "modeTieUp": 272,
+      "modeTieDown": 272,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        165,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 165,
+      "min": 165,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        95,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 95,
+      "min": 95,
+      "max": 95,
+      "modeTieUp": 95,
+      "modeTieDown": 95,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 272,
+   "maximum": 272,
+   "low": 272,
+   "high": 272,
+   "average": 272,
+   "min": 272,
+   "max": 272,
+   "koChance": 0,
+   "dist": [
+    [
+     272,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 105,
+   "high": 95,
+   "average": 101.25,
+   "min": 95,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     95,
+     0.0625
+    ],
+    [
+     99,
+     0.3125
+    ],
+    [
+     101,
+     0.3125
+    ],
+    [
+     105,
+     0.3125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 272,
+   "maximum": 272,
+   "low": 272,
+   "high": 272,
+   "average": 272,
+   "min": 272,
+   "max": 272,
+   "koChance": 0,
+   "dist": [
+    [
+     272,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 165,
+   "min": 165,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     165,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 105,
+   "high": 95,
+   "average": 101.25,
+   "min": 95,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     95,
+     0.0625
+    ],
+    [
+     99,
+     0.3125
+    ],
+    [
+     101,
+     0.3125
+    ],
+    [
+     105,
+     0.3125
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

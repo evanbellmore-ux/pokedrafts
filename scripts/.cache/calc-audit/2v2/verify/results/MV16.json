@@ -1,0 +1,1512 @@
+{
+ "id": "MV16",
+ "title": "Max Strike from Extreme Speed into a grounded target in Psychic Terrain",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Blocked?",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 63,
+   "classes": 49,
+   "ms": 90,
+   "decisions": {
+    "fail:": 15,
+    "roll": 15
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       146,
+       0.0625
+      ],
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       149,
+       0.0625
+      ],
+      [
+       150,
+       0.0625
+      ],
+      [
+       151,
+       0.0625
+      ],
+      [
+       152,
+       0.0625
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.0625
+      ],
+      [
+       155,
+       0.125
+      ],
+      [
+       156,
+       0.0625
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       158,
+       0.0625
+      ],
+      [
+       159,
+       0.0625
+      ],
+      [
+       160,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 153.125,
+     "min": 146,
+     "max": 160,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 89,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-75": 0.0625,
+       "boost:spe:-1": 1,
+       "damage:-76": 0.0625,
+       "damage:-77": 0.0625,
+       "damage:-78": 0.0625,
+       "damage:-79": 0.0625,
+       "damage:-80": 0.125,
+       "damage:-81": 0.0625,
+       "damage:-82": 0.0625,
+       "damage:-83": 0.0625,
+       "damage:-84": 0.0625,
+       "damage:-85": 0.0625,
+       "damage:-86": 0.0625,
+       "damage:-87": 0.0625,
+       "damage:-88": 0.0625,
+       "damage:-89": 0.0625
+      },
+      "opponent-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -89,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -89,
+       "max": -75,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 15,
+    "classes": 15,
+    "ms": 90,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        146,
+        0.0625
+       ],
+       [
+        147,
+        0.0625
+       ],
+       [
+        148,
+        0.0625
+       ],
+       [
+        149,
+        0.0625
+       ],
+       [
+        150,
+        0.0625
+       ],
+       [
+        151,
+        0.0625
+       ],
+       [
+        152,
+        0.0625
+       ],
+       [
+        153,
+        0.0625
+       ],
+       [
+        154,
+        0.0625
+       ],
+       [
+        155,
+        0.125
+       ],
+       [
+        156,
+        0.0625
+       ],
+       [
+        157,
+        0.0625
+       ],
+       [
+        158,
+        0.0625
+       ],
+       [
+        159,
+        0.0625
+       ],
+       [
+        160,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 153.125,
+      "min": 146,
+      "max": 160,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:psychicterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 13,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-75": 1,
+       "boost:spe:-1": 1
+      },
+      "opponent-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -75,
+       "max": -75
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -75,
+       "max": -75,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        160,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 160,
+      "min": 160,
+      "max": 160,
+      "modeTieUp": 160,
+      "modeTieDown": 160,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:psychicterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 11,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Arcanine",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       146,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 146,
+     "min": 146,
+     "max": 146,
+     "modeTieUp": 146,
+     "modeTieDown": 146,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spe:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "extremespeed",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 89,
+       "dmgMax": 89,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p2a: Blissey|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-89": 1,
+       "boost:spe:-1": 1
+      },
+      "opponent-right": {
+       "boost:spe:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -89,
+       "max": -89
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -89,
+       "max": -89,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Arcanine",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        146,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 146,
+      "min": 146,
+      "max": 146,
+      "modeTieUp": 146,
+      "modeTieDown": 146,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blissey",
+      "start": null,
+      "maximum": 330,
+      "dist": [
+       [
+        330,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 330,
+      "min": 330,
+      "max": 330,
+      "modeTieUp": 330,
+      "modeTieDown": 330,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spe:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:psychicterrain": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 146,
+   "average": 153.125,
+   "min": 146,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     146,
+     0.0625
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     149,
+     0.0625
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.0625
+    ],
+    [
+     152,
+     0.0625
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.0625
+    ],
+    [
+     155,
+     0.125
+    ],
+    [
+     156,
+     0.0625
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     158,
+     0.0625
+    ],
+    [
+     159,
+     0.0625
+    ],
+    [
+     160,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 146,
+   "average": 153.125,
+   "min": 146,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     146,
+     0.0625
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     149,
+     0.0625
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.0625
+    ],
+    [
+     152,
+     0.0625
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.0625
+    ],
+    [
+     155,
+     0.125
+    ],
+    [
+     156,
+     0.0625
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     158,
+     0.0625
+    ],
+    [
+     159,
+     0.0625
+    ],
+    [
+     160,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

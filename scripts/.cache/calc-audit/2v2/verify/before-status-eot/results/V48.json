@@ -1,0 +1,491 @@
+{
+ "id": "V48",
+ "title": "Focus Punch fails after a damaging hit",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Weavile hits Conkeldurr first: Focus Punch fails.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 31,
+   "classes": 24,
+   "ms": 18,
+   "decisions": {
+    "sample": 2,
+    "fail:": 7,
+    "roll": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       151,
+       0.0625
+      ],
+      [
+       152,
+       0.125
+      ],
+      [
+       153,
+       0.3125
+      ],
+      [
+       154,
+       0.1875
+      ],
+      [
+       155,
+       0.125
+      ],
+      [
+       156,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 153.75,
+     "min": 151,
+     "max": 156,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "Focus Punch": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p1a: Conkeldurr|Focus Punch|Focus Punch": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 10,
+   "classes": 9,
+   "ms": 6,
+   "decisions": {
+    "sample": 2,
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       156,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 156,
+     "min": 156,
+     "max": 156,
+     "modeTieUp": 156,
+     "modeTieDown": 156
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "Focus Punch": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p1a: Conkeldurr|Focus Punch|Focus Punch": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 24,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 10,
+   "classes": 9,
+   "ms": 6,
+   "decisions": {
+    "sample": 2,
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       151,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 151,
+     "min": 151,
+     "max": 151,
+     "modeTieUp": 151,
+     "modeTieDown": 151
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "focuspunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "Focus Punch": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p1a: Conkeldurr|Focus Punch|Focus Punch": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 156,
+   "high": 151,
+   "average": 153.75,
+   "min": 151,
+   "max": 156,
+   "koChance": 0,
+   "dist": [
+    [
+     151,
+     0.0625
+    ],
+    [
+     152,
+     0.125
+    ],
+    [
+     153,
+     0.3125
+    ],
+    [
+     154,
+     0.1875
+    ],
+    [
+     155,
+     0.125
+    ],
+    [
+     156,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

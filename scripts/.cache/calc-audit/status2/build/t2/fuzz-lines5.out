@@ -1,0 +1,47 @@
+REAL ["|","|move|p2a: Oranguru|Instruct|p1b: Farigiraf","|-singleturn|p1b: Farigiraf|move: Instruct|[of] p2a: Oranguru","|move|p1b: Farigiraf|Future Sight|p2a: Oranguru","|-start|p1b: Farigiraf|move: Future Sight","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|156/185","|-damage|p2a: Oranguru|84/100","|","|upkeep","|turn|24"]
+BELIEF ["|","|move|p2a: Oranguru|Instruct|p1b: Farigiraf","|-singleturn|p1b: Farigiraf|move: Instruct|[of] p2a: Oranguru","|move|p1b: Farigiraf|Future Sight|p2a: Oranguru","|-start|p1b: Farigiraf|move: Future Sight","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|157/185","|-damage|p2a: Oranguru|84/100","|","|upkeep","|turn|24"]
+REAL ["|","|move|p2a: Oranguru|Instruct|p1b: Farigiraf","|-singleturn|p1b: Farigiraf|move: Instruct|[of] p2a: Oranguru","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|87/185","|-damage|p2a: Oranguru|47/100","|-enditem|p2a: Oranguru|Sitrus Berry|[eat]","|split|p2","|-heal|p2a: Oranguru|133/185|[from] item: Sitrus Berry","|-heal|p2a: Oranguru|71/100|[from] item: Sitrus Berry","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|103/185","|-damage|p2a: Oranguru|55/100","|","|upkeep","|turn|25"]
+BELIEF ["|","|move|p2a: Oranguru|Instruct|p1b: Farigiraf","|-singleturn|p1b: Farigiraf|move: Instruct|[of] p2a: Oranguru","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|85/185","|-damage|p2a: Oranguru|45/100","|-enditem|p2a: Oranguru|Sitrus Berry|[eat]","|split|p2","|-heal|p2a: Oranguru|131/185|[from] item: Sitrus Berry","|-heal|p2a: Oranguru|70/100|[from] item: Sitrus Berry","|move|p1b: Farigiraf|Psychic|p2a: Oranguru","|-resisted|p2a: Oranguru|1","|split|p2","|-damage|p2a: Oranguru|101/185","|-damage|p2a: Oranguru|54/100","|","|upkeep","|turn|25"]
+{
+ "decisions": 157,
+ "compared": 561,
+ "mismatches": 2,
+ "logsClean": 101,
+ "logsSame": 99,
+ "cells": 942,
+ "engineCells": 911,
+ "issues": 0,
+ "notEstimated": 100,
+ "reasons": {
+  "engine: Instruct is not modelled in 2v2.": 89,
+  "rollout: Speed tie between switches with an entry effect.": 31,
+  "engine: Instruct needs the target of Farigiraf's last move.": 5,
+  "engine: Instruct needs the target of Cofagrigus's last move.": 2,
+  "engine: Instruct needs the target of Hydrapple's last move.": 2,
+  "engine: Copycat with Sleep Talk is not modelled in 2v2.": 1,
+  "engine: Trick Room is not modelled in 2v2.": 1,
+  "end of turn: Future Sight landing is not modelled in 2v2.": 1
+ },
+ "seen": {
+  "stall": 82,
+  "field": 35,
+  "disable": 30,
+  "twoturnmove": 18,
+  "taunt": 23,
+  "destinybond": 12,
+  "leechseed": 2
+ },
+ "carried": {
+  "onceUsed": 493,
+  "stall": 459,
+  "stages": 453,
+  "disable": 220,
+  "taunt": 131,
+  "charging": 109,
+  "destinyBond": 87,
+  "futureMove": 39,
+  "leechSeed": 12
+ }
+}
+#5 t23 log: real |-damage|p2a: Oranguru|156/185 / belief |-damage|p2a: Oranguru|157/185 (pass, move 3 2 | move 1 2, pass)
+#5 t24 log: real |-damage|p2a: Oranguru|87/185 / belief |-damage|p2a: Oranguru|85/185 (pass, move 3 2 | move 1 2, pass)

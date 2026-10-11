@@ -1,0 +1,654 @@
+{
+ "id": "ZV04",
+ "title": "Z-Trop Kick lowers nothing: the target's later Body Slam at full Attack",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "No -1 Atk.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 163,
+   "classes": 36,
+   "ms": 128,
+   "decisions": {
+    "fail:": 144,
+    "roll": 144,
+    "secondary": 128
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tsareena",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       83,
+       0.0625
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       90,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       93,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 88.375,
+     "min": 83,
+     "max": 93,
+     "modeTieUp": 89,
+     "modeTieDown": 89
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       81,
+       0.0625
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       87,
+       0.0625
+      ],
+      [
+       88,
+       0.0625
+      ],
+      [
+       90,
+       0.0625
+      ],
+      [
+       91,
+       0.0625
+      ],
+      [
+       93,
+       0.0625
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       99,
+       0.0625
+      ],
+      [
+       100,
+       0.0625
+      ],
+      [
+       102,
+       0.0625
+      ],
+      [
+       103,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 93.4375,
+     "min": 81,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 81
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "tropkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 130,
+       "dmgMax": 154,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tsareena",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       93,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 93,
+     "min": 93,
+     "max": 93,
+     "modeTieUp": 93,
+     "modeTieDown": 93
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "tropkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 130,
+       "dmgMax": 130,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tsareena",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       81,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 81,
+     "min": 81,
+     "max": 81,
+     "modeTieUp": 81,
+     "modeTieDown": 81
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "tropkick",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 154,
+       "dmgMax": 154,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 93,
+   "high": 83,
+   "average": 88.375,
+   "min": 83,
+   "max": 93,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     90,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 105,
+   "high": 81,
+   "average": 93.4375,
+   "min": 81,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     81,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     88,
+     0.0625
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     91,
+     0.0625
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ],
+    [
+     100,
+     0.0625
+    ],
+    [
+     102,
+     0.0625
+    ],
+    [
+     103,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

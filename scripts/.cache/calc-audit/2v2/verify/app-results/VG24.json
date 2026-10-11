@@ -1,0 +1,110 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Roar with Neutralizing Gas is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 51,
+     "max": 61,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.957446808510635,
+     "rolls": [
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      61
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 51–61 HP (21.7–26.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Charizard's Blaze is suppressed by Neutralizing Gas.",
+      "Snorlax's Thick Fat is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0348968505859375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 184,
+      "high": 174,
+      "average": 179.0625,
+      "min": 174,
+      "max": 184,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 61,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Arcanine, Charizard and Snorlax."
+  ]
+ },
+ "ms": 1.9080000000003565,
+ "preflight": []
+}

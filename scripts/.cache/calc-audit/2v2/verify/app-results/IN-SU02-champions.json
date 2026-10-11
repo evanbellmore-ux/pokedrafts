@@ -1,0 +1,265 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "struggle",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "struggle",
+       "effectiveName": "Struggle",
+       "effectiveType": "???",
+       "effectivePower": 50,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 12.340425531914894,
+       "maxPercent": 14.893617021276595,
+       "rolls": [
+        29,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Struggle: 29–35 HP (12.3–14.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 29,
+       "max": 35,
+       "breaks": 0
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 176,
+    "average": 176,
+    "high": 176,
+    "min": 176,
+    "max": 176,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 11 HP.",
+      "chance": 0.0625
+     },
+     {
+      "text": "Substitute: 10 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 9 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 8 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 7 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 6 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 5 HP.",
+      "chance": 0.0625
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "struggle",
+     "effectiveName": "Struggle",
+     "effectiveType": "???",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Deals typeless damage to a random opposing Pokemon. If this move was successful, the user loses 1/4 of its maximum HP, rounded half up, and the Rock Head Ability does not prevent this. This move is automatically used if none of the user's known moves can be selected.",
+     "assumptions": [],
+     "reason": "Snorlax (opponent's) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 176,
+     "average": 176,
+     "high": 176,
+     "min": 176,
+     "max": 176,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": null,
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 11 HP.",
+       "chance": 0.0625
+      },
+      {
+       "text": "Substitute: 10 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 9 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 8 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 7 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 6 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 5 HP.",
+       "chance": 0.0625
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.1791000000002896,
+ "preflight": [
+  "own-left: Snorlax does not learn struggle in champions"
+ ]
+}

@@ -1,0 +1,224 @@
+
+### TR01 champions Hyper Beam, then put to sleep by a slower Venusaur: turn 2 is the recharge  (24 runs)
+   [0.333333] T1 end: Chomp slp time 2/2 v:mustrecharge
+   [0.666667] T1 end: Chomp slp time 3/3 v:mustrecharge
+   [0.333333] T1 moves: Chomp slp time 2/2 v:mustrecharge
+   [0.666667] T1 moves: Chomp slp time 3/3 v:mustrecharge
+   [0.333333] T2 end: Chomp slp time 2/2 v:-
+   [0.666667] T2 end: Chomp slp time 3/3 v:-
+   [0.333333] T2 moves: Chomp slp time 2/2 v:-
+   [0.666667] T2 moves: Chomp slp time 3/3 v:-
+   1  |move|p1a: Chomp|Hyper Beam|p2a: Saur
+   1  |-damage|p2a: Saur|107/155
+   1  |move|p2a: Saur|Sleep Powder|p1a: Chomp
+   1  |-status|p1a: Chomp|slp|[from] move: Sleep Powder
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+   1  |cant|p1a: Chomp|recharge
+   1  |move|p2a: Saur|Splash|p2a: Saur
+   1  |turn|3
+
+### TR02 champions an asleep Snorlax switched in on turn 1: its counter after the turn  (1 runs)
+   [1] T1 end: p1a Sleeper slp time 3/3
+   [1] T1 moves: p1a Sleeper slp time 3/3
+   1  |switch|p1a: Sleeper|Snorlax, L50, F|235/235 slp
+   1  |move|p2b: Lax4|Splash|p2b: Lax4
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR02b champions control: the same sleeper in place using Splash (No move) loses one  (1 runs)
+   [1] T1 end: p1a Sleeper slp time 2/3
+   [1] T1 moves: p1a Sleeper slp time 2/3
+   1  |cant|p1a: Sleeper|slp
+   1  |move|p2b: Lax4|Splash|p2b: Lax4
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR03 champions confused Protect with counter 3 under Gravity  (4 runs)
+ turn 1 after moves: p1a Prot [178:0.33 201:0.446667 235:0.223333] | p1b Lax1 [235:1] | p2a Foe [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Prot [178:0.33 201:0.446667 235:0.223333] | p1b Lax1 [235:1] | p2a Foe [235:1] | p2b Lax4 [235:1]
+   1  |-activate|p1a: Prot|confusion
+   0.446667  |move|p1a: Prot|Protect||[still]
+   0.446667  |-fail|p1a: Prot
+   1  |cant|p2b: Lax4|move: Gravity|Splash
+   1  |move|p2a: Foe|Tackle|p1a: Prot
+   0.446667  |-damage|p1a: Prot|201/235
+   1  |cant|p1b: Lax1|move: Gravity|Splash
+   1  |turn|2
+   0.223333  |move|p1a: Prot|Protect|p1a: Prot
+   0.223333  |-singleturn|p1a: Prot|Protect
+   0.223333  |-activate|p1a: Prot|move: Protect
+   0.33  |-damage|p1a: Prot|212/235|[from] confusion
+   0.33  |-damage|p1a: Prot|178/235
+
+### TR03b champions the same confused Pokémon using Splash under Gravity  (1 runs)
+ turn 1 after moves: p1a Prot [235:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Prot [235:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+   1  |cant|p1a: Prot|move: Gravity|Splash
+   1  |cant|p2b: Lax4|move: Gravity|Splash
+   1  |cant|p2a: Lax2|move: Gravity|Splash
+   1  |cant|p1b: Lax1|move: Gravity|Splash
+   1  |turn|2
+
+### TR04 champions tied switches bring in Torkoal (Drought) and Politoed (Drizzle)  (16 runs)
+   [0.5] T1 end: weather raindance
+   [0.5] T1 end: weather sunnyday
+   [0.5] T1 moves: weather raindance
+   [0.5] T1 moves: weather sunnyday
+   1  |switch|p1a: Tork|Torkoal, L50, F|145/145
+   1  |-weather|SunnyDay|[from] ability: Drought|[of] p1a: Tork
+   1  |switch|p2a: Toed|Politoed, L50, F|165/165
+   1  |-weather|RainDance|[from] ability: Drizzle|[of] p2a: Toed
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   0.5  |-weather|RainDance|[upkeep]
+   1  |turn|2
+   0.5  |-weather|SunnyDay|[upkeep]
+
+### TR05 champions tied Mega Evolutions: Charizard (Drought) and Tyranitar (Sand Stream)  (40 runs)
+   [0.5] T1 end: weather sandstorm
+   [0.5] T1 end: weather sunnyday
+   [0.5] T1 moves: weather sandstorm
+   [0.5] T1 moves: weather sunnyday
+   1  |detailschange|p1a: Zard|Charizard-Mega-Y, L50, M
+   1  |-mega|p1a: Zard|Charizard|Charizardite Y
+   1  |-weather|SunnyDay|[from] ability: Drought|[of] p1a: Zard
+   1  |detailschange|p2a: Ttar|Tyranitar-Mega, L50, M
+   1  |-mega|p2a: Ttar|Tyranitar|Tyranitarite
+   0.5  |-weather|Sandstorm|[from] ability: Sand Stream|[of] p2a: Ttar
+   1  |move|p1a: Zard|Splash|p1a: Zard
+   1  |move|p2a: Ttar|Splash|p2a: Ttar
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   0.5  |-weather|Sandstorm|[upkeep]
+   0.5  |-damage|p1a: Zard|144/153|[from] Sandstorm
+   0.5  |-damage|p2b: Lax2|221/235|[from] Sandstorm
+   0.5  |-damage|p1b: Lax1|221/235|[from] Sandstorm
+   1  |turn|2
+   0.5  |-weather|SunnyDay|[upkeep]
+
+### TR06a champions Payback into a Pokémon that switched in this turn  (1 runs)
+ turn 1 after moves: p1a Ttar [175:1] | p1b Lax1 [235:1] | p2a New [184:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Ttar [175:1] | p1b Lax1 [235:1] | p2a New [184:1] | p2b Lax2 [235:1]
+   1  |switch|p2a: New|Snorlax, L50, F|235/235
+   1  |move|p1a: Ttar|Payback|p2a: New
+   1  |-damage|p2a: New|184/235
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR06b champions Payback into a faster Pokémon that has moved  (1 runs)
+ turn 1 after moves: p1a Ttar [175:1] | p1b Lax1 [235:1] | p2a Fast [133:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Ttar [175:1] | p1b Lax1 [235:1] | p2a Fast [133:1] | p2b Lax2 [235:1]
+   1  |move|p2a: Fast|Splash|p2a: Fast
+   1  |move|p1a: Ttar|Payback|p2a: Fast
+   1  |-damage|p2a: Fast|133/235
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR07 champions confused Incineroar's second-turn Fake Out under Gravity  (2 runs)
+ turn 1 after moves: p1a Inci [151:0.33 170:0.67] | p1b Lax1 [235:1] | p2a Foe [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Inci [151:0.33 170:0.67] | p1b Lax1 [235:1] | p2a Foe [235:1] | p2b Lax4 [235:1]
+   1  |-activate|p1a: Inci|confusion
+   0.67  |move|p1a: Inci|Fake Out||[still]
+   0.67  |-hint|Fake Out only works on your first turn out.
+   0.67  |-fail|p1a: Inci
+   1  |cant|p2b: Lax4|move: Gravity|Splash
+   1  |cant|p2a: Foe|move: Gravity|Splash
+   1  |cant|p1b: Lax1|move: Gravity|Splash
+   1  |turn|2
+   0.33  |-damage|p1a: Inci|151/170|[from] confusion
+
+### TR08 champions Magic Room (1 turn left) and a Sitrus holder at 100/235  (1 runs)
+ turn 1 after moves: p1a Berry [100:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Berry [158:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+   1  |move|p1a: Berry|Splash|p1a: Berry
+   1  |move|p2b: Lax4|Splash|p2b: Lax4
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |-fieldend|move: Magic Room|[of] p1a: Berry
+   1  |-enditem|p1a: Berry|Sitrus Berry|[eat]
+   1  |-heal|p1a: Berry|158/235|[from] item: Sitrus Berry
+   1  |turn|2
+
+### TR08b champions the same with 2 turns left: no Sitrus  (1 runs)
+ turn 1 after moves: p1a Berry [100:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Berry [100:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+   1  |move|p1a: Berry|Splash|p1a: Berry
+   1  |move|p2b: Lax4|Splash|p2b: Lax4
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR09 champions Struggle by Snorlax (random foe, 1/4 recoil)  (32 runs)
+ turn 1 after moves: p1a Strug [176:1] | p1b Lax1 [235:1] | p2a Gengar [104:0.5 135:0.5] | p2b Foe [206:0.5 235:0.5]
+ turn 1 end of turn: p1a Strug [176:1] | p1b Lax1 [235:1] | p2a Gengar [104:0.5 135:0.5] | p2b Foe [206:0.5 235:0.5]
+   1  |move|p2a: Gengar|Splash|p2a: Gengar
+   1  |-activate|p1a: Strug|move: Struggle
+   0.5  |move|p1a: Strug|Struggle|p2a: Gengar
+   0.5  |-damage|p2a: Gengar|104/135
+   1  |-damage|p1a: Strug|176/235|[from] recoil
+   1  |move|p2b: Foe|Splash|p2b: Foe
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+   0.5  |move|p1a: Strug|Struggle|p2b: Foe
+   0.5  |-damage|p2b: Foe|206/235
+
+### TR10a champions Analytic Starmie (Speed 1) moves after every queued action; the foe across switched in  (1 runs)
+ turn 1 after moves: p1a Star [135:1] | p1b Lax1 [235:1] | p2a New [159:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Star [135:1] | p1b Lax1 [235:1] | p2a New [159:1] | p2b Lax2 [235:1]
+   1  |switch|p2a: New|Snorlax, L50, F|235/235
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p1a: Star|Hydro Pump|p2a: New
+   1  |-damage|p2a: New|159/235
+   1  |turn|2
+
+### TR10b champions control: the foe across stays in and moves after Starmie (Speed 0): no boost  (1 runs)
+ turn 1 after moves: p1a Star [135:1] | p1b Lax1 [235:1] | p2a New [177:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Star [135:1] | p1b Lax1 [235:1] | p2a New [177:1] | p2b Lax2 [235:1]
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p1a: Star|Hydro Pump|p2a: New
+   1  |-damage|p2a: New|177/235
+   1  |move|p2a: New|Splash|p2a: New
+   1  |turn|2
+
+### TR09b champions Struggle into a lone foe's Substitute (40 HP)  (1 runs)
+ turn 1 after moves: p1a Strug [176:1] | p1b Lax1 [235:1] | p2a Subbed [235:1] | p2b Gone [0:1]
+ turn 1 end of turn: p1a Strug [176:1] | p1b Lax1 [235:1] | p2a Subbed [235:1] | p2b Gone [0:1]
+   [1] T1 end: sub:11 strug:176
+   [1] T1 moves: sub:11 strug:176
+   1  |-activate|p1a: Strug|move: Struggle
+   1  |move|p1a: Strug|Struggle|p2a: Subbed
+   1  |-activate|p2a: Subbed|move: Substitute|[damage]
+   1  |-damage|p1a: Strug|176/235|[from] recoil
+   1  |move|p2a: Subbed|Splash|p2a: Subbed
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR09c champions Struggle into a lone foe's Protect  (2 runs)
+ turn 1 after moves: p1a Strug [235:1] | p1b Lax1 [235:1] | p2a Prot [235:1] | p2b Gone [0:1]
+ turn 1 end of turn: p1a Strug [235:1] | p1b Lax1 [235:1] | p2a Prot [235:1] | p2b Gone [0:1]
+   1  |move|p2a: Prot|Protect|p2a: Prot
+   1  |-singleturn|p2a: Prot|Protect
+   1  |-activate|p1a: Strug|move: Struggle
+   1  |move|p1a: Strug|Struggle|p2a: Prot
+   1  |-activate|p2a: Prot|move: Protect
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+### TR11 champions a confused Pokémon's recharge turn  (16 runs)
+ turn 1 after moves: p1a Beamer [235:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+ turn 1 end of turn: p1a Beamer [235:1] | p1b Lax1 [235:1] | p2a Lax2 [235:1] | p2b Lax4 [235:1]
+   [1] T1 end: confusion time 4 v:confusion
+   [1] T1 moves: confusion time 4 v:confusion
+   1  |cant|p1a: Beamer|recharge
+   1  |move|p2b: Lax4|Splash|p2b: Lax4
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2

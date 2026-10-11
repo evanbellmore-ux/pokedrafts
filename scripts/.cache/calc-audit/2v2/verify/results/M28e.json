@@ -1,0 +1,1643 @@
+{
+ "id": "M28e",
+ "title": "Burning Bulwark burns a spread contact attacker before its hits",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The burn comes in TryHit: Brutal Swing into Snorlax and Venusaur at half damage.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 154,
+   "classes": 27,
+   "ms": 415,
+   "decisions": {
+    "sample": 140,
+    "fail:": 240,
+    "roll": 240
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147,
+     "status": {
+      "brn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       220,
+       0.25
+      ],
+      [
+       221,
+       0.375
+      ],
+      [
+       222,
+       0.375
+      ]
+     ],
+     "koChance": 0,
+     "average": 221.125,
+     "min": 220,
+     "max": 222,
+     "modeTieUp": 222,
+     "modeTieDown": 221,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       143,
+       0.3125
+      ],
+      [
+       144,
+       0.5
+      ],
+      [
+       145,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 143.875,
+     "min": 143,
+     "max": 145,
+     "modeTieUp": 144,
+     "modeTieDown": 144,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 15,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 10,
+       "dmgMax": 12,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:brn": 1
+      },
+      "own-right": {
+       "damage:-13": 0.375,
+       "damage:-14": 0.375,
+       "damage:-15": 0.25
+      },
+      "opponent-right": {
+       "damage:-10": 0.1875,
+       "damage:-11": 0.5,
+       "damage:-12": 0.3125
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -15,
+       "max": -13
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -12,
+       "max": -10
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -15,
+       "max": -13,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -12,
+       "max": -10,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 72,
+    "classes": 18,
+    "ms": 415,
+    "decisions": {
+     "tie2": 72,
+     "chance:shedskin": 72
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        138,
+        0.6699999999999999
+       ],
+       [
+        147,
+        0.32999999999999996
+       ]
+      ],
+      "koChance": 0,
+      "average": 140.97,
+      "min": 138,
+      "max": 147,
+      "modeTieUp": 138,
+      "modeTieDown": 138,
+      "status": {
+       "": 0.32999999999999996,
+       "brn": 0.6699999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        220,
+        0.25
+       ],
+       [
+        221,
+        0.37499999999999994
+       ],
+       [
+        222,
+        0.37499999999999994
+       ]
+      ],
+      "koChance": 0,
+      "average": 221.125,
+      "min": 220,
+      "max": 222,
+      "modeTieUp": 222,
+      "modeTieDown": 221,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gouging Fire",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        143,
+        0.3125
+       ],
+       [
+        144,
+        0.49999999999999994
+       ],
+       [
+        145,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 143.875,
+      "min": 143,
+      "max": 145,
+      "modeTieUp": 144,
+      "modeTieDown": 144,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "brn",
+      "chance": 0.6699999999999999,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.32999999999999996,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.32999999999999996,
+       "curestatus:brn": 0.32999999999999996
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 46,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147,
+     "status": {
+      "brn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       222,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 222,
+     "min": 222,
+     "max": 222,
+     "modeTieUp": 222,
+     "modeTieDown": 222,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 13,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 10,
+       "dmgMax": 10,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:brn": 1
+      },
+      "own-right": {
+       "damage:-13": 1
+      },
+      "opponent-right": {
+       "damage:-10": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -13,
+       "max": -13
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -10,
+       "max": -10
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -13,
+       "max": -13,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -10,
+       "max": -10,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 2,
+    "ms": 47,
+    "decisions": {
+     "tie2": 8,
+     "chance:shedskin": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        138,
+        0.6699999999999999
+       ],
+       [
+        147,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 140.97,
+      "min": 138,
+      "max": 147,
+      "modeTieUp": 138,
+      "modeTieDown": 138,
+      "status": {
+       "": 0.33,
+       "brn": 0.6699999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        222,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 222,
+      "min": 222,
+      "max": 222,
+      "modeTieUp": 222,
+      "modeTieDown": 222,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gouging Fire",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "brn",
+      "chance": 0.6699999999999999,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.33,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.33,
+       "curestatus:brn": 0.33
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 44,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147,
+     "status": {
+      "brn": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       220,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 220,
+     "min": 220,
+     "max": 220,
+     "modeTieUp": 220,
+     "modeTieDown": 220,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 12,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "status:brn": 1
+      },
+      "own-right": {
+       "damage:-15": 1
+      },
+      "opponent-right": {
+       "damage:-12": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": -15,
+       "max": -15
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -12,
+       "max": -12
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -15,
+       "max": -15,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -12,
+       "max": -12,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 2,
+    "ms": 44,
+    "decisions": {
+     "tie2": 8,
+     "chance:shedskin": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        138,
+        0.6699999999999999
+       ],
+       [
+        147,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 140.97,
+      "min": 138,
+      "max": 147,
+      "modeTieUp": 138,
+      "modeTieDown": 138,
+      "status": {
+       "": 0.33,
+       "brn": 0.6699999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        220,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 220,
+      "min": 220,
+      "max": 220,
+      "modeTieUp": 220,
+      "modeTieDown": 220,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Gouging Fire",
+      "start": null,
+      "maximum": 180,
+      "dist": [
+       [
+        180,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 180,
+      "min": 180,
+      "max": 180,
+      "modeTieUp": 180,
+      "modeTieDown": 180,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        143,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 143,
+      "min": 143,
+      "max": 143,
+      "modeTieUp": 143,
+      "modeTieDown": 143,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "brn",
+      "chance": 0.6699999999999999,
+      "min": -9,
+      "max": -9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Shed Skin",
+      "chance": 0.33,
+      "min": null,
+      "max": null,
+      "koChance": 0,
+      "facts": {
+       "activate:shedskin": 0.33,
+       "curestatus:brn": 0.33
+      },
+      "index": 2
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 147,
+   "high": 147,
+   "average": 147,
+   "min": 147,
+   "max": 147,
+   "koChance": 0,
+   "dist": [
+    [
+     147,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 222,
+   "high": 220,
+   "average": 221.125,
+   "min": 220,
+   "max": 222,
+   "koChance": 0,
+   "dist": [
+    [
+     220,
+     0.25
+    ],
+    [
+     221,
+     0.375
+    ],
+    [
+     222,
+     0.375
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 145,
+   "high": 143,
+   "average": 143.875,
+   "min": 143,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.3125
+    ],
+    [
+     144,
+     0.5
+    ],
+    [
+     145,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 138,
+   "high": 138,
+   "average": 140.97,
+   "min": 138,
+   "max": 147,
+   "koChance": 0,
+   "dist": [
+    [
+     138,
+     0.6699999999999999
+    ],
+    [
+     147,
+     0.32999999999999996
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 222,
+   "high": 220,
+   "average": 221.125,
+   "min": 220,
+   "max": 222,
+   "koChance": 0,
+   "dist": [
+    [
+     220,
+     0.25
+    ],
+    [
+     221,
+     0.37499999999999994
+    ],
+    [
+     222,
+     0.37499999999999994
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 145,
+   "high": 143,
+   "average": 143.875,
+   "min": 143,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.3125
+    ],
+    [
+     144,
+     0.49999999999999994
+    ],
+    [
+     145,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "brn",
+   "chance": 0.6699999999999999,
+   "min": -9,
+   "max": -9,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "own-left",
+   "effect": "Shed Skin",
+   "chance": 0.32999999999999996,
+   "min": null,
+   "max": null,
+   "koChance": 0,
+   "facts": {
+    "activate:shedskin": 0.32999999999999996,
+    "curestatus:brn": 0.32999999999999996
+   },
+   "index": 2
+  }
+ ]
+}

@@ -1,0 +1,446 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 280,
+    "maximum": 280
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "thunderbolt",
+    "effectiveName": "Max Lightning",
+    "effectiveType": "Electric",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 47,
+      "minPercent": 25.161290322580644,
+      "maxPercent": 30.32258064516129,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Max Lightning",
+       "effectiveType": "Electric",
+       "effectivePower": 130,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 39,
+       "max": 47,
+       "minPercent": 25.161290322580644,
+       "maxPercent": 30.32258064516129,
+       "rolls": [
+        39,
+        40,
+        40,
+        41,
+        42,
+        42,
+        42,
+        42,
+        43,
+        44,
+        44,
+        45,
+        45,
+        45,
+        46,
+        47
+       ],
+       "ohkoChance": 0,
+       "description": "Max Lightning: 39–47 HP (25.2–30.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Blastoise's Electric Seed is used up on Electric Terrain: +1 Defense.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 36,
+      "max": 43,
+      "minPercent": 23.376623376623375,
+      "maxPercent": 27.92207792207792,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 36,
+       "max": 43,
+       "minPercent": 23.376623376623375,
+       "maxPercent": 27.92207792207792,
+       "rolls": [
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 36–43 HP (23.4–27.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 280,
+    "maximum": 280,
+    "low": 280,
+    "average": 280,
+    "high": 280,
+    "min": 280,
+    "max": 280,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 118,
+    "average": 114.75,
+    "high": 111,
+    "min": 111,
+    "max": 118,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 116,
+    "average": 112.0625,
+    "high": 108,
+    "min": 108,
+    "max": 116,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Max Lightning",
+     "effectiveType": "Electric",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 39,
+     "max": 47,
+     "minPercent": 25.161290322580644,
+     "maxPercent": 30.32258064516129,
+     "rolls": [
+      39,
+      40,
+      40,
+      41,
+      42,
+      42,
+      42,
+      42,
+      43,
+      44,
+      44,
+      45,
+      45,
+      45,
+      46,
+      47
+     ],
+     "ohkoChance": 0,
+     "description": "Max Lightning: 39–47 HP (25.2–30.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.554931640625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Max Lightning changes the field.",
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 116,
+      "high": 108,
+      "average": 112.0625,
+      "min": 108,
+      "max": 116,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 47,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 52,
+     "max": 63,
+     "minPercent": 33.76623376623377,
+     "maxPercent": 40.909090909090914,
+     "rolls": [
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      58,
+      60,
+      60,
+      61,
+      61,
+      63
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 102,
+      "high": 91,
+      "average": 96.6875,
+      "min": 91,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 52,
+        "heals": []
+       },
+       "high": {
+        "dealt": 63,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Blastoise has not used Minimize.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 280,
+     "maximum": 280,
+     "low": 280,
+     "average": 280,
+     "high": 280,
+     "min": 280,
+     "max": 280,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 118,
+     "average": 114.75,
+     "high": 111,
+     "min": 111,
+     "max": 118,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 116,
+     "average": 112.0625,
+     "high": 108,
+     "min": 108,
+     "max": 116,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.199900000000071,
+ "preflight": []
+}

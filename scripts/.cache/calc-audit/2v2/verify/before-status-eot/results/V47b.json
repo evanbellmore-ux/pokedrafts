@@ -1,0 +1,515 @@
+{
+ "id": "V47b",
+ "title": "Upper Hand into a 0-priority move fails",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Night Slash has priority 0: Upper Hand fails.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 30,
+   "classes": 22,
+   "ms": 14,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Medicham",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       65,
+       0.0625
+      ],
+      [
+       66,
+       0.125
+      ],
+      [
+       68,
+       0.125
+      ],
+      [
+       69,
+       0.125
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 70.75,
+     "min": 65,
+     "max": 77,
+     "modeTieUp": 75,
+     "modeTieDown": 66
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "upperhand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Medicham|Upper Hand||[still]": 1,
+      "|-fail|p1a: Medicham": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 70,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Medicham",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       77,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 77,
+     "min": 77,
+     "max": 77,
+     "modeTieUp": 77,
+     "modeTieDown": 77
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "upperhand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Medicham|Upper Hand||[still]": 1,
+      "|-fail|p1a: Medicham": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Medicham",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       65,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 65,
+     "min": 65,
+     "max": 65,
+     "modeTieUp": 65,
+     "modeTieDown": 65
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "upperhand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Medicham|Upper Hand||[still]": 1,
+      "|-fail|p1a: Medicham": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 70,
+       "dmgMax": 70,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 77,
+   "high": 65,
+   "average": 70.75,
+   "min": 65,
+   "max": 77,
+   "koChance": 0,
+   "dist": [
+    [
+     65,
+     0.0625
+    ],
+    [
+     66,
+     0.125
+    ],
+    [
+     68,
+     0.125
+    ],
+    [
+     69,
+     0.125
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

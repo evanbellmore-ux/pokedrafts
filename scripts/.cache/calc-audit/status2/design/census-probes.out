@@ -1,0 +1,120 @@
+
+== P1 Matcha Gotcha: one drain heal per target
+  |move|p1a: Sinistcha|Matcha Gotcha|p2b: Blissey|[spread] p2a,p2b
+  |-damage|p2a: Snorlax|192/235
+  |-damage|p2a: Snorlax|192/235
+  |-heal|p1a: Sinistcha|62/146|[from] drain|[of] p2a: Snorlax
+  |-heal|p1a: Sinistcha|62/146|[from] drain|[of] p2a: Snorlax
+  |-damage|p2b: Blissey|299/330
+  |-damage|p2b: Blissey|299/330
+  |-heal|p1a: Sinistcha|78/146|[from] drain|[of] p2b: Blissey
+  |-heal|p1a: Sinistcha|78/146|[from] drain|[of] p2b: Blissey
+  |move|p2b: Blissey|Splash|p2b: Blissey
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2a: Snorlax|Splash|p2a: Snorlax
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P2a U-turn: after the U-turn action
+  |move|p1a: Rillaboom|U-turn|p2a: Snorlax
+  |-damage|p2a: Snorlax|189/235
+  |-damage|p2a: Snorlax|189/235
+  requestState=switch turn=1 midTurn=true
+
+== P2b U-turn: the replacement switches in, then the rest of the turn
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |switch|p1a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |move|p2a: Snorlax|Splash|p2a: Snorlax
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Tackle|p1a: Bench
+  |-damage|p1a: Bench|213/235
+  |-damage|p1a: Bench|213/235
+  |-heal|p2a: Snorlax|203/235|[from] Grassy Terrain
+  |-heal|p2a: Snorlax|203/235|[from] Grassy Terrain
+  |-heal|p1a: Bench|227/235|[from] Grassy Terrain
+  |-heal|p1a: Bench|227/235|[from] Grassy Terrain
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P3 Opportunist copying Swords Dance
+  |move|p1a: Garchomp|Swords Dance|p1a: Garchomp
+  |-boost|p1a: Garchomp|atk|2
+  |-ability|p2a: Espathra|Opportunist|boost
+  |-boost|p2a: Espathra|atk|2
+  |move|p2a: Espathra|Splash|p2a: Espathra
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Tackle|p1a: Garchomp
+  |-damage|p1a: Garchomp|167/183
+  |-damage|p1a: Garchomp|167/183
+  |-damage|p2b: Torkoal|127/145|[from] ability: Rough Skin|[of] p1a: Garchomp
+  |-damage|p2b: Torkoal|127/145|[from] ability: Rough Skin|[of] p1a: Garchomp
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P4a Eject Pack after Icy Wind
+  |move|p1a: Glalie|Icy Wind|p2b: Torkoal|[spread] p2a,p2b
+  |-damage|p2a: Snorlax|225/235
+  |-damage|p2a: Snorlax|225/235
+  |-damage|p2b: Torkoal|130/145
+  |-damage|p2b: Torkoal|130/145
+  |-unboost|p2a: Snorlax|spe|1
+  |-unboost|p2b: Torkoal|spe|1
+  |-enditem|p2a: Snorlax|Eject Pack
+  requestState=switch turn=1 midTurn=true
+
+== P4b Eject Pack: the replacement, then the rest of the turn
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Tackle|p1a: Glalie
+  |-damage|p1a: Glalie|136/155
+  |-damage|p1a: Glalie|136/155
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P5 Imposter at the lead (p1b copies the foe across)
+  |-transform|p1b: Ditto|p2a: Garchomp|[from] ability: Imposter
+  requestState=move turn=1 midTurn=false
+
+== P6 Harvest in sun at a low HP
+  |-enditem|p1a: Exeggutor|Sitrus Berry|[eat]
+  |-heal|p1a: Exeggutor|72/170|[from] item: Sitrus Berry
+  |-heal|p1a: Exeggutor|72/170|[from] item: Sitrus Berry
+  |-weather|SunnyDay|[upkeep]
+  |-item|p1a: Exeggutor|Sitrus Berry|[from] ability: Harvest
+  |-enditem|p1a: Exeggutor|Sitrus Berry|[eat]
+  |-heal|p1a: Exeggutor|114/170|[from] item: Sitrus Berry
+  |-heal|p1a: Exeggutor|114/170|[from] item: Sitrus Berry
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P7 Pickup after an ally's Sitrus
+  |move|p2a: Garchomp|Dragon Claw|p1b: Snorlax
+  |-damage|p1b: Snorlax|22/235
+  |-damage|p1b: Snorlax|22/235
+  |-enditem|p1b: Snorlax|Sitrus Berry|[eat]
+  |-heal|p1b: Snorlax|80/235|[from] item: Sitrus Berry
+  |-heal|p1b: Snorlax|80/235|[from] item: Sitrus Berry
+  |move|p1a: Zigzagoon|Splash|p1a: Zigzagoon
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2b: Torkoal|Splash|p2b: Torkoal
+  |-item|p1a: Zigzagoon|Sitrus Berry|[from] ability: Pickup
+  |turn|2
+  requestState=move turn=2 midTurn=false
+
+== P8 Stored Power after Double Team: boosts {"atk":0,"def":0,"spa":0,"spd":0,"spe":1,"accuracy":0,"evasion":1}; basePowerCallback 60
+
+== P9 Red Card
+  |move|p1a: Garchomp|Dragon Claw|p2a: Snorlax
+  |-damage|p2a: Snorlax|145/235
+  |-damage|p2a: Snorlax|145/235
+  |-enditem|p2a: Snorlax|Red Card|[of] p1a: Garchomp
+  |drag|p1a: Bench|Snorlax, L50, F|235/235
+  |drag|p1a: Bench|Snorlax, L50, F|235/235
+  |move|p1b: Snorlax|Splash|p1b: Snorlax
+  |move|p2a: Snorlax|Splash|p2a: Snorlax
+  |move|p2b: Torkoal|Tackle|p1a: Bench
+  |-damage|p1a: Bench|214/235
+  |-damage|p1a: Bench|214/235
+  |turn|2
+  requestState=move turn=2 midTurn=false

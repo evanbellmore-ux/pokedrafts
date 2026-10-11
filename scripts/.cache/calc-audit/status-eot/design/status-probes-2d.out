@@ -1,0 +1,76 @@
+
+### Q25 sv: Jolteon Thunder Wave at Snorlax with a Lightning Rod Raichu partner; Breloom Spore into Sap Sipper Azumarill  (3 runs)
+ start: p1a Jolteon 140/140 | p1b Breloom 135/135 | p2a Snorlax 235/235 | p2b Raichu 135/135
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Breloom [135:1] | p2a Snorlax [235:1] | p2b Raichu [135:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Breloom [135:1] | p2a Snorlax [235:1] | p2b Raichu [135:1]
+   1  |move|p1a: Jolteon|Thunder Wave|p2b: Raichu
+   1  |-activate|p2b: Raichu|ability: Lightning Rod
+   1  |-ability|p2b: Raichu|Lightning Rod|boost
+   1  |-boost|p2b: Raichu|spa|1
+   1  |move|p2b: Raichu|Splash|p2b: Raichu
+   1  |move|p1b: Breloom|Spore|p2b: Raichu
+   1  |-status|p2b: Raichu|slp|[from] move: Spore
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+
+### Q25b sv: Breloom Spore into Sap Sipper Azumarill  (1 runs)
+ start: p1a Breloom 135/135 | p1b Blissey 330/330 | p2a Azumarill 175/175 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Breloom [135:1] | p1b Blissey [330:1] | p2a Azumarill [175:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Breloom [135:1] | p1b Blissey [330:1] | p2a Azumarill [175:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Breloom|Spore|p2a: Azumarill
+   1  |-ability|p2a: Azumarill|Sap Sipper|boost
+   1  |-boost|p2a: Azumarill|atk|1
+   1  |move|p1b: Blissey|Splash|p1b: Blissey
+   1  |move|p2a: Azumarill|Splash|p2a: Azumarill
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### Q26 sv: Follow Me (Clefairy) then Jolteon Thunder Wave aimed at Snorlax  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Clefairy 145/145
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Clefairy [145:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Clefairy [145:1]
+   1  |move|p2b: Clefairy|Follow Me|p2b: Clefairy
+   1  |-singleturn|p2b: Clefairy|move: Follow Me
+   1  |move|p1a: Jolteon|Thunder Wave|p2b: Clefairy
+   1  |-status|p2b: Clefairy|par
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+
+### Q27 sv: Wide Guard (Chansey) vs Lapras String Shot  (64 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Lapras 205/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Lapras [205:1] | p2b Shuckle [95:1]
+   1  |move|p1b: Chansey|Wide Guard|p1b: Chansey
+   1  |-singleturn|p1b: Chansey|Wide Guard
+   1  |move|p1a: Jolteon|Splash|p1a: Jolteon
+   1  |-activate|p1a: Jolteon|move: Wide Guard
+   1  |-activate|p1b: Chansey|move: Wide Guard
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   0.5  |move|p2a: Lapras|String Shot|p1a: Jolteon|[spread] 
+   0.5  |move|p2a: Lapras|String Shot|p1b: Chansey|[spread] 
+
+### Q28 sv: Toxic into Snorlax; Toxic Thread into Shuckle  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Ariados 145/145 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Ariados [145:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Ariados [145:1] | p2a Snorlax [221:1] | p2b Shuckle [84:1]
+   1  |move|p1a: Jolteon|Toxic|p2a: Snorlax
+   1  |-status|p2a: Snorlax|tox
+   1  |move|p1b: Ariados|Toxic Thread|p2b: Shuckle
+   1  |-unboost|p2b: Shuckle|spe|1
+   1  |-status|p2b: Shuckle|psn
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-damage|p2a: Snorlax|221/235 tox|[from] psn
+   1  |-damage|p2b: Shuckle|84/95 psn|[from] psn
+
+### Q28 champions: Toxic into Snorlax; Toxic Thread into Shuckle  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Ariados 145/145 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Ariados [145:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Ariados [145:1] | p2a Snorlax [221:1] | p2b Shuckle [84:1]
+   1  |move|p1a: Jolteon|Toxic|p2a: Snorlax
+   1  |-status|p2a: Snorlax|tox
+   1  |move|p1b: Ariados|Toxic Thread|p2b: Shuckle
+   1  |-unboost|p2b: Shuckle|spe|2
+   1  |-status|p2b: Shuckle|psn
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+   1  |-damage|p2a: Snorlax|221/235 tox|[from] psn
+   1  |-damage|p2b: Shuckle|84/95 psn|[from] psn

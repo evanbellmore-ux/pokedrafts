@@ -1,0 +1,690 @@
+{
+ "id": "F32a",
+ "title": "Mirror Armor on the other foe of a Max Darkness",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Darkness lowers both foes' Sp. Def; Corviknight's Mirror Armor turns it on Weavile: Fire Blast into Weavile at -1 Sp. Def.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 227,
+   "classes": 52,
+   "ms": 127,
+   "decisions": {
+    "fail:": 192,
+    "roll": 192,
+    "accuracy": 176,
+    "secondary": 176
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       158,
+       0.0625
+      ],
+      [
+       160,
+       0.0625
+      ],
+      [
+       162,
+       0.125
+      ],
+      [
+       164,
+       0.0625
+      ],
+      [
+       166,
+       0.125
+      ],
+      [
+       168,
+       0.0625
+      ],
+      [
+       170,
+       0.125
+      ],
+      [
+       172,
+       0.0625
+      ],
+      [
+       174,
+       0.125
+      ],
+      [
+       176,
+       0.0625
+      ],
+      [
+       178,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 168.625,
+     "min": 158,
+     "max": 178,
+     "modeTieUp": 178,
+     "modeTieDown": 162
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       73,
+       0.0625
+      ],
+      [
+       76,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       79,
+       0.0625
+      ],
+      [
+       81,
+       0.0625
+      ],
+      [
+       82,
+       0.0625
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       87,
+       0.0625
+      ],
+      [
+       88,
+       0.0625
+      ],
+      [
+       90,
+       0.0625
+      ],
+      [
+       91,
+       0.0625
+      ],
+      [
+       93,
+       0.0625
+      ],
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       99,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 86.1875,
+     "min": 73,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 73
+    },
+    "opponent-right": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-ability|p2a: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Weavile|spd|1": 1,
+      "|-unboost|p2b: Snorlax|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "fireblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 112,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "accuracy": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       178,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 178,
+     "min": 178,
+     "max": 178,
+     "modeTieUp": 178,
+     "modeTieDown": 178
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "opponent-right": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 136,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-ability|p2a: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Weavile|spd|1": 1,
+      "|-unboost|p2b: Snorlax|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "fireblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 112,
+       "dmgMax": 112,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "accuracy": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       158,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 158,
+     "min": 158,
+     "max": 158,
+     "modeTieUp": 158,
+     "modeTieDown": 158
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       73,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 73,
+     "min": 73,
+     "max": 73,
+     "modeTieUp": 73,
+     "modeTieDown": 73
+    },
+    "opponent-right": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       173,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 173,
+     "min": 173,
+     "max": 173,
+     "modeTieUp": 173,
+     "modeTieDown": 173
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 162,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-ability|p2a: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Weavile|spd|1": 1,
+      "|-unboost|p2b: Snorlax|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "fireblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 132,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 290,
+   "maximum": 290,
+   "low": 178,
+   "high": 158,
+   "average": 168.625,
+   "min": 158,
+   "max": 178,
+   "koChance": 0,
+   "dist": [
+    [
+     158,
+     0.0625
+    ],
+    [
+     160,
+     0.0625
+    ],
+    [
+     162,
+     0.125
+    ],
+    [
+     164,
+     0.0625
+    ],
+    [
+     166,
+     0.125
+    ],
+    [
+     168,
+     0.0625
+    ],
+    [
+     170,
+     0.125
+    ],
+    [
+     172,
+     0.0625
+    ],
+    [
+     174,
+     0.125
+    ],
+    [
+     176,
+     0.0625
+    ],
+    [
+     178,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 99,
+   "high": 73,
+   "average": 86.1875,
+   "min": 73,
+   "max": 99,
+   "koChance": 0,
+   "dist": [
+    [
+     73,
+     0.0625
+    ],
+    [
+     76,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     79,
+     0.0625
+    ],
+    [
+     81,
+     0.0625
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     88,
+     0.0625
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     91,
+     0.0625
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 173,
+   "maximum": 173,
+   "low": 173,
+   "high": 173,
+   "average": 173,
+   "min": 173,
+   "max": 173,
+   "koChance": 0,
+   "dist": [
+    [
+     173,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

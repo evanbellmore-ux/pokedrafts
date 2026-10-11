@@ -1,0 +1,815 @@
+{
+ "id": "V15-usum",
+ "title": "Icy Wind then the re-sort (usum)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Gen 7: Garchomp keeps its place before Golurk (probe 5).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 2070,
+   "classes": 1097,
+   "ms": 948,
+   "decisions": {
+    "sample": 32,
+    "accuracy": 48,
+    "fail:": 1128,
+    "roll": 1128,
+    "secondary": 48
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       83,
+       0.0625
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       95,
+       0.125
+      ],
+      [
+       97,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 90.0625,
+     "min": 83,
+     "max": 97,
+     "modeTieUp": 95,
+     "modeTieDown": 86
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       228,
+       0.0625
+      ],
+      [
+       229,
+       0.9375
+      ]
+     ],
+     "koChance": 0,
+     "average": 228.9375,
+     "min": 228,
+     "max": 229,
+     "modeTieUp": 229,
+     "modeTieDown": 229
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       50,
+       0.00390625
+      ],
+      [
+       51,
+       0.0078125
+      ],
+      [
+       53,
+       0.0078125
+      ],
+      [
+       54,
+       0.01171875
+      ],
+      [
+       56,
+       0.0078125
+      ],
+      [
+       57,
+       0.01171875
+      ],
+      [
+       58,
+       0.03125
+      ],
+      [
+       59,
+       0.0703125
+      ],
+      [
+       60,
+       0.00390625
+      ],
+      [
+       61,
+       0.0625
+      ],
+      [
+       62,
+       0.12109375
+      ],
+      [
+       63,
+       0.0546875
+      ],
+      [
+       64,
+       0.0625
+      ],
+      [
+       65,
+       0.1484375
+      ],
+      [
+       66,
+       0.08203125
+      ],
+      [
+       67,
+       0.0625
+      ],
+      [
+       68,
+       0.0859375
+      ],
+      [
+       69,
+       0.08203125
+      ],
+      [
+       71,
+       0.0546875
+      ],
+      [
+       72,
+       0.02734375
+      ]
+     ],
+     "koChance": 0,
+     "average": 64.3125,
+     "min": 50,
+     "max": 72,
+     "modeTieUp": 65,
+     "modeTieDown": 65
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 72,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 6,
+       "dmgMax": 7,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Garchomp|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 16,
+   "classes": 11,
+   "ms": 11,
+   "decisions": {
+    "sample": 12,
+    "accuracy": 8,
+    "fail:": 12,
+    "roll": 12,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       97,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 97,
+     "max": 97,
+     "modeTieUp": 97,
+     "modeTieDown": 97
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       229,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 229,
+     "min": 229,
+     "max": 229,
+     "modeTieUp": 229,
+     "modeTieDown": 229
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       72,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 72,
+     "min": 72,
+     "max": 72,
+     "modeTieUp": 72,
+     "modeTieDown": 72
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 6,
+       "dmgMax": 6,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Garchomp|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 16,
+   "classes": 11,
+   "ms": 11,
+   "decisions": {
+    "sample": 12,
+    "accuracy": 8,
+    "fail:": 12,
+    "roll": 12,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       228,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 228,
+     "min": 228,
+     "max": 228,
+     "modeTieUp": 228,
+     "modeTieDown": 228
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       50,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 50,
+     "min": 50,
+     "max": 50,
+     "modeTieUp": 50,
+     "modeTieDown": 50
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 7,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Garchomp|spe|1": 1,
+      "|-unboost|p2b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 164,
+   "maximum": 164,
+   "low": 97,
+   "high": 83,
+   "average": 90.0625,
+   "min": 83,
+   "max": 97,
+   "koChance": 0,
+   "dist": [
+    [
+     83,
+     0.0625
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     97,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 229,
+   "high": 228,
+   "average": 228.9375,
+   "min": 228,
+   "max": 229,
+   "koChance": 0,
+   "dist": [
+    [
+     228,
+     0.0625
+    ],
+    [
+     229,
+     0.9375
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 72,
+   "high": 50,
+   "average": 64.3125,
+   "min": 50,
+   "max": 72,
+   "koChance": 0,
+   "dist": [
+    [
+     50,
+     0.00390625
+    ],
+    [
+     51,
+     0.0078125
+    ],
+    [
+     53,
+     0.0078125
+    ],
+    [
+     54,
+     0.01171875
+    ],
+    [
+     56,
+     0.0078125
+    ],
+    [
+     57,
+     0.01171875
+    ],
+    [
+     58,
+     0.03125
+    ],
+    [
+     59,
+     0.0703125
+    ],
+    [
+     60,
+     0.00390625
+    ],
+    [
+     61,
+     0.0625
+    ],
+    [
+     62,
+     0.12109375
+    ],
+    [
+     63,
+     0.0546875
+    ],
+    [
+     64,
+     0.0625
+    ],
+    [
+     65,
+     0.1484375
+    ],
+    [
+     66,
+     0.08203125
+    ],
+    [
+     67,
+     0.0625
+    ],
+    [
+     68,
+     0.0859375
+    ],
+    [
+     69,
+     0.08203125
+    ],
+    [
+     71,
+     0.0546875
+    ],
+    [
+     72,
+     0.02734375
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

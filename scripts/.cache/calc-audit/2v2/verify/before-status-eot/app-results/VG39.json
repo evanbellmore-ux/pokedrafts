@@ -1,0 +1,110 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Magic Room with Neutralizing Gas is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 132,
+    "maximum": 132
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 25,
+     "max": 31,
+     "minPercent": 10.638297872340425,
+     "maxPercent": 13.191489361702127,
+     "rolls": [
+      25,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 25–31 HP (10.6–13.2% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Your right Charizard's Blaze is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 8,
+      "fasterChance": 0.9999925743613858,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 210,
+      "high": 204,
+      "average": 206.8125,
+      "min": 204,
+      "max": 210,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 25,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Neutralizing Gas suppresses the abilities of Klefki and Charizard."
+  ]
+ },
+ "ms": 3.3437000000003536,
+ "preflight": []
+}

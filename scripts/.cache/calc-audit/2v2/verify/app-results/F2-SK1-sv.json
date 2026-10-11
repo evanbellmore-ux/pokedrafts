@@ -1,0 +1,977 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 192,
+      "max": 228,
+      "minPercent": 112.94117647058823,
+      "maxPercent": 134.1176470588235,
+      "koChance": 1,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Thunderbolt",
+       "effectiveType": "Electric",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 192,
+       "max": 228,
+       "minPercent": 112.94117647058823,
+       "maxPercent": 134.1176470588235,
+       "rolls": [
+        192,
+        192,
+        196,
+        196,
+        196,
+        204,
+        204,
+        204,
+        208,
+        208,
+        216,
+        216,
+        216,
+        220,
+        220,
+        228
+       ],
+       "ohkoChance": 1,
+       "description": "Thunderbolt: 192–228 HP (112.9–134.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "earthquake",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 42,
+      "minPercent": 19.428571428571427,
+      "maxPercent": 24,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 42,
+       "minPercent": 19.428571428571427,
+       "maxPercent": 24,
+       "rolls": [
+        34,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 34–42 HP (19.4–24.0% of maximum HP). Applied: Grassy.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 92,
+      "max": 110,
+      "minPercent": 68.14814814814815,
+      "maxPercent": 81.48148148148148,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 92,
+       "max": 110,
+       "minPercent": 68.14814814814815,
+       "maxPercent": 81.48148148148148,
+       "rolls": [
+        92,
+        92,
+        96,
+        96,
+        96,
+        98,
+        98,
+        102,
+        102,
+        102,
+        104,
+        104,
+        104,
+        108,
+        108,
+        110
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 92–110 HP (68.1–81.5% of maximum HP). Applied: Grassy.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "soak",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes Water type.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Gyarados fainted: Soak hits Garchomp.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 141,
+    "average": 137.0625,
+    "high": 133,
+    "min": 133,
+    "max": 141,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 43,
+    "average": 34.25,
+    "high": 25,
+    "min": 25,
+    "max": 43,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: Water.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 192,
+     "max": 228,
+     "minPercent": 112.94117647058823,
+     "maxPercent": 134.1176470588235,
+     "rolls": [
+      192,
+      192,
+      196,
+      196,
+      196,
+      204,
+      204,
+      204,
+      208,
+      208,
+      216,
+      216,
+      216,
+      220,
+      220,
+      228
+     ],
+     "ohkoChance": 1,
+     "description": "Thunderbolt: 192–228 HP (112.9–134.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Grassy Terrain heals the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 170,
+        "heals": []
+       },
+       "high": {
+        "dealt": 170,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 42,
+     "minPercent": 19.428571428571427,
+     "maxPercent": 24,
+     "rolls": [
+      34,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      37,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 34–42 HP (19.4–24.0% of maximum HP). Applied: Grassy.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.7299977540969849,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Grassy Terrain heals the target at the end of each turn.",
+       "Grassy Terrain heals the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the terrain lasts through every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 141,
+      "high": 133,
+      "average": 137.0625,
+      "min": 133,
+      "max": 141,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 92,
+     "max": 110,
+     "minPercent": 68.14814814814815,
+     "maxPercent": 81.48148148148148,
+     "rolls": [
+      92,
+      92,
+      96,
+      96,
+      96,
+      98,
+      98,
+      102,
+      102,
+      102,
+      104,
+      104,
+      104,
+      108,
+      108,
+      110
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 92–110 HP (68.1–81.5% of maximum HP). Applied: Grassy.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Grassy Terrain heals the target at the end of each turn.",
+       "Grassy Terrain heals the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the terrain lasts through every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 43,
+      "high": 25,
+      "average": 34.25,
+      "min": 25,
+      "max": 43,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 92,
+        "heals": []
+       },
+       "high": {
+        "dealt": 110,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Earthquake: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 170,
+      "high": 170,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 151,
+     "average": 147.0625,
+     "high": 143,
+     "min": 143,
+     "max": 151,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 51,
+     "average": 42.25,
+     "high": 33,
+     "min": 33,
+     "max": 51,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: Water.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Grassy Terrain",
+     "chance": 1,
+     "min": 8,
+     "max": 8,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Grassy Terrain",
+     "chance": 1,
+     "min": 10,
+     "max": 10,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 6.409299999999348,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 0.0625
+       },
+       {
+        "hp": 145,
+        "chance": 0.1875
+       },
+       {
+        "hp": 146,
+        "chance": 0.25
+       },
+       {
+        "hp": 148,
+        "chance": 0.1875
+       },
+       {
+        "hp": 149,
+        "chance": 0.25
+       },
+       {
+        "hp": 151,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "azumarill",
+       "nature": "Serious",
+       "abilityId": "hugepower",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 33,
+        "chance": 0.0625
+       },
+       {
+        "hp": 35,
+        "chance": 0.125
+       },
+       {
+        "hp": 39,
+        "chance": 0.1875
+       },
+       {
+        "hp": 41,
+        "chance": 0.1875
+       },
+       {
+        "hp": 45,
+        "chance": 0.125
+       },
+       {
+        "hp": 47,
+        "chance": 0.1875
+       },
+       {
+        "hp": 51,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "raichu",
+       "nature": "Serious",
+       "abilityId": "static",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Brave",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "types": [
+        "Water"
+       ]
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "gyarados",
+       "nature": "Serious",
+       "abilityId": "moxie",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "Grassy",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,437 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 160,
+    "maximum": 160
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 134,
+      "max": 158,
+      "minPercent": 83.75,
+      "maxPercent": 98.75,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Thunderbolt",
+       "effectiveType": "Electric",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 134,
+       "max": 158,
+       "minPercent": 83.75,
+       "maxPercent": 98.75,
+       "rolls": [
+        134,
+        134,
+        138,
+        138,
+        140,
+        140,
+        144,
+        144,
+        146,
+        146,
+        150,
+        150,
+        152,
+        152,
+        156,
+        158
+       ],
+       "ohkoChance": 0,
+       "description": "Thunderbolt: 134–158 HP (83.8–98.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bravebird",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 46,
+      "max": 55,
+      "minPercent": 32.857142857142854,
+      "maxPercent": 39.285714285714285,
+      "koChance": 0,
+      "row": {
+       "moveId": "bravebird",
+       "effectiveName": "Brave Bird",
+       "effectiveType": "Flying",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 46,
+       "max": 55,
+       "minPercent": 32.857142857142854,
+       "maxPercent": 39.285714285714285,
+       "rolls": [
+        46,
+        47,
+        48,
+        48,
+        48,
+        49,
+        50,
+        51,
+        51,
+        51,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55
+       ],
+       "ohkoChance": 0,
+       "description": "Brave Bird: 46–55 HP (32.9–39.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Crobat faints (recoil).",
+      "chance": 0.6171875
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 94,
+    "average": 89.375,
+    "high": 85,
+    "min": 85,
+    "max": 94,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 160,
+    "maximum": 160,
+    "low": 11,
+    "average": 2.2265625,
+    "high": 0,
+    "min": 0,
+    "max": 11,
+    "koChance": 0.6171875,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 134,
+     "max": 158,
+     "minPercent": 83.75,
+     "maxPercent": 98.75,
+     "rolls": [
+      134,
+      134,
+      138,
+      138,
+      140,
+      140,
+      144,
+      144,
+      146,
+      146,
+      150,
+      150,
+      152,
+      152,
+      156,
+      158
+     ],
+     "ohkoChance": 0,
+     "description": "Thunderbolt: 134–158 HP (83.8–98.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Jolteon's Lum Berry cured its burn (used up)."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 160,
+      "low": 26,
+      "high": 2,
+      "average": 14.875,
+      "min": 2,
+      "max": 26,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 134,
+        "heals": []
+       },
+       "high": {
+        "dealt": 158,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bravebird",
+     "effectiveName": "Brave Bird",
+     "effectiveType": "Flying",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 46,
+     "max": 55,
+     "minPercent": 32.857142857142854,
+     "maxPercent": 39.285714285714285,
+     "rolls": [
+      46,
+      47,
+      48,
+      48,
+      48,
+      49,
+      50,
+      51,
+      51,
+      51,
+      52,
+      53,
+      53,
+      54,
+      54,
+      55
+     ],
+     "ohkoChance": 0,
+     "description": "Brave Bird: 46–55 HP (32.9–39.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Jolteon's Lum Berry cured its burn (used up)."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.9990234375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 94,
+      "high": 85,
+      "average": 89.375,
+      "min": 85,
+      "max": 94,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 46,
+        "heals": []
+       },
+       "high": {
+        "dealt": 55,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 94,
+     "average": 89.375,
+     "high": 85,
+     "min": 85,
+     "max": 94,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 160,
+     "maximum": 160,
+     "low": 11,
+     "average": 2.2265625,
+     "high": 0,
+     "min": 0,
+     "max": 11,
+     "koChance": 0.6171875,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.974199999999655,
+ "preflight": []
+}

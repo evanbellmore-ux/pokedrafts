@@ -1,0 +1,228 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 40,
+    "maximum": 142
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "playrough",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 68,
+      "max": 84,
+      "minPercent": 37.15846994535519,
+      "maxPercent": 45.90163934426229,
+      "koChance": 0,
+      "row": {
+       "moveId": "playrough",
+       "effectiveName": "Play Rough",
+       "effectiveType": "Fairy",
+       "effectivePower": 90,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 68,
+       "max": 84,
+       "minPercent": 37.15846994535519,
+       "maxPercent": 45.90163934426229,
+       "rolls": [
+        68,
+        72,
+        72,
+        72,
+        72,
+        74,
+        74,
+        74,
+        78,
+        78,
+        78,
+        78,
+        80,
+        80,
+        80,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Play Rough: 68–84 HP (37.2–45.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 40,
+    "maximum": 142,
+    "low": 70,
+    "average": 70,
+    "high": 70,
+    "min": 70,
+    "max": 70,
+    "koChance": 0,
+    "heals": [
+     "Cheek Pouch: +47 HP."
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 115,
+    "average": 107.125,
+    "high": 99,
+    "min": 99,
+    "max": 115,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "playrough",
+     "effectiveName": "Play Rough",
+     "effectiveType": "Fairy",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 68,
+     "max": 84,
+     "minPercent": 37.15846994535519,
+     "maxPercent": 45.90163934426229,
+     "rolls": [
+      68,
+      72,
+      72,
+      72,
+      72,
+      74,
+      74,
+      74,
+      78,
+      78,
+      78,
+      78,
+      80,
+      80,
+      80,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Play Rough: 68–84 HP (37.2–45.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.8125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Liechi Berry raises its Attack once, at a quarter of its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 115,
+      "high": 99,
+      "average": 107.125,
+      "min": 99,
+      "max": 115,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 68,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.7667999999998756,
+ "preflight": []
+}

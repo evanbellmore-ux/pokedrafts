@@ -1,0 +1,143 @@
+LOG #41 t6 log: real |move|p2b: Alakazam|Encore||[still] / belief |move|p2b: Alakazam|Encore|p1b: Kingambit (move 3, move 4 | move 3, move 1 2)
+|poke|p2|Snorlax, L50, M|
+|poke|p2|Farigiraf, L50, M|
+|poke|p2|Aggron, L50, M|
+|teampreview|4
+|
+|teamsize|p1|4
+|teamsize|p2|4
+|start
+|switch|p1a: Espeon|Espeon, L50, F|160/160
+|switch|p1b: Kingambit|Kingambit, L50, M|195/195
+|switch|p2a: Aerodactyl|Aerodactyl, L50, M|175/175
+|switch|p2b: Alakazam|Alakazam, L50, M|150/150
+|-ability|p2a: Aerodactyl|Pressure
+|turn|1
+|
+|move|p1b: Kingambit|Sucker Punch|p2a: Aerodactyl
+|-damage|p2a: Aerodactyl|84/175
+|move|p2a: Aerodactyl|Fly||[still]
+|-prepare|p2a: Aerodactyl|Fly
+|move|p2b: Alakazam|Safeguard|p2b: Alakazam
+|-sidestart|p2: Training|Safeguard
+|move|p1a: Espeon|Skill Swap|p2a: Aerodactyl|[miss]
+|-miss|p1a: Espeon|p2a: Aerodactyl
+|
+|upkeep
+|turn|2
+|
+|move|p1b: Kingambit|Sucker Punch|p2a: Aerodactyl|[miss]
+|-miss|p1b: Kingambit|p2a: Aerodactyl
+|move|p2a: Aerodactyl|Fly|p1a: Espeon|[from] lockedmove
+|-damage|p1a: Espeon|67/160
+|move|p2b: Alakazam|Safeguard||[still]
+|-fail|p2b: Alakazam
+|move|p1a: Espeon|Skill Swap|p2a: Aerodactyl
+|-activate|p1a: Espeon|Skill Swap|Pressure|Magic Bounce|[of] p2a: Aerodactyl
+|-ability|p1a: Espeon|Pressure
+|
+|upkeep
+|turn|3
+|
+|move|p1b: Kingambit|Sucker Punch|p2a: Aerodactyl
+|-damage|p2a: Aerodactyl|0 fnt
+|-damage|p2a: Aerodactyl|0 fnt
+|faint|p2a: Aerodactyl
+|move|p2b: Alakazam|Safeguard||[still]
+|-fail|p2b: Alakazam
+|move|p1a: Espeon|Skill Swap|p2b: Alakazam
+|-activate|p1a: Espeon|Skill Swap|Inner Focus|Pressure|[of] p2b: Alakazam
+|-ability|p2b: Alakazam|Pressure
+|
+|upkeep
+|
+|switch|p2a: Snorlax|Snorlax, L50, M|255/255
+|turn|4
+|
+|move|p1a: Espeon|Protect|p1a: Espeon
+|-singleturn|p1a: Espeon|Protect
+|move|p2a: Snorlax|Protect|p2a: Snorlax
+|-singleturn|p2a: Snorlax|Protect
+|move|p2b: Alakazam|Encore|p1b: Kingambit
+|-start|p1b: Kingambit|Encore
+|move|p1b: Kingambit|Sucker Punch||[still]
+|-fail|p1b: Kingambit
+|
+|upkeep
+|turn|5
+|
+|move|p1a: Espeon|Protect||[still]
+|-fail|p1a: Espeon
+|move|p2a: Snorlax|Protect||[still]
+|-fail|p2a: Snorlax
+|move|p1b: Kingambit|Sucker Punch||[still]
+|-fail|p1b: Kingambit
+|move|p2b: Alakazam|Encore||[still]
+|-fail|p2b: Alakazam
+|
+|-end|p1b: Kingambit|Encore
+|-sideend|p2: Training|Safeguard
+|upkeep
+|turn|6
+{
+ "decisions": 912,
+ "compared": 3402,
+ "mismatches": 3,
+ "logsClean": 551,
+ "logsSame": 548,
+ "cells": 5472,
+ "engineCells": 5237,
+ "issues": 0,
+ "notEstimated": 320,
+ "reasons": {
+  "engine: Instruct is not modelled in 2v2.": 290,
+  "rollout: Speed tie between switches with an entry effect.": 235,
+  "engine: Psychic Terrain is not modelled in 2v2.": 9,
+  "engine: Instruct needs the target of Farigiraf's last move.": 6,
+  "engine: Instruct needs the target of Cofagrigus's last move.": 4,
+  "end of turn: Psychic Terrain ending is not modelled in 2v2.": 4,
+  "end of turn: Future Sight landing is not modelled in 2v2.": 3,
+  "end of turn: Electric Terrain ending is not modelled in 2v2.": 3,
+  "engine: Copycat with Sleep Talk is not modelled in 2v2.": 2,
+  "engine: Instruct needs the target of Hydrapple's last move.": 2,
+  "engine: Instruct with No move is not modelled in 2v2.": 2,
+  "engine: Trick Room is not modelled in 2v2.": 1,
+  "engine: Uproar is not modelled in 2v2.": 1,
+  "engine: Instruct needs the target of Venusaur's last move.": 1,
+  "engine: Electric Terrain is not modelled in 2v2.": 1,
+  "engine: Encore changes Kingambit's move: not modelled.": 1
+ },
+ "seen": {
+  "stall": 527,
+  "field": 165,
+  "disable": 135,
+  "twoturnmove": 103,
+  "taunt": 119,
+  "destinybond": 81,
+  "leechseed": 20,
+  "lockon": 18,
+  "cudchew": 4,
+  "encore": 36,
+  "mustrecharge": 13,
+  "uproar": 21
+ },
+ "carried": {
+  "stall": 2253,
+  "stages": 1841,
+  "onceUsed": 1327,
+  "disable": 875,
+  "taunt": 729,
+  "charging": 646,
+  "destinyBond": 512,
+  "uproar": 146,
+  "encore": 144,
+  "futureMove": 116,
+  "leechSeed": 97,
+  "lockOn": 94,
+  "mustRecharge": 85,
+  "cudChew": 24
+ }
+}
+#5 t23 log: real |-damage|p2a: Oranguru|156/185 / belief |-damage|p2a: Oranguru|157/185 (pass, move 3 2 | move 1 2, pass)
+#5 t24 log: real |-damage|p2a: Oranguru|87/185 / belief |-damage|p2a: Oranguru|85/185 (pass, move 3 2 | move 1 2, pass)
+#41 t6 log: real |move|p2b: Alakazam|Encore||[still] / belief |move|p2b: Alakazam|Encore|p1b: Kingambit (move 3, move 4 | move 3, move 1 2)

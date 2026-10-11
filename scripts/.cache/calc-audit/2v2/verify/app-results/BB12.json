@@ -1,0 +1,294 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbite",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 73,
+      "max": 87,
+      "minPercent": 44.24242424242424,
+      "maxPercent": 52.72727272727272,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbite",
+       "effectiveName": "Bug Bite",
+       "effectiveType": "Bug",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 73,
+       "max": 87,
+       "minPercent": 44.24242424242424,
+       "maxPercent": 52.72727272727272,
+       "rolls": [
+        73,
+        73,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        84,
+        85,
+        87
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Bite: 73–87 HP (44.2–52.7% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 145,
+    "low": 132,
+    "average": 132,
+    "high": 132,
+    "min": 132,
+    "max": 132,
+    "koChance": 0,
+    "heals": [
+     "Scizor eats Politoed's Figy Berry: +72 HP."
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 92,
+    "average": 85.5,
+    "high": 78,
+    "min": 78,
+    "max": 92,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbite",
+     "effectiveName": "Bug Bite",
+     "effectiveType": "Bug",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 73,
+     "max": 87,
+     "minPercent": 44.24242424242424,
+     "maxPercent": 52.72727272727272,
+     "rolls": [
+      73,
+      73,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      84,
+      85,
+      87
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Bite: 73–87 HP (44.2–52.7% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.1875,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Bug Bite takes the target's item."
+      ],
+      "notes": [
+       "Assumes the confused attacker does not hit itself."
+      ]
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 92,
+      "high": 78,
+      "average": 85.5,
+      "min": 78,
+      "max": 92,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 73,
+        "heals": []
+       },
+       "high": {
+        "dealt": 87,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 145,
+     "low": 132,
+     "average": 132,
+     "high": 132,
+     "min": 132,
+     "max": 132,
+     "koChance": 0,
+     "heals": [
+      "Scizor eats Politoed's Figy Berry: +72 HP."
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 92,
+     "average": 85.5,
+     "high": 78,
+     "min": 78,
+     "max": 92,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.7155000000002474,
+ "preflight": []
+}

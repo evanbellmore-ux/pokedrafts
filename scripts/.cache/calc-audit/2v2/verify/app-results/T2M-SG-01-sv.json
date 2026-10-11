@@ -1,0 +1,738 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 110,
+    "maximum": 110
+   },
+   "own-right": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 150
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "safeguard",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Safeguard starts on Altaria's side.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-left",
+    "moveId": "nuzzle",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 9,
+      "max": 12,
+      "minPercent": 6,
+      "maxPercent": 8,
+      "koChance": 0,
+      "row": {
+       "moveId": "nuzzle",
+       "effectiveName": "Nuzzle",
+       "effectiveType": "Electric",
+       "effectivePower": 20,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 9,
+       "max": 12,
+       "minPercent": 6,
+       "maxPercent": 8,
+       "rolls": [
+        9,
+        9,
+        9,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        12
+       ],
+       "ohkoChance": 0,
+       "description": "Nuzzle: 9–12 HP (6.0–8.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "inferno",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 36,
+      "max": 43,
+      "minPercent": 15.319148936170212,
+      "maxPercent": 18.29787234042553,
+      "koChance": 0,
+      "row": {
+       "moveId": "inferno",
+       "effectiveName": "Inferno",
+       "effectiveType": "Fire",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 36,
+       "max": 43,
+       "minPercent": 15.319148936170212,
+       "maxPercent": 18.29787234042553,
+       "rolls": [
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43
+       ],
+       "ohkoChance": 0,
+       "description": "Inferno: 36–43 HP (15.3–18.3% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 110,
+    "maximum": 110,
+    "low": 110,
+    "average": 110,
+    "high": 110,
+    "min": 110,
+    "max": 110,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 199,
+    "average": 195.75,
+    "high": 192,
+    "min": 192,
+    "max": 199,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 141,
+    "average": 140.0625,
+    "high": 138,
+    "min": 138,
+    "max": 141,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "nuzzle",
+     "effectiveName": "Nuzzle",
+     "effectiveType": "Electric",
+     "effectivePower": 20,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 9,
+     "max": 12,
+     "minPercent": 6,
+     "maxPercent": 8,
+     "rolls": [
+      9,
+      9,
+      9,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      12
+     ],
+     "ohkoChance": 0,
+     "description": "Nuzzle: 9–12 HP (6.0–8.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 17,
+      "fewest": 13,
+      "fasterChance": 0.9999883651540917,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 141,
+      "high": 138,
+      "average": 140.0625,
+      "min": 138,
+      "max": 141,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 9,
+        "heals": []
+       },
+       "high": {
+        "dealt": 12,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "inferno",
+     "effectiveName": "Inferno",
+     "effectiveType": "Fire",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 15.319148936170212,
+     "maxPercent": 18.29787234042553,
+     "rolls": [
+      36,
+      36,
+      37,
+      37,
+      37,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Inferno: 36–43 HP (15.3–18.3% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 5,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the target at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 199,
+      "high": 192,
+      "average": 195.75,
+      "min": 192,
+      "max": 199,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 110,
+     "maximum": 110,
+     "low": 110,
+     "average": 110,
+     "high": 110,
+     "min": 110,
+     "max": 110,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 185,
+     "average": 181.75,
+     "high": 178,
+     "min": 178,
+     "max": 185,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 141,
+     "average": 140.0625,
+     "high": 138,
+     "min": 138,
+     "max": 141,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.859699999999066,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 110,
+    "maximum": 110
+   },
+   "own-right": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 150
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 110,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "pikachu",
+       "nature": "Serious",
+       "abilityId": "static",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 135,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "chandelure",
+       "nature": "Serious",
+       "abilityId": "infiltrator",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 178,
+        "chance": 0.0625
+       },
+       {
+        "hp": 179,
+        "chance": 0.1875
+       },
+       {
+        "hp": 181,
+        "chance": 0.1875
+       },
+       {
+        "hp": 182,
+        "chance": 0.25
+       },
+       {
+        "hp": 184,
+        "chance": 0.1875
+       },
+       {
+        "hp": 185,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "brn",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 138,
+        "chance": 0.0625
+       },
+       {
+        "hp": 140,
+        "chance": 0.75
+       },
+       {
+        "hp": 141,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "altaria",
+       "nature": "Serious",
+       "abilityId": "naturalcure",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0,
+      "safeguard": true,
+      "clock": {
+       "safeguard": "set"
+      }
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,513 @@
+{
+ "id": "HL07",
+ "title": "Drain Punch into Rough Skin and Rocky Helmet: the attacker's Sitrus Berry on some rolls (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Drain heals half the damage first (not a listed heal), then Rough Skin 16 and Rocky Helmet 22: the Sitrus Berry (+33) at 67 or less.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 13,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Breloom",
+     "start": 75,
+     "maximum": 135,
+     "dist": [
+      [
+       68,
+       0.125
+      ],
+      [
+       69,
+       0.25
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.0625
+      ],
+      [
+       99,
+       0.25
+      ],
+      [
+       100,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 82.4375,
+     "min": 68,
+     "max": 100,
+     "modeTieUp": 99,
+     "modeTieDown": 69
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       116,
+       0.0625
+      ],
+      [
+       117,
+       0.125
+      ],
+      [
+       119,
+       0.125
+      ],
+      [
+       120,
+       0.125
+      ],
+      [
+       122,
+       0.125
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       125,
+       0.125
+      ],
+      [
+       126,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 121.4375,
+     "min": 116,
+     "max": 126,
+     "modeTieUp": 123,
+     "modeTieDown": 123
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Breloom|hp|[from] drain|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Breloom|Sitrus Berry|[eat]": 0.4375,
+      "|-heal|p1a: Breloom|hp|[from] item: Sitrus Berry": 0.4375
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Breloom",
+     "start": 75,
+     "maximum": 135,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Breloom|hp|[from] drain|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Breloom|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Breloom|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Breloom",
+     "start": 75,
+     "maximum": 135,
+     "dist": [
+      [
+       71,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 71,
+     "min": 71,
+     "max": 71,
+     "modeTieUp": 71,
+     "modeTieDown": 71
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       116,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 116,
+     "min": 116,
+     "max": 116,
+     "modeTieUp": 116,
+     "modeTieDown": 116
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "drainpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Breloom|hp|[from] drain|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Breloom|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 75,
+   "maximum": 135,
+   "low": 99,
+   "high": 71,
+   "average": 82.4375,
+   "min": 68,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     68,
+     0.125
+    ],
+    [
+     69,
+     0.25
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.0625
+    ],
+    [
+     99,
+     0.25
+    ],
+    [
+     100,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 126,
+   "high": 116,
+   "average": 121.4375,
+   "min": 116,
+   "max": 126,
+   "koChance": 0,
+   "dist": [
+    [
+     116,
+     0.0625
+    ],
+    [
+     117,
+     0.125
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     120,
+     0.125
+    ],
+    [
+     122,
+     0.125
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     125,
+     0.125
+    ],
+    [
+     126,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 8 whole-turn replays"
+ ]
+}

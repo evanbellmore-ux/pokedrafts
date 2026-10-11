@@ -1,0 +1,438 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "poisonjab",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 29,
+      "max": 35,
+      "minPercent": 15.846994535519126,
+      "maxPercent": 19.12568306010929,
+      "koChance": 0,
+      "row": {
+       "moveId": "poisonjab",
+       "effectiveName": "Poison Jab",
+       "effectiveType": "Poison",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 15.846994535519126,
+       "maxPercent": 19.12568306010929,
+       "rolls": [
+        29,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        32,
+        32,
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Poison Jab: 29–35 HP (15.8–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Unburden has been activated — yes."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 85,
+      "max": 102,
+      "minPercent": 54.83870967741935,
+      "maxPercent": 65.80645161290323,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 85,
+       "max": 102,
+       "minPercent": 54.83870967741935,
+       "maxPercent": 65.80645161290323,
+       "rolls": [
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94,
+        94,
+        96,
+        97,
+        97,
+        99,
+        100,
+        102
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 85–102 HP (54.8–65.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Target: Unburden has been activated — yes."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 51,
+    "average": 42.75,
+    "high": 34,
+    "min": 34,
+    "max": 51,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 154,
+    "average": 151.125,
+    "high": 148,
+    "min": 148,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "poisonjab",
+     "effectiveName": "Poison Jab",
+     "effectiveType": "Poison",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 29,
+     "max": 35,
+     "minPercent": 15.846994535519126,
+     "maxPercent": 19.12568306010929,
+     "rolls": [
+      29,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35
+     ],
+     "ohkoChance": 0,
+     "description": "Poison Jab: 29–35 HP (15.8–19.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Unburden has been activated — yes.",
+      "Sneasler's Lum Berry cured its paralysis (used up).",
+      "Sneasler's Unburden is active (Lum Berry used up)."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9826021790504456,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 154,
+      "high": 148,
+      "average": 151.125,
+      "min": 148,
+      "max": 154,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 35,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 85,
+     "max": 102,
+     "minPercent": 54.83870967741935,
+     "maxPercent": 65.80645161290323,
+     "rolls": [
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      102
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 85–102 HP (54.8–65.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Unburden has been activated — yes.",
+      "Sneasler's Lum Berry cured its paralysis (used up).",
+      "Sneasler's Unburden is active (Lum Berry used up)."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 70,
+      "high": 53,
+      "average": 61.75,
+      "min": 53,
+      "max": 70,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 85,
+        "heals": []
+       },
+       "high": {
+        "dealt": 102,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 51,
+     "average": 42.75,
+     "high": 34,
+     "min": 34,
+     "max": 51,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 154,
+     "average": 151.125,
+     "high": 148,
+     "min": 148,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.481499999999869,
+ "preflight": []
+}

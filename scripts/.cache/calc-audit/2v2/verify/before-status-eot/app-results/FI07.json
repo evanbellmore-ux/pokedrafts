@@ -1,0 +1,175 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "shadowball",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 55,
+      "max": 66,
+      "minPercent": 42.30769230769231,
+      "maxPercent": 50.76923076923077,
+      "koChance": 0,
+      "row": {
+       "moveId": "shadowball",
+       "effectiveName": "Shadow Ball",
+       "effectiveType": "Ghost",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 55,
+       "max": 66,
+       "minPercent": 42.30769230769231,
+       "maxPercent": 50.76923076923077,
+       "rolls": [
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66
+       ],
+       "ohkoChance": 0,
+       "description": "Shadow Ball: 55–66 HP (42.3–50.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Disguise: Mimikyu takes no damage.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 130,
+    "average": 130,
+    "high": 130,
+    "min": 130,
+    "max": 130,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "shadowball",
+     "effectiveName": "Shadow Ball",
+     "effectiveType": "Ghost",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 20% chance to lower the target's Special Defense by 1 stage.",
+     "assumptions": [],
+     "reason": "Intact Disguise takes the first hit.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.4471999999996115,
+ "preflight": []
+}

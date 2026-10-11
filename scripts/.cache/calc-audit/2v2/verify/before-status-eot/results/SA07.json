@@ -1,0 +1,579 @@
+{
+ "id": "SA07",
+ "title": "Serene Grace Air Slash's flinch is still 60%: the slower target moves (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "30% doubled to 60% stays below 100%: Snorlax is not flinched.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 73,
+   "classes": 18,
+   "ms": 33,
+   "decisions": {
+    "accuracy": 7,
+    "fail:": 63,
+    "roll": 63,
+    "secondary": 63
+   },
+   "slots": {
+    "own-left": {
+     "species": "Togekiss",
+     "start": 160,
+     "maximum": 160,
+     "dist": [
+      [
+       94,
+       0.0625
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       97,
+       0.125
+      ],
+      [
+       99,
+       0.125
+      ],
+      [
+       100,
+       0.1875
+      ],
+      [
+       102,
+       0.125
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       105,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 99.875,
+     "min": 94,
+     "max": 105,
+     "modeTieUp": 100,
+     "modeTieDown": 100
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       180,
+       0.0625
+      ],
+      [
+       181,
+       0.125
+      ],
+      [
+       183,
+       0.1875
+      ],
+      [
+       184,
+       0.1875
+      ],
+      [
+       186,
+       0.125
+      ],
+      [
+       187,
+       0.1875
+      ],
+      [
+       189,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 184.625,
+     "min": 180,
+     "max": 189,
+     "modeTieUp": 187,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Lapras",
+     "start": 205,
+     "maximum": 205,
+     "dist": [
+      [
+       205,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 205,
+     "min": 205,
+     "max": 205,
+     "modeTieUp": 205,
+     "modeTieDown": 205
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Togekiss",
+     "start": 160,
+     "maximum": 160,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       189,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 189,
+     "min": 189,
+     "max": 189,
+     "modeTieUp": 189,
+     "modeTieDown": 189
+    },
+    "opponent-right": {
+     "species": "Lapras",
+     "start": 205,
+     "maximum": 205,
+     "dist": [
+      [
+       205,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 205,
+     "min": 205,
+     "max": 205,
+     "modeTieUp": 205,
+     "modeTieDown": 205
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 46,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Togekiss",
+     "start": 160,
+     "maximum": 160,
+     "dist": [
+      [
+       94,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 94,
+     "min": 94,
+     "max": 94,
+     "modeTieUp": 94,
+     "modeTieDown": 94
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-right": {
+     "species": "Lapras",
+     "start": 205,
+     "maximum": 205,
+     "dist": [
+      [
+       205,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 205,
+     "min": 205,
+     "max": 205,
+     "modeTieUp": 205,
+     "modeTieDown": 205
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 160,
+   "maximum": 160,
+   "low": 105,
+   "high": 94,
+   "average": 99.875,
+   "min": 94,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     94,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     97,
+     0.125
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.1875
+    ],
+    [
+     102,
+     0.125
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 189,
+   "high": 180,
+   "average": 184.625,
+   "min": 180,
+   "max": 189,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     0.0625
+    ],
+    [
+     181,
+     0.125
+    ],
+    [
+     183,
+     0.1875
+    ],
+    [
+     184,
+     0.1875
+    ],
+    [
+     186,
+     0.125
+    ],
+    [
+     187,
+     0.1875
+    ],
+    [
+     189,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 205,
+   "maximum": 205,
+   "low": 205,
+   "high": 205,
+   "average": 205,
+   "min": 205,
+   "max": 205,
+   "koChance": 0,
+   "dist": [
+    [
+     205,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

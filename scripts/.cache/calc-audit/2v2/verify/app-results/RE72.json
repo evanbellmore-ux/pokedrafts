@@ -1,0 +1,350 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "scaleshot",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 25,
+      "max": 93,
+      "minPercent": 10.638297872340425,
+      "maxPercent": 39.57446808510638,
+      "koChance": 0,
+      "row": {
+       "moveId": "scaleshot",
+       "effectiveName": "Scale Shot",
+       "effectiveType": "Dragon",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 50,
+       "max": 155,
+       "minPercent": 21.27659574468085,
+       "maxPercent": 65.95744680851064,
+       "rolls": [
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ],
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ],
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ],
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ],
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Scale Shot: 50–155 HP (21.3–66.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Scale Shot: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 3,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       },
+       {
+        "text": "Scale Shot hits Snorlax after its Substitute breaks.",
+        "chance": 0.65
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 50,
+       "max": 50,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 203.99375000000006,
+    "high": 142,
+    "min": 142,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "scaleshot",
+     "effectiveName": "Scale Shot",
+     "effectiveType": "Dragon",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits two to five times. Lowers the user's Defense by 1 stage and raises the user's Speed by 1 stage after the last hit. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 203.99375000000006,
+     "high": 142,
+     "min": 142,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.535000000000764,
+ "preflight": []
+}

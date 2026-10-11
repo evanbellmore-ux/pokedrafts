@@ -1,0 +1,230 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 100,
+    "maximum": 185
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "allyswitch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Reuniclus and Jolteon swap places.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-left",
+    "moveId": "wish",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Wish fails: a Wish is already waiting there.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 140,
+    "low": 60,
+    "average": 60,
+    "high": 60,
+    "min": 60,
+    "max": 60,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Reuniclus.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 100,
+    "maximum": 185,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Jolteon.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Reuniclus did not use Ally Switch last turn."
+  ],
+  "swapped": {
+   "own": 1
+  },
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 140,
+     "low": 140,
+     "average": 140,
+     "high": 140,
+     "min": 140,
+     "max": 140,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Reuniclus.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 100,
+     "maximum": 185,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Jolteon.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Wish",
+     "chance": 1,
+     "min": 80,
+     "max": 80,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 1.7385000000003856,
+ "preflight": []
+}

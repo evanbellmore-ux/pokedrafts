@@ -1,0 +1,1259 @@
+{
+ "id": "ER10d",
+ "title": "Grassy Terrain: Dig and Fly charge turns",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Dig is the last action (70): Donphan underground (semi-invulnerable): no Grassy heal; Corviknight (Flying): none; the foes heal.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 22,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Donphan",
+     "start": 100,
+     "maximum": 165,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dig": 1,
+      "twoturnmove": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Corviknight",
+     "start": 100,
+     "maximum": 173,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 100,
+     "maximum": 140,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 100,
+     "maximum": 154,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dig",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Donphan|Dig||[still]": 1
+     },
+     "effects": {
+      "own-left": {
+       "prepare:dig": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 1,
+    "ms": 22,
+    "decisions": {
+     "tie2": 2
+    },
+    "slots": {
+     "own-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dig": 1,
+       "twoturnmove": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 8,
+      "max": 8,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 44,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Donphan",
+     "start": 100,
+     "maximum": 165,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dig": 1,
+      "twoturnmove": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Corviknight",
+     "start": 100,
+     "maximum": 173,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 100,
+     "maximum": 140,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 100,
+     "maximum": 154,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dig",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Donphan|Dig||[still]": 1
+     },
+     "effects": {
+      "own-left": {
+       "prepare:dig": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 1,
+    "ms": 45,
+    "decisions": {
+     "tie2": 2
+    },
+    "slots": {
+     "own-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dig": 1,
+       "twoturnmove": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 8,
+      "max": 8,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 25,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Donphan",
+     "start": 100,
+     "maximum": 165,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dig": 1,
+      "twoturnmove": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Corviknight",
+     "start": 100,
+     "maximum": 173,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 100,
+     "maximum": 140,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 100,
+     "maximum": 154,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dig",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Donphan|Dig||[still]": 1
+     },
+     "effects": {
+      "own-left": {
+       "prepare:dig": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 1,
+    "ms": 25,
+    "decisions": {
+     "tie2": 2
+    },
+    "slots": {
+     "own-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dig": 1,
+       "twoturnmove": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        100,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 100,
+      "min": 100,
+      "max": 100,
+      "modeTieUp": 100,
+      "modeTieDown": 100,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        109,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 109,
+      "min": 109,
+      "max": 109,
+      "modeTieUp": 109,
+      "modeTieDown": 109,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 8,
+      "max": 8,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 100,
+   "maximum": 165,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 173,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 100,
+   "maximum": 140,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 100,
+   "maximum": 154,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 100,
+   "maximum": 165,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 173,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 100,
+   "maximum": 140,
+   "low": 108,
+   "high": 108,
+   "average": 108,
+   "min": 108,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     108,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 100,
+   "maximum": 154,
+   "low": 109,
+   "high": 109,
+   "average": 109,
+   "min": 109,
+   "max": 109,
+   "koChance": 0,
+   "dist": [
+    [
+     109,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "opponent-left",
+   "effect": "Grassy Terrain",
+   "chance": 1,
+   "min": 8,
+   "max": 8,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "opponent-right",
+   "effect": "Grassy Terrain",
+   "chance": 1,
+   "min": 9,
+   "max": 9,
+   "koChance": 0,
+   "facts": {},
+   "index": 5
+  }
+ ]
+}

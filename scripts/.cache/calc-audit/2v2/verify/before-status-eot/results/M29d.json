@@ -1,0 +1,527 @@
+{
+ "id": "M29d",
+ "title": "The Unnerve user faints from its own recoil: the target eats its Sitrus Berry",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Double-Edge takes Snorlax under half; the recoil KOs Tyranitar, and Snorlax eats at the next Update.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 36,
+   "classes": 21,
+   "ms": 21,
+   "decisions": {
+    "fail:": 16,
+    "roll": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 10,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       118,
+       0.0625
+      ],
+      [
+       161,
+       0.0625
+      ],
+      [
+       162,
+       0.0625
+      ],
+      [
+       163,
+       0.0625
+      ],
+      [
+       164,
+       0.0625
+      ],
+      [
+       165,
+       0.0625
+      ],
+      [
+       166,
+       0.0625
+      ],
+      [
+       167,
+       0.0625
+      ],
+      [
+       168,
+       0.0625
+      ],
+      [
+       169,
+       0.0625
+      ],
+      [
+       170,
+       0.0625
+      ],
+      [
+       171,
+       0.0625
+      ],
+      [
+       172,
+       0.0625
+      ],
+      [
+       173,
+       0.0625
+      ],
+      [
+       174,
+       0.0625
+      ],
+      [
+       175,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 164.875,
+     "min": 118,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 118
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doubleedge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|0 fnt|[from] Recoil": 1,
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 0.9375,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 0.9375
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 10,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       118,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 118,
+     "min": 118,
+     "max": 118,
+     "modeTieUp": 118,
+     "modeTieDown": 118
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doubleedge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|0 fnt|[from] Recoil": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 10,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 200,
+     "maximum": 235,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doubleedge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Tyranitar|0 fnt|[from] Recoil": 1,
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 10,
+   "maximum": 175,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 200,
+   "maximum": 235,
+   "low": 118,
+   "high": 161,
+   "average": 164.875,
+   "min": 118,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     118,
+     0.0625
+    ],
+    [
+     161,
+     0.0625
+    ],
+    [
+     162,
+     0.0625
+    ],
+    [
+     163,
+     0.0625
+    ],
+    [
+     164,
+     0.0625
+    ],
+    [
+     165,
+     0.0625
+    ],
+    [
+     166,
+     0.0625
+    ],
+    [
+     167,
+     0.0625
+    ],
+    [
+     168,
+     0.0625
+    ],
+    [
+     169,
+     0.0625
+    ],
+    [
+     170,
+     0.0625
+    ],
+    [
+     171,
+     0.0625
+    ],
+    [
+     172,
+     0.0625
+    ],
+    [
+     173,
+     0.0625
+    ],
+    [
+     174,
+     0.0625
+    ],
+    [
+     175,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,1830 @@
+{
+ "id": "S11b",
+ "title": "Flatter; Swagger into Own Tempo",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Flatter: Sp. Atk +1 and confusion on Charizard (its Ember +1); Own Tempo: Indeedee gets Attack +2, no confusion.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 174,
+   "classes": 119,
+   "ms": 213,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 56,
+    "fail:": 40,
+    "roll": 56,
+    "secondary": 40,
+    "accuracy": 56
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1.0000000000000004
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1.0000000000000004
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000004
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000004
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       49,
+       0.041874999999999996
+      ],
+      [
+       51,
+       0.041874999999999996
+      ],
+      [
+       52,
+       0.08374999999999999
+      ],
+      [
+       54,
+       0.08374999999999999
+      ],
+      [
+       55,
+       0.08374999999999999
+      ],
+      [
+       57,
+       0.08374999999999999
+      ],
+      [
+       58,
+       0.08374999999999999
+      ],
+      [
+       60,
+       0.041874999999999996
+      ],
+      [
+       61,
+       0.08374999999999999
+      ],
+      [
+       63,
+       0.041874999999999996
+      ],
+      [
+       130,
+       0.32999999999999996
+      ]
+     ],
+     "koChance": 0,
+     "average": 80.461875,
+     "min": 49,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1.0000000000000004
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000004
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.32999999999999996,
+      "1": 0.6700000000000004
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       133,
+       0.020625
+      ],
+      [
+       134,
+       0.10312500000000001
+      ],
+      [
+       135,
+       0.10312500000000001
+      ],
+      [
+       136,
+       0.10312500000000001
+      ],
+      [
+       153,
+       0.6700000000000004
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.01875,
+     "min": 133,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1.0000000000000004
+     },
+     "volatiles": {
+      "confusion": 1.0000000000000004
+     },
+     "boosts": {
+      "spa:1": 1.0000000000000004
+     },
+     "item": {
+      "": 1.0000000000000004
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000004
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Indeedee-F",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1.0000000000000004
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1.0000000000000004
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:2": 1.0000000000000004
+     },
+     "item": {
+      "": 1.0000000000000004
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000004
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flatter",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Charizard|spa|1": 1,
+      "|-start|p2b: Charizard|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:spa:1": 1,
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "swagger",
+     "picked": 1.0000000000000004,
+     "faintedAtPick": 0,
+     "moved": 1.0000000000000004,
+     "cant": {},
+     "orderAll": {
+      "3": 1.0000000000000004
+     },
+     "orderMoved": {
+      "3": 1.0000000000000004
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1.0000000000000004,
+       "landed": 1.0000000000000004,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2a: Indeedee|atk|2": 1.0000000000000004,
+      "|-immune|p2a: Indeedee|confusion|[from] ability: Own Tempo": 1.0000000000000004
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:atk:2": 1.0000000000000004,
+       "immune:owntempo": 1.0000000000000004
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "ember",
+     "picked": 1.0000000000000004,
+     "faintedAtPick": 0,
+     "moved": 0.6700000000000004,
+     "cant": {},
+     "orderAll": {
+      "2": 1.0000000000000004
+     },
+     "orderMoved": {
+      "2": 0.6700000000000004
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6700000000000004,
+       "landed": 0.6700000000000004,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Charizard|confusion": 1.0000000000000004,
+      "|-damage|p2b: Charizard|hp|[from] confusion": 0.32999999999999996
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1.0000000000000004,
+       "damage:confusion:-17": 0.10312500000000001,
+       "damage:confusion:-18": 0.10312500000000001,
+       "damage:confusion:-19": 0.10312500000000001,
+       "damage:confusion:-20": 0.020625
+      },
+      "own-right": {
+       "damage:-67": 0.041874999999999996,
+       "damage:-69": 0.08374999999999999,
+       "damage:-70": 0.041874999999999996,
+       "damage:-72": 0.08374999999999999,
+       "damage:-73": 0.08374999999999999,
+       "damage:-75": 0.08374999999999999,
+       "damage:-76": 0.08374999999999999,
+       "damage:-78": 0.08374999999999999,
+       "damage:-79": 0.041874999999999996,
+       "damage:-81": 0.041874999999999996
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -81,
+       "max": -67
+      },
+      "opponent-left": {
+       "min": -20,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -81,
+       "max": -67,
+       "mass": 0.6700000000000004
+      }
+     },
+     "selfHit": {
+      "mass": 0.32999999999999996,
+      "min": 17,
+      "max": 20
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 56,
+    "classes": 56,
+    "ms": 214,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1.0000000000000004
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1.0000000000000004
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000004
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000004
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        49,
+        0.041874999999999996
+       ],
+       [
+        51,
+        0.041874999999999996
+       ],
+       [
+        52,
+        0.08374999999999999
+       ],
+       [
+        54,
+        0.08374999999999999
+       ],
+       [
+        55,
+        0.08374999999999999
+       ],
+       [
+        57,
+        0.08374999999999999
+       ],
+       [
+        58,
+        0.08374999999999999
+       ],
+       [
+        60,
+        0.041874999999999996
+       ],
+       [
+        61,
+        0.08374999999999999
+       ],
+       [
+        63,
+        0.041874999999999996
+       ],
+       [
+        130,
+        0.32999999999999996
+       ]
+      ],
+      "koChance": 0,
+      "average": 80.461875,
+      "min": 49,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1.0000000000000004
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000004
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.32999999999999996,
+       "1": 0.6700000000000004
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        133,
+        0.020625
+       ],
+       [
+        134,
+        0.10312500000000001
+       ],
+       [
+        135,
+        0.10312500000000001
+       ],
+       [
+        136,
+        0.10312500000000001
+       ],
+       [
+        153,
+        0.6700000000000004
+       ]
+      ],
+      "koChance": 0,
+      "average": 147.01875,
+      "min": 133,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1.0000000000000004
+      },
+      "volatiles": {
+       "confusion": 1.0000000000000004
+      },
+      "boosts": {
+       "spa:1": 1.0000000000000004
+      },
+      "item": {
+       "": 1.0000000000000004
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000004
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Indeedee-F",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1.0000000000000004
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1.0000000000000004
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:2": 1.0000000000000004
+      },
+      "item": {
+       "": 1.0000000000000004
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000004
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1.0000000000000004,
+     "weather:": 1.0000000000000004
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 30,
+   "classes": 23,
+   "ms": 49,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8,
+    "secondary": 4,
+    "accuracy": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       63,
+       0.6699999999999999
+      ],
+      [
+       130,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 85.10999999999999,
+     "min": 63,
+     "max": 130,
+     "modeTieUp": 63,
+     "modeTieDown": 63,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       136,
+       0.33
+      ],
+      [
+       153,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.39,
+     "min": 136,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "spa:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Indeedee-F",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flatter",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Charizard|spa|1": 1,
+      "|-start|p2b: Charizard|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:spa:1": 1,
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "swagger",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2a: Indeedee|atk|2": 1,
+      "|-immune|p2a: Indeedee|confusion|[from] ability: Own Tempo": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:atk:2": 1,
+       "immune:owntempo": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "ember",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Charizard|confusion": 1,
+      "|-damage|p2b: Charizard|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-17": 0.33
+      },
+      "own-right": {
+       "damage:-67": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -67,
+       "max": -67
+      },
+      "opponent-left": {
+       "min": -17,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -67,
+       "max": -67,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 17,
+      "max": 17
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 49,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        63,
+        0.6699999999999999
+       ],
+       [
+        130,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 85.10999999999999,
+      "min": 63,
+      "max": 130,
+      "modeTieUp": 63,
+      "modeTieDown": 63,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        136,
+        0.33
+       ],
+       [
+        153,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 147.39,
+      "min": 136,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "spa:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Indeedee-F",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 30,
+   "classes": 23,
+   "ms": 36,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8,
+    "secondary": 4,
+    "accuracy": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Smeargle",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       49,
+       0.6699999999999999
+      ],
+      [
+       130,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 75.72999999999999,
+     "min": 49,
+     "max": 130,
+     "modeTieUp": 49,
+     "modeTieDown": 49,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       133,
+       0.33
+      ],
+      [
+       153,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 146.39999999999998,
+     "min": 133,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "spa:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Indeedee-F",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:2": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flatter",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2b: Charizard|spa|1": 1,
+      "|-start|p2b: Charizard|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "boost:spa:1": 1,
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "swagger",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-boost|p2a: Indeedee|atk|2": 1,
+      "|-immune|p2a: Indeedee|confusion|[from] ability: Own Tempo": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "boost:atk:2": 1,
+       "immune:owntempo": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "ember",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Charizard|confusion": 1,
+      "|-damage|p2b: Charizard|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-20": 0.33
+      },
+      "own-right": {
+       "damage:-81": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -81,
+       "max": -81
+      },
+      "opponent-left": {
+       "min": -20,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -81,
+       "max": -81,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 20,
+      "max": 20
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 36,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Smeargle",
+      "start": null,
+      "maximum": 130,
+      "dist": [
+       [
+        49,
+        0.6699999999999999
+       ],
+       [
+        130,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 75.72999999999999,
+      "min": 49,
+      "max": 130,
+      "modeTieUp": 49,
+      "modeTieDown": 49,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        133,
+        0.33
+       ],
+       [
+        153,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 146.39999999999998,
+      "min": 133,
+      "max": 153,
+      "modeTieUp": 153,
+      "modeTieDown": 153,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "spa:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Indeedee-F",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:2": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1.0000000000000004
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 63,
+   "high": 49,
+   "average": 80.461875,
+   "min": 49,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     49,
+     0.041874999999999996
+    ],
+    [
+     51,
+     0.041874999999999996
+    ],
+    [
+     52,
+     0.08374999999999999
+    ],
+    [
+     54,
+     0.08374999999999999
+    ],
+    [
+     55,
+     0.08374999999999999
+    ],
+    [
+     57,
+     0.08374999999999999
+    ],
+    [
+     58,
+     0.08374999999999999
+    ],
+    [
+     60,
+     0.041874999999999996
+    ],
+    [
+     61,
+     0.08374999999999999
+    ],
+    [
+     63,
+     0.041874999999999996
+    ],
+    [
+     130,
+     0.32999999999999996
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 147.01875,
+   "min": 133,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     133,
+     0.020625
+    ],
+    [
+     134,
+     0.10312500000000001
+    ],
+    [
+     135,
+     0.10312500000000001
+    ],
+    [
+     136,
+     0.10312500000000001
+    ],
+    [
+     153,
+     0.6700000000000004
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1.0000000000000004
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 130,
+   "maximum": 130,
+   "low": 130,
+   "high": 130,
+   "average": 130,
+   "min": 130,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     1.0000000000000004
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 63,
+   "high": 49,
+   "average": 80.461875,
+   "min": 49,
+   "max": 130,
+   "koChance": 0,
+   "dist": [
+    [
+     49,
+     0.041874999999999996
+    ],
+    [
+     51,
+     0.041874999999999996
+    ],
+    [
+     52,
+     0.08374999999999999
+    ],
+    [
+     54,
+     0.08374999999999999
+    ],
+    [
+     55,
+     0.08374999999999999
+    ],
+    [
+     57,
+     0.08374999999999999
+    ],
+    [
+     58,
+     0.08374999999999999
+    ],
+    [
+     60,
+     0.041874999999999996
+    ],
+    [
+     61,
+     0.08374999999999999
+    ],
+    [
+     63,
+     0.041874999999999996
+    ],
+    [
+     130,
+     0.32999999999999996
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 147.01875,
+   "min": 133,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     133,
+     0.020625
+    ],
+    [
+     134,
+     0.10312500000000001
+    ],
+    [
+     135,
+     0.10312500000000001
+    ],
+    [
+     136,
+     0.10312500000000001
+    ],
+    [
+     153,
+     0.6700000000000004
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1.0000000000000004
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

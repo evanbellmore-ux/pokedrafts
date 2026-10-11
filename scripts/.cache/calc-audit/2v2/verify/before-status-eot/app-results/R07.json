@@ -1,0 +1,180 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Burn Up changes Arcanine's type: later moves are not modelled.",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "burnup",
+     "effectiveName": "Burn Up",
+     "effectiveType": "Fire",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 31,
+     "max": 37,
+     "minPercent": 13.191489361702127,
+     "maxPercent": 15.74468085106383,
+     "rolls": [
+      31,
+      31,
+      31,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      34,
+      34,
+      36,
+      36,
+      36,
+      36,
+      37
+     ],
+     "ohkoChance": 0,
+     "description": "Burn Up: 31–37 HP (13.2–15.7% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Flash Fire has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Burn Up removes its Fire type",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 204,
+      "high": 198,
+      "average": 201.125,
+      "min": 198,
+      "max": 204,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 31,
+        "heals": []
+       },
+       "high": {
+        "dealt": 37,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 72,
+     "max": 86,
+     "minPercent": 43.63636363636363,
+     "maxPercent": 52.121212121212125,
+     "rolls": [
+      72,
+      72,
+      74,
+      74,
+      74,
+      78,
+      78,
+      78,
+      78,
+      80,
+      80,
+      80,
+      84,
+      84,
+      84,
+      86
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 72–86 HP (43.6–52.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.0859375,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 93,
+      "high": 79,
+      "average": 86.5,
+      "min": 79,
+      "max": 93,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 72,
+        "heals": []
+       },
+       "high": {
+        "dealt": 86,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.8519000000001142,
+ "preflight": []
+}

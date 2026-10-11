@@ -1,0 +1,654 @@
+
+### FU1 swamp (sv): getStat('spe') after the combined Grass Pledge; the order of the two foes after it  (1 runs)
+ turn 1 after moves: p1a Venusaur [88:1] | p1b Blastoise [154:1] | p2a FoeA [166:1] | p2b FoeChomp [183:1]
+ turn 1 end of turn: p1a Venusaur [88:1] | p1b Blastoise [154:1] | p2a FoeA [166:1] | p2b FoeChomp [183:1]
+   [1] T1 end: p1a spe 132 (speed 132), p1b spe 98 (speed 98), p2a spe 12 (speed 12), p2b spe 32 (speed 32)
+   [1] T1 moves: p1a spe 132 (speed 132), p1b spe 98 (speed 98), p2a spe 12 (speed 12), p2b spe 32 (speed 32)
+   1  |move|p1a: Venusaur|Grass Pledge|p2a: FoeA
+   1  |-waiting|p1a: Venusaur|p1b: Blastoise
+   1  |move|p1b: Blastoise|Water Pledge|p2a: FoeA|[from] move: Grass Pledge
+   1  |-damage|p2a: FoeA|166/235
+   1  |-sidestart|p2: Player 2|Grass Pledge
+   1  |move|p2b: FoeChomp|Dragon Claw|p1a: Venusaur
+   1  |-damage|p1a: Venusaur|88/155
+   1  |move|p2a: FoeA|Splash|p2a: FoeA
+   1  |turn|2
+
+### FU1b swamp: the foe's Gyro Ball after it (sv), lowest rolls  (1 runs)
+ turn 1 after moves: p1a Venusaur [65:1] | p1b Blastoise [154:1] | p2a FoeA [166:1] | p2b FoeGyro [142:1]
+ turn 1 end of turn: p1a Venusaur [65:1] | p1b Blastoise [154:1] | p2a FoeA [166:1] | p2b FoeGyro [142:1]
+   [1] T1 end: p1a:Venusaur(65/155) 0 Venusaur/overgrow | p1b:Blastoise(154/154) 0 Blastoise/torrent | p2a:FoeA(166/235) 0 Snorlax/thickfat | p2b:FoeGyro(142/142) 0 Bronzong/levitate
+   [1] T1 moves: p1a:Venusaur(65/155) 0 Venusaur/overgrow | p1b:Blastoise(154/154) 0 Blastoise/torrent | p2a:FoeA(166/235) 0 Snorlax/thickfat | p2b:FoeGyro(142/142) 0 Bronzong/levitate
+   1  |move|p1a: Venusaur|Grass Pledge|p2a: FoeA
+   1  |-waiting|p1a: Venusaur|p1b: Blastoise
+   1  |move|p1b: Blastoise|Water Pledge|p2a: FoeA|[from] move: Grass Pledge
+   1  |-damage|p2a: FoeA|166/235
+   1  |-sidestart|p2: Player 2|Grass Pledge
+   1  |move|p2b: FoeGyro|Gyro Ball|p1a: Venusaur
+   1  |-damage|p1a: Venusaur|65/155
+   1  |move|p2a: FoeA|Splash|p2a: FoeA
+   1  |turn|2
+
+== FU2 Copycat moving first in turn 2: copies the last move of turn 1 (FoeB's Tackle)
+  |move|p1a: Clefable|Splash|p1a: Clefable
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2a: FoeA|Splash|p2a: FoeA
+  |move|p2b: FoeB|Tackle|p1a: Clefable
+  |-damage|p1a: Clefable|137/170
+  |-damage|p1a: Clefable|137/170
+  |turn|2
+  |move|p1a: Clefable|Copycat|p1a: Clefable
+  |move|p1a: Clefable|Tackle|p2a: FoeA|[from] move: Copycat
+  |-damage|p2a: FoeA|218/235
+  |-damage|p2a: FoeA|218/235
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2a: FoeA|Splash|p2a: FoeA
+  |move|p2b: FoeB|Splash|p2b: FoeB
+  |turn|3
+
+== FU3 Instruct on a slower ally that has not moved: its turn-1 Earthquake again, then its own Body Slam
+  |move|p1a: Oranguru|Splash|p1a: Oranguru
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p2a: Lax1|Splash|p2a: Lax1
+  |move|p1b: Ally|Earthquake|p2a: Lax1|[spread] p1a,p2a,p2b
+  |-damage|p1a: Oranguru|128/165
+  |-damage|p1a: Oranguru|128/165
+  |-damage|p2a: Lax1|191/235
+  |-damage|p2a: Lax1|191/235
+  |-damage|p2b: Lax2|191/235
+  |-damage|p2b: Lax2|191/235
+  |turn|2
+  |move|p1a: Oranguru|Instruct|p1b: Ally
+  |-singleturn|p1b: Ally|move: Instruct|[of] p1a: Oranguru
+  |move|p1b: Ally|Earthquake|p2a: Lax1|[spread] p1a,p2a,p2b
+  |-damage|p1a: Oranguru|91/165
+  |-damage|p1a: Oranguru|91/165
+  |-damage|p2a: Lax1|147/235
+  |-damage|p2a: Lax1|147/235
+  |-damage|p2b: Lax2|147/235
+  |-damage|p2b: Lax2|147/235
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p2a: Lax1|Splash|p2a: Lax1
+  |move|p1b: Ally|Body Slam|p2a: Lax1
+  |-damage|p2a: Lax1|72/235
+  |-damage|p2a: Lax1|72/235
+  |turn|3
+
+### FU4 Metal Burst rounding: x1.5 of the damage (lowest rolls)  (2 runs)
+ turn 1 after moves: p1a Bastiodon [155:1] | p1b Lax1 [235:1] | p2a Garchomp [165:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Bastiodon [155:1] | p1b Lax1 [235:1] | p2a Garchomp [165:1] | p2b Lax2 [235:1]
+   [1] T1 end: p1a:Bastiodon(155/167) 0 Bastiodon/sturdy | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Garchomp(165/183) 0 Garchomp/roughskin | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Bastiodon(155/167) 0 Bastiodon/sturdy | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Garchomp(165/183) 0 Garchomp/roughskin | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   1  |move|p2a: Garchomp|Dragon Pulse|p1a: Bastiodon
+   1  |-resisted|p1a: Bastiodon
+   1  |-damage|p1a: Bastiodon|155/167
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p1a: Bastiodon|Metal Burst|p2a: Garchomp
+   1  |-damage|p2a: Garchomp|165/183
+   1  |turn|2
+
+### FU4 Metal Burst rounding: x1.5 of the damage (highest rolls)  (2 runs)
+ turn 1 after moves: p1a Bastiodon [152:1] | p1b Lax1 [235:1] | p2a Garchomp [161:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Bastiodon [152:1] | p1b Lax1 [235:1] | p2a Garchomp [161:1] | p2b Lax2 [235:1]
+   [1] T1 end: p1a:Bastiodon(152/167) 0 Bastiodon/sturdy | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Garchomp(161/183) 0 Garchomp/roughskin | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Bastiodon(152/167) 0 Bastiodon/sturdy | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Garchomp(161/183) 0 Garchomp/roughskin | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   1  |move|p2a: Garchomp|Dragon Pulse|p1a: Bastiodon
+   1  |-resisted|p1a: Bastiodon
+   1  |-damage|p1a: Bastiodon|152/167
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p1a: Bastiodon|Metal Burst|p2a: Garchomp
+   1  |-damage|p2a: Garchomp|161/183
+   1  |turn|2
+
+### FU5 Fusion: Flare, a fully paralysed foe in between (Ninjask), then Bolt (lowest rolls)  (2 runs)
+ turn 1 after moves: p1a Reshiram [175:1] | p1b Zekrom [175:1] | p2a Ninjask [136:1] | p2b Lax2 [0:0.25 46:0.75]
+ turn 1 end of turn: p1a Reshiram [175:1] | p1b Zekrom [175:1] | p2a Ninjask [136:1] | p2b Lax2 [46:0.75] | p2b Bench [235:0.25]
+   [0.25] T1 end: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Ninjask(136/136 par) 0 Ninjask/infiltrator | p2b:Bench(235/235) 0 Snorlax/thickfat
+   [0.75] T1 end: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Ninjask(136/136 par) atk+2 Ninjask/infiltrator | p2b:Lax2(46/235) 0 Snorlax/thickfat
+   [0.25] T1 moves: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Ninjask(136/136 par) 0 Ninjask/infiltrator | p2b:Lax2(0/235) 0 Snorlax/thickfat
+   [0.75] T1 moves: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Ninjask(136/136 par) atk+2 Ninjask/infiltrator | p2b:Lax2(46/235) 0 Snorlax/thickfat
+   1  |move|p1a: Reshiram|Fusion Flare|p2b: Lax2
+   1  |-damage|p2b: Lax2|160/235
+   0.75  |move|p2a: Ninjask|Swords Dance|p2a: Ninjask
+   0.75  |-boost|p2a: Ninjask|atk|2
+   1  |move|p1b: Zekrom|Fusion Bolt|p2b: Lax2
+   0.75  |-damage|p2b: Lax2|46/235
+   0.75  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |turn|2
+   0.25  |cant|p2a: Ninjask|par
+   0.25  |-damage|p2b: Lax2|0 fnt
+   0.25  |switch|p2b: Bench|Snorlax, L50, M|235/235
+
+### FU6 Dancer after the Dancer copy: Fusion Flare? (n/a) - a Dancer copying Fiery Dance between Fusion Flare and Bolt (sv)  (1 runs)
+ turn 1 after moves: p1a Reshiram [175:1] | p1b Zekrom [175:1] | p2a Oricorio [150:1] | p2b Lax2 [46:1]
+ turn 1 end of turn: p1a Reshiram [175:1] | p1b Zekrom [175:1] | p2a Oricorio [150:1] | p2b Lax2 [46:1]
+   [1] T1 end: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Oricorio(150/150) 0 Oricorio/dancer | p2b:Lax2(46/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Reshiram(175/175) 0 Reshiram/turboblaze | p1b:Zekrom(175/175) 0 Zekrom/teravolt | p2a:Oricorio(150/150) 0 Oricorio/dancer | p2b:Lax2(46/235) 0 Snorlax/thickfat
+   1  |move|p1a: Reshiram|Fusion Flare|p2b: Lax2
+   1  |-damage|p2b: Lax2|160/235
+   1  |move|p2a: Oricorio|Splash|p2a: Oricorio
+   1  |move|p1b: Zekrom|Fusion Bolt|p2b: Lax2
+   1  |-damage|p2b: Lax2|46/235
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |turn|2
+
+### FU7 Beak Blast: Dual Wingbeat into Beak Blast with a Guts attacker (no halving, Atk x1.5 after the burn)  (2 runs)
+ turn 1 after moves: p1a Toucannon [95:1] | p1b Lax1 [235:1] | p2a Ursaring [81:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Toucannon [95:1] | p1b Lax1 [235:1] | p2a Ursaring [71:1] | p2b Lax2 [235:1]
+   [1] T1 end: p1a:Toucannon(95/155) 0 Toucannon/keeneye | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Ursaring(71/165 brn) 0 Ursaring/guts | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Toucannon(95/155) 0 Toucannon/keeneye | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Ursaring(81/165 brn) 0 Ursaring/guts | p2b:Lax2(235/235) 0 Snorlax/thickfat
+   1  |-singleturn|p1a: Toucannon|move: Beak Blast
+   1  |move|p2a: Ursaring|Dual Wingbeat|p1a: Toucannon
+   1  |-damage|p1a: Toucannon|131/155
+   1  |-status|p2a: Ursaring|brn
+   1  |-damage|p1a: Toucannon|95/155
+   1  |-hitcount|p1a: Toucannon|2
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p1a: Toucannon|Beak Blast|p2a: Ursaring
+   1  |-damage|p2a: Ursaring|81/165 brn
+   1  |-damage|p2a: Ursaring|71/165 brn|[from] brn
+   1  |turn|2
+
+== RT1 two Lightning Rods at one Speed, both foes of the attacker (lead order p2a then p2b): who takes Thunderbolt
+  start: p1a Jolteon effectOrder 0, p1b Lax1 effectOrder 1, p2a RodA effectOrder 2, p2b RodB effectOrder 3
+  |
+  |t:|1791673356
+  |move|p1a: Jolteon|Thunderbolt|p2a: RodA
+  |-ability|p2a: RodA|Lightning Rod|boost
+  |-boost|p2a: RodA|spa|1
+  |move|p2a: RodA|Splash|p2a: RodA
+  |-nothing
+  |move|p2b: RodB|Splash|p2b: RodB
+  |-nothing
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-nothing
+  |
+  |upkeep
+  |turn|2
+
+== RT2 two Lightning Rods at one Speed: the attacker's ally and a foe (p1b and p2a): who takes it
+  start: p1a Jolteon effectOrder 0, p1b RodAlly effectOrder 1, p2a RodFoe effectOrder 2, p2b Lax2 effectOrder 3
+  |
+  |t:|1791673356
+  |move|p1a: Jolteon|Thunderbolt|p1b: RodAlly
+  |-activate|p1b: RodAlly|ability: Lightning Rod
+  |-ability|p1b: RodAlly|Lightning Rod|boost
+  |-boost|p1b: RodAlly|spa|1
+  |move|p1b: RodAlly|Splash|p1b: RodAlly
+  |-nothing
+  |move|p2a: RodFoe|Splash|p2a: RodFoe
+  |-nothing
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |-nothing
+  |
+  |upkeep
+  |turn|2
+
+== RT3 the same, but p2a switched out and back (a newer effectOrder for RodFoe)
+  start: p1a Jolteon effectOrder 0, p1b RodAlly effectOrder 1, p2a RodFoe effectOrder 2, p2b Lax2 effectOrder 3
+  |
+  |t:|1791673356
+  |split|p2
+  |switch|p2a: Swap|Snorlax, L50, F|235/235
+  |switch|p2a: Swap|Snorlax, L50, F|235/235
+  |move|p1a: Jolteon|Splash|p1a: Jolteon
+  |-nothing
+  |move|p1b: RodAlly|Splash|p1b: RodAlly
+  |-nothing
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |-nothing
+  |
+  |upkeep
+  |turn|2
+  |
+  |t:|1791673356
+  |split|p2
+  |switch|p2a: RodFoe|Raichu, L50, M|135/135
+  |switch|p2a: RodFoe|Raichu, L50, M|135/135
+  |move|p1a: Jolteon|Splash|p1a: Jolteon
+  |-nothing
+  |move|p1b: RodAlly|Splash|p1b: RodAlly
+  |-nothing
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |-nothing
+  |
+  |upkeep
+  |turn|3
+  |
+  |t:|1791673356
+  |move|p1a: Jolteon|Thunderbolt|p1b: RodAlly
+  |-activate|p1b: RodAlly|ability: Lightning Rod
+  |-ability|p1b: RodAlly|Lightning Rod|boost
+  |-boost|p1b: RodAlly|spa|1
+  |move|p1b: RodAlly|Splash|p1b: RodAlly
+  |-nothing
+  |move|p2a: RodFoe|Splash|p2a: RodFoe
+  |-nothing
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |-nothing
+  |
+  |upkeep
+  |turn|4
+
+== RT4 two Follow Me users at one Speed on the same side (both centres): who takes the move
+  start: p1a Garchomp effectOrder 0, p1b Lax1 effectOrder 1, p2a FMA effectOrder 2, p2b FMB effectOrder 3
+  |
+  |t:|1791673356
+  |move|p2a: FMA|Follow Me|p2a: FMA
+  |-singleturn|p2a: FMA|move: Follow Me
+  |move|p2b: FMB|Follow Me|p2b: FMB
+  |-singleturn|p2b: FMB|move: Follow Me
+  |move|p1a: Garchomp|Dragon Claw|p2a: FMA
+  |debug|Follow Me redirected target of move
+  |-immune|p2a: FMA
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-nothing
+  |
+  |upkeep
+  |turn|2
+
+== TR1 Trace at the lead with two different foe abilities (one decision: the first)
+  |switch|p1a: Gardevoir|Gardevoir, L50, M|143/143
+  |switch|p1a: Gardevoir|Gardevoir, L50, M|143/143
+  |switch|p1b: Lax1|Snorlax, L50, F|235/235
+  |switch|p1b: Lax1|Snorlax, L50, F|235/235
+  |switch|p2a: Garchomp|Garchomp, L50, M|183/183
+  |switch|p2a: Garchomp|Garchomp, L50, M|183/183
+  |switch|p2b: Hydreigon|Hydreigon, L50, F|167/167
+  |switch|p2b: Hydreigon|Hydreigon, L50, F|167/167
+  |-ability|p1a: Gardevoir|Rough Skin|Trace|[from] ability: Trace|[of] p2a: Garchomp
+  |turn|1
+  state: p1a:Gardevoir(143/143) 0 Gardevoir/roughskin | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Garchomp(183/183) 0 Garchomp/roughskin | p2b:Hydreigon(167/167) 0 Hydreigon/levitate
+
+### TR2 Trace at the lead: the copy over the decisions (Rough Skin / Levitate)  (1 runs)
+ turn 1 after moves: p1a Gardevoir [143:1] | p1b Lax1 [235:1] | p2a Garchomp [183:1] | p2b Hydreigon [167:1]
+ turn 1 end of turn: p1a Gardevoir [143:1] | p1b Lax1 [235:1] | p2a Garchomp [183:1] | p2b Hydreigon [167:1]
+   [1] T1 end: trace copied roughskin
+   [1] T1 moves: trace copied roughskin
+   1  |move|p2a: Garchomp|Splash|p2a: Garchomp
+   1  |move|p2b: Hydreigon|Splash|p2b: Hydreigon
+   1  |move|p1a: Gardevoir|Splash|p1a: Gardevoir
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+== TR3 Trace copying Intimidate at the lead: both foes -1 Atk (with Defiant)
+  |switch|p1a: Gardevoir|Gardevoir, L50, M|143/143
+  |switch|p1a: Gardevoir|Gardevoir, L50, M|143/143
+  |switch|p1b: Lax1|Snorlax, L50, F|235/235
+  |switch|p1b: Lax1|Snorlax, L50, F|235/235
+  |switch|p2a: Incineroar|Incineroar, L50, M|170/170
+  |switch|p2a: Incineroar|Incineroar, L50, M|170/170
+  |switch|p2b: Kingambit|Kingambit, L50, F|175/175
+  |switch|p2b: Kingambit|Kingambit, L50, F|175/175
+  |-ability|p1a: Gardevoir|Intimidate|Trace|[from] ability: Trace|[of] p2a: Incineroar
+  |-ability|p1a: Gardevoir|Intimidate|boost
+  |-unboost|p2a: Incineroar|atk|1
+  |-unboost|p2b: Kingambit|atk|1
+  |-ability|p2b: Kingambit|Defiant|boost
+  |-boost|p2b: Kingambit|atk|2
+  |-ability|p2a: Incineroar|Intimidate|boost
+  |-unboost|p1a: Gardevoir|atk|1
+  |-unboost|p1b: Lax1|atk|1
+  |turn|1
+  state: p1a:Gardevoir(143/143) atk-1 Gardevoir/intimidate | p1b:Lax1(235/235) atk-1 Snorlax/thickfat | p2a:Incineroar(170/170) atk-1 Incineroar/intimidate | p2b:Kingambit(175/175) atk+1 Kingambit/defiant
+
+### TR4 Trace with Intimidate and Defiant foes over the decisions: the copy and the stages  (1 runs)
+ turn 1 after moves: p1a Gardevoir [143:1] | p1b Lax1 [235:1] | p2a Incineroar [170:1] | p2b Kingambit [175:1]
+ turn 1 end of turn: p1a Gardevoir [143:1] | p1b Lax1 [235:1] | p2a Incineroar [170:1] | p2b Kingambit [175:1]
+   [1] T1 end: p1a:Gardevoir(143/143) atk-1 Gardevoir/intimidate | p1b:Lax1(235/235) atk-1 Snorlax/thickfat | p2a:Incineroar(170/170) atk-1 Incineroar/intimidate | p2b:Kingambit(175/175) atk+1 Kingambit/defiant
+   [1] T1 moves: p1a:Gardevoir(143/143) atk-1 Gardevoir/intimidate | p1b:Lax1(235/235) atk-1 Snorlax/thickfat | p2a:Incineroar(170/170) atk-1 Incineroar/intimidate | p2b:Kingambit(175/175) atk+1 Kingambit/defiant
+   1  |move|p1a: Gardevoir|Splash|p1a: Gardevoir
+   1  |move|p2a: Incineroar|Splash|p2a: Incineroar
+   1  |move|p2b: Kingambit|Splash|p2b: Kingambit
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+== DL1 Download at the lead vs Dauntless Shield Zamazenta (slower than Porygon-Z) and a Snorlax
+  |switch|p1a: Porygon-Z|Porygon-Z, L50|160/160
+  |switch|p1a: Porygon-Z|Porygon-Z, L50|160/160
+  |switch|p1b: Lax1|Snorlax, L50, M|235/235
+  |switch|p1b: Lax1|Snorlax, L50, M|235/235
+  |switch|p2a: Zamazenta|Zamazenta, L50|167/167
+  |switch|p2a: Zamazenta|Zamazenta, L50|167/167
+  |switch|p2b: Lax2|Snorlax, L50, F|235/235
+  |switch|p2b: Lax2|Snorlax, L50, F|235/235
+  |-ability|p2a: Zamazenta|Dauntless Shield|boost
+  |-boost|p2a: Zamazenta|def|1
+  |-ability|p1a: Porygon-Z|Download|boost
+  |-boost|p1a: Porygon-Z|spa|1
+  state: p1a:Porygon-Z(160/160) spa+1 Porygon-Z/download | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Zamazenta(167/167) def+1 Zamazenta/dauntlessshield | p2b:Lax2(235/235) 0 Snorlax/thickfat
+
+== DL2 Download at the lead vs a faster Dauntless Shield Zamazenta
+  |switch|p1a: Porygon-Z|Porygon-Z, L50|160/160
+  |switch|p1a: Porygon-Z|Porygon-Z, L50|160/160
+  |switch|p1b: Lax1|Snorlax, L50, M|235/235
+  |switch|p1b: Lax1|Snorlax, L50, M|235/235
+  |switch|p2a: Zamazenta|Zamazenta, L50|167/167
+  |switch|p2a: Zamazenta|Zamazenta, L50|167/167
+  |switch|p2b: Lax2|Snorlax, L50, F|235/235
+  |switch|p2b: Lax2|Snorlax, L50, F|235/235
+  |-ability|p2a: Zamazenta|Dauntless Shield|boost
+  |-boost|p2a: Zamazenta|def|1
+  |-ability|p1a: Porygon-Z|Download|boost
+  |-boost|p1a: Porygon-Z|spa|1
+  state: p1a:Porygon-Z(160/160) spa+1 Porygon-Z/download | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Zamazenta(167/167) def+1 Zamazenta/dauntlessshield | p2b:Lax2(235/235) 0 Snorlax/thickfat
+
+### DL3 Download at the lead with a Speed tie against Dauntless Shield: over the decisions  (1 runs)
+ turn 1 after moves: p1a Porygon-Z [160:1] | p1b Lax1 [235:1] | p2a Zamazenta [167:1] | p2b Lax2 [235:1]
+ turn 1 end of turn: p1a Porygon-Z [160:1] | p1b Lax1 [235:1] | p2a Zamazenta [167:1] | p2b Lax2 [235:1]
+   [1] T1 end: Porygon-Z spa+1; Zamazenta def+1
+   [1] T1 moves: Porygon-Z spa+1; Zamazenta def+1
+   1  |move|p2a: Zamazenta|Splash|p2a: Zamazenta
+   1  |move|p1a: Porygon-Z|Splash|p1a: Porygon-Z
+   1  |move|p2b: Lax2|Splash|p2b: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+
+== UB1 sv: a paralysed Unburden Sneasler with Lum Berry, slower than a foe until the Berry
+  |move|p1a: Sneasler|Tackle|p2a: Garchomp
+  |move|p2a: Garchomp|Dragon Claw|p1a: Sneasler
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== UB1 usum: a paralysed Unburden Sneasler with Lum Berry, slower than a foe until the Berry
+  |move|p1a: Hawlucha|Tackle|p2a: Garchomp
+  |move|p2a: Garchomp|Dragon Claw|p1a: Hawlucha
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== UB1 champions: a paralysed Unburden Sneasler with Lum Berry, slower than a foe until the Berry
+  |move|p1a: Sneasler|Tackle|p2a: Garchomp
+  |move|p2a: Garchomp|Dragon Claw|p1a: Sneasler
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== AC1 Tailwind with a Wind Rider ally (+1 Atk) and a Wind Power ally (charged); then the Wind Power holder's Thunderbolt
+  |move|p1a: Talonflame|Tailwind|p1a: Talonflame
+  |-sidestart|p1: Player 1|move: Tailwind
+  |-start|p1b: Kilowattrel|Charge|Tailwind|[from] ability: Wind Power
+  |move|p1b: Kilowattrel|Thunderbolt|p2a: Brambleghast
+  |-resisted|p2a: Brambleghast
+  |-damage|p2a: Brambleghast|59/130
+  |-damage|p2a: Brambleghast|59/130
+  |-end|p1b: Kilowattrel|Charge|[silent]
+  |move|p2a: Brambleghast|Splash|p2a: Brambleghast
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== AC2 Tailwind on its own side with a Wind Rider ally; a foe's Wind Rider is not raised
+  |move|p1a: Talonflame|Tailwind|p1a: Talonflame
+  |-sidestart|p1: Player 1|move: Tailwind
+  |-ability|p1b: RiderAlly|Wind Rider|boost
+  |-boost|p1b: RiderAlly|atk|1
+  |move|p1b: RiderAlly|Splash|p1b: RiderAlly
+  |move|p2a: RiderFoe|Splash|p2a: RiderFoe
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== AC3 Trick Room with a Room Service holder (foe): -1 Spe, the item used (Unburden?)
+  |move|p2a: Hawlucha|Splash|p2a: Hawlucha
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Hatterene|Trick Room|p1a: Hatterene
+  |-fieldstart|move: Trick Room|[of] p1a: Hatterene
+  |-enditem|p2a: Hawlucha|Room Service
+  |-unboost|p2a: Hawlucha|spe|1|[from] item: Room Service
+  |turn|2
+
+== AC4 Trick Room ending (used while up) with Room Service: not used; Room Service with Contrary
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p2a: Malamar|Splash|p2a: Malamar
+  |move|p1a: Hatterene|Trick Room|p1a: Hatterene
+  |-fieldend|move: Trick Room
+  |turn|2
+
+== AC5 Gravity starting while Trick Room is up: a Room Service holder that came in under Magic Room? (any pseudo-weather change)
+  |move|p1a: Hatterene|Gravity|p1a: Hatterene
+  |-fieldstart|move: Gravity
+  |cant|p1b: Lax1|move: Gravity|Splash
+  |cant|p2b: Lax2|move: Gravity|Splash
+  |cant|p2a: Hawlucha|move: Gravity|Splash
+  |turn|2
+
+== AC6 Room Service with Eject Pack? n/a (one item); Room Service drop with White Herb n/a; Room Service on a Clear Body holder (self drop: not blocked)
+  |move|p2a: Metagross|Splash|p2a: Metagross
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Hatterene|Trick Room|p1a: Hatterene
+  |-fieldstart|move: Trick Room|[of] p1a: Hatterene
+  |-enditem|p2a: Metagross|Room Service
+  |-unboost|p2a: Metagross|spe|1|[from] item: Room Service
+  |turn|2
+
+== FC1 Sunny Day: a Protosynthesis ally activates (its highest stat) before its own move
+  |move|p1b: Great Tusk|Headlong Rush|p2a: Lax1
+  |-damage|p2a: Lax1|115/235
+  |-damage|p2a: Lax1|115/235
+  |-unboost|p1b: Great Tusk|def|1
+  |-unboost|p1b: Great Tusk|spd|1
+  |move|p1a: Torkoal|Sunny Day|p1a: Torkoal
+  |-weather|SunnyDay
+  |-activate|p1b: Great Tusk|ability: Protosynthesis
+  |-start|p1b: Great Tusk|protosynthesisatk
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p2a: Lax1|Splash|p2a: Lax1
+  |-weather|SunnyDay|[upkeep]
+  |turn|2
+
+== FC2 Electric Terrain: a Quark Drive foe activates; then Ice Spinner (ally) ends the terrain after its hit: Quark Drive ends
+  |move|p1b: Baxcalibur|Ice Spinner|p2a: Iron Hands
+  |-damage|p2a: Iron Hands|171/229
+  |-damage|p2a: Iron Hands|171/229
+  |move|p2a: Iron Hands|Splash|p2a: Iron Hands
+  |move|p1a: Pincurchin|Electric Terrain|p1a: Pincurchin
+  |-fieldstart|move: Electric Terrain
+  |-activate|p2a: Iron Hands|ability: Quark Drive
+  |-start|p2a: Iron Hands|quarkdriveatk
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |turn|2
+
+== FC3 sun ends at the end of turn (1 turn left): Protosynthesis with Booster Energy keeps the boost, the Energy used
+  |-weather|none
+  |turn|2
+
+== FC4 Grassy Terrain mid-turn: a Grassy Seed holder uses it (+1 Def); Psychic Terrain with Psychic Seed
+  |move|p2a: Hawlucha|Splash|p2a: Hawlucha
+  |move|p1a: Rillaboom|Grassy Terrain|p1a: Rillaboom
+  |-fieldstart|move: Grassy Terrain
+  |-enditem|p2a: Hawlucha|Grassy Seed
+  |-boost|p2a: Hawlucha|def|1|[from] item: Grassy Seed
+  |-enditem|p1b: SeedAlly|Grassy Seed
+  |-boost|p1b: SeedAlly|def|1|[from] item: Grassy Seed
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: SeedAlly|Splash|p1b: SeedAlly
+  |turn|2
+
+== FC5 Snowscape mid-turn: Eiscue-Noice gets its Ice Face back
+  |move|p2a: Eiscue|Splash|p2a: Eiscue
+  |move|p1a: Abomasnow|Snowscape|p1a: Abomasnow
+  |-weather|Snowscape
+  |-activate|p2a: Eiscue|ability: Ice Face
+  |detailschange|p2a: Eiscue|Eiscue, L50, M
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|Snowscape|[upkeep]
+  |turn|2
+
+== FC6 Mimicry (champions): Grassy Terrain mid-turn makes Stunfisk-Galar Grass type; Misty
+  |move|p1a: Rillaboom|Grassy Terrain|p1a: Rillaboom
+  |-fieldstart|move: Grassy Terrain
+  |-start|p2a: Stunfisk|typechange|Grass|[from] ability: Mimicry
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2a: Stunfisk|Splash|p2a: Stunfisk
+  |turn|2
+
+== FC7 Forecast (champions): Rain Dance mid-turn: Castform-Rainy
+  |move|p1a: Pelipper|Rain Dance|p1a: Pelipper
+  |-weather|RainDance
+  |-formechange|p2a: Castform|Castform-Rainy|[msg]|[from] ability: Forecast
+  |move|p2a: Castform|Splash|p2a: Castform
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|RainDance|[upkeep]
+  |turn|2
+
+== FC8 Flower Gift (swsh): Sunny Day mid-turn: Cherrim-Sunshine; the ally's Attack 1.5x after
+  |move|p2a: Cherrim|Splash|p2a: Cherrim
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p1a: Torkoal|Splash|p1a: Torkoal
+  |-weather|SunnyDay|[upkeep]
+  |turn|2
+
+== FC9 Protosynthesis already active from Booster Energy, then sun starts: no change; sun from a Drought? n/a
+  |move|p2a: Flutter Mane|Splash|p2a: Flutter Mane
+  |move|p1a: Torkoal|Sunny Day|p1a: Torkoal
+  |-weather|SunnyDay
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|SunnyDay|[upkeep]
+  |turn|2
+
+== FC10 Protosynthesis from sun, then Rain Dance replaces the sun: the boost ends (no Booster Energy)
+  |move|p2a: Flutter Mane|Splash|p2a: Flutter Mane
+  |move|p1a: Pelipper|Rain Dance|p1a: Pelipper
+  |-weather|RainDance
+  |-end|p2a: Flutter Mane|Protosynthesis
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|RainDance|[upkeep]
+  |turn|2
+
+### RW1 Present (sv): 40% 40 power, 30% 80, 10% 120, 20% heal a quarter (lowest rolls)  (10 runs)
+ turn 1 after moves: p1a Delibird [120:1] | p1b Lax1 [235:1] | p2a Lax2 [90:0.1 110:0.3 129:0.4 209:0.2] | p2b Lax3 [235:1]
+ turn 1 end of turn: p1a Delibird [120:1] | p1b Lax1 [235:1] | p2a Lax2 [90:0.1 110:0.3 129:0.4 209:0.2] | p2b Lax3 [235:1]
+   [0.3] T1 end: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(110/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.4] T1 end: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(129/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.2] T1 end: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(209/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.1] T1 end: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(90/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.3] T1 moves: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(110/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.4] T1 moves: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(129/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.2] T1 moves: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(209/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [0.1] T1 moves: p1a:Delibird(120/120) 0 Delibird/hustle | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(90/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   1  |move|p1a: Delibird|Present|p2a: Lax2
+   0.2  |-heal|p2a: Lax2|209/235
+   1  |move|p2b: Lax3|Splash|p2b: Lax3
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+   0.4  |-damage|p2a: Lax2|129/235
+   0.3  |-damage|p2a: Lax2|110/235
+   0.1  |-damage|p2a: Lax2|90/235
+
+### RW2 Magnitude (usum): 4-10 at 5/10/20/30/20/10/5 % (lowest rolls)  (8 runs)
+ turn 1 after moves: p1a Dugtrio [110:1] | p1b Lax1 [145:1] | p2a Lax2 [145:1] | p2b Lax3 [145:1]
+ turn 1 end of turn: p1a Dugtrio [110:1] | p1b Lax1 [145:1] | p2a Lax2 [145:1] | p2b Lax3 [145:1]
+   [1] T1 end: p1a:Dugtrio(110/110) 0 Dugtrio/arenatrap | p1b:Lax1(145/235) 0 Snorlax/thickfat | p2a:Lax2(145/235) 0 Snorlax/thickfat | p2b:Lax3(145/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Dugtrio(110/110) 0 Dugtrio/arenatrap | p1b:Lax1(145/235) 0 Snorlax/thickfat | p2a:Lax2(145/235) 0 Snorlax/thickfat | p2b:Lax3(145/235) 0 Snorlax/thickfat
+   0.5  |move|p1a: Dugtrio|Magnitude|p2a: Lax2|[spread] p1b,p2a,p2b
+   1  |-activate|p1a: Dugtrio|move: Magnitude|10
+   1  |-damage|p1b: Lax1|145/235
+   1  |-damage|p2a: Lax2|145/235
+   1  |-damage|p2b: Lax3|145/235
+   1  |move|p2b: Lax3|Splash|p2b: Lax3
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+   0.5  |move|p1a: Dugtrio|Magnitude|p2b: Lax3|[spread] p1b,p2a,p2b
+
+### RW3 Echoed Voice twice in one turn (ally then foe), first turn: both 40 (lowest rolls)  (1 runs)
+ turn 1 after moves: p1a Jigglypuff [157:1] | p1b Lax1 [235:1] | p2a PuffFoe [157:1] | p2b Lax3 [235:1]
+ turn 1 end of turn: p1a Jigglypuff [157:1] | p1b Lax1 [235:1] | p2a PuffFoe [157:1] | p2b Lax3 [235:1]
+   [1] T1 end: p1a:Jigglypuff(157/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:PuffFoe(157/190) 0 Jigglypuff/competitive | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Jigglypuff(157/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:PuffFoe(157/190) 0 Jigglypuff/competitive | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   1  |move|p1a: Jigglypuff|Echoed Voice|p2a: PuffFoe
+   1  |-damage|p2a: PuffFoe|157/190
+   1  |move|p2b: Lax3|Splash|p2b: Lax3
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |move|p2a: PuffFoe|Echoed Voice|p1a: Jigglypuff
+   1  |-damage|p1a: Jigglypuff|157/190
+   1  |turn|2
+
+### RW4 Echoed Voice on turn 2 after turn 1's: 80 (lowest rolls)  (1 runs)
+ turn 1 after moves: p1a Jigglypuff [190:1] | p1b Lax1 [235:1] | p2a Lax2 [223:1] | p2b Lax3 [235:1]
+ turn 2 after moves: p1a Jigglypuff [190:1] | p1b Lax1 [235:1] | p2a Lax2 [199:1] | p2b Lax3 [235:1]
+ turn 1 end of turn: p1a Jigglypuff [190:1] | p1b Lax1 [235:1] | p2a Lax2 [223:1] | p2b Lax3 [235:1]
+ turn 2 end of turn: p1a Jigglypuff [190:1] | p1b Lax1 [235:1] | p2a Lax2 [199:1] | p2b Lax3 [235:1]
+   [1] T1 end: p1a:Jigglypuff(190/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(223/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [1] T1 moves: p1a:Jigglypuff(190/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(223/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [1] T2 end: p1a:Jigglypuff(190/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(199/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   [1] T2 moves: p1a:Jigglypuff(190/190) 0 Jigglypuff/competitive | p1b:Lax1(235/235) 0 Snorlax/thickfat | p2a:Lax2(199/235) 0 Snorlax/thickfat | p2b:Lax3(235/235) 0 Snorlax/thickfat
+   1  |move|p1a: Jigglypuff|Echoed Voice|p2a: Lax2
+   1  |-damage|p2a: Lax2|223/235
+   1  |move|p2b: Lax3|Splash|p2b: Lax3
+   1  |move|p2a: Lax2|Splash|p2a: Lax2
+   1  |move|p1b: Lax1|Splash|p1b: Lax1
+   1  |turn|2
+   1  |-damage|p2a: Lax2|199/235
+   1  |turn|3
+
+### RW5 Retaliate the turn after an ally fainted: 140 (lowest rolls)  (1 runs)
+ turn 1 after moves: p1a Herdier [140:1] | p1b Doomed [0:1] | p2a Garchomp [183:1] | p2b Lax3 [235:1]
+ turn 2 after moves: p1a Herdier [69:1] | p1b Bench [235:1] | p2a Garchomp [114:1] | p2b Lax3 [235:1]
+ turn 1 end of turn: p1a Herdier [140:1] | p1b Bench [235:1] | p2a Garchomp [183:1] | p2b Lax3 [235:1]
+ turn 2 end of turn: p1a Herdier [69:1] | p1b Bench [235:1] | p2a Garchomp [114:1] | p2b Lax3 [235:1]
+   [1] T1 end: p1a:Herdier(140/140) 0 Herdier/intimidate | p1b:Bench(235/235) 0 Snorlax/thickfat | p2a:Garchomp(183/183) atk-1 Garchomp/roughskin | p2b:Lax3(235/235) atk-1 Snorlax/thickfat
+   [1] T1 moves: p1a:Herdier(140/140) 0 Herdier/intimidate | p1b:Doomed(0/235) 0 Snorlax/thickfat | p2a:Garchomp(183/183) atk-1 Garchomp/roughskin | p2b:Lax3(235/235) atk-1 Snorlax/thickfat
+   [1] T2 end: p1a:Herdier(69/140) 0 Herdier/intimidate | p1b:Bench(235/235) 0 Snorlax/thickfat | p2a:Garchomp(114/183) atk-1 Garchomp/roughskin | p2b:Lax3(235/235) atk-1 Snorlax/thickfat
+   [1] T2 moves: p1a:Herdier(69/140) 0 Herdier/intimidate | p1b:Bench(235/235) 0 Snorlax/thickfat | p2a:Garchomp(114/183) atk-1 Garchomp/roughskin | p2b:Lax3(235/235) atk-1 Snorlax/thickfat
+   1  |move|p2a: Garchomp|Dragon Claw|p1b: Doomed
+   1  |-damage|p1b: Doomed|0 fnt
+   1  |move|p1a: Herdier|Splash|p1a: Herdier
+   1  |move|p2b: Lax3|Splash|p2b: Lax3
+   1  |switch|p1b: Bench|Snorlax, L50, F|235/235
+   1  |turn|2
+   1  |move|p2a: Garchomp|Dragon Claw|p1a: Herdier
+   1  |-damage|p1a: Herdier|86/140
+   1  |move|p1a: Herdier|Retaliate|p2a: Garchomp
+   1  |-damage|p2a: Garchomp|114/183
+   1  |-damage|p1a: Herdier|69/140|[from] ability: Rough Skin|[of] p2a: Garchomp
+   1  |move|p1b: Bench|Splash|p1b: Bench
+   1  |turn|3
+
+== RW6 Pursuit (usum) with no switch: 40 power
+  |move|p1a: Tyranitar|Pursuit|p2a: Lax2
+  |-damage|p2a: Lax2|193/235
+  |-damage|p2a: Lax2|193/235
+  |move|p2b: Lax3|Splash|p2b: Lax3
+  |move|p2a: Lax2|Splash|p2a: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|Sandstorm|[upkeep]
+  |-damage|p2b: Lax3|221/235|[from] Sandstorm
+  |-damage|p2b: Lax3|221/235|[from] Sandstorm
+  |-damage|p2a: Lax2|179/235|[from] Sandstorm
+  |-damage|p2a: Lax2|179/235|[from] Sandstorm
+  |-damage|p1b: Lax1|221/235|[from] Sandstorm
+  |-damage|p1b: Lax1|221/235|[from] Sandstorm
+  |turn|2
+
+== RW7 Pursuit (usum) into a foe's U-turn: it hits the U-turner before it leaves, 80 power
+  |move|p2a: Scizor|U-turn|p1a: Tyranitar
+  |-supereffective|p1a: Tyranitar
+  |-damage|p1a: Tyranitar|83/175
+  |-damage|p1a: Tyranitar|83/175
+  |-activate|p2a: Scizor|move: Pursuit
+  |move|p1a: Tyranitar|Pursuit|p2a: Scizor|[from] move: Pursuit
+  |-damage|p2a: Scizor|87/145
+  |-damage|p2a: Scizor|87/145
+  |switch|p2a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |switch|p2a: Bench|Snorlax, L50, F|235/235|[from] U-turn
+  |move|p2b: Lax3|Splash|p2b: Lax3
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |-weather|Sandstorm|[upkeep]
+  |-damage|p2b: Lax3|221/235|[from] Sandstorm
+  |-damage|p2b: Lax3|221/235|[from] Sandstorm
+  |-damage|p1b: Lax1|221/235|[from] Sandstorm
+  |-damage|p1b: Lax1|221/235|[from] Sandstorm
+  |-damage|p2a: Bench|221/235|[from] Sandstorm
+  |-damage|p2a: Bench|221/235|[from] Sandstorm
+  |turn|2

@@ -1,0 +1,711 @@
+{
+ "id": "ZV14",
+ "title": "Z-Clear Smog resets nothing: the partner's later Close Combat meets +2 Defense",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "+2 Def stays.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 122,
+   "classes": 67,
+   "ms": 100,
+   "decisions": {
+    "fail:": 63,
+    "roll": 63,
+    "secondary": 56
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       219,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 219,
+     "min": 219,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       46,
+       0.00390625
+      ],
+      [
+       47,
+       0.0078125
+      ],
+      [
+       48,
+       0.0078125
+      ],
+      [
+       49,
+       0.02734375
+      ],
+      [
+       50,
+       0.01171875
+      ],
+      [
+       51,
+       0.0234375
+      ],
+      [
+       52,
+       0.0390625
+      ],
+      [
+       53,
+       0.02734375
+      ],
+      [
+       54,
+       0.0234375
+      ],
+      [
+       55,
+       0.0703125
+      ],
+      [
+       56,
+       0.0234375
+      ],
+      [
+       57,
+       0.0390625
+      ],
+      [
+       58,
+       0.046875
+      ],
+      [
+       59,
+       0.0390625
+      ],
+      [
+       60,
+       0.02734375
+      ],
+      [
+       61,
+       0.0859375
+      ],
+      [
+       62,
+       0.0234375
+      ],
+      [
+       63,
+       0.05078125
+      ],
+      [
+       64,
+       0.05859375
+      ],
+      [
+       65,
+       0.0390625
+      ],
+      [
+       66,
+       0.03125
+      ],
+      [
+       67,
+       0.08984375
+      ],
+      [
+       68,
+       0.0234375
+      ],
+      [
+       69,
+       0.046875
+      ],
+      [
+       70,
+       0.0390625
+      ],
+      [
+       71,
+       0.0234375
+      ],
+      [
+       72,
+       0.015625
+      ],
+      [
+       73,
+       0.0390625
+      ],
+      [
+       75,
+       0.015625
+      ]
+     ],
+     "koChance": 0,
+     "average": 61.5,
+     "min": 46,
+     "max": 75,
+     "modeTieUp": 67,
+     "modeTieDown": 67
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clearsmog",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Acid Downpour": 1
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 114,
+       "dmgMax": 134,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Hariyama|def|1": 1,
+      "|-unboost|p1b: Hariyama|spd|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       219,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 219,
+     "min": 219,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       75,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 75,
+     "min": 75,
+     "max": 75,
+     "modeTieUp": 75,
+     "modeTieDown": 75
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clearsmog",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 46,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Acid Downpour": 1
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 114,
+       "dmgMax": 114,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Hariyama|def|1": 1,
+      "|-unboost|p1b: Hariyama|spd|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       219,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 219,
+     "min": 219,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       46,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 46,
+     "min": 46,
+     "max": 46,
+     "modeTieUp": 46,
+     "modeTieDown": 46
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "clearsmog",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Acid Downpour": 1
+     }
+    },
+    "own-right": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 134,
+       "dmgMax": 134,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Hariyama|def|1": 1,
+      "|-unboost|p1b: Hariyama|spd|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 219,
+   "maximum": 219,
+   "low": 219,
+   "high": 219,
+   "average": 219,
+   "min": 219,
+   "max": 219,
+   "koChance": 0,
+   "dist": [
+    [
+     219,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 75,
+   "high": 46,
+   "average": 61.5,
+   "min": 46,
+   "max": 75,
+   "koChance": 0,
+   "dist": [
+    [
+     46,
+     0.00390625
+    ],
+    [
+     47,
+     0.0078125
+    ],
+    [
+     48,
+     0.0078125
+    ],
+    [
+     49,
+     0.02734375
+    ],
+    [
+     50,
+     0.01171875
+    ],
+    [
+     51,
+     0.0234375
+    ],
+    [
+     52,
+     0.0390625
+    ],
+    [
+     53,
+     0.02734375
+    ],
+    [
+     54,
+     0.0234375
+    ],
+    [
+     55,
+     0.0703125
+    ],
+    [
+     56,
+     0.0234375
+    ],
+    [
+     57,
+     0.0390625
+    ],
+    [
+     58,
+     0.046875
+    ],
+    [
+     59,
+     0.0390625
+    ],
+    [
+     60,
+     0.02734375
+    ],
+    [
+     61,
+     0.0859375
+    ],
+    [
+     62,
+     0.0234375
+    ],
+    [
+     63,
+     0.05078125
+    ],
+    [
+     64,
+     0.05859375
+    ],
+    [
+     65,
+     0.0390625
+    ],
+    [
+     66,
+     0.03125
+    ],
+    [
+     67,
+     0.08984375
+    ],
+    [
+     68,
+     0.0234375
+    ],
+    [
+     69,
+     0.046875
+    ],
+    [
+     70,
+     0.0390625
+    ],
+    [
+     71,
+     0.0234375
+    ],
+    [
+     72,
+     0.015625
+    ],
+    [
+     73,
+     0.0390625
+    ],
+    [
+     75,
+     0.015625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

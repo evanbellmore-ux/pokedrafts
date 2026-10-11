@@ -1,0 +1,1665 @@
+{
+ "id": "F2-CC3-usum",
+ "title": "USUM: a Sheer Force Poison Jab into Kecleon: no type change; Chansey's later Psychic 1x",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "A Sheer Force move with secondaries runs no AfterMoveSecondary (sim/battle-actions.ts:811-816): Kecleon keeps Normal (a Poison type would take Psychic 2x).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 112,
+   "classes": 69,
+   "ms": 80,
+   "decisions": {
+    "fail:": 55,
+    "roll": 55,
+    "secondary": 44
+   },
+   "slots": {
+    "own-left": {
+     "species": "Nidoking",
+     "start": 156,
+     "maximum": 156,
+     "dist": [
+      [
+       156,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 156,
+     "min": 156,
+     "max": 156,
+     "modeTieUp": 156,
+     "modeTieDown": 156,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Chansey",
+     "start": 325,
+     "maximum": 325,
+     "dist": [
+      [
+       325,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 325,
+     "min": 325,
+     "max": 325,
+     "modeTieUp": 325,
+     "modeTieDown": 325,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kecleon",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       22,
+       0.00390625
+      ],
+      [
+       23,
+       0.01953125
+      ],
+      [
+       24,
+       0.02734375
+      ],
+      [
+       25,
+       0.04296875
+      ],
+      [
+       26,
+       0.0625
+      ],
+      [
+       27,
+       0.06640625
+      ],
+      [
+       28,
+       0.05859375
+      ],
+      [
+       29,
+       0.0625
+      ],
+      [
+       30,
+       0.06640625
+      ],
+      [
+       31,
+       0.05859375
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       33,
+       0.06640625
+      ],
+      [
+       34,
+       0.05859375
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0703125
+      ],
+      [
+       37,
+       0.07421875
+      ],
+      [
+       38,
+       0.06640625
+      ],
+      [
+       39,
+       0.0546875
+      ],
+      [
+       40,
+       0.015625
+      ]
+     ],
+     "koChance": 0,
+     "average": 31.875,
+     "min": 22,
+     "max": 40,
+     "modeTieUp": 37,
+     "modeTieDown": 37,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "poisonjab",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 0.0625,
+       "damage:-82": 0.125,
+       "damage:-84": 0.125,
+       "damage:-85": 0.0625,
+       "damage:-87": 0.125,
+       "damage:-88": 0.0625,
+       "damage:-90": 0.125,
+       "damage:-91": 0.0625,
+       "damage:-93": 0.125,
+       "damage:-94": 0.0625,
+       "damage:-96": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 14,
+       "dmgMax": 17,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Kecleon|typechange|Psychic|[from] ability: Color Change": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-14": 0.25,
+       "start:typechange": 1,
+       "damage:-15": 0.375,
+       "damage:-16": 0.3125,
+       "damage:-17": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -17,
+       "max": -14
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -17,
+       "max": -14,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 44,
+    "classes": 44,
+    "ms": 80,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Nidoking",
+      "start": null,
+      "maximum": 156,
+      "dist": [
+       [
+        156,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 156,
+      "min": 156,
+      "max": 156,
+      "modeTieUp": 156,
+      "modeTieDown": 156,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Chansey",
+      "start": null,
+      "maximum": 325,
+      "dist": [
+       [
+        325,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 325,
+      "min": 325,
+      "max": 325,
+      "modeTieUp": 325,
+      "modeTieDown": 325,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kecleon",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        22,
+        0.00390625
+       ],
+       [
+        23,
+        0.01953125
+       ],
+       [
+        24,
+        0.02734375
+       ],
+       [
+        25,
+        0.04296875
+       ],
+       [
+        26,
+        0.0625
+       ],
+       [
+        27,
+        0.06640625
+       ],
+       [
+        28,
+        0.05859375
+       ],
+       [
+        29,
+        0.0625
+       ],
+       [
+        30,
+        0.06640625
+       ],
+       [
+        31,
+        0.05859375
+       ],
+       [
+        32,
+        0.0625
+       ],
+       [
+        33,
+        0.06640625
+       ],
+       [
+        34,
+        0.05859375
+       ],
+       [
+        35,
+        0.0625
+       ],
+       [
+        36,
+        0.0703125
+       ],
+       [
+        37,
+        0.07421875
+       ],
+       [
+        38,
+        0.06640625
+       ],
+       [
+        39,
+        0.0546875
+       ],
+       [
+        40,
+        0.015625
+       ]
+      ],
+      "koChance": 0,
+      "average": 31.875,
+      "min": 22,
+      "max": 40,
+      "modeTieUp": 37,
+      "modeTieDown": 37,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Nidoking",
+     "start": 156,
+     "maximum": 156,
+     "dist": [
+      [
+       156,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 156,
+     "min": 156,
+     "max": 156,
+     "modeTieUp": 156,
+     "modeTieDown": 156,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Chansey",
+     "start": 325,
+     "maximum": 325,
+     "dist": [
+      [
+       325,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 325,
+     "min": 325,
+     "max": 325,
+     "modeTieUp": 325,
+     "modeTieDown": 325,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kecleon",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       40,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 40,
+     "min": 40,
+     "max": 40,
+     "modeTieUp": 40,
+     "modeTieDown": 40,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "poisonjab",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -81,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 14,
+       "dmgMax": 14,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Kecleon|typechange|Psychic|[from] ability: Color Change": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-14": 1,
+       "start:typechange": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -14,
+       "max": -14
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -14,
+       "max": -14,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 5,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Nidoking",
+      "start": null,
+      "maximum": 156,
+      "dist": [
+       [
+        156,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 156,
+      "min": 156,
+      "max": 156,
+      "modeTieUp": 156,
+      "modeTieDown": 156,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Chansey",
+      "start": null,
+      "maximum": 325,
+      "dist": [
+       [
+        325,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 325,
+      "min": 325,
+      "max": 325,
+      "modeTieUp": 325,
+      "modeTieDown": 325,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kecleon",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        40,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 40,
+      "min": 40,
+      "max": 40,
+      "modeTieUp": 40,
+      "modeTieDown": 40,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Nidoking",
+     "start": 156,
+     "maximum": 156,
+     "dist": [
+      [
+       156,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 156,
+     "min": 156,
+     "max": 156,
+     "modeTieUp": 156,
+     "modeTieDown": 156,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Chansey",
+     "start": 325,
+     "maximum": 325,
+     "dist": [
+      [
+       325,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 325,
+     "min": 325,
+     "max": 325,
+     "modeTieUp": 325,
+     "modeTieDown": 325,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Kecleon",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       22,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 22,
+     "min": 22,
+     "max": 22,
+     "modeTieUp": 22,
+     "modeTieDown": 22,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "2": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "poisonjab",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-96": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -96
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -96,
+       "mass": 1
+      }
+     }
+    },
+    "own-right": {
+     "moveId": "psychic",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 17,
+       "dmgMax": 17,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Kecleon|typechange|Psychic|[from] ability: Color Change": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-17": 1,
+       "start:typechange": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -17,
+       "max": -17
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -17,
+       "max": -17,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 5,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Nidoking",
+      "start": null,
+      "maximum": 156,
+      "dist": [
+       [
+        156,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 156,
+      "min": 156,
+      "max": 156,
+      "modeTieUp": 156,
+      "modeTieDown": 156,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Chansey",
+      "start": null,
+      "maximum": 325,
+      "dist": [
+       [
+        325,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 325,
+      "min": 325,
+      "max": 325,
+      "modeTieUp": 325,
+      "modeTieDown": 325,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Kecleon",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        22,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 22,
+      "min": 22,
+      "max": 22,
+      "modeTieUp": 22,
+      "modeTieDown": 22,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "2": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 156,
+   "maximum": 156,
+   "low": 156,
+   "high": 156,
+   "average": 156,
+   "min": 156,
+   "max": 156,
+   "koChance": 0,
+   "dist": [
+    [
+     156,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 325,
+   "maximum": 325,
+   "low": 325,
+   "high": 325,
+   "average": 325,
+   "min": 325,
+   "max": 325,
+   "koChance": 0,
+   "dist": [
+    [
+     325,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 40,
+   "high": 22,
+   "average": 31.875,
+   "min": 22,
+   "max": 40,
+   "koChance": 0,
+   "dist": [
+    [
+     22,
+     0.00390625
+    ],
+    [
+     23,
+     0.01953125
+    ],
+    [
+     24,
+     0.02734375
+    ],
+    [
+     25,
+     0.04296875
+    ],
+    [
+     26,
+     0.0625
+    ],
+    [
+     27,
+     0.06640625
+    ],
+    [
+     28,
+     0.05859375
+    ],
+    [
+     29,
+     0.0625
+    ],
+    [
+     30,
+     0.06640625
+    ],
+    [
+     31,
+     0.05859375
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.06640625
+    ],
+    [
+     34,
+     0.05859375
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0703125
+    ],
+    [
+     37,
+     0.07421875
+    ],
+    [
+     38,
+     0.06640625
+    ],
+    [
+     39,
+     0.0546875
+    ],
+    [
+     40,
+     0.015625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 156,
+   "maximum": 156,
+   "low": 156,
+   "high": 156,
+   "average": 156,
+   "min": 156,
+   "max": 156,
+   "koChance": 0,
+   "dist": [
+    [
+     156,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 325,
+   "maximum": 325,
+   "low": 325,
+   "high": 325,
+   "average": 325,
+   "min": 325,
+   "max": 325,
+   "koChance": 0,
+   "dist": [
+    [
+     325,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 40,
+   "high": 22,
+   "average": 31.875,
+   "min": 22,
+   "max": 40,
+   "koChance": 0,
+   "dist": [
+    [
+     22,
+     0.00390625
+    ],
+    [
+     23,
+     0.01953125
+    ],
+    [
+     24,
+     0.02734375
+    ],
+    [
+     25,
+     0.04296875
+    ],
+    [
+     26,
+     0.0625
+    ],
+    [
+     27,
+     0.06640625
+    ],
+    [
+     28,
+     0.05859375
+    ],
+    [
+     29,
+     0.0625
+    ],
+    [
+     30,
+     0.06640625
+    ],
+    [
+     31,
+     0.05859375
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.06640625
+    ],
+    [
+     34,
+     0.05859375
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0703125
+    ],
+    [
+     37,
+     0.07421875
+    ],
+    [
+     38,
+     0.06640625
+    ],
+    [
+     39,
+     0.0546875
+    ],
+    [
+     40,
+     0.015625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

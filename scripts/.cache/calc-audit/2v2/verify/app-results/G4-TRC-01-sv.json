@@ -1,0 +1,282 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "opponent-right": {
+    "hp": 160,
+    "maximum": 160
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "psychic",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 27,
+      "max": 33,
+      "minPercent": 16.875,
+      "maxPercent": 20.625,
+      "koChance": 0,
+      "row": {
+       "moveId": "psychic",
+       "effectiveName": "Psychic",
+       "effectiveType": "Psychic",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 27,
+       "max": 33,
+       "minPercent": 16.875,
+       "maxPercent": 20.625,
+       "rolls": [
+        27,
+        27,
+        28,
+        28,
+        29,
+        29,
+        30,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        32,
+        32,
+        33
+       ],
+       "ohkoChance": 0,
+       "description": "Psychic: 27–33 HP (16.9–20.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 143,
+    "maximum": 143,
+    "low": 143,
+    "average": 143,
+    "high": 143,
+    "min": 143,
+    "max": 143,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 133,
+    "average": 130.1875,
+    "high": 127,
+    "min": 127,
+    "max": 133,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "psychic",
+     "effectiveName": "Psychic",
+     "effectiveType": "Psychic",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 27,
+     "max": 33,
+     "minPercent": 16.875,
+     "maxPercent": 20.625,
+     "rolls": [
+      27,
+      27,
+      28,
+      28,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33
+     ],
+     "ohkoChance": 0,
+     "description": "Psychic: 27–33 HP (16.9–20.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trace: Gardevoir copied Insomnia."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Sleep wears off at random"
+     },
+     "afterUse": {
+      "start": 160,
+      "low": 133,
+      "high": 127,
+      "average": 130.1875,
+      "min": 127,
+      "max": 133,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 27,
+        "heals": []
+       },
+       "high": {
+        "dealt": 33,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Insomnia: Gardevoir is cured of its sleep as the turn starts."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 143,
+     "maximum": 143,
+     "low": 143,
+     "average": 143,
+     "high": 143,
+     "min": 143,
+     "max": 143,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 160,
+     "maximum": 160,
+     "low": 133,
+     "average": 130.1875,
+     "high": 127,
+     "min": 127,
+     "max": 133,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.987199999999575,
+ "preflight": []
+}

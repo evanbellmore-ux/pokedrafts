@@ -1,0 +1,680 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-right": {
+    "hp": 140,
+    "maximum": 140
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "rockslide",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 62,
+      "max": 74,
+      "minPercent": 44.285714285714285,
+      "maxPercent": 52.85714285714286,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 62,
+       "max": 74,
+       "minPercent": 44.285714285714285,
+       "maxPercent": 52.85714285714286,
+       "rolls": [
+        62,
+        62,
+        64,
+        64,
+        64,
+        66,
+        66,
+        68,
+        68,
+        68,
+        70,
+        70,
+        70,
+        72,
+        72,
+        74
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 62–74 HP (44.3–52.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 31,
+      "minPercent": 15.028901734104046,
+      "maxPercent": 17.91907514450867,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 26,
+       "max": 31,
+       "minPercent": 15.028901734104046,
+       "maxPercent": 17.91907514450867,
+       "rolls": [
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 26–31 HP (15.0–17.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 173,
+    "maximum": 173,
+    "low": 147,
+    "average": 144.8125,
+    "high": 142,
+    "min": 142,
+    "max": 147,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 140,
+    "maximum": 140,
+    "low": 78,
+    "average": 72.5,
+    "high": 66,
+    "min": 66,
+    "max": 78,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 15.028901734104046,
+     "maxPercent": 17.91907514450867,
+     "rolls": [
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 26–31 HP (15.0–17.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.19037896394729614,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 147,
+      "high": 142,
+      "average": 144.8125,
+      "min": 142,
+      "max": 147,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 62,
+     "max": 74,
+     "minPercent": 44.285714285714285,
+     "maxPercent": 52.85714285714286,
+     "rolls": [
+      62,
+      62,
+      64,
+      64,
+      64,
+      66,
+      66,
+      68,
+      68,
+      68,
+      70,
+      70,
+      70,
+      72,
+      72,
+      74
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 62–74 HP (44.3–52.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.16455078125,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [
+       "Spicy Spray burns the attacker.",
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 78,
+      "high": 66,
+      "average": 72.5,
+      "min": 66,
+      "max": 78,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 62,
+        "heals": []
+       },
+       "high": {
+        "dealt": 74,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 172,
+     "average": 172,
+     "high": 172,
+     "min": 172,
+     "max": 172,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 173,
+     "maximum": 173,
+     "low": 147,
+     "average": 144.8125,
+     "high": 142,
+     "min": 142,
+     "max": 147,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 140,
+     "maximum": 140,
+     "low": 78,
+     "average": 72.5,
+     "high": 66,
+     "min": 66,
+     "max": 78,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -11,
+     "max": -11,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.841800000000148,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-right": {
+    "hp": 140,
+    "maximum": 140
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 172,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "brn",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 142,
+        "chance": 0.0625
+       },
+       {
+        "hp": 143,
+        "chance": 0.1875
+       },
+       {
+        "hp": 144,
+        "chance": 0.1875
+       },
+       {
+        "hp": 145,
+        "chance": 0.1875
+       },
+       {
+        "hp": 146,
+        "chance": 0.1875
+       },
+       {
+        "hp": 147,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "corviknight",
+       "nature": "Serious",
+       "abilityId": "mirrorarmor",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 66,
+        "chance": 0.0625
+       },
+       {
+        "hp": 68,
+        "chance": 0.125
+       },
+       {
+        "hp": 70,
+        "chance": 0.1875
+       },
+       {
+        "hp": 72,
+        "chance": 0.1875
+       },
+       {
+        "hp": 74,
+        "chance": 0.125
+       },
+       {
+        "hp": 76,
+        "chance": 0.1875
+       },
+       {
+        "hp": 78,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "scovillainmega",
+       "nature": "Serious",
+       "abilityId": "spicyspray",
+       "abilityActive": false,
+       "itemId": "scovillainite",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

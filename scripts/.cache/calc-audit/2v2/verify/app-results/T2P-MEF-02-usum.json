@@ -1,0 +1,606 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "mefirst",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Me First fails: Garchomp (2)'s move is not an attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "mefirst",
+    "effectiveName": "Rock Slide",
+    "effectiveType": "Rock",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 20,
+      "max": 24,
+      "minPercent": 10.92896174863388,
+      "maxPercent": 13.114754098360656,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 20,
+       "max": 24,
+       "minPercent": 10.92896174863388,
+       "maxPercent": 13.114754098360656,
+       "rolls": [
+        20,
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        23,
+        24,
+        24,
+        24
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 20–24 HP (10.9–13.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Rock Slide: 1.5x power this turn."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 20,
+      "max": 24,
+      "minPercent": 10.92896174863388,
+      "maxPercent": 13.114754098360656,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 20,
+       "max": 24,
+       "minPercent": 10.92896174863388,
+       "maxPercent": 13.114754098360656,
+       "rolls": [
+        20,
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        23,
+        24,
+        24,
+        24
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 20–24 HP (10.9–13.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Rock Slide: 1.5x power this turn."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Me First calls Rock Slide.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "rockslide",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 47,
+      "minPercent": 27.857142857142858,
+      "maxPercent": 33.57142857142857,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 39,
+       "max": 47,
+       "minPercent": 27.857142857142858,
+       "maxPercent": 33.57142857142857,
+       "rolls": [
+        39,
+        40,
+        40,
+        41,
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45,
+        45,
+        46,
+        46,
+        47
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 39–47 HP (27.9–33.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 47,
+      "minPercent": 27.857142857142858,
+      "maxPercent": 33.57142857142857,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 39,
+       "max": 47,
+       "minPercent": 27.857142857142858,
+       "maxPercent": 33.57142857142857,
+       "rolls": [
+        39,
+        40,
+        40,
+        41,
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45,
+        45,
+        46,
+        46,
+        47
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 39–47 HP (27.9–33.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "swordsdance",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+2 Attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 101,
+    "average": 97,
+    "high": 93,
+    "min": 93,
+    "max": 101,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 140,
+    "maximum": 140,
+    "low": 101,
+    "average": 97,
+    "high": 93,
+    "min": 93,
+    "max": 101,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 163,
+    "average": 160.75,
+    "high": 159,
+    "min": 159,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 163,
+    "average": 160.75,
+    "high": 159,
+    "min": 159,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 39,
+     "max": 47,
+     "minPercent": 27.857142857142858,
+     "maxPercent": 33.57142857142857,
+     "rolls": [
+      39,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45,
+      45,
+      46,
+      46,
+      47
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 39–47 HP (27.9–33.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.001708984375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 101,
+      "high": 93,
+      "average": 97,
+      "min": 93,
+      "max": 101,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 47,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 39,
+     "max": 47,
+     "minPercent": 27.857142857142858,
+     "maxPercent": 33.57142857142857,
+     "rolls": [
+      39,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45,
+      45,
+      46,
+      46,
+      47
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 39–47 HP (27.9–33.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.001708984375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 101,
+      "high": 93,
+      "average": 97,
+      "min": 93,
+      "max": 101,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 47,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 101,
+     "average": 97,
+     "high": 93,
+     "min": 93,
+     "max": 101,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 140,
+     "maximum": 140,
+     "low": 101,
+     "average": 97,
+     "high": 93,
+     "min": 93,
+     "max": 101,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 163,
+     "average": 160.75,
+     "high": 159,
+     "min": 159,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 163,
+     "average": 160.75,
+     "high": 159,
+     "min": 159,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.7762000000002445,
+ "preflight": []
+}

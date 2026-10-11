@@ -1,0 +1,483 @@
+{
+ "id": "BB15",
+ "title": "Bug Bite at full HP: the Sitrus Berry heals nothing (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "battle.heal returns false at full HP (sd-probe sitrusFull).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 16,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 11,
+    "roll": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       69,
+       0.0625
+      ],
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       74,
+       0.0625
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 77.0625,
+     "min": 69,
+     "max": 84,
+     "modeTieUp": 83,
+     "modeTieDown": 72
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       69,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 69,
+     "min": 69,
+     "max": 69,
+     "modeTieUp": 69,
+     "modeTieDown": 69
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 84,
+   "high": 69,
+   "average": 77.0625,
+   "min": 69,
+   "max": 84,
+   "koChance": 0,
+   "dist": [
+    [
+     69,
+     0.0625
+    ],
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     74,
+     0.0625
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

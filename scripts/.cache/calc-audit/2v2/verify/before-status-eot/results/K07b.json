@@ -1,0 +1,522 @@
+{
+ "id": "K07b",
+ "title": "Aromatic Mist with the ally fainted",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Charizard fainted before the turn: Aromatic Mist (Alcremie 84) has no target and fails before Snorlax's Body Slam.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 13,
+   "classes": 5,
+   "ms": 10,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9,
+    "secondary": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alcremie",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       61,
+       0.0625
+      ],
+      [
+       62,
+       0.0625
+      ],
+      [
+       64,
+       0.125
+      ],
+      [
+       65,
+       0.125
+      ],
+      [
+       67,
+       0.125
+      ],
+      [
+       68,
+       0.125
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       73,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 67.4375,
+     "min": 61,
+     "max": 73,
+     "modeTieUp": 73,
+     "modeTieDown": 64
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aromaticmist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Alcremie|Aromatic Mist|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Alcremie": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 13,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alcremie",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       73,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 73,
+     "min": 73,
+     "max": 73,
+     "modeTieUp": 73,
+     "modeTieDown": 73
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aromaticmist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Alcremie|Aromatic Mist|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Alcremie": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Alcremie",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       61,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 61,
+     "min": 61,
+     "max": 61,
+     "modeTieUp": 61,
+     "modeTieDown": 61
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "aromaticmist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Alcremie|Aromatic Mist|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Alcremie": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 73,
+   "high": 61,
+   "average": 67.4375,
+   "min": 61,
+   "max": 73,
+   "koChance": 0,
+   "dist": [
+    [
+     61,
+     0.0625
+    ],
+    [
+     62,
+     0.0625
+    ],
+    [
+     64,
+     0.125
+    ],
+    [
+     65,
+     0.125
+    ],
+    [
+     67,
+     0.125
+    ],
+    [
+     68,
+     0.125
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     73,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 0,
+   "maximum": 153,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 9 whole-turn replays"
+ ]
+}

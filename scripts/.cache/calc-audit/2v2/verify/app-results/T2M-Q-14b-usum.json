@@ -1,0 +1,300 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 202,
+    "maximum": 202
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 200,
+    "maximum": 200
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "iondeluge",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Ion Deluge: Normal moves are Electric type this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "weatherball",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 31,
+      "minPercent": 12.871287128712872,
+      "maxPercent": 15.346534653465346,
+      "koChance": 0,
+      "row": {
+       "moveId": "weatherball",
+       "effectiveName": "Weather Ball",
+       "effectiveType": "Water",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 26,
+       "max": 31,
+       "minPercent": 12.871287128712872,
+       "maxPercent": 15.346534653465346,
+       "rolls": [
+        26,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Weather Ball: 26–31 HP (12.9–15.3% of maximum HP). Applied: Rain.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Effective move type: Water.",
+        "Move power: 100."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 202,
+    "maximum": 202,
+    "low": 176,
+    "average": 173.5625,
+    "high": 171,
+    "min": 171,
+    "max": 176,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 200,
+    "maximum": 200,
+    "low": 200,
+    "average": 200,
+    "high": 200,
+    "min": 200,
+    "max": 200,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "weatherball",
+     "effectiveName": "Weather Ball",
+     "effectiveType": "Water",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 12.871287128712872,
+     "maxPercent": 15.346534653465346,
+     "rolls": [
+      26,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Weather Ball: 26–31 HP (12.9–15.3% of maximum HP). Applied: Rain.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Effective move type: Water.",
+      "Move power: 100.",
+      "Forecast: Castform is Castform-Rainy (Water type) in Rain."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.26632486283779144,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 202,
+      "low": 176,
+      "high": 171,
+      "average": 173.5625,
+      "min": 171,
+      "max": 176,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 202,
+     "maximum": 202,
+     "low": 176,
+     "average": 173.5625,
+     "high": 171,
+     "min": 171,
+     "max": 176,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 200,
+     "maximum": 200,
+     "low": 200,
+     "average": 200,
+     "high": 200,
+     "min": 200,
+     "max": 200,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.542599999998856,
+ "preflight": []
+}

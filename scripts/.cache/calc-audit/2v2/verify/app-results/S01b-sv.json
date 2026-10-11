@@ -1,0 +1,328 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "hypnosis",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Falls asleep.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "darkpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.3333333333333333,
+    "skipped": [
+     {
+      "text": "Asleep.",
+      "chance": 0.6666666666666667
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 0.3333333333333333,
+      "kind": "calculated",
+      "min": 51,
+      "max": 60,
+      "minPercent": 32.903225806451616,
+      "maxPercent": 38.70967741935484,
+      "koChance": 0,
+      "row": {
+       "moveId": "darkpulse",
+       "effectiveName": "Dark Pulse",
+       "effectiveType": "Dark",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 51,
+       "max": 60,
+       "minPercent": 32.903225806451616,
+       "maxPercent": 38.70967741935484,
+       "rolls": [
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60
+       ],
+       "ohkoChance": 0,
+       "description": "Dark Pulse: 51–60 HP (32.9–38.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Wakes up.",
+      "chance": 0.3333333333333333
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 136.75,
+    "high": 155,
+    "min": 95,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Asleep.",
+      "chance": 0.6666666666666667
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "darkpulse",
+     "effectiveName": "Dark Pulse",
+     "effectiveType": "Dark",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 51,
+     "max": 60,
+     "minPercent": 32.903225806451616,
+     "maxPercent": 38.70967741935484,
+     "rolls": [
+      51,
+      51,
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60
+     ],
+     "ohkoChance": 0,
+     "description": "Dark Pulse: 51–60 HP (32.9–38.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.980224609375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 104,
+      "high": 95,
+      "average": 100.25,
+      "min": 95,
+      "max": 104,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 136.75,
+     "high": 155,
+     "min": 95,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Asleep.",
+       "chance": 0.6666666666666667
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.947799999999916,
+ "preflight": []
+}

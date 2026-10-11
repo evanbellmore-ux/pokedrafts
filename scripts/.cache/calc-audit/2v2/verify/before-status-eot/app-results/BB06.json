@@ -1,0 +1,387 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbite",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 40,
+      "max": 48,
+      "minPercent": 24.242424242424242,
+      "maxPercent": 29.09090909090909,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbite",
+       "effectiveName": "Bug Bite",
+       "effectiveType": "Bug",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 24.242424242424242,
+       "maxPercent": 29.09090909090909,
+       "rolls": [
+        40,
+        41,
+        41,
+        42,
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46,
+        46,
+        47,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Bite: 40–48 HP (24.2–29.1% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Scizor eats Politoed's Lum Berry: its burn is cured.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "hex",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 55,
+      "max": 66,
+      "minPercent": 37.93103448275862,
+      "maxPercent": 45.51724137931035,
+      "koChance": 0,
+      "row": {
+       "moveId": "hex",
+       "effectiveName": "Hex",
+       "effectiveType": "Ghost",
+       "effectivePower": 65,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 55,
+       "max": 66,
+       "minPercent": 37.93103448275862,
+       "maxPercent": 45.51724137931035,
+       "rolls": [
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66
+       ],
+       "ohkoChance": 0,
+       "description": "Hex: 55–66 HP (37.9–45.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 90,
+    "average": 84.875,
+    "high": 79,
+    "min": 79,
+    "max": 90,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 125,
+    "average": 121.25,
+    "high": 117,
+    "min": 117,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbite",
+     "effectiveName": "Bug Bite",
+     "effectiveType": "Bug",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 40,
+     "max": 48,
+     "minPercent": 24.242424242424242,
+     "maxPercent": 29.09090909090909,
+     "rolls": [
+      40,
+      41,
+      41,
+      42,
+      42,
+      42,
+      43,
+      43,
+      44,
+      45,
+      45,
+      45,
+      46,
+      46,
+      47,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Bite: 40–48 HP (24.2–29.1% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [
+       "Bug Bite takes the target's item.",
+       "Bug Bite eats the target's Lum Berry on the first use: it cures the attacker's burn."
+      ],
+      "notes": [
+       "Assumes Trick Room lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 125,
+      "high": 117,
+      "average": 121.25,
+      "min": 117,
+      "max": 125,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 40,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "hex",
+     "effectiveName": "Hex",
+     "effectiveType": "Ghost",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 109,
+     "max": 130,
+     "minPercent": 75.17241379310344,
+     "maxPercent": 89.65517241379311,
+     "rolls": [
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      118,
+      120,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130
+     ],
+     "ohkoChance": 0,
+     "description": "Hex: 109–130 HP (75.2–89.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged.",
+      "Move power: 130."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the target at the end of each turn."
+      ],
+      "notes": [
+       "Assumes Trick Room lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 36,
+      "high": 15,
+      "average": 25.25,
+      "min": 15,
+      "max": 36,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 109,
+        "heals": []
+       },
+       "high": {
+        "dealt": 130,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Trick Room: slower Pokémon move first."
+  ]
+ },
+ "ms": 5.386300000000119,
+ "preflight": []
+}

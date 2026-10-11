@@ -1,0 +1,635 @@
+{
+ "id": "VG66",
+ "title": "Sunny Day mid-turn with a suppressed Chlorophyll: Venusaur's Sludge Bomb still after Garchomp's Dragon Claw",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "weather move with a suppressed speed ability",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 164,
+   "classes": 84,
+   "ms": 135,
+   "decisions": {
+    "fail:": 90,
+    "roll": 90,
+    "secondary": 81
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       82,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 82.4375,
+     "min": 76,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 79
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       148,
+       0.0625
+      ],
+      [
+       149,
+       0.125
+      ],
+      [
+       150,
+       0.25
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       152,
+       0.125
+      ],
+      [
+       153,
+       0.25
+      ],
+      [
+       154,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 151.125,
+     "min": 148,
+     "max": 154,
+     "modeTieUp": 153,
+     "modeTieDown": 150
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sunnyday",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|SunnyDay": 1
+     }
+    },
+    "own-right": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 22,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sunnyday",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|SunnyDay": 1
+     }
+    },
+    "own-right": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       76,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 76,
+     "min": 76,
+     "max": 76,
+     "modeTieUp": 76,
+     "modeTieDown": 76
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       148,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 148,
+     "min": 148,
+     "max": 148,
+     "modeTieUp": 148,
+     "modeTieDown": 148
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sunnyday",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-weather|SunnyDay": 1
+     }
+    },
+    "own-right": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 88,
+   "high": 76,
+   "average": 82.4375,
+   "min": 76,
+   "max": 88,
+   "koChance": 0,
+   "dist": [
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     82,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 154,
+   "high": 148,
+   "average": 151.125,
+   "min": 148,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     148,
+     0.0625
+    ],
+    [
+     149,
+     0.125
+    ],
+    [
+     150,
+     0.25
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     152,
+     0.125
+    ],
+    [
+     153,
+     0.25
+    ],
+    [
+     154,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

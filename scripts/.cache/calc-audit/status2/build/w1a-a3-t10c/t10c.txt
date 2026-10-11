@@ -1,0 +1,30 @@
+  it("a Terrain Seed in its terrain and Room Service under Trick Room, from a giver that could not use them, are used at once (T10c; status2 T2M §3.21)", () => {
+    // data/items.ts electricseed / roomservice onStart: pokemon.useItem(): the boost from the holder itself, the item gone.
+    const used = (fx: ReturnType<typeof fixture>) => {
+      const boosts: unknown[] = [];
+      Object.assign(fx.kernel, {
+        applyBoosts: (_world: World, slot: DoublesSlotId, changes: Record<string, number>, source: DoublesSlotId | null, opts: { effect: string }) => { boosts.push([slot, changes, source, opts.effect]); return changes; },
+        noteItemUse: vi.fn(), hitFact: vi.fn(), moveName: (id: string) => fx.kernel.runtime.movesById.get(id)?.name ?? id,
+      });
+      return boosts;
+    };
+    const seed = fixture({ itemId: "electricseed", abilityId: "klutz" }, {});
+    seed.w.field = { ...seed.w.field, terrain: "Electric" };
+    const seedBoosts = used(seed);
+    expect(items.swapItems(seed.kernel, seed.w, seed.action, T, seed.move)).toEqual([seed.w]);
+    expect(seedBoosts).toEqual([[T, { def: 1 }, T, "item"]]);
+    expect(seed.w.mons[T]!.build.itemId).toBe("");
+    expect(seed.kernel.noteItemUse).toHaveBeenCalledWith(seed.w, T, "electricseed");
+    expect(seed.kernel.hitFact).toHaveBeenCalledWith(seed.action, T, "Its Electric Seed is used up on Electric Terrain: +1 Defense.", 1);
+    const room = fixture({ itemId: "roomservice", abilityId: "klutz" }, {});
+    room.w.field = { ...room.w.field, trickRoom: true };
+    const roomBoosts = used(room);
+    expect(items.swapItems(room.kernel, room.w, room.action, T, room.move)).toEqual([room.w]);
+    expect(roomBoosts).toEqual([[T, { spe: -1 }, T, "item"]]);
+    expect(room.w.mons[T]!.build.itemId).toBe("");
+    expect(room.kernel.hitFact).toHaveBeenCalledWith(room.action, T, "Its Room Service is used up under Trick Room: −1 Speed.", 1);
+    // The Klutz giver receiving nothing: nothing for it to use.
+    const back = fixture({ abilityId: "klutz" }, { itemId: "electricseed", abilityId: "klutz" });
+    back.w.field = { ...back.w.field, terrain: "Electric" };
+    expect(items.swapItems(back.kernel, back.w, back.action, T, back.move)).toEqual([back.w]);
+  });

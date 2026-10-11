@@ -1,0 +1,619 @@
+{
+ "id": "V27a",
+ "title": "Payback after the target moved",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Garchomp moves first: Payback doubles.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 222,
+   "classes": 124,
+   "ms": 102,
+   "decisions": {
+    "fail:": 110,
+    "roll": 110
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dusknoir",
+     "start": 120,
+     "maximum": 120,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       0.0625
+      ],
+      [
+       141,
+       0.0625
+      ],
+      [
+       142,
+       0.125
+      ],
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.125
+      ],
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       150,
+       0.0625
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.125
+      ],
+      [
+       154,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.0625,
+     "min": 139,
+     "max": 154,
+     "modeTieUp": 153,
+     "modeTieDown": 142
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       136,
+       0.0625
+      ],
+      [
+       137,
+       0.125
+      ],
+      [
+       138,
+       0.125
+      ],
+      [
+       139,
+       0.125
+      ],
+      [
+       140,
+       0.125
+      ],
+      [
+       141,
+       0.125
+      ],
+      [
+       142,
+       0.125
+      ],
+      [
+       143,
+       0.125
+      ],
+      [
+       144,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 136,
+     "max": 144,
+     "modeTieUp": 143,
+     "modeTieDown": 137
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "payback",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 47,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dusknoir|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dusknoir",
+     "start": 120,
+     "maximum": 120,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "payback",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dusknoir|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dusknoir",
+     "start": 120,
+     "maximum": 120,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "payback",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 47,
+       "dmgMax": 47,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dusknoir|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 120,
+   "maximum": 120,
+   "low": 105,
+   "high": 105,
+   "average": 105,
+   "min": 105,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     105,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 147.0625,
+   "min": 139,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.125
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     154,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 144,
+   "high": 136,
+   "average": 140,
+   "min": 136,
+   "max": 144,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     0.0625
+    ],
+    [
+     137,
+     0.125
+    ],
+    [
+     138,
+     0.125
+    ],
+    [
+     139,
+     0.125
+    ],
+    [
+     140,
+     0.125
+    ],
+    [
+     141,
+     0.125
+    ],
+    [
+     142,
+     0.125
+    ],
+    [
+     143,
+     0.125
+    ],
+    [
+     144,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

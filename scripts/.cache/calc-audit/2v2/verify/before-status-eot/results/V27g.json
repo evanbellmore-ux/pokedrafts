@@ -1,0 +1,795 @@
+{
+ "id": "V27g",
+ "title": "Rage Fist after two hits",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Hit twice before it moves: Rage Fist at 150 power.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1357,
+   "classes": 708,
+   "ms": 671,
+   "decisions": {
+    "fail:": 705,
+    "roll": 705
+   },
+   "slots": {
+    "own-left": {
+     "species": "Annihilape",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       42,
+       0.00390625
+      ],
+      [
+       44,
+       0.015625
+      ],
+      [
+       45,
+       0.0234375
+      ],
+      [
+       46,
+       0.01171875
+      ],
+      [
+       47,
+       0.0625
+      ],
+      [
+       48,
+       0.0546875
+      ],
+      [
+       49,
+       0.0390625
+      ],
+      [
+       50,
+       0.109375
+      ],
+      [
+       51,
+       0.0703125
+      ],
+      [
+       52,
+       0.0546875
+      ],
+      [
+       53,
+       0.12109375
+      ],
+      [
+       54,
+       0.0703125
+      ],
+      [
+       55,
+       0.04296875
+      ],
+      [
+       56,
+       0.10546875
+      ],
+      [
+       57,
+       0.0625
+      ],
+      [
+       58,
+       0.02734375
+      ],
+      [
+       59,
+       0.0625
+      ],
+      [
+       60,
+       0.03125
+      ],
+      [
+       61,
+       0.015625
+      ],
+      [
+       62,
+       0.015625
+      ]
+     ],
+     "koChance": 0,
+     "average": 52.9375,
+     "min": 42,
+     "max": 62,
+     "modeTieUp": 53,
+     "modeTieDown": 53
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       65,
+       0.0625
+      ],
+      [
+       66,
+       0.0625
+      ],
+      [
+       68,
+       0.0625
+      ],
+      [
+       69,
+       0.0625
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       74,
+       0.0625
+      ],
+      [
+       75,
+       0.0625
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 74.375,
+     "min": 65,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 71
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ragefist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 100,
+       "dmgMax": 118,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Annihilape|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "iceshard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Annihilape",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       62,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 62,
+     "min": 62,
+     "max": 62,
+     "modeTieUp": 62,
+     "modeTieDown": 62
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       83,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 83,
+     "min": 83,
+     "max": 83,
+     "modeTieUp": 83,
+     "modeTieDown": 83
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ragefist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 100,
+       "dmgMax": 100,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Annihilape|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "iceshard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Annihilape",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       42,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 42,
+     "min": 42,
+     "max": 42,
+     "modeTieUp": 42,
+     "modeTieDown": 42
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       65,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 65,
+     "min": 65,
+     "max": 65,
+     "modeTieUp": 65,
+     "modeTieDown": 65
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ragefist",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 118,
+       "dmgMax": 118,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Annihilape|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "iceshard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 62,
+   "high": 42,
+   "average": 52.9375,
+   "min": 42,
+   "max": 62,
+   "koChance": 0,
+   "dist": [
+    [
+     42,
+     0.00390625
+    ],
+    [
+     44,
+     0.015625
+    ],
+    [
+     45,
+     0.0234375
+    ],
+    [
+     46,
+     0.01171875
+    ],
+    [
+     47,
+     0.0625
+    ],
+    [
+     48,
+     0.0546875
+    ],
+    [
+     49,
+     0.0390625
+    ],
+    [
+     50,
+     0.109375
+    ],
+    [
+     51,
+     0.0703125
+    ],
+    [
+     52,
+     0.0546875
+    ],
+    [
+     53,
+     0.12109375
+    ],
+    [
+     54,
+     0.0703125
+    ],
+    [
+     55,
+     0.04296875
+    ],
+    [
+     56,
+     0.10546875
+    ],
+    [
+     57,
+     0.0625
+    ],
+    [
+     58,
+     0.02734375
+    ],
+    [
+     59,
+     0.0625
+    ],
+    [
+     60,
+     0.03125
+    ],
+    [
+     61,
+     0.015625
+    ],
+    [
+     62,
+     0.015625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 83,
+   "high": 65,
+   "average": 74.375,
+   "min": 65,
+   "max": 83,
+   "koChance": 0,
+   "dist": [
+    [
+     65,
+     0.0625
+    ],
+    [
+     66,
+     0.0625
+    ],
+    [
+     68,
+     0.0625
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     74,
+     0.0625
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

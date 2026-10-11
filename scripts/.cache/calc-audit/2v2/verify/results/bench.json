@@ -1,0 +1,9539 @@
+{
+ "summary": {
+  "turn": {
+   "p50": 2.5949999999998,
+   "p95": 6.962599999999952,
+   "max": 139.0936999999999,
+   "n": 1471,
+   "targets": {
+    "p50": 30,
+    "p95": 120,
+    "max": 400
+   }
+  },
+  "movesPane": {
+   "max": 20.092800000000352,
+   "p50": 11.77179999999953,
+   "n": 23,
+   "target": 25
+  },
+  "slowest": [
+   {
+    "id": "RS-RVP1",
+    "ms": 139.0936999999999,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "E30c",
+    "ms": 19.455199999999877,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "E44",
+    "ms": 17.83010000000013,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-teeter",
+    "ms": 15.655099999999948,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "fuzz-26-sword_shield",
+    "ms": 15.512399999999616,
+    "status": "ready"
+   },
+   {
+    "id": "BENCH-seeds",
+    "ms": 12.08770000000004,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "fuzz-13-scarlet_violet",
+    "ms": 11.695600000000013,
+    "status": "ready"
+   },
+   {
+    "id": "fuzz-33-scarlet_violet",
+    "ms": 11.09479999999985,
+    "status": "ready"
+   },
+   {
+    "id": "E31a",
+    "ms": 11.082600000000184,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "V24a",
+    "ms": 11.060400000000072,
+    "status": "ready",
+    "end": "ready"
+   }
+  ],
+  "statuses": {
+   "ready": 1340,
+   "not-estimated": 127,
+   "issues": 4
+  },
+  "reasons": [
+   [
+    "Neutralizing Gas ending is not modelled in 2v2.",
+    11
+   ],
+   [
+    "Opportunist copying a stat rise is not modelled in 2v2.",
+    4
+   ],
+   [
+    "Sleep Talk is not modelled in 2v2.",
+    3
+   ],
+   [
+    "Snorlax switches out: the replacement is not known.",
+    3
+   ],
+   [
+    "Sitrus Berry after a confusion self-hit with Anger Shell is not modelled in 2v2.",
+    3
+   ],
+   [
+    "Hidden Power's declared type does not match the innate IVs.",
+    3
+   ],
+   [
+    "Starf Berry raises a random stat",
+    2
+   ],
+   [
+    "Disguise against a multi-hit move is not modelled in 2v2.",
+    2
+   ],
+   [
+    "One-hit KO move: no damage range.",
+    2
+   ],
+   [
+    "Sitrus Berry after a confusion self-hit with Berserk is not modelled in 2v2.",
+    2
+   ],
+   [
+    "Trace copies a random foe's ability.",
+    2
+   ],
+   [
+    "Furfrou-Dandy switches out: the replacement is not known.",
+    2
+   ],
+   [
+    "A weather or terrain change this turn would change Mimicry.",
+    1
+   ],
+   [
+    "A weather or terrain change this turn would change Electric Seed.",
+    1
+   ],
+   [
+    "Unnerve is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Protean changes Greninja's type: later moves are not modelled.",
+    1
+   ],
+   [
+    "Double Shock changes Pawmot's type: later moves are not modelled.",
+    1
+   ],
+   [
+    "Burn Up changes Arcanine's type: later moves are not modelled.",
+    1
+   ],
+   [
+    "Fire Pledge with Grass Pledge is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Copycat is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Blastoise switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Glaive Rush doubles the damage Baxcalibur takes: later moves are not modelled.",
+    1
+   ],
+   [
+    "Status Z-Moves are not calculated.",
+    1
+   ],
+   [
+    "Me First is not modelled in 2v2.",
+    1
+   ],
+   [
+    "As One (Spectrier) is not modelled in 2v2.",
+    1
+   ],
+   [
+    "An Ability Shield change under Neutralizing Gas is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Lingering Aroma with Neutralizing Gas is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Roar with Neutralizing Gas is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Magic Room with Neutralizing Gas is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Ingrain changes whether Venusaur is grounded: later moves are not modelled.",
+    1
+   ],
+   [
+    "Magnet Rise changes whether Magnezone is grounded: later moves are not modelled.",
+    1
+   ],
+   [
+    "Encore changes Garchomp's move: not modelled.",
+    1
+   ],
+   [
+    "Uproar is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Skill Swap is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Soak is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Attract is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Transform is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Bestow is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Encore needs Garchomp's move from the last turn.",
+    1
+   ],
+   [
+    "Imprison needs Gengar's moves.",
+    1
+   ],
+   [
+    "Pain Split with a Dynamaxed Pokémon is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Disguise against a confusion self-hit is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Roost changes Dragonite's type: later moves are not modelled.",
+    1
+   ],
+   [
+    "Grimmsnarl switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Dragon Darts aimed where its user now stands is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Electric Seed received by Garchomp is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Room Service received by Garchomp is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Vespiquen switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Magician into a Substitute is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Max Moves into a Substitute is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Parental Bond into a Substitute is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Mind Blown into a Substitute is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Icicle Spear into Dragonite's Substitute with Multiscale is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Icicle Spear into Mudsdale's Substitute with Stamina is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Icicle Spear into Garchomp's Substitute with Yache Berry is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Dual Wingbeat into Cofagrigus's Substitute with Mummy is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Flame Burst is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Psychic Noise is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Matcha Gotcha heals from more than one target: not modelled.",
+    1
+   ],
+   [
+    "Rock Slide heals from more than one target: not modelled.",
+    1
+   ],
+   [
+    "Fling is not verified for this game.",
+    1
+   ],
+   [
+    "Punishment with Jolteon's accuracy or evasion stage from this turn is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Sparkling Aria's burn cure after Primarina faints in the move is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Stored Power with Malamar's accuracy or evasion stage from this turn is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Starf Berry between the hits of Bullet Seed is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Ganlon Berry between the hits of Bullet Seed is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Magic Room is not modelled and comes before another move.",
+    1
+   ],
+   [
+    "Luxray switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Imposter is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Round is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Golisopod switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Gliscor switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Yanmega switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Phione switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Unfezant switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Basculin-Blue-Striped switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Spectral Thief is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Greninja-Ash switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Manectric-Mega switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Staraptor switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Dazzling Gleam's effect on Dedenne from more than one target is not modelled.",
+    1
+   ],
+   [
+    "Mirror Coat is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Emolga switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Silvally-Bug switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Thundurus-Therian switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Furfrou-La Reine switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Protean changes Greninja-Mega's type: later moves are not modelled.",
+    1
+   ],
+   [
+    "Barraskewda switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Counter is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Pachirisu switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Cotton Down is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Victini switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Whimsicott switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Flapple switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Tornadus-Therian switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Qwilfish switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Dragapult switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Basculin switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Celebi switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Gligar switches out: the replacement is not known.",
+    1
+   ]
+  ],
+  "bench": [
+   {
+    "id": "BENCH-teeter",
+    "ms": 15.655099999999948,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-swagger",
+    "ms": 5.466900000000351,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-spore",
+    "ms": 3.453599999999824,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-seeds",
+    "ms": 12.08770000000004,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-substitute",
+    "ms": 6.942299999999705,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-allyswitch",
+    "ms": 5.162999999999556,
+    "status": "ready",
+    "end": "ready"
+   },
+   {
+    "id": "BENCH-trick",
+    "ms": 8.01550000000043,
+    "status": "ready",
+    "end": "ready"
+   }
+  ],
+  "endOfTurn": [
+   [
+    "ready",
+    1162
+   ],
+   [
+    "Pickup is not modelled in 2v2.",
+    4
+   ],
+   [
+    "Harvest is not modelled in 2v2.",
+    4
+   ],
+   [
+    "Vespiquen switches out: the replacement is not known.",
+    2
+   ],
+   [
+    "Skill Swap is not modelled.",
+    1
+   ],
+   [
+    "Soak is not modelled.",
+    1
+   ],
+   [
+    "Attract is not modelled.",
+    1
+   ],
+   [
+    "Transform is not modelled.",
+    1
+   ],
+   [
+    "Bestow is not modelled.",
+    1
+   ],
+   [
+    "Blastoise switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Golisopod switches out: the replacement is not known.",
+    1
+   ],
+   [
+    "Neutralizing Gas ending is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Cud Chew is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Future Sight landing is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Zen Mode changing Darmanitan's form is not modelled in 2v2.",
+    1
+   ],
+   [
+    "G-Max Wildfire's damage over time is not modelled in 2v2.",
+    1
+   ],
+   [
+    "Alakazam switches out: the replacement is not known.",
+    1
+   ]
+  ],
+  "reference": {
+   "equal": 30,
+   "of": 30,
+   "differ": []
+  }
+ },
+ "rows": [
+  {
+   "id": "V01a",
+   "ms": 5.675799999999981,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V01b",
+   "ms": 5.256000000000029,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V02",
+   "ms": 4.382499999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V03",
+   "ms": 8.17070000000001,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V04",
+   "ms": 7.185599999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V05",
+   "ms": 2.9735999999999763,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V06a",
+   "ms": 3.026299999999992,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V06b",
+   "ms": 1.2280999999999835,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V06c",
+   "ms": 1.9805999999999813,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V07a",
+   "ms": 3.4791999999999916,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V07b",
+   "ms": 2.641300000000001,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V07c",
+   "ms": 2.4621999999999957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V07d",
+   "ms": 3.490000000000009,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V07e",
+   "ms": 2.9093999999999482,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V08a",
+   "ms": 4.250699999999995,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V08b",
+   "ms": 3.9651999999999816,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V09a",
+   "ms": 4.164900000000102,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V09b",
+   "ms": 4.866300000000024,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V10a",
+   "ms": 5.342300000000023,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V10b",
+   "ms": 1.7279999999999518,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V10c",
+   "ms": 3.0622999999999365,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V11",
+   "ms": 3.6340000000000146,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V12a",
+   "ms": 4.025200000000041,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V12b",
+   "ms": 3.965599999999995,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V12c",
+   "ms": 3.720299999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V13-sv",
+   "ms": 3.394999999999982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V13-usum",
+   "ms": 3.9132999999999356,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V14-sv",
+   "ms": 7.397199999999998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V14-usum",
+   "ms": 8.851400000000012,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V15-sv",
+   "ms": 6.962599999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V15-champions",
+   "ms": 5.066100000000006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V15-usum",
+   "ms": 5.068399999999997,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16a",
+   "ms": 2.8040000000000873,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16b",
+   "ms": 2.1701000000000477,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16c",
+   "ms": 3.092399999999998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16d",
+   "ms": 3.6952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16e",
+   "ms": 2.436300000000074,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16f",
+   "ms": 2.645599999999945,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16g",
+   "ms": 2.5580999999999676,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V16h",
+   "ms": 2.9039999999999964,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V17a",
+   "ms": 2.9500000000000455,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V17b",
+   "ms": 1.0371000000000095,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V17c",
+   "ms": 2.3401000000000067,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V17d",
+   "ms": 2.322200000000066,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V18a",
+   "ms": 6.370600000000081,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V18b",
+   "ms": 4.212099999999964,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V19a",
+   "ms": 2.4378999999998996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V19b",
+   "ms": 3.0833999999999833,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V19c",
+   "ms": 4.615599999999972,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V20a",
+   "ms": 3.611599999999953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V20b",
+   "ms": 4.292300000000068,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V20c",
+   "ms": 3.8900999999999613,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V21",
+   "ms": 3.9107999999999947,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V22a",
+   "ms": 3.985400000000027,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V22b",
+   "ms": 3.5376999999999725,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V22c",
+   "ms": 3.306799999999953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V22d",
+   "ms": 5.318700000000035,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V23",
+   "ms": 5.843200000000024,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V24a",
+   "ms": 11.060400000000072,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V24b",
+   "ms": 4.891200000000026,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V25a",
+   "ms": 3.286399999999958,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V25b",
+   "ms": 3.8250000000000455,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V26",
+   "ms": 4.422300000000064,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27a",
+   "ms": 4.22199999999998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27b",
+   "ms": 2.6323999999999614,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27c",
+   "ms": 3.9949000000000296,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27d",
+   "ms": 3.4198000000000093,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27e",
+   "ms": 4.216099999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27f",
+   "ms": 3.3532000000000153,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V27g",
+   "ms": 5.363399999999956,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V28a",
+   "ms": 3.399099999999976,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V28b",
+   "ms": 4.209999999999923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V29a",
+   "ms": 3.45900000000006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V29b",
+   "ms": 1.1902000000000044,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V30a",
+   "ms": 2.730099999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V30b",
+   "ms": 2.0341000000000804,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V31a",
+   "ms": 6.811400000000049,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V31b",
+   "ms": 6.28589999999997,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V32a",
+   "ms": 3.060100000000034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V32b",
+   "ms": 3.914600000000064,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V33",
+   "ms": 4.715400000000045,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V34-champions",
+   "ms": 2.462599999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V34-sv",
+   "ms": 3.160600000000045,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V37",
+   "ms": 2.8821000000000367,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V38",
+   "ms": 2.77780000000007,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V39",
+   "ms": 1.8617000000000417,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V40",
+   "ms": 2.997600000000034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V41",
+   "ms": 1.466099999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V42",
+   "ms": 4.635700000000043,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V43",
+   "ms": 3.4248999999999796,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V44",
+   "ms": 5.56389999999999,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V45",
+   "ms": 3.7543000000000575,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V46",
+   "ms": 3.7626000000000204,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V47a",
+   "ms": 2.636000000000081,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V47b",
+   "ms": 2.64650000000006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V48",
+   "ms": 2.6304999999999836,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V49",
+   "ms": 8.286600000000021,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V50",
+   "ms": 3.4010000000000673,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V51",
+   "ms": 3.8032000000000608,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V52",
+   "ms": 2.6532999999999447,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V53",
+   "ms": 3.3048,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V54",
+   "ms": 3.837299999999914,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V55",
+   "ms": 5.067299999999932,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V56",
+   "ms": 5.767699999999991,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36a",
+   "ms": 2.4184999999999945,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36e",
+   "ms": 1.5482000000000653,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36f",
+   "ms": 0.9642999999999802,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36g",
+   "ms": 1.097099999999955,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36b",
+   "ms": 4.1667999999999665,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36c",
+   "ms": 2.738299999999981,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "V36d",
+   "ms": 3.240600000000086,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C01-SV",
+   "ms": 4.70490000000018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C02-SV",
+   "ms": 4.524900000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C03-SV",
+   "ms": 3.68549999999982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C04-SV",
+   "ms": 4.537699999999859,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C05-SV",
+   "ms": 4.229899999999816,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C06-SV",
+   "ms": 4.912299999999959,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C07-SV",
+   "ms": 4.118200000000115,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C08-SV",
+   "ms": 5.225699999999961,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C09-SV",
+   "ms": 4.947499999999991,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C10-SV",
+   "ms": 5.595899999999801,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C01-SWSH",
+   "ms": 5.17410000000018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C02-SWSH",
+   "ms": 4.239500000000135,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C03-SWSH",
+   "ms": 3.3777999999999793,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C04-SWSH",
+   "ms": 4.971000000000004,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C05-SWSH",
+   "ms": 4.001099999999951,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C06-SWSH",
+   "ms": 7.206400000000031,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C07-SWSH",
+   "ms": 3.8787999999999556,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C08-SWSH",
+   "ms": 4.699500000000171,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C09-SWSH",
+   "ms": 4.160799999999881,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C10-SWSH",
+   "ms": 5.0779999999999745,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C01-USUM",
+   "ms": 5.3624999999999545,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C02-USUM",
+   "ms": 4.084299999999985,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C03-USUM",
+   "ms": 3.529499999999871,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C04-USUM",
+   "ms": 4.282799999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C05-USUM",
+   "ms": 4.279299999999921,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C06-USUM",
+   "ms": 4.4271000000001095,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C07-USUM",
+   "ms": 3.2859000000000833,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C08-USUM",
+   "ms": 4.379199999999855,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C09-USUM",
+   "ms": 4.722000000000207,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C10-USUM",
+   "ms": 4.863900000000058,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C01-CHAMPIONS",
+   "ms": 4.34069999999997,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C02-CHAMPIONS",
+   "ms": 4.8301000000001295,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C03-CHAMPIONS",
+   "ms": 3.136099999999942,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C04-CHAMPIONS",
+   "ms": 3.8741999999999734,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C05-CHAMPIONS",
+   "ms": 3.4285999999999603,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C06-CHAMPIONS",
+   "ms": 4.248299999999972,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C07-CHAMPIONS",
+   "ms": 6.4483000000000175,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C08-CHAMPIONS",
+   "ms": 4.3284000000001015,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C09-CHAMPIONS",
+   "ms": 3.955699999999979,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "C10-CHAMPIONS",
+   "ms": 5.000599999999849,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M01a",
+   "ms": 3.7898999999999887,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M01b",
+   "ms": 3.5451000000000477,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M01c",
+   "ms": 3.3005000000000564,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M01d",
+   "ms": 2.7454999999999927,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M02a",
+   "ms": 2.8619999999998527,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M02b",
+   "ms": 1.939200000000028,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M03",
+   "ms": 2.0896000000000186,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M04a",
+   "ms": 1.9231999999999516,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M04b",
+   "ms": 1.8792000000000826,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M04c",
+   "ms": 2.1006999999999607,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M05a",
+   "ms": 3.901700000000119,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M05b",
+   "ms": 2.526200000000017,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M06",
+   "ms": 3.8492999999998574,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M07",
+   "ms": 3.27579999999989,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M08",
+   "ms": 3.3826000000001386,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M09",
+   "ms": 3.5485000000001037,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M10a",
+   "ms": 2.786200000000008,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M10b",
+   "ms": 2.5247000000001663,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M11a",
+   "ms": 4.268199999999979,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M11b",
+   "ms": 1.758299999999963,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M12a",
+   "ms": 3.9109000000000833,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M12b",
+   "ms": 3.5349999999998545,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M12c",
+   "ms": 2.7596000000000913,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M13a",
+   "ms": 2.7869000000000597,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M13b",
+   "ms": 4.942399999999907,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M13c",
+   "ms": 2.754699999999957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M14a",
+   "ms": 3.6567999999999756,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M14b",
+   "ms": 4.244699999999966,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M14c",
+   "ms": 3.1422000000000025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M15a",
+   "ms": 3.020200000000159,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M15b",
+   "ms": 3.718399999999974,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M16a",
+   "ms": 3.522999999999911,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M16b",
+   "ms": 3.971900000000005,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M17",
+   "ms": 3.5438000000001466,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M18a",
+   "ms": 3.192800000000034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M18b",
+   "ms": 2.989799999999832,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M19",
+   "ms": 2.9675999999999476,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M20",
+   "ms": 2.345199999999977,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M21a",
+   "ms": 4.449700000000121,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M21b",
+   "ms": 2.130899999999883,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M22a",
+   "ms": 3.945500000000038,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M22b",
+   "ms": 2.8979000000001633,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M23a",
+   "ms": 3.4881000000000313,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M23b",
+   "ms": 2.689000000000078,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24a",
+   "ms": 6.50870000000009,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24b",
+   "ms": 4.490400000000136,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24c",
+   "ms": 5.120099999999866,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24d",
+   "ms": 4.069099999999935,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24e",
+   "ms": 5.101499999999987,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24f",
+   "ms": 5.248500000000149,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M25a",
+   "ms": 3.5188000000000557,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M25b",
+   "ms": 3.4544999999998254,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M25c",
+   "ms": 3.5738000000001193,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M26a",
+   "ms": 3.601199999999835,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M26b",
+   "ms": 2.4880000000000564,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M27",
+   "ms": 1.6347000000000662,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M05c",
+   "ms": 2.677400000000034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M05d",
+   "ms": 2.7998000000000047,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M16d",
+   "ms": 3.5030000000001564,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24k",
+   "ms": 3.8350000000000364,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M14d",
+   "ms": 3.990099999999984,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M16c",
+   "ms": 6.199200000000019,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M17b",
+   "ms": 4.370499999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M17c",
+   "ms": 3.547399999999925,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M22c",
+   "ms": 3.9352000000001226,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24g",
+   "ms": 4.42229999999995,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24h",
+   "ms": 3.7572000000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M24i",
+   "ms": 1.72199999999998,
+   "status": "not-estimated",
+   "reason": "A weather or terrain change this turn would change Mimicry."
+  },
+  {
+   "id": "M24j",
+   "ms": 1.8510000000001128,
+   "status": "not-estimated",
+   "reason": "A weather or terrain change this turn would change Electric Seed."
+  },
+  {
+   "id": "M25d",
+   "ms": 2.3514000000000124,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M28a",
+   "ms": 3.629799999999932,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M28b",
+   "ms": 4.665399999999863,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M28c",
+   "ms": 3.440099999999802,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M28d",
+   "ms": 4.859100000000126,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M28e",
+   "ms": 3.327299999999923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M29a",
+   "ms": 3.3937000000000808,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M29b",
+   "ms": 2.794300000000021,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M29c",
+   "ms": 1.1617999999998574,
+   "status": "not-estimated",
+   "reason": "Unnerve is not modelled in 2v2."
+  },
+  {
+   "id": "M29d",
+   "ms": 2.6227000000001226,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M29e",
+   "ms": 2.001800000000003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "M29f",
+   "ms": 1.9516999999998461,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X01",
+   "ms": 3.4114999999999327,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X02",
+   "ms": 3.047599999999875,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X03",
+   "ms": 3.2655999999999494,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X04",
+   "ms": 3.8337000000001353,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X05",
+   "ms": 3.4325999999998658,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X06",
+   "ms": 5.49169999999981,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X07",
+   "ms": 3.7623000000000957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X08",
+   "ms": 3.348600000000033,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X09",
+   "ms": 4.301099999999906,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X10",
+   "ms": 4.794300000000021,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "X11",
+   "ms": 5.430700000000115,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB01",
+   "ms": 3.0008000000000266,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB02",
+   "ms": 2.2574999999999363,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB03",
+   "ms": 2.726799999999912,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB04",
+   "ms": 2.5042000000000826,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB05",
+   "ms": 2.2768999999998414,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB06",
+   "ms": 3.6160999999999603,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB07",
+   "ms": 3.33199999999988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB08",
+   "ms": 4.9500000000000455,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB09",
+   "ms": 3.1454999999998563,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB10",
+   "ms": 2.835099999999784,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB11",
+   "ms": 2.552599999999984,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB12",
+   "ms": 2.214100000000144,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB13",
+   "ms": 2.3230000000000928,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB14",
+   "ms": 2.6096000000000004,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB15",
+   "ms": 2.4898000000000593,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB16",
+   "ms": 2.289199999999937,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BB17",
+   "ms": 1.1797999999998865,
+   "status": "not-estimated",
+   "reason": "Starf Berry raises a random stat"
+  },
+  {
+   "id": "BB18",
+   "ms": 1.4762000000000626,
+   "status": "not-estimated",
+   "reason": "Opportunist copying a stat rise is not modelled in 2v2."
+  },
+  {
+   "id": "ZI01",
+   "ms": 2.2631000000001222,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI02",
+   "ms": 1.9315999999998894,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI03",
+   "ms": 4.08829999999989,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI04",
+   "ms": 3.036600000000135,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI05",
+   "ms": 2.9103999999999814,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI06",
+   "ms": 2.1342999999999392,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI07",
+   "ms": 2.2770000000000437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZI08",
+   "ms": 3.20679999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL01",
+   "ms": 2.2739000000001397,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL02",
+   "ms": 2.6055999999998676,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL03",
+   "ms": 2.332100000000082,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL04",
+   "ms": 2.2100000000000364,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL05",
+   "ms": 2.248100000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL06",
+   "ms": 2.6454000000001088,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL07",
+   "ms": 2.7773999999999432,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL08",
+   "ms": 2.0283999999999196,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL09",
+   "ms": 2.1155999999998585,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL10",
+   "ms": 2.064100000000053,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL11",
+   "ms": 2.2449000000001433,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "HL12",
+   "ms": 3.5727999999999156,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R01",
+   "ms": 5.919800000000123,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R02",
+   "ms": 1.3821000000000367,
+   "status": "not-estimated",
+   "reason": "Protean changes Greninja's type: later moves are not modelled."
+  },
+  {
+   "id": "R03",
+   "ms": 1.4537000000000262,
+   "status": "not-estimated",
+   "reason": "Double Shock changes Pawmot's type: later moves are not modelled."
+  },
+  {
+   "id": "R04",
+   "ms": 3.4214999999999236,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R05",
+   "ms": 2.394399999999905,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R05u",
+   "ms": 2.277599999999893,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R06",
+   "ms": 2.888500000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R07",
+   "ms": 1.4593999999999596,
+   "status": "not-estimated",
+   "reason": "Burn Up changes Arcanine's type: later moves are not modelled."
+  },
+  {
+   "id": "R08",
+   "ms": 4.573399999999992,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R09",
+   "ms": 0.9761000000000877,
+   "status": "not-estimated",
+   "reason": "Fire Pledge with Grass Pledge is not modelled in 2v2."
+  },
+  {
+   "id": "R10",
+   "ms": 0.567299999999932,
+   "status": "not-estimated",
+   "reason": "Copycat is not modelled in 2v2."
+  },
+  {
+   "id": "R13",
+   "ms": 1.4782999999999902,
+   "status": "not-estimated",
+   "reason": "Blastoise switches out: the replacement is not known."
+  },
+  {
+   "id": "R14",
+   "ms": 1.534400000000005,
+   "status": "not-estimated",
+   "reason": "Glaive Rush doubles the damage Baxcalibur takes: later moves are not modelled."
+  },
+  {
+   "id": "R15",
+   "ms": 3.935899999999947,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "R16",
+   "ms": 0.8360999999999876,
+   "status": "not-estimated",
+   "reason": "Status Z-Moves are not calculated."
+  },
+  {
+   "id": "R17",
+   "ms": 2.227500000000191,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F16a",
+   "ms": 2.6737000000000535,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F16b",
+   "ms": 2.263200000000097,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F18a",
+   "ms": 2.2641000000000986,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F15a",
+   "ms": 2.6786999999999352,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F17a",
+   "ms": 2.6403999999999996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F17b",
+   "ms": 2.592200000000048,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F17c",
+   "ms": 2.0277000000000953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F22a",
+   "ms": 1.707400000000007,
+   "status": "not-estimated",
+   "reason": "Opportunist copying a stat rise is not modelled in 2v2."
+  },
+  {
+   "id": "F14a",
+   "ms": 0.7652000000000498,
+   "status": "not-estimated",
+   "reason": "Sleep Talk is not modelled in 2v2."
+  },
+  {
+   "id": "F14b",
+   "ms": 2.041099999999915,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F14c",
+   "ms": 0.5525000000000091,
+   "status": "not-estimated",
+   "reason": "Sleep Talk is not modelled in 2v2."
+  },
+  {
+   "id": "F21a",
+   "ms": 0.741399999999885,
+   "status": "not-estimated",
+   "reason": "Me First is not modelled in 2v2."
+  },
+  {
+   "id": "F30a",
+   "ms": 2.379799999999932,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F30b",
+   "ms": 2.1567999999999756,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F30c",
+   "ms": 2.415899999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F30d",
+   "ms": 1.302900000000136,
+   "status": "not-estimated",
+   "reason": "As One (Spectrier) is not modelled in 2v2."
+  },
+  {
+   "id": "F30e",
+   "ms": 2.7614999999998417,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F31a",
+   "ms": 3.1273000000001048,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F31b",
+   "ms": 3.6527000000000953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F32a",
+   "ms": 3.682199999999966,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F13a",
+   "ms": 3.1390000000001237,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F12a",
+   "ms": 1.9749000000001615,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F10a",
+   "ms": 2.112100000000055,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F05a",
+   "ms": 4.759900000000016,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F05b",
+   "ms": 3.445500000000038,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F30f",
+   "ms": 3.197200000000066,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "F30g",
+   "ms": 3.437400000000025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K01a",
+   "ms": 1.6523000000001957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K01b",
+   "ms": 1.6010999999998603,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K01c",
+   "ms": 1.8115000000000236,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K01d",
+   "ms": 2.2623000000000957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K02a",
+   "ms": 1.9927000000000135,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K02b",
+   "ms": 2.1748999999999796,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K03a",
+   "ms": 2.8063999999999396,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K03b",
+   "ms": 1.4393999999999778,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K04a",
+   "ms": 1.8174000000001342,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K04b",
+   "ms": 1.6770000000001346,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K05a",
+   "ms": 6.145899999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K05b",
+   "ms": 4.693899999999985,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K05c",
+   "ms": 4.999900000000025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K05d",
+   "ms": 5.192000000000007,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K05e",
+   "ms": 3.9446000000000367,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K06a",
+   "ms": 2.766599999999926,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K06b",
+   "ms": 2.350199999999859,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K07a",
+   "ms": 1.8858000000000175,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K07b",
+   "ms": 1.9262999999998556,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K08a",
+   "ms": 1.8494000000000597,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K09a",
+   "ms": 1.7368999999998778,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K10a",
+   "ms": 1.9817000000000462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K10b",
+   "ms": 1.8858000000000175,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K10c",
+   "ms": 1.8215000000000146,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K11a",
+   "ms": 1.7949999999998454,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K11b",
+   "ms": 1.678000000000111,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K11c",
+   "ms": 1.7209000000000287,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K12a",
+   "ms": 1.699100000000044,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K13a",
+   "ms": 1.7660000000000764,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K14a",
+   "ms": 1.8530000000000655,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K15a",
+   "ms": 1.6112000000000535,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K16a",
+   "ms": 3.9187000000001717,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K17a",
+   "ms": 1.8068000000000666,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K18a",
+   "ms": 1.842300000000023,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "K19a",
+   "ms": 1.9390000000000782,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS01",
+   "ms": 3.219500000000153,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS02",
+   "ms": 3.3144999999999527,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS03",
+   "ms": 3.740400000000136,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS04",
+   "ms": 2.082499999999982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS05",
+   "ms": 1.9791999999999916,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS06",
+   "ms": 2.678000000000111,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS07",
+   "ms": 3.56880000000001,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS08",
+   "ms": 4.180100000000039,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS09",
+   "ms": 4.8146999999999025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS10",
+   "ms": 3.5510000000001583,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS11",
+   "ms": 3.1603000000000065,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS12",
+   "ms": 1.940499999999929,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS13",
+   "ms": 2.644700000000057,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS14",
+   "ms": 4.239900000000034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS15",
+   "ms": 3.044499999999971,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS16",
+   "ms": 2.813899999999876,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS17",
+   "ms": 2.3442999999999756,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS18",
+   "ms": 2.8282999999998992,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS19",
+   "ms": 2.83420000000001,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS20",
+   "ms": 2.575900000000047,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS21",
+   "ms": 2.904600000000073,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS22",
+   "ms": 1.7980000000000018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS23",
+   "ms": 2.3151000000000295,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZS24",
+   "ms": 1.6655000000000655,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV01",
+   "ms": 2.5538000000001375,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV02",
+   "ms": 2.908200000000079,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV03",
+   "ms": 3.1669999999999163,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV04",
+   "ms": 4.573700000000144,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV05",
+   "ms": 2.588700000000017,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV06",
+   "ms": 2.7700999999999567,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV07",
+   "ms": 1.7571000000000367,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV08",
+   "ms": 1.8902000000000498,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV09",
+   "ms": 2.167799999999943,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV10",
+   "ms": 2.9424000000001342,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV11",
+   "ms": 2.8699000000001433,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV12",
+   "ms": 2.5049000000001342,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV13",
+   "ms": 3.7229999999999563,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV14",
+   "ms": 3.6159000000000106,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV15",
+   "ms": 3.136700000000019,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV16",
+   "ms": 2.538200000000188,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV17",
+   "ms": 4.080999999999904,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV18",
+   "ms": 2.319500000000062,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV19",
+   "ms": 2.235099999999875,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV20",
+   "ms": 2.013500000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV21",
+   "ms": 1.9604999999999109,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV22",
+   "ms": 1.9497999999998683,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV23",
+   "ms": 2.0008000000000266,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV24",
+   "ms": 2.479000000000042,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV25",
+   "ms": 2.647899999999936,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV26",
+   "ms": 3.5502000000001317,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV27",
+   "ms": 2.036299999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV28",
+   "ms": 2.133600000000115,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV29",
+   "ms": 3.06899999999996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV30",
+   "ms": 1.9688999999998487,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV31",
+   "ms": 2.473700000000008,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV32",
+   "ms": 1.8724999999999454,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ZV33",
+   "ms": 2.1589000000001306,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV01",
+   "ms": 4.077299999999923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV02",
+   "ms": 5.807399999999916,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV03",
+   "ms": 5.198200000000043,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV04",
+   "ms": 2.9234999999998763,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV05",
+   "ms": 3.8424999999999727,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV06",
+   "ms": 2.3577999999999975,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV07",
+   "ms": 2.329300000000103,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV08",
+   "ms": 3.371599999999944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV09",
+   "ms": 3.2800999999999476,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV10",
+   "ms": 3.9407000000001062,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV11",
+   "ms": 4.101499999999987,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV12",
+   "ms": 1.9976999999998952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV13",
+   "ms": 4.870300000000043,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV14",
+   "ms": 4.052999999999884,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV15",
+   "ms": 2.680499999999938,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "MV16",
+   "ms": 2.5422000000000935,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA01",
+   "ms": 3.465199999999868,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA02",
+   "ms": 2.79970000000003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA03",
+   "ms": 2.6187999999999647,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA04",
+   "ms": 2.623100000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA06",
+   "ms": 2.816400000000158,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA07",
+   "ms": 2.358900000000176,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA08",
+   "ms": 3.0947000000001026,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA09",
+   "ms": 3.449500000000171,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA10",
+   "ms": 2.9373999999997977,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA11",
+   "ms": 3.0198999999997795,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "SA12",
+   "ms": 2.7836999999999534,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI01",
+   "ms": 5.863400000000183,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI02",
+   "ms": 2.7820999999999003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI03",
+   "ms": 2.2817000000000007,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI04",
+   "ms": 2.148400000000038,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI05",
+   "ms": 1.883900000000267,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI06",
+   "ms": 1.956300000000283,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI07",
+   "ms": 1.9652000000000953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI08",
+   "ms": 1.9710999999997512,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI09",
+   "ms": 1.9493000000002212,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI10",
+   "ms": 3.2572000000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FI11",
+   "ms": 3.504699999999957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF01",
+   "ms": 2.65079999999989,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF02",
+   "ms": 4.050600000000031,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF03",
+   "ms": 2.7937999999999192,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF04",
+   "ms": 2.6545999999998457,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF05",
+   "ms": 2.90099999999984,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF06",
+   "ms": 1.7492000000002008,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF07",
+   "ms": 3.970299999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "IF08",
+   "ms": 2.6255999999998494,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF01",
+   "ms": 2.06919999999991,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF02",
+   "ms": 2.141599999999926,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF03",
+   "ms": 2.507799999999861,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF04",
+   "ms": 2.1521999999999935,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF05",
+   "ms": 2.358400000000074,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF06",
+   "ms": 3.0545999999999367,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF07",
+   "ms": 2.79320000000007,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF08",
+   "ms": 3.5016999999998006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF09",
+   "ms": 2.672900000000027,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF10",
+   "ms": 2.5307999999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF11",
+   "ms": 2.939300000000003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF12",
+   "ms": 4.236099999999624,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF13",
+   "ms": 2.008900000000267,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF14",
+   "ms": 2.453700000000026,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF15",
+   "ms": 2.809099999999944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF16",
+   "ms": 1.2844999999997526,
+   "status": "not-estimated",
+   "reason": "Disguise against a multi-hit move is not modelled in 2v2."
+  },
+  {
+   "id": "VF17",
+   "ms": 2.2867999999998574,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF18",
+   "ms": 1.883600000000115,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF19",
+   "ms": 1.8782999999998538,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF20",
+   "ms": 2.1944000000003143,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF21",
+   "ms": 2.0378999999998086,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF22",
+   "ms": 2.1269999999999527,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VF23",
+   "ms": 2.8083999999998923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VH01",
+   "ms": 6.563099999999849,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VH02",
+   "ms": 5.327099999999973,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VH03",
+   "ms": 7.059600000000046,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI01",
+   "ms": 2.568000000000211,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI02",
+   "ms": 1.780399999999645,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI03",
+   "ms": 2.8308999999999287,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI05",
+   "ms": 1.9282000000002881,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI06",
+   "ms": 3.7876000000001113,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VI07",
+   "ms": 1.8191000000001623,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG01",
+   "ms": 2.5832000000000335,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG02",
+   "ms": 1.6612999999997555,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG03",
+   "ms": 1.8900999999996202,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG04",
+   "ms": 2.1766999999999825,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG05",
+   "ms": 2.869299999999839,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG06",
+   "ms": 3.790899999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG07",
+   "ms": 3.6780000000003383,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG08",
+   "ms": 1.8146999999999025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG09",
+   "ms": 2.3384000000000924,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG10",
+   "ms": 2.788000000000011,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG11",
+   "ms": 2.4617000000002918,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG12",
+   "ms": 1.3089999999997417,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG13",
+   "ms": 2.567399999999907,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG14",
+   "ms": 1.9726000000000568,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG15",
+   "ms": 1.769300000000385,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG16",
+   "ms": 2.05199999999968,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG23",
+   "ms": 1.7166999999999462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG24",
+   "ms": 1.9946999999997388,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG28",
+   "ms": 1.6585000000000036,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG25",
+   "ms": 2.3357999999998356,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG26",
+   "ms": 2.2599999999997635,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG27",
+   "ms": 2.0151999999998225,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG29",
+   "ms": 2.024399999999787,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG30",
+   "ms": 2.5895000000000437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG31",
+   "ms": 2.234899999999925,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "NG17",
+   "ms": 1.8438000000001011,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "NG18",
+   "ms": 1.7146999999999935,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "NG19",
+   "ms": 1.0414999999998145,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "NG20",
+   "ms": 1.4608000000002903,
+   "status": "not-estimated",
+   "reason": "An Ability Shield change under Neutralizing Gas is not modelled in 2v2."
+  },
+  {
+   "id": "NG21",
+   "ms": 1.227400000000216,
+   "status": "not-estimated",
+   "reason": "Lingering Aroma with Neutralizing Gas is not modelled in 2v2."
+  },
+  {
+   "id": "NG32",
+   "ms": 1.5886999999997897,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "NG22",
+   "ms": 1.9927999999999884,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG01",
+   "ms": 5.681799999999839,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG02",
+   "ms": 2.2510999999999513,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG03",
+   "ms": 2.021600000000035,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG04",
+   "ms": 3.10149999999976,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG05",
+   "ms": 1.733299999999872,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG06",
+   "ms": 1.694300000000112,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG07",
+   "ms": 3.35990000000038,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG08",
+   "ms": 2.590400000000045,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG09",
+   "ms": 1.8670999999999367,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG10",
+   "ms": 3.720600000000104,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG11",
+   "ms": 1.747200000000248,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG12",
+   "ms": 1.7008999999998196,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG13",
+   "ms": 1.72629999999981,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG14",
+   "ms": 2.399800000000141,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG15",
+   "ms": 2.537999999999556,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG16",
+   "ms": 2.2247999999999593,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG17",
+   "ms": 2.4764000000000124,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG18",
+   "ms": 3.7645000000002256,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG19",
+   "ms": 2.411399999999958,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG27",
+   "ms": 1.6736000000000786,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG28",
+   "ms": 1.5816999999997279,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG29",
+   "ms": 2.9960000000000946,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG30",
+   "ms": 1.7941000000000713,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG31",
+   "ms": 1.6576000000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG32",
+   "ms": 2.6671000000001186,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG34",
+   "ms": 1.639299999999821,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG35",
+   "ms": 1.4621000000001914,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG36",
+   "ms": 1.602100000000064,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG37",
+   "ms": 1.5329999999999018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG43",
+   "ms": 2.987799999999879,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG44",
+   "ms": 1.7495000000003529,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG45",
+   "ms": 1.6354000000001179,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG46",
+   "ms": 1.7444000000000415,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG50",
+   "ms": 1.7795000000000982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG51",
+   "ms": 2.4082000000003063,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG52",
+   "ms": 2.7824000000000524,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG53",
+   "ms": 1.6458000000002357,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG55",
+   "ms": 1.7415000000000873,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG56",
+   "ms": 2.4866000000001804,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG57",
+   "ms": 2.1988000000001193,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG58",
+   "ms": 1.18520000000035,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG59",
+   "ms": 1.645600000000286,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG60",
+   "ms": 1.759900000000016,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG61",
+   "ms": 3.7694000000001324,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG62",
+   "ms": 2.2595000000001164,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG63",
+   "ms": 1.7881999999999607,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG64",
+   "ms": 2.0219999999999345,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG65",
+   "ms": 2.416400000000067,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG66",
+   "ms": 3.0050999999998567,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG67",
+   "ms": 2.5635999999999513,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG20",
+   "ms": 2.1282000000001062,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG21",
+   "ms": 1.3009000000001834,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG22",
+   "ms": 1.1847999999999956,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG23",
+   "ms": 1.0965000000001055,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG24",
+   "ms": 1.0505000000002838,
+   "status": "not-estimated",
+   "reason": "Roar with Neutralizing Gas is not modelled in 2v2."
+  },
+  {
+   "id": "VG38",
+   "ms": 2.1954000000000633,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VG39",
+   "ms": 1.2139999999999418,
+   "status": "not-estimated",
+   "reason": "Magic Room with Neutralizing Gas is not modelled in 2v2."
+  },
+  {
+   "id": "VG40",
+   "ms": 1.3679999999999382,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VG41",
+   "ms": 1.8685999999997875,
+   "status": "not-estimated",
+   "reason": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "VGX35",
+   "ms": 1.7728000000001884,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VGX38",
+   "ms": 2.0230999999998858,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VGX38b",
+   "ms": 2.022200000000339,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01a-sv",
+   "ms": 1.509099999999762,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01a-champions",
+   "ms": 1.4121000000000095,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01a-usum",
+   "ms": 1.223700000000008,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01a-swsh",
+   "ms": 1.3021999999996297,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01b-sv",
+   "ms": 2.402100000000246,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01b-champions",
+   "ms": 2.665099999999711,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01b-usum",
+   "ms": 2.4710000000000036,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S01b-swsh",
+   "ms": 2.378600000000006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S02a",
+   "ms": 1.2906000000002678,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S02b",
+   "ms": 1.0144000000000233,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S02c",
+   "ms": 1.9821999999999207,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S02d",
+   "ms": 2.1062000000001717,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S02e-champions",
+   "ms": 0.9454000000000633,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S03a",
+   "ms": 2.034400000000005,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S03b",
+   "ms": 2.02579999999989,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S03c",
+   "ms": 2.0792999999998756,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S04a",
+   "ms": 2.2287999999998647,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S04b",
+   "ms": 1.5475000000001273,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S04c",
+   "ms": 1.0246000000001914,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S05-sv",
+   "ms": 3.8831999999997606,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S05-champions",
+   "ms": 5.317599999999857,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S05-usum",
+   "ms": 4.704200000000128,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S05-swsh",
+   "ms": 3.194300000000112,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S06a",
+   "ms": 1.1230000000000473,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S06b",
+   "ms": 1.3413000000000466,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S06c",
+   "ms": 0.9691000000002532,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S06d",
+   "ms": 1.0261000000000422,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S07a",
+   "ms": 0.9877999999998792,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S07b",
+   "ms": 1.2233000000001084,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S08a",
+   "ms": 1.9540999999999258,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S08b",
+   "ms": 3.692399999999907,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S08c",
+   "ms": 1.1242000000002008,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S08d",
+   "ms": 0.8677999999999884,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S09a",
+   "ms": 1.1233000000001994,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S09b",
+   "ms": 0.9205999999999221,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S09c",
+   "ms": 0.9863999999997759,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S09d-champions",
+   "ms": 1.1685999999999694,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S09e-swsh",
+   "ms": 0.8089999999997417,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S10-sv",
+   "ms": 2.2795999999998457,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S10-champions",
+   "ms": 2.173400000000129,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S10-usum",
+   "ms": 2.792500000000018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S11a",
+   "ms": 2.3906999999999243,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S11b",
+   "ms": 2.8315999999999804,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S11c",
+   "ms": 2.032000000000153,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S11d",
+   "ms": 2.0603000000000975,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S12a",
+   "ms": 2.152599999999893,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S12b",
+   "ms": 2.3372999999996864,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S12c",
+   "ms": 3.796600000000126,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S13a",
+   "ms": 2.7373999999999796,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S13b",
+   "ms": 0.9798000000000684,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S13c",
+   "ms": 1.3087000000000444,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S14a",
+   "ms": 0.8735999999998967,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S14b",
+   "ms": 1.0787000000000262,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S14c",
+   "ms": 1.3458000000000538,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S14d",
+   "ms": 1.049199999999928,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S14e",
+   "ms": 0.9301000000000386,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15a",
+   "ms": 1.1940000000004147,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15b",
+   "ms": 3.0350000000003092,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15c",
+   "ms": 1.1322000000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15d",
+   "ms": 0.9962000000000444,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15e",
+   "ms": 0.8476999999998043,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15f",
+   "ms": 1.0685000000003129,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S15g-champions",
+   "ms": 0.9654000000000451,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S16a",
+   "ms": 1.052299999999832,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S16b",
+   "ms": 0.9700000000002547,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S16c-usum",
+   "ms": 0.9419000000002598,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S17a",
+   "ms": 1.179200000000037,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S17b",
+   "ms": 1.3022000000000844,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S17c",
+   "ms": 1.4127000000003136,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S18a",
+   "ms": 3.6661999999996624,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S18b",
+   "ms": 2.432499999999891,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S18c",
+   "ms": 1.9924999999998363,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S19a",
+   "ms": 3.3030000000003383,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S19b",
+   "ms": 1.3559999999997672,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S19c",
+   "ms": 2.2714999999998327,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S19d",
+   "ms": 2.0399999999999636,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S19e-champions",
+   "ms": 2.0235999999999876,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S20a",
+   "ms": 1.877599999999802,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S20b",
+   "ms": 3.54970000000003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21a-sv",
+   "ms": 4.481699999999819,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21a-usum",
+   "ms": 3.8717000000001462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21b",
+   "ms": 1.9661999999998443,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21c-sv",
+   "ms": 3.794000000000324,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21c-usum",
+   "ms": 3.542699999999968,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21d-sv",
+   "ms": 3.1096999999999753,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S21d-usum",
+   "ms": 3.1233000000001994,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22a",
+   "ms": 1.1363000000001193,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22b",
+   "ms": 2.0073999999999614,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22c",
+   "ms": 1.0976999999998043,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22d-champions",
+   "ms": 0.9980999999997948,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22e-sun",
+   "ms": 1.183400000000347,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22e-rain",
+   "ms": 1.0891999999998916,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22e-sand",
+   "ms": 1.153899999999794,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S22f",
+   "ms": 0.9967000000001462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S23a",
+   "ms": 1.1665000000002692,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S23b",
+   "ms": 4.110599999999977,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S23c",
+   "ms": 1.3996000000001914,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S24a",
+   "ms": 1.26949999999988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S24b",
+   "ms": 1.2262000000000626,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S25a",
+   "ms": 1.3156000000003587,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S25b",
+   "ms": 0.9942999999998392,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S26a",
+   "ms": 2.3101999999998952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S26b",
+   "ms": 0.9703000000004067,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S26c",
+   "ms": 1.25649999999996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S26d",
+   "ms": 1.4333999999998923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S27a",
+   "ms": 1.4670999999998457,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S27b",
+   "ms": 1.171900000000278,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S28a",
+   "ms": 2.147399999999834,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S28b",
+   "ms": 0.9976000000001477,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S29a",
+   "ms": 1.65099999999984,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S29b",
+   "ms": 1.0488000000000284,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S30a",
+   "ms": 2.631199999999808,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S30b",
+   "ms": 1.1534999999998945,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S31a",
+   "ms": 3.2554000000000087,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S31b",
+   "ms": 4.3828999999996086,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S31c",
+   "ms": 0.9845000000000255,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S32a",
+   "ms": 2.8296000000000276,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S32b-swsh",
+   "ms": 2.387699999999768,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S32c",
+   "ms": 2.112300000000232,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S33a",
+   "ms": 2.0639000000001033,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S33b",
+   "ms": 1.123199999999997,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S33c",
+   "ms": 1.2405000000003383,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S34a",
+   "ms": 1.3627999999998792,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S34b",
+   "ms": 1.040899999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S34c",
+   "ms": 0.9610999999999876,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S34d",
+   "ms": 0.9375,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S34e",
+   "ms": 0.9039000000002488,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S35a",
+   "ms": 2.4418000000000575,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S35b",
+   "ms": 1.2597999999998137,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S35c",
+   "ms": 2.109399999999823,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S36a",
+   "ms": 1.1399000000001251,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S36b",
+   "ms": 1.4281000000000859,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S37a",
+   "ms": 1.221100000000206,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S37b",
+   "ms": 1.0747999999998683,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S37c",
+   "ms": 1.4272000000000844,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S37d",
+   "ms": 0.9785999999999149,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S37e",
+   "ms": 2.145799999999781,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S38a",
+   "ms": 1.3614999999999782,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S38b",
+   "ms": 1.091899999999896,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S38c",
+   "ms": 2.916899999999714,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S39a",
+   "ms": 1.2427999999999884,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S39b",
+   "ms": 1.3278999999997723,
+   "status": "not-estimated",
+   "reason": "Ingrain changes whether Venusaur is grounded: later moves are not modelled."
+  },
+  {
+   "id": "S39c",
+   "ms": 1.352100000000064,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S39d",
+   "ms": 1.2923000000000684,
+   "status": "not-estimated",
+   "reason": "Magnet Rise changes whether Magnezone is grounded: later moves are not modelled."
+  },
+  {
+   "id": "S40-sv",
+   "ms": 1.164299999999912,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S40-champions",
+   "ms": 0.89449999999988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a0-sv",
+   "ms": 1.3279999999999745,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a1-sv",
+   "ms": 2.2833999999998014,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a2-sv",
+   "ms": 2.1032000000000153,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a3-sv",
+   "ms": 2.0136999999999716,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a0-champions",
+   "ms": 1.1790999999998348,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a1-champions",
+   "ms": 2.4405000000001564,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a2-champions",
+   "ms": 2.011199999999917,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a0-usum",
+   "ms": 1.5505000000002838,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a1-usum",
+   "ms": 2.0421000000001186,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a2-usum",
+   "ms": 1.9850999999998749,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41a3-usum",
+   "ms": 1.7465000000001965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41b-sv",
+   "ms": 1.8771999999999025,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41b-usum",
+   "ms": 1.7559000000001106,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41c-sv",
+   "ms": 1.287300000000414,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41c-champions",
+   "ms": 1.121599999999944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S41d",
+   "ms": 1.172900000000027,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S42a",
+   "ms": 2.264799999999923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S42b0-champions",
+   "ms": 2.3793000000000575,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S42b1-champions",
+   "ms": 2.0059000000001106,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S42b2-champions",
+   "ms": 1.9746000000000095,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S42c",
+   "ms": 4.39469999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43a0",
+   "ms": 2.9764000000000124,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43a1",
+   "ms": 3.944300000000112,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43a2",
+   "ms": 4.536699999999655,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43a3",
+   "ms": 4.763500000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43a4",
+   "ms": 3.0666000000001077,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43b",
+   "ms": 2.8989999999998872,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S43c",
+   "ms": 2.9459999999999127,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44a-sv",
+   "ms": 2.1237999999998465,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44a-champions",
+   "ms": 1.6498999999998887,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44b",
+   "ms": 4.6643999999996595,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44c",
+   "ms": 3.111199999999826,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44d",
+   "ms": 3.8640999999997803,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S44e",
+   "ms": 0.8886000000002241,
+   "status": "not-estimated",
+   "reason": "Encore changes Garchomp's move: not modelled."
+  },
+  {
+   "id": "S45-sv",
+   "ms": 2.5902000000000953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S45-champions",
+   "ms": 2.2687000000000808,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S46a",
+   "ms": 2.154899999999998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S46b",
+   "ms": 1.1790000000000873,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S47a",
+   "ms": 2.032799999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S47b",
+   "ms": 0.5441000000000713,
+   "status": "not-estimated",
+   "reason": "Sleep Talk is not modelled in 2v2."
+  },
+  {
+   "id": "S47c",
+   "ms": 0.7845999999999549,
+   "status": "not-estimated",
+   "reason": "Uproar is not modelled in 2v2."
+  },
+  {
+   "id": "S48-SkillSwap-before",
+   "ms": 0.7053000000000793,
+   "status": "not-estimated",
+   "reason": "Skill Swap is not modelled and comes before another move."
+  },
+  {
+   "id": "S48-SkillSwap-last",
+   "ms": 1.9583999999999833,
+   "status": "ready",
+   "end": "Skill Swap is not modelled."
+  },
+  {
+   "id": "S48-Soak-before",
+   "ms": 1.0284999999998945,
+   "status": "not-estimated",
+   "reason": "Soak is not modelled and comes before another move."
+  },
+  {
+   "id": "S48-Soak-last",
+   "ms": 1.8174999999996544,
+   "status": "ready",
+   "end": "Soak is not modelled."
+  },
+  {
+   "id": "S48-Attract-before",
+   "ms": 0.996599999999944,
+   "status": "not-estimated",
+   "reason": "Attract is not modelled and comes before another move."
+  },
+  {
+   "id": "S48-Attract-last",
+   "ms": 1.8179000000000087,
+   "status": "ready",
+   "end": "Attract is not modelled."
+  },
+  {
+   "id": "S48-Transform-before",
+   "ms": 0.6179999999999382,
+   "status": "not-estimated",
+   "reason": "Transform is not modelled and comes before another move."
+  },
+  {
+   "id": "S48-Transform-last",
+   "ms": 1.7872999999999593,
+   "status": "ready",
+   "end": "Transform is not modelled."
+  },
+  {
+   "id": "S48-Bestow-before-usum",
+   "ms": 0.6332999999999629,
+   "status": "not-estimated",
+   "reason": "Bestow is not modelled and comes before another move."
+  },
+  {
+   "id": "S48-Bestow-last-usum",
+   "ms": 2.487800000000334,
+   "status": "ready",
+   "end": "Bestow is not modelled."
+  },
+  {
+   "id": "S48-Encore-noLastMove",
+   "ms": 0.8490000000001601,
+   "status": "not-estimated",
+   "reason": "Encore needs Garchomp's move from the last turn."
+  },
+  {
+   "id": "S48-Imprison-noMoves",
+   "ms": 1.2791000000001986,
+   "status": "not-estimated",
+   "reason": "Imprison needs Gengar's moves."
+  },
+  {
+   "id": "S48-PainSplit-dynamax-swsh",
+   "ms": 0.9567000000001826,
+   "status": "not-estimated",
+   "reason": "Pain Split with a Dynamaxed Pokémon is not modelled in 2v2."
+  },
+  {
+   "id": "S48-Disguise-selfhit",
+   "ms": 0.8427000000001499,
+   "status": "not-estimated",
+   "reason": "Disguise against a confusion self-hit is not modelled in 2v2."
+  },
+  {
+   "id": "S48-Roost-flying",
+   "ms": 1.065299999999752,
+   "status": "not-estimated",
+   "reason": "Roost changes Dragonite's type: later moves are not modelled."
+  },
+  {
+   "id": "S48-PartingShot-before",
+   "ms": 0.9149000000002161,
+   "status": "not-estimated",
+   "reason": "Grimmsnarl switches out: the replacement is not known."
+  },
+  {
+   "id": "S48-PartingShot-clearbody",
+   "ms": 2.6179000000001906,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S48-Teleport-noSwitch",
+   "ms": 1.9400000000000546,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S48-UTurn-last",
+   "ms": 2.742699999999786,
+   "status": "ready",
+   "end": "Vespiquen switches out: the replacement is not known."
+  },
+  {
+   "id": "S49",
+   "ms": 10.692199999999957,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "S50",
+   "ms": 1.3580000000001746,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER01a",
+   "ms": 0.8344999999999345,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER01b",
+   "ms": 0.8055999999996857,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER01c",
+   "ms": 2.319800000000214,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER01d-champions",
+   "ms": 1.4549999999999272,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER02-usum",
+   "ms": 0.8086000000002969,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER03-sv",
+   "ms": 1.0351000000000568,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER04",
+   "ms": 1.1418000000003303,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER05",
+   "ms": 0.9785999999999149,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER06a",
+   "ms": 0.7219999999997526,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER06b",
+   "ms": 3.869499999999789,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER07",
+   "ms": 1.1310999999996056,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER08a",
+   "ms": 0.8238999999998668,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER08b",
+   "ms": 0.9238000000000284,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER09a",
+   "ms": 0.8777000000000044,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER09b",
+   "ms": 0.9699999999997999,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER09c-champions",
+   "ms": 0.8117999999999483,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER10a",
+   "ms": 0.8197000000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER10b",
+   "ms": 0.7562000000002627,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER10c",
+   "ms": 2.1198999999996886,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER10d",
+   "ms": 1.356199999999717,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER10e",
+   "ms": 1.669800000000123,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER11a",
+   "ms": 1.151299999999992,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER11b",
+   "ms": 1.0435999999999694,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER11c",
+   "ms": 0.8670000000001892,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER12",
+   "ms": 0.8336999999996806,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER13",
+   "ms": 0.7764000000001943,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER14",
+   "ms": 0.9403999999999542,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER15",
+   "ms": 2.3036999999999352,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER16a",
+   "ms": 0.9283000000000357,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER16b",
+   "ms": 1.830500000000029,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER16c",
+   "ms": 0.8953000000001339,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER16d",
+   "ms": 0.852900000000318,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER17",
+   "ms": 1.4701000000000022,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER18a",
+   "ms": 2.2934000000000196,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER18b",
+   "ms": 0.8377999999997883,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER18c",
+   "ms": 1.7278999999998632,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER18d",
+   "ms": 1.0300000000002,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER19a-sv",
+   "ms": 2.069499999999607,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER19a-champions",
+   "ms": 2.048700000000281,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER19c",
+   "ms": 1.9645000000000437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER19d",
+   "ms": 1.0460000000002765,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER20",
+   "ms": 1.0081999999997606,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER21a",
+   "ms": 0.8207000000002154,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER21b",
+   "ms": 1.9169999999999163,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER21c",
+   "ms": 1.965099999999893,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER22a-sv",
+   "ms": 1.0751000000000204,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER22a-champions",
+   "ms": 0.9003999999999905,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER22c",
+   "ms": 0.8359000000000378,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER23",
+   "ms": 0.948500000000422,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER25a",
+   "ms": 0.746599999999944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER25b",
+   "ms": 0.7089999999998327,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER25c",
+   "ms": 1.9326000000000931,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER27",
+   "ms": 0.8807999999999083,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER28",
+   "ms": 0.8445999999999003,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER29a",
+   "ms": 1.0036000000000058,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER29b",
+   "ms": 1.0291000000001986,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER29c",
+   "ms": 1.0113000000001193,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER31a-usum",
+   "ms": 2.7135000000002947,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER31b-usum",
+   "ms": 0.8389999999999418,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER32a",
+   "ms": 1.9750999999996566,
+   "status": "ready",
+   "end": "Blastoise switches out: the replacement is not known."
+  },
+  {
+   "id": "ER32b-usum",
+   "ms": 1.8490999999999076,
+   "status": "ready",
+   "end": "Golisopod switches out: the replacement is not known."
+  },
+  {
+   "id": "ER34-swsh",
+   "ms": 3.0011999999996988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER37",
+   "ms": 1.0323000000003049,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER38",
+   "ms": 0.9462000000003172,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER39",
+   "ms": 1.098399999999856,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER40",
+   "ms": 0.8368000000000393,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER41a",
+   "ms": 0.8652999999999338,
+   "status": "ready",
+   "end": "Neutralizing Gas ending is not modelled in 2v2."
+  },
+  {
+   "id": "ER41b",
+   "ms": 2.2934000000000196,
+   "status": "ready",
+   "end": "Pickup is not modelled in 2v2."
+  },
+  {
+   "id": "ER41c",
+   "ms": 0.7129999999997381,
+   "status": "ready",
+   "end": "Harvest is not modelled in 2v2."
+  },
+  {
+   "id": "ER41d",
+   "ms": 0.6471000000001368,
+   "status": "ready",
+   "end": "Cud Chew is not modelled in 2v2."
+  },
+  {
+   "id": "ER41e",
+   "ms": 0.87729999999965,
+   "status": "ready",
+   "end": "Future Sight landing is not modelled in 2v2."
+  },
+  {
+   "id": "ER41f",
+   "ms": 0.9030000000002474,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "ER41g-usum",
+   "ms": 0.8865999999998166,
+   "status": "ready",
+   "end": "Zen Mode changing Darmanitan's form is not modelled in 2v2."
+  },
+  {
+   "id": "ER41h-swsh",
+   "ms": 2.312999999999647,
+   "status": "ready",
+   "end": "G-Max Wildfire's damage over time is not modelled in 2v2."
+  },
+  {
+   "id": "ER45-usum",
+   "ms": 0.9655999999999949,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E01-sv",
+   "ms": 3.366099999999733,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E01-champions",
+   "ms": 2.5083999999997104,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E01-swsh",
+   "ms": 2.660200000000259,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E01-usum",
+   "ms": 2.610200000000077,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E02",
+   "ms": 3.6042999999999665,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E03-BodySlam",
+   "ms": 1.6997000000001208,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E03-HealPulse",
+   "ms": 1.2092000000002372,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E03-PollenPuff",
+   "ms": 1.5114000000003216,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E03-AromaticMist",
+   "ms": 1.1854000000002998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E03-DragonDarts",
+   "ms": 0.9023999999999432,
+   "status": "not-estimated",
+   "reason": "Dragon Darts aimed where its user now stands is not modelled in 2v2."
+  },
+  {
+   "id": "E04",
+   "ms": 2.5949999999998,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E05-FlashCannon",
+   "ms": 2.2112999999999374,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E05-SnipeShot",
+   "ms": 1.980199999999968,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E05-BodySlam",
+   "ms": 2.3388999999997395,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E06",
+   "ms": 3.3070000000002437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E07a-sv",
+   "ms": 1.1552999999998974,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E07a-champions",
+   "ms": 1.0195000000003347,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E07b",
+   "ms": 1.1048000000000684,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E08",
+   "ms": 0.9358999999999469,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E09a-sv",
+   "ms": 3.39870000000019,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E09a-champions",
+   "ms": 3.8946999999998297,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E09b-sv",
+   "ms": 2.980399999999918,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E09b-swsh",
+   "ms": 2.8058999999998377,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E09b-usum",
+   "ms": 2.2697000000002845,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E10a",
+   "ms": 2.469500000000153,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E10b",
+   "ms": 2.678899999999885,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E11a",
+   "ms": 2.99980000000005,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E11b",
+   "ms": 4.014400000000023,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E12",
+   "ms": 2.7833999999998014,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E46-SnipeShot",
+   "ms": 1.958599999999933,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E46-FlashCannon",
+   "ms": 1.9695000000001528,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E13-sv",
+   "ms": 5.213799999999992,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E13-champions",
+   "ms": 6.062800000000152,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E13-swsh",
+   "ms": 6.117799999999988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E13-usum",
+   "ms": 4.984100000000126,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E14",
+   "ms": 5.765599999999722,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E15a",
+   "ms": 3.2676000000001295,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E15b",
+   "ms": 3.0672999999997046,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16a",
+   "ms": 3.309700000000248,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16b",
+   "ms": 2.2513999999996486,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16c",
+   "ms": 2.1267000000002554,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16d",
+   "ms": 1.4131999999999607,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16e",
+   "ms": 2.6793000000002394,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16f",
+   "ms": 1.0479999999997744,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16g",
+   "ms": 1.078899999999976,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E16h",
+   "ms": 1.0199999999999818,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E17a",
+   "ms": 0.8894000000000233,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E17b",
+   "ms": 1.092200000000048,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E17c",
+   "ms": 1.4886000000001332,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E18a",
+   "ms": 1.3589999999999236,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E18b-champions",
+   "ms": 1.633900000000267,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E18c-swsh",
+   "ms": 1.6151999999997315,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E18d-usum",
+   "ms": 1.4432000000001608,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E19a",
+   "ms": 4.673600000000079,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E19b",
+   "ms": 5.1228000000000975,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-Leftovers",
+   "ms": 1.6837000000000444,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-BlackSludge",
+   "ms": 1.561699999999746,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-ToxicOrb",
+   "ms": 3.7964999999999236,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-FlameOrb",
+   "ms": 1.6681000000003223,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-StickyBarb",
+   "ms": 1.6053999999999178,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E20-Micle",
+   "ms": 1.7982999999999265,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E21-sv",
+   "ms": 5.640899999999874,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E21-usum",
+   "ms": 3.8049999999998363,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E22a",
+   "ms": 3.0529999999998836,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E22b",
+   "ms": 0.5023999999998523,
+   "status": "not-estimated",
+   "reason": "Electric Seed received by Garchomp is not modelled in 2v2."
+  },
+  {
+   "id": "E22c",
+   "ms": 0.3706999999999425,
+   "status": "not-estimated",
+   "reason": "Room Service received by Garchomp is not modelled in 2v2."
+  },
+  {
+   "id": "E23",
+   "ms": 1.4998000000000502,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E24-sv",
+   "ms": 3.5102999999999156,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E24-champions",
+   "ms": 2.8951999999999316,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E24-usum",
+   "ms": 3.163800000000265,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E24-swsh",
+   "ms": 2.5729999999998654,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E25a",
+   "ms": 5.880900000000111,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E25b",
+   "ms": 3.688299999999799,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E25c",
+   "ms": 4.488600000000133,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E25d",
+   "ms": 2.8614000000002306,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E26",
+   "ms": 4.2292999999999665,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E26b",
+   "ms": 4.057199999999739,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27a-sv",
+   "ms": 3.532799999999952,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27a-champions",
+   "ms": 4.33829999999989,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27a-usum",
+   "ms": 2.9901999999997315,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27a-swsh",
+   "ms": 3.0086999999998625,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27b",
+   "ms": 3.512200000000121,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27c",
+   "ms": 2.22420000000011,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27d",
+   "ms": 2.369799999999941,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E27e",
+   "ms": 2.4497999999998683,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E28",
+   "ms": 2.694600000000264,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E29",
+   "ms": 5.903099999999995,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E30a",
+   "ms": 4.526100000000042,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E30b",
+   "ms": 8.228599999999915,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E30c",
+   "ms": 19.455199999999877,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E31a",
+   "ms": 11.082600000000184,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E31b",
+   "ms": 6.698799999999665,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E31c",
+   "ms": 2.725800000000163,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E31d",
+   "ms": 3.5643999999997504,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E31e",
+   "ms": 3.555200000000241,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E32a",
+   "ms": 2.9821999999999207,
+   "status": "ready",
+   "end": "Vespiquen switches out: the replacement is not known."
+  },
+  {
+   "id": "E32b",
+   "ms": 2.172299999999723,
+   "status": "not-estimated",
+   "reason": "Vespiquen switches out: the replacement is not known."
+  },
+  {
+   "id": "E33",
+   "ms": 2.7416000000002896,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E34a",
+   "ms": 3.4049999999997453,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E34b",
+   "ms": 1.4333999999998923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E35",
+   "ms": 2.394999999999982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E36",
+   "ms": 2.874699999999848,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E37",
+   "ms": 1.0072000000000116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E38",
+   "ms": 2.784700000000157,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E39a-usum",
+   "ms": 2.365700000000288,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E39b-usum",
+   "ms": 2.408400000000256,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E43-30",
+   "ms": 3.697900000000118,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E43-300",
+   "ms": 10.292499999999563,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E44",
+   "ms": 17.83010000000013,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E47",
+   "ms": 2.4057999999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E40-Magician",
+   "ms": 1.1298000000001593,
+   "status": "not-estimated",
+   "reason": "Magician into a Substitute is not modelled in 2v2."
+  },
+  {
+   "id": "E40-MaxMove-swsh",
+   "ms": 1.5943999999999505,
+   "status": "not-estimated",
+   "reason": "Max Moves into a Substitute is not modelled in 2v2."
+  },
+  {
+   "id": "E40-ParentalBond-usum",
+   "ms": 1.2197000000001026,
+   "status": "not-estimated",
+   "reason": "Parental Bond into a Substitute is not modelled in 2v2."
+  },
+  {
+   "id": "E40-MindBlown-usum",
+   "ms": 1.5680999999999585,
+   "status": "not-estimated",
+   "reason": "Mind Blown into a Substitute is not modelled in 2v2."
+  },
+  {
+   "id": "E40-IcicleSpear-Multiscale",
+   "ms": 1.2351000000003296,
+   "status": "not-estimated",
+   "reason": "Icicle Spear into Dragonite's Substitute with Multiscale is not modelled in 2v2."
+  },
+  {
+   "id": "E40-IcicleSpear-Stamina",
+   "ms": 1.3792999999996027,
+   "status": "not-estimated",
+   "reason": "Icicle Spear into Mudsdale's Substitute with Stamina is not modelled in 2v2."
+  },
+  {
+   "id": "E40-IcicleSpear-YacheBerry",
+   "ms": 1.098399999999856,
+   "status": "not-estimated",
+   "reason": "Icicle Spear into Garchomp's Substitute with Yache Berry is not modelled in 2v2."
+  },
+  {
+   "id": "E40-DualWingbeat-Mummy-swsh",
+   "ms": 1.1882000000000517,
+   "status": "not-estimated",
+   "reason": "Dual Wingbeat into Cofagrigus's Substitute with Mummy is not modelled in 2v2."
+  },
+  {
+   "id": "E40-Disguise",
+   "ms": 0.8731999999999971,
+   "status": "not-estimated",
+   "reason": "Disguise against a multi-hit move is not modelled in 2v2."
+  },
+  {
+   "id": "E40-FlameBurst-usum",
+   "ms": 0.508600000000115,
+   "status": "not-estimated",
+   "reason": "Flame Burst is not modelled in 2v2."
+  },
+  {
+   "id": "E45a",
+   "ms": 2.145600000000286,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E45b",
+   "ms": 7.872199999999793,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "E41",
+   "ms": 6.315799999999854,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT01",
+   "ms": 3.155899999999747,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT02",
+   "ms": 4.9223000000001775,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT03",
+   "ms": 3.169000000000324,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT04a",
+   "ms": 2.2359999999998763,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT04b",
+   "ms": 2.072400000000016,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT05",
+   "ms": 3.9391999999998006,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "INT06",
+   "ms": 1.5992000000001099,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV01",
+   "ms": 1.7395999999998821,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV02",
+   "ms": 4.005999999999858,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV03",
+   "ms": 1.1859999999996944,
+   "status": "not-estimated",
+   "reason": "Snorlax switches out: the replacement is not known."
+  },
+  {
+   "id": "RS-RV03b",
+   "ms": 0.5554000000001906,
+   "status": "not-estimated",
+   "reason": "Snorlax switches out: the replacement is not known."
+  },
+  {
+   "id": "RS-RV04",
+   "ms": 3.219100000000253,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV05",
+   "ms": 0.7671999999997752,
+   "status": "not-estimated",
+   "reason": "Opportunist copying a stat rise is not modelled in 2v2."
+  },
+  {
+   "id": "RS-RV06",
+   "ms": 0.9563999999995758,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV07",
+   "ms": 0.9198999999998705,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV08",
+   "ms": 1.2850000000003092,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV09",
+   "ms": 1.062199999999848,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV09b",
+   "ms": 0.8973000000000866,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV09c",
+   "ms": 0.8029000000001361,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV10",
+   "ms": 4.147799999999734,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV10b",
+   "ms": 1.4163000000003194,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV10c",
+   "ms": 2.7989000000002306,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV10d",
+   "ms": 2.259700000000066,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV11",
+   "ms": 2.555499999999938,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV11b",
+   "ms": 2.540899999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV12",
+   "ms": 1.5270000000000437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV12b",
+   "ms": 1.4984999999996944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV13",
+   "ms": 5.679200000000037,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV13b",
+   "ms": 4.390000000000327,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV14",
+   "ms": 2.112699999999677,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV14b",
+   "ms": 3.1028000000001157,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV15",
+   "ms": 2.0549999999998363,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV15b",
+   "ms": 1.4441999999999098,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RVP1",
+   "ms": 139.0936999999999,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV16",
+   "ms": 3.3939000000000306,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV16b",
+   "ms": 3.7598999999995613,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV17",
+   "ms": 2.646600000000035,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV17b",
+   "ms": 1.8940000000002328,
+   "status": "not-estimated",
+   "reason": "Snorlax switches out: the replacement is not known."
+  },
+  {
+   "id": "RS-RV18",
+   "ms": 7.1370999999999185,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV18b",
+   "ms": 2.6190999999998894,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RS-RV19",
+   "ms": 3.310899999999947,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV01",
+   "ms": 1.6799000000000888,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV02",
+   "ms": 1.54529999999977,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV03",
+   "ms": 1.1325000000001637,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV04",
+   "ms": 1.8825000000001637,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV05",
+   "ms": 0.9715000000001055,
+   "status": "not-estimated",
+   "reason": "Psychic Noise is not modelled in 2v2."
+  },
+  {
+   "id": "RT-RV06",
+   "ms": 0.8065000000001419,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV07",
+   "ms": 0.8797000000004118,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV08",
+   "ms": 0.9945000000002437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV09",
+   "ms": 0.9450999999999112,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV10",
+   "ms": 0.7647000000001754,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV11",
+   "ms": 0.8750999999997475,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV12",
+   "ms": 1.0702000000001135,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV13",
+   "ms": 0.9342000000001462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV14",
+   "ms": 0.7685999999998785,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV15",
+   "ms": 0.9068999999999505,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV16",
+   "ms": 0.9259999999999309,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV17",
+   "ms": 0.7595000000001164,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV18",
+   "ms": 1.8008999999997286,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV19",
+   "ms": 2.574200000000019,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV20",
+   "ms": 1.1228000000000975,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV21",
+   "ms": 1.6136999999998807,
+   "status": "ready",
+   "end": "Harvest is not modelled in 2v2."
+  },
+  {
+   "id": "RT-RV22",
+   "ms": 1.4697000000001026,
+   "status": "ready",
+   "end": "Pickup is not modelled in 2v2."
+  },
+  {
+   "id": "RT-RV23",
+   "ms": 1.2550999999998567,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RV05b",
+   "ms": 4.188499999999749,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RT01",
+   "ms": 1.3112999999998465,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RT03",
+   "ms": 1.1851000000001477,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RT-RT04",
+   "ms": 1.2899999999999636,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE01b",
+   "ms": 0.8926000000001295,
+   "status": "not-estimated",
+   "reason": "One-hit KO move: no damage range."
+  },
+  {
+   "id": "RE02",
+   "ms": 3.2807999999999993,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE03",
+   "ms": 3.617899999999736,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE03b",
+   "ms": 2.3919999999998254,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE04",
+   "ms": 1.070299999999861,
+   "status": "not-estimated",
+   "reason": "Matcha Gotcha heals from more than one target: not modelled."
+  },
+  {
+   "id": "RE05",
+   "ms": 0.9245999999998276,
+   "status": "not-estimated",
+   "reason": "Rock Slide heals from more than one target: not modelled."
+  },
+  {
+   "id": "RE06",
+   "ms": 2.4064000000003034,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE07",
+   "ms": 4.233700000000226,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE08",
+   "ms": 2.701599999999871,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE09",
+   "ms": 2.9146999999998116,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE10",
+   "ms": 3.2426000000000386,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE11",
+   "ms": 2.900000000000091,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE20",
+   "ms": 3.3760999999999513,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE22",
+   "ms": 3.362499999999727,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE23",
+   "ms": 1.600800000000163,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE24-usum",
+   "ms": 3.8006000000000313,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE30",
+   "ms": 1.8247999999998683,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE31",
+   "ms": 3.28899999999976,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE32",
+   "ms": 4.286999999999807,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE33",
+   "ms": 2.7838999999999032,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE40",
+   "ms": 2.428200000000288,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE41",
+   "ms": 3.280300000000352,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE42",
+   "ms": 4.766100000000279,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE43",
+   "ms": 0.9329999999999927,
+   "status": "not-estimated",
+   "reason": "Fling is not verified for this game."
+  },
+  {
+   "id": "RE44",
+   "ms": 6.449300000000221,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE46",
+   "ms": 3.955800000000181,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE48",
+   "ms": 3.0914999999999964,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE49",
+   "ms": 2.5636999999996988,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE52",
+   "ms": 6.360800000000381,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE55",
+   "ms": 4.9802999999997155,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE55-usum",
+   "ms": 3.692399999999907,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE56",
+   "ms": 6.530199999999695,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE60",
+   "ms": 7.7642000000000735,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE61",
+   "ms": 2.1999000000000706,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE62",
+   "ms": 1.2536000000000058,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE45b",
+   "ms": 4.673800000000028,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE63",
+   "ms": 3.8769999999999527,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE64-swsh",
+   "ms": 1.5836999999996806,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE70",
+   "ms": 3.182199999999739,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE71",
+   "ms": 3.3717000000001462,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE72",
+   "ms": 5.588200000000143,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE80",
+   "ms": 5.575400000000172,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE81",
+   "ms": 4.975400000000263,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE82",
+   "ms": 1.137699999999768,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE83",
+   "ms": 1.4144000000001142,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE84",
+   "ms": 1.3472000000001572,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE85",
+   "ms": 2.3643999999999323,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE86",
+   "ms": 5.0866000000000895,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE87",
+   "ms": 9.126399999999649,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE88",
+   "ms": 7.1030000000000655,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE89",
+   "ms": 4.187800000000152,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE90-swsh",
+   "ms": 7.560899999999947,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "RE64b-swsh",
+   "ms": 3.0397000000002663,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX01",
+   "ms": 0.9797000000003209,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX01b",
+   "ms": 2.024000000000342,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX02",
+   "ms": 4.0767000000000735,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX02b",
+   "ms": 3.9032999999999447,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX04",
+   "ms": 4.883800000000065,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX05",
+   "ms": 2.8309000000003834,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX06",
+   "ms": 1.1539000000002488,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX07",
+   "ms": 1.4523999999996704,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX08",
+   "ms": 3.5658000000003085,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX08b",
+   "ms": 6.55560000000014,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX09",
+   "ms": 2.3753999999998996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FE-FX10",
+   "ms": 5.314499999999953,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H1-1",
+   "ms": 0.907799999999952,
+   "status": "not-estimated",
+   "reason": "Sitrus Berry after a confusion self-hit with Anger Shell is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H1-2",
+   "ms": 0.7266000000004169,
+   "status": "not-estimated",
+   "reason": "Sitrus Berry after a confusion self-hit with Anger Shell is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H1-3",
+   "ms": 0.7611000000001695,
+   "status": "not-estimated",
+   "reason": "Sitrus Berry after a confusion self-hit with Anger Shell is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H1-4",
+   "ms": 0.6523999999999432,
+   "status": "not-estimated",
+   "reason": "Sitrus Berry after a confusion self-hit with Berserk is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H1-5",
+   "ms": 1.8281000000001768,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H1-6",
+   "ms": 2.207499999999982,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H1-7",
+   "ms": 1.4172000000003209,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-1",
+   "ms": 2.227599999999711,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-2",
+   "ms": 2.12480000000005,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-3",
+   "ms": 2.2806000000000495,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-4",
+   "ms": 2.5791000000003805,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-5",
+   "ms": 4.824200000000019,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-6",
+   "ms": 2.21100000000024,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-7",
+   "ms": 0.9277000000001863,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-8",
+   "ms": 1.7379000000000815,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-9",
+   "ms": 1.070600000000013,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-10",
+   "ms": 1.8618000000001302,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-11",
+   "ms": 3.149199999999837,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H2-12",
+   "ms": 0.9400000000000546,
+   "status": "not-estimated",
+   "reason": "Punishment with Jolteon's accuracy or evasion stage from this turn is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H2-13",
+   "ms": 0.725800000000163,
+   "status": "not-estimated",
+   "reason": "Opportunist copying a stat rise is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H3-1",
+   "ms": 1.5792999999998756,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H4-1",
+   "ms": 1.812800000000152,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H4-2",
+   "ms": 1.1979000000001179,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H4-3",
+   "ms": 1.3531000000002678,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H4-4",
+   "ms": 1.358299999999872,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H4-5",
+   "ms": 1.3337000000001353,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-1",
+   "ms": 2.9851000000003296,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-2",
+   "ms": 4.6274999999996,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-3",
+   "ms": 3.5286000000000968,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-4",
+   "ms": 4.478399999999965,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-5",
+   "ms": 4.591500000000451,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H5-6",
+   "ms": 5.497100000000046,
+   "status": "not-estimated",
+   "reason": "Sparkling Aria's burn cure after Primarina faints in the move is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H6-2",
+   "ms": 1.2141999999998916,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H6-3",
+   "ms": 1.021099999999933,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H6-4",
+   "ms": 2.12519999999995,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H7-1",
+   "ms": 2.4243999999998778,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H7-2",
+   "ms": 2.1743999999998778,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H7-3",
+   "ms": 1.9312999999997373,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H7-4",
+   "ms": 3.3714999999997417,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-1",
+   "ms": 3.2458999999998923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-2",
+   "ms": 4.237599999999929,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-3",
+   "ms": 4.020899999999983,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-4",
+   "ms": 4.502399999999852,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-5",
+   "ms": 3.0225000000000364,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-7",
+   "ms": 3.6238000000003012,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H8-8",
+   "ms": 3.5400000000004184,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-L1-1",
+   "ms": 3.215099999999893,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-L1-2",
+   "ms": 1.762499999999818,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-L2-1",
+   "ms": 1.4621999999999389,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-L2-2",
+   "ms": 1.43520000000035,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M2-1",
+   "ms": 2.8783000000003085,
+   "status": "ready",
+   "end": "Alakazam switches out: the replacement is not known."
+  },
+  {
+   "id": "VE-M2-2",
+   "ms": 2.6159999999999854,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M4-1",
+   "ms": 1.4681000000000495,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M4-2",
+   "ms": 1.4488999999998668,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M4-3",
+   "ms": 1.4855000000002292,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M4-4",
+   "ms": 1.4522999999999229,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-1",
+   "ms": 3.452299999999923,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-2",
+   "ms": 5.183700000000044,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-3",
+   "ms": 3.6872000000003027,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-4",
+   "ms": 1.643699999999626,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-5",
+   "ms": 2.875500000000102,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F2-1",
+   "ms": 0.9483000000000175,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F2-2",
+   "ms": 0.9488000000001193,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F3-1",
+   "ms": 2.684099999999944,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F3-2",
+   "ms": 4.3759000000000015,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F4-2",
+   "ms": 1.722400000000107,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-1",
+   "ms": 5.428200000000288,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-2",
+   "ms": 7.406100000000151,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-3",
+   "ms": 2.9425999999998567,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-4",
+   "ms": 2.7256999999999607,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-5",
+   "ms": 2.6120999999998276,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-6",
+   "ms": 1.8945000000003347,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-7",
+   "ms": 3.0749000000000706,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-8",
+   "ms": 2.5819000000001324,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-9",
+   "ms": 2.99980000000005,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-11",
+   "ms": 2.691899999999805,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-12",
+   "ms": 2.4536000000002787,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-UI-13",
+   "ms": 1.7931000000003223,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M1-1",
+   "ms": 2.4288000000001375,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M1-2",
+   "ms": 1.6867999999999483,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M1-3",
+   "ms": 2.0183999999999287,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-M1-4",
+   "ms": 3.55580000000009,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-ST-1",
+   "ms": 1.2971999999999753,
+   "status": "not-estimated",
+   "reason": "Stored Power with Malamar's accuracy or evasion stage from this turn is not modelled in 2v2."
+  },
+  {
+   "id": "VE-ST-2",
+   "ms": 3.155500000000302,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-ST-3",
+   "ms": 1.2935999999999694,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-ST-5",
+   "ms": 1.3697000000001935,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-ST-4",
+   "ms": 3.7569000000003143,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-6",
+   "ms": 9.80679999999984,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-7",
+   "ms": 2.2504000000003543,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-8",
+   "ms": 3.7467999999998938,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-9",
+   "ms": 3.528799999999592,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-10",
+   "ms": 1.896900000000187,
+   "status": "not-estimated",
+   "reason": "Starf Berry between the hits of Bullet Seed is not modelled in 2v2."
+  },
+  {
+   "id": "VE-F1-13",
+   "ms": 2.34270000000015,
+   "status": "not-estimated",
+   "reason": "Ganlon Berry between the hits of Bullet Seed is not modelled in 2v2."
+  },
+  {
+   "id": "VE-F1-14",
+   "ms": 3.0171000000000276,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-15",
+   "ms": 1.5765999999998712,
+   "status": "not-estimated",
+   "reason": "Starf Berry raises a random stat"
+  },
+  {
+   "id": "VE-F1-11",
+   "ms": 4.206500000000233,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-F1-12",
+   "ms": 3.475500000000011,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VE-H1-C1",
+   "ms": 0.742200000000139,
+   "status": "not-estimated",
+   "reason": "Sitrus Berry after a confusion self-hit with Berserk is not modelled in 2v2."
+  },
+  {
+   "id": "VE-H1-C2",
+   "ms": 1.5823999999997795,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FT-FX01",
+   "ms": 1.437199999999848,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FT-FX02",
+   "ms": 1.3301000000001295,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE01",
+   "ms": 1.1579999999999018,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE02",
+   "ms": 1.3454000000001543,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE03",
+   "ms": 4.141900000000078,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE04",
+   "ms": 3.7321999999999207,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE05",
+   "ms": 5.291300000000319,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE06",
+   "ms": 1.4302000000002408,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE07",
+   "ms": 1.3497000000002117,
+   "status": "ready",
+   "end": "Harvest is not modelled in 2v2."
+  },
+  {
+   "id": "VT-VE08",
+   "ms": 1.2740999999996347,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE09",
+   "ms": 1.295799999999872,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE10",
+   "ms": 1.2142000000003463,
+   "status": "ready",
+   "end": "Pickup is not modelled in 2v2."
+  },
+  {
+   "id": "VT-VE11",
+   "ms": 1.2863999999999578,
+   "status": "ready",
+   "end": "Pickup is not modelled in 2v2."
+  },
+  {
+   "id": "VT-VE12",
+   "ms": 1.2106000000003405,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE13",
+   "ms": 1.6113000000004831,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE14",
+   "ms": 1.1395000000002256,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE15",
+   "ms": 1.0739999999996144,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE16",
+   "ms": 1.5675000000001091,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE17",
+   "ms": 1.515400000000227,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE18",
+   "ms": 1.2683999999999287,
+   "status": "ready",
+   "end": "Harvest is not modelled in 2v2."
+  },
+  {
+   "id": "VT-VE19",
+   "ms": 1.2590000000000146,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE20",
+   "ms": 1.4151999999994587,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VE21",
+   "ms": 1.1167999999997846,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT01",
+   "ms": 1.138900000000831,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT02",
+   "ms": 1.1674999999995634,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT03",
+   "ms": 1.1982000000007247,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT04",
+   "ms": 1.118600000000697,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT05",
+   "ms": 1.0528000000003885,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT06",
+   "ms": 0.2947999999996682,
+   "status": "not-estimated",
+   "reason": "Magic Room is not modelled and comes before another move."
+  },
+  {
+   "id": "VT-VT07",
+   "ms": 0.8140000000003056,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT08",
+   "ms": 0.7316000000000713,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "VT-VT09",
+   "ms": 0.6486000000004424,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN01",
+   "ms": 1.9284999999999854,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN02",
+   "ms": 4.901699999999437,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN03",
+   "ms": 4.262799999999515,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN04",
+   "ms": 4.261899999999514,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN05",
+   "ms": 1.6264000000001033,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "FN06",
+   "ms": 1.4247999999997774,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-teeter",
+   "ms": 15.655099999999948,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-swagger",
+   "ms": 5.466900000000351,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-spore",
+   "ms": 3.453599999999824,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-seeds",
+   "ms": 12.08770000000004,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-substitute",
+   "ms": 6.942299999999705,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-allyswitch",
+   "ms": 5.162999999999556,
+   "status": "ready",
+   "end": "ready"
+  },
+  {
+   "id": "BENCH-trick",
+   "ms": 8.01550000000043,
+   "status": "ready",
+   "end": "ready"
+  }
+ ],
+ "fuzzRows": [
+  {
+   "id": "fuzz-0-champions",
+   "ms": 4.162100000000464,
+   "status": "not-estimated",
+   "reason": "Luxray switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-1-scarlet_violet",
+   "ms": 6.469599999999446,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-2-sword_shield",
+   "ms": 6.544699999999466,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-3-ultra_sun_ultra_moon",
+   "ms": 5.3059000000002925,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-4-champions",
+   "ms": 0.14640000000053988,
+   "status": "not-estimated",
+   "reason": "Imposter is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-5-scarlet_violet",
+   "ms": 10.280000000000655,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-6-sword_shield",
+   "ms": 4.917199999999866,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-7-ultra_sun_ultra_moon",
+   "ms": 4.405999999999949,
+   "status": "not-estimated",
+   "reason": "Hidden Power's declared type does not match the innate IVs."
+  },
+  {
+   "id": "fuzz-8-champions",
+   "ms": 2.467999999999847,
+   "status": "not-estimated",
+   "reason": "Round is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-9-scarlet_violet",
+   "ms": 5.961800000000039,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-10-sword_shield",
+   "ms": 2.2879000000002634,
+   "status": "not-estimated",
+   "reason": "Golisopod switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-11-ultra_sun_ultra_moon",
+   "ms": 4.323900000000322,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-12-champions",
+   "ms": 8.770399999999427,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-13-scarlet_violet",
+   "ms": 11.695600000000013,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-14-sword_shield",
+   "ms": 6.567000000000007,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-15-ultra_sun_ultra_moon",
+   "ms": 5.212500000000546,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-16-champions",
+   "ms": 7.513100000000122,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-17-scarlet_violet",
+   "ms": 0.11130000000048312,
+   "status": "issues"
+  },
+  {
+   "id": "fuzz-18-sword_shield",
+   "ms": 7.374400000000605,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-19-ultra_sun_ultra_moon",
+   "ms": 0.1837999999997919,
+   "status": "not-estimated",
+   "reason": "Trace copies a random foe's ability."
+  },
+  {
+   "id": "fuzz-20-champions",
+   "ms": 7.130000000000109,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-21-scarlet_violet",
+   "ms": 7.252300000000105,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-22-sword_shield",
+   "ms": 4.87079999999969,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-23-ultra_sun_ultra_moon",
+   "ms": 2.64009999999962,
+   "status": "not-estimated",
+   "reason": "Gliscor switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-24-champions",
+   "ms": 6.737099999999373,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-25-scarlet_violet",
+   "ms": 4.623599999999897,
+   "status": "not-estimated",
+   "reason": "Yanmega switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-26-sword_shield",
+   "ms": 15.512399999999616,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-27-ultra_sun_ultra_moon",
+   "ms": 1.9739000000008673,
+   "status": "not-estimated",
+   "reason": "Phione switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-28-champions",
+   "ms": 5.052599999999984,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-29-scarlet_violet",
+   "ms": 5.284900000000562,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-30-sword_shield",
+   "ms": 2.781300000000556,
+   "status": "not-estimated",
+   "reason": "Unfezant switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-31-ultra_sun_ultra_moon",
+   "ms": 5.354799999999159,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-32-champions",
+   "ms": 6.802899999999681,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-33-scarlet_violet",
+   "ms": 11.09479999999985,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-34-sword_shield",
+   "ms": 2.121299999999792,
+   "status": "not-estimated",
+   "reason": "Basculin-Blue-Striped switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-35-ultra_sun_ultra_moon",
+   "ms": 5.089799999999741,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-36-champions",
+   "ms": 6.872299999999996,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-37-scarlet_violet",
+   "ms": 9.666300000000774,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-38-sword_shield",
+   "ms": 2.7770000000000437,
+   "status": "not-estimated",
+   "reason": "Spectral Thief is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-39-ultra_sun_ultra_moon",
+   "ms": 5.350300000000061,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-40-champions",
+   "ms": 6.342200000000048,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-41-scarlet_violet",
+   "ms": 8.35149999999976,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-42-sword_shield",
+   "ms": 0.06859999999960564,
+   "status": "issues"
+  },
+  {
+   "id": "fuzz-43-ultra_sun_ultra_moon",
+   "ms": 3.0729999999994106,
+   "status": "not-estimated",
+   "reason": "Hidden Power's declared type does not match the innate IVs."
+  },
+  {
+   "id": "fuzz-44-champions",
+   "ms": 6.909300000000258,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-45-scarlet_violet",
+   "ms": 5.0887000000002445,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-46-sword_shield",
+   "ms": 7.554399999999987,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-47-ultra_sun_ultra_moon",
+   "ms": 2.001499999999396,
+   "status": "not-estimated",
+   "reason": "Hidden Power's declared type does not match the innate IVs."
+  },
+  {
+   "id": "fuzz-48-champions",
+   "ms": 7.707100000000537,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-49-scarlet_violet",
+   "ms": 6.910600000000159,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-50-sword_shield",
+   "ms": 7.188500000000204,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-51-ultra_sun_ultra_moon",
+   "ms": 5.604400000000169,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-52-champions",
+   "ms": 7.723500000000058,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-53-scarlet_violet",
+   "ms": 6.476800000000367,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-54-sword_shield",
+   "ms": 7.065099999999802,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-55-ultra_sun_ultra_moon",
+   "ms": 3.214100000000144,
+   "status": "not-estimated",
+   "reason": "Greninja-Ash switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-56-champions",
+   "ms": 6.126699999999801,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-57-scarlet_violet",
+   "ms": 5.2260000000005675,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-58-sword_shield",
+   "ms": 4.173300000000381,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-59-ultra_sun_ultra_moon",
+   "ms": 2.102100000000064,
+   "status": "not-estimated",
+   "reason": "Manectric-Mega switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-60-champions",
+   "ms": 0.11329999999998108,
+   "status": "not-estimated",
+   "reason": "Trace copies a random foe's ability."
+  },
+  {
+   "id": "fuzz-61-scarlet_violet",
+   "ms": 7.592499999999745,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-62-sword_shield",
+   "ms": 7.629100000000108,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-63-ultra_sun_ultra_moon",
+   "ms": 3.744999999999891,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-64-champions",
+   "ms": 4.561799999999494,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-65-scarlet_violet",
+   "ms": 7.182999999999993,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-66-sword_shield",
+   "ms": 5.471700000000055,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-67-ultra_sun_ultra_moon",
+   "ms": 5.444599999999809,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-68-champions",
+   "ms": 2.900499999999738,
+   "status": "not-estimated",
+   "reason": "One-hit KO move: no damage range."
+  },
+  {
+   "id": "fuzz-69-scarlet_violet",
+   "ms": 7.121399999999994,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-70-sword_shield",
+   "ms": 6.021500000000742,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-71-ultra_sun_ultra_moon",
+   "ms": 5.878000000000611,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-72-champions",
+   "ms": 7.330399999999827,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-73-scarlet_violet",
+   "ms": 7.444000000000415,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-74-sword_shield",
+   "ms": 5.218800000000556,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-75-ultra_sun_ultra_moon",
+   "ms": 5.355800000000272,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-76-champions",
+   "ms": 6.4002999999993335,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-77-scarlet_violet",
+   "ms": 6.7323999999998705,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-78-sword_shield",
+   "ms": 0.0466999999998734,
+   "status": "issues"
+  },
+  {
+   "id": "fuzz-79-ultra_sun_ultra_moon",
+   "ms": 6.984599999999773,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-80-champions",
+   "ms": 10.70219999999972,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-81-scarlet_violet",
+   "ms": 6.2465000000001965,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-82-sword_shield",
+   "ms": 4.5832000000000335,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-83-ultra_sun_ultra_moon",
+   "ms": 7.027399999999943,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-84-champions",
+   "ms": 2.348399999999856,
+   "status": "not-estimated",
+   "reason": "Staraptor switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-85-scarlet_violet",
+   "ms": 7.4440999999997075,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-86-sword_shield",
+   "ms": 4.640400000000227,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-87-ultra_sun_ultra_moon",
+   "ms": 5.5875999999998385,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-88-champions",
+   "ms": 3.342999999999847,
+   "status": "not-estimated",
+   "reason": "Dazzling Gleam's effect on Dedenne from more than one target is not modelled."
+  },
+  {
+   "id": "fuzz-89-scarlet_violet",
+   "ms": 4.98660000000018,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-90-sword_shield",
+   "ms": 4.1729999999997744,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-91-ultra_sun_ultra_moon",
+   "ms": 3.8867999999993117,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-92-champions",
+   "ms": 5.831000000000131,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-93-scarlet_violet",
+   "ms": 7.12289999999939,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-94-sword_shield",
+   "ms": 1.8208999999997104,
+   "status": "not-estimated",
+   "reason": "Mirror Coat is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-95-ultra_sun_ultra_moon",
+   "ms": 9.10989999999947,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-96-champions",
+   "ms": 3.933899999999994,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-97-scarlet_violet",
+   "ms": 4.485200000000077,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-98-sword_shield",
+   "ms": 8.980800000000272,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-99-ultra_sun_ultra_moon",
+   "ms": 5.228100000000268,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-100-champions",
+   "ms": 2.3580000000001746,
+   "status": "not-estimated",
+   "reason": "Emolga switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-101-scarlet_violet",
+   "ms": 7.068400000000111,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-102-sword_shield",
+   "ms": 9.231999999999971,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-103-ultra_sun_ultra_moon",
+   "ms": 4.792499999999563,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-104-champions",
+   "ms": 9.563400000000001,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-105-scarlet_violet",
+   "ms": 5.071999999999207,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-106-sword_shield",
+   "ms": 4.473399999999856,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-107-ultra_sun_ultra_moon",
+   "ms": 2.161300000000665,
+   "status": "not-estimated",
+   "reason": "Silvally-Bug switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-108-champions",
+   "ms": 5.613699999999881,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-109-scarlet_violet",
+   "ms": 7.225699999999961,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-110-sword_shield",
+   "ms": 5.803200000000288,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-111-ultra_sun_ultra_moon",
+   "ms": 2.679300000000694,
+   "status": "not-estimated",
+   "reason": "Thundurus-Therian switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-112-champions",
+   "ms": 6.796800000000076,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-113-scarlet_violet",
+   "ms": 5.46730000000025,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-114-sword_shield",
+   "ms": 6.843800000000556,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-115-ultra_sun_ultra_moon",
+   "ms": 8.118400000000292,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-116-champions",
+   "ms": 5.421799999999166,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-117-scarlet_violet",
+   "ms": 0.09400000000005093,
+   "status": "issues"
+  },
+  {
+   "id": "fuzz-118-sword_shield",
+   "ms": 6.353299999999763,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-119-ultra_sun_ultra_moon",
+   "ms": 2.3450000000002547,
+   "status": "not-estimated",
+   "reason": "Furfrou-La Reine switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-120-champions",
+   "ms": 5.354000000000269,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-121-scarlet_violet",
+   "ms": 6.130000000000109,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-122-sword_shield",
+   "ms": 5.717200000000048,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-123-ultra_sun_ultra_moon",
+   "ms": 5.034700000000157,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-124-champions",
+   "ms": 3.4942000000000917,
+   "status": "not-estimated",
+   "reason": "Protean changes Greninja-Mega's type: later moves are not modelled."
+  },
+  {
+   "id": "fuzz-125-scarlet_violet",
+   "ms": 2.5820999999996275,
+   "status": "not-estimated",
+   "reason": "Barraskewda switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-126-sword_shield",
+   "ms": 7.859000000000378,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-127-ultra_sun_ultra_moon",
+   "ms": 4.743000000000393,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-128-champions",
+   "ms": 4.096099999999751,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-129-scarlet_violet",
+   "ms": 4.599600000000464,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-130-sword_shield",
+   "ms": 1.9187000000001717,
+   "status": "not-estimated",
+   "reason": "Counter is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-131-ultra_sun_ultra_moon",
+   "ms": 5.534200000000055,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-132-champions",
+   "ms": 6.598500000000058,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-133-scarlet_violet",
+   "ms": 6.084100000000035,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-134-sword_shield",
+   "ms": 5.399099999999635,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-135-ultra_sun_ultra_moon",
+   "ms": 3.1914999999999054,
+   "status": "not-estimated",
+   "reason": "Pachirisu switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-136-champions",
+   "ms": 9.293799999999464,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-137-scarlet_violet",
+   "ms": 5.21100000000024,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-138-sword_shield",
+   "ms": 1.9432999999999083,
+   "status": "not-estimated",
+   "reason": "Cotton Down is not modelled in 2v2."
+  },
+  {
+   "id": "fuzz-139-ultra_sun_ultra_moon",
+   "ms": 5.416999999999462,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-140-champions",
+   "ms": 6.255200000000514,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-141-scarlet_violet",
+   "ms": 7.203000000000429,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-142-sword_shield",
+   "ms": 7.537100000000464,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-143-ultra_sun_ultra_moon",
+   "ms": 6.746000000000095,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-144-champions",
+   "ms": 6.119599999999991,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-145-scarlet_violet",
+   "ms": 5.639199999999619,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-146-sword_shield",
+   "ms": 6.287299999999959,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-147-ultra_sun_ultra_moon",
+   "ms": 3.780000000000655,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-148-champions",
+   "ms": 6.975199999999859,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-149-scarlet_violet",
+   "ms": 4.303100000000086,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-150-sword_shield",
+   "ms": 2.8226000000004206,
+   "status": "not-estimated",
+   "reason": "Victini switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-151-ultra_sun_ultra_moon",
+   "ms": 3.4174000000002707,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-152-champions",
+   "ms": 5.913000000000466,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-153-scarlet_violet",
+   "ms": 7.336800000000039,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-154-sword_shield",
+   "ms": 3.6493000000000393,
+   "status": "not-estimated",
+   "reason": "Whimsicott switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-155-ultra_sun_ultra_moon",
+   "ms": 9.159500000000662,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-156-champions",
+   "ms": 3.42240000000038,
+   "status": "not-estimated",
+   "reason": "Flapple switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-157-scarlet_violet",
+   "ms": 5.837900000000445,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-158-sword_shield",
+   "ms": 9.066100000000006,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-159-ultra_sun_ultra_moon",
+   "ms": 6.9354999999995925,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-160-champions",
+   "ms": 3.771700000000237,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-161-scarlet_violet",
+   "ms": 5.537599999999657,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-162-sword_shield",
+   "ms": 4.908300000000054,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-163-ultra_sun_ultra_moon",
+   "ms": 3.865899999999783,
+   "status": "not-estimated",
+   "reason": "Tornadus-Therian switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-164-champions",
+   "ms": 7.601300000000265,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-165-scarlet_violet",
+   "ms": 4.288700000000063,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-166-sword_shield",
+   "ms": 6.49369999999999,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-167-ultra_sun_ultra_moon",
+   "ms": 3.0625,
+   "status": "not-estimated",
+   "reason": "Furfrou-Dandy switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-168-champions",
+   "ms": 3.558700000000499,
+   "status": "not-estimated",
+   "reason": "Qwilfish switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-169-scarlet_violet",
+   "ms": 4.868800000000192,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-170-sword_shield",
+   "ms": 1.6954999999998108,
+   "status": "not-estimated",
+   "reason": "Dragapult switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-171-ultra_sun_ultra_moon",
+   "ms": 4.292300000000068,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-172-champions",
+   "ms": 6.223800000000665,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-173-scarlet_violet",
+   "ms": 4.151400000000649,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-174-sword_shield",
+   "ms": 5.70049999999992,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-175-ultra_sun_ultra_moon",
+   "ms": 9.249499999999898,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-176-champions",
+   "ms": 8.338600000000042,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-177-scarlet_violet",
+   "ms": 6.7192000000004555,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-178-sword_shield",
+   "ms": 5.355800000000272,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-179-ultra_sun_ultra_moon",
+   "ms": 3.994999999999891,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-180-champions",
+   "ms": 6.05159999999978,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-181-scarlet_violet",
+   "ms": 4.824999999999818,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-182-sword_shield",
+   "ms": 4.648600000000442,
+   "status": "not-estimated",
+   "reason": "Basculin switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-183-ultra_sun_ultra_moon",
+   "ms": 5.867500000000291,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-184-champions",
+   "ms": 3.100399999999354,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-185-scarlet_violet",
+   "ms": 6.430100000000493,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-186-sword_shield",
+   "ms": 6.177899999999681,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-187-ultra_sun_ultra_moon",
+   "ms": 6.343899999999849,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-188-champions",
+   "ms": 4.771300000000338,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-189-scarlet_violet",
+   "ms": 9.717399999999543,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-190-sword_shield",
+   "ms": 6.399699999999939,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-191-ultra_sun_ultra_moon",
+   "ms": 5.955199999999422,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-192-champions",
+   "ms": 6.117199999999684,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-193-scarlet_violet",
+   "ms": 7.714899999999943,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-194-sword_shield",
+   "ms": 3.0721000000003187,
+   "status": "not-estimated",
+   "reason": "Celebi switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-195-ultra_sun_ultra_moon",
+   "ms": 2.5208999999995285,
+   "status": "not-estimated",
+   "reason": "Furfrou-Dandy switches out: the replacement is not known."
+  },
+  {
+   "id": "fuzz-196-champions",
+   "ms": 6.658900000000358,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-197-scarlet_violet",
+   "ms": 6.202400000000125,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-198-sword_shield",
+   "ms": 6.664299999999457,
+   "status": "ready"
+  },
+  {
+   "id": "fuzz-199-ultra_sun_ultra_moon",
+   "ms": 3.1222999999999956,
+   "status": "not-estimated",
+   "reason": "Gligar switches out: the replacement is not known."
+  }
+ ],
+ "moves": [
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 12.594599999999446,
+   "rows": 64
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 20.092800000000352,
+   "rows": 82
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 11.779700000000048,
+   "rows": 64
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 16.413900000000467,
+   "rows": 82
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 13.705899999999929,
+   "rows": 64
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 11.644800000000032,
+   "rows": 62
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 11.77179999999953,
+   "rows": 64
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 13.74200000000019,
+   "rows": 86
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 9.593400000000656,
+   "rows": 59
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 11.281199999999444,
+   "rows": 73
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 14.283499999999549,
+   "rows": 83
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 7.026400000000649,
+   "rows": 73
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 10.144099999999526,
+   "rows": 91
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 7.628600000000006,
+   "rows": 73
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 10.312600000000202,
+   "rows": 91
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 12.156399999999849,
+   "rows": 73
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 11.311599999999999,
+   "rows": 91
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 12.634900000000016,
+   "rows": 83
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 12.50590000000011,
+   "rows": 91
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 13.86489999999958,
+   "rows": 83
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 7.990899999999783,
+   "rows": 91
+  },
+  {
+   "slot": "own-left",
+   "into": "opponent-left",
+   "ms": 10.961899999999332,
+   "rows": 60
+  },
+  {
+   "slot": "opponent-right",
+   "into": "own-right",
+   "ms": 6.834600000000137,
+   "rows": 44
+  }
+ ],
+ "reference": [
+  {
+   "id": "S03c",
+   "equal": true
+  },
+  {
+   "id": "S05-sv",
+   "equal": true
+  },
+  {
+   "id": "S09a",
+   "equal": true
+  },
+  {
+   "id": "S10-sv",
+   "equal": true
+  },
+  {
+   "id": "S11a",
+   "equal": true
+  },
+  {
+   "id": "S12b",
+   "equal": true
+  },
+  {
+   "id": "S13a",
+   "equal": true
+  },
+  {
+   "id": "S14a",
+   "equal": true
+  },
+  {
+   "id": "S15b",
+   "equal": true
+  },
+  {
+   "id": "S18a",
+   "equal": true
+  },
+  {
+   "id": "S22e-sun",
+   "equal": true
+  },
+  {
+   "id": "S25b",
+   "equal": true
+  },
+  {
+   "id": "S26a",
+   "equal": true
+  },
+  {
+   "id": "S31b",
+   "equal": true
+  },
+  {
+   "id": "S35a",
+   "equal": true
+  },
+  {
+   "id": "S41a1-sv",
+   "equal": true
+  },
+  {
+   "id": "S43a2",
+   "equal": true
+  },
+  {
+   "id": "ER07",
+   "equal": true
+  },
+  {
+   "id": "ER08b",
+   "equal": true
+  },
+  {
+   "id": "ER12",
+   "equal": true
+  },
+  {
+   "id": "ER14",
+   "equal": true
+  },
+  {
+   "id": "ER16a",
+   "equal": true
+  },
+  {
+   "id": "ER17",
+   "equal": true
+  },
+  {
+   "id": "ER19d",
+   "equal": true
+  },
+  {
+   "id": "ER22a-sv",
+   "equal": true
+  },
+  {
+   "id": "E01-sv",
+   "equal": true
+  },
+  {
+   "id": "E13-sv",
+   "equal": true
+  },
+  {
+   "id": "E24-sv",
+   "equal": true
+  },
+  {
+   "id": "E27b",
+   "equal": true
+  },
+  {
+   "id": "E41",
+   "equal": true
+  }
+ ]
+}

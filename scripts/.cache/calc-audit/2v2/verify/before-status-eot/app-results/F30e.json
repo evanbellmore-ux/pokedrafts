@@ -1,0 +1,375 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 70,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 90,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "rockslide",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 33,
+      "max": 39,
+      "minPercent": 21.428571428571427,
+      "maxPercent": 25.324675324675322,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 33,
+       "max": 39,
+       "minPercent": 21.428571428571427,
+       "maxPercent": 25.324675324675322,
+       "rolls": [
+        33,
+        33,
+        33,
+        34,
+        34,
+        35,
+        35,
+        35,
+        36,
+        36,
+        37,
+        37,
+        37,
+        38,
+        38,
+        39
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 33–39 HP (21.4–25.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 45,
+      "max": 54,
+      "minPercent": 19.148936170212767,
+      "maxPercent": 22.97872340425532,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockslide",
+       "effectiveName": "Rock Slide",
+       "effectiveType": "Rock",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 45,
+       "max": 54,
+       "minPercent": 19.148936170212767,
+       "maxPercent": 22.97872340425532,
+       "rolls": [
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        49,
+        49,
+        50,
+        50,
+        51,
+        51,
+        52,
+        52,
+        53,
+        54
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Slide: 45–54 HP (19.1–23.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 70,
+    "maximum": 235,
+    "low": 25,
+    "average": 20.5625,
+    "high": 16,
+    "min": 16,
+    "max": 25,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 90,
+    "maximum": 154,
+    "low": 57,
+    "average": 54.375,
+    "high": 51,
+    "min": 51,
+    "max": 57,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 19.148936170212767,
+     "maxPercent": 22.97872340425532,
+     "rolls": [
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      49,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52,
+      52,
+      53,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 45–54 HP (19.1–23.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.571044921875,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Figy Berry heals it once, at a quarter of its HP or less."
+      ],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 70,
+      "low": 103,
+      "high": 94,
+      "average": 98.5625,
+      "min": 94,
+      "max": 103,
+      "koChance": 0,
+      "heals": [
+       "Figy Berry: +78 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": [
+         "Figy Berry: +78 HP."
+        ]
+       },
+       "high": {
+        "dealt": 54,
+        "heals": [
+         "Figy Berry: +78 HP."
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 21.428571428571427,
+     "maxPercent": 25.324675324675322,
+     "rolls": [
+      33,
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      35,
+      36,
+      36,
+      37,
+      37,
+      37,
+      38,
+      38,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 33–39 HP (21.4–25.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 90,
+      "low": 95,
+      "high": 89,
+      "average": 92.375,
+      "min": 89,
+      "max": 95,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +38 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       },
+       "high": {
+        "dealt": 39,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 6.6702000000000226,
+ "preflight": []
+}

@@ -1,0 +1,59 @@
+
+### R11 sv: Unburden Hawlucha Tricks its Sitrus to Snorlax (40%); Snorlax then Body Slams  (1 runs)
+ start: p1a Hawlucha 153/153 | p1b Chansey 325/325 | p2a Snorlax 94/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Hawlucha [153:1] | p1b Chansey [76:1] | p2a Snorlax [152:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Hawlucha [153:1] | p1b Chansey [76:1] | p2a Snorlax [152:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Hawlucha|Trick|p2a: Snorlax
+   1  |-activate|p1a: Hawlucha|move: Trick|[of] p2a: Snorlax
+   1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Trick
+   1  |-enditem|p1a: Hawlucha|Sitrus Berry|[silent]|[from] move: Trick
+   1  |-enditem|p2a: Snorlax|Sitrus Berry|[eat]
+   1  |-heal|p2a: Snorlax|152/235|[from] item: Sitrus Berry
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Body Slam|p1b: Chansey
+   1  |-damage|p1b: Chansey|76/325
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### R11b sv: Trick into Sticky Hold Muk  (1 runs)
+ start: p1a Hawlucha 153/153 | p1b Blissey 330/330 | p2a Muk 180/180 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Hawlucha [153:1] | p1b Blissey [330:1] | p2a Muk [180:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Hawlucha [153:1] | p1b Blissey [330:1] | p2a Muk [180:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Hawlucha|Trick|p2a: Muk
+   1  |-immune|p2a: Muk
+   1  |move|p1b: Blissey|Splash|p1b: Blissey
+   1  |move|p2a: Muk|Splash|p2a: Muk
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### R12 sv: Raichu Charge then its ally Jolteon... (Charge is self) - Raichu Charge turn 1, Thunderbolt turn 2 vs no Charge  (1 runs)
+ start: p1a Raichu 135/135 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Raichu [135:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 after moves: p1a Raichu [135:1] | p1b Chansey [325:1] | p2a Snorlax [148:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Raichu [135:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 end of turn: p1a Raichu [135:1] | p1b Chansey [325:1] | p2a Snorlax [148:1] | p2b Shuckle [95:1]
+   1  |-boost|p1a: Raichu|spd|1
+   1  |-start|p1a: Raichu|Charge
+   1  |-damage|p2a: Snorlax|148/235
+   1  |-end|p1a: Raichu|Charge|[silent]
+
+### R13 sv: Defog (Corviknight) into Snorlax with Reflect on its side and Electric Terrain  (1 runs)
+ start: p1a Corviknight 173/173 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Corviknight [173:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Corviknight [173:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Corviknight|Defog|p2a: Snorlax
+   1  |-unboost|p2a: Snorlax|evasion|1
+   1  |-sideend|p2: Player 2|Reflect
+   1  |-fieldend|move: Electric Terrain
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### R14 sv: Magic Room (Jolteon) then Snorlax hit below half by Body Slam does not eat its Sitrus  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Snorlax 235/235 | p2a Lapras 123/205 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [60:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Snorlax [235:1] | p2a Lapras [60:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Magic Room|p1a: Jolteon
+   1  |-fieldstart|move: Magic Room|[of] p1a: Jolteon
+   1  |move|p2a: Lapras|Splash|p2a: Lapras
+   1  |move|p1b: Snorlax|Body Slam|p2a: Lapras
+   1  |-damage|p2a: Lapras|60/205
+   1  |move|p2b: Shuckle|Splash|p2b: Shuckle

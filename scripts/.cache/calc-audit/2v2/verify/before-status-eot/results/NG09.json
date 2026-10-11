@@ -1,0 +1,601 @@
+{
+ "id": "NG09",
+ "title": "Gale Wings suppressed: Talonflame's Brave Bird at full HP has no priority, Garchomp moves first (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "priority from an ability suppressed; Jolly Garchomp (169) before Talonflame (146)",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 36,
+   "classes": 26,
+   "ms": 20,
+   "decisions": {
+    "fail:": 11,
+    "roll": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Talonflame",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       121,
+       0.0625
+      ],
+      [
+       122,
+       0.1875
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       124,
+       0.1875
+      ],
+      [
+       125,
+       0.1875
+      ],
+      [
+       126,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 123.8125,
+     "min": 121,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 122
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       0.0625
+      ],
+      [
+       141,
+       0.0625
+      ],
+      [
+       142,
+       0.125
+      ],
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.125
+      ],
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       150,
+       0.0625
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.125
+      ],
+      [
+       154,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.0625,
+     "min": 139,
+     "max": 154,
+     "modeTieUp": 153,
+     "modeTieDown": 142
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Talonflame|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Weezing": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Talonflame",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Talonflame|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Weezing": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Talonflame",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       121,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 121,
+     "min": 121,
+     "max": 121,
+     "modeTieUp": 121,
+     "modeTieDown": 121
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Talonflame|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Weezing": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 126,
+   "high": 121,
+   "average": 123.8125,
+   "min": 121,
+   "max": 126,
+   "koChance": 0,
+   "dist": [
+    [
+     121,
+     0.0625
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.1875
+    ],
+    [
+     125,
+     0.1875
+    ],
+    [
+     126,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 147.0625,
+   "min": 139,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.125
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     154,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

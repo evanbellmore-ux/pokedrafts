@@ -1,0 +1,1749 @@
+{
+ "id": "S12a",
+ "title": "Confusion self-hit into Sturdy and Focus Sash",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "+6 Attack, −6 Defense: a self-hit would knock either out from full HP; Sturdy leaves Donphan at 1, the Focus Sash leaves Garchomp at 1 and is used.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 838,
+   "classes": 55,
+   "ms": 738,
+   "decisions": {
+    "random": 20,
+    "chance:confusion": 816,
+    "roll": 768
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1.0000000000000089
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1.0000000000000089
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000089
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000089
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1.0000000000000089
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1.0000000000000089
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000089
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000089
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Donphan",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       1,
+       0.3300000000000021
+      ],
+      [
+       165,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 110.87999999999975,
+     "min": 1,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1.0000000000000089
+     },
+     "volatiles": {
+      "confusion": 1.0000000000000089,
+      "defensecurl": 0.6699999999999999
+     },
+     "boosts": {
+      "atk:6": 1.0000000000000089,
+      "def:-5": 0.6699999999999999,
+      "def:-6": 0.3300000000000021
+     },
+     "item": {
+      "": 1.0000000000000089
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000089
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       1,
+       0.33000000000000046
+      ],
+      [
+       183,
+       0.6700000000000044
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.9400000000002,
+     "min": 1,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1.0000000000000089
+     },
+     "volatiles": {
+      "confusion": 1.0000000000000089
+     },
+     "boosts": {
+      "atk:6": 1.0000000000000089,
+      "def:-6": 1.0000000000000089
+     },
+     "item": {
+      "": 0.33000000000000046,
+      "focussash": 0.6700000000000044
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000089
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Donphan|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "defensecurl",
+     "picked": 1.0000000000000089,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "4": 1.0000000000000089
+     },
+     "orderMoved": {
+      "4": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Donphan|confusion": 1.0000000000000089,
+      "|-boost|p2b: Donphan|def|1": 0.6699999999999999,
+      "|-ability|p2b: Donphan|Sturdy": 0.3300000000000021,
+      "|-damage|p2b: Donphan|hp|[from] confusion": 0.3300000000000021
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1.0000000000000089,
+       "boost:def:1": 0.6699999999999999,
+       "ability:sturdy": 0.3300000000000021,
+       "damage:confusion:-164": 0.3300000000000021
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": -164,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.3300000000000021,
+      "min": 240,
+      "max": 283
+     }
+    },
+    "opponent-right": {
+     "moveId": "swordsdance",
+     "picked": 1.0000000000000053,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "3": 1.0000000000000053
+     },
+     "orderMoved": {
+      "3": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Garchomp|confusion": 1.0000000000000053,
+      "|-boost|p2a: Garchomp|atk|0": 0.6699999999999999,
+      "|-enditem|p2a: Garchomp|Focus Sash": 0.32999999999999863,
+      "|-damage|p2a: Garchomp|hp|[from] confusion": 0.32999999999999863
+     },
+     "effects": {
+      "opponent-right": {
+       "activate:confusion": 1.0000000000000053,
+       "boost:atk:0": 0.6699999999999999,
+       "enditem:focussash": 0.32999999999999863,
+       "damage:confusion:-182": 0.32999999999999863
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": -182,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.32999999999999863,
+      "min": 322,
+      "max": 379
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 544,
+    "classes": 32,
+    "ms": 738,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1.0000000000000089
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1.0000000000000089
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000089
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000089
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1.0000000000000089
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1.0000000000000089
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000089
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000089
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        1,
+        0.3300000000000021
+       ],
+       [
+        165,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 110.87999999999975,
+      "min": 1,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1.0000000000000089
+      },
+      "volatiles": {
+       "confusion": 1.0000000000000089,
+       "defensecurl": 0.6699999999999999
+      },
+      "boosts": {
+       "atk:6": 1.0000000000000089,
+       "def:-5": 0.6699999999999999,
+       "def:-6": 0.3300000000000021
+      },
+      "item": {
+       "": 1.0000000000000089
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000089
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        1,
+        0.33000000000000046
+       ],
+       [
+        183,
+        0.6700000000000044
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.9400000000002,
+      "min": 1,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1.0000000000000089
+      },
+      "volatiles": {
+       "confusion": 1.0000000000000089
+      },
+      "boosts": {
+       "atk:6": 1.0000000000000089,
+       "def:-6": 1.0000000000000089
+      },
+      "item": {
+       "": 0.33000000000000046,
+       "focussash": 0.6700000000000044
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000089
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1.0000000000000089,
+     "weather:": 1.0000000000000089
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 118,
+   "classes": 55,
+   "ms": 129,
+   "decisions": {
+    "random": 20,
+    "chance:confusion": 96,
+    "roll": 48
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Donphan",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       1,
+       0.33000000000000007
+      ],
+      [
+       165,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 110.87999999999998,
+     "min": 1,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1,
+      "defensecurl": 0.6699999999999999
+     },
+     "boosts": {
+      "atk:6": 1,
+      "def:-5": 0.6699999999999999,
+      "def:-6": 0.33000000000000007
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       1,
+       0.33000000000000007
+      ],
+      [
+       183,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.93999999999998,
+     "min": 1,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "atk:6": 1,
+      "def:-6": 1
+     },
+     "item": {
+      "": 0.33000000000000007,
+      "focussash": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Donphan|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "defensecurl",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "4": 1
+     },
+     "orderMoved": {
+      "4": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Donphan|confusion": 1,
+      "|-boost|p2b: Donphan|def|1": 0.6699999999999999,
+      "|-ability|p2b: Donphan|Sturdy": 0.33000000000000007,
+      "|-damage|p2b: Donphan|hp|[from] confusion": 0.33000000000000007
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "boost:def:1": 0.6699999999999999,
+       "ability:sturdy": 0.33000000000000007,
+       "damage:confusion:-164": 0.33000000000000007
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": -164,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.33000000000000007,
+      "min": 240,
+      "max": 240
+     }
+    },
+    "opponent-right": {
+     "moveId": "swordsdance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Garchomp|confusion": 1,
+      "|-boost|p2a: Garchomp|atk|0": 0.6699999999999999,
+      "|-enditem|p2a: Garchomp|Focus Sash": 0.33,
+      "|-damage|p2a: Garchomp|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-right": {
+       "activate:confusion": 1,
+       "boost:atk:0": 0.6699999999999999,
+       "enditem:focussash": 0.33,
+       "damage:confusion:-182": 0.33
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": -182,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.33,
+      "min": 322,
+      "max": 322
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 32,
+    "ms": 130,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        1,
+        0.33000000000000007
+       ],
+       [
+        165,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 110.87999999999998,
+      "min": 1,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1,
+       "defensecurl": 0.6699999999999999
+      },
+      "boosts": {
+       "atk:6": 1,
+       "def:-5": 0.6699999999999999,
+       "def:-6": 0.33000000000000007
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        1,
+        0.33000000000000007
+       ],
+       [
+        183,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.93999999999998,
+      "min": 1,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "atk:6": 1,
+       "def:-6": 1
+      },
+      "item": {
+       "": 0.33000000000000007,
+       "focussash": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 118,
+   "classes": 55,
+   "ms": 122,
+   "decisions": {
+    "random": 20,
+    "chance:confusion": 96,
+    "roll": 48
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Dragapult",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Donphan",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       1,
+       0.33000000000000007
+      ],
+      [
+       165,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 110.87999999999998,
+     "min": 1,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1,
+      "defensecurl": 0.6699999999999999
+     },
+     "boosts": {
+      "atk:6": 1,
+      "def:-5": 0.6699999999999999,
+      "def:-6": 0.33000000000000007
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       1,
+       0.33000000000000007
+      ],
+      [
+       183,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.93999999999998,
+     "min": 1,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "atk:6": 1,
+      "def:-6": 1
+     },
+     "item": {
+      "": 0.33000000000000007,
+      "focussash": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Donphan|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "defensecurl",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "4": 1
+     },
+     "orderMoved": {
+      "4": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Donphan|confusion": 1,
+      "|-boost|p2b: Donphan|def|1": 0.6699999999999999,
+      "|-ability|p2b: Donphan|Sturdy": 0.33000000000000007,
+      "|-damage|p2b: Donphan|hp|[from] confusion": 0.33000000000000007
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "boost:def:1": 0.6699999999999999,
+       "ability:sturdy": 0.33000000000000007,
+       "damage:confusion:-164": 0.33000000000000007
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": -164,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.33000000000000007,
+      "min": 283,
+      "max": 283
+     }
+    },
+    "opponent-right": {
+     "moveId": "swordsdance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 0.6699999999999999
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Garchomp|confusion": 1,
+      "|-boost|p2a: Garchomp|atk|0": 0.6699999999999999,
+      "|-enditem|p2a: Garchomp|Focus Sash": 0.33,
+      "|-damage|p2a: Garchomp|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-right": {
+       "activate:confusion": 1,
+       "boost:atk:0": 0.6699999999999999,
+       "enditem:focussash": 0.33,
+       "damage:confusion:-182": 0.33
+      }
+     },
+     "change": {
+      "opponent-right": {
+       "min": -182,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "selfHit": {
+      "mass": 0.33,
+      "min": 379,
+      "max": 379
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 32,
+    "ms": 122,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Dragapult",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Donphan",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        1,
+        0.33000000000000007
+       ],
+       [
+        165,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 110.87999999999998,
+      "min": 1,
+      "max": 165,
+      "modeTieUp": 165,
+      "modeTieDown": 165,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1,
+       "defensecurl": 0.6699999999999999
+      },
+      "boosts": {
+       "atk:6": 1,
+       "def:-5": 0.6699999999999999,
+       "def:-6": 0.33000000000000007
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        1,
+        0.33000000000000007
+       ],
+       [
+        183,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.93999999999998,
+      "min": 1,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "atk:6": 1,
+       "def:-6": 1
+      },
+      "item": {
+       "": 0.33000000000000007,
+       "focussash": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1.0000000000000089
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1.0000000000000089
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 110.87999999999975,
+   "min": 1,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     1,
+     0.3300000000000021
+    ],
+    [
+     165,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 122.9400000000002,
+   "min": 1,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     1,
+     0.33000000000000046
+    ],
+    [
+     183,
+     0.6700000000000044
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1.0000000000000089
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1.0000000000000089
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 165,
+   "high": 165,
+   "average": 110.87999999999975,
+   "min": 1,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     1,
+     0.3300000000000021
+    ],
+    [
+     165,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 122.9400000000002,
+   "min": 1,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     1,
+     0.33000000000000046
+    ],
+    [
+     183,
+     0.6700000000000044
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

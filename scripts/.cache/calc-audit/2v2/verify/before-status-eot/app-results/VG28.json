@@ -1,0 +1,228 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "electrodrift",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 88,
+      "max": 105,
+      "minPercent": 37.4468085106383,
+      "maxPercent": 44.680851063829785,
+      "koChance": 0,
+      "row": {
+       "moveId": "electrodrift",
+       "effectiveName": "Electro Drift",
+       "effectiveType": "Electric",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 88,
+       "max": 105,
+       "minPercent": 37.4468085106383,
+       "maxPercent": 44.680851063829785,
+       "rolls": [
+        88,
+        90,
+        90,
+        91,
+        93,
+        94,
+        94,
+        96,
+        97,
+        97,
+        99,
+        100,
+        100,
+        102,
+        103,
+        105
+       ],
+       "ohkoChance": 0,
+       "description": "Electro Drift: 88–105 HP (37.4–44.7% of maximum HP). Applied: Electric.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 140,
+    "high": 140,
+    "min": 140,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 147,
+    "average": 138.8125,
+    "high": 130,
+    "min": 130,
+    "max": 147,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "electrodrift",
+     "effectiveName": "Electro Drift",
+     "effectiveType": "Electric",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 88,
+     "max": 105,
+     "minPercent": 37.4468085106383,
+     "maxPercent": 44.680851063829785,
+     "rolls": [
+      88,
+      90,
+      90,
+      91,
+      93,
+      94,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      100,
+      102,
+      103,
+      105
+     ],
+     "ohkoChance": 0,
+     "description": "Electro Drift: 88–105 HP (37.4–44.7% of maximum HP). Applied: Electric.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Your left Miraidon's Hadron Engine is suppressed by Neutralizing Gas.",
+      "Opponent's right Snorlax's Thick Fat is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 147,
+      "high": 130,
+      "average": 138.8125,
+      "min": 130,
+      "max": 147,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 88,
+        "heals": []
+       },
+       "high": {
+        "dealt": 105,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Neutralizing Gas suppresses the abilities of Miraidon, Venusaur and Snorlax."
+  ]
+ },
+ "ms": 2.586899999999332,
+ "preflight": []
+}

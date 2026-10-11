@@ -1,0 +1,299 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 117,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 51,
+      "max": 61,
+      "minPercent": 21.70212765957447,
+      "maxPercent": 25.957446808510635,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 51,
+       "max": 61,
+       "minPercent": 21.70212765957447,
+       "maxPercent": 25.957446808510635,
+       "rolls": [
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        61
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 51–61 HP (21.7–26.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 140,
+    "high": 140,
+    "min": 140,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 117,
+    "maximum": 235,
+    "low": 66,
+    "average": 75.6875,
+    "high": 134,
+    "min": 59,
+    "max": 135,
+    "koChance": 0,
+    "heals": [
+     "Figy Berry: +78 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.1875
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 51,
+     "max": 61,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.957446808510635,
+     "rolls": [
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      61
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 51–61 HP (21.7–26.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Charizard's Blaze is suppressed by Neutralizing Gas.",
+      "Snorlax's Gluttony is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 2,
+      "fasterChance": 0.05859375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Figy Berry heals it once, at a quarter of its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 117,
+      "low": 66,
+      "high": 134,
+      "average": 75.6875,
+      "min": 59,
+      "max": 135,
+      "koChance": 0,
+      "heals": [
+       "Figy Berry: +78 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 61,
+        "heals": [
+         "Figy Berry: +78 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Charizard, Venusaur and Snorlax."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 140,
+     "average": 140,
+     "high": 140,
+     "min": 140,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 117,
+     "maximum": 235,
+     "low": 66,
+     "average": 75.6875,
+     "high": 134,
+     "min": 59,
+     "max": 135,
+     "koChance": 0,
+     "heals": [
+      "Figy Berry: +78 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.1875
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.0576999999998407,
+ "preflight": []
+}

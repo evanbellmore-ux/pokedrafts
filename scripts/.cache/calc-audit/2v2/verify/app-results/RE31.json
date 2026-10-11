@@ -1,0 +1,361 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "allyswitch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.5
+     },
+     {
+      "position": 2,
+      "chance": 0.5
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Reuniclus and Amoonguss swap places.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "ragepowder",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.5
+     },
+     {
+      "position": 2,
+      "chance": 0.5
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "energyball",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 15,
+      "max": 18,
+      "minPercent": 7.936507936507936,
+      "maxPercent": 9.523809523809524,
+      "koChance": 0,
+      "row": {
+       "moveId": "energyball",
+       "effectiveName": "Energy Ball",
+       "effectiveType": "Grass",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 15,
+       "max": 18,
+       "minPercent": 7.936507936507936,
+       "maxPercent": 9.523809523809524,
+       "rolls": [
+        15,
+        15,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        17,
+        17,
+        17,
+        18,
+        18,
+        18
+       ],
+       "ohkoChance": 0,
+       "description": "Energy Ball: 15–18 HP (7.9–9.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Energy Ball hits Amoonguss in Reuniclus's place.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 185,
+    "maximum": 185,
+    "low": 185,
+    "average": 185,
+    "high": 185,
+    "min": 185,
+    "max": 185,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Amoonguss.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 189,
+    "maximum": 189,
+    "low": 174,
+    "average": 172.5625,
+    "high": 171,
+    "min": 171,
+    "max": 174,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Reuniclus.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "energyball",
+     "effectiveName": "Energy Ball",
+     "effectiveType": "Grass",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 58,
+     "max": 70,
+     "minPercent": 31.351351351351354,
+     "maxPercent": 37.83783783783784,
+     "rolls": [
+      58,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70
+     ],
+     "ohkoChance": 0,
+     "description": "Energy Ball: 58–70 HP (31.4–37.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.907958984375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 185,
+      "low": 127,
+      "high": 115,
+      "average": 120.75,
+      "min": 115,
+      "max": 127,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 70,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Reuniclus did not use Ally Switch last turn."
+  ],
+  "swapped": {
+   "opponent": 1
+  },
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 185,
+     "maximum": 185,
+     "low": 185,
+     "average": 185,
+     "high": 185,
+     "min": 185,
+     "max": 185,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Amoonguss.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 189,
+     "maximum": 189,
+     "low": 174,
+     "average": 172.5625,
+     "high": 171,
+     "min": 171,
+     "max": 174,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Reuniclus.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.547599999999875,
+ "preflight": []
+}

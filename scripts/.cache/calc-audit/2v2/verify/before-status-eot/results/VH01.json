@@ -1,0 +1,694 @@
+{
+ "id": "VH01",
+ "title": "Rock Slide, then Regigigas's Crush Grip into Snorlax at every HP the slide leaves (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "HP-read power per HP",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 2028,
+   "classes": 1015,
+   "ms": 2103,
+   "decisions": {
+    "sample": 240,
+    "accuracy": 448,
+    "fail:": 1344,
+    "roll": 1344,
+    "secondary": 448
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Regigigas",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       105,
+       0.00390625
+      ],
+      [
+       106,
+       0.015625
+      ],
+      [
+       107,
+       0.0078125
+      ],
+      [
+       108,
+       0.046875
+      ],
+      [
+       109,
+       0.03515625
+      ],
+      [
+       110,
+       0.03125
+      ],
+      [
+       111,
+       0.10546875
+      ],
+      [
+       112,
+       0.06640625
+      ],
+      [
+       113,
+       0.0625
+      ],
+      [
+       114,
+       0.140625
+      ],
+      [
+       115,
+       0.06640625
+      ],
+      [
+       116,
+       0.0703125
+      ],
+      [
+       117,
+       0.12109375
+      ],
+      [
+       118,
+       0.046875
+      ],
+      [
+       119,
+       0.046875
+      ],
+      [
+       120,
+       0.0703125
+      ],
+      [
+       121,
+       0.0234375
+      ],
+      [
+       122,
+       0.0234375
+      ],
+      [
+       123,
+       0.015625
+      ]
+     ],
+     "koChance": 0,
+     "average": 114.59765625,
+     "min": 105,
+     "max": 123,
+     "modeTieUp": 114,
+     "modeTieDown": 114
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       98,
+       0.0625
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.1875
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       104,
+       0.1875
+      ],
+      [
+       106,
+       0.1875
+      ],
+      [
+       107,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 103.1875,
+     "min": 98,
+     "max": 107,
+     "modeTieUp": 106,
+     "modeTieDown": 101
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "crushgrip",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 28,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Regigigas",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       123,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 123,
+     "min": 123,
+     "max": 123,
+     "modeTieUp": 123,
+     "modeTieDown": 123
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       107,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 107,
+     "min": 107,
+     "max": 107,
+     "modeTieUp": 107,
+     "modeTieDown": 107
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "crushgrip",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 30,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Tyranitar",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Regigigas",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       98,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 98,
+     "min": 98,
+     "max": 98,
+     "modeTieUp": 98,
+     "modeTieDown": 98
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "crushgrip",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 123,
+   "high": 105,
+   "average": 114.59765625,
+   "min": 105,
+   "max": 123,
+   "koChance": 0,
+   "dist": [
+    [
+     105,
+     0.00390625
+    ],
+    [
+     106,
+     0.015625
+    ],
+    [
+     107,
+     0.0078125
+    ],
+    [
+     108,
+     0.046875
+    ],
+    [
+     109,
+     0.03515625
+    ],
+    [
+     110,
+     0.03125
+    ],
+    [
+     111,
+     0.10546875
+    ],
+    [
+     112,
+     0.06640625
+    ],
+    [
+     113,
+     0.0625
+    ],
+    [
+     114,
+     0.140625
+    ],
+    [
+     115,
+     0.06640625
+    ],
+    [
+     116,
+     0.0703125
+    ],
+    [
+     117,
+     0.12109375
+    ],
+    [
+     118,
+     0.046875
+    ],
+    [
+     119,
+     0.046875
+    ],
+    [
+     120,
+     0.0703125
+    ],
+    [
+     121,
+     0.0234375
+    ],
+    [
+     122,
+     0.0234375
+    ],
+    [
+     123,
+     0.015625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 107,
+   "high": 98,
+   "average": 103.1875,
+   "min": 98,
+   "max": 107,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     0.0625
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.1875
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     104,
+     0.1875
+    ],
+    [
+     106,
+     0.1875
+    ],
+    [
+     107,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

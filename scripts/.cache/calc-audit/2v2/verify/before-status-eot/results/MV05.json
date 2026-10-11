@@ -1,0 +1,724 @@
+{
+ "id": "MV05",
+ "title": "Max Darkness from Throat Chop silences nothing: the target's Overdrive",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Overdrive used.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6792,
+   "classes": 3397,
+   "ms": 7992,
+   "decisions": {
+    "sample": 3436,
+    "fail:": 6780,
+    "roll": 6780
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       223,
+       0.0625
+      ],
+      [
+       224,
+       0.125
+      ],
+      [
+       226,
+       0.125
+      ],
+      [
+       227,
+       0.125
+      ],
+      [
+       229,
+       0.125
+      ],
+      [
+       230,
+       0.1875
+      ],
+      [
+       232,
+       0.125
+      ],
+      [
+       233,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 228.4375,
+     "min": 223,
+     "max": 233,
+     "modeTieUp": 230,
+     "modeTieDown": 230
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       180,
+       0.0625
+      ],
+      [
+       181,
+       0.125
+      ],
+      [
+       183,
+       0.1875
+      ],
+      [
+       184,
+       0.1875
+      ],
+      [
+       186,
+       0.125
+      ],
+      [
+       187,
+       0.1875
+      ],
+      [
+       189,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 184.625,
+     "min": 180,
+     "max": 189,
+     "modeTieUp": 187,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       15,
+       0.0625
+      ],
+      [
+       17,
+       0.0625
+      ],
+      [
+       18,
+       0.0625
+      ],
+      [
+       20,
+       0.0625
+      ],
+      [
+       21,
+       0.0625
+      ],
+      [
+       23,
+       0.0625
+      ],
+      [
+       24,
+       0.0625
+      ],
+      [
+       26,
+       0.0625
+      ],
+      [
+       27,
+       0.0625
+      ],
+      [
+       29,
+       0.125
+      ],
+      [
+       30,
+       0.0625
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 25.9375,
+     "min": 15,
+     "max": 36,
+     "modeTieUp": 29,
+     "modeTieDown": 29
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 114,
+       "dmgMax": 135,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blissey|spd|1": 1,
+      "|-unboost|p2b: Toxtricity|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 67,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 24,
+   "classes": 13,
+   "ms": 28,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       233,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 233,
+     "min": 233,
+     "max": 233,
+     "modeTieUp": 233,
+     "modeTieDown": 233
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       189,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 189,
+     "min": 189,
+     "max": 189,
+     "modeTieUp": 189,
+     "modeTieDown": 189
+    },
+    "opponent-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       36,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 36,
+     "min": 36,
+     "max": 36,
+     "modeTieUp": 36,
+     "modeTieDown": 36
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 114,
+       "dmgMax": 114,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blissey|spd|1": 1,
+      "|-unboost|p2b: Toxtricity|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 46,
+       "dmgMax": 46,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 24,
+   "classes": 13,
+   "ms": 29,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       223,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 223,
+     "min": 223,
+     "max": 223,
+     "modeTieUp": 223,
+     "modeTieDown": 223
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       15,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 15,
+     "min": 15,
+     "max": 15,
+     "modeTieUp": 15,
+     "modeTieDown": 15
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 135,
+       "dmgMax": 135,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blissey|spd|1": 1,
+      "|-unboost|p2b: Toxtricity|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 290,
+   "maximum": 290,
+   "low": 233,
+   "high": 223,
+   "average": 228.4375,
+   "min": 223,
+   "max": 233,
+   "koChance": 0,
+   "dist": [
+    [
+     223,
+     0.0625
+    ],
+    [
+     224,
+     0.125
+    ],
+    [
+     226,
+     0.125
+    ],
+    [
+     227,
+     0.125
+    ],
+    [
+     229,
+     0.125
+    ],
+    [
+     230,
+     0.1875
+    ],
+    [
+     232,
+     0.125
+    ],
+    [
+     233,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 189,
+   "high": 180,
+   "average": 184.625,
+   "min": 180,
+   "max": 189,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     0.0625
+    ],
+    [
+     181,
+     0.125
+    ],
+    [
+     183,
+     0.1875
+    ],
+    [
+     184,
+     0.1875
+    ],
+    [
+     186,
+     0.125
+    ],
+    [
+     187,
+     0.1875
+    ],
+    [
+     189,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 36,
+   "high": 15,
+   "average": 25.9375,
+   "min": 15,
+   "max": 36,
+   "koChance": 0,
+   "dist": [
+    [
+     15,
+     0.0625
+    ],
+    [
+     17,
+     0.0625
+    ],
+    [
+     18,
+     0.0625
+    ],
+    [
+     20,
+     0.0625
+    ],
+    [
+     21,
+     0.0625
+    ],
+    [
+     23,
+     0.0625
+    ],
+    [
+     24,
+     0.0625
+    ],
+    [
+     26,
+     0.0625
+    ],
+    [
+     27,
+     0.0625
+    ],
+    [
+     29,
+     0.125
+    ],
+    [
+     30,
+     0.0625
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

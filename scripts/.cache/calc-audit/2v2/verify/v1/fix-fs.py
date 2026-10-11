@@ -1,0 +1,52 @@
+p = 'scripts/.cache/calc-audit/2v2/verify/cases-fs.ts'
+s = open(p, encoding='utf8').read()
+rep = [
+('''  slots: slots(act(fast("swsh", mon("Alakazam", "Inner Focus")), "Magic Coat"), idle(lax(0)), act(lax(16), "Growl"), idle(lax(8))),''', '''  slots: slots(act(fast("swsh", mon("Alakazam", "Inner Focus")), "Magic Coat"), idle(lax(0)), act(mon("Audino", "Healer"), "Growl"), idle(lax(8))),'''),
+('''  slots: slots(act(fast("usum", mon("Absol", "Pressure")), "Magic Coat"), idle(lax(0)), act(lax(16), "Stealth Rock"), idle(lax(8))),''', '''  slots: slots(act(fast("usum", mon("Absol", "Pressure")), "Magic Coat"), idle(lax(0)), act(mon("Aggron", "Sturdy"), "Stealth Rock"), idle(lax(8))),'''),
+('''const snatcher = (extra: Partial<CaseMon> = {}) => mon("Absol", "Pressure", { evs: { spe: 252 }, ...extra });''', '''const snatcher = (extra: Partial<CaseMon> = {}) => mon("Alakazam", "Inner Focus", { evs: { spe: 252 }, ...extra });'''),
+('''  title: "USUM: Absol's Snatch steals a foe's Swords Dance (F10)",
+  slots: slots(act(snatcher(), "Snatch"), idle(lax(0)), idle(lax(16)), act(lax(8), "Swords Dance")),
+  checks: "snatch onAnyPrepareHit −1: the user of the snatched move is Absol (+2 Atk); the foe gets nothing.",''', '''  title: "USUM: Alakazam's Snatch steals a foe's Swords Dance (F10)",
+  slots: slots(act(snatcher(), "Snatch"), idle(lax(0)), idle(lax(16)), act(mon("Absol", "Pressure"), "Swords Dance")),
+  checks: "snatch onAnyPrepareHit −1: the user of the snatched move is Alakazam (+2 Atk); the foe gets nothing.",'''),
+('''  title: "USUM: Snatch steals a foe's Reflect: it goes up on Absol's side (F11)",''', '''  title: "USUM: Snatch steals a foe's Reflect: it goes up on Alakazam's side (F11)",'''),
+('''  slots: slots(act(snatcher(), "Snatch"), idle(lax(0)), idle(lax(16)), act(mon("Alakazam", "Inner Focus"), "Reflect")),''', '''  slots: slots(act(snatcher(), "Snatch"), idle(lax(0)), idle(lax(16)), act(mon("Absol", "Pressure"), "Reflect")),'''),
+('''  title: "USUM: a paralysed Absol's Snatch: 1/4 fully paralysed, then the Swords Dance is not stolen (F15)",
+  slots: slots(act(snatcher({ status: "par" }), "Snatch"), idle(lax(0)), idle(lax(16)), act(lax(8), "Swords Dance")),''', '''  title: "USUM: a paralysed Alakazam's Snatch: 1/4 fully paralysed, then the Swords Dance is not stolen (F15)",
+  slots: slots(act(snatcher({ status: "par" }), "Snatch"), idle(lax(0)), idle(lax(16)), act(mon("Absol", "Pressure"), "Swords Dance")),'''),
+('''  title: "USUM: Snatch steals a foe's Substitute: Absol pays the quarter (F13a)",''', '''  title: "USUM: Snatch steals a foe's Substitute: Alakazam pays the quarter (F13a)",'''),
+('''  checks: "The stolen Substitute is Absol's.",''', '''  checks: "The stolen Substitute is Alakazam's.",'''),
+('''  title: "USUM: Snatch steals a foe's Heal Bell: Absol's side is cured, its bench too; the foe's not (F126)",''', '''  title: "USUM: Snatch steals a foe's Heal Bell: Alakazam's side is cured, its bench too; the foe's not (F126)",'''),
+('''  slots: slots(act(fast("swsh", mon("Klefki", "Magician")), "Crafty Shield"), idle(lax(0)), act(lax(16), "Growl"), act(mon("Raichu", "Static"), "Thunder Wave", OR)),''', '''  slots: slots(act(fast("swsh", mon("Klefki", "Magician")), "Crafty Shield"), idle(lax(0)), act(mon("Audino", "Healer"), "Growl"), act(mon("Raichu", "Static"), "Thunder Wave", OR)),'''),
+('''act(mon("Garchomp", "Rough Skin", { evs: { spe: 252 } }), "Feint", OR)''', '''act(mon("Absol", "Pressure", { evs: { spe: 252 } }), "Feint", OR)'''),
+('''  slots: slots(act(fast("usum", mon("Klefki", "Magician")), "Crafty Shield"), act(mon("Lapras", "Shell Armor"), "Magic Coat"), act(lax(16), "Thunder Wave", OR), idle(lax(8))),''', '''  slots: slots(act(fast("usum", mon("Klefki", "Magician")), "Crafty Shield"), act(mon("Alakazam", "Inner Focus"), "Magic Coat"), act(mon("Absol", "Pressure"), "Thunder Wave", OR), idle(lax(8))),'''),
+('''  title: "USUM: Lapras's Magic Coat and Klefki's Crafty Shield; a foe's Thunder Wave into Lapras: Crafty Shield first (F25)",''', '''  title: "USUM: Alakazam's Magic Coat and Klefki's Crafty Shield; a foe's Thunder Wave into Alakazam: Crafty Shield first (F25)",'''),
+('''  slots: slots(act(fast("sv", mon("Altaria", "Natural Cure")), "Mist"), idle(lax(0)), act(lax(16), "Snarl"), idle(lax(8))),''', '''  slots: slots(act(fast("sv", mon("Altaria", "Natural Cure")), "Mist"), idle(lax(0)), act(mon("Arcanine", "Intimidate"), "Snarl"), idle(lax(8))),'''),
+('''  slots: slots(act(fast("swsh", mon("Altaria", "Natural Cure")), "Mist"), idle(mon("Corviknight", "Mirror Armor")), act(lax(16), "Snarl"), idle(lax(8))),''', '''  slots: slots(act(fast("swsh", mon("Altaria", "Natural Cure")), "Mist"), idle(mon("Corviknight", "Mirror Armor")), act(mon("Arcanine", "Intimidate"), "Snarl"), idle(lax(8))),'''),
+('''act(mon("Incineroar", "Intimidate"), "Parting Shot", OL)''', '''act(mon("Pangoro", "Iron Fist"), "Parting Shot", OL)'''),
+('''  slots: slots(act(fast("champions", mon("Alakazam", "Inner Focus")), "Wonder Room"), act(lax(0), "Body Slam", PR), idle(lax(2)), idle(mon("Chansey", "Natural Cure"))),''', '''  slots: slots(act(fast("champions", mon("Alakazam", "Inner Focus")), "Wonder Room"), act(lax(0), "Body Slam", PR), idle(lax(2)), idle(lax(3))),'''),
+('''  title: "Champions: Wonder Room up; Alakazam's Wonder Room ends it; then a Body Slam into Chansey (F72)",''', '''  title: "Champions: Wonder Room up; Alakazam's Wonder Room ends it; then a Body Slam into Snorlax (F72)",'''),
+('''act(mon("Golem-Alola", "Galvanize"), "Body Slam", OL)''', '''act(mon("Golem-Alola", "Galvanize"), "Double-Edge", OL)'''),
+('''  title: "USUM: Mud Sport this turn; an Alolan Golem's Galvanize Body Slam (Electric) is weakened",''', '''  title: "USUM: Mud Sport this turn; an Alolan Golem's Galvanize Double-Edge (Electric) is weakened",'''),
+('''idle(mon("Swalot", "Sticky Hold", { item: "Black Sludge" }))''', '''idle(mon("Swalot", "Sticky Hold", { item: "Leftovers" }))'''),
+('''  title: "USUM: Bestow into a protecting Snorlax: blocked? (Bestow ignores Protect) and an Unburden giver (F88b)",
+  slots: slots(act(mon("Drifblim", "Unburden", { item: "Leftovers" }), "Bestow", PR), idle(lax(0)), idle(lax(16)), act(lax(8), "Protect")),
+  checks: "Bestow's flags decide Protect (the oracle); Unburden on the giver.",''', '''  title: "USUM: Blissey (Leftovers) Bestows into a protecting Snorlax (F88b)",
+  slots: slots(act(mon("Blissey", "Natural Cure", { item: "Leftovers" }), "Bestow", PR), idle(lax(0)), idle(lax(16)), act(lax(8), "Protect")),
+  checks: "Bestow's flags decide Protect (the oracle decides).",'''),
+('''idle(lax(1, { item: "Figy Berry", hp: 150, nature: "Modest" }))''', '''idle(lax(1, { item: "Oran Berry", hp: 150 }))'''),
+('''  title: "Champions: Teatime under Magic Room, beside a Unnerve foe, with a Figy Berry (F102)",''', '''  title: "Champions: Teatime under Magic Room, beside an Unnerve foe, with an Oran Berry (F102; no Figy Berry in Champions)",'''),
+('''  checks: "Teatime ignores Magic Room? and Unnerve? (the oracle decides); the Figy confuses a Modest eater.",''', '''  checks: "Teatime under Magic Room and Unnerve (the oracle decides).",'''),
+('''  title: "USUM: a Soundproof Exploud's Heal Bell; its Soundproof bench partner (F122)",
+  bench: { own: { status: "psn", ability: "Soundproof" } },
+  slots: slots(act(mon("Exploud", "Soundproof", { status: "psn" }), "Heal Bell"), idle(lax(0, { status: "par" })), idle(lax(16)), idle(lax(8))),
+  checks: "Gen 7: Soundproof holders other than the user are not cured.",''', '''  title: "USUM: Blissey's Heal Bell beside a poisoned Soundproof Exploud, and a Soundproof bench Pokémon (F122)",
+  bench: { own: { status: "psn", ability: "Soundproof" } },
+  slots: slots(act(mon("Blissey", "Natural Cure"), "Heal Bell"), idle(mon("Exploud", "Soundproof", { status: "psn" })), idle(lax(16)), idle(lax(8))),
+  checks: "Gen 7: Soundproof holders are not cured, active or benched.",'''),
+]
+for a, b in rep:
+    assert a in s, a[:90]
+    s = s.replace(a, b)
+open(p, 'w', encoding='utf8').write(s)
+print("ok")

@@ -1,0 +1,1305 @@
+{
+ "id": "M03",
+ "title": "Propeller Tail ignores Storm Drain",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Liquidation stays on Charizard: no Storm Drain redirection or absorption.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 25,
+   "classes": 16,
+   "ms": 28,
+   "decisions": {
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       1,
+       0.0625
+      ],
+      [
+       3,
+       0.125
+      ],
+      [
+       7,
+       0.125
+      ],
+      [
+       9,
+       0.125
+      ],
+      [
+       13,
+       0.0625
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 3.25,
+     "min": 0,
+     "max": 13,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.5,
+       "dmgMin": 140,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-140": 0.0625,
+       "damage:-144": 0.125,
+       "damage:-146": 0.125,
+       "damage:-150": 0.125,
+       "damage:-152": 0.0625,
+       "damage:-153": 0.5,
+       "faint": 0.5
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -153,
+       "max": -140
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -153,
+       "max": -140,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 28,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 136,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        0,
+        0.5
+       ],
+       [
+        1,
+        0.0625
+       ],
+       [
+        3,
+        0.125
+       ],
+       [
+        7,
+        0.125
+       ],
+       [
+        9,
+        0.125
+       ],
+       [
+        13,
+        0.0625
+       ]
+      ],
+      "koChance": 0.5,
+      "average": 3.25,
+      "min": 0,
+      "max": 13,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.5,
+       "fnt": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.5
+     },
+     "opponent-right": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        186,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 186,
+      "min": 186,
+      "max": 186,
+      "modeTieUp": 186,
+      "modeTieDown": 186,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       13,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 13,
+     "min": 13,
+     "max": 13,
+     "modeTieUp": 13,
+     "modeTieDown": 13,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-140": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -140,
+       "max": -140
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -140,
+       "max": -140,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 136,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        13,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 13,
+      "min": 13,
+      "max": 13,
+      "modeTieUp": 13,
+      "modeTieDown": 13,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        186,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 186,
+      "min": 186,
+      "max": 186,
+      "modeTieUp": 186,
+      "modeTieDown": 186,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 168,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-153": 1,
+       "faint": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -153,
+       "max": -153
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -153,
+       "max": -153,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Barraskewda",
+      "start": null,
+      "maximum": 136,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 153,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Gastrodon",
+      "start": null,
+      "maximum": 186,
+      "dist": [
+       [
+        186,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 186,
+      "min": 186,
+      "max": 186,
+      "modeTieUp": 186,
+      "modeTieDown": 186,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 136,
+   "maximum": 136,
+   "low": 136,
+   "high": 136,
+   "average": 136,
+   "min": 136,
+   "max": 136,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 13,
+   "high": 0,
+   "average": 3.25,
+   "min": 0,
+   "max": 13,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     1,
+     0.0625
+    ],
+    [
+     3,
+     0.125
+    ],
+    [
+     7,
+     0.125
+    ],
+    [
+     9,
+     0.125
+    ],
+    [
+     13,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 186,
+   "maximum": 186,
+   "low": 186,
+   "high": 186,
+   "average": 186,
+   "min": 186,
+   "max": 186,
+   "koChance": 0,
+   "dist": [
+    [
+     186,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 136,
+   "maximum": 136,
+   "low": 136,
+   "high": 136,
+   "average": 136,
+   "min": 136,
+   "max": 136,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 13,
+   "high": 0,
+   "average": 3.25,
+   "min": 0,
+   "max": 13,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     1,
+     0.0625
+    ],
+    [
+     3,
+     0.125
+    ],
+    [
+     7,
+     0.125
+    ],
+    [
+     9,
+     0.125
+    ],
+    [
+     13,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 186,
+   "maximum": 186,
+   "low": 186,
+   "high": 186,
+   "average": 186,
+   "min": 186,
+   "max": 186,
+   "koChance": 0,
+   "dist": [
+    [
+     186,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

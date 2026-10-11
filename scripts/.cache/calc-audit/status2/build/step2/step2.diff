@@ -1,0 +1,1019 @@
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-actions.ts app/lib/battle/doubles-actions.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-actions.ts	2026-10-11 15:33:36.468611800 -0400
++++ app/lib/battle/doubles-actions.ts	2026-10-11 15:39:44.234986900 -0400
+@@ -246,6 +246,8 @@
+   gasEnds: "Neutralizing Gas ending is not modelled in 2v2.",
+   withGas: (name: string) => `${name} with Neutralizing Gas is not modelled in 2v2.`,
+   gasShield: "An Ability Shield change under Neutralizing Gas is not modelled in 2v2.",
++  /** status2 R (SPEC2 §2.4, Step 2): a Neutralizing Gas holder that comes in mid-turn (the other Pokémon's abilities would end). R-E calls it. */
++  entersWithGas: (name: string) => `${name}'s Neutralizing Gas coming in is not modelled in 2v2.`,
+   // status2 SPEC2 §2.4 (Step 0a writes every key; a track starts calling it).
+   /** A1: an ability Start the turn does not follow (Supreme Overlord; Forecast on Castform, Flower Gift on Cherrim). */
+   abilityStart: (ability: string, name: string) => `${ability} starting on ${name} is not modelled in 2v2.`,
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-eot.ts app/lib/battle/doubles-eot.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-eot.ts	2026-10-11 15:33:36.360624900 -0400
++++ app/lib/battle/doubles-eot.ts	2026-10-11 15:53:42.836709600 -0400
+@@ -1,7 +1,7 @@
+ import { GAS_STAND_IN } from "./calculate";
+ import { REASONS, SEMI_INVULNERABLE_MOVES, STRONG_WEATHERS } from "./doubles-actions";
+ import {
+-  allyOf, DOUBLES_SLOTS, foesOf, slotSide, type DoublesFact, type DoublesOutcomeMon, type DoublesResidual, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput,
++  allyOf, DOUBLES_SLOTS, foesOf, sideCanSwitch, slotSide, type DoublesFact, type DoublesOutcomeMon, type DoublesResidual, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput,
+ } from "./doubles-types";
+ import {
+   cloneWorld, condition, endTrap, entryCount, hpIn, join, locate, mapHP, mapJoint, marginal, mergeWorlds, sheltered, withSpecies, type EotState, type MonState, type PendingAction,
+@@ -387,7 +387,7 @@
+ 
+ function commute(kernel: TurnKernel, group: Handler[]): boolean {
+   // A handler that can end the battle (a side with no Pokémon left to send in) decides whether the others run.
+-  if (group.some((handler) => handler.writes.some((slot) => kernel.input.canSwitch?.[slotSide(slot)] === false))) return false;
++  if (group.some((handler) => handler.writes.some((slot) => sideCanSwitch(kernel.input, slotSide(slot)) === false))) return false;
+   for (let i = 0; i < group.length; i++) {
+     for (let j = i + 1; j < group.length; j++) {
+       const a = group[i], b = group[j];
+@@ -455,7 +455,8 @@
+ }
+ 
+ const SIDES = ["own", "opponent"] as const;
+-const canSwitch = (kernel: TurnKernel, slot: DoublesSlotId) => kernel.input.canSwitch?.[slotSide(slot)] ?? true;
++// status2 R: a side's bench, where given, takes canSwitch's place (sideCanSwitch).
++const canSwitch = (kernel: TurnKernel, slot: DoublesSlotId) => sideCanSwitch(kernel.input, slotSide(slot)) ?? true;
+ 
+ /**
+  * The battle is over in this world (sim/battle.ts checkWin after faintMessages): a side with no Pokémon left to send in
+@@ -472,7 +473,7 @@
+       if (!mon.fainted) wiped = false;
+     }
+     if (!present || !wiped) continue;
+-    const left = p.kernel.input.canSwitch?.[side];
++    const left = sideCanSwitch(p.kernel.input, side);
+     if (left === false) done = true;
+     else if (left === undefined) p.turnFacts.add(`Assumes ${side === "own" ? "your side" : "the opponent's side"} has a Pokémon left to switch in.`);
+   }
+@@ -2327,7 +2328,9 @@
+   // foeSidesWithConditions: the user's foes' side, whichever Pokémon it hit; on a Substitute only while the user has HP.
+   if ((id === "ceaselessedge" || id === "stoneaxe") && (outcome.landed > 0 || someHP(w, attacker, (hp) => hp > 0))) {
+     const side = slotSide(attacker) === "own" ? "opponent" : "own";
+-    w.sides[side] = { ...w.sides[side], hazards: [...w.sides[side].hazards, id === "ceaselessedge" ? "spikes" : "stealthrock"] };
++    const hazard = id === "ceaselessedge" ? "spikes" : "stealthrock";
++    // status2 R: a hazard up already, or at its layers, does not go up again (R's doubles-switch.ts hazardFails; Step 2: none).
++    if (!switchHooks.hazardFails(kernel, w, side, hazard)) w.sides[side] = { ...w.sides[side], hazards: [...w.sides[side].hazards, hazard] };
+   }
+ }
+ 
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-faces.ts app/lib/battle/doubles-faces.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-faces.ts	2026-10-11 15:33:36.486506900 -0400
++++ app/lib/battle/doubles-faces.ts	2026-10-11 15:43:55.569308100 -0400
+@@ -2,7 +2,7 @@
+ import { calculateTurnMove, usesHelpers } from "./calculate";
+ import { BUSTED_FORMS, DRAG_MOVES, REASONS, SWITCH_MOVES } from "./doubles-actions";
+ import * as switchNs from "./doubles-switch";
+-import type { DoublesSlotId } from "./doubles-types";
++import { sideCanSwitch, type DoublesSlotId } from "./doubles-types";
+ import { setVol, stageFact } from "./doubles-use";
+ import { cloneWorld, condition, mapHP, marginal, withSpecies, type PendingAction, type Stage, type World } from "./doubles-world";
+ import type { FaceKind, SearchEntry, StepChild, TurnKernel, TurnMoveInfo } from "./doubles-turn";
+@@ -289,7 +289,7 @@
+   }
+   // Eject Button and Red Card need a Pokémon to come in (canSwitch); Eject Button waits for none already switching (a
+   // U-turn's user: its selfSwitch is set in the hit); each is used up as it acts.
+-  const canSwitch = (slot: DoublesSlotId) => kernel.input.canSwitch?.[sideOfSlot(slot)] !== false;
++  const canSwitch = (slot: DoublesSlotId) => sideCanSwitch(kernel.input, sideOfSlot(slot)) !== false;
+   const selfSwitch = !info.transformed && SWITCH_MOVES.has(action.moveId!) && kernel.alive(w, attacker);
+   // Dragon Tail and Circle Throw set the holder's forceSwitchFlag in the hit (sim/battle-actions.ts forceSwitch), before these.
+   const dragged = !info.transformed && DRAG_MOVES.has(action.moveId!) && !isMaxActive(receiver.build);
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-field.ts app/lib/battle/doubles-field.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-field.ts	2026-10-11 15:33:36.362137400 -0400
++++ app/lib/battle/doubles-field.ts	2026-10-11 15:43:55.569308100 -0400
+@@ -1,5 +1,5 @@
+ import { ABSORBING, REASONS, SIDE_MOVES, STRONG_WEATHERS, TERRAIN_MOVES, WEATHER_MOVES } from "./doubles-actions";
+-import { DOUBLES_SLOTS, SHOWDOWN_POSITION, slotSide, type DoublesSideId, type DoublesSlotId, type SideClockFlag } from "./doubles-types";
++import { DOUBLES_SLOTS, SHOWDOWN_POSITION, sideCanSwitch, slotSide, type DoublesSideId, type DoublesSlotId, type SideClockFlag } from "./doubles-types";
+ import { cloneWorld, type PendingAction, type SideState, type World } from "./doubles-world";
+ import type { TurnKernel } from "./doubles-turn";
+ import * as fieldChangeNs from "./doubles-fieldchange";
+@@ -706,7 +706,7 @@
+     if (cure(kernel, w, use, slot)) effect(kernel, use, slot, w);
+   }
+   setSide(w, side, { benchCured: true });
+-  if (kernel.input.canSwitch?.[side] !== false && DOUBLES_SLOTS.every((slot) => slotSide(slot) !== side || kernel.input.pokemon[slot])) {
++  if (sideCanSwitch(kernel.input, side) !== false && DOUBLES_SLOTS.every((slot) => slotSide(slot) !== side || kernel.input.pokemon[slot])) {
+     kernel.stepFact(use.action, `${move.name} also cures the statuses of ${side === "own" ? "your side" : "the opponent's side"}'s Pokémon not in battle.`, w.mass);
+   }
+   return [w];
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-max.ts app/lib/battle/doubles-max.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-max.ts	2026-10-11 15:33:36.314590300 -0400
++++ app/lib/battle/doubles-max.ts	2026-10-11 15:53:42.835192600 -0400
+@@ -1,5 +1,5 @@
+ import { REASONS } from "./doubles-actions";
+-import { allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, slotSide, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
++import { allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, sideCanSwitch, slotSide, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
+ import { cloneWorld, mapHP, type PendingAction, type World } from "./doubles-world";
+ import type { TurnKernel, TurnMoveInfo } from "./doubles-turn";
+ import type { GivenStatus } from "./doubles-status";
+@@ -7,6 +7,7 @@
+ import * as hiddenNs from "./doubles-hidden";
+ import * as itemNs from "./doubles-items";
+ import * as typingNs from "./doubles-typing";
++import * as switchNs from "./doubles-switch";
+ import { getBuildGender, isMaxActive } from "./mechanics";
+ import { MAX_MOVE_EFFECTS } from "./stat-moves";
+ import type { ChampionsMove } from "./types";
+@@ -133,7 +134,8 @@
+     // Steelsurge, Stonesurge: the foe side's hazard (addSideCondition: one already up this turn fails).
+     case "gmaxsteelsurge": case "gmaxstonesurge": {
+       const hazard = id === "gmaxsteelsurge" ? "gmaxsteelsurge" : "stealthrock";
+-      if (!w.sides[foeSide].hazards.includes(hazard)) w.sides[foeSide] = { ...w.sides[foeSide], hazards: [...w.sides[foeSide].hazards, hazard] };
++      // status2 R: a hazard from before the turn counts too (R's doubles-switch.ts hazardFails; Step 2: none is up).
++      if (!w.sides[foeSide].hazards.includes(hazard) && !switchNs.hazardFails(kernel, w, foeSide, hazard)) w.sides[foeSide] = { ...w.sides[foeSide], hazards: [...w.sides[foeSide].hazards, hazard] };
+       return [w];
+     }
+     case "gmaxterror":
+@@ -300,7 +302,7 @@
+     kernel.stepFact(action, `G-Max Sweetness: ${kernel.names[partner]}'s status is cured.`, w.mass);
+   }
+   w.sides[side] = { ...w.sides[side], benchCured: true };
+-  if (kernel.input.canSwitch?.[side] !== false && DOUBLES_SLOTS.every((slot) => slotSide(slot) !== side || kernel.input.pokemon[slot])) {
++  if (sideCanSwitch(kernel.input, side) !== false && DOUBLES_SLOTS.every((slot) => slotSide(slot) !== side || kernel.input.pokemon[slot])) {
+     kernel.stepFact(action, `G-Max Sweetness also cures the statuses of ${side === "own" ? "your side" : "the opponent's side"}'s Pokémon not in battle.`, w.mass);
+   }
+ }
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-presence.ts app/lib/battle/doubles-presence.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-presence.ts	2026-10-11 15:33:36.365164700 -0400
++++ app/lib/battle/doubles-presence.ts	2026-10-11 15:43:55.570825400 -0400
+@@ -1,5 +1,5 @@
+ import { ABSORBING, DANCE_MOVES, PLEDGE_MOVES, REASONS, REDIRECT_ABILITIES } from "./doubles-actions";
+-import { allyOf, DOUBLES_SLOTS, SHOWDOWN_POSITION, slotSide, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
++import { allyOf, DOUBLES_SLOTS, SHOWDOWN_POSITION, sideCanSwitch, slotSide, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
+ import { cloneWorld, mapHP, type MonState, type MoveVolatiles, type PendingAction, type World } from "./doubles-world";
+ import type { Resolution, TurnKernel, TurnMoveInfo } from "./doubles-turn";
+ import * as fieldChangeNs from "./doubles-fieldchange";
+@@ -83,7 +83,7 @@
+ /** The battle is over in this world (doubles-turn.ts battleOver's rule): a side with no Pokémon left to switch in has every Pokémon it had fainted. */
+ function battleOver(kernel: TurnKernel, w: World): boolean {
+   return (["own", "opponent"] as const).some((side) => {
+-    if (kernel.input.canSwitch?.[side] !== false) return false;
++    if (sideCanSwitch(kernel.input, side) !== false) return false;
+     const present = DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side && w.mons[slot]);
+     return present.length > 0 && present.every((slot) => w.mons[slot]!.fainted);
+   });
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-status.ts app/lib/battle/doubles-status.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-status.ts	2026-10-11 15:33:36.363653000 -0400
++++ app/lib/battle/doubles-status.ts	2026-10-11 15:53:42.835192600 -0400
+@@ -1756,6 +1756,9 @@
+       ? DOUBLES_SLOTS.find((slot) => slotSide(slot) === foeSide && kernel.alive(w, slot) && w.mons[slot]!.build.abilityId === "magicbounce" && !breaks(kernel, w, use, slot)) : undefined;
+     const lands = bouncer ? userSide : foeSide;
+     if (bouncer) kernel.stepFact(use.action, `${kernel.abilityName("magicbounce")}: ${move.name} goes back to ${name}'s side.`, w.mass);
++    // status2 R: a hazard up already, or at its layers, fails (R's doubles-switch.ts hazardFails; Step 2: none does).
++    const fails = switchHooks.hazardFails(kernel, w, lands, move.id);
++    if (fails) { kernel.stepFact(use.action, fails, w.mass); return [w]; }
+     w.sides[lands] = { ...w.sides[lands], hazards: [...w.sides[lands].hazards, move.id] };
+     return [w];
+   }
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-switch.ts app/lib/battle/doubles-switch.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-switch.ts	2026-10-11 15:33:36.378975000 -0400
++++ app/lib/battle/doubles-switch.ts	2026-10-11 15:53:42.833681300 -0400
+@@ -1,6 +1,6 @@
+ import { REASONS } from "./doubles-actions";
+-import type { DoublesSlotId } from "./doubles-types";
+-import type { PendingAction, World } from "./doubles-world";
++import { slotSide, type DoublesBenchedMon, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
++import type { BenchedMon, PendingAction, World } from "./doubles-world";
+ import type { TurnKernel } from "./doubles-turn";
+ import * as presenceNs from "./doubles-presence";
+ 
+@@ -10,12 +10,18 @@
+ // complete when this module runs, and every export is a function or a const.
+ const presenceHooks = { ...presenceNs };
+ 
+-// Switch-outs during the turn (status2 SPEC2 §3.5, §4.8; ADDENDUM2 §8.7): Track R's file (wave 2; frozen in wave 1). Every
++// Switch-outs during the turn (status2 SPEC2 §3.5, §4.8; ADDENDUM2 §8.7): Track R's file (wave 2: R-E). Every
+ // switch-out site of the moves calls switchOut where today it decided between "not estimated" and the end of turn's
+ // leaving: Eject Pack, Emergency Exit and Wimp Out after an action (doubles-turn.ts eventGuards), Eject Button and Red Card
+-// (hitReactions), U-turn, Volt Switch, Flip Turn and the drag of Dragon Tail and Circle Throw (afterHit), the status moves'
+-// switches (doubles-status.ts switchOut: Baton Pass, Teleport, Shed Tail, Parting Shot, Roar, Whirlwind, Chilly Reception),
+-// and the end of turn's Eject Pack (doubles-eot.ts ejectPack: the switch after the turn). R models the replacement.
++// (hitReactions; doubles-faces.ts for a face's hit), U-turn, Volt Switch, Flip Turn and the drag of Dragon Tail and Circle
++// Throw (afterHit), the status moves' switches (doubles-status.ts switchOut: Baton Pass, Teleport, Shed Tail, Parting
++// Shot, Roar, Whirlwind, Chilly Reception), and the end of turn's Eject Pack (doubles-eot.ts ejectPack: the switch after the
++// turn). R models the replacement where the side's bench is given (DoublesTurnInput.bench).
++//
++// Step 2 (ADDENDUM2 §8.7 step 1; scripts/.cache/calc-audit/status2/build/STEP2.md has the hook map) wrote the contract and
++// these stubs, keyed on the bench and the hazards, which nothing sets yet: replaceSlot keeps today's rule, betweenActions and
++// the pending switches (World.switching) wait for R-E, benchedOutcome reports a leaver (World.benched) as E2 lists it, and
++// hazardFails lets every hazard land as today.
+ 
+ /** What makes the Pokémon leave (R reads it: the newcomer's entry, the drag's random bench pick). */
+ export type SwitchHow = "ejectpack" | "exit" | "ejectbutton" | "redcard" | "selfswitch" | "drag" | "status" | "residual";
+@@ -24,13 +30,68 @@
+  * `slot` leaves (today's rule, moved verbatim from the five sites): with a later living action its replacement is not known
+  * (REASONS.switchesOut); with none it leaves for the end of turn (kernel.leaving). The end of turn's own Eject Pack
+  * ("residual") switches after the turn, which no input follows: nothing more. `action`: the action it happened in (null: at
+- * the end of turn or outside an action).
++ * the end of turn or outside an action). status2 R: with the leaver's side's bench given (DoublesTurnInput.bench), the
++ * replacement point replaceSlot instead.
+  */
+ export function switchOut(kernel: TurnKernel, w: World, slot: DoublesSlotId, how: SwitchHow, action: PendingAction | null) {
+-  void action;
++  // R-E: with a bench, the switch after the turn too (E2's replacement before the next turn: F4 §5.4).
+   if (how === "residual") return;
+-  // A commanding Tatsugiri or its Dondozo cannot leave (PR, T2P §2.1). Step 0: never.
++  // A commanding Tatsugiri or its Dondozo cannot leave (PR, T2P §2.1).
+   if (presenceHooks.cannotLeave(kernel, w, slot)) return;
++  if (kernel.input.bench?.[slotSide(slot)]) { replaceSlot(kernel, w, slot, how, action); return; }
++  if (kernel.laterAction(w)) kernel.notEstimated(REASONS.switchesOut(kernel.names[slot]));
++  kernel.leaving(w, slot);
++}
++
++/**
++ * R-E (F4 §5.4's replaceSlot, SPEC2 §4.8): `slot`'s Pokémon leaves with its side's bench given. Showdown sets the switch
++ * here (sim/pokemon.ts switchFlag; a drag's forceSwitchFlag: sim/battle-actions.ts:1312, 1360) and makes it as the action
++ * ends (sim/battle.ts:2821-2914), so R-E records it in World.switching and betweenActions makes it: the leaver's queued action
++ * removed, its switch-out effects, the newcomer (`replacement[slot]` or the first bench Pokémon not in play; a drag: one
++ * world per living bench Pokémon), its entry. Step 2's stub: today's rule (switchOut's), so a bench given before R-E lands
++ * changes no result.
++ */
++export function replaceSlot(kernel: TurnKernel, w: World, slot: DoublesSlotId, how: SwitchHow, action: PendingAction | null) {
++  void how;
++  void action;
+   if (kernel.laterAction(w)) kernel.notEstimated(REASONS.switchesOut(kernel.names[slot]));
+   kernel.leaving(w, slot);
+ }
++
++/**
++ * R-E: as an action ends (doubles-turn.ts walk, after execute), the switch-outs it set (World.switching), in Showdown's order
++ * (sim/battle.ts:2821-2914: the drags, then the faints, the Update and Emergency Exit, then the switch requests): one world
++ * per outcome, World.switching gone. null: this world goes on unchanged. Step 2's stub: null (nothing sets World.switching).
++ */
++export function betweenActions(kernel: TurnKernel, w: World): World[] | null {
++  void kernel;
++  void w;
++  return null;
++}
++
++/**
++ * R-E: a Pokémon that left (World.benched) as E2 lists it (DoublesOutcome.benched): Step 2 gives its build (status, item,
++ * form), its HP as it left and whether its action was picked; R-E adds what it keeps on the bench (its sleep counter, the
++ * once-a-battle effects).
++ */
++export function benchedOutcome(kernel: TurnKernel, w: World, entry: BenchedMon): DoublesBenchedMon {
++  void kernel;
++  void w;
++  return { id: entry.id, slot: entry.slot, hp: entry.hp.map(([hp, chance]) => ({ hp, chance })), build: entry.mon.build, protected: false, moved: entry.mon.moved };
++}
++
++/**
++ * R-E: why a hazard does not go up on `side` (null: it does), at every place one lands (doubles-status.ts sideOrField's
++ * hazard moves, doubles-max.ts G-Max Steelsurge and Stonesurge, doubles-eot.ts Ceaseless Edge and Stone Axe): Stealth Rock,
++ * Sticky Web and G-Max Steelsurge up already, Spikes at 3 layers, Toxic Spikes at 2 (PS/data/moves.ts spikes and
++ * toxicspikes onSideRestart; the others have none, so sim/side.ts addSideCondition returns false), counting the hazards from
++ * before the turn that the side holds now (DoublesTurnInput.hazards through SideState.hazardsFrom) and those that landed this
++ * turn (SideState.hazards). A status move's text is its failure fact. Step 2's stub: null (each lands, as today).
++ */
++export function hazardFails(kernel: TurnKernel, w: World, side: DoublesSideId, hazard: string): string | null {
++  void kernel;
++  void w;
++  void side;
++  void hazard;
++  return null;
++}
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-turn.ts app/lib/battle/doubles-turn.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-turn.ts	2026-10-11 15:33:36.378461200 -0400
++++ app/lib/battle/doubles-turn.ts	2026-10-11 15:55:05.358188700 -0400
+@@ -9,7 +9,7 @@
+   SEMI_INVULNERABLE_MOVES, STRONG_WEATHERS, SWITCH_MOVES, TRACKING_ABILITIES, TRACKS_TARGET_MOVES,
+ } from "./doubles-actions";
+ import {
+-  allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, slotSide, turnNames, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
++  allyOf, DOUBLES_SLOTS, foesOf, SHOWDOWN_POSITION, sideCanSwitch, slotSide, turnBenchNames, turnNames, type DoublesFact, type DoublesHit, type DoublesHP, type DoublesSideId,
+   type DoublesSlotId, type DoublesStart, type DoublesStartRow, type DoublesStep, type DoublesTurnInput, type DoublesTurnResult,
+   type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesEndOfTurn,
+ } from "./doubles-types";
+@@ -162,7 +162,16 @@
+ };
+ type Ctx = {
+   input: DoublesTurnInput; runtime: BattleRuntime; gen7: boolean; champions: boolean;
++  /** The names of the Pokémon at the four slots (turnNames; status2 R: a newcomer's while the walk is at a world it stands in: syncOccupants). */
+   names: Record<DoublesSlotId, string>;
++  /** status2 R: the bench Pokémon's names by id (turnBenchNames; empty without a bench). */
++  benchNames: Record<string, string>;
++  /** status2 R: the slots' starting Pokémon's names and HP (turnNames, the settle's turnHP), which syncOccupants puts back. */
++  startNames: Readonly<Record<DoublesSlotId, string>>;
++  startHP: Readonly<Record<DoublesSlotId, { maxHP: number; baseMaxHP: number }>>;
++  /** status2 R: names and hp hold a newcomer's now (syncOccupants). */
++  renamed: boolean;
++  /** Each slot's engine maximum HP and base maximum HP (status2 R: a newcomer's while the walk is at a world it stands in: syncOccupants). */
+   hp: Record<DoublesSlotId, { maxHP: number; baseMaxHP: number }>;
+   actions: { slot: DoublesSlotId; moveId: string | null; target: DoublesSlotId | null }[];
+   mode: Mode; memo: Memo;
+@@ -204,9 +213,19 @@
+   // ---- Context ----
+   readonly input: DoublesTurnInput;
+   readonly runtime: BattleRuntime;
+-  /** turnNames: a species name, with " (yours)" / " (opponent's)" across sides and " (1)" / " (2)" within one (doublesNames); the input's names name a fainted Pokémon as its card does, else "" for an empty slot. */
++  /**
++   * turnNames: a species name, with " (yours)" / " (opponent's)" across sides and " (1)" / " (2)" within one (doublesNames); the
++   * input's names name a fainted Pokémon as its card does, else "" for an empty slot. status2 R: the Pokémon standing in the
++   * slot in the world the walk is at (a newcomer's from benchNames: syncOccupants), so a hook's text names the occupant.
++   */
+   readonly names: Record<DoublesSlotId, string>;
+-  /** Each slot's engine maximum HP (Dynamax HP while Dynamaxed) and base maximum HP. */
++  /** status2 R: the bench Pokémon's names by id (turnBenchNames: after the four slots', each side's bench in order); empty without a bench. */
++  readonly benchNames: Readonly<Record<string, string>>;
++  /** status2 R: the names of the Pokémon that started the turn in each slot (turnNames), whoever stands there now (`names` follows the occupant). */
++  readonly startNames: Readonly<Record<DoublesSlotId, string>>;
++  /** status2 R: the name of the Pokémon at mons[slot] in `w`: names[slot] for the slot's starting Pokémon, a newcomer's from benchNames (MonState.id). */
++  nameOf(w: World, slot: DoublesSlotId): string;
++  /** Each slot's engine maximum HP (Dynamax HP while Dynamaxed) and base maximum HP (status2 R: the occupant's, as `names`). */
+   readonly hp: Record<DoublesSlotId, { maxHP: number; baseMaxHP: number }>;
+   readonly gen7: boolean;
+   readonly champions: boolean;
+@@ -473,7 +492,11 @@
+ 
+ function makeKernel(ctx: Ctx): TurnKernel {
+   const kernel: TurnKernel = {
+-    input: ctx.input, runtime: ctx.runtime, names: ctx.names, hp: ctx.hp, gen7: ctx.gen7, champions: ctx.champions, mode: ctx.mode,
++    input: ctx.input, runtime: ctx.runtime, names: ctx.names, benchNames: ctx.benchNames, startNames: ctx.startNames, hp: ctx.hp, gen7: ctx.gen7, champions: ctx.champions, mode: ctx.mode,
++    nameOf: (w, slot) => {
++      const id = w.mons[slot]?.id;
++      return id === undefined ? ctx.names[slot] : ctx.benchNames[id] ?? id;
++    },
+     get reference() { return DOUBLES_REFERENCE.on; },
+     recording: ctx.stats !== null, gas: ctx.gas, budget: BUDGET,
+     fieldSettledAbilities: FIELD_SETTLED_ABILITIES, fieldSettledItems: FIELD_SETTLED_ITEMS,
+@@ -1319,17 +1342,22 @@
+   while (worlds.length) {
+     const next: World[] = [];
+     for (const w0 of worlds) {
++      // status2 R: the per-slot names and HP of the Pokémon standing in this world (a no-op until a newcomer stands in one).
++      syncOccupants(ctx, w0);
+       for (const w of refine(ctx, w0)) {
+         if (battleOver(ctx, w)) { done.push(w); continue; }
+         const group = topGroup(ctx, w);
+         if (!group.length) { done.push(w); continue; }
+         // Each tied action is next with equal chance (sim/battle.ts:429-458 speedSort shuffles each tied run, at
+         // every sort from generation 8 and once in generation 7). An action that changed the weather set it this turn
+-        // (World.weatherSet: a new duration, or none up).
++        // (World.weatherSet: a new duration, or none up). status2 R: the switch-outs the action set are made as it ends
++        // (doubles-switch.ts betweenActions: a newcomer's weather counts as the action's; null keeps the world).
+         for (const action of group) {
+-          for (const out of execute(ctx, cloneWorld(w, w.mass / group.length), action)) {
+-            if (out.field.weather !== w.field.weather) out.weatherSet = true;
+-            next.push(out);
++          for (const acted of execute(ctx, cloneWorld(w, w.mass / group.length), action)) {
++            for (const out of switchHooks.betweenActions(kernelOf(ctx), acted) ?? [acted]) {
++              if (out.field.weather !== w.field.weather) out.weatherSet = true;
++              next.push(out);
++            }
+           }
+         }
+       }
+@@ -1337,18 +1365,46 @@
+     worlds = DOUBLES_REFERENCE.on ? next.filter((world) => world.mass > 0) : mergeWorlds(next, ctx.mode === "all");
+     if ((worlds.length > BUDGET.worlds || entryCount(worlds) > BUDGET.entries) && !DOUBLES_REFERENCE.on) notEstimated(REASONS.tooMany);
+   }
++  // status2 R: the slots' starting Pokémon's names and HP again for what reads the context after the walk.
++  syncOccupants(ctx, null);
+   return DOUBLES_REFERENCE.on ? done : mergeWorlds(done, ctx.mode === "all");
+ }
+ 
+ /**
++ * status2 R (Step 2): the per-slot data the hook modules read by slot (kernel.names, kernel.hp) follow the Pokémon standing
++ * there in `w` (null: the slots' starting Pokémon): a newcomer's name from benchNames and its turnHP. Every world of one
++ * action has the same occupants (a switch-out is made only as the action ends: doubles-switch.ts betweenActions), so the
++ * walk sets them once per world before its next action; R-E sets them where it reads finished worlds one by one (the end
++ * of turn, the result's per-world reads). Without a newcomer in any world (no bench: MonState.id is never set) it does nothing.
++ */
++function syncOccupants(ctx: Ctx, w: World | null) {
++  if (!ctx.renamed && !w?.benched) return;
++  let renamed = false;
++  for (const slot of DOUBLES_SLOTS) {
++    const mon = w?.mons[slot];
++    if (mon?.id === undefined) {
++      ctx.names[slot] = ctx.startNames[slot];
++      ctx.hp[slot] = ctx.startHP[slot];
++      continue;
++    }
++    renamed = true;
++    ctx.names[slot] = ctx.benchNames[mon.id] ?? mon.id;
++    const { maxHP, baseMaxHP } = turnHP(mon.build, ctx.runtime);
++    ctx.hp[slot] = { maxHP, baseMaxHP };
++  }
++  ctx.renamed = renamed;
++}
++
++/**
+  * Whether the battle is over in this world before its next action (sim/battle.ts faintMessages then checkWin, after
+  * each action; runAction stops the queue once `ended`): a side with no Pokémon left to switch in (canSwitch false) has
+  * every Pokémon it had in place fainted. No later action runs (its step's skip fact says so), and the end of turn passes
+  * it through (doubles-eot.ts over). With canSwitch absent the turn assumes a Pokémon is left (doubles-eot.ts's fact).
++ * status2 R: a side's bench, where given, takes canSwitch's place (sideCanSwitch).
+  */
+ function battleOver(ctx: Ctx, w: World): boolean {
+   const over = (["own", "opponent"] as const).some((side) => {
+-    if (ctx.input.canSwitch?.[side] !== false) return false;
++    if (sideCanSwitch(ctx.input, side) !== false) return false;
+     const present = DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side && w.mons[slot]);
+     return present.length > 0 && present.every((slot) => w.mons[slot]!.fainted);
+   });
+@@ -3049,8 +3105,8 @@
+   // U-turn, Volt Switch and Flip Turn switch the user out after a hit (selfSwitch): its replacement is not known. A gas
+   // holder takes its Neutralizing Gas with it, whether or not an action follows. With no later action the switch
+   // reaches only the end of turn (doubles-eot.ts leaving; R's doubles-switch.ts switchOut). A side with no Pokémon left to
+-  // switch in (canSwitch false) keeps it in (sim/battle-actions.ts:1290-1291 canSwitch(source.side)).
+-  const switchable = (slot: DoublesSlotId) => ctx.input.canSwitch?.[slotSide(slot)] !== false;
++  // switch in (canSwitch false; status2 R: an empty bench) keeps it in (sim/battle-actions.ts:1290-1291 canSwitch(source.side)).
++  const switchable = (slot: DoublesSlotId) => sideCanSwitch(ctx.input, slotSide(slot)) !== false;
+   if (SWITCH_MOVES.has(id) && ownAny && !user.fainted && switchable(attacker)) {
+     gasEnds(ctx, w, attacker);
+     switchHooks.switchOut(kernel, w, attacker, "selfswitch", action);
+@@ -3214,7 +3270,9 @@
+   })) as Ctx["hp"];
+   const actions = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]).map((slot) => ({ slot, moveId: input.pokemon[slot]!.action.moveId, target: aimedAt(input, slot) }));
+   return {
+-    input, runtime, gen7: runtime.profile.generation === 7, champions: runtime.profile.id === "champions", names, hp, actions, mode, memo, stats,
++    input, runtime, gen7: runtime.profile.generation === 7, champions: runtime.profile.id === "champions", hp, actions, mode, memo, stats,
++    // status2 R: names and hp are this context's own (syncOccupants writes a newcomer's in them; the input's names are never changed).
++    names: { ...names }, benchNames: turnBenchNames(input), startNames: names, startHP: { ...hp }, renamed: false,
+     heals: new Map(), faintsBefore: new Map(), otherFaints: new Set(), targetless: targetlessSlots(input), gas: settle.gas ?? null,
+     losses: new Map(), walkFacts: new Set(),
+     // status2 (SPEC2 §4.9's readers rule): the new state is written only where something reads it.
+@@ -3313,9 +3371,83 @@
+   }
+   // status2 (ADDENDUM2 §3.7, IN §3.5): the turn-level inputs (entry ranks, the battle's last move, Echoed Voice, field turns).
+   issues.field.push(...turnIssues(input));
++  // status2 R (IN §5.7): the bench, the replacements and the hazards.
++  if (input.bench || input.replacement || input.hazards) {
++    const found = benchIssues(input);
++    issues.field.push(...found.field);
++    for (const [slot, list] of Object.entries(found.pokemon) as [DoublesSlotId, BuildIssue[]][]) issues.pokemon[slot] = [...(issues.pokemon[slot] ?? []), ...list];
++  }
+   return Object.keys(issues.pokemon).length || issues.field.length || issues.actions.length ? { status: "issues", issues } : null;
+ }
+ 
++const HAZARD_MOVES = [["stealthRock", "stealthrock", "Stealth Rock"], ["spikes", "spikes", "Spikes"], ["toxicSpikes", "toxicspikes", "Toxic Spikes"], ["stickyWeb", "stickyweb", "Sticky Web"]] as const;
++
++/**
++ * status2 R (IN §5.7, F4 §5.4; Step 2): the bench's, the replacements' and the hazards' issues. A side's bench holds at most
++ * four Pokémon, each under its own id (a slot's startId names a Pokémon in play) and each a valid build, shown as `Bench
++ * {Name}: …` (validateBuild's issues but a used Protean's, which resets as it comes in; its sleep and freeze counters,
++ * once-a-battle effects and moves list as carriedIssues reads them); a Pokémon's replacement is one of its side's bench Pokémon (an issue
++ * on the Pokémon; an empty slot's is not read); Spikes have 1 to 3 layers, Toxic Spikes 1 or 2, and each hazard's move is in
++ * the game (G-Max Steelsurge: SwSh).
++ */
++function benchIssues(input: DoublesTurnInput): { field: BuildIssue[]; pokemon: Partial<Record<DoublesSlotId, BuildIssue[]>> } {
++  const { runtime } = input;
++  const field: BuildIssue[] = [];
++  const pokemon: Partial<Record<DoublesSlotId, BuildIssue[]>> = {};
++  const add = (key: string, message: string) => field.push({ field: key, message });
++  const whole = (value: number, least: number, most = Infinity) => Number.isInteger(value) && value >= least && value <= most;
++  const champions = runtime.profile.id === "champions";
++  const gen9 = runtime.profile.id === "scarlet_violet" || champions;
++  const names = turnBenchNames(input);
++  const ids = new Set<string>();
++  for (const side of ["own", "opponent"] as const) {
++    const list = input.bench?.[side];
++    if (!list) continue;
++    if (list.length > 4) add(`bench.${side}`, "A bench holds at most four Pokémon.");
++    list.forEach((each, index) => {
++      const key = `bench.${side}.${index}`;
++      const name = names[each.id] || each.id;
++      if (each.id.startsWith("slot:")) add(key, `${name} is already in play.`);
++      else if (ids.has(each.id)) add(key, "Two bench Pokémon have the same id.");
++      ids.add(each.id);
++      const { build } = each;
++      for (const issue of validateBuild(build, runtime)) if (!usedProtean(build, issue)) add(key, `Bench ${name}: ${issue.message}`);
++      const carried = each.carried ?? {};
++      if (carried.sleep) {
++        const { attempts, rest } = carried.sleep;
++        const longest = rest || champions ? 3 : 4;
++        if (build.status !== "slp") add(key, `Bench ${name}: turns lost to sleep need the Asleep status.`);
++        else if (!whole(attempts, 0) || attempts * (build.abilityId === "earlybird" ? 2 : 1) >= longest) add(key, `Bench ${name}: it cannot have lost ${attempts} turns to sleep.`);
++      }
++      if (carried.freeze) {
++        if (!champions) add(key, `Bench ${name}: turns lost to freeze are counted in Champions only.`);
++        else if (build.status !== "frz") add(key, `Bench ${name}: turns lost to freeze need the Frozen status.`);
++        else if (!whole(carried.freeze.attempts, 0, 2)) add(key, `Bench ${name}: it cannot have lost ${carried.freeze.attempts} turns to freeze.`);
++      }
++      if (carried.onceUsed?.length) {
++        const known = ["battlebond", "intrepidsword", "dauntlessshield", "supersweetsyrup"];
++        if (!gen9 || carried.onceUsed.some((id) => !known.includes(id))) add(key, `Bench ${name}: Only generation 9 counts once-a-battle effects.`);
++        else if (carried.onceUsed.includes("battlebond") && runtime.profile.id !== "scarlet_violet") add(key, `Bench ${name}: Battle Bond counts once a battle in Scarlet/Violet only.`);
++      }
++      if (each.moves && new Set(each.moves).size !== each.moves.length) add(key, `Bench ${name}: its moves list a move twice.`);
++    });
++  }
++  for (const [slot, id] of Object.entries(input.replacement ?? {}) as [DoublesSlotId, string][]) {
++    if (!input.pokemon[slot]) continue;
++    if (!(input.bench?.[slotSide(slot)] ?? []).some((each) => each.id === id)) (pokemon[slot] ??= []).push({ field: "replacement", message: "Its replacement is not on its side's bench." });
++  }
++  for (const side of ["own", "opponent"] as const) {
++    const hazards = input.hazards?.[side];
++    if (!hazards) continue;
++    const key = `hazards.${side}`;
++    if (hazards.spikes !== undefined && !whole(hazards.spikes, 1, 3)) add(`${key}.spikes`, "Spikes have 1 to 3 layers.");
++    if (hazards.toxicSpikes !== undefined && !whole(hazards.toxicSpikes, 1, 2)) add(`${key}.toxicSpikes`, "Toxic Spikes have 1 or 2 layers.");
++    for (const [flag, id, name] of HAZARD_MOVES) if (hazards[flag] !== undefined && !runtime.movesById.has(id)) add(`${key}.${flag}`, `${name} is not in this game.`);
++    if (hazards.steelsurge && !runtime.movesById.has("gmaxsteelsurge")) add(`${key}.steelsurge`, "G-Max Steelsurge is not in this game.");
++  }
++  return { field, pokemon };
++}
++
+ /**
+  * status2 (ADDENDUM2 §3.7, IN §3.5, T2E §3.1, C40): the action issue of a slot's carried state, or null: a two-turn move it
+  * charged, Encore, Uproar and Bide lock its action; Disable forbids its move; Taunt forbids a status move (Me First and a
+@@ -4253,8 +4385,19 @@
+     if (mon.vol.substitute) entry.substitute = [{ hp: mon.vol.substitute, chance: 1 }];
+     if (e.allySwitch !== undefined) entry.allySwitch = e.allySwitch;
+     Object.assign(entry, status2Mon(mon), f.fields);
++    // status2 R: the occupant's id when it came in this turn (absent: the slot's starting Pokémon).
++    if (mon.id !== undefined) entry.id = mon.id;
+     mons[slot] = entry;
+   }
++  // status2 R: the Pokémon that left (World.benched), as R's doubles-switch.ts benchedOutcome reports each.
++  let benched: DoublesOutcome["benched"];
++  if (world.benched) {
++    benched = {};
++    for (const each of ["own", "opponent"] as const) {
++      const list = world.benched[each];
++      if (list?.length) benched[each] = list.map((entry) => switchHooks.benchedOutcome(kernel, world, entry));
++    }
++  }
+   const side = (state: SideState) => ({
+     reflect: state.reflect, lightScreen: state.lightScreen, auroraVeil: state.auroraVeil, tailwind: state.tailwind, faintedThisTurn: state.faintedThisTurn,
+     ...(state.safeguard ? { safeguard: true } : {}), ...(state.hazards.length ? { hazards: [...state.hazards] } : {}),
+@@ -4271,6 +4414,7 @@
+     ...(world.fieldSet ? { fieldSet: { ...world.fieldSet } } : {}),
+     allFainted: { own: sideFaintedChance(world, "own"), opponent: sideFaintedChance(world, "opponent") },
+     positions: { own: world.swapped?.own ? "swapped" : "kept", opponent: world.swapped?.opponent ? "swapped" : "kept" },
++    ...(benched && Object.keys(benched).length ? { benched } : {}),
+   };
+ }
+ 
+@@ -4311,45 +4455,56 @@
+  */
+ function mergeOutcomes(outcomes: DoublesOutcome[]): DoublesOutcome[] {
+   type Mixed = { hp: Map<number, number>; substitute: Map<number, number> | null; sleep: number | null };
+-  const byKey = new Map<string, { outcome: DoublesOutcome; mixed: Map<DoublesSlotId, Mixed>; fainted: Record<DoublesSideId, number> }>();
++  const byKey = new Map<string, { outcome: DoublesOutcome; mixed: Map<string, Mixed>; fainted: Record<DoublesSideId, number>; benched: Map<string, Mixed> }>();
+   for (const outcome of outcomes) {
+     const key = JSON.stringify([
+       DOUBLES_SLOTS.map((slot) => {
+         const mon = outcome.mons[slot];
+-        // status2: the new fields (each absent unless set), after today's.
+-        const { stockpile, stages, moves, pendingCopy, lastItem, berryLocked, berryWeaken, turnsLeft, charging, onceUsed, chiStrike, cudChew } = mon ?? {};
+-        const extra = { stockpile, stages, moves, pendingCopy, lastItem, berryLocked, berryWeaken, turnsLeft, charging, onceUsed, chiStrike, cudChew };
++        // status2: the new fields (each absent unless set), after today's; R's occupant id.
++        const { stockpile, stages, moves, pendingCopy, lastItem, berryLocked, berryWeaken, turnsLeft, charging, onceUsed, chiStrike, cudChew, id } = mon ?? {};
++        const extra = { stockpile, stages, moves, pendingCopy, lastItem, berryLocked, berryWeaken, turnsLeft, charging, onceUsed, chiStrike, cudChew, id };
+         return mon ? [mon.build, mon.protected, mon.moved, mon.volatiles ?? null, mon.perishCount ?? null, mon.allySwitch ?? null, extra] : null;
+       }), outcome.sides, outcome.field, outcome.positions, outcome.fieldSet ?? null,
++      // status2 R: the leavers but their HP and sleep counters, which mix below as the occupants' do (only while one left).
++      ...(outcome.benched ? [Object.entries(outcome.benched).map(([side, list]) => [side, (list ?? []).map((mon) => ({ ...mon, hp: null, sleepTurns: null }))])] : []),
+     ]);
+     let entry = byKey.get(key);
+-    if (!entry) byKey.set(key, entry = { outcome: { ...outcome, chance: 0 }, mixed: new Map(), fainted: { own: 0, opponent: 0 } });
++    if (!entry) byKey.set(key, entry = { outcome: { ...outcome, chance: 0 }, mixed: new Map(), fainted: { own: 0, opponent: 0 }, benched: new Map() });
+     entry.outcome.chance += outcome.chance;
+-    for (const slot of DOUBLES_SLOTS) {
+-      const mon = outcome.mons[slot];
+-      if (!mon) continue;
+-      let mixed = entry.mixed.get(slot);
+-      if (!mixed) entry.mixed.set(slot, mixed = { hp: new Map(), substitute: mon.substitute ? new Map() : null, sleep: mon.sleepTurns !== undefined ? 0 : null });
++    const mix = (map: Map<string, Mixed>, at: string, mon: DoublesOutcomeMon) => {
++      let mixed = map.get(at);
++      if (!mixed) map.set(at, mixed = { hp: new Map(), substitute: mon.substitute ? new Map() : null, sleep: mon.sleepTurns !== undefined ? 0 : null });
+       for (const { hp, chance } of mon.hp) mixed.hp.set(hp, (mixed.hp.get(hp) ?? 0) + chance * outcome.chance);
+       if (mixed.substitute) for (const { hp, chance } of mon.substitute ?? []) mixed.substitute.set(hp, (mixed.substitute.get(hp) ?? 0) + chance * outcome.chance);
+       if (mixed.sleep !== null) mixed.sleep += (mon.sleepTurns ?? 0) * outcome.chance;
++    };
++    for (const slot of DOUBLES_SLOTS) {
++      const mon = outcome.mons[slot];
++      if (!mon) continue;
++      mix(entry.mixed, slot, mon);
+     }
++    for (const [side, list] of Object.entries(outcome.benched ?? {})) (list ?? []).forEach((mon, index) => mix(entry.benched, `${side}:${index}`, mon));
+     entry.fainted.own += outcome.allFainted.own * outcome.chance;
+     entry.fainted.opponent += outcome.allFainted.opponent * outcome.chance;
+   }
+-  return [...byKey.values()].map(({ outcome, mixed, fainted }) => {
++  return [...byKey.values()].map(({ outcome, mixed, fainted, benched }) => {
+     const share = (mass: number) => outcome.chance > 0 ? mass / outcome.chance : 0;
+     const table = (map: Map<number, number>) => [...map].sort((a, b) => a[0] - b[0]).map(([value, mass]) => ({ hp: value, chance: share(mass) }));
++    const mixedMon = <T extends DoublesOutcomeMon>(mon: T, each: Mixed): T => ({
++      ...mon, hp: table(each.hp), ...(each.substitute ? { substitute: table(each.substitute) } : {}), ...(each.sleep !== null ? { sleepTurns: share(each.sleep) } : {}),
++    });
+     const mons: DoublesOutcome["mons"] = {};
+     for (const slot of DOUBLES_SLOTS) {
+       const mon = outcome.mons[slot];
+       const each = mixed.get(slot);
+       if (!mon || !each) continue;
+-      mons[slot] = {
+-        ...mon, hp: table(each.hp), ...(each.substitute ? { substitute: table(each.substitute) } : {}), ...(each.sleep !== null ? { sleepTurns: share(each.sleep) } : {}),
+-      };
++      mons[slot] = mixedMon(mon, each);
+     }
+-    return { ...outcome, mons, allFainted: { own: share(fainted.own), opponent: share(fainted.opponent) } };
++    const out: DoublesOutcome = { ...outcome, mons, allFainted: { own: share(fainted.own), opponent: share(fainted.opponent) } };
++    if (outcome.benched) {
++      out.benched = Object.fromEntries(Object.entries(outcome.benched).map(([side, list]) => [side, (list ?? []).map((mon, index) => mixedMon(mon, benched.get(`${side}:${index}`)!))]));
++    }
++    return out;
+   });
+ }
+ 
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-types.ts app/lib/battle/doubles-types.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-types.ts	2026-10-11 15:33:36.480408400 -0400
++++ app/lib/battle/doubles-types.ts	2026-10-11 15:54:56.704810600 -0400
+@@ -32,9 +32,10 @@
+ };
+ /**
+  * A Pokémon's name in text: its display name (`base`), its team when the other side shows the same name (`side`), and its
+- * place in its side's slot order when its partner shows the same name (`number`: the left slot 1, the right slot 2).
++ * place in its side's slot order when its partner shows the same name (`number`: the left slot 1, the right slot 2; status2
++ * R: a bench Pokémon after them, benchNameParts).
+  */
+-export type NameParts = { base: string; side: "yours" | "opponent's" | null; number: 1 | 2 | null };
++export type NameParts = { base: string; side: "yours" | "opponent's" | null; number: number | null };
+ 
+ /**
+  * The name parts of four slots' base names ("" = an empty slot): the side word when a slot on the other side has the same
+@@ -80,6 +81,42 @@
+ }
+ 
+ /**
++ * status2 R (IN §5.7): each bench Pokémon's name parts by its id, after the four slots' (duplicateNameParts, which the bench
++ * does not change). A side's bench is named in its order: the side word when a Pokémon of the other side, in play or on its
++ * bench, has the same name; a number when a Pokémon of its own side before it (the two slots, then its bench in order) has
++ * the same name: one more than the number of those Pokémon. So every two Pokémon of the turn named alike differ in text.
++ */
++export function benchNameParts(base: Record<DoublesSlotId, string>, bench: Partial<Record<DoublesSideId, readonly { id: string; base: string }[]>>): Record<string, NameParts> {
++  const out: Record<string, NameParts> = {};
++  const sides: DoublesSideId[] = ["own", "opponent"];
++  const namesOf = (side: DoublesSideId) => [...DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side).map((slot) => base[slot]), ...(bench[side] ?? []).map((each) => each.base)];
++  for (const side of sides) {
++    const other = namesOf(side === "own" ? "opponent" : "own");
++    const own = namesOf(side);
++    (bench[side] ?? []).forEach((each, index) => {
++      if (!each.base) { out[each.id] = { base: "", side: null, number: null }; return; }
++      // The side's Pokémon before this one: its two slots, then the bench members before it.
++      const before = own.slice(0, 2 + index).filter((name) => name === each.base).length;
++      out[each.id] = {
++        base: each.base,
++        side: other.includes(each.base) ? (side === "own" ? "yours" : "opponent's") : null,
++        number: before ? before + 1 : null,
++      };
++    });
++  }
++  return out;
++}
++
++/** status2 R: the bench Pokémon's names by id (nameText of benchNameParts over the slots' and the bench's species names). */
++export function doublesBenchNames(pokemon: Record<DoublesSlotId, { build: BattleBuild } | null>, bench: Partial<Record<DoublesSideId, readonly DoublesBenchPokemon[]>>,
++  runtime: BattleRuntime): Record<string, string> {
++  const name = (build: BattleBuild) => runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
++  const base = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, pokemon[slot] ? name(pokemon[slot]!.build) : ""])) as Record<DoublesSlotId, string>;
++  const benchBase = Object.fromEntries(Object.entries(bench).map(([side, list]) => [side, (list ?? []).map((each) => ({ id: each.id, base: name(each.build) }))]));
++  return Object.fromEntries(Object.entries(benchNameParts(base, benchBase)).map(([id, parts]) => [id, nameText(parts)]));
++}
++
++/**
+  * A slot's choice. moveId null is "No move": it takes its turn at priority 0 and its own Speed and does nothing, as Splash
+  * would. target: the slot it aims at when its rule is "choose"; null otherwise.
+  */
+@@ -295,7 +332,10 @@
+   pokemon: Record<DoublesSlotId, DoublesPokemonInput | null>;
+   /** Turns the weather has left before this turn's countdown (1: it ends at this end of turn without acting). Absent: it lasts (turn fact when it acts). */
+   weatherTurns?: number;
+-  /** Whether each side has a Pokémon left to switch in (S moves, Healing Wish, Lunar Dance, Roar, Whirlwind). Absent: true (turn fact when read). */
++  /**
++   * Whether each side has a Pokémon left to switch in (S moves, Healing Wish, Lunar Dance, Roar, Whirlwind). Absent: true (turn
++   * fact when read). status2 R: a side's `bench`, where given, takes its place (sideCanSwitch).
++   */
+   canSwitch?: Partial<Record<DoublesSideId, boolean>>;
+   /**
+    * The names the page shows for the four slots (doublesNames over every slot's Pokémon, a fainted one's too), so the
+@@ -319,6 +359,25 @@
+   faintedLastTurn?: Partial<Record<DoublesSideId, boolean>>;
+   /** The echoedvoice pseudo-weather's multiplier after last turn, 1–5; 0: none last turn. Absent: unknown (C25). */
+   echoedVoice?: 0 | 1 | 2 | 3 | 4 | 5;
++
++  // ---- status2 R (SPEC2 §4.8, F4 §5.4, IN §3.1 and §5.7, ADDENDUM2 §8.7 Step 2): switch-outs with a replacement ----
++  /**
++   * Each side's living bench, in order (the calculator's Bench in roster order; Training's party). Where given it takes
++   * canSwitch's place (sideCanSwitch: a Pokémon is left to switch in exactly when the list is not empty), and a switch-out
++   * of that side is followed with its replacement (doubles-switch.ts replaceSlot). Absent: not known (a switch with a later
++   * action is not estimated: REASONS.switchesOut; with none the end of turn is not).
++   */
++  bench?: Partial<Record<DoublesSideId, readonly DoublesBenchPokemon[]>>;
++  /**
++   * The bench Pokémon (its id) that comes in for the Pokémon that started the turn in this slot when its own player picks a
++   * replacement mid-turn: U-turn, Volt Switch, Flip Turn, Parting Shot, Teleport, Baton Pass, Shed Tail, Chilly Reception,
++   * Eject Button, Eject Pack, Emergency Exit, Wimp Out. Absent with a bench: the first bench Pokémon not in play then (the
++   * turn fact `Assumes {Newcomer} comes in for {Name}.`). A random drag (Roar, Whirlwind, Dragon Tail, Circle Throw, Red
++   * Card) reads none: one outcome per living bench Pokémon.
++   */
++  replacement?: Partial<Record<DoublesSlotId, string>>;
++  /** The hazards on each side as the turn starts (a newcomer's entry reads them; Defog, Court Change, Tidy Up, Rapid Spin and Mortal Spin move or clear them). Absent: none. */
++  hazards?: Partial<Record<DoublesSideId, DoublesHazards>>;
+ };
+ 
+ /** The names the turn's text uses: the input's `names`, else doublesNames of its Pokémon ("" for an empty slot). */
+@@ -326,6 +385,75 @@
+   return input.names ?? doublesNames(input.pokemon, input.runtime);
+ }
+ 
++// ---------- status2 R: the bench, the replacement and the hazards (SPEC2 §4.8, F4 §5.4, IN §3.1, ADDENDUM2 §8.7) ----------
++
++/**
++ * A Pokémon on a side's bench (not in play) under an id the caller keeps (never of the form `slot:…`, which names a slot's
++ * starting Pokémon: startId): its build as it is now (its HP in currentHP, 1 to its maximum; its status, item, form) and the
++ * state from earlier turns it keeps on the bench: its sleep and freeze counters (DoublesCarried's meaning) and generation 9's
++ * once-a-battle effects. Bad poison is not carried: its stage restarts at 0 as it comes in (PS/data/conditions.ts tox
++ * onSwitchIn). `moves`: every move it has, in move-slot order (Assist's party: PS/data/moves.ts assist reads each other party
++ * member's moveSlots; ADDENDUM2 §8.7); absent: unknown.
++ */
++export type DoublesBenchPokemon = {
++  id: string; build: BattleBuild; carried?: Pick<DoublesCarried, "sleep" | "freeze" | "onceUsed">;
++  moves?: readonly string[];
++};
++
++/** The hazards on one side as the turn starts (DoublesTurnInput.hazards); each absent: not up. */
++export type DoublesHazards = {
++  stealthRock?: true;
++  /** Spikes layers. */
++  spikes?: 1 | 2 | 3;
++  /** Toxic Spikes layers (2: bad poison). */
++  toxicSpikes?: 1 | 2;
++  stickyWeb?: true;
++  /** SwSh: G-Max Steelsurge, a Steel-type Stealth Rock. */
++  steelsurge?: true;
++};
++
++/**
++ * A slot whose Pokémon left during the turn and what came in (DoublesTurnResult.replaced; the end of turn's for a switch
++ * after the residual). The ids are startId(slot) for the slot's starting Pokémon and the bench ids for the others.
++ */
++export type DoublesReplaced = {
++  /**
++   * Each Pokémon that left the slot, in the order it left (the slot's starting Pokémon first): its HP as it left (after its
++   * switch-out effects: Regenerator) over the outcomes in which it left, and that share of the turn.
++   */
++  left: { id: string; hp: DoublesHP; chance: number }[];
++  /** Each Pokémon that came in, with the share of the turn in which it did (a random drag: one per bench Pokémon). */
++  entered: { id: string; chance: number }[];
++};
++
++/** One Pokémon that left its slot during the turn, as an outcome (DoublesOutcome.benched): its state on the bench now. */
++export type DoublesBenchedMon = DoublesOutcomeMon & {
++  /** startId(slot) for a slot's starting Pokémon, else its bench id. */
++  id: string;
++  /** The slot it left, as DoublesOutcome.mons keys it (the slot it, or the Pokémon it came in for, started the turn in). */
++  slot: DoublesSlotId;
++};
++
++/** The id a slot's starting Pokémon goes by in the R fields (MonState.id absent; DoublesReplaced, DoublesOutcome.benched): `slot:{slot}`. */
++export function startId(slot: DoublesSlotId): string {
++  return `slot:${slot}`;
++}
++
++/**
++ * Whether `side` has a Pokémon left to switch in (sim/battle.ts canSwitch): its bench where given (a Pokémon is left exactly
++ * when it is not empty), else the input's canSwitch; undefined when neither is given (the turn assumes one is left, a turn
++ * fact). Every reader of canSwitch reads it through here, so a bench takes canSwitch's place (F4 §5.4).
++ */
++export function sideCanSwitch(input: Pick<DoublesTurnInput, "bench" | "canSwitch">, side: DoublesSideId): boolean | undefined {
++  const bench = input.bench?.[side];
++  return bench ? bench.length > 0 : input.canSwitch?.[side];
++}
++
++/** The bench Pokémon's names the turn's text uses, by id (doublesBenchNames of the input); empty without a bench. */
++export function turnBenchNames(input: Pick<DoublesTurnInput, "pokemon" | "runtime" | "bench">): Record<string, string> {
++  return input.bench ? doublesBenchNames(input.pokemon, input.bench, input.runtime) : {};
++}
++
+ /** Which targets the move a slot would use can take, as chosen in the game (doubles-targets.ts). */
+ export type DoublesTargetRule =
+   /** The player picks one: present slots, in the order left foe, right foe, ally, itself; none when both foe slots are empty and the move can reach a foe. */
+@@ -371,6 +499,8 @@
+ /** One Pokémon a move reaches. */
+ export type DoublesHit = {
+   slot: DoublesSlotId;
++  /** status2 R: the Pokémon it reached when that is not the slot's starting Pokémon (a newcomer: its bench id). Absent: the starting Pokémon. */
++  id?: string;
+   /** Share of the turn in which this move reached this slot, after redirection, retargeting and failures. */
+   reached: number;
+   /**
+@@ -443,6 +573,8 @@
+ /** One residual on one Pokémon, aggregated over the turn's worlds. */
+ export type DoublesResidual = {
+   slot: DoublesSlotId;
++  /** status2 R: the Pokémon it acted on when that is not the slot's starting Pokémon (a newcomer: its bench id). Absent: the starting Pokémon. */
++  id?: string;
+   /** "Sandstorm", "Leftovers", "Burn", "Bad poison", "Leech Seed", "Fire Spin", "Bad Dreams", "Healer", "Sitrus Berry"... */
+   effect: string;
+   /** The other Pokémon of a two-Pokémon residual: Leech Seed's seeder or seeded, the Bad Dreams or Healer holder. */
+@@ -459,7 +591,13 @@
+ };
+ /** The end of the turn (SPEC §2.3): ready with every Pokémon's HP after the residuals, or not estimated with a fact reason (the moves stay estimated). */
+ export type DoublesEndOfTurn =
+-  | { status: "ready"; hp: Record<DoublesSlotId, DoublesHP | null>; residuals: DoublesResidual[]; facts: string[] }
++  | {
++    status: "ready"; hp: Record<DoublesSlotId, DoublesHP | null>; residuals: DoublesResidual[]; facts: string[];
++    /** status2 R: the newcomers' HP after the whole turn, by slot and bench id (DoublesTurnResult.hpEntered's after the end of turn). */
++    hpEntered?: Partial<Record<DoublesSlotId, Record<string, DoublesHP>>>;
++    /** status2 R: the switch-outs after the residual (Eject Pack at order 29, Emergency Exit and Wimp Out), with their replacements. */
++    replaced?: Partial<Record<DoublesSlotId, DoublesReplaced>>;
++  }
+   | { status: "not-estimated"; reason: string };
+ 
+ export type DoublesTurnResult =
+@@ -482,6 +620,13 @@
+     swapped?: Partial<Record<DoublesSideId, number>>;
+     /** The end of the turn after the moves: HP after the whole turn, or why it is not estimated. */
+     endOfTurn: DoublesEndOfTurn;
++    /**
++     * status2 R: each slot whose Pokémon left during the moves with a replacement (a bench given): who left at what HP and who
++     * came in. Absent: none. hp[slot] stays the slot's starting Pokémon's (where it left, its HP as it left).
++     */
++    replaced?: Partial<Record<DoublesSlotId, DoublesReplaced>>;
++    /** status2 R: each newcomer's HP after the moves, by slot and bench id (its card below the leaver's line). Absent: none. */
++    hpEntered?: Partial<Record<DoublesSlotId, Record<string, DoublesHP>>>;
+   };
+ 
+ // ---------- The turn as finished worlds (calculateDoublesOutcomes; Training AI, SPEC E2) ----------
+@@ -541,6 +686,8 @@
+   chiStrike?: 1 | 2 | 3;
+   /** The Berry Cud Chew re-eats at the next end of turn. */
+   cudChew?: string;
++  /** status2 R: the occupant at the end when it is not the slot's starting Pokémon (a newcomer: its bench id). Absent: the starting Pokémon. */
++  id?: string;
+ };
+ /** status2 (SPEC2 §3.1): the side conditions whose clock an outcome reports (DoublesOutcome.sides.clock). */
+ export type SideClockFlag = "reflect" | "lightScreen" | "auroraVeil" | "tailwind" | "safeguard" | "mist" | "luckyChant";
+@@ -574,6 +721,11 @@
+   allFainted: Record<DoublesSideId, number>;
+   /** Ally Switch: each side's two Pokémon stand swapped after the turn, or not. mons stay keyed by the slot each started in. */
+   positions: Record<DoublesSideId, "kept" | "swapped">;
++  /**
++   * status2 R: the Pokémon that left each side's slots during the turn and are on its bench now, with their ids and their
++   * state as they left (mons[slot] is then the occupant at the end, with its id). Absent: none.
++   */
++  benched?: Partial<Record<DoublesSideId, DoublesBenchedMon[]>>;
+ };
+ export type DoublesOutcomesResult =
+   | { status: "issues"; issues: DoublesIssues }
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-use.ts app/lib/battle/doubles-use.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-use.ts	2026-10-11 15:33:36.365164700 -0400
++++ app/lib/battle/doubles-use.ts	2026-10-11 15:43:55.566759000 -0400
+@@ -1,4 +1,4 @@
+-import { DOUBLES_SLOTS, slotSide, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
++import { DOUBLES_SLOTS, sideCanSwitch, slotSide, type DoublesSideId, type DoublesSlotId } from "./doubles-types";
+ import type { EotState, MoveVolatiles, PendingAction, Stage, World } from "./doubles-world";
+ import type { TurnKernel, TurnMoveInfo } from "./doubles-turn";
+ import { statusEntry, type StatusEntry } from "./status-table";
+@@ -140,9 +140,9 @@
+   return use.move.category === "Status" && w.mons[use.user]!.build.abilityId === "myceliummight" && !shielded;
+ };
+ 
+-/** Whether `side` has a Pokémon left to switch in (DoublesTurnInput.canSwitch; absent: true, with a turn fact). */
++/** Whether `side` has a Pokémon left to switch in (DoublesTurnInput.canSwitch, or status2 R's bench where given: sideCanSwitch; absent: true, with a turn fact). */
+ export function canSwitch(kernel: TurnKernel, side: DoublesSideId): boolean {
+-  const given = kernel.input.canSwitch?.[side];
++  const given = sideCanSwitch(kernel.input, side);
+   if (given !== undefined) return given;
+   if (DOUBLES_SLOTS.some((slot) => slotSide(slot) === side && !kernel.input.pokemon[slot])) return false;
+   kernel.turnFact(`Assumes ${side === "own" ? "your side" : "the opponent's side"} has a Pokémon left to switch in.`);
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-world.ts app/lib/battle/doubles-world.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/battle/doubles-world.ts	2026-10-11 15:33:36.473329000 -0400
++++ app/lib/battle/doubles-world.ts	2026-10-11 15:39:35.170564600 -0400
+@@ -1,4 +1,5 @@
+ import { allyOf, slotSide, type DoublesSideId, type DoublesSlotId, type SideClockFlag } from "./doubles-types";
++import type { SwitchHow } from "./doubles-switch";
+ import type { StatusStages } from "./status-table";
+ import type { BattleBuild, BattleConditions } from "./types";
+ 
+@@ -226,6 +227,37 @@
+   commanding?: DoublesSlotId; commanded?: DoublesSlotId;
+   /** N: its ability state's age (input entryOrder, then this turn's changes, each later than all before); only with a tie reader. */
+   entry?: number;
++  /**
++   * status2 R (F4 §5.4): who this is. Absent: the Pokémon that started the turn in this slot (startId(slot)); a newcomer:
++   * its bench id (DoublesBenchPokemon.id). mons[slot] is the slot's occupant (replaced as one comes in); `occupant` and
++   * `positionOf` stay positional.
++   */
++  id?: string;
++};
++
++/**
++ * status2 R (F4 §5.4): a Pokémon that left its slot during the turn (World.benched). Its HP leaves the factors as its marginal,
++ * which is exact for what reads it: E2's per-Pokémon outcome, the result's leaver line, and its own return later in the
++ * turn (the joint with the others no longer matters once it is out).
++ */
++export type BenchedMon = {
++  /** startId(slot) for a slot's starting Pokémon, else its bench id. */
++  id: string;
++  /** The slot it left, as World.mons keys it. */
++  slot: DoublesSlotId;
++  /** Its state as it left, after its switch-out effects (Regenerator, Natural Cure, Zero to Hero) and with what leaving clears gone. */
++  mon: MonState;
++  /** Its HP as it left: [hp, mass] ascending by HP, masses summing to 1. */
++  hp: readonly (readonly [number, number])[];
++};
++
++/** status2 R: a switch-out pending in a world until the action ends (World.switching; doubles-switch.ts betweenActions). */
++export type PendingSwitch = {
++  /** The slot (as World.mons keys it) whose Pokémon leaves. */
++  slot: DoublesSlotId;
++  how: SwitchHow;
++  /** The move of the action it happened in (U-turn, Roar, Parting Shot…), or null (an item or ability outside a move's own effect). */
++  moveId: string | null;
+ };
+ 
+ export type SideState = {
+@@ -333,6 +365,13 @@
+   lastSuccessful?: string | null;
+   /** CL: the last move used in the battle (Copycat), this turn's or the input's battleLastMove. */
+   lastMove?: string | null;
++  // ---- status2 R (SPEC2 §4.8, F4 §5.4); each written only with a bench (DoublesTurnInput.bench), absent otherwise ----
++  /** The Pokémon that left each side's slots this turn, in the order they left (DoublesOutcome.benched, DoublesTurnResult.replaced). */
++  benched?: Partial<Record<DoublesSideId, BenchedMon[]>>;
++  /** The ids still on each side's bench, in the input's order. Absent for a side: its whole input bench. */
++  bench?: Partial<Record<DoublesSideId, string[]>>;
++  /** Switch-outs set during the current action (sim/pokemon.ts switchFlag, forceSwitchFlag), resolved as it ends (doubles-switch.ts betweenActions). */
++  switching?: PendingSwitch[];
+ };
+ 
+ /**
+@@ -579,6 +618,10 @@
+   if (world.didSomething) out.didSomething = true;
+   if (world.lastSuccessful !== undefined) out.lastSuccessful = world.lastSuccessful;
+   if (world.lastMove !== undefined) out.lastMove = world.lastMove;
++  // status2 R: the lists are replaced, never changed in place (their entries are immutable), so a shallow copy of each.
++  if (world.benched) out.benched = { ...world.benched };
++  if (world.bench) out.bench = { ...world.bench };
++  if (world.switching) out.switching = [...world.switching];
+   return out;
+ }
+ 
+@@ -692,7 +735,7 @@
+  * The discrete key two worlds must share to merge: everything but the mass and the factor tables (their partition included).
+  * status2's new fields of every state object enter through `mons`, `sides` and `field`; the World's keyed fields (fieldSet,
+  * didSomething, lastSuccessful, lastMove) through one more entry, present only while one of them is set (so a world with
+- * none of them has today's key).
++ * none of them has today's key); R's (benched with the leavers' HP, bench, switching) through another, likewise.
+  */
+ export function discreteKey(world: World): string {
+   const partition = world.factors.map((factor) => factor.slots.join(",")).sort();
+@@ -701,6 +744,7 @@
+   if (world.fieldSet || world.didSomething || world.lastSuccessful !== undefined || world.lastMove !== undefined) {
+     key.push({ fieldSet: world.fieldSet, didSomething: world.didSomething, lastSuccessful: world.lastSuccessful, lastMove: world.lastMove });
+   }
++  if (world.benched || world.bench || world.switching) key.push({ benched: world.benched, bench: world.bench, switching: world.switching });
+   return JSON.stringify(key);
+ }
+ 
+diff -ru --strip-trailing-cr C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/tests/source/status2-hooks.test.ts tests/source/status2-hooks.test.ts
+--- C:/Users/evanb/AppData/Local/Temp/claude/C--Users-evanb-OneDrive-pokedrafts/2f5050c3-27de-4325-af6b-e1650dd1d85e/scratchpad/step2/pre-src/tests/source/status2-hooks.test.ts	2026-10-11 15:33:40.708720000 -0400
++++ tests/source/status2-hooks.test.ts	2026-10-11 15:54:13.448063800 -0400
+@@ -147,6 +147,13 @@
+   ["doubles-fieldchange.ts", "fainted", "doubles-turn.ts", "faint", "fieldChangeHooks.fainted("],
+   ["doubles-fieldchange.ts", "stepEnv", "doubles-turn.ts", "searchFor", "fieldChangeHooks.stepEnv("],
+   ["doubles-fieldchange.ts", "stepField", "doubles-turn.ts", "applyStep", "fieldChangeHooks.stepField("],
++  // Step 2 (status2 R's contract, ADDENDUM2 §8.7; build/STEP2.md): R-E's stubs, keyed on the bench.
++  ["doubles-switch.ts", "replaceSlot", "doubles-switch.ts", "switchOut", "replaceSlot(kernel"],
++  ["doubles-switch.ts", "betweenActions", "doubles-turn.ts", "walk", "switchHooks.betweenActions("],
++  ["doubles-switch.ts", "benchedOutcome", "doubles-turn.ts", "outcomeOf", "switchHooks.benchedOutcome("],
++  ["doubles-switch.ts", "hazardFails", "doubles-status.ts", "sideOrField", "switchHooks.hazardFails("],
++  ["doubles-switch.ts", "hazardFails", "doubles-max.ts", "gmaxEffect", "switchNs.hazardFails("],
++  ["doubles-switch.ts", "hazardFails", "doubles-eot.ts", "afterHit", "switchHooks.hazardFails("],
+ ];
+ 
+ // ---- The hook calls Step 0a inserts (SPEC2 §3.5's table, ADDENDUM2 §3.5's lists), each at its site ----
+@@ -188,7 +195,11 @@
+   ["doubles-turn.ts", "searchFor", ["guardHooks.hiddenStageGuard(", "reactionHooks.calcStandIns(", "healStandIn(", "presenceHooks.stepReport(", "guardHooks.stepReport(", "reactionHooks.stepEnv(", "pairHooks.stepEnv(", "fieldChangeHooks.stepEnv("]],
+   ["doubles-turn.ts", "rootWorlds", ["startHooks.variants(", "rootWorldsOf("]],
+   ["doubles-turn.ts", "rootWorldsOf", ["historyHooks.proteanUsed(", "presenceHooks.rootActions("]],
+-  ["doubles-turn.ts", "walk", ["statusHooks.turnStartUpdate(", "presenceHooks.turnStart("]],
++  ["doubles-turn.ts", "walk", ["statusHooks.turnStartUpdate(", "presenceHooks.turnStart(", "execute(ctx", "switchHooks.betweenActions(", "out.weatherSet = true"]],
++  // Step 2: the bench's, the replacements' and the hazards' issues after the turn-level ones; R's outcome fields.
++  ["doubles-turn.ts", "validate", ["turnIssues(", "benchIssues("]],
++  ["doubles-turn.ts", "outcomeOf", ["status2Mon(", "entry.id = mon.id", "switchHooks.benchedOutcome("]],
++  ["doubles-switch.ts", "switchOut", ["presenceHooks.cannotLeave(", "kernel.input.bench?.[slotSide(slot)]", "replaceSlot(", "REASONS.switchesOut(", "kernel.leaving("]],
+   // Integration 1a (D): every Encore rewrite runs as its own action (executeUsed: BeforeMove on).
+   ["doubles-turn.ts", "execute", ["guardHooks.encoreRewrites(", "guardHooks.encoreRewrite(", "executeUsed("]],
+   ["doubles-turn.ts", "executeUsed", ["statusHooks.beforeMove(", "runMove(ctx"]],
+@@ -312,6 +323,12 @@
+     };
+     for (const file of graph.keys()) visit(file, []);
+   });
++  it("every canSwitch reader goes through sideCanSwitch, so a bench takes its place (Step 2)", () => {
++    for (const file of readdirSync(DIR).filter((name) => /\.(ts|cjs)$/.test(name) && name !== "doubles-types.ts")) {
++      expect(read(file), `${file} reads input.canSwitch directly`).not.toMatch(/input\??\.canSwitch/);
++    }
++    expect(read("doubles-types.ts")).toMatch(/export function sideCanSwitch\(/);
++  });
+   it("residualHit is called only from doubles-eot.ts; kernel.useCalled is the only calling path", () => {
+     for (const path of filesUnder(APP)) {
+       const name = path.replace(/^.*[\\/]/, "");
+Only in tests/unit: status2-r-contract.test.ts

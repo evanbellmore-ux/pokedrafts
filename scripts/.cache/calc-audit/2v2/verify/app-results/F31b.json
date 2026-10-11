@@ -1,0 +1,418 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "throatchop",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 49,
+      "minPercent": 24.705882352941178,
+      "maxPercent": 28.823529411764703,
+      "koChance": 0,
+      "row": {
+       "moveId": "throatchop",
+       "effectiveName": "Throat Chop",
+       "effectiveType": "Dark",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 42,
+       "max": 49,
+       "minPercent": 24.705882352941178,
+       "maxPercent": 28.823529411764703,
+       "rolls": [
+        42,
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        48,
+        49
+       ],
+       "ohkoChance": 0,
+       "description": "Throat Chop: 42–49 HP (24.7–28.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "moonblast",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 67,
+      "max": 79,
+      "minPercent": 38.285714285714285,
+      "maxPercent": 45.14285714285714,
+      "koChance": 0,
+      "row": {
+       "moveId": "moonblast",
+       "effectiveName": "Moonblast",
+       "effectiveType": "Fairy",
+       "effectivePower": 95,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 67,
+       "max": 79,
+       "minPercent": 38.285714285714285,
+       "maxPercent": 45.14285714285714,
+       "rolls": [
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        79
+       ],
+       "ohkoChance": 0,
+       "description": "Moonblast: 67–79 HP (38.3–45.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 108,
+    "average": 102.4375,
+    "high": 96,
+    "min": 96,
+    "max": 108,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 128,
+    "average": 124.8125,
+    "high": 121,
+    "min": 121,
+    "max": 128,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "throatchop",
+     "effectiveName": "Throat Chop",
+     "effectiveType": "Dark",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 42,
+     "max": 49,
+     "minPercent": 24.705882352941178,
+     "maxPercent": 28.823529411764703,
+     "rolls": [
+      42,
+      42,
+      42,
+      43,
+      43,
+      44,
+      45,
+      45,
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      48,
+      49
+     ],
+     "ohkoChance": 0,
+     "description": "Throat Chop: 42–49 HP (24.7–28.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.9954681396484375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 128,
+      "high": 121,
+      "average": 124.8125,
+      "min": 121,
+      "max": 128,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 42,
+        "heals": []
+       },
+       "high": {
+        "dealt": 49,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "moonblast",
+     "effectiveName": "Moonblast",
+     "effectiveType": "Fairy",
+     "effectivePower": 95,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 67,
+     "max": 79,
+     "minPercent": 38.285714285714285,
+     "maxPercent": 45.14285714285714,
+     "rolls": [
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79
+     ],
+     "ohkoChance": 0,
+     "description": "Moonblast: 67–79 HP (38.3–45.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 108,
+      "high": 96,
+      "average": 102.4375,
+      "min": 96,
+      "max": 108,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 79,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 108,
+     "average": 102.4375,
+     "high": 96,
+     "min": 96,
+     "max": 108,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 128,
+     "average": 124.8125,
+     "high": 121,
+     "min": 121,
+     "max": 128,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.802400000000034,
+ "preflight": []
+}

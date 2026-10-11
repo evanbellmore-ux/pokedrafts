@@ -1,0 +1,94 @@
+import { PENDING_MOVES, REASONS, SEMI_INVULNERABLE_MOVES } from "./doubles-actions";
+import { CRASH_MOVES } from "./status-table";
+import { DOUBLES_SLOTS, type DoublesSlotId } from "./doubles-types";
+import type { PendingAction, World } from "./doubles-world";
+import type { HitCheck, TurnKernel, TurnMoveInfo } from "./doubles-turn";
+import type { Use } from "./doubles-use";
+import type { ChampionsMove } from "./types";
+
+// The hidden state (status2 ADDENDUM2 §3.5, T2M §3.1, C20, C21, C27, C38): Track H's file. Fly, Bounce, Dig, Dive, Phantom
+// Force, Shadow Force and Sky Drop out of reach; crash damage. Step 0 moves today's charge-turn guard here verbatim
+// (chargeHidden), keeps today's Sky Drop presence guard (skyDrop) and gives a carried hidden release today's reason
+// (carriedStart); the other hooks are stubs that change nothing.
+
+/**
+ * A semi-invulnerable user (Fly, Dig, Dive, Bounce, Phantom Force, Shadow Force) is not followed past its charge turn
+ * while a later living action follows (SPEC §2.2): doubles-turn.ts chargeTurn's guard, moved verbatim.
+ */
+export function chargeHidden(kernel: TurnKernel, w: World, action: PendingAction, move: ChampionsMove) {
+  if (SEMI_INVULNERABLE_MOVES.has(move.id) && kernel.laterAction(w)) kernel.notEstimated(REASONS.semiInvulnerable(kernel.names[action.slot], move.name));
+}
+
+/**
+ * A carried hidden release (DoublesCarried.charging of Fly, Bounce, Dig, Dive, Phantom Force or Shadow Force: eot.hidden from
+ * the turn's start, C38): another Pokémon's move this turn could meet it out of reach. Step 0: today's reason for a hidden
+ * Pokémon with a later move (doubles-turn.ts presenceGuards calls it for each slot as the walk starts).
+ */
+export function carriedStart(kernel: TurnKernel, w: World, slot: DoublesSlotId) {
+  const hidden = w.mons[slot]?.eot.hidden;
+  if (!hidden) return;
+  const others = DOUBLES_SLOTS.some((other) => other !== slot && !!kernel.input.pokemon[other]?.action.moveId);
+  if (others) kernel.notEstimated(REASONS.semiInvulnerable(kernel.names[slot], kernel.moveName(hidden)));
+}
+
+/** Sky Drop (PENDING_MOVES: it lifts its target): doubles-turn.ts presenceGuards' PENDING_MOVES guard, moved verbatim (C21: H models it in wave 1a). */
+export function skyDrop(kernel: TurnKernel, w: World, slot: DoublesSlotId) {
+  void w;
+  const moveId = kernel.input.pokemon[slot]?.action.moveId;
+  if (moveId && PENDING_MOVES.has(moveId)) kernel.notEstimated(REASONS.notIn2v2(kernel.runtime.movesById.get(moveId)!.name));
+}
+
+/**
+ * The invulnerability step of a damaging move into `slot` (doubles-turn.ts hitChecks, each target first; C27: after
+ * presence.invulnerable): a miss as `{ slot, block: { by: "miss", hidden: <the hidden move's name> } }` (blockedHit's fact
+ * "{Move} misses {Name} ({Hidden move})."), or null. Step 0: null.
+ */
+export function misses(kernel: TurnKernel, w: World, action: PendingAction, info: TurnMoveInfo, slot: DoublesSlotId): HitCheck | null {
+  void kernel; void w; void action; void info; void slot;
+  return null;
+}
+
+/** The invulnerability step of a status move into `slot` (doubles-status.ts tryHit, first; after presence.invulnerable): the hidden move's name for the fact "{Move} misses {Name} ({Hidden move}).", or null. Step 0: null. */
+export function missesStatus(kernel: TurnKernel, w: World, use: Use, slot: DoublesSlotId): string | null {
+  void kernel; void w; void use; void slot;
+  return null;
+}
+
+/** A field-wide move's reach to `slot` (Perish Song, A3's Teatime): whether the hidden Pokémon is missed. Step 0: false. */
+export function missesField(kernel: TurnKernel, w: World, slot: DoublesSlotId, move: ChampionsMove): boolean {
+  void kernel; void w; void slot; void move;
+  return false;
+}
+
+/** A hidden Pokémon lands (Gravity starting, Smack Down, Thousand Arrows): its queued release cancelled. Step 0: nothing. */
+export function land(kernel: TurnKernel, w: World, slot: DoublesSlotId) {
+  void kernel; void w; void slot;
+}
+
+/** Before a move's use (doubles-turn.ts runMove): a carried release leaves its hidden state at its TryMove. Step 0: nothing. */
+export function release(kernel: TurnKernel, w: World, action: PendingAction) {
+  void kernel; void w; void action;
+}
+
+/**
+ * Crash damage (status2 Step 1 #10; T2M §3.1.7, C24): High Jump Kick, Jump Kick, Axe Kick and Supercell Slam used as
+ * themselves (CRASH_MOVES, generated from the dex's hasCrashDamage; not their Z-Move or Max Move) run MoveFail when every
+ * target failed in the hit steps (PS/sim/battle-actions.ts:521-531: a miss, Protect and the shields after their contact
+ * effect, Wide Guard, Quick Guard, Mat Block, Telepathy, an absorbing ability, a type or ability immunity: the calculation's
+ * no-damage row), and none when it had no target at all (:504-508: damagingMove's no-target branch never reaches here) or met
+ * a Substitute or a Disguise (`hit`: a hit reached a target or its Substitute in that world). onMoveFail
+ * (PS/data/moves.ts highjumpkick and its kin): `this.damage(source.baseMaxhp / 2, source, source, …)`, truncated, from a
+ * non-move effect (Magic Guard stops it; a Berserk lock resets): afterLoss, its Berry at the action's Update; Emergency
+ * Exit and Wimp Out read the drop (doubles-turn.ts eventGuards, a damaging action).
+ */
+export function crash(kernel: TurnKernel, worlds: World[], action: PendingAction, info: TurnMoveInfo, hit: (w: World) => boolean): World[] {
+  if (info.transformed || !CRASH_MOVES.has(action.moveId!)) return worlds;
+  const user = action.slot;
+  const loss = Math.trunc(kernel.hp[user].baseMaxHP / 2);
+  return worlds.flatMap((w) => {
+    const mon = w.mons[user]!;
+    if (!kernel.alive(w, user) || hit(w) || mon.build.abilityId === "magicguard" || loss <= 0) return [w];
+    kernel.lossFact(user, `${kernel.names[user]} loses ${loss} HP (${kernel.moveName(action.moveId!)}).`, w.mass);
+    return kernel.afterLoss(w, user, loss);
+  });
+}

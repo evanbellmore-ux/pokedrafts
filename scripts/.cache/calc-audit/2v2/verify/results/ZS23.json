@@ -1,0 +1,1365 @@
+{
+ "id": "ZS23",
+ "title": "Max Darkness from Sucker Punch has no onTry: it hits a target that does not attack (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Darkness lands on the idle Slowbro (and lowers its Sp. Def).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 430,
+   "classes": 33,
+   "ms": 782,
+   "decisions": {
+    "tie2": 1410,
+    "fail:": 208,
+    "roll": 208
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.5625
+      ],
+      [
+       2,
+       0.0625
+      ],
+      [
+       6,
+       0.125
+      ],
+      [
+       8,
+       0.0625
+      ],
+      [
+       12,
+       0.125
+      ],
+      [
+       14,
+       0.0625
+      ]
+     ],
+     "koChance": 0.5625,
+     "average": 3.75,
+     "min": 0,
+     "max": 14,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spd:-1": 0.4375
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.5625,
+       "dmgMin": 156,
+       "dmgMax": 186,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1,
+      "|-unboost|p2b: Slowbro|spd|1": 0.4375
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-156": 0.0625,
+       "boost:spd:-1": 0.4375,
+       "damage:-158": 0.125,
+       "damage:-162": 0.0625,
+       "damage:-164": 0.125,
+       "damage:-168": 0.0625,
+       "damage:-170": 0.5625,
+       "faint": 0.5625
+      },
+      "opponent-right": {
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -170,
+       "max": -156
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -170,
+       "max": -156,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 162,
+    "classes": 12,
+    "ms": 782,
+    "decisions": {
+     "tie2": 160
+    },
+    "slots": {
+     "own-left": {
+      "species": "Absol",
+      "start": null,
+      "maximum": 280,
+      "dist": [
+       [
+        280,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 280,
+      "min": 280,
+      "max": 280,
+      "modeTieUp": 280,
+      "modeTieDown": 280,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Slowbro",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        0.5625
+       ],
+       [
+        2,
+        0.0625
+       ],
+       [
+        6,
+        0.125
+       ],
+       [
+        8,
+        0.0625
+       ],
+       [
+        12,
+        0.125
+       ],
+       [
+        14,
+        0.0625
+       ]
+      ],
+      "koChance": 0.5625,
+      "average": 3.75,
+      "min": 0,
+      "max": 14,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.4375,
+       "fnt": 0.5625
+      },
+      "volatiles": {},
+      "boosts": {
+       "spd:-1": 0.4375
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.5625
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 122,
+   "classes": 13,
+   "ms": 224,
+   "decisions": {
+    "tie2": 418,
+    "fail:": 32,
+    "roll": 32
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       14,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 14,
+     "min": 14,
+     "max": 14,
+     "modeTieUp": 14,
+     "modeTieDown": 14,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 156,
+       "dmgMax": 156,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1,
+      "|-unboost|p2b: Slowbro|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-156": 1,
+       "boost:spd:-1": 1
+      },
+      "opponent-right": {
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -156,
+       "max": -156
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -156,
+       "max": -156,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 32,
+    "classes": 2,
+    "ms": 225,
+    "decisions": {
+     "tie2": 32
+    },
+    "slots": {
+     "own-left": {
+      "species": "Absol",
+      "start": null,
+      "maximum": 280,
+      "dist": [
+       [
+        280,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 280,
+      "min": 280,
+      "max": 280,
+      "modeTieUp": 280,
+      "modeTieDown": 280,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Slowbro",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        14,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 14,
+      "min": 14,
+      "max": 14,
+      "modeTieUp": 14,
+      "modeTieDown": 14,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 70,
+   "classes": 13,
+   "ms": 123,
+   "decisions": {
+    "tie2": 210,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Absol",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Slowbro",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 186,
+       "dmgMax": 186,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Snorlax|spd|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-170": 1,
+       "faint": 1
+      },
+      "opponent-right": {
+       "boost:spd:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -170,
+       "max": -170
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -170,
+       "max": -170,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 123,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Absol",
+      "start": null,
+      "maximum": 280,
+      "dist": [
+       [
+        280,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 280,
+      "min": 280,
+      "max": 280,
+      "modeTieUp": 280,
+      "modeTieDown": 280,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Slowbro",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        1
+       ]
+      ],
+      "koChance": 1,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "modeTieUp": 0,
+      "modeTieDown": 0,
+      "status": {
+       "fnt": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 1
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 280,
+   "maximum": 280,
+   "low": 280,
+   "high": 280,
+   "average": 280,
+   "min": 280,
+   "max": 280,
+   "koChance": 0,
+   "dist": [
+    [
+     280,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 14,
+   "high": 0,
+   "average": 3.75,
+   "min": 0,
+   "max": 14,
+   "koChance": 0.5625,
+   "dist": [
+    [
+     0,
+     0.5625
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     6,
+     0.125
+    ],
+    [
+     8,
+     0.0625
+    ],
+    [
+     12,
+     0.125
+    ],
+    [
+     14,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: opponent-left and opponent-right (50)"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 280,
+   "maximum": 280,
+   "low": 280,
+   "high": 280,
+   "average": 280,
+   "min": 280,
+   "max": 280,
+   "koChance": 0,
+   "dist": [
+    [
+     280,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 14,
+   "high": 0,
+   "average": 3.75,
+   "min": 0,
+   "max": 14,
+   "koChance": 0.5625,
+   "dist": [
+    [
+     0,
+     0.5625
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     6,
+     0.125
+    ],
+    [
+     8,
+     0.0625
+    ],
+    [
+     12,
+     0.125
+    ],
+    [
+     14,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

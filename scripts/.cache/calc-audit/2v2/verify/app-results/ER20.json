@@ -1,0 +1,231 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "curse",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Is cursed.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "own-left",
+      "reached": 0,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": -67,
+       "max": -67
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 68,
+    "average": 68,
+    "high": 68,
+    "min": 68,
+    "max": 68,
+    "koChance": 0,
+    "heals": [],
+    "losses": [
+     {
+      "text": "Gengar loses 67 HP (Curse).",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Cursed.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Cursed.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 68,
+     "average": 68,
+     "high": 68,
+     "min": 68,
+     "max": 68,
+     "koChance": 0,
+     "heals": [],
+     "losses": [
+      {
+       "text": "Gengar loses 67 HP (Curse).",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 177,
+     "average": 177,
+     "high": 177,
+     "min": 177,
+     "max": 177,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Cursed.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 116,
+     "average": 116,
+     "high": 116,
+     "min": 116,
+     "max": 116,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Cursed.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-right",
+     "effect": "Curse",
+     "chance": 1,
+     "min": -38,
+     "max": -38,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Curse",
+     "chance": 1,
+     "min": -58,
+     "max": -58,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 1.1399000000001251,
+ "preflight": []
+}

@@ -1,0 +1,497 @@
+{
+ "id": "ZI08",
+ "title": "Max Darkness from Knock Off takes nothing: the holder eats its Sitrus Berry (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Darkness (getActiveMaxMove): no Knock Off handlers; its Sp. Def drop lands on both foes.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 47,
+   "classes": 37,
+   "ms": 37,
+   "decisions": {
+    "fail:": 11,
+    "roll": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       290,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 290,
+     "min": 290,
+     "max": 290,
+     "modeTieUp": 290,
+     "modeTieDown": 290
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       92,
+       0.0625
+      ],
+      [
+       93,
+       0.125
+      ],
+      [
+       95,
+       0.0625
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       99,
+       0.125
+      ],
+      [
+       129,
+       0.0625
+      ],
+      [
+       131,
+       0.0625
+      ],
+      [
+       132,
+       0.125
+      ],
+      [
+       134,
+       0.0625
+      ],
+      [
+       135,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 111.8125,
+     "min": 92,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 93
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blastoise|spd|1": 1,
+      "|-unboost|p2b: Garchomp|spd|1": 1,
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 0.4375,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 0.4375
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       290,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 290,
+     "min": 290,
+     "max": 290,
+     "modeTieUp": 290,
+     "modeTieDown": 290
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blastoise|spd|1": 1,
+      "|-unboost|p2b: Garchomp|spd|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 290,
+     "maximum": 290,
+     "dist": [
+      [
+       290,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 290,
+     "min": 290,
+     "max": 290,
+     "modeTieUp": 290,
+     "modeTieDown": 290
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       129,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 129,
+     "min": 129,
+     "max": 129,
+     "modeTieUp": 129,
+     "modeTieDown": 129
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 99,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Darkness": 1,
+      "|-unboost|p2a: Blastoise|spd|1": 1,
+      "|-unboost|p2b: Garchomp|spd|1": 1,
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 290,
+   "maximum": 290,
+   "low": 290,
+   "high": 290,
+   "average": 290,
+   "min": 290,
+   "max": 290,
+   "koChance": 0,
+   "dist": [
+    [
+     290,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 99,
+   "high": 129,
+   "average": 111.8125,
+   "min": 92,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     92,
+     0.0625
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     129,
+     0.0625
+    ],
+    [
+     131,
+     0.0625
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     134,
+     0.0625
+    ],
+    [
+     135,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 11 whole-turn replays"
+ ]
+}

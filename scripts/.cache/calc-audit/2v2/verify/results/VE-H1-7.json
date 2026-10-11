@@ -1,0 +1,1390 @@
+{
+ "id": "VE-H1-7",
+ "title": "Locked Anger Shell Klawf, an ally's Life Dew (allies) hits it",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Life Dew heals 35 (to above half): no eat either way; the lock ends at its AfterMoveSecondary.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 248,
+   "classes": 108,
+   "ms": 251,
+   "decisions": {
+    "sample": 224,
+    "chance:confusion": 80,
+    "roll": 64
+   },
+   "slots": {
+    "own-left": {
+     "species": "Klawf",
+     "start": 76,
+     "maximum": 145,
+     "dist": [
+      [
+       95,
+       0.020625
+      ],
+      [
+       96,
+       0.10312500000000001
+      ],
+      [
+       97,
+       0.12375000000000001
+      ],
+      [
+       98,
+       0.0825
+      ],
+      [
+       112,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 106.988125,
+     "min": 95,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999999
+     },
+     "boosts": {},
+     "item": {
+      "sitrusberry": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Primarina",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "lifedew",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {},
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1b: Primarina|Life Dew||[still]|[spread] p1a,p1b": 0.9999999999999999,
+      "|-heal|p1a: Klawf|hp": 0.9999999999999999,
+      "|-fail|p1b: Primarina|heal": 0.9999999999999999
+     },
+     "effects": {
+      "own-left": {
+       "heal:36": 0.9999999999999999
+      },
+      "own-right": {
+       "fail:heal": 0.9999999999999999
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 36,
+       "max": 36,
+       "mass": 0.9999999999999999
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 0.9999999999999999,
+      "damage:confusion:-14": 0.0825,
+      "damage:confusion:-15": 0.12375000000000001,
+      "damage:confusion:-16": 0.10312499999999997,
+      "damage:confusion:-17": 0.020625
+     }
+    },
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 40,
+    "classes": 40,
+    "ms": 251,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Klawf",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        95,
+        0.020625
+       ],
+       [
+        96,
+        0.10312500000000001
+       ],
+       [
+        97,
+        0.12375000000000001
+       ],
+       [
+        98,
+        0.0825
+       ],
+       [
+        112,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 106.988125,
+      "min": 95,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999999
+      },
+      "boosts": {},
+      "item": {
+       "sitrusberry": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Primarina",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 128,
+   "classes": 60,
+   "ms": 148,
+   "decisions": {
+    "sample": 128,
+    "chance:confusion": 32,
+    "roll": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Klawf",
+     "start": 76,
+     "maximum": 145,
+     "dist": [
+      [
+       98,
+       0.33
+      ],
+      [
+       112,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 107.38,
+     "min": 98,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Primarina",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "lifedew",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1b: Primarina|Life Dew||[still]|[spread] p1a,p1b": 1,
+      "|-heal|p1a: Klawf|hp": 1,
+      "|-fail|p1b: Primarina|heal": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:36": 1
+      },
+      "own-right": {
+       "fail:heal": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 36,
+       "max": 36,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 1,
+      "damage:confusion:-14": 0.33
+     }
+    },
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 16,
+    "classes": 16,
+    "ms": 148,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Klawf",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        98,
+        0.33
+       ],
+       [
+        112,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 107.38,
+      "min": 98,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Primarina",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 128,
+   "classes": 60,
+   "ms": 140,
+   "decisions": {
+    "sample": 128,
+    "chance:confusion": 32,
+    "roll": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Klawf",
+     "start": 76,
+     "maximum": 145,
+     "dist": [
+      [
+       95,
+       0.33
+      ],
+      [
+       112,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 106.38999999999999,
+     "min": 95,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "sitrusberry": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Primarina",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "lifedew",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|move|p1b: Primarina|Life Dew||[still]|[spread] p1a,p1b": 1,
+      "|-heal|p1a: Klawf|hp": 1,
+      "|-fail|p1b: Primarina|heal": 1
+     },
+     "effects": {
+      "own-left": {
+       "heal:36": 1
+      },
+      "own-right": {
+       "fail:heal": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 36,
+       "max": 36
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": 36,
+       "max": 36,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-left": {
+     "own-left": {
+      "activate:confusion": 1,
+      "damage:confusion:-17": 0.33
+     }
+    },
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 16,
+    "classes": 16,
+    "ms": 140,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Klawf",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        95,
+        0.33
+       ],
+       [
+        112,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 106.38999999999999,
+      "min": 95,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "sitrusberry": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Primarina",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 76,
+   "maximum": 145,
+   "low": 112,
+   "high": 112,
+   "average": 106.988125,
+   "min": 95,
+   "max": 112,
+   "koChance": 0,
+   "dist": [
+    [
+     95,
+     0.020625
+    ],
+    [
+     96,
+     0.10312500000000001
+    ],
+    [
+     97,
+     0.12375000000000001
+    ],
+    [
+     98,
+     0.0825
+    ],
+    [
+     112,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 76,
+   "maximum": 145,
+   "low": 112,
+   "high": 112,
+   "average": 106.988125,
+   "min": 95,
+   "max": 112,
+   "koChance": 0,
+   "dist": [
+    [
+     95,
+     0.020625
+    ],
+    [
+     96,
+     0.10312500000000001
+    ],
+    [
+     97,
+     0.12375000000000001
+    ],
+    [
+     98,
+     0.0825
+    ],
+    [
+     112,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999999
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "hidden": [
+  {
+   "label": "own-left confusion 2",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 3",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 4",
+   "weight": 0.25
+  },
+  {
+   "label": "own-left confusion 5",
+   "weight": 0.25
+  }
+ ]
+}

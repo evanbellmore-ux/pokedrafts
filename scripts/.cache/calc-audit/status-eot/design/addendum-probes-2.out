@@ -1,0 +1,815 @@
+
+### T1 sv: Jolteon Tricks its Choice Scarf to Snorlax (50 -> 75); Chansey (70) and Snorlax act after  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  inspect #1:
+     1  after moves: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+  inspect #2:
+     1  end of turn: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+
+### T1 champions: Jolteon Tricks its Choice Scarf to Snorlax (50 -> 75); Chansey (70) and Snorlax act after  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  inspect #1:
+     1  after moves: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+  inspect #2:
+     1  end of turn: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+
+### T1 swsh: Jolteon Tricks its Choice Scarf to Snorlax (50 -> 75); Chansey (70) and Snorlax act after  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  inspect #1:
+     1  after moves: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+  inspect #2:
+     1  end of turn: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Snorlax > Chansey > Shuckle
+
+### T1 usum: Jolteon Tricks its Choice Scarf to Snorlax (50 -> 75); Chansey (70) and Snorlax act after  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Shuckle 95/95 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  inspect #1:
+     1  after moves: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Chansey > Snorlax > Shuckle
+  inspect #2:
+     1  end of turn: Jolteon:- Shuckle:- Snorlax:choicescarf Chansey:- || Jolteon > Chansey > Snorlax > Shuckle
+
+### T2 sv: Regieleki (110 with Iron Ball) Tricks Iron Ball to Gyarados (101 -> 50); Chansey (70) Splash; Garchomp (63) Earthquake  (64 runs)
+  start: p1a Regieleki 155/155 | p1b Garchomp 96/96 | p2a Gyarados 170/170 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Regieleki 105/155 | p1b Garchomp 96/96 | p2a Gyarados 152/170 | p2b Chansey 255/325
+  turn 1 end:
+     1  p1a Regieleki 105/155 | p1b Garchomp 96/96 | p2a Gyarados 152/170 | p2b Chansey 255/325
+  inspect #1:
+     1  after moves: Regieleki:- Garchomp:- Gyarados:ironball Chansey:- || Regieleki > Chansey > Garchomp > Gyarados || Regieleki 105, Garchomp 96, Gyarados 152, Chansey 255
+  inspect #2:
+     1  end of turn: Regieleki:- Garchomp:- Gyarados:ironball Chansey:- || Regieleki > Chansey > Garchomp > Gyarados || Regieleki 105, Garchomp 96, Gyarados 152, Chansey 255
+  lines:
+     1  |move|p1a: Regieleki|Trick|p2a: Gyarados
+     1  |-activate|p1a: Regieleki|move: Trick|[of] p2a: Gyarados
+     1  |-item|p2a: Gyarados|Iron Ball|[from] move: Trick
+     1  |-enditem|p1a: Regieleki|Iron Ball|[silent]|[from] move: Trick
+     1  |move|p2b: Chansey|Splash|p2b: Chansey
+     1  |-damage|p1a: Regieleki|105/155
+     1  |-damage|p2a: Gyarados|152/170
+     1  |-damage|p2b: Chansey|255/325
+     1  |move|p2a: Gyarados|Splash|p2a: Gyarados
+     0.5  |move|p1b: Garchomp|Earthquake|p2a: Gyarados|[spread] p1a,p2a,p2b
+     0.5  |move|p1b: Garchomp|Earthquake|p2b: Chansey|[spread] p1a,p2a,p2b
+
+### T3 sv: Jolteon (fast) Tricks Life Orb to Snorlax; Snorlax Body Slams Chansey; Jolteon's ally Lapras Body Slams Snorlax  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Lapras 205/205 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Lapras 205/205 | p2a Snorlax 172/235 | p2b Chansey 1/325
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Lapras 205/205 | p2a Snorlax 172/235 | p2b Chansey 1/325
+  inspect #1:
+     1  after moves: Jolteon:- Lapras:- Snorlax:lifeorb Chansey:- || Jolteon 140, Lapras 205, Snorlax 172, Chansey 1
+  inspect #2:
+     1  end of turn: Jolteon:- Lapras:- Snorlax:lifeorb Chansey:- || Jolteon 140, Lapras 205, Snorlax 172, Chansey 1
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Life Orb|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Life Orb|[silent]|[from] move: Trick
+     1  |move|p1b: Lapras|Body Slam|p2a: Snorlax
+     1  |-damage|p2a: Snorlax|195/235
+     1  |move|p2b: Chansey|Splash|p2b: Chansey
+     1  |move|p2a: Snorlax|Body Slam|p2b: Chansey
+     1  |-damage|p2b: Chansey|1/325
+     1  |-damage|p2a: Snorlax|172/235|[from] item: Life Orb
+
+### T4 sv: Jolteon Tricks Sitrus Berry to Snorlax at 90/235  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95 || Snorlax volatiles - def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95 || Snorlax volatiles - def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Sitrus Berry|[silent]|[from] move: Trick
+     1  |-enditem|p2a: Snorlax|Sitrus Berry|[eat]
+     1  |-heal|p2a: Snorlax|148/235|[from] item: Sitrus Berry
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T4 sv: Jolteon Tricks Lum Berry to Snorlax paralysed  (128 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Lum Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Lum Berry|[silent]|[from] move: Trick
+     1  |-enditem|p2a: Snorlax|Lum Berry|[eat]
+     1  |-curestatus|p2a: Snorlax|par|[msg]
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T4 sv: Jolteon Tricks White Herb to Snorlax at Def -2  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-enditem|p2a: Snorlax|White Herb
+     1  |-clearnegativeboost|p2a: Snorlax|[silent]
+     1  |-item|p2a: Snorlax|White Herb|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|White Herb|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T4 sv: Jolteon Tricks Mental Herb to Snorlax taunted  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95 || Snorlax volatiles - def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Mental Herb|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Mental Herb|[silent]|[from] move: Trick
+     1  |-enditem|p2a: Snorlax|Mental Herb
+     1  |-end|p2a: Snorlax|move: Taunt
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T4 sv: Jolteon Tricks Figy Berry to Snorlax at 50/235, Modest (-Atk)  (8 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 50/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     0.67  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 128/235 | p2b Shuckle 95/95
+     0.33  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 106/235 | p2b Shuckle 95/95
+  turn 1 end:
+     0.67  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 128/235 | p2b Shuckle 95/95
+     0.33  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 106/235 | p2b Shuckle 95/95
+  inspect #1:
+     0.67  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 128, Shuckle 95 || Snorlax volatiles confusion def 0
+     0.33  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 106, Shuckle 95 || Snorlax volatiles confusion def 0
+  inspect #2:
+     0.67  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 128, Shuckle 95 || Snorlax volatiles confusion def 0
+     0.33  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 106, Shuckle 95 || Snorlax volatiles confusion def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Figy Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Figy Berry|[silent]|[from] move: Trick
+     1  |-enditem|p2a: Snorlax|Figy Berry|[eat]
+     1  |-heal|p2a: Snorlax|128/235|[from] item: Figy Berry
+     1  |-start|p2a: Snorlax|confusion
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |-activate|p2a: Snorlax|confusion
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+     0.67  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     0.33  |-damage|p2a: Snorlax|106/235|[from] confusion
+
+### T4b sv: Jolteon Tricks Sitrus Berry to Snorlax at 90 HP under Klutz Snorlax  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:sitrusberry Shuckle:- || Jolteon 140, Chansey 325, Snorlax 90, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:sitrusberry Shuckle:- || Jolteon 140, Chansey 325, Snorlax 90, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Sitrus Berry|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T4b sv: Jolteon Tricks Sitrus Berry to Snorlax at 90 HP under Magic Room  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:sitrusberry Shuckle:- || Jolteon 140, Chansey 325, Snorlax 90, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:sitrusberry Shuckle:- || Jolteon 140, Chansey 325, Snorlax 90, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Sitrus Berry|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T5 sv: Mold Breaker Trick into Sticky Hold  (1 runs)
+  start: p1a Excadrill 185/185 | p1b Chansey 325/325 | p2a Muk 180/180 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Excadrill 185/185 | p1b Chansey 325/325 | p2a Muk 180/180 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Excadrill 185/185 | p1b Chansey 325/325 | p2a Muk 180/180 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Excadrill:choicescarf Chansey:- Muk:blacksludge Shuckle:-
+  inspect #2:
+     1  end of turn: Excadrill:choicescarf Chansey:- Muk:blacksludge Shuckle:-
+  lines:
+     1  |move|p1a: Excadrill|Trick|p2a: Muk
+     1  |-immune|p2a: Muk
+     1  |move|p2a: Muk|Splash|p2a: Muk
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T5 sv: Trick into a Substitute  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:choicescarf Chansey:- Snorlax:leftovers Shuckle:-
+  inspect #2:
+     1  end of turn: Jolteon:choicescarf Chansey:- Snorlax:leftovers Shuckle:-
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T5 sv: Trick into Protect  (2 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:choicescarf Chansey:- Snorlax:leftovers Shuckle:-
+  inspect #2:
+     1  end of turn: Jolteon:choicescarf Chansey:- Snorlax:leftovers Shuckle:-
+  lines:
+     1  |move|p2a: Snorlax|Protect|p2a: Snorlax
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p2a: Snorlax|move: Protect
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T5 sv: both item-less  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:-
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:-
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T5 sv: a Sticky Hold user Tricks  (1 runs)
+  start: p1a Muk 180/180 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Muk 180/180 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Muk 180/180 | p1b Chansey 325/325 | p2a Snorlax 206/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Muk:leftovers Chansey:- Snorlax:blacksludge Shuckle:-
+  inspect #2:
+     1  end of turn: Muk:leftovers Chansey:- Snorlax:blacksludge Shuckle:-
+  lines:
+     1  |move|p1a: Muk|Trick|p2a: Snorlax
+     1  |-activate|p1a: Muk|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Black Sludge|[from] move: Trick
+     1  |-item|p1a: Muk|Leftovers|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+     1  |-damage|p2a: Snorlax|206/235|[from] item: Black Sludge
+
+### T6 sv: Plate from Arceus  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:choicescarf Chansey:- Arceus:flameplate Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:choicescarf Chansey:- Arceus:flameplate Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p2a: Arceus|Splash|p2a: Arceus
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 sv: Plate to Arceus  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Arceus 195/195 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:flameplate Chansey:- Arceus:- Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:flameplate Chansey:- Arceus:- Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p2a: Arceus|Splash|p2a: Arceus
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 sv: Booster Energy from Flutter Mane  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Flutter Mane:choicescarf Shuckle:- || Flutter/target volatiles protosynthesis,choicelock
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Flutter Mane:choicescarf Shuckle:- || Flutter/target volatiles protosynthesis,choicelock
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Flutter Mane
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Flutter Mane
+     1  |-item|p2a: Flutter Mane|Choice Scarf|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Choice Scarf|[silent]|[from] move: Trick
+     1  |move|p2a: Flutter Mane|Splash|p2a: Flutter Mane
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 sv: Booster Energy to Flutter Mane  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Flutter Mane 130/130 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:boosterenergy Chansey:- Flutter Mane:- Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:boosterenergy Chansey:- Flutter Mane:- Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p2a: Flutter Mane|Splash|p2a: Flutter Mane
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 sv: Booster Energy to Snorlax (non-Paradox)  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:boosterenergy Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:boosterenergy Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Booster Energy|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Booster Energy|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 champions: Charizardite X from Charizard  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:choicescarf Chansey:- Charizard:charizarditex Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:choicescarf Chansey:- Charizard:charizarditex Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p2a: Charizard|Splash|p2a: Charizard
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 champions: Charizardite X to Charizard  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Charizard 153/153 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:charizarditex Chansey:- Charizard:- Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:charizarditex Chansey:- Charizard:- Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p2a: Charizard|Splash|p2a: Charizard
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 champions: Charizardite X to Snorlax  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:charizarditex Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:charizarditex Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Charizardite X|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Charizardite X|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 swsh: Rusted Sword from Zacian  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Zacian 167/167 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Zacian 167/167 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Zacian 167/167 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:choicescarf Chansey:- Zacian:rustedsword Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:choicescarf Chansey:- Zacian:rustedsword Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p2a: Zacian|Splash|p2a: Zacian
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T6 usum: a Z-Crystal  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:electriumz Chansey:- Snorlax:leftovers Shuckle:- || Flutter/target volatiles -
+  inspect #2:
+     1  end of turn: Jolteon:electriumz Chansey:- Snorlax:leftovers Shuckle:- || Flutter/target volatiles -
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T7 sv: Regieleki (item-less) Tricks Hawlucha (Unburden, Sitrus); Dragapult (162) and Hawlucha (138 -> 276) act after  (1 runs)
+  start: p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Regieleki:sitrusberry Dragapult:- Hawlucha:- Shuckle:- || Regieleki > Hawlucha > Dragapult > Shuckle || Hawlucha volatiles unburden
+  inspect #2:
+     1  end of turn: Regieleki:sitrusberry Dragapult:- Hawlucha:- Shuckle:- || Regieleki > Hawlucha > Dragapult > Shuckle || Hawlucha volatiles unburden
+
+### T7b sv: Hawlucha (Unburden, active: item-less) receives Regieleki's Leftovers: Unburden stops while it holds one  (1 runs)
+  start: p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Regieleki 155/155 | p1b Dragapult 163/163 | p2a Hawlucha 153/153 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Regieleki:- Dragapult:- Hawlucha:leftovers Shuckle:- || Hawlucha > Regieleki > Dragapult > Shuckle || Hawlucha volatiles unburden spe 138
+  inspect #2:
+     1  end of turn: Regieleki:- Dragapult:- Hawlucha:leftovers Shuckle:- || Hawlucha > Regieleki > Dragapult > Shuckle || Hawlucha volatiles unburden spe 138
+
+### T8 sv: Jolteon (100/140) Tricks Leftovers to Snorlax (100/235)  (1 runs)
+  start: p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 114/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:leftovers Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:leftovers Shuckle:- || Jolteon 100, Chansey 325, Snorlax 114, Shuckle 95
+
+### T8 sv: Jolteon (100/140) Tricks Black Sludge to Snorlax (100/235)  (1 runs)
+  start: p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 71/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:blacksludge Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:blacksludge Shuckle:- || Jolteon 100, Chansey 325, Snorlax 71, Shuckle 95
+
+### T8 sv: Jolteon (100/140) Tricks Toxic Orb to Snorlax (100/235)  (1 runs)
+  start: p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:toxicorb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:toxicorb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100 tox, Shuckle 95
+
+### T8 sv: Jolteon (100/140) Tricks Flame Orb to Snorlax (100/235)  (1 runs)
+  start: p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:flameorb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:flameorb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100 brn, Shuckle 95
+
+### T8 sv: Jolteon (100/140) Tricks Sticky Barb to Snorlax (100/235)  (1 runs)
+  start: p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 100/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 100/140 | p1b Chansey 325/325 | p2a Snorlax 71/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:stickybarb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 100, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:stickybarb Shuckle:- || Jolteon 100, Chansey 325, Snorlax 71, Shuckle 95
+
+### T9 sv: Switcheroo Sitrus Berry to Snorlax at 90 HP  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:leftovers Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:leftovers Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Switcheroo|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Switcheroo
+     1  |-item|p1a: Jolteon|Leftovers|[from] move: Switcheroo
+     1  |-enditem|p2a: Snorlax|Sitrus Berry|[eat]
+     1  |-heal|p2a: Snorlax|148/235|[from] item: Sitrus Berry
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T9b usum: Bestow Sitrus to Snorlax at 90 HP through Protect  (2 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  lines:
+     1  |move|p2a: Snorlax|Protect|p2a: Snorlax
+     1  |move|p1a: Jolteon|Bestow|p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Bestow|[of] p1a: Jolteon
+     1  |-enditem|p2a: Snorlax|Sitrus Berry|[eat]
+     1  |-heal|p2a: Snorlax|148/235|[from] item: Sitrus Berry
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T9b usum: Bestow Sitrus into a Substitute (Snorlax at 90 HP)  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 90/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 148/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Jolteon 140, Chansey 325, Snorlax 148, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Bestow|p2a: Snorlax
+     1  |-item|p2a: Snorlax|Sitrus Berry|[from] move: Bestow|[of] p1a: Jolteon
+     1  |-enditem|p2a: Snorlax|Sitrus Berry|[eat]
+     1  |-heal|p2a: Snorlax|148/235|[from] item: Sitrus Berry
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T9b usum: Bestow Sitrus to a holder  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:sitrusberry Chansey:- Snorlax:leftovers Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:sitrusberry Chansey:- Snorlax:leftovers Shuckle:- || Jolteon 140, Chansey 325, Snorlax 235, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Bestow||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T9b usum: Bestow Sitrus to Sticky Hold Muk at 50 HP  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Muk 50/180 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Muk 95/180 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Muk 95/180 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Muk:- Shuckle:- || Jolteon 140, Chansey 325, Muk 95, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Muk:- Shuckle:- || Jolteon 140, Chansey 325, Muk 95, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Bestow|p2a: Muk
+     1  |-item|p2a: Muk|Sitrus Berry|[from] move: Bestow|[of] p1a: Jolteon
+     1  |-enditem|p2a: Muk|Sitrus Berry|[eat]
+     1  |-heal|p2a: Muk|95/180|[from] item: Sitrus Berry
+     1  |move|p2a: Muk|Splash|p2a: Muk
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T10 sv: Jolteon Tricks Air Balloon to Snorlax; Garchomp (slow) Earthquake  (32 runs)
+  start: p1a Jolteon 140/140 | p1b Garchomp 114/114 | p2a Snorlax 235/235 | p2b Chansey 325/325
+  turn 1 after moves:
+     1  p1a Jolteon 78/140 | p1b Garchomp 114/114 | p2a Snorlax 235/235 | p2b Chansey 225/325
+  turn 1 end:
+     1  p1a Jolteon 78/140 | p1b Garchomp 114/114 | p2a Snorlax 235/235 | p2b Chansey 225/325
+  inspect #1:
+     1  after moves: Jolteon:- Garchomp:- Snorlax:airballoon Chansey:- || Jolteon 78, Garchomp 114, Snorlax 235, Chansey 225
+  inspect #2:
+     1  end of turn: Jolteon:- Garchomp:- Snorlax:airballoon Chansey:- || Jolteon 78, Garchomp 114, Snorlax 235, Chansey 225
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Air Balloon
+     1  |-item|p2a: Snorlax|Air Balloon|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Air Balloon|[silent]|[from] move: Trick
+     1  |-immune|p2a: Snorlax
+     1  |-damage|p1a: Jolteon|78/140
+     1  |-damage|p2b: Chansey|225/325
+     1  |move|p2b: Chansey|Splash|p2b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     0.5  |move|p1b: Garchomp|Earthquake|p2a: Snorlax|[spread] p1a,p2b
+     0.5  |move|p1b: Garchomp|Earthquake|p2b: Chansey|[spread] p1a,p2b
+
+### T10b sv: Jolteon Tricks Room Service to Snorlax  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 0
+  lines:
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+
+### T10b sv: Jolteon Tricks Electric Seed to Snorlax  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 0
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 0
+  lines:
+     1  |move|p1a: Jolteon|Trick||[still]
+     1  |-fail|p1a: Jolteon
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T11 sv: Jolteon Tricks its Choice Scarf to item-less Snorlax; Jolteon's ally Oranguru has Symbiosis + Leftovers  (1 runs)
+  start: p1a Jolteon 140/140 | p1b Oranguru 165/165 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 140/140 | p1b Oranguru 165/165 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 140/140 | p1b Oranguru 165/165 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Oranguru:leftovers Snorlax:choicescarf Shuckle:-
+  inspect #2:
+     1  end of turn: Jolteon:- Oranguru:leftovers Snorlax:choicescarf Shuckle:-
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Choice Scarf|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Choice Scarf|[silent]|[from] move: Trick
+     1  |move|p1b: Oranguru|Splash|p1b: Oranguru
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T10c sv: Klutz Lopunny Tricks Room Service to Snorlax  (1 runs)
+  start: p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Lopunny:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe -1 def 0
+  inspect #2:
+     1  end of turn: Lopunny:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe -1 def 0
+  lines:
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p1a: Lopunny|Trick|p2a: Snorlax
+     1  |-activate|p1a: Lopunny|move: Trick|[of] p2a: Snorlax
+     1  |-enditem|p2a: Snorlax|Room Service
+     1  |-unboost|p2a: Snorlax|spe|1|[from] item: Room Service
+     1  |-item|p2a: Snorlax|Room Service|[from] move: Trick
+     1  |-enditem|p1a: Lopunny|Room Service|[silent]|[from] move: Trick
+
+### T10c sv: Klutz Lopunny Tricks Electric Seed to Snorlax  (1 runs)
+  start: p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Lopunny 140/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Lopunny:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 1
+  inspect #2:
+     1  end of turn: Lopunny:- Chansey:- Snorlax:- Shuckle:- || Snorlax spe 0 def 1
+  lines:
+     1  |move|p1a: Lopunny|Trick|p2a: Snorlax
+     1  |-activate|p1a: Lopunny|move: Trick|[of] p2a: Snorlax
+     1  |-enditem|p2a: Snorlax|Electric Seed
+     1  |-boost|p2a: Snorlax|def|1|[from] item: Electric Seed
+     1  |-item|p2a: Snorlax|Electric Seed|[from] move: Trick
+     1  |-enditem|p1a: Lopunny|Electric Seed|[silent]|[from] move: Trick
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle
+
+### T12 sv: Jolteon (60/140) Tricks its Choice Scarf to Snorlax for Snorlax's Sitrus Berry  (1 runs)
+  start: p1a Jolteon 60/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 after moves:
+     1  p1a Jolteon 95/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  turn 1 end:
+     1  p1a Jolteon 95/140 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+  inspect #1:
+     1  after moves: Jolteon:- Chansey:- Snorlax:choicescarf Shuckle:- || Jolteon 95, Chansey 325, Snorlax 235, Shuckle 95
+  inspect #2:
+     1  end of turn: Jolteon:- Chansey:- Snorlax:choicescarf Shuckle:- || Jolteon 95, Chansey 325, Snorlax 235, Shuckle 95
+  lines:
+     1  |move|p1a: Jolteon|Trick|p2a: Snorlax
+     1  |-activate|p1a: Jolteon|move: Trick|[of] p2a: Snorlax
+     1  |-item|p2a: Snorlax|Choice Scarf|[from] move: Trick
+     1  |-item|p1a: Jolteon|Sitrus Berry|[from] move: Trick
+     1  |-enditem|p1a: Jolteon|Sitrus Berry|[eat]
+     1  |-heal|p1a: Jolteon|95/140|[from] item: Sitrus Berry
+     1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+     1  |move|p1b: Chansey|Splash|p1b: Chansey
+     1  |move|p2b: Shuckle|Splash|p2b: Shuckle

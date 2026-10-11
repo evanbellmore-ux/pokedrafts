@@ -1,0 +1,568 @@
+{
+ "id": "M13b",
+ "title": "Aura Break reverses Dark Aura",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Dark Pulse into Clefable at 3072/4096 (Aura Break); Moonblast plain.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 60,
+   "classes": 14,
+   "ms": 24,
+   "decisions": {
+    "fail:": 52,
+    "roll": 52,
+    "secondary": 52
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       142,
+       0.0625
+      ],
+      [
+       143,
+       0.3125
+      ],
+      [
+       144,
+       0.125
+      ],
+      [
+       145,
+       0.1875
+      ],
+      [
+       146,
+       0.3125
+      ]
+     ],
+     "koChance": 0,
+     "average": 144.375,
+     "min": 142,
+     "max": 146,
+     "modeTieUp": 146,
+     "modeTieDown": 143
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       43,
+       0.0625
+      ],
+      [
+       45,
+       0.125
+      ],
+      [
+       49,
+       0.125
+      ],
+      [
+       51,
+       0.125
+      ],
+      [
+       55,
+       0.125
+      ],
+      [
+       57,
+       0.125
+      ],
+      [
+       61,
+       0.125
+      ],
+      [
+       63,
+       0.125
+      ],
+      [
+       67,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 54.5,
+     "min": 43,
+     "max": 67,
+     "modeTieUp": 63,
+     "modeTieDown": 45
+    },
+    "opponent-right": {
+     "species": "Yveltal",
+     "start": 201,
+     "maximum": 201,
+     "dist": [
+      [
+       201,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 201,
+     "min": 201,
+     "max": 201,
+     "modeTieUp": 201,
+     "modeTieDown": 201
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 28,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       146,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 146,
+     "min": 146,
+     "max": 146,
+     "modeTieUp": 146,
+     "modeTieDown": 146
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       67,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 67,
+     "min": 67,
+     "max": 67,
+     "modeTieUp": 67,
+     "modeTieDown": 67
+    },
+    "opponent-right": {
+     "species": "Yveltal",
+     "start": 201,
+     "maximum": 201,
+     "dist": [
+      [
+       201,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 201,
+     "min": 201,
+     "max": 201,
+     "modeTieUp": 201,
+     "modeTieDown": 201
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 24,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       43,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 43,
+     "min": 43,
+     "max": 43,
+     "modeTieUp": 43,
+     "modeTieDown": 43
+    },
+    "opponent-right": {
+     "species": "Yveltal",
+     "start": 201,
+     "maximum": 201,
+     "dist": [
+      [
+       201,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 201,
+     "min": 201,
+     "max": 201,
+     "modeTieUp": 201,
+     "modeTieDown": 201
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "darkpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 28,
+       "dmgMax": 28,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 146,
+   "high": 142,
+   "average": 144.375,
+   "min": 142,
+   "max": 146,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     0.0625
+    ],
+    [
+     143,
+     0.3125
+    ],
+    [
+     144,
+     0.125
+    ],
+    [
+     145,
+     0.1875
+    ],
+    [
+     146,
+     0.3125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 67,
+   "high": 43,
+   "average": 54.5,
+   "min": 43,
+   "max": 67,
+   "koChance": 0,
+   "dist": [
+    [
+     43,
+     0.0625
+    ],
+    [
+     45,
+     0.125
+    ],
+    [
+     49,
+     0.125
+    ],
+    [
+     51,
+     0.125
+    ],
+    [
+     55,
+     0.125
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     61,
+     0.125
+    ],
+    [
+     63,
+     0.125
+    ],
+    [
+     67,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 201,
+   "maximum": 201,
+   "low": 201,
+   "high": 201,
+   "average": 201,
+   "min": 201,
+   "max": 201,
+   "koChance": 0,
+   "dist": [
+    [
+     201,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

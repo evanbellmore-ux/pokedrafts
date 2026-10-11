@@ -1,0 +1,470 @@
+{
+ "id": "HL06",
+ "title": "Double Hit into Rough Skin and Rocky Helmet: the attacker eats its Oran Berry, then faints (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "73 - 18 - 24 = 31, Oran +10: 41, then Rough Skin and Rocky Helmet on the second hit knock it out.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 66,
+   "classes": 51,
+   "ms": 51,
+   "decisions": {
+    "accuracy": 16,
+    "fail:": 32,
+    "roll": 32
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 73,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       143,
+       0.00390625
+      ],
+      [
+       144,
+       0.0390625
+      ],
+      [
+       145,
+       0.13671875
+      ],
+      [
+       146,
+       0.234375
+      ],
+      [
+       147,
+       0.29296875
+      ],
+      [
+       148,
+       0.1953125
+      ],
+      [
+       149,
+       0.09765625
+      ]
+     ],
+     "koChance": 0,
+     "average": 146.75,
+     "min": 143,
+     "max": 149,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doublehit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Weavile|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Weavile|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Weavile|Oran Berry|[eat]": 1,
+      "|-heal|p1a: Weavile|hp|[from] item: Oran Berry": 1,
+      "|-damage|p1a: Weavile|0 fnt|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 21,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 73,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       149,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 149,
+     "min": 149,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 149
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doublehit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Weavile|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Weavile|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Weavile|Oran Berry|[eat]": 1,
+      "|-heal|p1a: Weavile|hp|[from] item: Oran Berry": 1,
+      "|-damage|p1a: Weavile|0 fnt|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 73,
+     "maximum": 145,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "doublehit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Weavile|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Weavile|hp|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Weavile|Oran Berry|[eat]": 1,
+      "|-heal|p1a: Weavile|hp|[from] item: Oran Berry": 1,
+      "|-damage|p1a: Weavile|0 fnt|[from] item: Rocky Helmet|[of] p2b: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 73,
+   "maximum": 145,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 149,
+   "high": 143,
+   "average": 146.75,
+   "min": 143,
+   "max": 149,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.00390625
+    ],
+    [
+     144,
+     0.0390625
+    ],
+    [
+     145,
+     0.13671875
+    ],
+    [
+     146,
+     0.234375
+    ],
+    [
+     147,
+     0.29296875
+    ],
+    [
+     148,
+     0.1953125
+    ],
+    [
+     149,
+     0.09765625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 16 whole-turn replays"
+ ]
+}

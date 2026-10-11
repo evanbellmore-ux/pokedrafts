@@ -1,0 +1,436 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 219,
+    "maximum": 219
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "firepunch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "firepunch",
+       "effectiveName": "Fire Punch",
+       "effectiveType": "Fire",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 24,
+       "max": 29,
+       "minPercent": 10.212765957446807,
+       "maxPercent": 12.340425531914894,
+       "rolls": [
+        24,
+        24,
+        25,
+        25,
+        25,
+        26,
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29
+       ],
+       "ohkoChance": 0,
+       "description": "Fire Punch: 24–29 HP (10.2–12.3% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 24,
+       "max": 29,
+       "breaks": 0
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.20000000000000004,
+    "skipped": [
+     {
+      "text": "Frozen.",
+      "chance": 0.8000000000000002
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.20000000000000004,
+      "kind": "calculated",
+      "min": 78,
+      "max": 93,
+      "minPercent": 35.61643835616438,
+      "maxPercent": 42.465753424657535,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 78,
+       "max": 93,
+       "minPercent": 35.61643835616438,
+       "maxPercent": 42.465753424657535,
+       "rolls": [
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 78–93 HP (35.6–42.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Thaws.",
+      "chance": 0.20000000000000004
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 219,
+    "maximum": 219,
+    "low": 219,
+    "average": 201.9875,
+    "high": 219,
+    "min": 126,
+    "max": 219,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 76 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Status cured.",
+      "chance": 0.20000000000000004
+     },
+     {
+      "text": "Substitute: 75 HP.",
+      "chance": 0.18750000000000003
+     },
+     {
+      "text": "Substitute: 74 HP.",
+      "chance": 0.25
+     },
+     {
+      "text": "Substitute: 73 HP.",
+      "chance": 0.18750000000000003
+     },
+     {
+      "text": "Substitute: 72 HP.",
+      "chance": 0.18750000000000003
+     },
+     {
+      "text": "Substitute: 71 HP.",
+      "chance": 0.0625
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "firepunch",
+     "effectiveName": "Fire Punch",
+     "effectiveType": "Fire",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 10% chance to burn the target.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 78,
+     "max": 93,
+     "minPercent": 35.61643835616438,
+     "maxPercent": 42.465753424657535,
+     "rolls": [
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 78–93 HP (35.6–42.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Freeze thaws at random"
+     },
+     "afterUse": {
+      "start": 219,
+      "low": 141,
+      "high": 126,
+      "average": 133.9375,
+      "min": 126,
+      "max": 141,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 78,
+        "heals": []
+       },
+       "high": {
+        "dealt": 93,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Hariyama has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 219,
+     "maximum": 219,
+     "low": 219,
+     "average": 201.9875,
+     "high": 219,
+     "min": 126,
+     "max": 219,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 76 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Status cured.",
+       "chance": 0.20000000000000004
+      },
+      {
+       "text": "Substitute: 75 HP.",
+       "chance": 0.18750000000000003
+      },
+      {
+       "text": "Substitute: 74 HP.",
+       "chance": 0.25
+      },
+      {
+       "text": "Substitute: 73 HP.",
+       "chance": 0.18750000000000003
+      },
+      {
+       "text": "Substitute: 72 HP.",
+       "chance": 0.18750000000000003
+      },
+      {
+       "text": "Substitute: 71 HP.",
+       "chance": 0.0625
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.389600000000428,
+ "preflight": []
+}

@@ -1,0 +1,276 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "aquajet",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 18,
+      "max": 21,
+      "minPercent": 12.587412587412588,
+      "maxPercent": 14.685314685314685,
+      "koChance": 0,
+      "row": {
+       "moveId": "aquajet",
+       "effectiveName": "Aqua Jet",
+       "effectiveType": "Water",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 18,
+       "max": 21,
+       "minPercent": 12.587412587412588,
+       "maxPercent": 14.685314685314685,
+       "rolls": [
+        18,
+        18,
+        18,
+        18,
+        18,
+        19,
+        19,
+        19,
+        19,
+        20,
+        20,
+        20,
+        21,
+        21,
+        21,
+        21
+       ],
+       "ohkoChance": 0,
+       "description": "Aqua Jet: 18–21 HP (12.6–14.7% of maximum HP). Applied: Huge Power.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 143,
+    "maximum": 143,
+    "low": 125,
+    "average": 123.625,
+    "high": 122,
+    "min": 122,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "aquajet",
+     "effectiveName": "Aqua Jet",
+     "effectiveType": "Water",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 18,
+     "max": 21,
+     "minPercent": 12.587412587412588,
+     "maxPercent": 14.685314685314685,
+     "rolls": [
+      18,
+      18,
+      18,
+      18,
+      18,
+      19,
+      19,
+      19,
+      19,
+      20,
+      20,
+      20,
+      21,
+      21,
+      21,
+      21
+     ],
+     "ohkoChance": 0,
+     "description": "Aqua Jet: 18–21 HP (12.6–14.7% of maximum HP). Applied: Huge Power.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.012853384017944336,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 143,
+      "low": 125,
+      "high": 122,
+      "average": 123.625,
+      "min": 122,
+      "max": 125,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 18,
+        "heals": []
+       },
+       "high": {
+        "dealt": 21,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 143,
+     "maximum": 143,
+     "low": 125,
+     "average": 123.625,
+     "high": 122,
+     "min": 122,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.508600000000115,
+ "preflight": []
+}

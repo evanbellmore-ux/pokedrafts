@@ -1,0 +1,212 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 168,
+      "max": 198,
+      "minPercent": 108.38709677419357,
+      "maxPercent": 127.74193548387096,
+      "koChance": 1,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 168,
+       "max": 198,
+       "minPercent": 108.38709677419357,
+       "maxPercent": 127.74193548387096,
+       "rolls": [
+        168,
+        168,
+        170,
+        174,
+        174,
+        176,
+        180,
+        180,
+        182,
+        186,
+        186,
+        188,
+        192,
+        192,
+        194,
+        198
+       ],
+       "ohkoChance": 1,
+       "description": "Flamethrower: 168–198 HP (108.4–127.7% of maximum HP). Applied: Sun.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 168,
+     "max": 198,
+     "minPercent": 108.38709677419357,
+     "maxPercent": 127.74193548387096,
+     "rolls": [
+      168,
+      168,
+      170,
+      174,
+      174,
+      176,
+      180,
+      180,
+      182,
+      186,
+      186,
+      188,
+      192,
+      192,
+      194,
+      198
+     ],
+     "ohkoChance": 1,
+     "description": "Flamethrower: 168–198 HP (108.4–127.7% of maximum HP). Applied: Sun.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 155,
+        "heals": []
+       },
+       "high": {
+        "dealt": 155,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.531300000000101,
+ "preflight": []
+}

@@ -1,0 +1,17 @@
+# Integration 1a, A3's I1-I6 (W1A-A3.md needsFromIntegrator; w1a-a3-itree.sh).
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from apply import apply
+apply([
+ ("doubles-turn.ts", 'if (side.matBlock && isFoe(attacker, slot) && !info.isZ && !info.isMax && info.flags.protect) return', 'if (side.matBlock && slot !== attacker && !passes()) return', "I1 Mat Block stops what the protections stop, an ally's move too"),
+ ("doubles-turn.ts", 'if (w.sides[slotSide(target)].matBlock && attacker && moveId && isFoe(attacker, target)) {', 'if (w.sides[slotSide(target)].matBlock && attacker && moveId && target !== attacker) {', "I2 Mat Block's quarter for a Z-Move or Max Move from any other Pokemon"),
+ ("doubles-turn.ts", 'useCalled(w: World, action: PendingAction, moveId: string, target: DoublesSlotId | null, opts?: { priority?: number; prankster?: boolean }): World[];', 'useCalled(w: World, action: PendingAction, moveId: string, target: DoublesSlotId | null, opts?: { priority?: number; prankster?: boolean; snatched?: true; bounced?: true }): World[];', "I3 useCalled type"),
+ ("doubles-turn.ts", 'function useCalled(ctx: Ctx, w: World, action: PendingAction, moveId: string, target: DoublesSlotId | null, opts?: { priority?: number; prankster?: boolean }): World[] {', 'function useCalled(ctx: Ctx, w: World, action: PendingAction, moveId: string, target: DoublesSlotId | null, opts?: { priority?: number; prankster?: boolean; snatched?: true; bounced?: true }): World[] {', "I3 useCalled"),
+ ("doubles-turn.ts", '{ priority, ...(opts?.prankster !== undefined ? { prankster: opts.prankster } : {}) })', '{ priority, ...(opts?.prankster !== undefined ? { prankster: opts.prankster } : {}), ...(opts?.snatched ? { snatched: true as const } : {}), ...(opts?.bounced ? { bounced: true as const } : {}) })', "I3 runCalledStatus call"),
+ ("doubles-status.ts", 'opts: { priority: number; prankster?: boolean }): World[] {', 'opts: { priority: number; prankster?: boolean; snatched?: true; bounced?: true }): World[] {', "I3 runCalledStatus opts"),
+ ("doubles-status.ts", '  const use = makeUse(kernel, w, action, action.slot, move, entry, opts.priority, false, target, opts.prankster);', '  const use = makeUse(kernel, w, action, action.slot, move, entry, opts.priority, !!opts.bounced, target, opts.prankster);\n  if (opts.snatched) use.snatched = true;', "I3 the stolen and reflected use"),
+ ("doubles-status.ts", '  if (!use.bounced) typingHooks.proteanGuard(kernel, w, use.user, use.move.id, () => use.type);', '  if (!use.bounced && !use.snatched) typingHooks.proteanGuard(kernel, w, use.user, use.move.id, () => use.type);', "I4 prepareHit: no Protean on a snatched use"),
+ ("doubles-status.ts", '  if (!use.bounced) typingHooks.proteanGuard(kernel, w, user, move.id, () => use.type);', '  if (!use.bounced && !use.snatched) typingHooks.proteanGuard(kernel, w, user, move.id, () => use.type);', "I4 sideOrField: no Protean on a snatched use"),
+ ("doubles-actions.ts", '  "trick", "switcheroo", "bestow", "corrosivegas", "embargo", "magicroom",', '  "trick", "switcheroo",', "I5 SPEC2 §8.4: Magic Room, Corrosive Gas, Bestow and Embargo leave GAS_CHANGING_MOVES"),
+ ("doubles-field.ts", '  if (move.id === "swallow" && !w.mons[by]!.vol.stockpile) kernel.notEstimated(REASONS.notIn2v2(`${move.name} taken by ${kernel.moveName("snatch")}`));\n', '', "I6 the snatched-Swallow guard goes with I3"),
+])

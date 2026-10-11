@@ -1,0 +1,762 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 114,
+      "max": 134,
+      "minPercent": 65.14285714285715,
+      "maxPercent": 76.57142857142857,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Thunderbolt",
+       "effectiveType": "Electric",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 114,
+       "max": 134,
+       "minPercent": 65.14285714285715,
+       "maxPercent": 76.57142857142857,
+       "rolls": [
+        114,
+        114,
+        116,
+        116,
+        120,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128,
+        128,
+        132,
+        132,
+        134
+       ],
+       "ohkoChance": 0,
+       "description": "Thunderbolt: 114–134 HP (65.1–76.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "mudsport",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Mud Sport starts.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 41,
+      "max": 48,
+      "minPercent": 26.623376623376622,
+      "maxPercent": 31.16883116883117,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 41,
+       "max": 48,
+       "minPercent": 26.623376623376622,
+       "maxPercent": 31.16883116883117,
+       "rolls": [
+        41,
+        41,
+        42,
+        42,
+        42,
+        43,
+        44,
+        44,
+        45,
+        45,
+        45,
+        46,
+        47,
+        47,
+        48,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 41–48 HP (26.6–31.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "watersport",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Water Sport starts.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 113,
+    "average": 109.625,
+    "high": 106,
+    "min": 106,
+    "max": 113,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 61,
+    "average": 51.875,
+    "high": 41,
+    "min": 41,
+    "max": 61,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 41,
+     "max": 48,
+     "minPercent": 26.623376623376622,
+     "maxPercent": 31.16883116883117,
+     "rolls": [
+      41,
+      41,
+      42,
+      42,
+      42,
+      43,
+      44,
+      44,
+      45,
+      45,
+      45,
+      46,
+      47,
+      47,
+      48,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 41–48 HP (26.6–31.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 113,
+      "high": 106,
+      "average": 109.625,
+      "min": 106,
+      "max": 113,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 41,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 114,
+     "max": 134,
+     "minPercent": 65.14285714285715,
+     "maxPercent": 76.57142857142857,
+     "rolls": [
+      114,
+      114,
+      116,
+      116,
+      120,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132,
+      132,
+      134
+     ],
+     "ohkoChance": 0,
+     "description": "Thunderbolt: 114–134 HP (65.1–76.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 61,
+      "high": 41,
+      "average": 51.875,
+      "min": 41,
+      "max": 61,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 114,
+        "heals": []
+       },
+       "high": {
+        "dealt": 134,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 113,
+     "average": 109.625,
+     "high": 106,
+     "min": 106,
+     "max": 113,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 61,
+     "average": 51.875,
+     "high": 41,
+     "min": 41,
+     "max": 61,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.107700000000477,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 106,
+        "chance": 0.125
+       },
+       {
+        "hp": 107,
+        "chance": 0.125
+       },
+       {
+        "hp": 108,
+        "chance": 0.0625
+       },
+       {
+        "hp": 109,
+        "chance": 0.1875
+       },
+       {
+        "hp": 110,
+        "chance": 0.125
+       },
+       {
+        "hp": 111,
+        "chance": 0.0625
+       },
+       {
+        "hp": 112,
+        "chance": 0.1875
+       },
+       {
+        "hp": 113,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "bibarel",
+       "nature": "Serious",
+       "abilityId": "simple",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 41,
+        "chance": 0.0625
+       },
+       {
+        "hp": 43,
+        "chance": 0.125
+       },
+       {
+        "hp": 47,
+        "chance": 0.125
+       },
+       {
+        "hp": 49,
+        "chance": 0.125
+       },
+       {
+        "hp": 53,
+        "chance": 0.125
+       },
+       {
+        "hp": 55,
+        "chance": 0.1875
+       },
+       {
+        "hp": 59,
+        "chance": 0.125
+       },
+       {
+        "hp": 61,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "azumarill",
+       "nature": "Serious",
+       "abilityId": "hugepower",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 153,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "charizard",
+       "nature": "Serious",
+       "abilityId": "blaze",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 135,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "raichu",
+       "nature": "Serious",
+       "abilityId": "static",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false,
+     "mudSport": true,
+     "waterSport": true
+    },
+    "fieldSet": {
+     "mudSport": true,
+     "waterSport": true
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

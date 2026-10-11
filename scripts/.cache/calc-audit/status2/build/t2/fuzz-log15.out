@@ -1,0 +1,134 @@
+LOG #15 t7 Venusaur volatile stall: real false belief true
+|-singleturn|p2b: Dragapult|move: Instruct|[of] p1b: Oranguru
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|move|p2a: Clefable|Copycat|p2a: Clefable
+|move|p2a: Clefable|Lock-On|p1a: Venusaur|[from] move: Copycat
+|-activate|p1a: Venusaur|move: Protect
+|
+|upkeep
+|turn|2
+|
+|move|p1a: Venusaur|Protect||[still]
+|-fail|p1a: Venusaur
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|move|p2a: Clefable|Copycat|p2a: Clefable
+|move|p2a: Clefable|Lock-On|p1b: Oranguru|[from] move: Copycat
+|-activate|p2a: Clefable|move: Lock-On|[of] p1b: Oranguru
+|move|p1b: Oranguru|Instruct|p2b: Dragapult
+|-singleturn|p2b: Dragapult|move: Instruct|[of] p1b: Oranguru
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|
+|upkeep
+|turn|3
+|
+|move|p1a: Venusaur|Protect|p1a: Venusaur
+|-singleturn|p1a: Venusaur|Protect
+|move|p2b: Dragapult|Lock-On|p1b: Oranguru
+|-activate|p2b: Dragapult|move: Lock-On|[of] p1b: Oranguru
+|move|p2a: Clefable|Copycat|p2a: Clefable
+|move|p2a: Clefable|Lock-On||[from] move: Copycat|[still]
+|-fail|p2a: Clefable
+|move|p1b: Oranguru|Instruct|p2b: Dragapult
+|-singleturn|p2b: Dragapult|move: Instruct|[of] p1b: Oranguru
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|
+|upkeep
+|turn|4
+|
+|move|p1a: Venusaur|Protect|p1a: Venusaur
+|-singleturn|p1a: Venusaur|Protect
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|move|p2a: Clefable|Copycat|p2a: Clefable
+|move|p2a: Clefable|Lock-On|p1b: Oranguru|[from] move: Copycat
+|-activate|p2a: Clefable|move: Lock-On|[of] p1b: Oranguru
+|move|p1b: Oranguru|Instruct|p2b: Dragapult
+|-singleturn|p2b: Dragapult|move: Instruct|[of] p1b: Oranguru
+|move|p2b: Dragapult|Lock-On||[still]
+|-fail|p2b: Dragapult
+|
+|upkeep
+|turn|5
+|
+|move|p1a: Venusaur|Protect||[still]
+|-fail|p1a: Venusaur
+|move|p2b: Dragapult|Phantom Force||[still]
+|-prepare|p2b: Dragapult|Phantom Force
+|move|p2a: Clefable|Copycat|p2a: Clefable
+|move|p2a: Clefable|Phantom Force||[from] move: Copycat|[still]
+|-prepare|p2a: Clefable|Phantom Force
+|move|p1b: Oranguru|Instruct|p2b: Dragapult|[miss]
+|-miss|p1b: Oranguru|p2b: Dragapult
+|
+|upkeep
+|turn|6
+|
+|move|p1a: Venusaur|Protect|p1a: Venusaur
+|-singleturn|p1a: Venusaur|Protect
+|move|p2b: Dragapult|Phantom Force|p1b: Oranguru|[from] lockedmove
+|-immune|p1b: Oranguru
+|move|p1b: Oranguru|Instruct||[still]
+|-fail|p1b: Oranguru
+|move|p2a: Clefable|Phantom Force|p1a: Venusaur|[from] lockedmove
+|-activate|p1a: Venusaur|move: Phantom Force|[broken]
+|-damage|p1a: Venusaur|142/175
+|
+|upkeep
+|turn|7
+{
+ "decisions": 356,
+ "compared": 1328,
+ "mismatches": 5,
+ "cells": 2136,
+ "engineCells": 2055,
+ "issues": 0,
+ "notEstimated": 63,
+ "reasons": {
+  "rollout: Speed tie between switches with an entry effect.": 75,
+  "engine: Instruct is not modelled in 2v2.": 55,
+  "end of turn: Future Sight landing is not modelled in 2v2.": 10,
+  "engine: Instruct needs the target of Farigiraf's last move.": 6,
+  "rollout: phantomforce is not in its catalog moves.": 6,
+  "end of turn: Psychic Terrain ending is not modelled in 2v2.": 4,
+  "end of turn: Misty Terrain ending is not modelled in 2v2.": 4,
+  "engine: Copycat with Sleep Talk is not modelled in 2v2.": 1,
+  "engine: Encore changes Oranguru's move: not modelled.": 1
+ },
+ "seen": {
+  "stall": 200,
+  "lockon": 25,
+  "field": 94,
+  "twoturnmove": 39,
+  "disable": 37,
+  "destinybond": 22,
+  "taunt": 54,
+  "encore": 5,
+  "cudchew": 6,
+  "leechseed": 20,
+  "mustrecharge": 5
+ },
+ "carried": {
+  "stages": 1226,
+  "stall": 793,
+  "onceUsed": 686,
+  "taunt": 301,
+  "charging": 243,
+  "disable": 213,
+  "destinyBond": 143,
+  "lockOn": 124,
+  "leechSeed": 112,
+  "cudChew": 65,
+  "futureMove": 57,
+  "mustRecharge": 30,
+  "encore": 23
+ }
+}
+#6 t21 Incineroar cudchew: real [null,null] belief ["sitrusberry",1]
+#6 t22 Incineroar cudchew: real [null,null] belief ["sitrusberry",1]
+#6 t23 Incineroar cudchew: real [null,null] belief ["sitrusberry",1]
+#15 t7 Venusaur volatile stall: real false belief true
+#15 t8 Venusaur stall counter: real 3 belief 9

@@ -1,0 +1,554 @@
+{
+ "id": "MV04",
+ "title": "Max Phantasm from Hex into a burned target: not doubled, its Defense drop for the partner",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "-1 Def.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 28,
+   "classes": 15,
+   "ms": 33,
+   "decisions": {
+    "accuracy": 14,
+    "fail:": 14,
+    "roll": 14,
+    "secondary": 14
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 270,
+     "maximum": 270,
+     "dist": [
+      [
+       270,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 270,
+     "min": 270,
+     "max": 270,
+     "modeTieUp": 270,
+     "modeTieDown": 270
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       0.375
+      ],
+      [
+       1,
+       0.125
+      ],
+      [
+       5,
+       0.0625
+      ],
+      [
+       7,
+       0.0625
+      ],
+      [
+       11,
+       0.0625
+      ],
+      [
+       13,
+       0.0625
+      ],
+      [
+       17,
+       0.125
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       23,
+       0.0625
+      ]
+     ],
+     "koChance": 0.375,
+     "average": 7.125,
+     "min": 0,
+     "max": 23,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hex",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Phantasm": 1,
+      "|-immune|p2b: Snorlax": 1
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.375,
+       "dmgMin": 212,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 270,
+     "maximum": 270,
+     "dist": [
+      [
+       270,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 270,
+     "min": 270,
+     "max": 270,
+     "modeTieUp": 270,
+     "modeTieDown": 270
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       23,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 23,
+     "min": 23,
+     "max": 23,
+     "modeTieUp": 23,
+     "modeTieDown": 23
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hex",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Phantasm": 1,
+      "|-immune|p2b: Snorlax": 1
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 212,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 270,
+     "maximum": 270,
+     "dist": [
+      [
+       270,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 270,
+     "min": 270,
+     "max": 270,
+     "modeTieUp": 270,
+     "modeTieDown": 270
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "hex",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Phantasm": 1,
+      "|-immune|p2b: Snorlax": 1
+     }
+    },
+    "own-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 252,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1b: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 270,
+   "maximum": 270,
+   "low": 270,
+   "high": 270,
+   "average": 270,
+   "min": 270,
+   "max": 270,
+   "koChance": 0,
+   "dist": [
+    [
+     270,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 23,
+   "high": 0,
+   "average": 7.125,
+   "min": 0,
+   "max": 23,
+   "koChance": 0.375,
+   "dist": [
+    [
+     0,
+     0.375
+    ],
+    [
+     1,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     7,
+     0.0625
+    ],
+    [
+     11,
+     0.0625
+    ],
+    [
+     13,
+     0.0625
+    ],
+    [
+     17,
+     0.125
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     23,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

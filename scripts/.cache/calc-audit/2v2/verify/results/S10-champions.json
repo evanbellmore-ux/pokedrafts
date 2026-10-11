@@ -1,0 +1,1699 @@
+{
+ "id": "S10-champions",
+ "title": "Confuse Ray, then the target attacks (champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "A fresh confusion cannot end at its first BeforeMove: 33% self-hit (16 rolls; lowest/highest walks), 67% Dragon Claw.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 198,
+   "classes": 135,
+   "ms": 226,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 64,
+    "fail:": 44,
+    "roll": 64
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1.0000000000000007
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1.0000000000000007
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000007
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000007
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       0.041874999999999996
+      ],
+      [
+       141,
+       0.041874999999999996
+      ],
+      [
+       142,
+       0.08374999999999999
+      ],
+      [
+       144,
+       0.041874999999999996
+      ],
+      [
+       145,
+       0.08374999999999999
+      ],
+      [
+       147,
+       0.041874999999999996
+      ],
+      [
+       148,
+       0.08374999999999999
+      ],
+      [
+       150,
+       0.041874999999999996
+      ],
+      [
+       151,
+       0.08374999999999999
+      ],
+      [
+       153,
+       0.08374999999999999
+      ],
+      [
+       154,
+       0.041874999999999996
+      ],
+      [
+       235,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 176.08187499999997,
+     "min": 139,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1.0000000000000007
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000007
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6700000000000004
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       159,
+       0.020625
+      ],
+      [
+       160,
+       0.0825
+      ],
+      [
+       161,
+       0.0825
+      ],
+      [
+       162,
+       0.0825
+      ],
+      [
+       163,
+       0.061875
+      ],
+      [
+       183,
+       0.6700000000000004
+      ]
+     ],
+     "koChance": 0,
+     "average": 175.8225,
+     "min": 159,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1.0000000000000007
+     },
+     "volatiles": {
+      "confusion": 1.0000000000000007
+     },
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000007
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000007
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1.0000000000000007
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1.0000000000000007
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1.0000000000000007
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1.0000000000000007
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1.0000000000000007,
+     "faintedAtPick": 0,
+     "moved": 0.6700000000000004,
+     "cant": {},
+     "orderAll": {
+      "2": 1.0000000000000007
+     },
+     "orderMoved": {
+      "2": 0.6700000000000004
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6700000000000004,
+       "landed": 0.6700000000000004,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Garchomp|confusion": 1.0000000000000007,
+      "|-damage|p2b: Garchomp|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1.0000000000000007,
+       "damage:confusion:-20": 0.061875,
+       "damage:confusion:-21": 0.0825,
+       "damage:confusion:-22": 0.0825,
+       "damage:confusion:-23": 0.0825,
+       "damage:confusion:-24": 0.020625
+      },
+      "own-right": {
+       "damage:-81": 0.041874999999999996,
+       "damage:-82": 0.08374999999999999,
+       "damage:-84": 0.08374999999999999,
+       "damage:-85": 0.041874999999999996,
+       "damage:-87": 0.08374999999999999,
+       "damage:-88": 0.041874999999999996,
+       "damage:-90": 0.08374999999999999,
+       "damage:-91": 0.041874999999999996,
+       "damage:-93": 0.08374999999999999,
+       "damage:-94": 0.041874999999999996,
+       "damage:-96": 0.041874999999999996
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -96,
+       "max": -81
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -96,
+       "max": -81,
+       "mass": 0.6700000000000004
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 20,
+      "max": 24
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 64,
+    "ms": 226,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1.0000000000000007
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1.0000000000000007
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000007
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000007
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        139,
+        0.041874999999999996
+       ],
+       [
+        141,
+        0.041874999999999996
+       ],
+       [
+        142,
+        0.08374999999999999
+       ],
+       [
+        144,
+        0.041874999999999996
+       ],
+       [
+        145,
+        0.08374999999999999
+       ],
+       [
+        147,
+        0.041874999999999996
+       ],
+       [
+        148,
+        0.08374999999999999
+       ],
+       [
+        150,
+        0.041874999999999996
+       ],
+       [
+        151,
+        0.08374999999999999
+       ],
+       [
+        153,
+        0.08374999999999999
+       ],
+       [
+        154,
+        0.041874999999999996
+       ],
+       [
+        235,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 176.08187499999997,
+      "min": 139,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1.0000000000000007
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000007
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6700000000000004
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        159,
+        0.020625
+       ],
+       [
+        160,
+        0.0825
+       ],
+       [
+        161,
+        0.0825
+       ],
+       [
+        162,
+        0.0825
+       ],
+       [
+        163,
+        0.061875
+       ],
+       [
+        183,
+        0.6700000000000004
+       ]
+      ],
+      "koChance": 0,
+      "average": 175.8225,
+      "min": 159,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1.0000000000000007
+      },
+      "volatiles": {
+       "confusion": 1.0000000000000007
+      },
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000007
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000007
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1.0000000000000007
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1.0000000000000007
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1.0000000000000007
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1.0000000000000007
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1.0000000000000007,
+     "weather:": 1.0000000000000007
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 30,
+   "classes": 23,
+   "ms": 35,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       154,
+       0.6699999999999999
+      ],
+      [
+       235,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 180.73,
+     "min": 154,
+     "max": 235,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       163,
+       0.33
+      ],
+      [
+       183,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 176.39999999999998,
+     "min": 163,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Garchomp|confusion": 1,
+      "|-damage|p2b: Garchomp|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-20": 0.33
+      },
+      "own-right": {
+       "damage:-81": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -81,
+       "max": -81
+      },
+      "opponent-left": {
+       "min": -20,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -81,
+       "max": -81,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 20,
+      "max": 20
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 35,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        154,
+        0.6699999999999999
+       ],
+       [
+        235,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 180.73,
+      "min": 154,
+      "max": 235,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        163,
+        0.33
+       ],
+       [
+        183,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 176.39999999999998,
+      "min": 163,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 30,
+   "classes": 23,
+   "ms": 37,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       0.6699999999999999
+      ],
+      [
+       235,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 170.68,
+     "min": 139,
+     "max": 235,
+     "modeTieUp": 139,
+     "modeTieDown": 139,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       159,
+       0.33
+      ],
+      [
+       183,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 175.07999999999998,
+     "min": 159,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Garchomp|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-right": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Garchomp|confusion": 1,
+      "|-damage|p2b: Garchomp|hp|[from] confusion": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-24": 0.33
+      },
+      "own-right": {
+       "damage:-96": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -96,
+       "max": -96
+      },
+      "opponent-left": {
+       "min": -24,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -96,
+       "max": -96,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 24,
+      "max": 24
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 37,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        139,
+        0.6699999999999999
+       ],
+       [
+        235,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 170.68,
+      "min": 139,
+      "max": 235,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        159,
+        0.33
+       ],
+       [
+        183,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 175.07999999999998,
+      "min": 159,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1.0000000000000007
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 176.08187499999997,
+   "min": 139,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.041874999999999996
+    ],
+    [
+     141,
+     0.041874999999999996
+    ],
+    [
+     142,
+     0.08374999999999999
+    ],
+    [
+     144,
+     0.041874999999999996
+    ],
+    [
+     145,
+     0.08374999999999999
+    ],
+    [
+     147,
+     0.041874999999999996
+    ],
+    [
+     148,
+     0.08374999999999999
+    ],
+    [
+     150,
+     0.041874999999999996
+    ],
+    [
+     151,
+     0.08374999999999999
+    ],
+    [
+     153,
+     0.08374999999999999
+    ],
+    [
+     154,
+     0.041874999999999996
+    ],
+    [
+     235,
+     0.33
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 175.8225,
+   "min": 159,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     159,
+     0.020625
+    ],
+    [
+     160,
+     0.0825
+    ],
+    [
+     161,
+     0.0825
+    ],
+    [
+     162,
+     0.0825
+    ],
+    [
+     163,
+     0.061875
+    ],
+    [
+     183,
+     0.6700000000000004
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1.0000000000000007
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1.0000000000000007
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 176.08187499999997,
+   "min": 139,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.041874999999999996
+    ],
+    [
+     141,
+     0.041874999999999996
+    ],
+    [
+     142,
+     0.08374999999999999
+    ],
+    [
+     144,
+     0.041874999999999996
+    ],
+    [
+     145,
+     0.08374999999999999
+    ],
+    [
+     147,
+     0.041874999999999996
+    ],
+    [
+     148,
+     0.08374999999999999
+    ],
+    [
+     150,
+     0.041874999999999996
+    ],
+    [
+     151,
+     0.08374999999999999
+    ],
+    [
+     153,
+     0.08374999999999999
+    ],
+    [
+     154,
+     0.041874999999999996
+    ],
+    [
+     235,
+     0.33
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 175.8225,
+   "min": 159,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     159,
+     0.020625
+    ],
+    [
+     160,
+     0.0825
+    ],
+    [
+     161,
+     0.0825
+    ],
+    [
+     162,
+     0.0825
+    ],
+    [
+     163,
+     0.061875
+    ],
+    [
+     183,
+     0.6700000000000004
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1.0000000000000007
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

@@ -1,0 +1,569 @@
+{
+ "id": "M24d",
+ "title": "Max Lightning sets Electric Terrain: a later Electric move up",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Jolteon (150) first; Toxtricity's Thunderbolt at 1.3x (gen 8 terrain).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 47,
+   "classes": 19,
+   "ms": 28,
+   "decisions": {
+    "fail:": 31,
+    "roll": 31,
+    "secondary": 20
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       153,
+       0.05859375
+      ],
+      [
+       154,
+       0.05859375
+      ],
+      [
+       156,
+       0.1171875
+      ],
+      [
+       157,
+       0.1171875
+      ],
+      [
+       159,
+       0.1171875
+      ],
+      [
+       160,
+       0.1171875
+      ],
+      [
+       162,
+       0.05859375
+      ],
+      [
+       163,
+       0.1171875
+      ],
+      [
+       165,
+       0.1171875
+      ],
+      [
+       166,
+       0.05859375
+      ],
+      [
+       235,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 164.39453125,
+     "min": 153,
+     "max": 235,
+     "modeTieUp": 165,
+     "modeTieDown": 156
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.9375,
+       "dmgMin": 152,
+       "dmgMax": 182,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.0625,
+       "landed": 0.0625,
+       "ko": 0.0625,
+       "dmgMin": 144,
+       "dmgMax": 170,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.9375,
+       "landed": 0.9375,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 152,
+       "dmgMax": 152,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 144,
+       "dmgMax": 144,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 280,
+     "maximum": 280,
+     "dist": [
+      [
+       280,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 280,
+     "min": 280,
+     "max": 280,
+     "modeTieUp": 280,
+     "modeTieDown": 280
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 182,
+       "dmgMax": 182,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 280,
+   "maximum": 280,
+   "low": 280,
+   "high": 280,
+   "average": 280,
+   "min": 280,
+   "max": 280,
+   "koChance": 0,
+   "dist": [
+    [
+     280,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 153,
+   "average": 164.39453125,
+   "min": 153,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     0.05859375
+    ],
+    [
+     154,
+     0.05859375
+    ],
+    [
+     156,
+     0.1171875
+    ],
+    [
+     157,
+     0.1171875
+    ],
+    [
+     159,
+     0.1171875
+    ],
+    [
+     160,
+     0.1171875
+    ],
+    [
+     162,
+     0.05859375
+    ],
+    [
+     163,
+     0.1171875
+    ],
+    [
+     165,
+     0.1171875
+    ],
+    [
+     166,
+     0.05859375
+    ],
+    [
+     235,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

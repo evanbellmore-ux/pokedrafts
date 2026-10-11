@@ -1,0 +1,662 @@
+{
+ "id": "V03",
+ "title": "Multiscale broken by a spread move",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Rock Slide at 0.75 into both foes, halved on Dragonite; Flamethrower not halved after (probe c3: min rolls 166 → 132 → 98; Venusaur 155 → 117).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 3144,
+   "classes": 1909,
+   "ms": 1789,
+   "decisions": {
+    "sample": 236,
+    "accuracy": 448,
+    "fail:": 1568,
+    "roll": 1568,
+    "secondary": 1568
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       110,
+       0.0625
+      ],
+      [
+       111,
+       0.125
+      ],
+      [
+       112,
+       0.125
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       114,
+       0.125
+      ],
+      [
+       115,
+       0.1875
+      ],
+      [
+       116,
+       0.125
+      ],
+      [
+       117,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 113.8125,
+     "min": 110,
+     "max": 117,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       85,
+       0.00390625
+      ],
+      [
+       86,
+       0.01171875
+      ],
+      [
+       87,
+       0.03515625
+      ],
+      [
+       88,
+       0.05859375
+      ],
+      [
+       89,
+       0.08984375
+      ],
+      [
+       90,
+       0.1015625
+      ],
+      [
+       91,
+       0.13671875
+      ],
+      [
+       92,
+       0.13671875
+      ],
+      [
+       93,
+       0.140625
+      ],
+      [
+       94,
+       0.1015625
+      ],
+      [
+       95,
+       0.078125
+      ],
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.03125
+      ],
+      [
+       98,
+       0.01171875
+      ]
+     ],
+     "koChance": 0,
+     "average": 91.9375,
+     "min": 85,
+     "max": 98,
+     "modeTieUp": 93,
+     "modeTieDown": 93
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 38,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 41,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 19,
+   "decisions": {
+    "sample": 16,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       98,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 98,
+     "min": 98,
+     "max": 98,
+     "modeTieUp": 98,
+     "modeTieDown": 98
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 38,
+       "dmgMax": 38,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 15,
+   "decisions": {
+    "sample": 16,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       110,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 110,
+     "min": 110,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       85,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 85,
+     "min": 85,
+     "max": 85,
+     "modeTieUp": 85,
+     "modeTieDown": 85
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 41,
+       "dmgMax": 41,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 117,
+   "high": 110,
+   "average": 113.8125,
+   "min": 110,
+   "max": 117,
+   "koChance": 0,
+   "dist": [
+    [
+     110,
+     0.0625
+    ],
+    [
+     111,
+     0.125
+    ],
+    [
+     112,
+     0.125
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.1875
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     117,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 166,
+   "maximum": 166,
+   "low": 98,
+   "high": 85,
+   "average": 91.9375,
+   "min": 85,
+   "max": 98,
+   "koChance": 0,
+   "dist": [
+    [
+     85,
+     0.00390625
+    ],
+    [
+     86,
+     0.01171875
+    ],
+    [
+     87,
+     0.03515625
+    ],
+    [
+     88,
+     0.05859375
+    ],
+    [
+     89,
+     0.08984375
+    ],
+    [
+     90,
+     0.1015625
+    ],
+    [
+     91,
+     0.13671875
+    ],
+    [
+     92,
+     0.13671875
+    ],
+    [
+     93,
+     0.140625
+    ],
+    [
+     94,
+     0.1015625
+    ],
+    [
+     95,
+     0.078125
+    ],
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.03125
+    ],
+    [
+     98,
+     0.01171875
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

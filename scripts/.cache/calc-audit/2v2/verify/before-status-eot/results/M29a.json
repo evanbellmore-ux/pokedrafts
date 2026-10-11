@@ -1,0 +1,577 @@
+{
+ "id": "M29a",
+ "title": "A third Pokémon's Unnerve ends with its HP: the target eats its Sitrus Berry",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Dragon Claw takes Snorlax under half while Tyranitar's Unnerve stops the Sitrus Berry; Energy Ball KOs Tyranitar, and Snorlax eats it then.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 145,
+   "classes": 42,
+   "ms": 89,
+   "decisions": {
+    "fail:": 117,
+    "roll": 117,
+    "secondary": 104
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       63,
+       0.0625
+      ],
+      [
+       64,
+       0.0625
+      ],
+      [
+       66,
+       0.0625
+      ],
+      [
+       67,
+       0.0625
+      ],
+      [
+       69,
+       0.125
+      ],
+      [
+       70,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       73,
+       0.125
+      ],
+      [
+       75,
+       0.0625
+      ],
+      [
+       76,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       81,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 72.125,
+     "min": 63,
+     "max": 81,
+     "modeTieUp": 79,
+     "modeTieDown": 69
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 102,
+       "dmgMax": 122,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       81,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 81,
+     "min": 81,
+     "max": 81,
+     "modeTieUp": 81,
+     "modeTieDown": 81
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 102,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Tyranitar",
+     "start": 1,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 120,
+     "maximum": 235,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 122,
+       "dmgMax": 122,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 1,
+   "maximum": 175,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 120,
+   "maximum": 235,
+   "low": 81,
+   "high": 63,
+   "average": 72.125,
+   "min": 63,
+   "max": 81,
+   "koChance": 0,
+   "dist": [
+    [
+     63,
+     0.0625
+    ],
+    [
+     64,
+     0.0625
+    ],
+    [
+     66,
+     0.0625
+    ],
+    [
+     67,
+     0.0625
+    ],
+    [
+     69,
+     0.125
+    ],
+    [
+     70,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     73,
+     0.125
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     76,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     81,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

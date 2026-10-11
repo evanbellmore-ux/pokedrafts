@@ -1,0 +1,605 @@
+{
+ "id": "M21a",
+ "title": "As One (Glastrier): spread KO and a foe's Sitrus Berry stopped",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Glacial Lance KOs Venusaur (+1 Atk) and takes Sableye under half: As One stops its Sitrus Berry; Foul Play reads +1.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1056,
+   "classes": 59,
+   "ms": 909,
+   "decisions": {
+    "sample": 744,
+    "fail:": 1744,
+    "roll": 1744
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Ice",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       0.875
+      ],
+      [
+       175,
+       0.125
+      ]
+     ],
+     "koChance": 0.875,
+     "average": 21.875,
+     "min": 0,
+     "max": 175,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Sableye",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       0,
+       0.125
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       38,
+       0.125
+      ],
+      [
+       39,
+       0.0625
+      ],
+      [
+       41,
+       0.0625
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       44,
+       0.0625
+      ],
+      [
+       45,
+       0.0625
+      ],
+      [
+       47,
+       0.125
+      ],
+      [
+       48,
+       0.0625
+      ]
+     ],
+     "koChance": 0.125,
+     "average": 35.3125,
+     "min": 0,
+     "max": 48,
+     "modeTieUp": 47,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "glaciallance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.125,
+       "dmgMin": 108,
+       "dmgMax": 127,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 198,
+       "dmgMax": 234,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p1a: Calyrex|Chilling Neigh|boost": 1,
+      "|-boost|p1a: Calyrex|atk|1": 0.875,
+      "|-boost|p1a: Calyrex|atk|2": 0.125
+     }
+    },
+    "opponent-right": {
+     "moveId": "foulplay",
+     "picked": 1,
+     "faintedAtPick": 0.125,
+     "moved": 0.875,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.875
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.875,
+       "landed": 0.875,
+       "ko": 0.875,
+       "dmgMin": 176,
+       "dmgMax": 210,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Sableye|Sitrus Berry|[eat]": 0.875,
+      "|-heal|p2a: Sableye|hp|[from] item: Sitrus Berry": 0.875
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 20,
+    "fail:": 10,
+    "roll": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Ice",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Sableye",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       48,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 48,
+     "min": 48,
+     "max": 48,
+     "modeTieUp": 48,
+     "modeTieDown": 48
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "glaciallance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 198,
+       "dmgMax": 198,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p1a: Calyrex|Chilling Neigh|boost": 1,
+      "|-boost|p1a: Calyrex|atk|1": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "foulplay",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 176,
+       "dmgMax": 176,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Sableye|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Sableye|hp|[from] item: Sitrus Berry": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 20,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Calyrex-Ice",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 1,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Sableye",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "glaciallance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 127,
+       "dmgMax": 127,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 234,
+       "dmgMax": 234,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p1a: Calyrex|Chilling Neigh|boost": 1,
+      "|-boost|p1a: Calyrex|atk|2": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "foulplay",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 0,
+   "high": 175,
+   "average": 21.875,
+   "min": 0,
+   "max": 175,
+   "koChance": 0.875,
+   "dist": [
+    [
+     0,
+     0.875
+    ],
+    [
+     175,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 1,
+   "maximum": 155,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 125,
+   "maximum": 125,
+   "low": 48,
+   "high": 0,
+   "average": 35.3125,
+   "min": 0,
+   "max": 48,
+   "koChance": 0.125,
+   "dist": [
+    [
+     0,
+     0.125
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     39,
+     0.0625
+    ],
+    [
+     41,
+     0.0625
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     44,
+     0.0625
+    ],
+    [
+     45,
+     0.0625
+    ],
+    [
+     47,
+     0.125
+    ],
+    [
+     48,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

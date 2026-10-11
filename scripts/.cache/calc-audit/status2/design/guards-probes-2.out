@@ -1,0 +1,808 @@
+
+### C1 Harvest outside sun: 1/2 at 28.2, then the final Update eats the Berry again  (2 runs)
+ turn 1 after moves: p1a Egg [72:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Egg [72:0.5 114:0.5] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+   [0.5] T1 end: Egg:-(last sitrusberry) 114 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.5] T1 end: Egg:-(last sitrusberry) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [1] T1 moves: Egg:-(last sitrusberry, used) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+
+### C2 Harvest in sun under Cloud Nine (field.isWeather false): 1/2  (2 runs)
+ turn 1 after moves: p1a Egg [72:1] | p1b Lax4 [235:1] | p2a Golduck [155:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Egg [72:0.5 114:0.5] | p1b Lax4 [235:1] | p2a Golduck [155:1] | p2b Lax12 [235:1]
+   [0.5] T1 end: Egg:-(last sitrusberry) 114 | Lax4:-(last -) 235 | Golduck:-(last -) 155 | Lax12:-(last -) 235
+   [0.5] T1 end: Egg:-(last sitrusberry) 72 | Lax4:-(last -) 235 | Golduck:-(last -) 155 | Lax12:-(last -) 235
+   [1] T1 moves: Egg:-(last sitrusberry, used) 72 | Lax4:-(last -) 235 | Golduck:-(last -) 155 | Lax12:-(last -) 235
+
+### C3a Harvest after flinging its own Berry (Fling's condition sets lastItem), in sun  (1 runs)
+ turn 1 after moves: p1a Egg [170:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Egg [170:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+   [1] T1 end: Egg:sitrusberry(last -) 170 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [1] T1 moves: Egg:-(last sitrusberry, used) 170 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   1  |move|p1a: Egg|Fling|p2a: Lax8
+   1  |-damage|p2a: Lax8|230/235
+   1  |-heal|p2a: Lax8|235/235|[from] item: Sitrus Berry|[of] p1a: Egg
+   1  |-enditem|p1a: Egg|Sitrus Berry|[from] move: Fling
+   1  |move|p2b: Lax12|Splash|p2b: Lax12
+   1  |move|p2a: Lax8|Splash|p2a: Lax8
+   1  |move|p1b: Lax4|Splash|p1b: Lax4
+   1  |-weather|SunnyDay|[upkeep]
+   1  |-item|p1a: Egg|Sitrus Berry|[from] ability: Harvest
+   1  |turn|2
+
+### C3b Harvest after Bug Bite took its Berry (takeItem: no lastItem), in sun  (1 runs)
+ turn 1 after moves: p1a Egg [0:1] | p1b Lax4 [235:1] | p2a Scizor [145:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Bench [235:1] | p1b Lax4 [235:1] | p2a Scizor [145:1] | p2b Lax12 [235:1]
+   [1] T1 end: Bench:-(last -) 235 | Lax4:-(last -) 235 | Scizor:-(last -) 145 | Lax12:-(last -) 235
+   [1] T1 moves: Egg:-(last -) 0 | Lax4:-(last -) 235 | Scizor:-(last -) 145 | Lax12:-(last -) 235
+   1  |move|p2a: Scizor|Bug Bite|p1a: Egg
+   1  |-damage|p1a: Egg|0 fnt
+   1  |-enditem|p1a: Egg|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p2a: Scizor
+   1  |move|p2b: Lax12|Splash|p2b: Lax12
+   1  |move|p1b: Lax4|Splash|p1b: Lax4
+   1  |-weather|SunnyDay|[upkeep]
+   1  |switch|p1a: Bench|Snorlax, L50, F|235/235
+   1  |turn|2
+
+### C4 Harvest over two turns: lastItem stays when the 1/2 fails  (4 runs)
+ turn 1 after moves: p1a Egg [72:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 2 after moves: p1a Egg [72:0.5 114:0.5] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Egg [72:0.5 114:0.5] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 2 end of turn: p1a Egg [72:0.25 114:0.75] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+   [0.5] T1 end: Egg:-(last sitrusberry) 114 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.5] T1 end: Egg:-(last sitrusberry) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [1] T1 moves: Egg:-(last sitrusberry, used) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.5] T2 end: Egg:-(last sitrusberry) 114 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.25] T2 end: Egg:-(last sitrusberry) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.25] T2 end: Egg:sitrusberry(last -) 114 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.5] T2 moves: Egg:-(last sitrusberry) 114 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [0.5] T2 moves: Egg:-(last sitrusberry) 72 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+
+### C5 Pickup with two candidates (both foes ate a Berry this turn): uniform sample  (2 runs)
+ turn 1 after moves: p1a Zig [113:1] | p1b Lax4 [235:1] | p2a Lax8 [98:1] | p2b Lax12 [50:1]
+ turn 1 end of turn: p1a Zig [113:1] | p1b Lax4 [235:1] | p2a Lax8 [98:1] | p2b Lax12 [50:1]
+   [0.5] T1 end: Zig:oranberry(last -) 113 | Lax4:-(last -) 235 | Lax8:-(last sitrusberry) 98 | Lax12:-(last -) 50
+   [0.5] T1 end: Zig:sitrusberry(last -) 113 | Lax4:-(last -) 235 | Lax8:-(last -) 98 | Lax12:-(last oranberry) 50
+   [1] T1 moves: Zig:-(last -) 113 | Lax4:-(last -) 235 | Lax8:-(last sitrusberry, used) 98 | Lax12:-(last oranberry, used) 50
+
+### C6 Pickup: a knocked-off item is not a candidate  (1 runs)
+ turn 1 after moves: p1a Zig [113:1] | p1b Lax4 [144:1] | p2a Weavile [145:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Zig [113:1] | p1b Lax4 [144:1] | p2a Weavile [145:1] | p2b Lax12 [235:1]
+   [1] T1 end: Zig:-(last -) 113 | Lax4:-(last -) 144 | Weavile:-(last -) 145 | Lax12:-(last -) 235
+   [1] T1 moves: Zig:-(last -) 113 | Lax4:-(last -) 144 | Weavile:-(last -) 145 | Lax12:-(last -) 235
+
+### C7 Pickup takes a Lum Berry eaten at the turn's first Update  (1 runs)
+ turn 1 after moves: p1a Zig [113:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Zig [113:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+   [1] T1 end: Zig:lumberry(last -) 113 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [1] T1 moves: Zig:-(last -) 113 | Lax4:-(last lumberry, used) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+
+### C8 Pickup and its own used item (isAdjacent excludes itself): the Pickup holder's own eaten Sitrus  (1 runs)
+ turn 1 after moves: p1a Zig [38:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Zig [38:1] | p1b Lax4 [235:1] | p2a Lax8 [235:1] | p2b Lax12 [235:1]
+   [1] T1 end: Zig:-(last sitrusberry) 38 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+   [1] T1 moves: Zig:-(last sitrusberry, used) 38 | Lax4:-(last -) 235 | Lax8:-(last -) 235 | Lax12:-(last -) 235
+
+== D base power callbacks with accuracy and evasion stages
+  sv storedpower: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  sv powertrip: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  sv punishment: isNonstandard Past
+  champions storedpower: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  champions powertrip: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  champions punishment: isNonstandard Past
+  swsh storedpower: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  swsh powertrip: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  swsh punishment: isNonstandard Past
+  usum storedpower: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  usum powertrip: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 20; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 20
+  usum punishment: {"user":{"spe":1,"evasion":1},"target":{}} -> 60; {"user":{"accuracy":2},"target":{}} -> 60; {"user":{},"target":{"evasion":2,"atk":1}} -> 120; {"user":{},"target":{"evasion":6,"accuracy":6,"atk":6}} -> 200
+
+== E1 Fling with Shell Bell (30 power, or the held item's own damage effect while it is held)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-enditem|p1a: Sneasler|Shell Bell|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E1 Fling with Life Orb (30 power, or the held item's own damage effect while it is held)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|203/235
+  |-damage|p2a: Target|203/235
+  |-enditem|p1a: Sneasler|Life Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E1 Fling with Choice Band (30 power, or the held item's own damage effect while it is held)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|222/235
+  |-damage|p2a: Target|222/235
+  |-enditem|p1a: Sneasler|Choice Band|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E1 Fling with Black Glasses (30 power, or the held item's own damage effect while it is held)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|206/235
+  |-damage|p2a: Target|206/235
+  |-enditem|p1a: Sneasler|Black Glasses|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E1 Fling with Expert Belt (30 power, or the held item's own damage effect while it is held)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|226/235
+  |-damage|p2a: Target|226/235
+  |-enditem|p1a: Sneasler|Expert Belt|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E2 Fling a Sitrus Berry at its ally (the ally eats it: singleEvent Eat, no TryEatItem: a foe's Unnerve does not stop it)
+  |move|p1a: Sneasler|Fling|p1b: Ally
+  |-damage|p1b: Ally|91/235
+  |-damage|p1b: Ally|91/235
+  |-heal|p1b: Ally|149/235|[from] item: Sitrus Berry|[of] p1a: Sneasler
+  |-heal|p1b: Ally|149/235|[from] item: Sitrus Berry|[of] p1a: Sneasler
+  |-enditem|p1a: Sneasler|Sitrus Berry|[from] move: Fling
+  |move|p2a: Aerodactyl|Splash|p2a: Aerodactyl
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Ally|Splash|p1b: Ally
+  |turn|2
+
+== E3 Fling a White Herb at a foe with a lowered stat, and a Mental Herb at a Taunted foe
+  |move|p1a: Sneasler|Fling|p2a: Lowered
+  |-damage|p2a: Lowered|226/235
+  |-damage|p2a: Lowered|226/235
+  |-clearnegativeboost|p2a: Lowered|[silent]
+  |-enditem|p1a: Sneasler|White Herb|[from] move: Fling
+  |move|p1b: Weavile|Fling|p2b: Taunted
+  |-damage|p2b: Taunted|225/235
+  |-damage|p2b: Taunted|225/235
+  |-end|p2b: Taunted|move: Taunt
+  |-enditem|p1b: Weavile|Mental Herb|[from] move: Fling
+  |move|p2b: Taunted|Splash|p2b: Taunted
+  |move|p2a: Lowered|Splash|p2a: Lowered
+  |turn|2
+
+== E4 Fling Flame Orb: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-status|p2a: Target|brn
+  |-enditem|p1a: Sneasler|Flame Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+  |-damage|p2a: Target|196/235 brn|[from] brn
+  |-damage|p2a: Target|196/235 brn|[from] brn
+
+== E4 Fling Toxic Orb: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-status|p2a: Target|tox
+  |-enditem|p1a: Sneasler|Toxic Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+  |-damage|p2a: Target|196/235 tox|[from] psn
+  |-damage|p2a: Target|196/235 tox|[from] psn
+
+== E4 Fling Light Ball: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-status|p2a: Target|par
+  |-enditem|p1a: Sneasler|Light Ball|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+
+== E4 Fling Poison Barb: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|179/235
+  |-damage|p2a: Target|179/235
+  |-status|p2a: Target|psn
+  |-enditem|p1a: Sneasler|Poison Barb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Target|Splash|p2a: Target
+  |-damage|p2a: Target|150/235 psn|[from] psn
+  |-damage|p2a: Target|150/235 psn|[from] psn
+
+== E4 Fling King's Rock: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-enditem|p1a: Sneasler|King's Rock|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |cant|p2a: Target|flinch
+
+== E4 Fling Razor Fang: its fling status or volatile as a 100% secondary (the target has not moved)
+  |move|p1a: Sneasler|Fling|p2a: Target
+  |-damage|p2a: Target|210/235
+  |-damage|p2a: Target|210/235
+  |-enditem|p1a: Sneasler|Razor Fang|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |cant|p2a: Target|flinch
+
+== E4b Fling Flame Orb into Shield Dust: the secondary does not land; the Orb is still used up
+  |move|p1a: Sneasler|Fling|p2a: Dusty
+  |-damage|p2a: Dusty|135/160
+  |-damage|p2a: Dusty|135/160
+  |-enditem|p1a: Sneasler|Flame Orb|[from] move: Fling
+  |move|p2a: Dusty|Splash|p2a: Dusty
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+
+== E5 Fling fails: Klutz, Magic Room, no item
+  |move|p1b: Empty|Fling||[still]
+  |-fail|p1b: Empty
+  |move|p1a: Klutzy|Fling||[still]
+  |-fail|p1a: Klutzy
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |turn|2
+
+== E5b Fling under Magic Room fails
+  |move|p1a: Sneasler|Fling||[still]
+  |-fail|p1a: Sneasler
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== E6 Unburden after Fling, and Symbiosis passing the partner's item (AfterUseItem at the fling volatile's Update)
+  |move|p1a: Sneasler|Fling|p2a: Lax8
+  |-damage|p2a: Lax8|130/235
+  |-damage|p2a: Lax8|130/235
+  |-enditem|p1a: Sneasler|Iron Ball|[from] move: Fling
+  |-activate|p1b: Orang|ability: Symbiosis|Sitrus Berry|[of] p1a: Sneasler
+  |move|p1b: Orang|Splash|p1b: Orang
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+
+== E7 Fling Flame Orb into a Substitute: no burn, the Orb is used up
+  |move|p1a: Sneasler|Fling|p2a: Subbed
+  |-activate|p2a: Subbed|move: Substitute|[damage]
+  |-enditem|p1a: Sneasler|Flame Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Subbed|Splash|p2a: Subbed
+
+(champions: Fling standard; Sneasler standard)
+
+== E8 (champions) Fling Iron Ball and Life Orb
+  |move|p1a: Sneasler|Fling|p2a: Lax8
+  |-damage|p2a: Lax8|149/235
+  |-damage|p2a: Lax8|149/235
+  |-enditem|p1a: Sneasler|Iron Ball|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Garchomp|Fling|p2b: Lax12
+  |-damage|p2b: Lax12|208/235
+  |-damage|p2b: Lax12|208/235
+  |-enditem|p1b: Garchomp|Life Orb|[from] move: Fling
+  |move|p2a: Lax8|Splash|p2a: Lax8
+
+(swsh: Fling standard; Weavile standard)
+
+== E8 (swsh) Fling Iron Ball and Life Orb
+  |move|p1b: Garchomp|Fling|p2b: Lax12
+  |-damage|p2b: Lax12|208/235
+  |-damage|p2b: Lax12|208/235
+  |-enditem|p1b: Garchomp|Life Orb|[from] move: Fling
+  |move|p1a: Weavile|Fling|p2a: Lax8
+  |-damage|p2a: Lax8|114/235
+  |-damage|p2a: Lax8|114/235
+  |-enditem|p1a: Weavile|Iron Ball|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+
+(usum: Fling standard; Weavile standard)
+
+== E8 (usum) Fling Iron Ball and Life Orb
+  |move|p1b: Garchomp|Fling|p2b: Lax12
+  |-damage|p2b: Lax12|208/235
+  |-damage|p2b: Lax12|208/235
+  |-enditem|p1b: Garchomp|Life Orb|[from] move: Fling
+  |move|p1a: Weavile|Fling|p2a: Lax8
+  |-damage|p2a: Lax8|114/235
+  |-damage|p2a: Lax8|114/235
+  |-enditem|p1a: Weavile|Iron Ball|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+
+== F1 Sheer Cold into a non-Ice type at partial HP: damage = maxhp
+  |move|p1a: Lapras|Sheer Cold|p2a: Plain
+  |-damage|p2a: Plain|0 fnt
+  |-damage|p2a: Plain|0 fnt
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |turn|2
+
+== F2 Sheer Cold into an Ice type (generation 7+)
+  |move|p1a: Lapras|Sheer Cold|p2a: Glalie
+  |-immune|p2a: Glalie|[ohko]
+  |move|p2a: Glalie|Splash|p2a: Glalie
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F3 Fissure into Levitate
+  |move|p1a: Lapras|Fissure|p2a: Bronzong
+  |-immune|p2a: Bronzong|[from] ability: Levitate
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Bronzong|Splash|p2a: Bronzong
+  |turn|2
+
+== F4 Horn Drill into a Ghost type
+  |move|p2a: Gengar|Splash|p2a: Gengar
+  |move|p1a: Lapras|Horn Drill|p2a: Gengar
+  |-immune|p2a: Gengar
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F5 Sheer Cold into a higher-level target
+  |move|p1a: Lapras|Sheer Cold|p2a: Higher
+  |-immune|p2a: Higher|[ohko]
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Higher|Splash|p2a: Higher
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F6 Sheer Cold into Sturdy
+  |move|p1a: Lapras|Sheer Cold|p2a: Bastiodon
+  |-immune|p2a: Bastiodon|[from] ability: Sturdy
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Bastiodon|Splash|p2a: Bastiodon
+  |turn|2
+
+== F7 Sheer Cold into a full-HP Focus Sash holder
+  |move|p1a: Lapras|Sheer Cold|p2a: Sash
+  |-enditem|p2a: Sash|Focus Sash
+  |-damage|p2a: Sash|1/235
+  |-damage|p2a: Sash|1/235
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Sash|Splash|p2a: Sash
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F8 Sheer Cold into an Endure user holding a Sitrus Berry
+  |move|p2a: Endurer|Endure|p2a: Endurer
+  |-singleturn|p2a: Endurer|move: Endure
+  |move|p1a: Lapras|Sheer Cold|p2a: Endurer
+  |-activate|p2a: Endurer|move: Endure
+  |-damage|p2a: Endurer|1/235
+  |-damage|p2a: Endurer|1/235
+  |-enditem|p2a: Endurer|Sitrus Berry|[eat]
+  |-heal|p2a: Endurer|59/235|[from] item: Sitrus Berry
+  |-heal|p2a: Endurer|59/235|[from] item: Sitrus Berry
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F9 Sheer Cold into a Substitute
+  |move|p1a: Lapras|Sheer Cold|p2a: Subbed
+  |-end|p2a: Subbed|Substitute
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Subbed|Splash|p2a: Subbed
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F10 Sheer Cold into an intact Disguise
+  |move|p2a: Mimikyu|Splash|p2a: Mimikyu
+  |move|p1a: Lapras|Sheer Cold|p2a: Mimikyu
+  |-activate|p2a: Mimikyu|ability: Disguise
+  |-damage|p2a: Mimikyu|130/130
+  |-damage|p2a: Mimikyu|130/130
+  |-damage|p2a: Mimikyu|114/130|[from] pokemon: Mimikyu-Busted
+  |-damage|p2a: Mimikyu|114/130|[from] pokemon: Mimikyu-Busted
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F11 Sheer Cold into Wonder Guard (neutral: blocked)
+  |move|p1a: Lapras|Sheer Cold|p2a: Shedinja
+  |-immune|p2a: Shedinja|[from] ability: Wonder Guard
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Shedinja|Splash|p2a: Shedinja
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F12 (swsh) Sheer Cold into a Dynamaxed target
+  |-start|p2a: Dyna|Dynamax|
+  |-heal|p2a: Dyna|470/470|[silent]
+  |-heal|p2a: Dyna|470/470|[silent]
+  |move|p1a: Lapras|Sheer Cold|p2a: Dyna
+  |-immune|p2a: Dyna|[ohko]
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Dyna|Max Strike|p1b: Lax4
+  |-damage|p1b: Lax4|157/235
+  |-damage|p1b: Lax4|157/235
+  |-unboost|p1a: Lapras|spe|1
+  |-unboost|p1b: Lax4|spe|1
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== F13 (usum) Guillotine at partial HP
+  |move|p1a: Kingler|Guillotine|p2a: Plain
+  |-damage|p2a: Plain|0 fnt
+  |-damage|p2a: Plain|0 fnt
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |turn|2
+
+== F14 (swsh) Fissure into an Air Balloon holder
+  |move|p1a: Garchomp|Fissure|p2a: Balloon
+  |-immune|p2a: Balloon
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Balloon|Splash|p2a: Balloon
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+(champions: fissure standard, guillotine standard, horndrill standard, sheercold standard)
+
+== F15 (champions) Sheer Cold at partial HP
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1a: Vanilluxe|Sheer Cold|p2a: Plain
+  |-damage|p2a: Plain|0 fnt
+  |-damage|p2a: Plain|0 fnt
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |turn|2
+
+== G1 Matcha Gotcha: drain per target in hit order, one target with Liquid Ooze
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Ooze|[spread] p2a,p2b
+  |-damage|p2a: Ooze|109/155
+  |-damage|p2a: Ooze|109/155
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p2b: Plain|184/235
+  |-damage|p2b: Plain|184/235
+  |-heal|p1a: Sinistcha|83/146|[from] drain|[of] p2b: Plain
+  |-heal|p1a: Sinistcha|83/146|[from] drain|[of] p2b: Plain
+  |move|p2a: Ooze|Splash|p2a: Ooze
+  |move|p2b: Plain|Splash|p2b: Plain
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G1b the same with the Liquid Ooze target second in hit order
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Plain|[spread] p2a,p2b
+  |-damage|p2a: Plain|184/235
+  |-damage|p2a: Plain|184/235
+  |-heal|p1a: Sinistcha|106/146|[from] drain|[of] p2a: Plain
+  |-heal|p1a: Sinistcha|106/146|[from] drain|[of] p2a: Plain
+  |-damage|p2b: Ooze|109/155
+  |-damage|p2b: Ooze|109/155
+  |-damage|p1a: Sinistcha|83/146|[from] ability: Liquid Ooze|[of] p2b: Ooze
+  |-damage|p1a: Sinistcha|83/146|[from] ability: Liquid Ooze|[of] p2b: Ooze
+  |move|p2b: Ooze|Splash|p2b: Ooze
+  |move|p2a: Plain|Splash|p2a: Plain
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G2 Matcha Gotcha with Big Root (each target's heal rounded on its own)
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Lax8|[spread] p2a,p2b
+  |-damage|p2a: Lax8|184/235
+  |-damage|p2a: Lax8|184/235
+  |-heal|p1a: Sinistcha|74/146|[from] drain|[of] p2a: Lax8
+  |-heal|p1a: Sinistcha|74/146|[from] drain|[of] p2a: Lax8
+  |-damage|p2b: Lax12|184/235
+  |-damage|p2b: Lax12|184/235
+  |-heal|p1a: Sinistcha|108/146|[from] drain|[of] p2b: Lax12
+  |-heal|p1a: Sinistcha|108/146|[from] drain|[of] p2b: Lax12
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G3 Matcha Gotcha into a Rowap Berry holder: drains, then the Berry's damage, then the user's Sitrus at the Update
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Rowap|[spread] p2a,p2b
+  |-damage|p2a: Rowap|184/235
+  |-damage|p2a: Rowap|184/235
+  |-heal|p1a: Sinistcha|102/146|[from] drain|[of] p2a: Rowap
+  |-heal|p1a: Sinistcha|102/146|[from] drain|[of] p2a: Rowap
+  |-damage|p2b: Lax12|184/235
+  |-damage|p2b: Lax12|184/235
+  |-heal|p1a: Sinistcha|128/146|[from] drain|[of] p2b: Lax12
+  |-heal|p1a: Sinistcha|128/146|[from] drain|[of] p2b: Lax12
+  |-enditem|p2a: Rowap|Rowap Berry|[eat]
+  |-damage|p1a: Sinistcha|110/146|[from] item: Rowap Berry|[of] p2a: Rowap
+  |-damage|p1a: Sinistcha|110/146|[from] item: Rowap Berry|[of] p2a: Rowap
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Rowap|Splash|p2a: Rowap
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G4 Shell Bell on Rock Slide over two targets (one heal of totalDamage/8), one behind a Substitute
+  |move|p1a: Garchomp|Rock Slide|p2a: Lax8|[spread] p2a,p2b
+  |-end|p2b: Subbed|Substitute
+  |-damage|p2a: Lax8|190/235
+  |-damage|p2a: Lax8|190/235
+  |-heal|p1a: Garchomp|65/183|[from] item: Shell Bell|[of] p2b: Subbed
+  |-heal|p1a: Garchomp|65/183|[from] item: Shell Bell|[of] p2b: Subbed
+  |move|p2b: Subbed|Splash|p2b: Subbed
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G4b Shell Bell on Rock Slide over two targets, no Substitute
+  |move|p1a: Garchomp|Rock Slide|p2a: Lax8|[spread] p2a,p2b
+  |-damage|p2a: Lax8|190/235
+  |-damage|p2a: Lax8|190/235
+  |-damage|p2b: Lax12|190/235
+  |-damage|p2b: Lax12|190/235
+  |-heal|p1a: Garchomp|71/183|[from] item: Shell Bell|[of] p2b: Lax12
+  |-heal|p1a: Garchomp|71/183|[from] item: Shell Bell|[of] p2b: Lax12
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G5 a heal-blocked drainer into Liquid Ooze (Ooze holder faster): TryHeal's handler order
+  |move|p2a: Ooze|Splash|p2a: Ooze
+  |cant|p1a: Drainer|move: Heal Block|Giga Drain
+  |move|p1b: Farigiraf|Psychic Noise|p2a: Ooze
+  |-damage|p2a: Ooze|75/155
+  |-damage|p2a: Ooze|75/155
+  |-start|p2a: Ooze|move: Heal Block
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |turn|2
+
+== G5 a heal-blocked drainer into Liquid Ooze (Ooze holder slower): TryHeal's handler order
+  |cant|p1a: Drainer|move: Heal Block|Giga Drain
+  |move|p2a: Ooze|Splash|p2a: Ooze
+  |move|p1b: Farigiraf|Psychic Noise|p2a: Ooze
+  |-damage|p2a: Ooze|75/155
+  |-damage|p2a: Ooze|75/155
+  |-start|p2a: Ooze|move: Heal Block
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |turn|2
+
+== G6 Matcha Gotcha knocking a target out: the drain reads the damage dealt (its HP)
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Low|[spread] p2a,p2b
+  |-damage|p2a: Low|0 fnt
+  |-damage|p2a: Low|0 fnt
+  |-heal|p1a: Sinistcha|45/146|[from] drain|[of] p2a: Low
+  |-heal|p1a: Sinistcha|45/146|[from] drain|[of] p2a: Low
+  |-damage|p2b: Lax12|184/235
+  |-damage|p2b: Lax12|184/235
+  |-heal|p1a: Sinistcha|71/146|[from] drain|[of] p2b: Lax12
+  |-heal|p1a: Sinistcha|71/146|[from] drain|[of] p2b: Lax12
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |turn|2
+
+== G7 Parabolic Charge (allAdjacent: the ally too)
+  |move|p1a: Dedenne|Parabolic Charge|p2a: Lax8|[spread] p1b,p2a,p2b
+  |-damage|p1b: Lax4|207/235
+  |-damage|p1b: Lax4|207/235
+  |-heal|p1a: Dedenne|54/142|[from] drain|[of] p1b: Lax4
+  |-heal|p1a: Dedenne|54/142|[from] drain|[of] p1b: Lax4
+  |-damage|p2a: Lax8|207/235
+  |-damage|p2a: Lax8|207/235
+  |-heal|p1a: Dedenne|68/142|[from] drain|[of] p2a: Lax8
+  |-heal|p1a: Dedenne|68/142|[from] drain|[of] p2a: Lax8
+  |-damage|p2b: Lax12|207/235
+  |-damage|p2b: Lax12|207/235
+  |-heal|p1a: Dedenne|82/142|[from] drain|[of] p2b: Lax12
+  |-heal|p1a: Dedenne|82/142|[from] drain|[of] p2b: Lax12
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== H1 a self-hit locks the Sitrus; a later single-hit Tackle: the Berry at that action's end (AfterMoveSecondary)
+  |-activate|p1a: Drampa|confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Hitter|Tackle|p1a: Drampa
+  |-damage|p1a: Drampa|45/153
+  |-damage|p1a: Drampa|45/153
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|83/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|83/153|[from] item: Sitrus Berry
+  |turn|2
+
+== H2 the same with a multi-hit Double Hit: the Berry between the hits (onDamage multihit resets the lock)
+  |-activate|p1a: Drampa|confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Hitter|Double Hit|p1a: Drampa
+  |-damage|p1a: Drampa|48/153
+  |-damage|p1a: Drampa|48/153
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|86/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|86/153|[from] item: Sitrus Berry
+  |-damage|p1a: Drampa|61/153
+  |-damage|p1a: Drampa|61/153
+  |-ability|p1a: Drampa|Berserk|boost
+  |-boost|p1a: Drampa|spa|1
+  |turn|2
+
+== H3 the same with a status move (Growl) reaching it
+  |-activate|p1a: Drampa|confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Growler|Growl|p1a: Drampa|[spread] p1a,p1b
+  |-unboost|p1a: Drampa|atk|1
+  |-unboost|p1b: Lax4|atk|1
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|111/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|111/153|[from] item: Sitrus Berry
+  |turn|2
+
+== H4b turn 2 with the Tackle chosen as move 2 (Drampa snaps out of confusion on turn 2)
+  |-activate|p1a: Drampa|confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Hitter|Splash|p2a: Hitter
+  |turn|2
+  |-end|p1a: Drampa|confusion
+  |move|p1a: Drampa|Dragon Pulse|p2a: Hitter
+  |-damage|p2a: Hitter|177/235
+  |-damage|p2a: Hitter|177/235
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2a: Hitter|Tackle|p1a: Drampa
+  |-damage|p1a: Drampa|45/153
+  |-damage|p1a: Drampa|45/153
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|83/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|83/153|[from] item: Sitrus Berry
+  |turn|3
+
+== H5 (sv) a Sheer Force hit resets the lock at onDamage: the Berry at the hit's Update
+  |-activate|p1a: Drampa|confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |-damage|p1a: Drampa|73/153|[from] confusion
+  |move|p2a: SF|Sludge Bomb|p1a: Drampa
+  |-damage|p1a: Drampa|10/153
+  |-damage|p1a: Drampa|10/153
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|48/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|48/153|[from] item: Sitrus Berry
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== H6 (champions) a Sheer Force hit on a Berserk holder (no confusion): Champions' onDamage drops the Sheer Force clause
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: SF|Crunch|p1a: Drampa
+  |-damage|p1a: Drampa|38/153
+  |-damage|p1a: Drampa|38/153
+  |move|p1a: Drampa|Splash|p1a: Drampa
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|76/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|76/153|[from] item: Sitrus Berry
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== H6b (sv) the same Sheer Force hit (no confusion): the Berry at the hit's Update
+  |move|p2a: SF|Crunch|p1a: Drampa
+  |-damage|p1a: Drampa|38/153
+  |-damage|p1a: Drampa|38/153
+  |-enditem|p1a: Drampa|Sitrus Berry|[eat]
+  |-heal|p1a: Drampa|76/153|[from] item: Sitrus Berry
+  |-heal|p1a: Drampa|76/153|[from] item: Sitrus Berry
+  |move|p1a: Drampa|Splash|p1a: Drampa
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== I1 a paralysed Trace holder that copied Limber: cured at the turn's first Update
+  |move|p2a: Persian|Splash|p2a: Persian
+  |move|p2b: Persian2|Splash|p2b: Persian2
+  |move|p1a: Gardevoir|Psychic|p2a: Persian
+  |move|p1b: Lax4|Splash|p1b: Lax4
+
+== J1 Ghost Curse at under half HP: the user faints
+  |move|p1a: Gengar|Curse|p2a: Lax8
+  |-start|p2a: Lax8|Curse|[of] p1a: Gengar
+  |-damage|p1a: Gengar|0 fnt
+  |-damage|p1a: Gengar|0 fnt
+  |faint|p1a: Gengar
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |-damage|p2a: Lax8|177/235|[from] Curse
+  |-damage|p2a: Lax8|177/235|[from] Curse
+
+== K1 Heal Block, then the target's own Giga Drain: no drain heal
+  |move|p1a: Noise|Psychic Noise|p2a: Drainer
+  |-damage|p2a: Drainer|0 fnt
+  |-damage|p2a: Drainer|0 fnt
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |switch|p2a: Bench|Snorlax, L50, F|235/235
+  |turn|2
+
+== K2 Heal Block, then a later hit takes the Sitrus holder under half: the Berry stays
+  |move|p1b: Chomp|Dragon Claw|p2a: Holder
+  |-damage|p2a: Holder|49/235
+  |-damage|p2a: Holder|49/235
+  |move|p1a: Noise|Psychic Noise|p2a: Holder
+  |-damage|p2a: Holder|6/235
+  |-damage|p2a: Holder|6/235
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Holder|Splash|p2a: Holder
+  |turn|2
+
+== K3 Heal Block, then an Electric move into its Volt Absorb: immune, no heal
+  |move|p1b: Bolt|Thunderbolt|p2a: Absorber
+  |-immune|p2a: Absorber|[from] ability: Volt Absorb
+  |move|p1a: Noise|Psychic Noise|p2a: Absorber
+  |-damage|p2a: Absorber|22/200
+  |-damage|p2a: Absorber|22/200
+  |move|p2a: Absorber|Splash|p2a: Absorber
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |turn|2
+
+== K4 Heal Block, then the target's own Shell Bell hit: no Shell Bell heal
+  |move|p2a: Bell|Dragon Claw|p1b: Lax4
+  |-damage|p1b: Lax4|154/235
+  |-damage|p1b: Lax4|154/235
+  |move|p1a: Noise|Psychic Noise|p2a: Bell
+  |-damage|p2a: Bell|28/183
+  |-damage|p2a: Bell|28/183
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== K5 Heal Block, then its ally's Pollen Puff onto it
+  |move|p2b: Puffer|Pollen Puff||[still]
+  |cant|p2b: Puffer|move: Heal Block|Pollen Puff
+  |move|p1a: Noise|Psychic Noise|p2a: Blocked
+  |-damage|p2a: Blocked|37/235
+  |-damage|p2a: Blocked|37/235
+  |move|p2a: Blocked|Splash|p2a: Blocked
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+### L1 Double-Edge recoil takes the attacker to its Starf Berry's line: one world per stat  (5 runs)
+   [0.2] T1 end: Taur {"atk":0,"def":0,"spa":0,"spd":0,"spe":2,"accuracy":0,"evasion":0} item -
+   [0.2] T1 end: Taur {"atk":0,"def":0,"spa":0,"spd":2,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 end: Taur {"atk":0,"def":0,"spa":2,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 end: Taur {"atk":0,"def":2,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 end: Taur {"atk":2,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 moves: Taur {"atk":0,"def":0,"spa":0,"spd":0,"spe":2,"accuracy":0,"evasion":0} item -
+   [0.2] T1 moves: Taur {"atk":0,"def":0,"spa":0,"spd":2,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 moves: Taur {"atk":0,"def":0,"spa":2,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 moves: Taur {"atk":0,"def":2,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+   [0.2] T1 moves: Taur {"atk":2,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":0} item -
+
+### M1 White Herb at order 29 restores a lowered accuracy stage made under Magic Room  (1 runs)
+   [1] T1 end: {"atk":0,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":0,"evasion":0} item - room false
+   [1] T1 moves: {"atk":0,"def":0,"spa":0,"spd":0,"spe":0,"accuracy":-1,"evasion":0} item whiteherb room true
+   1  |move|p2b: Lax12|Splash|p2b: Lax12
+   1  |move|p2a: Lax8|Splash|p2a: Lax8
+   1  |move|p1b: Lax6|Splash|p1b: Lax6
+   1  |move|p1a: Herb|Splash|p1a: Herb
+   1  |-enditem|p1a: Herb|White Herb
+   1  |-clearnegativeboost|p1a: Herb|[silent]
+   1  |turn|2

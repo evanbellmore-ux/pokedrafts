@@ -1,0 +1,108 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Status Z-Moves are not calculated.",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 97,
+     "max": 115,
+     "minPercent": 41.27659574468085,
+     "maxPercent": 48.93617021276596,
+     "rolls": [
+      97,
+      99,
+      99,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 138,
+      "high": 120,
+      "average": 129.125,
+      "min": 120,
+      "max": 138,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 97,
+        "heals": []
+       },
+       "high": {
+        "dealt": 115,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes no protecting move was used last turn."
+  ]
+ },
+ "ms": 1.2145000000000437,
+ "preflight": []
+}

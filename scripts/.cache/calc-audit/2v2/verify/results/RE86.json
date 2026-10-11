@@ -1,0 +1,1837 @@
+{
+ "id": "RE86",
+ "title": "An Unburden Air Balloon holder behind a Substitute is hit, then moves",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The Air Balloon pops on the hit into the Substitute (AfterUseItem: Unburden): Drifblim 200 moves before Garchomp 122.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 216,
+   "classes": 109,
+   "ms": 352,
+   "decisions": {
+    "fail:substitute": 11,
+    "roll": 116,
+    "secondary": 18,
+    "fail:": 105
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       126,
+       0.0625
+      ],
+      [
+       128,
+       0.125
+      ],
+      [
+       129,
+       0.1875
+      ],
+      [
+       131,
+       0.125
+      ],
+      [
+       132,
+       0.1875
+      ],
+      [
+       134,
+       0.1875
+      ],
+      [
+       135,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 131.1875,
+     "min": 126,
+     "max": 135,
+     "modeTieUp": 134,
+     "modeTieDown": 129,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       99,
+       0.0625
+      ],
+      [
+       101,
+       0.0625
+      ],
+      [
+       102,
+       0.0625
+      ],
+      [
+       104,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ],
+      [
+       107,
+       0.0625
+      ],
+      [
+       108,
+       0.125
+      ],
+      [
+       110,
+       0.0625
+      ],
+      [
+       111,
+       0.0625
+      ],
+      [
+       113,
+       0.0625
+      ],
+      [
+       114,
+       0.0625
+      ],
+      [
+       116,
+       0.125
+      ],
+      [
+       117,
+       0.0625
+      ],
+      [
+       119,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 109.375,
+     "min": 99,
+     "max": 119,
+     "modeTieUp": 116,
+     "modeTieDown": 108,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 106,
+       "dmgMax": 126,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 40,
+        "takenMax": 40,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Drifblim|Air Balloon": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1,
+       "enditem:airballoon": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 106,
+       "dmgMax": 126,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-106": 0.0625,
+       "damage:-108": 0.0625,
+       "damage:-109": 0.125,
+       "damage:-111": 0.0625,
+       "damage:-112": 0.0625,
+       "damage:-114": 0.0625,
+       "damage:-115": 0.0625,
+       "damage:-117": 0.125,
+       "damage:-118": 0.0625,
+       "damage:-120": 0.0625,
+       "damage:-121": 0.0625,
+       "damage:-123": 0.0625,
+       "damage:-124": 0.0625,
+       "damage:-126": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -126,
+       "max": -106
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -126,
+       "max": -106,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-48": 0.125,
+       "damage:-49": 0.1875,
+       "damage:-51": 0.1875,
+       "damage:-52": 0.125,
+       "damage:-54": 0.1875,
+       "damage:-55": 0.125,
+       "damage:-57": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -57,
+       "max": -48
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -57,
+       "max": -48,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 98,
+    "classes": 98,
+    "ms": 352,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        126,
+        0.0625
+       ],
+       [
+        128,
+        0.125
+       ],
+       [
+        129,
+        0.1875
+       ],
+       [
+        131,
+        0.125
+       ],
+       [
+        132,
+        0.1875
+       ],
+       [
+        134,
+        0.1875
+       ],
+       [
+        135,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 131.1875,
+      "min": 126,
+      "max": 135,
+      "modeTieUp": 134,
+      "modeTieDown": 129,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        99,
+        0.0625
+       ],
+       [
+        101,
+        0.0625
+       ],
+       [
+        102,
+        0.0625
+       ],
+       [
+        104,
+        0.0625
+       ],
+       [
+        105,
+        0.0625
+       ],
+       [
+        107,
+        0.0625
+       ],
+       [
+        108,
+        0.125
+       ],
+       [
+        110,
+        0.0625
+       ],
+       [
+        111,
+        0.0625
+       ],
+       [
+        113,
+        0.0625
+       ],
+       [
+        114,
+        0.0625
+       ],
+       [
+        116,
+        0.125
+       ],
+       [
+        117,
+        0.0625
+       ],
+       [
+        119,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 109.375,
+      "min": 99,
+      "max": 119,
+      "modeTieUp": 116,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 3,
+    "secondary": 2,
+    "fail:": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       119,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 119,
+     "min": 119,
+     "max": 119,
+     "modeTieUp": 119,
+     "modeTieDown": 119,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 106,
+       "dmgMax": 106,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 40,
+        "takenMax": 40,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Drifblim|Air Balloon": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1,
+       "enditem:airballoon": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 106,
+       "dmgMax": 106,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-106": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -106,
+       "max": -106
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -106,
+       "max": -106,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-48": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -48,
+       "max": -48
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -48,
+       "max": -48,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        135,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 135,
+      "min": 135,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        119,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 119,
+      "min": 119,
+      "max": 119,
+      "modeTieUp": 119,
+      "modeTieDown": 119,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 17,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 3,
+    "secondary": 2,
+    "fail:": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Drifblim",
+     "start": 225,
+     "maximum": 225,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "unburden": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 126,
+       "dmgMax": 126,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 40,
+        "takenMax": 40,
+        "breaks": 1
+       }
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Drifblim|Air Balloon": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "end:substitute": 1,
+       "enditem:airballoon": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 126,
+       "dmgMax": 126,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-left": {
+       "damage:-126": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -126,
+       "max": -126
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -126,
+       "max": -126,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "own-right": {
+       "damage:-57": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -57,
+       "max": -57
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -57,
+       "max": -57,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 17,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        126,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 126,
+      "min": 126,
+      "max": 126,
+      "modeTieUp": 126,
+      "modeTieDown": 126,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Drifblim",
+      "start": null,
+      "maximum": 225,
+      "dist": [
+       [
+        99,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 99,
+      "min": 99,
+      "max": 99,
+      "modeTieUp": 99,
+      "modeTieDown": 99,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "unburden": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 135,
+   "high": 126,
+   "average": 131.1875,
+   "min": 126,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     126,
+     0.0625
+    ],
+    [
+     128,
+     0.125
+    ],
+    [
+     129,
+     0.1875
+    ],
+    [
+     131,
+     0.125
+    ],
+    [
+     132,
+     0.1875
+    ],
+    [
+     134,
+     0.1875
+    ],
+    [
+     135,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 225,
+   "maximum": 225,
+   "low": 119,
+   "high": 99,
+   "average": 109.375,
+   "min": 99,
+   "max": 119,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     101,
+     0.0625
+    ],
+    [
+     102,
+     0.0625
+    ],
+    [
+     104,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     107,
+     0.0625
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     110,
+     0.0625
+    ],
+    [
+     111,
+     0.0625
+    ],
+    [
+     113,
+     0.0625
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     117,
+     0.0625
+    ],
+    [
+     119,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 135,
+   "high": 126,
+   "average": 131.1875,
+   "min": 126,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     126,
+     0.0625
+    ],
+    [
+     128,
+     0.125
+    ],
+    [
+     129,
+     0.1875
+    ],
+    [
+     131,
+     0.125
+    ],
+    [
+     132,
+     0.1875
+    ],
+    [
+     134,
+     0.1875
+    ],
+    [
+     135,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 225,
+   "maximum": 225,
+   "low": 119,
+   "high": 99,
+   "average": 109.375,
+   "min": 99,
+   "max": 119,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     101,
+     0.0625
+    ],
+    [
+     102,
+     0.0625
+    ],
+    [
+     104,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     107,
+     0.0625
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     110,
+     0.0625
+    ],
+    [
+     111,
+     0.0625
+    ],
+    [
+     113,
+     0.0625
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     117,
+     0.0625
+    ],
+    [
+     119,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

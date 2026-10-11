@@ -1,0 +1,753 @@
+{
+ "id": "X09",
+ "title": "Sucker Punch first, Sitrus Berry, then a second attack (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Sucker Punch (+1) into the attacking Garchomp, its Sitrus Berry at the Update, then Dragon Claw and Flamethrower.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1370,
+   "classes": 651,
+   "ms": 728,
+   "decisions": {
+    "fail:": 808,
+    "roll": 808,
+    "secondary": 720
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 77.6875,
+     "min": 71,
+     "max": 84,
+     "modeTieUp": 83,
+     "modeTieDown": 74
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 120,
+     "maximum": 183,
+     "dist": [
+      [
+       64,
+       0.00390625
+      ],
+      [
+       65,
+       0.0234375
+      ],
+      [
+       66,
+       0.0390625
+      ],
+      [
+       67,
+       0.03125
+      ],
+      [
+       68,
+       0.0703125
+      ],
+      [
+       69,
+       0.0859375
+      ],
+      [
+       70,
+       0.0625
+      ],
+      [
+       71,
+       0.109375
+      ],
+      [
+       72,
+       0.1015625
+      ],
+      [
+       73,
+       0.0703125
+      ],
+      [
+       74,
+       0.109375
+      ],
+      [
+       75,
+       0.1015625
+      ],
+      [
+       76,
+       0.05859375
+      ],
+      [
+       77,
+       0.0546875
+      ],
+      [
+       78,
+       0.046875
+      ],
+      [
+       79,
+       0.0234375
+      ],
+      [
+       80,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 72.25,
+     "min": 64,
+     "max": 80,
+     "modeTieUp": 74,
+     "modeTieDown": 71
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 37,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 120,
+     "maximum": 183,
+     "dist": [
+      [
+       80,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 80,
+     "min": 80,
+     "max": 80,
+     "modeTieUp": 80,
+     "modeTieDown": 80
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 31,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 71,
+     "min": 71,
+     "max": 71,
+     "modeTieUp": 71,
+     "modeTieDown": 71
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 120,
+     "maximum": 183,
+     "dist": [
+      [
+       64,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 64,
+     "min": 64,
+     "max": 64,
+     "modeTieUp": 64,
+     "modeTieDown": 64
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "suckerpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Garchomp|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 37,
+       "dmgMax": 37,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 84,
+   "high": 71,
+   "average": 77.6875,
+   "min": 71,
+   "max": 84,
+   "koChance": 0,
+   "dist": [
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 120,
+   "maximum": 183,
+   "low": 80,
+   "high": 64,
+   "average": 72.25,
+   "min": 64,
+   "max": 80,
+   "koChance": 0,
+   "dist": [
+    [
+     64,
+     0.00390625
+    ],
+    [
+     65,
+     0.0234375
+    ],
+    [
+     66,
+     0.0390625
+    ],
+    [
+     67,
+     0.03125
+    ],
+    [
+     68,
+     0.0703125
+    ],
+    [
+     69,
+     0.0859375
+    ],
+    [
+     70,
+     0.0625
+    ],
+    [
+     71,
+     0.109375
+    ],
+    [
+     72,
+     0.1015625
+    ],
+    [
+     73,
+     0.0703125
+    ],
+    [
+     74,
+     0.109375
+    ],
+    [
+     75,
+     0.1015625
+    ],
+    [
+     76,
+     0.05859375
+    ],
+    [
+     77,
+     0.0546875
+    ],
+    [
+     78,
+     0.046875
+    ],
+    [
+     79,
+     0.0234375
+    ],
+    [
+     80,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

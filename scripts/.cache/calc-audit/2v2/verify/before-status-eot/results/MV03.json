@@ -1,0 +1,836 @@
+{
+ "id": "MV03",
+ "title": "Max Lightning from Nuzzle: no paralysis, Electric Terrain for the partner's Thunderbolt",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Terrain boost; Snorlax moves.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1130,
+   "classes": 151,
+   "ms": 960,
+   "decisions": {
+    "fail:": 1057,
+    "roll": 1057,
+    "secondary": 1050,
+    "fail:static": 980
+   },
+   "slots": {
+    "own-left": {
+     "species": "Pikachu",
+     "start": 220,
+     "maximum": 220,
+     "dist": [
+      [
+       96,
+       0.0625
+      ],
+      [
+       97,
+       0.0625
+      ],
+      [
+       99,
+       0.0625
+      ],
+      [
+       100,
+       0.0625
+      ],
+      [
+       102,
+       0.0625
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       105,
+       0.0625
+      ],
+      [
+       106,
+       0.0625
+      ],
+      [
+       108,
+       0.0625
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       111,
+       0.125
+      ],
+      [
+       112,
+       0.0625
+      ],
+      [
+       114,
+       0.0625
+      ],
+      [
+       115,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 105.6875,
+     "min": 96,
+     "max": 115,
+     "modeTieUp": 111,
+     "modeTieDown": 103
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       99,
+       0.00390625
+      ],
+      [
+       100,
+       0.00390625
+      ],
+      [
+       101,
+       0.0078125
+      ],
+      [
+       102,
+       0.02734375
+      ],
+      [
+       103,
+       0.01953125
+      ],
+      [
+       104,
+       0.02734375
+      ],
+      [
+       105,
+       0.0703125
+      ],
+      [
+       106,
+       0.04296875
+      ],
+      [
+       107,
+       0.046875
+      ],
+      [
+       108,
+       0.10546875
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       110,
+       0.046875
+      ],
+      [
+       111,
+       0.11328125
+      ],
+      [
+       112,
+       0.06640625
+      ],
+      [
+       113,
+       0.04296875
+      ],
+      [
+       114,
+       0.09765625
+      ],
+      [
+       115,
+       0.05078125
+      ],
+      [
+       116,
+       0.03125
+      ],
+      [
+       117,
+       0.05859375
+      ],
+      [
+       118,
+       0.02734375
+      ],
+      [
+       119,
+       0.015625
+      ],
+      [
+       120,
+       0.0234375
+      ],
+      [
+       121,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 110.6875,
+     "min": 99,
+     "max": 121,
+     "modeTieUp": 111,
+     "modeTieDown": 111
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nuzzle",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2,
+    "fail:static": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Pikachu",
+     "start": 220,
+     "maximum": 220,
+     "dist": [
+      [
+       115,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 115,
+     "min": 115,
+     "max": 115,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       121,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 121,
+     "min": 121,
+     "max": 121,
+     "modeTieUp": 121,
+     "modeTieDown": 121
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nuzzle",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 105,
+       "dmgMax": 105,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2,
+    "fail:static": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Pikachu",
+     "start": 220,
+     "maximum": 220,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96
+    },
+    "own-right": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "nuzzle",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Lightning": 1,
+      "|-fieldstart|move: Electric Terrain": 1
+     }
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 124,
+       "dmgMax": 124,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 220,
+   "maximum": 220,
+   "low": 115,
+   "high": 96,
+   "average": 105.6875,
+   "min": 96,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.0625
+    ],
+    [
+     97,
+     0.0625
+    ],
+    [
+     99,
+     0.0625
+    ],
+    [
+     100,
+     0.0625
+    ],
+    [
+     102,
+     0.0625
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     106,
+     0.0625
+    ],
+    [
+     108,
+     0.0625
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     111,
+     0.125
+    ],
+    [
+     112,
+     0.0625
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 121,
+   "high": 99,
+   "average": 110.6875,
+   "min": 99,
+   "max": 121,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.00390625
+    ],
+    [
+     100,
+     0.00390625
+    ],
+    [
+     101,
+     0.0078125
+    ],
+    [
+     102,
+     0.02734375
+    ],
+    [
+     103,
+     0.01953125
+    ],
+    [
+     104,
+     0.02734375
+    ],
+    [
+     105,
+     0.0703125
+    ],
+    [
+     106,
+     0.04296875
+    ],
+    [
+     107,
+     0.046875
+    ],
+    [
+     108,
+     0.10546875
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     110,
+     0.046875
+    ],
+    [
+     111,
+     0.11328125
+    ],
+    [
+     112,
+     0.06640625
+    ],
+    [
+     113,
+     0.04296875
+    ],
+    [
+     114,
+     0.09765625
+    ],
+    [
+     115,
+     0.05078125
+    ],
+    [
+     116,
+     0.03125
+    ],
+    [
+     117,
+     0.05859375
+    ],
+    [
+     118,
+     0.02734375
+    ],
+    [
+     119,
+     0.015625
+    ],
+    [
+     120,
+     0.0234375
+    ],
+    [
+     121,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

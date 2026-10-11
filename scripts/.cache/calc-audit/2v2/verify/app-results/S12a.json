@@ -1,0 +1,298 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "confuseray",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "confuseray",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "swordsdance",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 322–379 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 0.67,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Attack cannot go higher.",
+        "chance": 0.67
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "defensecurl",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 0.6700000000000002,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 240–283 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.6700000000000002,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+1 Defense.",
+        "chance": 0.6700000000000002
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 163,
+    "maximum": 163,
+    "low": 163,
+    "average": 163,
+    "high": 163,
+    "min": 163,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 110.88,
+    "high": 165,
+    "min": 1,
+    "max": 165,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 122.94,
+    "high": 183,
+    "min": 1,
+    "max": 183,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 0.33
+     }
+    ]
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 163,
+     "maximum": 163,
+     "low": 163,
+     "average": 163,
+     "high": 163,
+     "min": 163,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 110.88,
+     "high": 165,
+     "min": 1,
+     "max": 165,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 122.94,
+     "high": 183,
+     "min": 1,
+     "max": 183,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 0.33
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.5488000000000284,
+ "preflight": []
+}

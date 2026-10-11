@@ -1,0 +1,668 @@
+{
+ "id": "V10a",
+ "title": "A Protecting foe still counts for the spread modifier",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Blastoise protects; Snorlax 75 and Venusaur 61 at 0.75 (probe 1b).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 732,
+   "classes": 367,
+   "ms": 528,
+   "decisions": {
+    "sample": 376,
+    "fail:": 720,
+    "roll": 720
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       159,
+       0.125
+      ],
+      [
+       160,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 154.0625,
+     "min": 147,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 87.75,
+     "min": 82,
+     "max": 94,
+     "modeTieUp": 92,
+     "modeTieDown": 83
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Blastoise|move: Protect": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Blastoise|Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 20,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       94,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 94,
+     "min": 94,
+     "max": 94,
+     "modeTieUp": 94,
+     "modeTieDown": 94
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Blastoise|move: Protect": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Blastoise|Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 13,
+   "decisions": {
+    "sample": 20,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 82,
+     "min": 82,
+     "max": 82,
+     "modeTieUp": 82,
+     "modeTieDown": 82
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 73,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Blastoise|move: Protect": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Blastoise|Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 147,
+   "average": 154.0625,
+   "min": 147,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     159,
+     0.125
+    ],
+    [
+     160,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 94,
+   "high": 82,
+   "average": 87.75,
+   "min": 82,
+   "max": 94,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,730 @@
+{
+ "id": "X10",
+ "title": "A Z-Move and a single move into one slot (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Devastating Drake, then Blastoise's Sitrus Berry, then Flamethrower.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 295,
+   "classes": 183,
+   "ms": 140,
+   "decisions": {
+    "fail:": 125,
+    "roll": 125,
+    "secondary": 109
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       0.3203125
+      ],
+      [
+       1,
+       0.0078125
+      ],
+      [
+       2,
+       0.015625
+      ],
+      [
+       3,
+       0.03125
+      ],
+      [
+       4,
+       0.0234375
+      ],
+      [
+       5,
+       0.0390625
+      ],
+      [
+       6,
+       0.046875
+      ],
+      [
+       7,
+       0.03125
+      ],
+      [
+       8,
+       0.046875
+      ],
+      [
+       9,
+       0.046875
+      ],
+      [
+       10,
+       0.03125
+      ],
+      [
+       11,
+       0.046875
+      ],
+      [
+       12,
+       0.0390625
+      ],
+      [
+       13,
+       0.0234375
+      ],
+      [
+       14,
+       0.0390625
+      ],
+      [
+       15,
+       0.03125
+      ],
+      [
+       16,
+       0.0234375
+      ],
+      [
+       17,
+       0.0390625
+      ],
+      [
+       18,
+       0.03125
+      ],
+      [
+       19,
+       0.0234375
+      ],
+      [
+       20,
+       0.03125
+      ],
+      [
+       21,
+       0.015625
+      ],
+      [
+       22,
+       0.0078125
+      ],
+      [
+       23,
+       0.0078125
+      ]
+     ],
+     "koChance": 0.3203125,
+     "average": 7.6875,
+     "min": 0,
+     "max": 23,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       0.1171875
+      ],
+      [
+       3,
+       0.0390625
+      ],
+      [
+       5,
+       0.0390625
+      ],
+      [
+       9,
+       0.01953125
+      ],
+      [
+       11,
+       0.0390625
+      ],
+      [
+       15,
+       0.0390625
+      ],
+      [
+       17,
+       0.01953125
+      ],
+      [
+       155,
+       0.6875
+      ]
+     ],
+     "koChance": 0.1171875,
+     "average": 108.3984375,
+     "min": 0,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.3125,
+       "dmgMin": 136,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Devastating Drake": 1,
+      "|-enditem|p2b: Blastoise|Sitrus Berry|[eat]": 0.6875,
+      "|-heal|p2b: Blastoise|hp|[from] item: Sitrus Berry": 0.6875
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 0.6875,
+       "landed": 0.6875,
+       "ko": 0.0078125,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.3125,
+       "landed": 0.3125,
+       "ko": 0.1171875,
+       "dmgMin": 138,
+       "dmgMax": 164,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       23,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 23,
+     "min": 23,
+     "max": 23,
+     "modeTieUp": 23,
+     "modeTieDown": 23
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 136,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Devastating Drake": 1,
+      "|-enditem|p2b: Blastoise|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Blastoise|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 162,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Devastating Drake": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 164,
+       "dmgMax": 164,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 23,
+   "high": 0,
+   "average": 7.6875,
+   "min": 0,
+   "max": 23,
+   "koChance": 0.3203125,
+   "dist": [
+    [
+     0,
+     0.3203125
+    ],
+    [
+     1,
+     0.0078125
+    ],
+    [
+     2,
+     0.015625
+    ],
+    [
+     3,
+     0.03125
+    ],
+    [
+     4,
+     0.0234375
+    ],
+    [
+     5,
+     0.0390625
+    ],
+    [
+     6,
+     0.046875
+    ],
+    [
+     7,
+     0.03125
+    ],
+    [
+     8,
+     0.046875
+    ],
+    [
+     9,
+     0.046875
+    ],
+    [
+     10,
+     0.03125
+    ],
+    [
+     11,
+     0.046875
+    ],
+    [
+     12,
+     0.0390625
+    ],
+    [
+     13,
+     0.0234375
+    ],
+    [
+     14,
+     0.0390625
+    ],
+    [
+     15,
+     0.03125
+    ],
+    [
+     16,
+     0.0234375
+    ],
+    [
+     17,
+     0.0390625
+    ],
+    [
+     18,
+     0.03125
+    ],
+    [
+     19,
+     0.0234375
+    ],
+    [
+     20,
+     0.03125
+    ],
+    [
+     21,
+     0.015625
+    ],
+    [
+     22,
+     0.0078125
+    ],
+    [
+     23,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 0,
+   "average": 108.3984375,
+   "min": 0,
+   "max": 155,
+   "koChance": 0.1171875,
+   "dist": [
+    [
+     0,
+     0.1171875
+    ],
+    [
+     3,
+     0.0390625
+    ],
+    [
+     5,
+     0.0390625
+    ],
+    [
+     9,
+     0.01953125
+    ],
+    [
+     11,
+     0.0390625
+    ],
+    [
+     15,
+     0.0390625
+    ],
+    [
+     17,
+     0.01953125
+    ],
+    [
+     155,
+     0.6875
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,733 @@
+{
+ "id": "MV10",
+ "title": "Max Airstream from Brave Bird: no recoil, the ally's Speed rise reorders the turn",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Snorlax at 75 before Conkeldurr.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1354,
+   "classes": 571,
+   "ms": 1444,
+   "decisions": {
+    "fail:": 847,
+    "roll": 847,
+    "secondary": 840,
+    "accuracy": 784
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       0.375
+      ],
+      [
+       1,
+       0.125
+      ],
+      [
+       5,
+       0.0625
+      ],
+      [
+       7,
+       0.0625
+      ],
+      [
+       11,
+       0.0625
+      ],
+      [
+       13,
+       0.0625
+      ],
+      [
+       17,
+       0.125
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       23,
+       0.0625
+      ]
+     ],
+     "koChance": 0.375,
+     "average": 7.125,
+     "min": 0,
+     "max": 23,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       65,
+       0.0625
+      ],
+      [
+       67,
+       0.125
+      ],
+      [
+       68,
+       0.1875
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.1875
+      ],
+      [
+       73,
+       0.125
+      ],
+      [
+       74,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 70.25,
+     "min": 65,
+     "max": 74,
+     "modeTieUp": 74,
+     "modeTieDown": 68
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       114,
+       0.0625
+      ],
+      [
+       116,
+       0.125
+      ],
+      [
+       117,
+       0.125
+      ],
+      [
+       119,
+       0.125
+      ],
+      [
+       120,
+       0.1875
+      ],
+      [
+       122,
+       0.125
+      ],
+      [
+       123,
+       0.125
+      ],
+      [
+       125,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 119.875,
+     "min": 114,
+     "max": 125,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Corviknight|spe|1": 1,
+      "|-boost|p1b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.375,
+       "dmgMin": 212,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 8,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       23,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 23,
+     "min": 23,
+     "max": 23,
+     "modeTieUp": 23,
+     "modeTieDown": 23
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       74,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 74,
+     "min": 74,
+     "max": 74,
+     "modeTieUp": 74,
+     "modeTieDown": 74
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Corviknight|spe|1": 1,
+      "|-boost|p1b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 212,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 9,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2,
+    "accuracy": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Corviknight",
+     "start": 120,
+     "maximum": 346,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 125,
+     "maximum": 125,
+     "dist": [
+      [
+       65,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 65,
+     "min": 65,
+     "max": 65,
+     "modeTieUp": 65,
+     "modeTieDown": 65
+    },
+    "opponent-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       114,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 114,
+     "min": 114,
+     "max": 114,
+     "modeTieUp": 114,
+     "modeTieDown": 114
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Airstream": 1,
+      "|-boost|p1a: Corviknight|spe|1": 1,
+      "|-boost|p1b: Snorlax|spe|1": 1
+     }
+    },
+    "own-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "hammerarm",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 252,
+       "dmgMax": 252,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p2a: Conkeldurr|spe|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 120,
+   "maximum": 346,
+   "low": 120,
+   "high": 120,
+   "average": 120,
+   "min": 120,
+   "max": 120,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 23,
+   "high": 0,
+   "average": 7.125,
+   "min": 0,
+   "max": 23,
+   "koChance": 0.375,
+   "dist": [
+    [
+     0,
+     0.375
+    ],
+    [
+     1,
+     0.125
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     7,
+     0.0625
+    ],
+    [
+     11,
+     0.0625
+    ],
+    [
+     13,
+     0.0625
+    ],
+    [
+     17,
+     0.125
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     23,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 125,
+   "maximum": 125,
+   "low": 74,
+   "high": 65,
+   "average": 70.25,
+   "min": 65,
+   "max": 74,
+   "koChance": 0,
+   "dist": [
+    [
+     65,
+     0.0625
+    ],
+    [
+     67,
+     0.125
+    ],
+    [
+     68,
+     0.1875
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.1875
+    ],
+    [
+     73,
+     0.125
+    ],
+    [
+     74,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 125,
+   "high": 114,
+   "average": 119.875,
+   "min": 114,
+   "max": 125,
+   "koChance": 0,
+   "dist": [
+    [
+     114,
+     0.0625
+    ],
+    [
+     116,
+     0.125
+    ],
+    [
+     117,
+     0.125
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     120,
+     0.1875
+    ],
+    [
+     122,
+     0.125
+    ],
+    [
+     123,
+     0.125
+    ],
+    [
+     125,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

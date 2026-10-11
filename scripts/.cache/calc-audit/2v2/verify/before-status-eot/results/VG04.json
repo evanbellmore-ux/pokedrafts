@@ -1,0 +1,582 @@
+{
+ "id": "VG04",
+ "title": "Shielded Mold Breaker Excadrill's Earthquake: shielded Levitate Hydreigon stays immune; the gas holder ally is hit",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Levitate kept against Mold Breaker by the Shield",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 628,
+   "classes": 315,
+   "ms": 402,
+   "decisions": {
+    "sample": 324,
+    "fail:": 616,
+    "roll": 616
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       30,
+       0.0625
+      ],
+      [
+       32,
+       0.125
+      ],
+      [
+       36,
+       0.1875
+      ],
+      [
+       38,
+       0.1875
+      ],
+      [
+       42,
+       0.125
+      ],
+      [
+       44,
+       0.1875
+      ],
+      [
+       48,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 39.25,
+     "min": 30,
+     "max": 48,
+     "modeTieUp": 44,
+     "modeTieDown": 36
+    },
+    "opponent-left": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.0625
+      ],
+      [
+       147,
+       0.125
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       159,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 151.375,
+     "min": 144,
+     "max": 159,
+     "modeTieUp": 156,
+     "modeTieDown": 147
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 110,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 91,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2b: Hydreigon|[from] ability: Levitate": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 17,
+   "decisions": {
+    "sample": 20,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       48,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 48,
+     "min": 48,
+     "max": 48,
+     "modeTieUp": 48,
+     "modeTieDown": 48
+    },
+    "opponent-left": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       159,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 159,
+     "min": 159,
+     "max": 159,
+     "modeTieUp": 159,
+     "modeTieDown": 159
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 92,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 76,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2b: Hydreigon|[from] ability: Levitate": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 20,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Excadrill",
+     "start": 185,
+     "maximum": 185,
+     "dist": [
+      [
+       185,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 185,
+     "min": 185,
+     "max": 185,
+     "modeTieUp": 185,
+     "modeTieDown": 185
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       30,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 30,
+     "min": 30,
+     "max": 30,
+     "modeTieUp": 30,
+     "modeTieDown": 30
+    },
+    "opponent-left": {
+     "species": "Hydreigon",
+     "start": 167,
+     "maximum": 167,
+     "dist": [
+      [
+       167,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 167,
+     "min": 167,
+     "max": 167,
+     "modeTieUp": 167,
+     "modeTieDown": 167
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 110,
+       "dmgMax": 110,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p2b: Hydreigon|[from] ability: Levitate": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 185,
+   "maximum": 185,
+   "low": 185,
+   "high": 185,
+   "average": 185,
+   "min": 185,
+   "max": 185,
+   "koChance": 0,
+   "dist": [
+    [
+     185,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 48,
+   "high": 30,
+   "average": 39.25,
+   "min": 30,
+   "max": 48,
+   "koChance": 0,
+   "dist": [
+    [
+     30,
+     0.0625
+    ],
+    [
+     32,
+     0.125
+    ],
+    [
+     36,
+     0.1875
+    ],
+    [
+     38,
+     0.1875
+    ],
+    [
+     42,
+     0.125
+    ],
+    [
+     44,
+     0.1875
+    ],
+    [
+     48,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 167,
+   "maximum": 167,
+   "low": 167,
+   "high": 167,
+   "average": 167,
+   "min": 167,
+   "max": 167,
+   "koChance": 0,
+   "dist": [
+    [
+     167,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 159,
+   "high": 144,
+   "average": 151.375,
+   "min": 144,
+   "max": 159,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.0625
+    ],
+    [
+     147,
+     0.125
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     159,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

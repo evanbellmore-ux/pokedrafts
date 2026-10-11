@@ -1,0 +1,184 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Confusion is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dynamicpunch",
+     "effectiveName": "Dynamic Punch",
+     "effectiveType": "Fighting",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 72,
+     "max": 85,
+     "minPercent": 46.75324675324675,
+     "maxPercent": 55.1948051948052,
+     "rolls": [
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      82,
+      84,
+      85
+     ],
+     "ohkoChance": 0,
+     "description": "Dynamic Punch: 72–85 HP (46.8–55.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.70703125,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 82,
+      "high": 69,
+      "average": 75.8125,
+      "min": 69,
+      "max": 82,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 72,
+        "heals": []
+       },
+       "high": {
+        "dealt": 85,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 15,
+     "max": 18,
+     "minPercent": 9.67741935483871,
+     "maxPercent": 11.612903225806452,
+     "rolls": [
+      15,
+      15,
+      15,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      18,
+      18,
+      18,
+      18,
+      18
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 15–18 HP (9.7–11.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 11,
+      "fewest": 9,
+      "fasterChance": 0.9998729445005665,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 140,
+      "high": 137,
+      "average": 138.3125,
+      "min": 137,
+      "max": 140,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 15,
+        "heals": []
+       },
+       "high": {
+        "dealt": 18,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.0091999999999643,
+ "preflight": []
+}

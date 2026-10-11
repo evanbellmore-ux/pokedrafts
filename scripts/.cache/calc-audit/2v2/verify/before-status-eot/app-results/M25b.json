@@ -1,0 +1,393 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "hail",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "The weather becomes Hail.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "iciclecrash",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 140,
+      "max": 168,
+      "minPercent": 90.32258064516128,
+      "maxPercent": 108.38709677419357,
+      "koChance": 0.5,
+      "row": {
+       "moveId": "iciclecrash",
+       "effectiveName": "Icicle Crash",
+       "effectiveType": "Ice",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 140,
+       "max": 168,
+       "minPercent": 90.32258064516128,
+       "maxPercent": 108.38709677419357,
+       "rolls": [
+        140,
+        144,
+        144,
+        146,
+        146,
+        150,
+        150,
+        152,
+        156,
+        156,
+        158,
+        158,
+        162,
+        162,
+        164,
+        168
+       ],
+       "ohkoChance": 0.5,
+       "description": "Icicle Crash: 140–168 HP (90.3–108.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "sludgebomb",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 0.5,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.5
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 61,
+      "max": 73,
+      "minPercent": 35.88235294117647,
+      "maxPercent": 42.94117647058823,
+      "koChance": 0,
+      "row": {
+       "moveId": "sludgebomb",
+       "effectiveName": "Sludge Bomb",
+       "effectiveType": "Poison",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 61,
+       "max": 73,
+       "minPercent": 35.88235294117647,
+       "maxPercent": 42.94117647058823,
+       "rolls": [
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73
+       ],
+       "ohkoChance": 0,
+       "description": "Sludge Bomb: 61–73 HP (35.9–42.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 109,
+    "average": 136.375,
+    "high": 170,
+    "min": 97,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 15,
+    "average": 4.25,
+    "high": 0,
+    "min": 0,
+    "max": 15,
+    "koChance": 0.5,
+    "heals": [],
+    "faintsBeforeMoving": 0.5
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "iciclecrash",
+     "effectiveName": "Icicle Crash",
+     "effectiveType": "Ice",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 140,
+     "max": 168,
+     "minPercent": 90.32258064516128,
+     "maxPercent": 108.38709677419357,
+     "rolls": [
+      140,
+      144,
+      144,
+      146,
+      146,
+      150,
+      150,
+      152,
+      156,
+      156,
+      158,
+      158,
+      162,
+      162,
+      164,
+      168
+     ],
+     "ohkoChance": 0.5,
+     "description": "Icicle Crash: 140–168 HP (90.3–108.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.5,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 15,
+      "high": 0,
+      "average": 4.25,
+      "min": 0,
+      "max": 15,
+      "koChance": 0.5,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 140,
+        "heals": []
+       },
+       "high": {
+        "dealt": 155,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "sludgebomb",
+     "effectiveName": "Sludge Bomb",
+     "effectiveType": "Poison",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 61,
+     "max": 73,
+     "minPercent": 35.88235294117647,
+     "maxPercent": 42.94117647058823,
+     "rolls": [
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73
+     ],
+     "ohkoChance": 0,
+     "description": "Sludge Bomb: 61–73 HP (35.9–42.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 109,
+      "high": 97,
+      "average": 102.75,
+      "min": 97,
+      "max": 109,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 61,
+        "heals": []
+       },
+       "high": {
+        "dealt": 73,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 4.056599999999889,
+ "preflight": []
+}

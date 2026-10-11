@@ -1,0 +1,2141 @@
+{
+ "id": "FX-CE-01-swsh",
+ "title": "Core Enforcer as the last action into Speed Boost Blaziken (it moved): no Speed rise at the end of turn (T2A-VS2)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "gastroacid on Blaziken: abilities.ts speedboost onResidual does not run (E2 stages, gastroacid).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 216,
+   "classes": 11,
+   "ms": 323,
+   "decisions": {
+    "sample": 220,
+    "fail:": 392,
+    "roll": 392
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "aurabreak": 1
+     },
+     "forme": {
+      "zygarde": 1
+     },
+     "stored": {
+      "132/141/101/115/90": 1
+     },
+     "weight": {
+      "3050": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Raichu",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       84,
+       0.0625
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       87,
+       0.1875
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       90,
+       0.1875
+      ],
+      [
+       92,
+       0.1875
+      ],
+      [
+       93,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 88.9375,
+     "min": 84,
+     "max": 93,
+     "modeTieUp": 92,
+     "modeTieDown": 87,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Electric": 1
+     },
+     "ability": {
+      "static": 1
+     },
+     "forme": {
+      "raichu": 1
+     },
+     "stored": {
+      "110/75/110/100/130": 1
+     },
+     "weight": {
+      "300": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Blaziken",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       98,
+       0.0625
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.1875
+      ],
+      [
+       103,
+       0.125
+      ],
+      [
+       104,
+       0.1875
+      ],
+      [
+       106,
+       0.1875
+      ],
+      [
+       107,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 103.1875,
+     "min": 98,
+     "max": 107,
+     "modeTieUp": 106,
+     "modeTieDown": 101,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Fighting": 1
+     },
+     "ability": {
+      "speedboost": 1
+     },
+     "forme": {
+      "blaziken": 1
+     },
+     "stored": {
+      "140/90/130/90/100": 1
+     },
+     "weight": {
+      "520": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 57,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-48": 0.125,
+       "endability": 1,
+       "damage:-49": 0.1875,
+       "damage:-51": 0.1875,
+       "damage:-52": 0.125,
+       "damage:-54": 0.1875,
+       "damage:-55": 0.125,
+       "damage:-57": 0.0625
+      },
+      "opponent-left": {
+       "damage:-42": 0.0625,
+       "endability": 1,
+       "damage:-43": 0.1875,
+       "damage:-45": 0.1875,
+       "damage:-46": 0.1875,
+       "damage:-48": 0.1875,
+       "damage:-49": 0.125,
+       "damage:-51": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -51,
+       "max": -42
+      },
+      "opponent-right": {
+       "min": -57,
+       "max": -48
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -57,
+       "max": -48,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -51,
+       "max": -42,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 196,
+    "classes": 2,
+    "ms": 323,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "aurabreak": 1
+      },
+      "forme": {
+       "zygarde": 1
+      },
+      "stored": {
+       "132/141/101/115/90": 1
+      },
+      "weight": {
+       "3050": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Raichu",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        84,
+        0.0625
+       ],
+       [
+        86,
+        0.125
+       ],
+       [
+        87,
+        0.1875
+       ],
+       [
+        89,
+        0.1875
+       ],
+       [
+        90,
+        0.1875
+       ],
+       [
+        92,
+        0.1875
+       ],
+       [
+        93,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 88.9375,
+      "min": 84,
+      "max": 93,
+      "modeTieUp": 92,
+      "modeTieDown": 87,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Electric": 1
+      },
+      "ability": {
+       "static": 1
+      },
+      "forme": {
+       "raichu": 1
+      },
+      "stored": {
+       "110/75/110/100/130": 1
+      },
+      "weight": {
+       "300": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Blaziken",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        98,
+        0.0625
+       ],
+       [
+        100,
+        0.125
+       ],
+       [
+        101,
+        0.1875
+       ],
+       [
+        103,
+        0.125
+       ],
+       [
+        104,
+        0.1875
+       ],
+       [
+        106,
+        0.1875
+       ],
+       [
+        107,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 103.1875,
+      "min": 98,
+      "max": 107,
+      "modeTieUp": 106,
+      "modeTieDown": 101,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire/Fighting": 1
+      },
+      "ability": {
+       "speedboost": 1
+      },
+      "forme": {
+       "blaziken": 1
+      },
+      "stored": {
+       "140/90/130/90/100": 1
+      },
+      "weight": {
+       "520": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 24,
+   "classes": 11,
+   "ms": 76,
+   "decisions": {
+    "sample": 28,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "aurabreak": 1
+     },
+     "forme": {
+      "zygarde": 1
+     },
+     "stored": {
+      "132/141/101/115/90": 1
+     },
+     "weight": {
+      "3050": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Raichu",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       93,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 93,
+     "min": 93,
+     "max": 93,
+     "modeTieUp": 93,
+     "modeTieDown": 93,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Electric": 1
+     },
+     "ability": {
+      "static": 1
+     },
+     "forme": {
+      "raichu": 1
+     },
+     "stored": {
+      "110/75/110/100/130": 1
+     },
+     "weight": {
+      "300": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Blaziken",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       107,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 107,
+     "min": 107,
+     "max": 107,
+     "modeTieUp": 107,
+     "modeTieDown": 107,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Fighting": 1
+     },
+     "ability": {
+      "speedboost": 1
+     },
+     "forme": {
+      "blaziken": 1
+     },
+     "stored": {
+      "140/90/130/90/100": 1
+     },
+     "weight": {
+      "520": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-48": 1,
+       "endability": 1
+      },
+      "opponent-left": {
+       "damage:-42": 1,
+       "endability": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -42,
+       "max": -42
+      },
+      "opponent-right": {
+       "min": -48,
+       "max": -48
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -48,
+       "max": -48,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -42,
+       "max": -42,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 2,
+    "ms": 77,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "aurabreak": 1
+      },
+      "forme": {
+       "zygarde": 1
+      },
+      "stored": {
+       "132/141/101/115/90": 1
+      },
+      "weight": {
+       "3050": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Raichu",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        93,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 93,
+      "min": 93,
+      "max": 93,
+      "modeTieUp": 93,
+      "modeTieDown": 93,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Electric": 1
+      },
+      "ability": {
+       "static": 1
+      },
+      "forme": {
+       "raichu": 1
+      },
+      "stored": {
+       "110/75/110/100/130": 1
+      },
+      "weight": {
+       "300": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Blaziken",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        107,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 107,
+      "min": 107,
+      "max": 107,
+      "modeTieUp": 107,
+      "modeTieDown": 107,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire/Fighting": 1
+      },
+      "ability": {
+       "speedboost": 1
+      },
+      "forme": {
+       "blaziken": 1
+      },
+      "stored": {
+       "140/90/130/90/100": 1
+      },
+      "weight": {
+       "520": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 24,
+   "classes": 11,
+   "ms": 46,
+   "decisions": {
+    "sample": 28,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Zygarde",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "aurabreak": 1
+     },
+     "forme": {
+      "zygarde": 1
+     },
+     "stored": {
+      "132/141/101/115/90": 1
+     },
+     "weight": {
+      "3050": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/122": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Raichu",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Electric": 1
+     },
+     "ability": {
+      "static": 1
+     },
+     "forme": {
+      "raichu": 1
+     },
+     "stored": {
+      "110/75/110/100/130": 1
+     },
+     "weight": {
+      "300": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Blaziken",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       98,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 98,
+     "min": 98,
+     "max": 98,
+     "modeTieUp": 98,
+     "modeTieDown": 98,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "gastroacid": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Fighting": 1
+     },
+     "ability": {
+      "speedboost": 1
+     },
+     "forme": {
+      "blaziken": 1
+     },
+     "stored": {
+      "140/90/130/90/100": 1
+     },
+     "weight": {
+      "520": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "coreenforcer",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 57,
+       "dmgMax": 57,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-57": 1,
+       "endability": 1
+      },
+      "opponent-left": {
+       "damage:-51": 1,
+       "endability": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -51,
+       "max": -51
+      },
+      "opponent-right": {
+       "min": -57,
+       "max": -57
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -57,
+       "max": -57,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -51,
+       "max": -51,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 2,
+    "ms": 46,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Zygarde",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "aurabreak": 1
+      },
+      "forme": {
+       "zygarde": 1
+      },
+      "stored": {
+       "132/141/101/115/90": 1
+      },
+      "weight": {
+       "3050": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/122": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Raichu",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        84,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 84,
+      "min": 84,
+      "max": 84,
+      "modeTieUp": 84,
+      "modeTieDown": 84,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Electric": 1
+      },
+      "ability": {
+       "static": 1
+      },
+      "forme": {
+       "raichu": 1
+      },
+      "stored": {
+       "110/75/110/100/130": 1
+      },
+      "weight": {
+       "300": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Blaziken",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        98,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 98,
+      "min": 98,
+      "max": 98,
+      "modeTieUp": 98,
+      "modeTieDown": 98,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "gastroacid": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire/Fighting": 1
+      },
+      "ability": {
+       "speedboost": 1
+      },
+      "forme": {
+       "blaziken": 1
+      },
+      "stored": {
+       "140/90/130/90/100": 1
+      },
+      "weight": {
+       "520": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 93,
+   "high": 84,
+   "average": 88.9375,
+   "min": 84,
+   "max": 93,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.1875
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     90,
+     0.1875
+    ],
+    [
+     92,
+     0.1875
+    ],
+    [
+     93,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 107,
+   "high": 98,
+   "average": 103.1875,
+   "min": 98,
+   "max": 107,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     0.0625
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.1875
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     104,
+     0.1875
+    ],
+    [
+     106,
+     0.1875
+    ],
+    [
+     107,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 93,
+   "high": 84,
+   "average": 88.9375,
+   "min": 84,
+   "max": 93,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.1875
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     90,
+     0.1875
+    ],
+    [
+     92,
+     0.1875
+    ],
+    [
+     93,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 107,
+   "high": 98,
+   "average": 103.1875,
+   "min": 98,
+   "max": 107,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     0.0625
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.1875
+    ],
+    [
+     103,
+     0.125
+    ],
+    [
+     104,
+     0.1875
+    ],
+    [
+     106,
+     0.1875
+    ],
+    [
+     107,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

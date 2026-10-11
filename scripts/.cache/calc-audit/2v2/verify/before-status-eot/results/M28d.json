@@ -1,0 +1,591 @@
+{
+ "id": "M28d",
+ "title": "King's Shield lowers a spread contact attacker's Attack before its hits",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "King's Shield's -1 Atk comes in TryHit, before the hit loop: Brutal Swing into Snorlax and Blastoise at -1.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 136,
+   "classes": 49,
+   "ms": 118,
+   "decisions": {
+    "sample": 100,
+    "fail:": 160,
+    "roll": 160
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       210,
+       0.0625
+      ],
+      [
+       211,
+       0.25
+      ],
+      [
+       212,
+       0.25
+      ],
+      [
+       213,
+       0.25
+      ],
+      [
+       214,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 212.25,
+     "min": 210,
+     "max": 214,
+     "modeTieUp": 213,
+     "modeTieDown": 211
+    },
+    "opponent-left": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       135,
+       0.0625
+      ],
+      [
+       136,
+       0.3125
+      ],
+      [
+       137,
+       0.3125
+      ],
+      [
+       138,
+       0.3125
+      ]
+     ],
+     "koChance": 0,
+     "average": 136.875,
+     "min": 135,
+     "max": 138,
+     "modeTieUp": 138,
+     "modeTieDown": 136
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 19,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Aegislash|move: Protect": 1,
+      "|-unboost|p1a: Conkeldurr|atk|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "kingsshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Aegislash|Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 16,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       214,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 214,
+     "min": 214,
+     "max": 214,
+     "modeTieUp": 214,
+     "modeTieDown": 214
+    },
+    "opponent-left": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       138,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 138,
+     "min": 138,
+     "max": 138,
+     "modeTieUp": 138,
+     "modeTieDown": 138
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 21,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Aegislash|move: Protect": 1,
+      "|-unboost|p1a: Conkeldurr|atk|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "kingsshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Aegislash|Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 16,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       210,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 210,
+     "min": 210,
+     "max": 210,
+     "modeTieUp": 210,
+     "modeTieDown": 210
+    },
+    "opponent-left": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       135,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 135,
+     "min": 135,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 25,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 19,
+       "dmgMax": 19,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Aegislash|move: Protect": 1,
+      "|-unboost|p1a: Conkeldurr|atk|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "kingsshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Aegislash|Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 214,
+   "high": 210,
+   "average": 212.25,
+   "min": 210,
+   "max": 214,
+   "koChance": 0,
+   "dist": [
+    [
+     210,
+     0.0625
+    ],
+    [
+     211,
+     0.25
+    ],
+    [
+     212,
+     0.25
+    ],
+    [
+     213,
+     0.25
+    ],
+    [
+     214,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 135,
+   "high": 135,
+   "average": 135,
+   "min": 135,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 138,
+   "high": 135,
+   "average": 136.875,
+   "min": 135,
+   "max": 138,
+   "koChance": 0,
+   "dist": [
+    [
+     135,
+     0.0625
+    ],
+    [
+     136,
+     0.3125
+    ],
+    [
+     137,
+     0.3125
+    ],
+    [
+     138,
+     0.3125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

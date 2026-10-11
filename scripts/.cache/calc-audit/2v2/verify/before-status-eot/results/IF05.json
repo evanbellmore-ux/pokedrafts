@@ -1,0 +1,640 @@
+{
+ "id": "IF05",
+ "title": "Ogerpon-Wellspring holding its mask: Water Ivy Cudgel 1.2x; Flamethrower neutral into its Grass/Water (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "data/moves.ts ivycudgel onModifyType by the form; Ogerpon (130) moves before Charizard (120).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 377,
+   "classes": 258,
+   "ms": 191,
+   "decisions": {
+    "fail:": 135,
+    "roll": 135,
+    "secondary": 120
+   },
+   "slots": {
+    "own-left": {
+     "species": "Ogerpon-Wellspring",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       86,
+       0.0625
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.125
+      ],
+      [
+       95,
+       0.1875
+      ],
+      [
+       97,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 92.0625,
+     "min": 86,
+     "max": 97,
+     "modeTieUp": 95,
+     "modeTieDown": 95
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       103,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ],
+      [
+       106,
+       0.0625
+      ],
+      [
+       108,
+       0.0625
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.0625
+      ],
+      [
+       114,
+       0.0625
+      ],
+      [
+       115,
+       0.125
+      ],
+      [
+       117,
+       0.0625
+      ],
+      [
+       118,
+       0.0625
+      ],
+      [
+       120,
+       0.0625
+      ],
+      [
+       121,
+       0.0625
+      ],
+      [
+       123,
+       0.0625
+      ],
+      [
+       124,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 113.8125,
+     "min": 103,
+     "max": 124,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ivycudgel",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 111,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Ogerpon-Wellspring",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       97,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 97,
+     "min": 97,
+     "max": 97,
+     "modeTieUp": 97,
+     "modeTieDown": 97
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       124,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 124,
+     "min": 124,
+     "max": 124,
+     "modeTieUp": 124,
+     "modeTieDown": 124
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ivycudgel",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 111,
+       "dmgMax": 111,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Ogerpon-Wellspring",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       86,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 86,
+     "min": 86,
+     "max": 86,
+     "modeTieUp": 86,
+     "modeTieDown": 86
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       103,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 103,
+     "min": 103,
+     "max": 103,
+     "modeTieUp": 103,
+     "modeTieDown": 103
+    },
+    "opponent-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "ivycudgel",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 132,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 97,
+   "high": 86,
+   "average": 92.0625,
+   "min": 86,
+   "max": 97,
+   "koChance": 0,
+   "dist": [
+    [
+     86,
+     0.0625
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.125
+    ],
+    [
+     95,
+     0.1875
+    ],
+    [
+     97,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 124,
+   "high": 103,
+   "average": 113.8125,
+   "min": 103,
+   "max": 124,
+   "koChance": 0,
+   "dist": [
+    [
+     103,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     106,
+     0.0625
+    ],
+    [
+     108,
+     0.0625
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.0625
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     115,
+     0.125
+    ],
+    [
+     117,
+     0.0625
+    ],
+    [
+     118,
+     0.0625
+    ],
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.0625
+    ],
+    [
+     123,
+     0.0625
+    ],
+    [
+     124,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

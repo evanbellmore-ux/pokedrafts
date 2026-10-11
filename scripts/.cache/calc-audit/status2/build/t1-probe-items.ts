@@ -1,0 +1,4 @@
+import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
+const ids = ["liechiberry","ganlonberry","salacberry","petayaberry","apicotberry","starfberry","keeberry","marangaberry","weaknesspolicy","whiteherb","mirrorherb","ejectpack","sitrusberry","occaberry","airballoon","cellbattery","absorbbulb","luminousmoss","snowball","electricseed","roomservice","adrenalineorb","throatspray","blunderpolicy","boosterenergy","redcard","ejectbutton","focussash","powerherb","mentalherb","leftovers","normalgem","berryjuice","aguavberry","figyberry","magoberry","wikiberry","iapapaberry","oranberry","enigmaberry","lumberry","chestoberry","bindingband","gripclaw","shellbell","lifeorb"];
+console.log(ids.map((id) => `${id}:${runtime.itemsById.has(id) ? "Y" : "-"}`).join(" "));
+console.log([...runtime.itemsById.keys()].filter((id) => id.endsWith("berry")).join(","));

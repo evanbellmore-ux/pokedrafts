@@ -1,0 +1,2096 @@
+{
+ "id": "INT-SPE-05-sv",
+ "title": "Magmar's Heat Wave into Cramorant and Cramorant-Gulping: only the Gulping one hits back (a quarter, Def -1)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "gulpmissile onDamagingHit acts only for the Gulping and Gorging forms.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 8744,
+   "classes": 309,
+   "ms": 8696,
+   "decisions": {
+    "sample": 6352,
+    "tie2": 32488,
+    "accuracy": 12544,
+    "fail:?": 12544,
+    "roll": 12544,
+    "secondary": 12544
+   },
+   "slots": {
+    "own-left": {
+     "species": "Magmar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire": 1
+     },
+     "ability": {
+      "flamebody": 1
+     },
+     "forme": {
+      "magmar": 1
+     },
+     "stored": {
+      "115/77/120/105/113": 1
+     },
+     "weight": {
+      "445": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/50": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Cramorant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       120,
+       0.0625
+      ],
+      [
+       121,
+       0.3125
+      ],
+      [
+       122,
+       0.1875
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       124,
+       0.25
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.25,
+     "min": 120,
+     "max": 124,
+     "modeTieUp": 121,
+     "modeTieDown": 121,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Cramorant-Gulping",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       120,
+       0.0625
+      ],
+      [
+       121,
+       0.3125
+      ],
+      [
+       122,
+       0.1875
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       124,
+       0.25
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.25,
+     "min": 120,
+     "max": 124,
+     "modeTieUp": 121,
+     "modeTieDown": 121,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 25,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Magmar|hp|[from] ability: Gulp Missile|[of] p2a: Cramorant": 1,
+      "|-unboost|p1a: Magmar|def|1": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-21": 0.25,
+       "forme:cramorant": 1,
+       "damage:-22": 0.1875,
+       "damage:-23": 0.1875,
+       "damage:-24": 0.3125,
+       "damage:-25": 0.0625
+      },
+      "opponent-left": {
+       "damage:-21": 0.25,
+       "damage:-22": 0.1875,
+       "damage:-23": 0.1875,
+       "damage:-24": 0.3125,
+       "damage:-25": 0.0625
+      },
+      "own-left": {
+       "damage:gulpmissile:-35": 1,
+       "boost:def:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -35,
+       "max": -35
+      },
+      "opponent-left": {
+       "min": -25,
+       "max": -21
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -25,
+       "max": -21,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -25,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1600,
+    "classes": 100,
+    "ms": 8696,
+    "decisions": {
+     "tie2": 1600
+    },
+    "slots": {
+     "own-left": {
+      "species": "Magmar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        105,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 105,
+      "min": 105,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire": 1
+      },
+      "ability": {
+       "flamebody": 1
+      },
+      "forme": {
+       "magmar": 1
+      },
+      "stored": {
+       "115/77/120/105/113": 1
+      },
+      "weight": {
+       "445": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/50": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Cramorant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        120,
+        0.0625
+       ],
+       [
+        121,
+        0.3125
+       ],
+       [
+        122,
+        0.1875
+       ],
+       [
+        123,
+        0.1875
+       ],
+       [
+        124,
+        0.25
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.25,
+      "min": 120,
+      "max": 124,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Cramorant-Gulping",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        120,
+        0.0625
+       ],
+       [
+        121,
+        0.3125
+       ],
+       [
+        122,
+        0.1875
+       ],
+       [
+        123,
+        0.1875
+       ],
+       [
+        124,
+        0.25
+       ]
+      ],
+      "koChance": 0,
+      "average": 122.25,
+      "min": 120,
+      "max": 124,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 296,
+   "classes": 21,
+   "ms": 335,
+   "decisions": {
+    "sample": 208,
+    "tie2": 1000,
+    "accuracy": 256,
+    "fail:?": 256,
+    "roll": 256,
+    "secondary": 256
+   },
+   "slots": {
+    "own-left": {
+     "species": "Magmar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire": 1
+     },
+     "ability": {
+      "flamebody": 1
+     },
+     "forme": {
+      "magmar": 1
+     },
+     "stored": {
+      "115/77/120/105/113": 1
+     },
+     "weight": {
+      "445": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/50": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Cramorant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       124,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 124,
+     "min": 124,
+     "max": 124,
+     "modeTieUp": 124,
+     "modeTieDown": 124,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Cramorant-Gulping",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       124,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 124,
+     "min": 124,
+     "max": 124,
+     "modeTieUp": 124,
+     "modeTieDown": 124,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 21,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 21,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Magmar|hp|[from] ability: Gulp Missile|[of] p2a: Cramorant": 1,
+      "|-unboost|p1a: Magmar|def|1": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-21": 1,
+       "forme:cramorant": 1
+      },
+      "opponent-left": {
+       "damage:-21": 1
+      },
+      "own-left": {
+       "damage:gulpmissile:-35": 1,
+       "boost:def:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -35,
+       "max": -35
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21
+      },
+      "opponent-right": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -21,
+       "max": -21,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 4,
+    "ms": 335,
+    "decisions": {
+     "tie2": 64
+    },
+    "slots": {
+     "own-left": {
+      "species": "Magmar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        105,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 105,
+      "min": 105,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire": 1
+      },
+      "ability": {
+       "flamebody": 1
+      },
+      "forme": {
+       "magmar": 1
+      },
+      "stored": {
+       "115/77/120/105/113": 1
+      },
+      "weight": {
+       "445": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/50": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Cramorant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        124,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 124,
+      "min": 124,
+      "max": 124,
+      "modeTieUp": 124,
+      "modeTieDown": 124,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Cramorant-Gulping",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        124,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 124,
+      "min": 124,
+      "max": 124,
+      "modeTieUp": 124,
+      "modeTieDown": 124,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 296,
+   "classes": 21,
+   "ms": 286,
+   "decisions": {
+    "sample": 208,
+    "tie2": 1000,
+    "accuracy": 256,
+    "fail:?": 256,
+    "roll": 256,
+    "secondary": 256
+   },
+   "slots": {
+    "own-left": {
+     "species": "Magmar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire": 1
+     },
+     "ability": {
+      "flamebody": 1
+     },
+     "forme": {
+      "magmar": 1
+     },
+     "stored": {
+      "115/77/120/105/113": 1
+     },
+     "weight": {
+      "445": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/50": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Cramorant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Cramorant-Gulping",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       120,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 120,
+     "min": 120,
+     "max": 120,
+     "modeTieUp": 120,
+     "modeTieDown": 120,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Flying/Water": 1
+     },
+     "ability": {
+      "gulpmissile": 1
+     },
+     "forme": {
+      "cramorant": 1
+     },
+     "stored": {
+      "105/75/105/115/105": 1
+     },
+     "weight": {
+      "180": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 25,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 25,
+       "dmgMax": 25,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Magmar|hp|[from] ability: Gulp Missile|[of] p2a: Cramorant": 1,
+      "|-unboost|p1a: Magmar|def|1": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-25": 1,
+       "forme:cramorant": 1
+      },
+      "opponent-left": {
+       "damage:-25": 1
+      },
+      "own-left": {
+       "damage:gulpmissile:-35": 1,
+       "boost:def:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -35,
+       "max": -35
+      },
+      "opponent-left": {
+       "min": -25,
+       "max": -25
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -25
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -25,
+       "max": -25,
+       "mass": 1
+      },
+      "opponent-left": {
+       "min": -25,
+       "max": -25,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 64,
+    "classes": 4,
+    "ms": 286,
+    "decisions": {
+     "tie2": 64
+    },
+    "slots": {
+     "own-left": {
+      "species": "Magmar",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        105,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 105,
+      "min": 105,
+      "max": 105,
+      "modeTieUp": 105,
+      "modeTieDown": 105,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fire": 1
+      },
+      "ability": {
+       "flamebody": 1
+      },
+      "forme": {
+       "magmar": 1
+      },
+      "stored": {
+       "115/77/120/105/113": 1
+      },
+      "weight": {
+       "445": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/50": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Cramorant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        120,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 120,
+      "min": 120,
+      "max": 120,
+      "modeTieUp": 120,
+      "modeTieDown": 120,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Cramorant-Gulping",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        120,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 120,
+      "min": 120,
+      "max": 120,
+      "modeTieUp": 120,
+      "modeTieDown": 120,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Flying/Water": 1
+      },
+      "ability": {
+       "gulpmissile": 1
+      },
+      "forme": {
+       "cramorant": 1
+      },
+      "stored": {
+       "105/75/105/115/105": 1
+      },
+      "weight": {
+       "180": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 105,
+   "high": 105,
+   "average": 105,
+   "min": 105,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     105,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 124,
+   "high": 120,
+   "average": 122.25,
+   "min": 120,
+   "max": 124,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.3125
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.25
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 124,
+   "high": 120,
+   "average": 122.25,
+   "min": 120,
+   "max": 124,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.3125
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.25
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: opponent-left and opponent-right (105)"
+ ],
+ "afterTurn": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 105,
+   "high": 105,
+   "average": 105,
+   "min": 105,
+   "max": 105,
+   "koChance": 0,
+   "dist": [
+    [
+     105,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 124,
+   "high": 120,
+   "average": 122.25,
+   "min": 120,
+   "max": 124,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.3125
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.25
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 124,
+   "high": 120,
+   "average": 122.25,
+   "min": 120,
+   "max": 124,
+   "koChance": 0,
+   "dist": [
+    [
+     120,
+     0.0625
+    ],
+    [
+     121,
+     0.3125
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.25
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

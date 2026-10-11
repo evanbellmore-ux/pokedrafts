@@ -1,0 +1,1584 @@
+{
+ "id": "VT-VE05",
+ "title": "Rain (1 left): Max Flare then Max Geyser (SwSh): a new rain",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Max Geyser after Max Flare sets a 5-turn rain: Rain Dish heals (the app: the guard).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 75,
+   "classes": 35,
+   "ms": 119,
+   "decisions": {
+    "sample": 30,
+    "fail:": 37,
+    "roll": 37
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tentacruel",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       84,
+       0.0625
+      ],
+      [
+       85,
+       0.5625
+      ],
+      [
+       86,
+       0.25
+      ],
+      [
+       87,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 85.4375,
+     "min": 84,
+     "max": 87,
+     "modeTieUp": 85,
+     "modeTieDown": 85,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 308,
+     "maximum": 308,
+     "dist": [
+      [
+       286,
+       0.0625
+      ],
+      [
+       287,
+       0.375
+      ],
+      [
+       288,
+       0.25
+      ],
+      [
+       289,
+       0.1875
+      ],
+      [
+       290,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 287.9375,
+     "min": 286,
+     "max": 290,
+     "modeTieUp": 287,
+     "modeTieDown": 287,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Flare": 1,
+      "|-weather|SunnyDay": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-18": 0.125,
+       "damage:-19": 0.1875,
+       "damage:-20": 0.25,
+       "damage:-21": 0.375,
+       "damage:-22": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -22,
+       "max": -18
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sunnyday": 1
+      }
+     },
+     "moveChange": {
+      "opponent-right": {
+       "min": -22,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "surf",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-13": 0.125,
+       "damage:-14": 0.25,
+       "damage:-15": 0.5625,
+       "damage:-16": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -16,
+       "max": -13
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "own-right": {
+       "min": -16,
+       "max": -13,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 20,
+    "classes": 20,
+    "ms": 119,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 306,
+      "dist": [
+       [
+        306,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 306,
+      "min": 306,
+      "max": 306,
+      "modeTieUp": 306,
+      "modeTieDown": 306,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        93,
+        0.0625
+       ],
+       [
+        94,
+        0.5625
+       ],
+       [
+        95,
+        0.25
+       ],
+       [
+        96,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 94.4375,
+      "min": 93,
+      "max": 96,
+      "modeTieUp": 94,
+      "modeTieDown": 94,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 308,
+      "dist": [
+       [
+        286,
+        0.0625
+       ],
+       [
+        287,
+        0.375
+       ],
+       [
+        288,
+        0.25
+       ],
+       [
+        289,
+        0.1875
+       ],
+       [
+        290,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 287.9375,
+      "min": 286,
+      "max": 290,
+      "modeTieUp": 287,
+      "modeTieDown": 287,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Rain Dish",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 14,
+   "classes": 8,
+   "ms": 30,
+   "decisions": {
+    "sample": 12,
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tentacruel",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       87,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 87,
+     "min": 87,
+     "max": 87,
+     "modeTieUp": 87,
+     "modeTieDown": 87,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 308,
+     "maximum": 308,
+     "dist": [
+      [
+       290,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 290,
+     "min": 290,
+     "max": 290,
+     "modeTieUp": 290,
+     "modeTieDown": 290,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Flare": 1,
+      "|-weather|SunnyDay": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-18": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -18,
+       "max": -18
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sunnyday": 1
+      }
+     },
+     "moveChange": {
+      "opponent-right": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "surf",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 13,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-13": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -13,
+       "max": -13
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "own-right": {
+       "min": -13,
+       "max": -13,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 31,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 306,
+      "dist": [
+       [
+        306,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 306,
+      "min": 306,
+      "max": 306,
+      "modeTieUp": 306,
+      "modeTieDown": 306,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 308,
+      "dist": [
+       [
+        290,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 290,
+      "min": 290,
+      "max": 290,
+      "modeTieUp": 290,
+      "modeTieDown": 290,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Rain Dish",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 14,
+   "classes": 8,
+   "ms": 22,
+   "decisions": {
+    "sample": 12,
+    "fail:": 3,
+    "roll": 3
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 306,
+     "maximum": 306,
+     "dist": [
+      [
+       306,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 306,
+     "min": 306,
+     "max": 306,
+     "modeTieUp": 306,
+     "modeTieDown": 306,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Tentacruel",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 308,
+     "maximum": 308,
+     "dist": [
+      [
+       286,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 286,
+     "min": 286,
+     "max": 286,
+     "modeTieUp": 286,
+     "modeTieDown": 286,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "dynamax": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 22,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Flare": 1,
+      "|-weather|SunnyDay": 1
+     },
+     "effects": {
+      "opponent-right": {
+       "damage:-22": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -22,
+       "max": -22
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:sunnyday": 1
+      }
+     },
+     "moveChange": {
+      "opponent-right": {
+       "min": -22,
+       "max": -22,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "surf",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Geyser": 1,
+      "|-weather|RainDance": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-16": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -16,
+       "max": -16
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "weather:raindance": 1
+      }
+     },
+     "moveChange": {
+      "own-right": {
+       "min": -16,
+       "max": -16,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 22,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Charizard",
+      "start": null,
+      "maximum": 306,
+      "dist": [
+       [
+        306,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 306,
+      "min": 306,
+      "max": 306,
+      "modeTieUp": 306,
+      "modeTieDown": 306,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        93,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 93,
+      "min": 93,
+      "max": 93,
+      "modeTieUp": 93,
+      "modeTieDown": 93,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 308,
+      "dist": [
+       [
+        286,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 286,
+      "min": 286,
+      "max": 286,
+      "modeTieUp": 286,
+      "modeTieDown": 286,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "dynamax": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Rain Dish",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:raindance": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 306,
+   "maximum": 306,
+   "low": 306,
+   "high": 306,
+   "average": 306,
+   "min": 306,
+   "max": 306,
+   "koChance": 0,
+   "dist": [
+    [
+     306,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 155,
+   "low": 87,
+   "high": 84,
+   "average": 85.4375,
+   "min": 84,
+   "max": 87,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.0625
+    ],
+    [
+     85,
+     0.5625
+    ],
+    [
+     86,
+     0.25
+    ],
+    [
+     87,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 235,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 308,
+   "maximum": 308,
+   "low": 290,
+   "high": 286,
+   "average": 287.9375,
+   "min": 286,
+   "max": 290,
+   "koChance": 0,
+   "dist": [
+    [
+     286,
+     0.0625
+    ],
+    [
+     287,
+     0.375
+    ],
+    [
+     288,
+     0.25
+    ],
+    [
+     289,
+     0.1875
+    ],
+    [
+     290,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 306,
+   "maximum": 306,
+   "low": 306,
+   "high": 306,
+   "average": 306,
+   "min": 306,
+   "max": 306,
+   "koChance": 0,
+   "dist": [
+    [
+     306,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 155,
+   "low": 96,
+   "high": 93,
+   "average": 94.4375,
+   "min": 93,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.5625
+    ],
+    [
+     95,
+     0.25
+    ],
+    [
+     96,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 235,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 308,
+   "maximum": 308,
+   "low": 290,
+   "high": 286,
+   "average": 287.9375,
+   "min": 286,
+   "max": 290,
+   "koChance": 0,
+   "dist": [
+    [
+     286,
+     0.0625
+    ],
+    [
+     287,
+     0.375
+    ],
+    [
+     288,
+     0.25
+    ],
+    [
+     289,
+     0.1875
+    ],
+    [
+     290,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-right",
+   "effect": "Rain Dish",
+   "chance": 1,
+   "min": 9,
+   "max": 9,
+   "koChance": 0,
+   "facts": {},
+   "index": 3
+  }
+ ]
+}

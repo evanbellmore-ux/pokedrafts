@@ -1,0 +1,288 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "followme",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "snipeshot",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 29,
+      "max": 35,
+      "minPercent": 18.70967741935484,
+      "maxPercent": 22.58064516129032,
+      "koChance": 0,
+      "row": {
+       "moveId": "snipeshot",
+       "effectiveName": "Snipe Shot",
+       "effectiveType": "Water",
+       "effectivePower": 85,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 18.70967741935484,
+       "maxPercent": 22.58064516129032,
+       "rolls": [
+        29,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        32,
+        32,
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Snipe Shot: 29–35 HP (18.7–22.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 126,
+    "average": 123.125,
+    "high": 120,
+    "min": 120,
+    "max": 126,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "snipeshot",
+     "effectiveName": "Snipe Shot",
+     "effectiveType": "Water",
+     "effectivePower": 85,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 29,
+     "max": 35,
+     "minPercent": 18.70967741935484,
+     "maxPercent": 22.58064516129032,
+     "rolls": [
+      29,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35
+     ],
+     "ohkoChance": 0,
+     "description": "Snipe Shot: 29–35 HP (18.7–22.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.8939704895019531,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 126,
+      "high": 120,
+      "average": 123.125,
+      "min": 120,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 35,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 126,
+     "average": 123.125,
+     "high": 120,
+     "min": 120,
+     "max": 126,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 1.844300000000203,
+ "preflight": []
+}

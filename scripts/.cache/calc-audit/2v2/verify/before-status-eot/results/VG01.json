@@ -1,0 +1,978 @@
+{
+ "id": "VG01",
+ "title": "Intimidate Incineroar under the gas: no drop at the start; Flare Blitz into Snorlax with recoil; Garchomp's Earthquake hits all three",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Intimidate suppressed at the start (sim-dfs warns on a stage); Thick Fat suppressed; recoil",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 49288,
+   "classes": 32485,
+   "ms": 31564,
+   "decisions": {
+    "sample": 2252,
+    "fail:": 22400,
+    "roll": 22400,
+    "secondary": 15680
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.2890625
+      ],
+      [
+       1,
+       0.03125
+      ],
+      [
+       2,
+       0.0546875
+      ],
+      [
+       3,
+       0.0390625
+      ],
+      [
+       4,
+       0.03125
+      ],
+      [
+       5,
+       0.0390625
+      ],
+      [
+       6,
+       0.0546875
+      ],
+      [
+       7,
+       0.03125
+      ],
+      [
+       8,
+       0.0625
+      ],
+      [
+       9,
+       0.046875
+      ],
+      [
+       10,
+       0.0390625
+      ],
+      [
+       11,
+       0.05078125
+      ],
+      [
+       12,
+       0.0625
+      ],
+      [
+       13,
+       0.0390625
+      ],
+      [
+       14,
+       0.05078125
+      ],
+      [
+       15,
+       0.0234375
+      ],
+      [
+       16,
+       0.015625
+      ],
+      [
+       17,
+       0.015625
+      ],
+      [
+       18,
+       0.0234375
+      ]
+     ],
+     "koChance": 0.2890625,
+     "average": 6.25390625,
+     "min": 0,
+     "max": 18,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       30,
+       0.0625
+      ],
+      [
+       32,
+       0.125
+      ],
+      [
+       36,
+       0.1875
+      ],
+      [
+       38,
+       0.1875
+      ],
+      [
+       42,
+       0.125
+      ],
+      [
+       44,
+       0.1875
+      ],
+      [
+       48,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 39.25,
+     "min": 30,
+     "max": 48,
+     "modeTieUp": 44,
+     "modeTieDown": 36
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       20,
+       0.00390625
+      ],
+      [
+       21,
+       0.0078125
+      ],
+      [
+       22,
+       0.00390625
+      ],
+      [
+       23,
+       0.01171875
+      ],
+      [
+       24,
+       0.0234375
+      ],
+      [
+       25,
+       0.01171875
+      ],
+      [
+       26,
+       0.015625
+      ],
+      [
+       27,
+       0.03515625
+      ],
+      [
+       28,
+       0.01953125
+      ],
+      [
+       29,
+       0.02734375
+      ],
+      [
+       30,
+       0.05078125
+      ],
+      [
+       31,
+       0.0234375
+      ],
+      [
+       32,
+       0.0390625
+      ],
+      [
+       33,
+       0.0703125
+      ],
+      [
+       34,
+       0.03125
+      ],
+      [
+       35,
+       0.03515625
+      ],
+      [
+       36,
+       0.0703125
+      ],
+      [
+       37,
+       0.03125
+      ],
+      [
+       38,
+       0.04296875
+      ],
+      [
+       39,
+       0.0703125
+      ],
+      [
+       40,
+       0.03125
+      ],
+      [
+       41,
+       0.04296875
+      ],
+      [
+       42,
+       0.0703125
+      ],
+      [
+       43,
+       0.02734375
+      ],
+      [
+       44,
+       0.0234375
+      ],
+      [
+       45,
+       0.046875
+      ],
+      [
+       46,
+       0.01953125
+      ],
+      [
+       47,
+       0.0234375
+      ],
+      [
+       48,
+       0.03125
+      ],
+      [
+       49,
+       0.01171875
+      ],
+      [
+       50,
+       0.015625
+      ],
+      [
+       51,
+       0.0234375
+      ],
+      [
+       52,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 37.0625,
+     "min": 20,
+     "max": 52,
+     "modeTieUp": 42,
+     "modeTieDown": 33
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 127,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] Recoil": 0.7109375,
+      "|-damage|p1a: Incineroar|0 fnt|[from] Recoil": 0.2890625
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 138,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 110,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 40,
+   "decisions": {
+    "sample": 16,
+    "fail:": 14,
+    "roll": 14,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       18,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 18,
+     "min": 18,
+     "max": 18,
+     "modeTieUp": 18,
+     "modeTieDown": 18
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       48,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 48,
+     "min": 48,
+     "max": 48,
+     "modeTieUp": 48,
+     "modeTieDown": 48
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       52,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 52,
+     "min": 52,
+     "max": 52,
+     "modeTieUp": 52,
+     "modeTieDown": 52
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 92,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 20,
+   "decisions": {
+    "sample": 16,
+    "fail:": 14,
+    "roll": 14,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       30,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 30,
+     "min": 30,
+     "max": 30,
+     "modeTieUp": 30,
+     "modeTieDown": 30
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       20,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 20,
+     "min": 20,
+     "max": 20,
+     "modeTieUp": 20,
+     "modeTieDown": 20
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "flareblitz",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 127,
+       "dmgMax": 127,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|0 fnt|[from] Recoil": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 138,
+       "dmgMax": 138,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 110,
+       "dmgMax": 110,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 18,
+   "high": 0,
+   "average": 6.25390625,
+   "min": 0,
+   "max": 18,
+   "koChance": 0.2890625,
+   "dist": [
+    [
+     0,
+     0.2890625
+    ],
+    [
+     1,
+     0.03125
+    ],
+    [
+     2,
+     0.0546875
+    ],
+    [
+     3,
+     0.0390625
+    ],
+    [
+     4,
+     0.03125
+    ],
+    [
+     5,
+     0.0390625
+    ],
+    [
+     6,
+     0.0546875
+    ],
+    [
+     7,
+     0.03125
+    ],
+    [
+     8,
+     0.0625
+    ],
+    [
+     9,
+     0.046875
+    ],
+    [
+     10,
+     0.0390625
+    ],
+    [
+     11,
+     0.05078125
+    ],
+    [
+     12,
+     0.0625
+    ],
+    [
+     13,
+     0.0390625
+    ],
+    [
+     14,
+     0.05078125
+    ],
+    [
+     15,
+     0.0234375
+    ],
+    [
+     16,
+     0.015625
+    ],
+    [
+     17,
+     0.015625
+    ],
+    [
+     18,
+     0.0234375
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 48,
+   "high": 30,
+   "average": 39.25,
+   "min": 30,
+   "max": 48,
+   "koChance": 0,
+   "dist": [
+    [
+     30,
+     0.0625
+    ],
+    [
+     32,
+     0.125
+    ],
+    [
+     36,
+     0.1875
+    ],
+    [
+     38,
+     0.1875
+    ],
+    [
+     42,
+     0.125
+    ],
+    [
+     44,
+     0.1875
+    ],
+    [
+     48,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 52,
+   "high": 20,
+   "average": 37.0625,
+   "min": 20,
+   "max": 52,
+   "koChance": 0,
+   "dist": [
+    [
+     20,
+     0.00390625
+    ],
+    [
+     21,
+     0.0078125
+    ],
+    [
+     22,
+     0.00390625
+    ],
+    [
+     23,
+     0.01171875
+    ],
+    [
+     24,
+     0.0234375
+    ],
+    [
+     25,
+     0.01171875
+    ],
+    [
+     26,
+     0.015625
+    ],
+    [
+     27,
+     0.03515625
+    ],
+    [
+     28,
+     0.01953125
+    ],
+    [
+     29,
+     0.02734375
+    ],
+    [
+     30,
+     0.05078125
+    ],
+    [
+     31,
+     0.0234375
+    ],
+    [
+     32,
+     0.0390625
+    ],
+    [
+     33,
+     0.0703125
+    ],
+    [
+     34,
+     0.03125
+    ],
+    [
+     35,
+     0.03515625
+    ],
+    [
+     36,
+     0.0703125
+    ],
+    [
+     37,
+     0.03125
+    ],
+    [
+     38,
+     0.04296875
+    ],
+    [
+     39,
+     0.0703125
+    ],
+    [
+     40,
+     0.03125
+    ],
+    [
+     41,
+     0.04296875
+    ],
+    [
+     42,
+     0.0703125
+    ],
+    [
+     43,
+     0.02734375
+    ],
+    [
+     44,
+     0.0234375
+    ],
+    [
+     45,
+     0.046875
+    ],
+    [
+     46,
+     0.01953125
+    ],
+    [
+     47,
+     0.0234375
+    ],
+    [
+     48,
+     0.03125
+    ],
+    [
+     49,
+     0.01171875
+    ],
+    [
+     50,
+     0.015625
+    ],
+    [
+     51,
+     0.0234375
+    ],
+    [
+     52,
+     0.0078125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,1786 @@
+{
+ "id": "S12b",
+ "title": "Confusion self-hit with Magic Guard and a Sitrus Berry",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Magic Guard does not stop the self-hit; Sitrus Berry at the Update after it when at half or less.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 170,
+   "classes": 87,
+   "ms": 188,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 84,
+    "fail:": 36,
+    "roll": 84,
+    "secondary": 36,
+    "fail:cursedbody": 36
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       96,
+       0.041874999999999996
+      ],
+      [
+       97,
+       0.041874999999999996
+      ],
+      [
+       98,
+       0.08374999999999999
+      ],
+      [
+       99,
+       0.16749999999999998
+      ],
+      [
+       100,
+       0.08374999999999999
+      ],
+      [
+       101,
+       0.08374999999999999
+      ],
+      [
+       102,
+       0.16749999999999998
+      ],
+      [
+       135,
+       0.32999999999999985
+      ]
+     ],
+     "koChance": 0,
+     "average": 111.340625,
+     "min": 96,
+     "max": 135,
+     "modeTieUp": 135,
+     "modeTieDown": 135,
+     "status": {
+      "": 0.9999999999999989
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999989
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.32999999999999985,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       0.9999999999999989
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999989
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999989
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999989
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 110,
+     "maximum": 170,
+     "dist": [
+      [
+       82,
+       0.020625
+      ],
+      [
+       83,
+       0.020625
+      ],
+      [
+       84,
+       0.020625
+      ],
+      [
+       85,
+       0.04125
+      ],
+      [
+       86,
+       0.020625
+      ],
+      [
+       87,
+       0.04125
+      ],
+      [
+       88,
+       0.020625
+      ],
+      [
+       89,
+       0.04125
+      ],
+      [
+       90,
+       0.020625
+      ],
+      [
+       91,
+       0.020625
+      ],
+      [
+       92,
+       0.04125
+      ],
+      [
+       93,
+       0.020625
+      ],
+      [
+       110,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 102.63687499999999,
+     "min": 82,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110,
+     "status": {
+      "": 0.9999999999999989
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999989
+     },
+     "boosts": {
+      "atk:6": 0.9999999999999989
+     },
+     "item": {
+      "": 0.32999999999999985,
+      "sitrusberry": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999989
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       0.9999999999999989
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999989
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999989
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999989
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Clefable|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "moonblast",
+     "picked": 0.9999999999999998,
+     "faintedAtPick": 0,
+     "moved": 0.6700000000000004,
+     "cant": {},
+     "orderAll": {
+      "2": 0.9999999999999998
+     },
+     "orderMoved": {
+      "2": 0.6700000000000004
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.6700000000000004,
+       "landed": 0.6700000000000004,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Clefable|confusion": 0.9999999999999998,
+      "|-damage|p2b: Clefable|hp|[from] confusion": 0.32999999999999985,
+      "|-enditem|p2b: Clefable|Sitrus Berry|[eat]": 0.32999999999999985,
+      "|-heal|p2b: Clefable|hp|[from] item: Sitrus Berry": 0.32999999999999985
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 0.9999999999999998,
+       "damage:confusion:-59": 0.020625,
+       "enditem:sitrusberry:eat": 0.32999999999999985,
+       "heal:sitrusberry:42": 0.32999999999999985,
+       "damage:confusion:-60": 0.04125,
+       "damage:confusion:-61": 0.020625,
+       "damage:confusion:-62": 0.020625,
+       "damage:confusion:-63": 0.04125,
+       "damage:confusion:-64": 0.020625,
+       "damage:confusion:-65": 0.04125,
+       "damage:confusion:-66": 0.020625,
+       "damage:confusion:-67": 0.04125,
+       "damage:confusion:-68": 0.020625,
+       "damage:confusion:-69": 0.020625,
+       "damage:confusion:-70": 0.020625
+      },
+      "own-left": {
+       "damage:-33": 0.16749999999999998,
+       "damage:-34": 0.08374999999999999,
+       "damage:-35": 0.08374999999999999,
+       "damage:-36": 0.16749999999999998,
+       "damage:-37": 0.08374999999999999,
+       "damage:-38": 0.041874999999999996,
+       "damage:-39": 0.041874999999999996
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -39,
+       "max": -33
+      },
+      "opponent-left": {
+       "min": -28,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -39,
+       "max": -33,
+       "mass": 0.6700000000000004
+      }
+     },
+     "selfHit": {
+      "mass": 0.32999999999999985,
+      "min": 59,
+      "max": 70
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 76,
+    "classes": 76,
+    "ms": 188,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        96,
+        0.041874999999999996
+       ],
+       [
+        97,
+        0.041874999999999996
+       ],
+       [
+        98,
+        0.08374999999999999
+       ],
+       [
+        99,
+        0.16749999999999998
+       ],
+       [
+        100,
+        0.08374999999999999
+       ],
+       [
+        101,
+        0.08374999999999999
+       ],
+       [
+        102,
+        0.16749999999999998
+       ],
+       [
+        135,
+        0.32999999999999985
+       ]
+      ],
+      "koChance": 0,
+      "average": 111.340625,
+      "min": 96,
+      "max": 135,
+      "modeTieUp": 135,
+      "modeTieDown": 135,
+      "status": {
+       "": 0.9999999999999989
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999989
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.32999999999999985,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        0.9999999999999989
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999989
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999989
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999989
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        82,
+        0.020625
+       ],
+       [
+        83,
+        0.020625
+       ],
+       [
+        84,
+        0.020625
+       ],
+       [
+        85,
+        0.04125
+       ],
+       [
+        86,
+        0.020625
+       ],
+       [
+        87,
+        0.04125
+       ],
+       [
+        88,
+        0.020625
+       ],
+       [
+        89,
+        0.04125
+       ],
+       [
+        90,
+        0.020625
+       ],
+       [
+        91,
+        0.020625
+       ],
+       [
+        92,
+        0.04125
+       ],
+       [
+        93,
+        0.020625
+       ],
+       [
+        110,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 102.63687499999999,
+      "min": 82,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 110,
+      "status": {
+       "": 0.9999999999999989
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999989
+      },
+      "boosts": {
+       "atk:6": 0.9999999999999989
+      },
+      "item": {
+       "": 0.32999999999999985,
+       "sitrusberry": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999989
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        0.9999999999999989
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999989
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999989
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999989
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999989,
+     "weather:": 0.9999999999999989
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 26,
+   "classes": 19,
+   "ms": 29,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8,
+    "secondary": 4,
+    "fail:cursedbody": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       102,
+       0.6699999999999999
+      ],
+      [
+       135,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 112.88999999999999,
+     "min": 102,
+     "max": 135,
+     "modeTieUp": 102,
+     "modeTieDown": 102,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 110,
+     "maximum": 170,
+     "dist": [
+      [
+       93,
+       0.33
+      ],
+      [
+       110,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 104.38999999999999,
+     "min": 93,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "atk:6": 1
+     },
+     "item": {
+      "": 0.33,
+      "sitrusberry": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Clefable|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Clefable|confusion": 1,
+      "|-damage|p2b: Clefable|hp|[from] confusion": 0.33,
+      "|-enditem|p2b: Clefable|Sitrus Berry|[eat]": 0.33,
+      "|-heal|p2b: Clefable|hp|[from] item: Sitrus Berry": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-59": 0.33,
+       "enditem:sitrusberry:eat": 0.33,
+       "heal:sitrusberry:42": 0.33
+      },
+      "own-left": {
+       "damage:-33": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -33,
+       "max": -33
+      },
+      "opponent-left": {
+       "min": -17,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -33,
+       "max": -33,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 59,
+      "max": 59
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 29,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        102,
+        0.6699999999999999
+       ],
+       [
+        135,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 112.88999999999999,
+      "min": 102,
+      "max": 135,
+      "modeTieUp": 102,
+      "modeTieDown": 102,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        93,
+        0.33
+       ],
+       [
+        110,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 104.38999999999999,
+      "min": 93,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 110,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "atk:6": 1
+      },
+      "item": {
+       "": 0.33,
+       "sitrusberry": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 26,
+   "classes": 19,
+   "ms": 29,
+   "decisions": {
+    "random": 4,
+    "chance:confusion": 8,
+    "fail:": 4,
+    "roll": 8,
+    "secondary": 4,
+    "fail:cursedbody": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Gengar",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       96,
+       0.6699999999999999
+      ],
+      [
+       135,
+       0.33
+      ]
+     ],
+     "koChance": 0,
+     "average": 108.87,
+     "min": 96,
+     "max": 135,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.33,
+      "1": 0.6699999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Clefable",
+     "start": 110,
+     "maximum": 170,
+     "dist": [
+      [
+       82,
+       0.33
+      ],
+      [
+       110,
+       0.6699999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 100.75999999999999,
+     "min": 82,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "confusion": 1
+     },
+     "boosts": {
+      "atk:6": 1
+     },
+     "item": {
+      "": 0.33,
+      "sitrusberry": 0.6699999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "confuseray",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2b: Clefable|confusion": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "moonblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.6699999999999999,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.6699999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.6699999999999999,
+       "landed": 0.6699999999999999,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Clefable|confusion": 1,
+      "|-damage|p2b: Clefable|hp|[from] confusion": 0.33,
+      "|-enditem|p2b: Clefable|Sitrus Berry|[eat]": 0.33,
+      "|-heal|p2b: Clefable|hp|[from] item: Sitrus Berry": 0.33
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:confusion": 1,
+       "damage:confusion:-70": 0.33,
+       "enditem:sitrusberry:eat": 0.33,
+       "heal:sitrusberry:42": 0.33
+      },
+      "own-left": {
+       "damage:-39": 0.6699999999999999
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -39,
+       "max": -39
+      },
+      "opponent-left": {
+       "min": -28,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -39,
+       "max": -39,
+       "mass": 0.6699999999999999
+      }
+     },
+     "selfHit": {
+      "mass": 0.33,
+      "min": 70,
+      "max": 70
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 8,
+    "classes": 8,
+    "ms": 29,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Gengar",
+      "start": null,
+      "maximum": 135,
+      "dist": [
+       [
+        96,
+        0.6699999999999999
+       ],
+       [
+        135,
+        0.33
+       ]
+      ],
+      "koChance": 0,
+      "average": 108.87,
+      "min": 96,
+      "max": 135,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.33,
+       "1": 0.6699999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        82,
+        0.33
+       ],
+       [
+        110,
+        0.6699999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 100.75999999999999,
+      "min": 82,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 110,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "confusion": 1
+      },
+      "boosts": {
+       "atk:6": 1
+      },
+      "item": {
+       "": 0.33,
+       "sitrusberry": 0.6699999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 102,
+   "high": 96,
+   "average": 111.340625,
+   "min": 96,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.041874999999999996
+    ],
+    [
+     97,
+     0.041874999999999996
+    ],
+    [
+     98,
+     0.08374999999999999
+    ],
+    [
+     99,
+     0.16749999999999998
+    ],
+    [
+     100,
+     0.08374999999999999
+    ],
+    [
+     101,
+     0.08374999999999999
+    ],
+    [
+     102,
+     0.16749999999999998
+    ],
+    [
+     135,
+     0.32999999999999985
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999989
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 110,
+   "maximum": 170,
+   "low": 110,
+   "high": 110,
+   "average": 102.63687499999999,
+   "min": 82,
+   "max": 110,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.020625
+    ],
+    [
+     83,
+     0.020625
+    ],
+    [
+     84,
+     0.020625
+    ],
+    [
+     85,
+     0.04125
+    ],
+    [
+     86,
+     0.020625
+    ],
+    [
+     87,
+     0.04125
+    ],
+    [
+     88,
+     0.020625
+    ],
+    [
+     89,
+     0.04125
+    ],
+    [
+     90,
+     0.020625
+    ],
+    [
+     91,
+     0.020625
+    ],
+    [
+     92,
+     0.04125
+    ],
+    [
+     93,
+     0.020625
+    ],
+    [
+     110,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999989
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 135,
+   "maximum": 135,
+   "low": 102,
+   "high": 96,
+   "average": 111.340625,
+   "min": 96,
+   "max": 135,
+   "koChance": 0,
+   "dist": [
+    [
+     96,
+     0.041874999999999996
+    ],
+    [
+     97,
+     0.041874999999999996
+    ],
+    [
+     98,
+     0.08374999999999999
+    ],
+    [
+     99,
+     0.16749999999999998
+    ],
+    [
+     100,
+     0.08374999999999999
+    ],
+    [
+     101,
+     0.08374999999999999
+    ],
+    [
+     102,
+     0.16749999999999998
+    ],
+    [
+     135,
+     0.32999999999999985
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999989
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 110,
+   "maximum": 170,
+   "low": 110,
+   "high": 110,
+   "average": 102.63687499999999,
+   "min": 82,
+   "max": 110,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.020625
+    ],
+    [
+     83,
+     0.020625
+    ],
+    [
+     84,
+     0.020625
+    ],
+    [
+     85,
+     0.04125
+    ],
+    [
+     86,
+     0.020625
+    ],
+    [
+     87,
+     0.04125
+    ],
+    [
+     88,
+     0.020625
+    ],
+    [
+     89,
+     0.04125
+    ],
+    [
+     90,
+     0.020625
+    ],
+    [
+     91,
+     0.020625
+    ],
+    [
+     92,
+     0.04125
+    ],
+    [
+     93,
+     0.020625
+    ],
+    [
+     110,
+     0.6699999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999989
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

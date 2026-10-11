@@ -1,0 +1,456 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 136,
+    "maximum": 136
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "fusionflare",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "fusionflare",
+       "effectiveName": "Fusion Flare",
+       "effectiveType": "Fire",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Fusion Flare: 75–88 HP (31.9–37.4% of maximum HP). Applied: Turboblaze.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "swordsdance",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.75,
+    "skipped": [
+     {
+      "text": "Fully paralysed.",
+      "chance": 0.25
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.75,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+2 Attack.",
+        "chance": 0.75
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "fusionbolt",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 114,
+      "max": 267,
+      "minPercent": 48.51063829787234,
+      "maxPercent": 113.61702127659574,
+      "koChance": 0.25,
+      "row": {
+       "moveId": "fusionbolt",
+       "effectiveName": "Fusion Bolt",
+       "effectiveType": "Electric",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 114,
+       "max": 135,
+       "minPercent": 48.51063829787234,
+       "maxPercent": 57.446808510638306,
+       "rolls": [
+        114,
+        115,
+        117,
+        118,
+        120,
+        121,
+        121,
+        123,
+        124,
+        126,
+        127,
+        129,
+        130,
+        132,
+        133,
+        135
+       ],
+       "ohkoChance": 0,
+       "description": "Fusion Bolt: 114–135 HP (48.5–57.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 136,
+    "maximum": 136,
+    "low": 136,
+    "average": 136,
+    "high": 136,
+    "min": 136,
+    "max": 136,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 46,
+    "average": 22.5,
+    "high": 12,
+    "min": 0,
+    "max": 46,
+    "koChance": 0.25,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fusionflare",
+     "effectiveName": "Fusion Flare",
+     "effectiveType": "Fire",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Fusion Flare: 75–88 HP (31.9–37.4% of maximum HP). Applied: Turboblaze.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.875732421875,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fusionbolt",
+     "effectiveName": "Fusion Bolt",
+     "effectiveType": "Electric",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 114,
+     "max": 135,
+     "minPercent": 48.51063829787234,
+     "maxPercent": 57.446808510638306,
+     "rolls": [
+      114,
+      115,
+      117,
+      118,
+      120,
+      121,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130,
+      132,
+      133,
+      135
+     ],
+     "ohkoChance": 0,
+     "description": "Fusion Bolt: 114–135 HP (48.5–57.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.94140625,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 121,
+      "high": 100,
+      "average": 110.9375,
+      "min": 100,
+      "max": 121,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 114,
+        "heals": []
+       },
+       "high": {
+        "dealt": 135,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 136,
+     "maximum": 136,
+     "low": 136,
+     "average": 136,
+     "high": 136,
+     "min": 136,
+     "max": 136,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 46,
+     "average": 22.5,
+     "high": 12,
+     "min": 0,
+     "max": 46,
+     "koChance": 0.25,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.918999999999869,
+ "preflight": []
+}

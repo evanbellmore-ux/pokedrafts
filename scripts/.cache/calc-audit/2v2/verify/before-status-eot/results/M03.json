@@ -1,0 +1,440 @@
+{
+ "id": "M03",
+ "title": "Propeller Tail ignores Storm Drain",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Liquidation stays on Charizard: no Storm Drain redirection or absorption.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 25,
+   "classes": 16,
+   "ms": 13,
+   "decisions": {
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       1,
+       0.0625
+      ],
+      [
+       3,
+       0.125
+      ],
+      [
+       7,
+       0.125
+      ],
+      [
+       9,
+       0.125
+      ],
+      [
+       13,
+       0.0625
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 3.25,
+     "min": 0,
+     "max": 13,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.5,
+       "dmgMin": 140,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       13,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 13,
+     "min": 13,
+     "max": 13,
+     "modeTieUp": 13,
+     "modeTieDown": 13
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Barraskewda",
+     "start": 136,
+     "maximum": 136,
+     "dist": [
+      [
+       136,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 136,
+     "min": 136,
+     "max": 136,
+     "modeTieUp": 136,
+     "modeTieDown": 136
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Gastrodon",
+     "start": 186,
+     "maximum": 186,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "liquidation",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 168,
+       "dmgMax": 168,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 136,
+   "maximum": 136,
+   "low": 136,
+   "high": 136,
+   "average": 136,
+   "min": 136,
+   "max": 136,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 13,
+   "high": 0,
+   "average": 3.25,
+   "min": 0,
+   "max": 13,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     1,
+     0.0625
+    ],
+    [
+     3,
+     0.125
+    ],
+    [
+     7,
+     0.125
+    ],
+    [
+     9,
+     0.125
+    ],
+    [
+     13,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 186,
+   "maximum": 186,
+   "low": 186,
+   "high": 186,
+   "average": 186,
+   "min": 186,
+   "max": 186,
+   "koChance": 0,
+   "dist": [
+    [
+     186,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

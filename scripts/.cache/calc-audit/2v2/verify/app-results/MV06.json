@@ -1,0 +1,286 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 280,
+    "maximum": 280
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "explosion",
+    "effectiveName": "Max Strike",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 73,
+      "max": 87,
+      "minPercent": 31.06382978723404,
+      "maxPercent": 37.02127659574468,
+      "koChance": 0,
+      "row": {
+       "moveId": "explosion",
+       "effectiveName": "Max Strike",
+       "effectiveType": "Normal",
+       "effectivePower": 150,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 73,
+       "max": 87,
+       "minPercent": 31.06382978723404,
+       "maxPercent": 37.02127659574468,
+       "rolls": [
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87
+       ],
+       "ohkoChance": 0,
+       "description": "Max Strike: 73–87 HP (31.1–37.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 280,
+    "maximum": 280,
+    "low": 280,
+    "average": 280,
+    "high": 280,
+    "min": 280,
+    "max": 280,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 162,
+    "average": 155,
+    "high": 148,
+    "min": 148,
+    "max": 162,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "explosion",
+     "effectiveName": "Max Strike",
+     "effectiveType": "Normal",
+     "effectivePower": 150,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 73,
+     "max": 87,
+     "minPercent": 31.06382978723404,
+     "maxPercent": 37.02127659574468,
+     "rolls": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+     ],
+     "ohkoChance": 0,
+     "description": "Max Strike: 73–87 HP (31.1–37.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.76708984375,
+      "limit": 4,
+      "limitReason": "cap",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ],
+      "attackerFaints": {
+       "lowest": 4
+      }
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 162,
+      "high": 148,
+      "average": 155,
+      "min": 148,
+      "max": 162,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 73,
+        "heals": []
+       },
+       "high": {
+        "dealt": 87,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 280,
+     "maximum": 280,
+     "low": 280,
+     "average": 280,
+     "high": 280,
+     "min": 280,
+     "max": 280,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 162,
+     "average": 155,
+     "high": 148,
+     "min": 148,
+     "max": 162,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.013300000000072,
+ "preflight": []
+}

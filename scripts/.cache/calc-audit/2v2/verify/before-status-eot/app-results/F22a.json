@@ -1,0 +1,181 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Opportunist copying a stat rise is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 219,
+    "maximum": 219
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "fakeout",
+     "effectiveName": "Fake Out",
+     "effectiveType": "Normal",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 12,
+     "max": 14,
+     "minPercent": 8.275862068965518,
+     "maxPercent": 9.655172413793103,
+     "rolls": [
+      12,
+      12,
+      12,
+      12,
+      12,
+      13,
+      13,
+      13,
+      13,
+      13,
+      13,
+      13,
+      14,
+      14,
+      14,
+      14
+     ],
+     "ohkoChance": 0,
+     "description": "Fake Out: 12–14 HP (8.3–9.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the attacker's first turn in battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Works only on its first turn out",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 133,
+      "high": 131,
+      "average": 132.0625,
+      "min": 131,
+      "max": 133,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 12,
+        "heals": []
+       },
+       "high": {
+        "dealt": 14,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 109,
+     "max": 130,
+     "minPercent": 49.77168949771689,
+     "maxPercent": 59.3607305936073,
+     "rolls": [
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      118,
+      120,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130
+     ],
+     "ohkoChance": 0,
+     "description": "Close Combat: 109–130 HP (49.8–59.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.99609375,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 219,
+      "low": 110,
+      "high": 89,
+      "average": 99.25,
+      "min": 89,
+      "max": 110,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 109,
+        "heals": []
+       },
+       "high": {
+        "dealt": 130,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes the attacker's first turn in battle."
+  ]
+ },
+ "ms": 4.118800000000192,
+ "preflight": []
+}

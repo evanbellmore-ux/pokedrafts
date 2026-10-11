@@ -1,0 +1,811 @@
+{
+ "id": "K05c",
+ "title": "Two attacks into the last foe, which attacks back (usum)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Dragon Claw, then Flamethrower into Snorlax, then its Body Slam into Garchomp.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 600,
+   "classes": 81,
+   "ms": 221,
+   "decisions": {
+    "fail:": 598,
+    "roll": 598,
+    "secondary": 585
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       117,
+       0.0625
+      ],
+      [
+       119,
+       0.125
+      ],
+      [
+       120,
+       0.125
+      ],
+      [
+       122,
+       0.125
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       125,
+       0.125
+      ],
+      [
+       126,
+       0.125
+      ],
+      [
+       128,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.875,
+     "min": 117,
+     "max": 128,
+     "modeTieUp": 123,
+     "modeTieDown": 123
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       110,
+       0.00390625
+      ],
+      [
+       111,
+       0.00390625
+      ],
+      [
+       112,
+       0.01171875
+      ],
+      [
+       113,
+       0.03125
+      ],
+      [
+       114,
+       0.01953125
+      ],
+      [
+       115,
+       0.02734375
+      ],
+      [
+       116,
+       0.06640625
+      ],
+      [
+       117,
+       0.03515625
+      ],
+      [
+       118,
+       0.0390625
+      ],
+      [
+       119,
+       0.078125
+      ],
+      [
+       120,
+       0.0390625
+      ],
+      [
+       121,
+       0.04296875
+      ],
+      [
+       122,
+       0.08984375
+      ],
+      [
+       123,
+       0.05078125
+      ],
+      [
+       124,
+       0.02734375
+      ],
+      [
+       125,
+       0.078125
+      ],
+      [
+       126,
+       0.0546875
+      ],
+      [
+       127,
+       0.02734375
+      ],
+      [
+       128,
+       0.07421875
+      ],
+      [
+       129,
+       0.046875
+      ],
+      [
+       130,
+       0.02734375
+      ],
+      [
+       131,
+       0.0625
+      ],
+      [
+       132,
+       0.03125
+      ],
+      [
+       133,
+       0.015625
+      ],
+      [
+       134,
+       0.015625
+      ]
+     ],
+     "koChance": 0,
+     "average": 123,
+     "min": 110,
+     "max": 134,
+     "modeTieUp": 122,
+     "modeTieDown": 122
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 5,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       128,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 128,
+     "min": 128,
+     "max": 128,
+     "modeTieUp": 128,
+     "modeTieDown": 128
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       134,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 134,
+     "min": 134,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 134
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 5,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       117,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 117,
+     "min": 117,
+     "max": 117,
+     "modeTieUp": 117,
+     "modeTieDown": 117
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       110,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 110,
+     "min": 110,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2a: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2a: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 128,
+   "high": 117,
+   "average": 122.875,
+   "min": 117,
+   "max": 128,
+   "koChance": 0,
+   "dist": [
+    [
+     117,
+     0.0625
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     120,
+     0.125
+    ],
+    [
+     122,
+     0.125
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     125,
+     0.125
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     128,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 0,
+   "maximum": 154,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 134,
+   "high": 110,
+   "average": 123,
+   "min": 110,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     110,
+     0.00390625
+    ],
+    [
+     111,
+     0.00390625
+    ],
+    [
+     112,
+     0.01171875
+    ],
+    [
+     113,
+     0.03125
+    ],
+    [
+     114,
+     0.01953125
+    ],
+    [
+     115,
+     0.02734375
+    ],
+    [
+     116,
+     0.06640625
+    ],
+    [
+     117,
+     0.03515625
+    ],
+    [
+     118,
+     0.0390625
+    ],
+    [
+     119,
+     0.078125
+    ],
+    [
+     120,
+     0.0390625
+    ],
+    [
+     121,
+     0.04296875
+    ],
+    [
+     122,
+     0.08984375
+    ],
+    [
+     123,
+     0.05078125
+    ],
+    [
+     124,
+     0.02734375
+    ],
+    [
+     125,
+     0.078125
+    ],
+    [
+     126,
+     0.0546875
+    ],
+    [
+     127,
+     0.02734375
+    ],
+    [
+     128,
+     0.07421875
+    ],
+    [
+     129,
+     0.046875
+    ],
+    [
+     130,
+     0.02734375
+    ],
+    [
+     131,
+     0.0625
+    ],
+    [
+     132,
+     0.03125
+    ],
+    [
+     133,
+     0.015625
+    ],
+    [
+     134,
+     0.015625
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 520 whole-turn replays"
+ ]
+}

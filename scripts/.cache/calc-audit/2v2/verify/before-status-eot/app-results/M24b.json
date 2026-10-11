@@ -1,0 +1,475 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 272,
+    "maximum": 272
+   },
+   "own-right": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "liquidation",
+    "effectiveName": "Max Geyser",
+    "effectiveType": "Water",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 264,
+      "max": 312,
+      "minPercent": 172.54901960784315,
+      "maxPercent": 203.92156862745097,
+      "koChance": 1,
+      "row": {
+       "moveId": "liquidation",
+       "effectiveName": "Max Geyser",
+       "effectiveType": "Water",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 264,
+       "max": 312,
+       "minPercent": 172.54901960784315,
+       "maxPercent": 203.92156862745097,
+       "rolls": [
+        264,
+        266,
+        270,
+        272,
+        276,
+        278,
+        282,
+        284,
+        288,
+        290,
+        294,
+        296,
+        300,
+        302,
+        306,
+        312
+       ],
+       "ohkoChance": 1,
+       "description": "Max Geyser: 264–312 HP (172.5–203.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "airslash",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 50,
+      "max": 60,
+      "minPercent": 32.25806451612903,
+      "maxPercent": 38.70967741935484,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 50,
+       "max": 60,
+       "minPercent": 32.25806451612903,
+       "maxPercent": 38.70967741935484,
+       "rolls": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        54,
+        54,
+        54,
+        54,
+        54,
+        56,
+        56,
+        56,
+        56,
+        56,
+        60
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 50–60 HP (32.3–38.7% of maximum HP). Applied: Rain.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 272,
+    "maximum": 272,
+    "low": 272,
+    "average": 272,
+    "high": 272,
+    "min": 272,
+    "max": 272,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": [],
+    "faintsBeforeMoving": 1
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 105,
+    "average": 101.25,
+    "high": 95,
+    "min": 95,
+    "max": 105,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "liquidation",
+     "effectiveName": "Max Geyser",
+     "effectiveType": "Water",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 264,
+     "max": 312,
+     "minPercent": 172.54901960784315,
+     "maxPercent": 203.92156862745097,
+     "rolls": [
+      264,
+      266,
+      270,
+      272,
+      276,
+      278,
+      282,
+      284,
+      288,
+      290,
+      294,
+      296,
+      300,
+      302,
+      306,
+      312
+     ],
+     "ohkoChance": 1,
+     "description": "Max Geyser: 264–312 HP (172.5–203.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Max Geyser changes the field.",
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 153,
+        "heals": []
+       },
+       "high": {
+        "dealt": 153,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 102,
+     "max": 122,
+     "minPercent": 65.80645161290323,
+     "maxPercent": 78.70967741935485,
+     "rolls": [
+      102,
+      104,
+      104,
+      108,
+      108,
+      108,
+      110,
+      110,
+      114,
+      114,
+      114,
+      116,
+      116,
+      120,
+      120,
+      122
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 102–122 HP (65.8–78.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 53,
+      "high": 33,
+      "average": 43.125,
+      "min": 33,
+      "max": 53,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 102,
+        "heals": []
+       },
+       "high": {
+        "dealt": 122,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "airslash",
+     "effectiveName": "Air Slash",
+     "effectiveType": "Flying",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 97,
+     "max": 115,
+     "minPercent": 35.661764705882355,
+     "maxPercent": 42.279411764705884,
+     "rolls": [
+      97,
+      99,
+      99,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115
+     ],
+     "ohkoChance": 0,
+     "description": "Air Slash: 97–115 HP (35.7–42.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 272,
+      "low": 175,
+      "high": 157,
+      "average": 166.125,
+      "min": 157,
+      "max": 175,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 97,
+        "heals": []
+       },
+       "high": {
+        "dealt": 115,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 5.179200000000037,
+ "preflight": []
+}

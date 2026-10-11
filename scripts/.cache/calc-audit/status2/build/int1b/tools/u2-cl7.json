@@ -1,0 +1,14 @@
+{
+  "doubles-abilities.ts": [
+    ["const MINIMIZE_MOVES: ReadonlySet<string> = new Set([", "export const MINIMIZE_MOVES: ReadonlySet<string> = new Set(["]
+  ],
+  "doubles-turn.ts": [
+    ["  const ownAny = !info.transformed && hitAny;\n", "  const ownAny = !info.transformed && hitAny;\n  // status2 U2: Minimize's condition doubles a minimize-flag move's damage (A1 F1 §4.2; calculate.ts MINIMIZE_MOVES, takenMods.minimize).\n  if (ownAny && receiver.vol.minimize && abilityHooks.MINIMIZE_MOVES.has(id)) hitFact(ctx, action, target, \"Minimize: double damage.\", w.mass);\n"]
+  ],
+  "doubles-typing.ts": [
+    ["  if (FUTURE_MOVES.has(moveId) || CALLING_MOVES.has(moveId)) return;", "  // status2 CL-7: pinned callsMove (doubles-calling.ts CALLS_MOVE): Instruct is none, so Protean acts on it.\n  if (FUTURE_MOVES.has(moveId) || (CALLING_MOVES.has(moveId) && moveId !== \"instruct\")) return;"]
+  ],
+  "doubles-calling.ts": [
+    ["  // Instruct is no callsMove move: its user's Protean or Libero acts at its PrepareHit (PS/data/abilities.ts protean), which\n  // doubles-typing.ts proteanGuard leaves out for it (CALLING_MOVES).\n  const ability = w.mons[slot]!.build.abilityId;\n  const spent = generation(kernel) >= 9 && w.mons[slot]!.build.abilityActive === false;\n  if (moveId === \"instruct\" && (ability === \"protean\" || ability === \"libero\") && !spent && kernel.typesIn(w, slot).join() !== \"Psychic\") {\n    kernel.notEstimated(REASONS.combo(kernel.moveName(\"instruct\"), kernel.abilityName(ability)));\n  }\n", ""]
+  ]
+}

@@ -1,0 +1,579 @@
+{
+ "id": "V16d",
+ "title": "Covert Cloak: no flinch",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Covert Cloak blocks the flinch (SV: not in the Champions catalog).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 157,
+   "classes": 108,
+   "ms": 81,
+   "decisions": {
+    "fail:": 55,
+    "roll": 55
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       149,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 149,
+     "min": 149,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 149
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 77.6875,
+     "min": 71,
+     "max": 84,
+     "modeTieUp": 83,
+     "modeTieDown": 74
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       0.0625
+      ],
+      [
+       162,
+       0.25
+      ],
+      [
+       163,
+       0.3125
+      ],
+      [
+       164,
+       0.25
+      ],
+      [
+       165,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 163.125,
+     "min": 161,
+     "max": 165,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       149,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 149,
+     "min": 149,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 149
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       165,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 165,
+     "min": 165,
+     "max": 165,
+     "modeTieUp": 165,
+     "modeTieDown": 165
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 18,
+       "dmgMax": 18,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       149,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 149,
+     "min": 149,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 149
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 71,
+     "min": 71,
+     "max": 71,
+     "modeTieUp": 71,
+     "modeTieDown": 71
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 22,
+       "dmgMax": 22,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Incineroar|hp|[from] ability: Rough Skin|[of] p2a: Garchomp": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 149,
+   "high": 149,
+   "average": 149,
+   "min": 149,
+   "max": 149,
+   "koChance": 0,
+   "dist": [
+    [
+     149,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 84,
+   "high": 71,
+   "average": 77.6875,
+   "min": 71,
+   "max": 84,
+   "koChance": 0,
+   "dist": [
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 165,
+   "high": 161,
+   "average": 163.125,
+   "min": 161,
+   "max": 165,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     0.0625
+    ],
+    [
+     162,
+     0.25
+    ],
+    [
+     163,
+     0.3125
+    ],
+    [
+     164,
+     0.25
+    ],
+    [
+     165,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

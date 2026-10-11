@@ -1,0 +1,233 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "knockoff",
+    "effectiveName": "Black Hole Eclipse",
+    "effectiveType": "Dark",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 84,
+      "max": 99,
+      "minPercent": 45.90163934426229,
+      "maxPercent": 54.09836065573771,
+      "koChance": 0,
+      "row": {
+       "moveId": "knockoff",
+       "effectiveName": "Black Hole Eclipse",
+       "effectiveType": "Dark",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 84,
+       "max": 99,
+       "minPercent": 45.90163934426229,
+       "maxPercent": 54.09836065573771,
+       "rolls": [
+        84,
+        84,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96,
+        96,
+        97,
+        99
+       ],
+       "ohkoChance": 0,
+       "description": "Black Hole Eclipse: 84–99 HP (45.9–54.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 120,
+    "maximum": 183,
+    "low": 127,
+    "average": 120.125,
+    "high": 112,
+    "min": 112,
+    "max": 127,
+    "koChance": 0,
+    "heals": [
+     "Figy Berry: +91 HP."
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "knockoff",
+     "effectiveName": "Black Hole Eclipse",
+     "effectiveType": "Dark",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 99,
+     "minPercent": 45.90163934426229,
+     "maxPercent": 54.09836065573771,
+     "rolls": [
+      84,
+      84,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93,
+      93,
+      94,
+      96,
+      96,
+      97,
+      99
+     ],
+     "ohkoChance": 0,
+     "description": "Black Hole Eclipse: 84–99 HP (45.9–54.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 120,
+      "low": 127,
+      "high": 112,
+      "average": 120.125,
+      "min": 112,
+      "max": 127,
+      "koChance": 0,
+      "heals": [
+       "Figy Berry: +91 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 84,
+        "heals": [
+         "Figy Berry: +91 HP."
+        ]
+       },
+       "high": {
+        "dealt": 99,
+        "heals": [
+         "Figy Berry: +91 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.162800000000061,
+ "preflight": []
+}

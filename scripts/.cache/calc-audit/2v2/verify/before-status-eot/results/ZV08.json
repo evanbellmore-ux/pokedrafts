@@ -1,0 +1,475 @@
+{
+ "id": "ZV08",
+ "title": "Z-Giga Drain into Liquid Ooze: no drain, no Liquid Ooze damage",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Venusaur stays at 60.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 33,
+   "classes": 24,
+   "ms": 32,
+   "decisions": {
+    "fail:": 10,
+    "roll": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 60,
+     "maximum": 155,
+     "dist": [
+      [
+       60,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 60,
+     "min": 60,
+     "max": 60,
+     "modeTieUp": 60,
+     "modeTieDown": 60
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       74,
+       0.0625
+      ],
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       82,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 81.0625,
+     "min": 74,
+     "max": 88,
+     "modeTieUp": 86,
+     "modeTieDown": 77
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 60,
+     "maximum": 155,
+     "dist": [
+      [
+       60,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 60,
+     "min": 60,
+     "max": 60,
+     "modeTieUp": 60,
+     "modeTieDown": 60
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 60,
+     "maximum": 155,
+     "dist": [
+      [
+       60,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 60,
+     "min": 60,
+     "max": 60,
+     "modeTieUp": 60,
+     "modeTieDown": 60
+    },
+    "own-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       74,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 74,
+     "min": 74,
+     "max": 74,
+     "modeTieUp": 74,
+     "modeTieDown": 74
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "gigadrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Bloom Doom": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 60,
+   "maximum": 155,
+   "low": 60,
+   "high": 60,
+   "average": 60,
+   "min": 60,
+   "max": 60,
+   "koChance": 0,
+   "dist": [
+    [
+     60,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 88,
+   "high": 74,
+   "average": 81.0625,
+   "min": 74,
+   "max": 88,
+   "koChance": 0,
+   "dist": [
+    [
+     74,
+     0.0625
+    ],
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     82,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

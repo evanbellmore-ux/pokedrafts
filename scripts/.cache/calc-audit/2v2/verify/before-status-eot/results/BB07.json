@@ -1,0 +1,590 @@
+{
+ "id": "BB07",
+ "title": "A stolen Kee Berry raises the user's Defense before a later Dragon Claw (SV, Trick Room)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Scizor eats the Kee Berry (+1 Defense) before Garchomp's Dragon Claw hits it.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 101,
+   "classes": 36,
+   "ms": 68,
+   "decisions": {
+    "fail:": 77,
+    "roll": 77
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       122,
+       0.0625
+      ],
+      [
+       123,
+       0.1875
+      ],
+      [
+       124,
+       0.375
+      ],
+      [
+       125,
+       0.1875
+      ],
+      [
+       126,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 124.25,
+     "min": 122,
+     "max": 126,
+     "modeTieUp": 124,
+     "modeTieDown": 124
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       69,
+       0.0625
+      ],
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       74,
+       0.0625
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 77.0625,
+     "min": 69,
+     "max": 84,
+     "modeTieUp": 83,
+     "modeTieDown": 72
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Kee Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-boost|p1a: Scizor|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 19,
+       "dmgMax": 23,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Kee Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-boost|p1a: Scizor|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 19,
+       "dmgMax": 19,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 6,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       122,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 122,
+     "min": 122,
+     "max": 122,
+     "modeTieUp": 122,
+     "modeTieDown": 122
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Politoed",
+     "start": 165,
+     "maximum": 165,
+     "dist": [
+      [
+       69,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 69,
+     "min": 69,
+     "max": 69,
+     "modeTieUp": 69,
+     "modeTieDown": 69
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Politoed|Kee Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-boost|p1a: Scizor|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 23,
+       "dmgMax": 23,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 126,
+   "high": 122,
+   "average": 124.25,
+   "min": 122,
+   "max": 126,
+   "koChance": 0,
+   "dist": [
+    [
+     122,
+     0.0625
+    ],
+    [
+     123,
+     0.1875
+    ],
+    [
+     124,
+     0.375
+    ],
+    [
+     125,
+     0.1875
+    ],
+    [
+     126,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 165,
+   "maximum": 165,
+   "low": 84,
+   "high": 69,
+   "average": 77.0625,
+   "min": 69,
+   "max": 84,
+   "koChance": 0,
+   "dist": [
+    [
+     69,
+     0.0625
+    ],
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     74,
+     0.0625
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

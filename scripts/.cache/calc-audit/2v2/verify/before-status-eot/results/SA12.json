@@ -1,0 +1,616 @@
+{
+ "id": "SA12",
+ "title": "Silvally-Water holding a Water Memory: Multi-Attack Water, a Grass foe's Energy Ball super effective (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Multi-Attack is Water with STAB; Energy Ball 2x into Silvally-Water.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 302,
+   "classes": 207,
+   "ms": 179,
+   "decisions": {
+    "fail:": 108,
+    "roll": 108,
+    "secondary": 96
+   },
+   "slots": {
+    "own-left": {
+     "species": "Silvally-Water",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       42,
+       0.0625
+      ],
+      [
+       44,
+       0.125
+      ],
+      [
+       48,
+       0.125
+      ],
+      [
+       50,
+       0.125
+      ],
+      [
+       54,
+       0.1875
+      ],
+      [
+       56,
+       0.125
+      ],
+      [
+       60,
+       0.125
+      ],
+      [
+       62,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 52.75,
+     "min": 42,
+     "max": 62,
+     "modeTieUp": 54,
+     "modeTieDown": 54
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       126,
+       0.0625
+      ],
+      [
+       127,
+       0.0625
+      ],
+      [
+       129,
+       0.0625
+      ],
+      [
+       130,
+       0.125
+      ],
+      [
+       132,
+       0.0625
+      ],
+      [
+       133,
+       0.0625
+      ],
+      [
+       135,
+       0.125
+      ],
+      [
+       136,
+       0.0625
+      ],
+      [
+       138,
+       0.0625
+      ],
+      [
+       139,
+       0.125
+      ],
+      [
+       141,
+       0.0625
+      ],
+      [
+       142,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 134.625,
+     "min": 126,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 130
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "multiattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 109,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 128,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Silvally-Water",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       62,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 62,
+     "min": 62,
+     "max": 62,
+     "modeTieUp": 62,
+     "modeTieDown": 62
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "multiattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Silvally-Water",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       42,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 42,
+     "min": 42,
+     "max": 42,
+     "modeTieUp": 42,
+     "modeTieDown": 42
+    },
+    "own-right": {
+     "species": "Conkeldurr",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       126,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 126,
+     "min": 126,
+     "max": 126,
+     "modeTieUp": 126,
+     "modeTieDown": 126
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "multiattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 109,
+       "dmgMax": 109,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 128,
+       "dmgMax": 128,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 62,
+   "high": 42,
+   "average": 52.75,
+   "min": 42,
+   "max": 62,
+   "koChance": 0,
+   "dist": [
+    [
+     42,
+     0.0625
+    ],
+    [
+     44,
+     0.125
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     50,
+     0.125
+    ],
+    [
+     54,
+     0.1875
+    ],
+    [
+     56,
+     0.125
+    ],
+    [
+     60,
+     0.125
+    ],
+    [
+     62,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 142,
+   "high": 126,
+   "average": 134.625,
+   "min": 126,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     126,
+     0.0625
+    ],
+    [
+     127,
+     0.0625
+    ],
+    [
+     129,
+     0.0625
+    ],
+    [
+     130,
+     0.125
+    ],
+    [
+     132,
+     0.0625
+    ],
+    [
+     133,
+     0.0625
+    ],
+    [
+     135,
+     0.125
+    ],
+    [
+     136,
+     0.0625
+    ],
+    [
+     138,
+     0.0625
+    ],
+    [
+     139,
+     0.125
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

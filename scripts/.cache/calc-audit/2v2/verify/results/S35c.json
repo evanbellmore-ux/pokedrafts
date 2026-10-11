@@ -1,0 +1,1645 @@
+{
+ "id": "S35c",
+ "title": "Safeguard against the ally's Teeter Dance",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Milotic's Safeguard (146) first; Teeter Dance cannot confuse Milotic (Safeguard blocks other Pokémon, allies included); the foes are confused.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1356,
+   "classes": 199,
+   "ms": 1073,
+   "decisions": {
+    "sample": 80,
+    "random": 128,
+    "chance:confusion": 1280,
+    "roll": 1088
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lilligant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       0.9999999999999984
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 0.9999999999999984
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999984
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999984
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       0.9999999999999984
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 0.9999999999999984
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999984
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999984
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       207,
+       0.020625
+      ],
+      [
+       208,
+       0.061875000000000034
+      ],
+      [
+       209,
+       0.0825
+      ],
+      [
+       210,
+       0.061875000000000034
+      ],
+      [
+       211,
+       0.0825
+      ],
+      [
+       212,
+       0.020625
+      ],
+      [
+       235,
+       0.6700000000000003
+      ]
+     ],
+     "koChance": 0,
+     "average": 226.60562499999997,
+     "min": 207,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999984
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999984
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999984
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999984
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       137,
+       0.020624999999999977
+      ],
+      [
+       138,
+       0.10312500000000006
+      ],
+      [
+       139,
+       0.12375000000000005
+      ],
+      [
+       140,
+       0.0824999999999999
+      ],
+      [
+       154,
+       0.6699999999999998
+      ]
+     ],
+     "koChance": 0,
+     "average": 148.988125,
+     "min": 137,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999984
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999984
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999984
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999984
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "teeterdance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Milotic|move: Safeguard": 1,
+      "|-start|p2a: Blastoise|confusion": 1,
+      "|-start|p2b: Snorlax|confusion": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:safeguard": 1
+      },
+      "opponent-right": {
+       "start:confusion": 1
+      },
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "safeguard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-sidestart|p1: Player 1|Safeguard": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "own": {
+       "sidestart:safeguard": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {
+     "safeguard": 0.9999999999999984
+    },
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {
+     "opponent-right": {
+      "activate:confusion": 0.9999999999999998,
+      "damage:confusion:-14": 0.0825,
+      "damage:confusion:-15": 0.12374999999999992,
+      "damage:confusion:-16": 0.10312499999999994,
+      "damage:confusion:-17": 0.020625
+     }
+    },
+    "opponent-left": {
+     "opponent-left": {
+      "activate:confusion": 0.9999999999999984,
+      "damage:confusion:-23": 0.020625,
+      "damage:confusion:-24": 0.0825,
+      "damage:confusion:-25": 0.061875000000000034,
+      "damage:confusion:-26": 0.0825,
+      "damage:confusion:-27": 0.061875000000000034,
+      "damage:confusion:-28": 0.020625
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 1120,
+    "classes": 160,
+    "ms": 1073,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lilligant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999984
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999984
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999984
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999984
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        0.9999999999999984
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 0.9999999999999984
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999984
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999984
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        207,
+        0.020625
+       ],
+       [
+        208,
+        0.061875000000000034
+       ],
+       [
+        209,
+        0.0825
+       ],
+       [
+        210,
+        0.061875000000000034
+       ],
+       [
+        211,
+        0.0825
+       ],
+       [
+        212,
+        0.020625
+       ],
+       [
+        235,
+        0.6700000000000003
+       ]
+      ],
+      "koChance": 0,
+      "average": 226.60562499999997,
+      "min": 207,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999984
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999984
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999984
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999984
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        137,
+        0.020624999999999977
+       ],
+       [
+        138,
+        0.10312500000000006
+       ],
+       [
+        139,
+        0.12375000000000005
+       ],
+       [
+        140,
+        0.0824999999999999
+       ],
+       [
+        154,
+        0.6699999999999998
+       ]
+      ],
+      "koChance": 0,
+      "average": 148.988125,
+      "min": 137,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999984
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999984
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999984
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999984
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999984,
+     "weather:": 0.9999999999999984
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 268,
+   "classes": 103,
+   "ms": 331,
+   "decisions": {
+    "sample": 80,
+    "random": 128,
+    "chance:confusion": 192,
+    "roll": 96
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lilligant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       0.9999999999999982
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       0.9999999999999982
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       212,
+       0.33000000000000007
+      ],
+      [
+       235,
+       0.6699999999999995
+      ]
+     ],
+     "koChance": 0,
+     "average": 227.41,
+     "min": 212,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999982
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       140,
+       0.33000000000000007
+      ],
+      [
+       154,
+       0.6699999999999995
+      ]
+     ],
+     "koChance": 0,
+     "average": 149.38,
+     "min": 140,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999982
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "teeterdance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Milotic|move: Safeguard": 1,
+      "|-start|p2a: Blastoise|confusion": 1,
+      "|-start|p2b: Snorlax|confusion": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:safeguard": 1
+      },
+      "opponent-right": {
+       "start:confusion": 1
+      },
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "safeguard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-sidestart|p1: Player 1|Safeguard": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "own": {
+       "sidestart:safeguard": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {
+     "safeguard": 0.9999999999999982
+    },
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {
+     "opponent-right": {
+      "activate:confusion": 1,
+      "damage:confusion:-14": 0.33
+     }
+    },
+    "opponent-left": {
+     "opponent-left": {
+      "activate:confusion": 0.9999999999999982,
+      "damage:confusion:-23": 0.33000000000000007
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 128,
+    "classes": 64,
+    "ms": 331,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lilligant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999982
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        0.9999999999999982
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        212,
+        0.33000000000000007
+       ],
+       [
+        235,
+        0.6699999999999995
+       ]
+      ],
+      "koChance": 0,
+      "average": 227.41,
+      "min": 212,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999982
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        140,
+        0.33000000000000007
+       ],
+       [
+        154,
+        0.6699999999999995
+       ]
+      ],
+      "koChance": 0,
+      "average": 149.38,
+      "min": 140,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999982
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999982,
+     "weather:": 0.9999999999999982
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 268,
+   "classes": 103,
+   "ms": 302,
+   "decisions": {
+    "sample": 80,
+    "random": 128,
+    "chance:confusion": 192,
+    "roll": 96
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lilligant",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       0.9999999999999982
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Milotic",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       0.9999999999999982
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       207,
+       0.33000000000000007
+      ],
+      [
+       235,
+       0.6699999999999995
+      ]
+     ],
+     "koChance": 0,
+     "average": 225.76,
+     "min": 207,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999982
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       137,
+       0.33000000000000007
+      ],
+      [
+       154,
+       0.6699999999999995
+      ]
+     ],
+     "koChance": 0,
+     "average": 148.39,
+     "min": 137,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999982
+     },
+     "volatiles": {
+      "confusion": 0.9999999999999982
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999982
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999982
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "teeterdance",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p1b: Milotic|move: Safeguard": 1,
+      "|-start|p2a: Blastoise|confusion": 1,
+      "|-start|p2b: Snorlax|confusion": 1
+     },
+     "effects": {
+      "own-right": {
+       "activate:safeguard": 1
+      },
+      "opponent-right": {
+       "start:confusion": 1
+      },
+      "opponent-left": {
+       "start:confusion": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-right": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "own-right": {
+     "moveId": "safeguard",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-sidestart|p1: Player 1|Safeguard": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "own": {
+       "sidestart:safeguard": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {
+     "safeguard": 0.9999999999999982
+    },
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {
+     "opponent-right": {
+      "activate:confusion": 1,
+      "damage:confusion:-17": 0.33
+     }
+    },
+    "opponent-left": {
+     "opponent-left": {
+      "activate:confusion": 0.9999999999999982,
+      "damage:confusion:-28": 0.33000000000000007
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 128,
+    "classes": 64,
+    "ms": 303,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Lilligant",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        145,
+        0.9999999999999982
+       ]
+      ],
+      "koChance": 0,
+      "average": 145,
+      "min": 145,
+      "max": 145,
+      "modeTieUp": 145,
+      "modeTieDown": 145,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Milotic",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        0.9999999999999982
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        207,
+        0.33000000000000007
+       ],
+       [
+        235,
+        0.6699999999999995
+       ]
+      ],
+      "koChance": 0,
+      "average": 225.76,
+      "min": 207,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999982
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        137,
+        0.33000000000000007
+       ],
+       [
+        154,
+        0.6699999999999995
+       ]
+      ],
+      "koChance": 0,
+      "average": 148.39,
+      "min": 137,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999982
+      },
+      "volatiles": {
+       "confusion": 0.9999999999999982
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999982
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999982
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999982,
+     "weather:": 0.9999999999999982
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.9999999999999984
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     0.9999999999999984
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 226.60562499999997,
+   "min": 207,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     207,
+     0.020625
+    ],
+    [
+     208,
+     0.061875000000000034
+    ],
+    [
+     209,
+     0.0825
+    ],
+    [
+     210,
+     0.061875000000000034
+    ],
+    [
+     211,
+     0.0825
+    ],
+    [
+     212,
+     0.020625
+    ],
+    [
+     235,
+     0.6700000000000003
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 148.988125,
+   "min": 137,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.020624999999999977
+    ],
+    [
+     138,
+     0.10312500000000006
+    ],
+    [
+     139,
+     0.12375000000000005
+    ],
+    [
+     140,
+     0.0824999999999999
+    ],
+    [
+     154,
+     0.6699999999999998
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     0.9999999999999984
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     0.9999999999999984
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 226.60562499999997,
+   "min": 207,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     207,
+     0.020625
+    ],
+    [
+     208,
+     0.061875000000000034
+    ],
+    [
+     209,
+     0.0825
+    ],
+    [
+     210,
+     0.061875000000000034
+    ],
+    [
+     211,
+     0.0825
+    ],
+    [
+     212,
+     0.020625
+    ],
+    [
+     235,
+     0.6700000000000003
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 148.988125,
+   "min": 137,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     137,
+     0.020624999999999977
+    ],
+    [
+     138,
+     0.10312500000000006
+    ],
+    [
+     139,
+     0.12375000000000005
+    ],
+    [
+     140,
+     0.0824999999999999
+    ],
+    [
+     154,
+     0.6699999999999998
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

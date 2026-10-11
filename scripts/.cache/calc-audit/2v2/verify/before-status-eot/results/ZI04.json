@@ -1,0 +1,733 @@
+{
+ "id": "ZI04",
+ "title": "Z-Knock Off into a Kee Berry: eaten by its holder, then a physical hit at +1 Defense (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Black Hole Eclipse is physical: Snorlax eats its Kee Berry (+1 Defense) before Garchomp's Dragon Claw.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 377,
+   "classes": 258,
+   "ms": 159,
+   "decisions": {
+    "fail:": 135,
+    "roll": 135
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       39,
+       0.00390625
+      ],
+      [
+       40,
+       0.0078125
+      ],
+      [
+       41,
+       0.00390625
+      ],
+      [
+       42,
+       0.01953125
+      ],
+      [
+       43,
+       0.015625
+      ],
+      [
+       44,
+       0.01171875
+      ],
+      [
+       45,
+       0.0390625
+      ],
+      [
+       46,
+       0.0234375
+      ],
+      [
+       47,
+       0.0234375
+      ],
+      [
+       48,
+       0.0546875
+      ],
+      [
+       49,
+       0.03125
+      ],
+      [
+       50,
+       0.03125
+      ],
+      [
+       51,
+       0.06640625
+      ],
+      [
+       52,
+       0.0390625
+      ],
+      [
+       53,
+       0.03125
+      ],
+      [
+       54,
+       0.0703125
+      ],
+      [
+       55,
+       0.0390625
+      ],
+      [
+       56,
+       0.03125
+      ],
+      [
+       57,
+       0.07421875
+      ],
+      [
+       58,
+       0.0390625
+      ],
+      [
+       59,
+       0.03125
+      ],
+      [
+       60,
+       0.0703125
+      ],
+      [
+       61,
+       0.0390625
+      ],
+      [
+       62,
+       0.02734375
+      ],
+      [
+       63,
+       0.05078125
+      ],
+      [
+       64,
+       0.0234375
+      ],
+      [
+       65,
+       0.01953125
+      ],
+      [
+       66,
+       0.03515625
+      ],
+      [
+       67,
+       0.015625
+      ],
+      [
+       68,
+       0.0078125
+      ],
+      [
+       69,
+       0.015625
+      ],
+      [
+       70,
+       0.0078125
+      ]
+     ],
+     "koChance": 0,
+     "average": 55.1875,
+     "min": 39,
+     "max": 70,
+     "modeTieUp": 57,
+     "modeTieDown": 57
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 111,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1,
+      "|-enditem|p2b: Snorlax|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Snorlax|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       70,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 70,
+     "min": 70,
+     "max": 70,
+     "modeTieUp": 70,
+     "modeTieDown": 70
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 111,
+       "dmgMax": 111,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1,
+      "|-enditem|p2b: Snorlax|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Snorlax|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       39,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 39,
+     "min": 39,
+     "max": 39,
+     "modeTieUp": 39,
+     "modeTieDown": 39
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "knockoff",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 132,
+       "dmgMax": 132,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1,
+      "|-enditem|p2b: Snorlax|Kee Berry|[eat]": 1,
+      "|-boost|p2b: Snorlax|def|1|[from] item: Kee Berry": 1
+     }
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 70,
+   "high": 39,
+   "average": 55.1875,
+   "min": 39,
+   "max": 70,
+   "koChance": 0,
+   "dist": [
+    [
+     39,
+     0.00390625
+    ],
+    [
+     40,
+     0.0078125
+    ],
+    [
+     41,
+     0.00390625
+    ],
+    [
+     42,
+     0.01953125
+    ],
+    [
+     43,
+     0.015625
+    ],
+    [
+     44,
+     0.01171875
+    ],
+    [
+     45,
+     0.0390625
+    ],
+    [
+     46,
+     0.0234375
+    ],
+    [
+     47,
+     0.0234375
+    ],
+    [
+     48,
+     0.0546875
+    ],
+    [
+     49,
+     0.03125
+    ],
+    [
+     50,
+     0.03125
+    ],
+    [
+     51,
+     0.06640625
+    ],
+    [
+     52,
+     0.0390625
+    ],
+    [
+     53,
+     0.03125
+    ],
+    [
+     54,
+     0.0703125
+    ],
+    [
+     55,
+     0.0390625
+    ],
+    [
+     56,
+     0.03125
+    ],
+    [
+     57,
+     0.07421875
+    ],
+    [
+     58,
+     0.0390625
+    ],
+    [
+     59,
+     0.03125
+    ],
+    [
+     60,
+     0.0703125
+    ],
+    [
+     61,
+     0.0390625
+    ],
+    [
+     62,
+     0.02734375
+    ],
+    [
+     63,
+     0.05078125
+    ],
+    [
+     64,
+     0.0234375
+    ],
+    [
+     65,
+     0.01953125
+    ],
+    [
+     66,
+     0.03515625
+    ],
+    [
+     67,
+     0.015625
+    ],
+    [
+     68,
+     0.0078125
+    ],
+    [
+     69,
+     0.015625
+    ],
+    [
+     70,
+     0.0078125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 120 whole-turn replays"
+ ]
+}

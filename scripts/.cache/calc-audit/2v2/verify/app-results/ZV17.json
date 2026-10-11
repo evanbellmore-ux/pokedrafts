@@ -1,0 +1,402 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 25,
+      "max": 31,
+      "minPercent": 10.638297872340425,
+      "maxPercent": 13.191489361702127,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 25,
+       "max": 31,
+       "minPercent": 10.638297872340425,
+       "maxPercent": 13.191489361702127,
+       "rolls": [
+        25,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 25–31 HP (10.6–13.2% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "naturesmadness",
+    "effectiveName": "Guardian of Alola",
+    "effectiveType": "Fairy",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 153,
+      "max": 157,
+      "minPercent": 65.1063829787234,
+      "maxPercent": 66.80851063829788,
+      "koChance": 0,
+      "row": {
+       "moveId": "naturesmadness",
+       "effectiveName": "Guardian of Alola",
+       "effectiveType": "Fairy",
+       "effectivePower": 0,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 176,
+       "max": 176,
+       "minPercent": 74.8936170212766,
+       "maxPercent": 74.8936170212766,
+       "rolls": 176,
+       "ohkoChance": 0,
+       "description": "Guardian of Alola: 176–176 HP (74.9–74.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 4,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 53,
+    "average": 52,
+    "high": 51,
+    "min": 51,
+    "max": 53,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "naturesmadness",
+     "effectiveName": "Guardian of Alola",
+     "effectiveType": "Fairy",
+     "effectivePower": 0,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 176,
+     "max": 176,
+     "minPercent": 74.8936170212766,
+     "maxPercent": 74.8936170212766,
+     "rolls": 176,
+     "ohkoChance": 0,
+     "description": "Guardian of Alola: 176–176 HP (74.9–74.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 59,
+      "high": 59,
+      "average": 59,
+      "min": 59,
+      "max": 59,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 176,
+        "heals": []
+       },
+       "high": {
+        "dealt": 176,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 25,
+     "max": 31,
+     "minPercent": 10.638297872340425,
+     "maxPercent": 13.191489361702127,
+     "rolls": [
+      25,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 25–31 HP (10.6–13.2% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 21,
+      "fewest": 13,
+      "fasterChance": 0.9999999999999999,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Flamethrower's damage follows the attacker's HP.",
+       "Grassy Terrain heals the target at the end of each turn.",
+       "Grassy Terrain heals the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 210,
+      "high": 204,
+      "average": 206.8125,
+      "min": 204,
+      "max": 210,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 25,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 67,
+     "average": 66,
+     "high": 65,
+     "min": 65,
+     "max": 67,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Grassy Terrain",
+     "chance": 1,
+     "min": 14,
+     "max": 14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.5526999999997315,
+ "preflight": []
+}

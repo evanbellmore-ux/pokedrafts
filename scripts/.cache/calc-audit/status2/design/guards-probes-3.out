@@ -1,0 +1,98 @@
+
+== G8 Matcha Gotcha with Big Root into a Liquid Ooze target and a plain one
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Ooze|[spread] p2a,p2b
+  |-damage|p2a: Ooze|109/155
+  |-damage|p2a: Ooze|109/155
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p2b: Plain|184/235
+  |-damage|p2b: Plain|184/235
+  |-heal|p1a: Sinistcha|91/146|[from] drain|[of] p2b: Plain
+  |-heal|p1a: Sinistcha|91/146|[from] drain|[of] p2b: Plain
+  |move|p2a: Ooze|Splash|p2a: Ooze
+  |move|p2b: Plain|Splash|p2b: Plain
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+== G8b the same without Big Root (the raw drain amounts)
+  |move|p1a: Sinistcha|Matcha Gotcha|p2a: Ooze|[spread] p2a,p2b
+  |-damage|p2a: Ooze|109/155
+  |-damage|p2a: Ooze|109/155
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p1a: Sinistcha|57/146|[from] ability: Liquid Ooze|[of] p2a: Ooze
+  |-damage|p2b: Plain|184/235
+  |-damage|p2b: Plain|184/235
+  |-heal|p1a: Sinistcha|83/146|[from] drain|[of] p2b: Plain
+  |-heal|p1a: Sinistcha|83/146|[from] drain|[of] p2b: Plain
+  |move|p2a: Ooze|Splash|p2a: Ooze
+  |move|p2b: Plain|Splash|p2b: Plain
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |turn|2
+
+### O1 Focus Band against a knockout hit: 1/10 to survive at 1 HP  (2 runs)
+ turn 1 after moves: p1a Garchomp [183:1] | p1b Lax4 [235:1] | p2a Band [0:0.9 1:0.1] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Garchomp [183:1] | p1b Lax4 [235:1] | p2a Bench [235:0.9] | p2b Lax12 [235:1] | p2a Band [1:0.1]
+
+### O1b Focus Band against a two-hit Dual Wingbeat whose each hit can knock out: per hit  (3 runs)
+ turn 1 after moves: p1a Dragonite [166:1] | p1b Lax4 [235:1] | p2a Band [0:0.99 1:0.01] | p2b Lax12 [235:1]
+ turn 1 end of turn: p1a Dragonite [166:1] | p1b Lax4 [235:1] | p2a Bench [235:0.99] | p2b Lax12 [235:1] | p2a Band [1:0.01]
+
+== Q1 Glaive Rush, then a later hit into its user
+  |move|p1a: Bax|Glaive Rush|p2a: Lax8
+  |-damage|p2a: Lax8|103/235
+  |-damage|p2a: Lax8|103/235
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2b: Hitter|Tackle|p1a: Bax
+  |-damage|p1a: Bax|136/190
+  |-damage|p1a: Bax|136/190
+
+== Q1b the same Tackle without Glaive Rush (Bax uses Splash)
+  |move|p1a: Bax|Splash|p1a: Bax
+  |move|p2a: Lax8|Splash|p2a: Lax8
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |move|p2b: Hitter|Tackle|p1a: Bax
+  |-damage|p1a: Bax|163/190
+  |-damage|p1a: Bax|163/190
+
+== R1 Prankster-less priority (Quick Attack) into its own ally on Psychic Terrain, the ally with Armor Tail
+  |move|p1a: Pikachu|Quick Attack|p1b: Ally
+  |-damage|p1b: Ally|182/195
+  |-damage|p1b: Ally|182/195
+  |move|p1b: Ally|Splash|p1b: Ally
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Lax8|Splash|p2a: Lax8
+
+== N1 two Round users: the second moves next with 2x power
+  |move|p2a: Mid|Splash|p2a: Mid
+  |move|p1a: Cream|Round|p2a: Mid
+  |-damage|p2a: Mid|155/183
+  |-damage|p2a: Mid|155/183
+  |move|p1b: Slow|Round|p2b: Lax12|[from] move: Round
+  |-damage|p2b: Lax12|190/235
+  |-damage|p2b: Lax12|190/235
+  |move|p2b: Lax12|Splash|p2b: Lax12
+
+== E9 Fling Flame Orb by a Sheer Force user
+  |move|p1a: Nidoking|Fling|p2a: Target
+  |-damage|p2a: Target|218/235
+  |-damage|p2a: Target|218/235
+  |-status|p2a: Target|brn
+  |-enditem|p1a: Nidoking|Flame Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Target|Splash|p2a: Target
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |-damage|p2a: Target|204/235 brn|[from] brn
+  |-damage|p2a: Target|204/235 brn|[from] brn
+
+== E9b the same Fling by a non-Sheer Force Nidoking (damage comparison)
+  |move|p1a: Nidoking|Fling|p2a: Target
+  |-damage|p2a: Target|218/235
+  |-damage|p2a: Target|218/235
+  |-status|p2a: Target|brn
+  |-enditem|p1a: Nidoking|Flame Orb|[from] move: Fling
+  |move|p2b: Lax12|Splash|p2b: Lax12
+  |move|p2a: Target|Splash|p2a: Target
+  |move|p1b: Lax4|Splash|p1b: Lax4
+  |-damage|p2a: Target|204/235 brn|[from] brn
+  |-damage|p2a: Target|204/235 brn|[from] brn

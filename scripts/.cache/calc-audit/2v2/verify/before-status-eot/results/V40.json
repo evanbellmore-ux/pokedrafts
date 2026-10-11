@@ -1,0 +1,616 @@
+{
+ "id": "V40",
+ "title": "Stance Change: Blade Forme after attacking, then hit",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Aegislash (80) attacks first and becomes Blade Forme; Kingambit's (70) Iron Head meets the Blade Forme's Defense.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 144,
+   "classes": 15,
+   "ms": 63,
+   "decisions": {
+    "fail:": 140,
+    "roll": 140,
+    "secondary": 140
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       75,
+       0.125
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 77.6875,
+     "min": 71,
+     "max": 84,
+     "modeTieUp": 83,
+     "modeTieDown": 74
+    },
+    "own-right": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.125
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       82,
+       0.125
+      ],
+      [
+       83,
+       0.0625
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 80.875,
+     "min": 76,
+     "max": 85,
+     "modeTieUp": 85,
+     "modeTieDown": 78
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 50,
+       "dmgMax": 59,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "own-right": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       85,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 85,
+     "min": 85,
+     "max": 85,
+     "modeTieUp": 85,
+     "modeTieDown": 85
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 50,
+       "dmgMax": 50,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       71,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 71,
+     "min": 71,
+     "max": 71,
+     "modeTieUp": 71,
+     "modeTieDown": 71
+    },
+    "own-right": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Aegislash",
+     "start": 135,
+     "maximum": 135,
+     "dist": [
+      [
+       76,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 76,
+     "min": 76,
+     "max": 76,
+     "modeTieUp": 76,
+     "modeTieDown": 76
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "ironhead",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 59,
+       "dmgMax": 59,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 82,
+       "dmgMax": 82,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 84,
+   "high": 71,
+   "average": 77.6875,
+   "min": 71,
+   "max": 84,
+   "koChance": 0,
+   "dist": [
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     75,
+     0.125
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 135,
+   "maximum": 135,
+   "low": 85,
+   "high": 76,
+   "average": 80.875,
+   "min": 76,
+   "max": 85,
+   "koChance": 0,
+   "dist": [
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.125
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     82,
+     0.125
+    ],
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

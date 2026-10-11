@@ -1,0 +1,549 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 165,
+    "maximum": 165
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "flareblitz",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 36,
+      "max": 43,
+      "minPercent": 15.319148936170212,
+      "maxPercent": 18.29787234042553,
+      "koChance": 0,
+      "row": {
+       "moveId": "flareblitz",
+       "effectiveName": "Flare Blitz",
+       "effectiveType": "Fire",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 36,
+       "max": 43,
+       "minPercent": 15.319148936170212,
+       "maxPercent": 18.29787234042553,
+       "rolls": [
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43
+       ],
+       "ohkoChance": 0,
+       "description": "Flare Blitz: 36–43 HP (15.3–18.3% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 143,
+    "maximum": 143,
+    "low": 143,
+    "average": 143,
+    "high": 143,
+    "min": 143,
+    "max": 143,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 199,
+    "average": 195.75,
+    "high": 192,
+    "min": 192,
+    "max": 199,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 158,
+    "average": 157.0625,
+    "high": 156,
+    "min": 156,
+    "max": 158,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "flareblitz",
+     "effectiveName": "Flare Blitz",
+     "effectiveType": "Fire",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 15.319148936170212,
+     "maxPercent": 18.29787234042553,
+     "rolls": [
+      36,
+      36,
+      37,
+      37,
+      37,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Flare Blitz: 36–43 HP (15.3–18.3% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.5698296427726746,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 199,
+      "high": 192,
+      "average": 195.75,
+      "min": 192,
+      "max": 199,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 143,
+     "maximum": 143,
+     "low": 143,
+     "average": 143,
+     "high": 143,
+     "min": 143,
+     "max": 143,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 199,
+     "average": 195.75,
+     "high": 192,
+     "min": 192,
+     "max": 199,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 170,
+     "maximum": 170,
+     "low": 158,
+     "average": 157.0625,
+     "high": 156,
+     "min": 156,
+     "max": 158,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.26050000000032,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 165,
+    "maximum": 165
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "gardevoir",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -2,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "tracedAbility": "intimidate",
+       "copiedIntimidateStored": "incineroar,arcanine"
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 192,
+        "chance": 0.0625
+       },
+       {
+        "hp": 193,
+        "chance": 0.1875
+       },
+       {
+        "hp": 195,
+        "chance": 0.1875
+       },
+       {
+        "hp": 196,
+        "chance": 0.25
+       },
+       {
+        "hp": 198,
+        "chance": 0.1875
+       },
+       {
+        "hp": 199,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -2,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 156,
+        "chance": 0.25
+       },
+       {
+        "hp": 157,
+        "chance": 0.4375
+       },
+       {
+        "hp": 158,
+        "chance": 0.3125
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "arcanine",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

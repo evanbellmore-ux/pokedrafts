@@ -1,0 +1,1461 @@
+{
+ "id": "HL01",
+ "title": "Close Combat into Rough Skin: the attacker eats its own Sitrus Berry (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Heracross 93/155 - 19 (Rough Skin) = 74, then its Sitrus Berry +38: 112 (verifier E01).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 39,
+   "classes": 28,
+   "ms": 66,
+   "decisions": {
+    "fail:": 12,
+    "roll": 12,
+    "secondary": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Heracross",
+     "start": 93,
+     "maximum": 155,
+     "dist": [
+      [
+       112,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 112,
+     "min": 112,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       81,
+       0.0625
+      ],
+      [
+       83,
+       0.0625
+      ],
+      [
+       84,
+       0.0625
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       87,
+       0.0625
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       90,
+       0.0625
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       93,
+       0.0625
+      ],
+      [
+       95,
+       0.125
+      ],
+      [
+       96,
+       0.0625
+      ],
+      [
+       98,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 89.75,
+     "min": 81,
+     "max": 98,
+     "modeTieUp": 95,
+     "modeTieDown": 86,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 85,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Heracross|def|1": 1,
+      "|-unboost|p1a: Heracross|spd|1": 1,
+      "|-damage|p1a: Heracross|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Heracross|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Heracross|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-85": 0.0625,
+       "damage:-87": 0.0625,
+       "damage:-88": 0.125,
+       "damage:-90": 0.0625,
+       "damage:-91": 0.125,
+       "damage:-93": 0.0625,
+       "damage:-94": 0.125,
+       "damage:-96": 0.0625,
+       "damage:-97": 0.125,
+       "damage:-99": 0.0625,
+       "damage:-100": 0.0625,
+       "damage:-102": 0.0625
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1,
+       "damage:roughskin:-19": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 19,
+       "max": 19
+      },
+      "opponent-left": {
+       "min": -102,
+       "max": -85
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -102,
+       "max": -85,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 12,
+    "classes": 12,
+    "ms": 66,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Heracross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        112,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 112,
+      "min": 112,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        81,
+        0.0625
+       ],
+       [
+        83,
+        0.0625
+       ],
+       [
+        84,
+        0.0625
+       ],
+       [
+        86,
+        0.125
+       ],
+       [
+        87,
+        0.0625
+       ],
+       [
+        89,
+        0.125
+       ],
+       [
+        90,
+        0.0625
+       ],
+       [
+        92,
+        0.125
+       ],
+       [
+        93,
+        0.0625
+       ],
+       [
+        95,
+        0.125
+       ],
+       [
+        96,
+        0.0625
+       ],
+       [
+        98,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 89.75,
+      "min": 81,
+      "max": 98,
+      "modeTieUp": 95,
+      "modeTieDown": 86,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Heracross",
+     "start": 93,
+     "maximum": 155,
+     "dist": [
+      [
+       112,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 112,
+     "min": 112,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       98,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 98,
+     "min": 98,
+     "max": 98,
+     "modeTieUp": 98,
+     "modeTieDown": 98,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 85,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Heracross|def|1": 1,
+      "|-unboost|p1a: Heracross|spd|1": 1,
+      "|-damage|p1a: Heracross|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Heracross|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Heracross|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-85": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1,
+       "damage:roughskin:-19": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 19,
+       "max": 19
+      },
+      "opponent-left": {
+       "min": -85,
+       "max": -85
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -85,
+       "max": -85,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Heracross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        112,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 112,
+      "min": 112,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        98,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 98,
+      "min": 98,
+      "max": 98,
+      "modeTieUp": 98,
+      "modeTieDown": 98,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Heracross",
+     "start": 93,
+     "maximum": 155,
+     "dist": [
+      [
+       112,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 112,
+     "min": 112,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "def:-1": 1,
+      "spd:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       81,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 81,
+     "min": 81,
+     "max": 81,
+     "modeTieUp": 81,
+     "modeTieDown": 81,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 102,
+       "dmgMax": 102,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Heracross|def|1": 1,
+      "|-unboost|p1a: Heracross|spd|1": 1,
+      "|-damage|p1a: Heracross|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Heracross|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Heracross|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-102": 1
+      },
+      "own-left": {
+       "boost:def:-1": 1,
+       "boost:spd:-1": 1,
+       "damage:roughskin:-19": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 19,
+       "max": 19
+      },
+      "opponent-left": {
+       "min": -102,
+       "max": -102
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -102,
+       "max": -102,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Heracross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        112,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 112,
+      "min": 112,
+      "max": 112,
+      "modeTieUp": 112,
+      "modeTieDown": 112,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "def:-1": 1,
+       "spd:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        81,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 81,
+      "min": 81,
+      "max": 81,
+      "modeTieUp": 81,
+      "modeTieDown": 81,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 93,
+   "maximum": 155,
+   "low": 112,
+   "high": 112,
+   "average": 112,
+   "min": 112,
+   "max": 112,
+   "koChance": 0,
+   "dist": [
+    [
+     112,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 98,
+   "high": 81,
+   "average": 89.75,
+   "min": 81,
+   "max": 98,
+   "koChance": 0,
+   "dist": [
+    [
+     81,
+     0.0625
+    ],
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     96,
+     0.0625
+    ],
+    [
+     98,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 93,
+   "maximum": 155,
+   "low": 112,
+   "high": 112,
+   "average": 112,
+   "min": 112,
+   "max": 112,
+   "koChance": 0,
+   "dist": [
+    [
+     112,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 98,
+   "high": 81,
+   "average": 89.75,
+   "min": 81,
+   "max": 98,
+   "koChance": 0,
+   "dist": [
+    [
+     81,
+     0.0625
+    ],
+    [
+     83,
+     0.0625
+    ],
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.0625
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     90,
+     0.0625
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     96,
+     0.0625
+    ],
+    [
+     98,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

@@ -1,0 +1,541 @@
+{
+ "id": "K07a",
+ "title": "Helping Hand with the ally fainted",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Charizard fainted before the turn: Helping Hand has no target and fails; Rock Slide hits Clefable alone.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 25,
+   "classes": 15,
+   "ms": 25,
+   "decisions": {
+    "accuracy": 11,
+    "fail:": 11,
+    "roll": 11,
+    "secondary": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       104,
+       0.0625
+      ],
+      [
+       105,
+       0.0625
+      ],
+      [
+       106,
+       0.125
+      ],
+      [
+       107,
+       0.0625
+      ],
+      [
+       108,
+       0.125
+      ],
+      [
+       109,
+       0.0625
+      ],
+      [
+       110,
+       0.125
+      ],
+      [
+       111,
+       0.0625
+      ],
+      [
+       112,
+       0.125
+      ],
+      [
+       113,
+       0.0625
+      ],
+      [
+       114,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 109.3125,
+     "min": 104,
+     "max": 114,
+     "modeTieUp": 114,
+     "modeTieDown": 106
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "helpinghand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Clefable|Helping Hand|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Clefable": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 56,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 26,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       114,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 114,
+     "min": 114,
+     "max": 114,
+     "modeTieUp": 114,
+     "modeTieDown": 114
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "helpinghand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Clefable|Helping Hand|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Clefable": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 56,
+       "dmgMax": 56,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 7,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       104,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 104,
+     "min": 104,
+     "max": 104,
+     "modeTieUp": 104,
+     "modeTieDown": 104
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 0,
+     "maximum": 153,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "helpinghand",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|move|p1a: Clefable|Helping Hand|p1: Charizard|[notarget]": 1,
+      "|-fail|p1a: Clefable": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "rockslide",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 114,
+   "high": 104,
+   "average": 109.3125,
+   "min": 104,
+   "max": 114,
+   "koChance": 0,
+   "dist": [
+    [
+     104,
+     0.0625
+    ],
+    [
+     105,
+     0.0625
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     107,
+     0.0625
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     109,
+     0.0625
+    ],
+    [
+     110,
+     0.125
+    ],
+    [
+     111,
+     0.0625
+    ],
+    [
+     112,
+     0.125
+    ],
+    [
+     113,
+     0.0625
+    ],
+    [
+     114,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 0,
+   "maximum": 153,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 11 whole-turn replays"
+ ]
+}

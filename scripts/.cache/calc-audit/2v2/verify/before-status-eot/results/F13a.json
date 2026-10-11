@@ -1,0 +1,641 @@
+{
+ "id": "F13a",
+ "title": "A Figy Berry eaten without a disliked Nature",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Adamant lowers Sp. Atk: the Figy Berry does not confuse; Body Slam always comes.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 158,
+   "classes": 42,
+   "ms": 62,
+   "decisions": {
+    "fail:": 130,
+    "roll": 130,
+    "secondary": 117
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       76,
+       0.0625
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       82,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 82.4375,
+     "min": 76,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 79
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       113,
+       0.0625
+      ],
+      [
+       114,
+       0.0625
+      ],
+      [
+       116,
+       0.0625
+      ],
+      [
+       117,
+       0.0625
+      ],
+      [
+       119,
+       0.125
+      ],
+      [
+       120,
+       0.0625
+      ],
+      [
+       122,
+       0.0625
+      ],
+      [
+       123,
+       0.125
+      ],
+      [
+       125,
+       0.0625
+      ],
+      [
+       126,
+       0.0625
+      ],
+      [
+       128,
+       0.0625
+      ],
+      [
+       129,
+       0.125
+      ],
+      [
+       131,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 122.125,
+     "min": 113,
+     "max": 131,
+     "modeTieUp": 129,
+     "modeTieDown": 119
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Figy Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Figy Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       131,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 131,
+     "min": 131,
+     "max": 131,
+     "modeTieUp": 131,
+     "modeTieDown": 131
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Figy Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Figy Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       76,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 76,
+     "min": 76,
+     "max": 76,
+     "modeTieUp": 76,
+     "modeTieDown": 76
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 150,
+     "maximum": 235,
+     "dist": [
+      [
+       113,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 113,
+     "min": 113,
+     "max": 113,
+     "modeTieUp": 113,
+     "modeTieDown": 113
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Figy Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Figy Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 88,
+   "high": 76,
+   "average": 82.4375,
+   "min": 76,
+   "max": 88,
+   "koChance": 0,
+   "dist": [
+    [
+     76,
+     0.0625
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     82,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 150,
+   "maximum": 235,
+   "low": 131,
+   "high": 113,
+   "average": 122.125,
+   "min": 113,
+   "max": 131,
+   "koChance": 0,
+   "dist": [
+    [
+     113,
+     0.0625
+    ],
+    [
+     114,
+     0.0625
+    ],
+    [
+     116,
+     0.0625
+    ],
+    [
+     117,
+     0.0625
+    ],
+    [
+     119,
+     0.125
+    ],
+    [
+     120,
+     0.0625
+    ],
+    [
+     122,
+     0.0625
+    ],
+    [
+     123,
+     0.125
+    ],
+    [
+     125,
+     0.0625
+    ],
+    [
+     126,
+     0.0625
+    ],
+    [
+     128,
+     0.0625
+    ],
+    [
+     129,
+     0.125
+    ],
+    [
+     131,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

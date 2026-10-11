@@ -1,0 +1,223 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "ivycudgel",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 186,
+      "max": 218,
+      "minPercent": 120,
+      "maxPercent": 140.6451612903226,
+      "koChance": 1,
+      "row": {
+       "moveId": "ivycudgel",
+       "effectiveName": "Ivy Cudgel",
+       "effectiveType": "Fire",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 186,
+       "max": 218,
+       "minPercent": 120,
+       "maxPercent": 140.6451612903226,
+       "rolls": [
+        186,
+        186,
+        188,
+        192,
+        192,
+        194,
+        198,
+        200,
+        200,
+        204,
+        206,
+        210,
+        210,
+        212,
+        216,
+        218
+       ],
+       "ohkoChance": 1,
+       "description": "Ivy Cudgel: 186–218 HP (120.0–140.6% of maximum HP). Applied: Hearthflame Mask.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "ivycudgel",
+     "effectiveName": "Ivy Cudgel",
+     "effectiveType": "Fire",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 186,
+     "max": 218,
+     "minPercent": 120,
+     "maxPercent": 140.6451612903226,
+     "rolls": [
+      186,
+      186,
+      188,
+      192,
+      192,
+      194,
+      198,
+      200,
+      200,
+      204,
+      206,
+      210,
+      210,
+      212,
+      216,
+      218
+     ],
+     "ohkoChance": 1,
+     "description": "Ivy Cudgel: 186–218 HP (120.0–140.6% of maximum HP). Applied: Hearthflame Mask.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 155,
+        "heals": []
+       },
+       "high": {
+        "dealt": 155,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.665100000000166,
+ "preflight": []
+}

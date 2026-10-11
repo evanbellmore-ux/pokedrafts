@@ -1,0 +1,340 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bulletseed",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 66,
+      "max": 195,
+      "minPercent": 50.76923076923077,
+      "maxPercent": 150,
+      "koChance": 0.1508056640625,
+      "row": {
+       "moveId": "bulletseed",
+       "effectiveName": "Bullet Seed",
+       "effectiveType": "Grass",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 66,
+       "max": 195,
+       "minPercent": 50.76923076923077,
+       "maxPercent": 150,
+       "rolls": [
+        [
+         33,
+         33,
+         33,
+         33,
+         34,
+         34,
+         34,
+         34,
+         36,
+         36,
+         36,
+         36,
+         37,
+         37,
+         37,
+         39
+        ],
+        [
+         33,
+         33,
+         33,
+         33,
+         34,
+         34,
+         34,
+         34,
+         36,
+         36,
+         36,
+         36,
+         37,
+         37,
+         37,
+         39
+        ],
+        [
+         33,
+         33,
+         33,
+         33,
+         34,
+         34,
+         34,
+         34,
+         36,
+         36,
+         36,
+         36,
+         37,
+         37,
+         37,
+         39
+        ],
+        [
+         33,
+         33,
+         33,
+         33,
+         34,
+         34,
+         34,
+         34,
+         36,
+         36,
+         36,
+         36,
+         37,
+         37,
+         37,
+         39
+        ],
+        [
+         33,
+         33,
+         33,
+         33,
+         34,
+         34,
+         34,
+         34,
+         36,
+         36,
+         36,
+         36,
+         37,
+         37,
+         37,
+         39
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Bullet Seed: 66–195 HP (50.8–150.0% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Bullet Seed: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 4,
+      "facts": [
+       {
+        "text": "Disguise: Mimikyu takes no damage.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 81,
+    "average": 44.212939453125,
+    "high": 0,
+    "min": 0,
+    "max": 81,
+    "koChance": 0.1508056640625,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bulletseed",
+     "effectiveName": "Bullet Seed",
+     "effectiveType": "Grass",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+     "assumptions": [],
+     "reason": "Intact Disguise takes the first hit.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 130,
+     "maximum": 130,
+     "low": 81,
+     "average": 44.212939453125,
+     "high": 0,
+     "min": 0,
+     "max": 81,
+     "koChance": 0.1508056640625,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.256400000000212,
+ "preflight": []
+}

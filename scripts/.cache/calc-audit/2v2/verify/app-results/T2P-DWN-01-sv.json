@@ -1,0 +1,277 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 167,
+    "maximum": 167
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "triattack",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 78,
+      "max": 93,
+      "minPercent": 46.706586826347305,
+      "maxPercent": 55.688622754491014,
+      "koChance": 0,
+      "row": {
+       "moveId": "triattack",
+       "effectiveName": "Tri Attack",
+       "effectiveType": "Normal",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 78,
+       "max": 93,
+       "minPercent": 46.706586826347305,
+       "maxPercent": 55.688622754491014,
+       "rolls": [
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93
+       ],
+       "ohkoChance": 0,
+       "description": "Tri Attack: 78–93 HP (46.7–55.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Target: Dauntless Shield has raised Defense — yes."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 167,
+    "maximum": 167,
+    "low": 89,
+    "average": 81.9375,
+    "high": 74,
+    "min": 74,
+    "max": 89,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "triattack",
+     "effectiveName": "Tri Attack",
+     "effectiveType": "Normal",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 78,
+     "max": 93,
+     "minPercent": 46.706586826347305,
+     "maxPercent": 55.688622754491014,
+     "rolls": [
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93
+     ],
+     "ohkoChance": 0,
+     "description": "Tri Attack: 78–93 HP (46.7–55.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Dauntless Shield has raised Defense — yes.",
+      "Porygon-Z's Download raised its Sp. Atk: it read Zamazenta's Defense after its Dauntless Shield rise (assumes all four led together, Zamazenta first: 158 Speed against 142)."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.6953125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 167,
+      "low": 89,
+      "high": 74,
+      "average": 81.9375,
+      "min": 74,
+      "max": 89,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 78,
+        "heals": []
+       },
+       "high": {
+        "dealt": 93,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 167,
+     "maximum": 167,
+     "low": 89,
+     "average": 81.9375,
+     "high": 74,
+     "min": 74,
+     "max": 89,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.0591999999996915,
+ "preflight": []
+}

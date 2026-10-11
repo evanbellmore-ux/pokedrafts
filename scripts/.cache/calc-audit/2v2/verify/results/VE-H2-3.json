@@ -1,0 +1,1502 @@
+{
+ "id": "VE-H2-3",
+ "title": "Sand Attack into a Mirror Armor Eject Pack holder (Gravity)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The drop goes back to Garchomp: Corviknight's stats did not fall, no Eject Pack.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 12,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       143,
+       0.0625
+      ],
+      [
+       144,
+       0.125
+      ],
+      [
+       145,
+       0.1875
+      ],
+      [
+       146,
+       0.125
+      ],
+      [
+       147,
+       0.1875
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       149,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 146.375,
+     "min": 143,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 145,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       152,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 152,
+     "min": 152,
+     "max": 152,
+     "modeTieUp": 152,
+     "modeTieDown": 152,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "ejectpack": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sandattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Garchomp|accuracy|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:accuracy:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodypress",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Corviknight|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-34": 0.1875,
+       "damage:-35": 0.125,
+       "damage:-36": 0.1875,
+       "damage:-37": 0.125,
+       "damage:-38": 0.1875,
+       "damage:-39": 0.125,
+       "damage:-40": 0.0625
+      },
+      "opponent-left": {
+       "damage:roughskin:-21": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -40,
+       "max": -34
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -40,
+       "max": -34,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {
+     "own-right": {
+      "cant:gravity": 1
+     }
+    },
+    "opponent-right": {
+     "opponent-right": {
+      "cant:gravity": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 7,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        143,
+        0.0625
+       ],
+       [
+        144,
+        0.125
+       ],
+       [
+        145,
+        0.1875
+       ],
+       [
+        146,
+        0.125
+       ],
+       [
+        147,
+        0.1875
+       ],
+       [
+        148,
+        0.125
+       ],
+       [
+        149,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 146.375,
+      "min": 143,
+      "max": 149,
+      "modeTieUp": 149,
+      "modeTieDown": 145,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        152,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 152,
+      "min": 152,
+      "max": 152,
+      "modeTieUp": 152,
+      "modeTieDown": 152,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "ejectpack": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 8,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       149,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 149,
+     "min": 149,
+     "max": 149,
+     "modeTieUp": 149,
+     "modeTieDown": 149,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       152,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 152,
+     "min": 152,
+     "max": 152,
+     "modeTieUp": 152,
+     "modeTieDown": 152,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "ejectpack": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sandattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Garchomp|accuracy|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:accuracy:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodypress",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 34,
+       "dmgMax": 34,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Corviknight|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-34": 1
+      },
+      "opponent-left": {
+       "damage:roughskin:-21": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -34,
+       "max": -34
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -34,
+       "max": -34,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {
+     "own-right": {
+      "cant:gravity": 1
+     }
+    },
+    "opponent-right": {
+     "opponent-right": {
+      "cant:gravity": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 8,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        149,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 149,
+      "min": 149,
+      "max": 149,
+      "modeTieUp": 149,
+      "modeTieDown": 149,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        152,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 152,
+      "min": 152,
+      "max": 152,
+      "modeTieUp": 152,
+      "modeTieDown": 152,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "ejectpack": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "accuracy:-1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Corviknight",
+     "start": 173,
+     "maximum": 173,
+     "dist": [
+      [
+       152,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 152,
+     "min": 152,
+     "max": 152,
+     "modeTieUp": 152,
+     "modeTieDown": 152,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "ejectpack": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sandattack",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-ability|p2b: Corviknight|Mirror Armor": 1,
+      "|-unboost|p1a: Garchomp|accuracy|1": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "ability:mirrorarmor": 1
+      },
+      "own-left": {
+       "boost:accuracy:-1": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodypress",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2b: Corviknight|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-40": 1
+      },
+      "opponent-left": {
+       "damage:roughskin:-21": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -40,
+       "max": -40
+      },
+      "opponent-left": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -40,
+       "max": -40,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {
+     "own-right": {
+      "cant:gravity": 1
+     }
+    },
+    "opponent-right": {
+     "opponent-right": {
+      "cant:gravity": 1
+     }
+    }
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        143,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 143,
+      "min": 143,
+      "max": 143,
+      "modeTieUp": 143,
+      "modeTieDown": 143,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "accuracy:-1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Corviknight",
+      "start": null,
+      "maximum": 173,
+      "dist": [
+       [
+        152,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 152,
+      "min": 152,
+      "max": 152,
+      "modeTieUp": 152,
+      "modeTieDown": 152,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "ejectpack": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 149,
+   "high": 143,
+   "average": 146.375,
+   "min": 143,
+   "max": 149,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.0625
+    ],
+    [
+     144,
+     0.125
+    ],
+    [
+     145,
+     0.1875
+    ],
+    [
+     146,
+     0.125
+    ],
+    [
+     147,
+     0.1875
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     149,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 173,
+   "maximum": 173,
+   "low": 152,
+   "high": 152,
+   "average": 152,
+   "min": 152,
+   "max": 152,
+   "koChance": 0,
+   "dist": [
+    [
+     152,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 149,
+   "high": 143,
+   "average": 146.375,
+   "min": 143,
+   "max": 149,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.0625
+    ],
+    [
+     144,
+     0.125
+    ],
+    [
+     145,
+     0.1875
+    ],
+    [
+     146,
+     0.125
+    ],
+    [
+     147,
+     0.1875
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     149,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 173,
+   "maximum": 173,
+   "low": 152,
+   "high": 152,
+   "average": 152,
+   "min": 152,
+   "max": 152,
+   "koChance": 0,
+   "dist": [
+    [
+     152,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

@@ -1,0 +1,367 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "fakeout",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 29,
+      "max": 35,
+      "minPercent": 18.70967741935484,
+      "maxPercent": 22.58064516129032,
+      "koChance": 0,
+      "row": {
+       "moveId": "fakeout",
+       "effectiveName": "Fake Out",
+       "effectiveType": "Normal",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 18.70967741935484,
+       "maxPercent": 22.58064516129032,
+       "rolls": [
+        29,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Fake Out: 29–35 HP (18.7–22.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the attacker's first turn in battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bugbuzz",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 13,
+      "max": 16,
+      "minPercent": 8.49673202614379,
+      "maxPercent": 10.457516339869281,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbuzz",
+       "effectiveName": "Bug Buzz",
+       "effectiveType": "Bug",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 13,
+       "max": 16,
+       "minPercent": 8.49673202614379,
+       "maxPercent": 10.457516339869281,
+       "rolls": [
+        13,
+        13,
+        13,
+        13,
+        14,
+        14,
+        14,
+        14,
+        14,
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        16
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Buzz: 13–16 HP (8.5–10.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 140,
+    "average": 138.75,
+    "high": 137,
+    "min": 137,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 126,
+    "average": 123.125,
+    "high": 120,
+    "min": 120,
+    "max": 126,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fakeout",
+     "effectiveName": "Fake Out",
+     "effectiveType": "Normal",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 29,
+     "max": 35,
+     "minPercent": 18.70967741935484,
+     "maxPercent": 22.58064516129032,
+     "rolls": [
+      29,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      32,
+      32,
+      32,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35
+     ],
+     "ohkoChance": 0,
+     "description": "Fake Out: 29–35 HP (18.7–22.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the attacker's first turn in battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Works only on its first turn out",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 126,
+      "high": 120,
+      "average": 123.125,
+      "min": 120,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 35,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "bugbuzz",
+     "effectiveName": "Bug Buzz",
+     "effectiveType": "Bug",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 13,
+     "max": 16,
+     "minPercent": 8.49673202614379,
+     "maxPercent": 10.457516339869281,
+     "rolls": [
+      13,
+      13,
+      13,
+      13,
+      14,
+      14,
+      14,
+      14,
+      14,
+      15,
+      15,
+      15,
+      15,
+      15,
+      15,
+      16
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Buzz: 13–16 HP (8.5–10.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 12,
+      "fewest": 10,
+      "fasterChance": 0.922490317775555,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 140,
+      "high": 137,
+      "average": 138.75,
+      "min": 137,
+      "max": 140,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 13,
+        "heals": []
+       },
+       "high": {
+        "dealt": 16,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes the attacker's first turn in battle."
+  ]
+ },
+ "ms": 5.842599999999948,
+ "preflight": []
+}

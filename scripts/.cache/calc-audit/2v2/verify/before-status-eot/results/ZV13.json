@@ -1,0 +1,691 @@
+{
+ "id": "ZV13",
+ "title": "Z-Throat Chop silences nothing: the target's later Hyper Voice",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "Hyper Voice used.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 3642,
+   "classes": 1839,
+   "ms": 3792,
+   "decisions": {
+    "sample": 1808,
+    "fail:": 3632,
+    "roll": 3632
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       97,
+       0.05859375
+      ],
+      [
+       99,
+       0.17578125
+      ],
+      [
+       100,
+       0.17578125
+      ],
+      [
+       102,
+       0.17578125
+      ],
+      [
+       103,
+       0.17578125
+      ],
+      [
+       105,
+       0.17578125
+      ],
+      [
+       145,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 104.21875,
+     "min": 97,
+     "max": 145,
+     "modeTieUp": 105,
+     "modeTieDown": 99
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       196,
+       0.05859375
+      ],
+      [
+       198,
+       0.17578125
+      ],
+      [
+       199,
+       0.234375
+      ],
+      [
+       201,
+       0.234375
+      ],
+      [
+       202,
+       0.234375
+      ],
+      [
+       235,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 202.0703125,
+     "min": 196,
+     "max": 235,
+     "modeTieUp": 202,
+     "modeTieDown": 199
+    },
+    "opponent-left": {
+     "species": "Exploud",
+     "start": 179,
+     "maximum": 179,
+     "dist": [
+      [
+       0,
+       0.0625
+      ],
+      [
+       2,
+       0.0625
+      ],
+      [
+       4,
+       0.0625
+      ],
+      [
+       5,
+       0.0625
+      ],
+      [
+       7,
+       0.0625
+      ],
+      [
+       8,
+       0.0625
+      ],
+      [
+       11,
+       0.0625
+      ],
+      [
+       13,
+       0.0625
+      ],
+      [
+       14,
+       0.0625
+      ],
+      [
+       16,
+       0.0625
+      ],
+      [
+       17,
+       0.0625
+      ],
+      [
+       20,
+       0.0625
+      ],
+      [
+       22,
+       0.0625
+      ],
+      [
+       23,
+       0.0625
+      ],
+      [
+       25,
+       0.0625
+      ],
+      [
+       26,
+       0.0625
+      ]
+     ],
+     "koChance": 0.0625,
+     "average": 13.3125,
+     "min": 0,
+     "max": 26,
+     "modeTieUp": 26,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.0625,
+       "dmgMin": 153,
+       "dmgMax": 180,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 0.0625,
+     "moved": 0.9375,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.9375
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9375,
+       "landed": 0.9375,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 48,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 0.9375,
+       "landed": 0.9375,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 16,
+   "classes": 11,
+   "ms": 20,
+   "decisions": {
+    "sample": 12,
+    "fail:": 10,
+    "roll": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       105,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 105,
+     "min": 105,
+     "max": 105,
+     "modeTieUp": 105,
+     "modeTieDown": 105
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       202,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 202,
+     "min": 202,
+     "max": 202,
+     "modeTieUp": 202,
+     "modeTieDown": 202
+    },
+    "opponent-left": {
+     "species": "Exploud",
+     "start": 179,
+     "maximum": 179,
+     "dist": [
+      [
+       26,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 26,
+     "min": 26,
+     "max": 26,
+     "modeTieUp": 26,
+     "modeTieDown": 26
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 153,
+       "dmgMax": 153,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 12,
+   "classes": 9,
+   "ms": 11,
+   "decisions": {
+    "sample": 8,
+    "fail:": 2,
+    "roll": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Exploud",
+     "start": 179,
+     "maximum": 179,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Blissey",
+     "start": 330,
+     "maximum": 330,
+     "dist": [
+      [
+       330,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 330,
+     "min": 330,
+     "max": 330,
+     "modeTieUp": 330,
+     "modeTieDown": 330
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 180,
+       "dmgMax": 180,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Black Hole Eclipse": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 1,
+     "moved": 0,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 105,
+   "high": 145,
+   "average": 104.21875,
+   "min": 97,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     97,
+     0.05859375
+    ],
+    [
+     99,
+     0.17578125
+    ],
+    [
+     100,
+     0.17578125
+    ],
+    [
+     102,
+     0.17578125
+    ],
+    [
+     103,
+     0.17578125
+    ],
+    [
+     105,
+     0.17578125
+    ],
+    [
+     145,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 202,
+   "high": 235,
+   "average": 202.0703125,
+   "min": 196,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     196,
+     0.05859375
+    ],
+    [
+     198,
+     0.17578125
+    ],
+    [
+     199,
+     0.234375
+    ],
+    [
+     201,
+     0.234375
+    ],
+    [
+     202,
+     0.234375
+    ],
+    [
+     235,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 179,
+   "maximum": 179,
+   "low": 26,
+   "high": 0,
+   "average": 13.3125,
+   "min": 0,
+   "max": 26,
+   "koChance": 0.0625,
+   "dist": [
+    [
+     0,
+     0.0625
+    ],
+    [
+     2,
+     0.0625
+    ],
+    [
+     4,
+     0.0625
+    ],
+    [
+     5,
+     0.0625
+    ],
+    [
+     7,
+     0.0625
+    ],
+    [
+     8,
+     0.0625
+    ],
+    [
+     11,
+     0.0625
+    ],
+    [
+     13,
+     0.0625
+    ],
+    [
+     14,
+     0.0625
+    ],
+    [
+     16,
+     0.0625
+    ],
+    [
+     17,
+     0.0625
+    ],
+    [
+     20,
+     0.0625
+    ],
+    [
+     22,
+     0.0625
+    ],
+    [
+     23,
+     0.0625
+    ],
+    [
+     25,
+     0.0625
+    ],
+    [
+     26,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 330,
+   "maximum": 330,
+   "low": 330,
+   "high": 330,
+   "average": 330,
+   "min": 330,
+   "max": 330,
+   "koChance": 0,
+   "dist": [
+    [
+     330,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

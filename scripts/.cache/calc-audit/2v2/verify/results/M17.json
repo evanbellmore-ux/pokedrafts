@@ -1,0 +1,1868 @@
+{
+ "id": "M17",
+ "title": "Mycelium Might: a status move after a slower Earthquake",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Grassy Terrain (-0.1) after Snorlax's Earthquake: Earthquake not halved.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 3328,
+   "classes": 729,
+   "ms": 5103,
+   "decisions": {
+    "sample": 2612,
+    "fail:": 7776,
+    "roll": 7776
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toedscruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       129,
+       0.0625
+      ],
+      [
+       130,
+       0.1875
+      ],
+      [
+       131,
+       0.25
+      ],
+      [
+       132,
+       0.25
+      ],
+      [
+       133,
+       0.25
+      ]
+     ],
+     "koChance": 0,
+     "average": 131.4375,
+     "min": 129,
+     "max": 133,
+     "modeTieUp": 133,
+     "modeTieDown": 131,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       93,
+       0.0625
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       95,
+       0.125
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       97,
+       0.125
+      ],
+      [
+       98,
+       0.125
+      ],
+      [
+       99,
+       0.125
+      ],
+      [
+       100,
+       0.125
+      ],
+      [
+       101,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 97.4375,
+     "min": 93,
+     "max": 101,
+     "modeTieUp": 101,
+     "modeTieDown": 95,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       112,
+       0.0625
+      ],
+      [
+       113,
+       0.125
+      ],
+      [
+       114,
+       0.125
+      ],
+      [
+       115,
+       0.125
+      ],
+      [
+       116,
+       0.1875
+      ],
+      [
+       117,
+       0.125
+      ],
+      [
+       118,
+       0.125
+      ],
+      [
+       119,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 115.75,
+     "min": 112,
+     "max": 119,
+     "modeTieUp": 116,
+     "modeTieDown": 116,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "grassyterrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Grassy Terrain": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:grassyterrain": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 36,
+       "dmgMax": 43,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 22,
+       "dmgMax": 26,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 44,
+       "dmgMax": 52,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-36": 0.125,
+       "damage:-37": 0.125,
+       "damage:-38": 0.125,
+       "damage:-39": 0.1875,
+       "damage:-40": 0.125,
+       "damage:-41": 0.125,
+       "damage:-42": 0.125,
+       "damage:-43": 0.0625
+      },
+      "own-left": {
+       "damage:-22": 0.25,
+       "damage:-23": 0.25,
+       "damage:-24": 0.25,
+       "damage:-25": 0.1875,
+       "damage:-26": 0.0625
+      },
+      "own-right": {
+       "damage:-44": 0.125,
+       "damage:-45": 0.125,
+       "damage:-46": 0.125,
+       "damage:-47": 0.125,
+       "damage:-48": 0.125,
+       "damage:-49": 0.125,
+       "damage:-50": 0.125,
+       "damage:-51": 0.0625,
+       "damage:-52": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -26,
+       "max": -22
+      },
+      "own-right": {
+       "min": -52,
+       "max": -44
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -43,
+       "max": -36
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -43,
+       "max": -36,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -26,
+       "max": -22,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -52,
+       "max": -44,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 720,
+    "classes": 720,
+    "ms": 5103,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Toedscruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        138,
+        0.0625
+       ],
+       [
+        139,
+        0.1875
+       ],
+       [
+        140,
+        0.25
+       ],
+       [
+        141,
+        0.25
+       ],
+       [
+        142,
+        0.25
+       ]
+      ],
+      "koChance": 0,
+      "average": 140.4375,
+      "min": 138,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        102,
+        0.0625
+       ],
+       [
+        103,
+        0.0625
+       ],
+       [
+        104,
+        0.125
+       ],
+       [
+        105,
+        0.125
+       ],
+       [
+        106,
+        0.125
+       ],
+       [
+        107,
+        0.125
+       ],
+       [
+        108,
+        0.125
+       ],
+       [
+        109,
+        0.125
+       ],
+       [
+        110,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 106.4375,
+      "min": 102,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 104,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        121,
+        0.0625
+       ],
+       [
+        122,
+        0.125
+       ],
+       [
+        123,
+        0.125
+       ],
+       [
+        124,
+        0.125
+       ],
+       [
+        125,
+        0.1875
+       ],
+       [
+        126,
+        0.125
+       ],
+       [
+        127,
+        0.125
+       ],
+       [
+        128,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 124.75,
+      "min": 121,
+      "max": 128,
+      "modeTieUp": 125,
+      "modeTieDown": 125,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 27,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toedscruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       133,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 133,
+     "min": 133,
+     "max": 133,
+     "modeTieUp": 133,
+     "modeTieDown": 133,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       101,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 101,
+     "min": 101,
+     "max": 101,
+     "modeTieUp": 101,
+     "modeTieDown": 101,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       119,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 119,
+     "min": 119,
+     "max": 119,
+     "modeTieUp": 119,
+     "modeTieDown": 119,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "grassyterrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Grassy Terrain": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:grassyterrain": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 36,
+       "dmgMax": 36,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 22,
+       "dmgMax": 22,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 44,
+       "dmgMax": 44,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-36": 1
+      },
+      "own-left": {
+       "damage:-22": 1
+      },
+      "own-right": {
+       "damage:-44": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -22,
+       "max": -22
+      },
+      "own-right": {
+       "min": -44,
+       "max": -44
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -36,
+       "max": -36
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -36,
+       "max": -36,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -22,
+       "max": -22,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -44,
+       "max": -44,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 27,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Toedscruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        110,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 110,
+      "min": 110,
+      "max": 110,
+      "modeTieUp": 110,
+      "modeTieDown": 110,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        128,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 128,
+      "min": 128,
+      "max": 128,
+      "modeTieUp": 128,
+      "modeTieDown": 128,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 29,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toedscruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       129,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 129,
+     "min": 129,
+     "max": 129,
+     "modeTieUp": 129,
+     "modeTieDown": 129,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       93,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 93,
+     "min": 93,
+     "max": 93,
+     "modeTieUp": 93,
+     "modeTieDown": 93,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       112,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 112,
+     "min": 112,
+     "max": 112,
+     "modeTieUp": 112,
+     "modeTieDown": 112,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "grassyterrain",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Grassy Terrain": 1
+     },
+     "effects": {},
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:grassyterrain": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 43,
+       "dmgMax": 43,
+       "truncated": 0
+      },
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 26,
+       "dmgMax": 26,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 52,
+       "truncated": 0
+      }
+     },
+     "lines": {},
+     "effects": {
+      "opponent-right": {
+       "damage:-43": 1
+      },
+      "own-left": {
+       "damage:-26": 1
+      },
+      "own-right": {
+       "damage:-52": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -26,
+       "max": -26
+      },
+      "own-right": {
+       "min": -52,
+       "max": -52
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -43,
+       "max": -43
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -43,
+       "max": -43,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -26,
+       "max": -26,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -52,
+       "max": -52,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 29,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Toedscruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        138,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 138,
+      "min": 138,
+      "max": 138,
+      "modeTieUp": 138,
+      "modeTieDown": 138,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Weavile",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        102,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 102,
+      "min": 102,
+      "max": 102,
+      "modeTieUp": 102,
+      "modeTieDown": 102,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        121,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 121,
+      "min": 121,
+      "max": 121,
+      "modeTieUp": 121,
+      "modeTieDown": 121,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Grassy Terrain",
+      "chance": 1,
+      "min": 9,
+      "max": 9,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:grassyterrain": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 133,
+   "high": 129,
+   "average": 131.4375,
+   "min": 129,
+   "max": 133,
+   "koChance": 0,
+   "dist": [
+    [
+     129,
+     0.0625
+    ],
+    [
+     130,
+     0.1875
+    ],
+    [
+     131,
+     0.25
+    ],
+    [
+     132,
+     0.25
+    ],
+    [
+     133,
+     0.25
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 101,
+   "high": 93,
+   "average": 97.4375,
+   "min": 93,
+   "max": 101,
+   "koChance": 0,
+   "dist": [
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     95,
+     0.125
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     97,
+     0.125
+    ],
+    [
+     98,
+     0.125
+    ],
+    [
+     99,
+     0.125
+    ],
+    [
+     100,
+     0.125
+    ],
+    [
+     101,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 119,
+   "high": 112,
+   "average": 115.75,
+   "min": 112,
+   "max": 119,
+   "koChance": 0,
+   "dist": [
+    [
+     112,
+     0.0625
+    ],
+    [
+     113,
+     0.125
+    ],
+    [
+     114,
+     0.125
+    ],
+    [
+     115,
+     0.125
+    ],
+    [
+     116,
+     0.1875
+    ],
+    [
+     117,
+     0.125
+    ],
+    [
+     118,
+     0.125
+    ],
+    [
+     119,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 142,
+   "high": 138,
+   "average": 140.4375,
+   "min": 138,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     138,
+     0.0625
+    ],
+    [
+     139,
+     0.1875
+    ],
+    [
+     140,
+     0.25
+    ],
+    [
+     141,
+     0.25
+    ],
+    [
+     142,
+     0.25
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 110,
+   "high": 102,
+   "average": 106.4375,
+   "min": 102,
+   "max": 110,
+   "koChance": 0,
+   "dist": [
+    [
+     102,
+     0.0625
+    ],
+    [
+     103,
+     0.0625
+    ],
+    [
+     104,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     107,
+     0.125
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     109,
+     0.125
+    ],
+    [
+     110,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 128,
+   "high": 121,
+   "average": 124.75,
+   "min": 121,
+   "max": 128,
+   "koChance": 0,
+   "dist": [
+    [
+     121,
+     0.0625
+    ],
+    [
+     122,
+     0.125
+    ],
+    [
+     123,
+     0.125
+    ],
+    [
+     124,
+     0.125
+    ],
+    [
+     125,
+     0.1875
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     127,
+     0.125
+    ],
+    [
+     128,
+     0.125
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-right",
+   "effect": "Grassy Terrain",
+   "chance": 1,
+   "min": 9,
+   "max": 9,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "own-left",
+   "effect": "Grassy Terrain",
+   "chance": 1,
+   "min": 9,
+   "max": 9,
+   "koChance": 0,
+   "facts": {},
+   "index": 5
+  },
+  {
+   "slot": "opponent-right",
+   "effect": "Grassy Terrain",
+   "chance": 1,
+   "min": 9,
+   "max": 9,
+   "koChance": 0,
+   "facts": {},
+   "index": 8
+  }
+ ]
+}

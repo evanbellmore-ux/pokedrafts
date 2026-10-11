@@ -1,0 +1,277 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "extremespeed",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 55,
+      "max": 65,
+      "minPercent": 23.404255319148938,
+      "maxPercent": 27.659574468085108,
+      "koChance": 0,
+      "row": {
+       "moveId": "extremespeed",
+       "effectiveName": "Extreme Speed",
+       "effectiveType": "Normal",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 55,
+       "max": 65,
+       "minPercent": 23.404255319148938,
+       "maxPercent": 27.659574468085108,
+       "rolls": [
+        55,
+        55,
+        56,
+        57,
+        57,
+        58,
+        59,
+        59,
+        60,
+        61,
+        61,
+        62,
+        63,
+        63,
+        64,
+        65
+       ],
+       "ohkoChance": 0,
+       "description": "Extreme Speed: 55–65 HP (23.4–27.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 166,
+    "average": 166,
+    "high": 166,
+    "min": 166,
+    "max": 166,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 140,
+    "high": 140,
+    "min": 140,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 180,
+    "average": 175.3125,
+    "high": 170,
+    "min": 170,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "extremespeed",
+     "effectiveName": "Extreme Speed",
+     "effectiveType": "Normal",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 55,
+     "max": 65,
+     "minPercent": 23.404255319148938,
+     "maxPercent": 27.659574468085108,
+     "rolls": [
+      55,
+      55,
+      56,
+      57,
+      57,
+      58,
+      59,
+      59,
+      60,
+      61,
+      61,
+      62,
+      63,
+      63,
+      64,
+      65
+     ],
+     "ohkoChance": 0,
+     "description": "Extreme Speed: 55–65 HP (23.4–27.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Dragonite's Inner Focus is suppressed by Neutralizing Gas.",
+      "Snorlax's Thick Fat is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.745635986328125,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 180,
+      "high": 170,
+      "average": 175.3125,
+      "min": 170,
+      "max": 180,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 55,
+        "heals": []
+       },
+       "high": {
+        "dealt": 65,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Dragonite, Farigiraf and Snorlax."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 166,
+     "average": 166,
+     "high": 166,
+     "min": 166,
+     "max": 166,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 140,
+     "maximum": 140,
+     "low": 140,
+     "average": 140,
+     "high": 140,
+     "min": 140,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 180,
+     "average": 175.3125,
+     "high": 170,
+     "min": 170,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.089100000000144,
+ "preflight": []
+}

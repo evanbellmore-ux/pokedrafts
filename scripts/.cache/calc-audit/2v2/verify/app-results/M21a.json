@@ -1,0 +1,587 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 1,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 125,
+    "maximum": 125
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "glaciallance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 108,
+      "max": 127,
+      "minPercent": 86.4,
+      "maxPercent": 101.6,
+      "koChance": 0.125,
+      "row": {
+       "moveId": "glaciallance",
+       "effectiveName": "Glacial Lance",
+       "effectiveType": "Ice",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 108,
+       "max": 127,
+       "minPercent": 86.4,
+       "maxPercent": 101.6,
+       "rolls": [
+        108,
+        109,
+        109,
+        111,
+        112,
+        114,
+        115,
+        117,
+        118,
+        118,
+        120,
+        121,
+        123,
+        124,
+        126,
+        127
+       ],
+       "ohkoChance": 0.125,
+       "description": "Glacial Lance: 108–127 HP (86.4–101.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 198,
+      "max": 234,
+      "minPercent": 127.74193548387096,
+      "maxPercent": 150.96774193548387,
+      "koChance": 1,
+      "row": {
+       "moveId": "glaciallance",
+       "effectiveName": "Glacial Lance",
+       "effectiveType": "Ice",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 198,
+       "max": 234,
+       "minPercent": 127.74193548387096,
+       "maxPercent": 150.96774193548387,
+       "rolls": [
+        198,
+        200,
+        200,
+        204,
+        206,
+        210,
+        210,
+        212,
+        216,
+        218,
+        222,
+        222,
+        224,
+        228,
+        230,
+        234
+       ],
+       "ohkoChance": 1,
+       "description": "Glacial Lance: 198–234 HP (127.7–151.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "foulplay",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.875,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.125
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.875,
+      "kind": "calculated",
+      "min": 176,
+      "max": 210,
+      "minPercent": 100.57142857142858,
+      "maxPercent": 120,
+      "koChance": 0.875,
+      "row": {
+       "moveId": "foulplay",
+       "effectiveName": "Foul Play",
+       "effectiveType": "Dark",
+       "effectivePower": 95,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 176,
+       "max": 210,
+       "minPercent": 100.57142857142858,
+       "maxPercent": 120,
+       "rolls": [
+        176,
+        180,
+        180,
+        182,
+        186,
+        188,
+        188,
+        192,
+        194,
+        194,
+        198,
+        200,
+        200,
+        204,
+        206,
+        210
+       ],
+       "ohkoChance": 1,
+       "description": "Foul Play: 176–210 HP (100.6–120.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 0,
+    "average": 21.875000000000004,
+    "high": 175,
+    "min": 0,
+    "max": 175,
+    "koChance": 0.8749999999999998,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 1,
+    "maximum": 155,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 125,
+    "maximum": 125,
+    "low": 48,
+    "average": 35.3125,
+    "high": 0,
+    "min": 0,
+    "max": 48,
+    "koChance": 0.125,
+    "heals": [
+     "Sitrus Berry: +31 HP."
+    ],
+    "faintsBeforeMoving": 0.125,
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.8749999999999998
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "glaciallance",
+     "effectiveName": "Glacial Lance",
+     "effectiveType": "Ice",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 198,
+     "max": 234,
+     "minPercent": 127.74193548387096,
+     "maxPercent": 150.96774193548387,
+     "rolls": [
+      198,
+      200,
+      200,
+      204,
+      206,
+      210,
+      210,
+      212,
+      216,
+      218,
+      222,
+      222,
+      224,
+      228,
+      230,
+      234
+     ],
+     "ohkoChance": 1,
+     "description": "Glacial Lance: 198–234 HP (127.7–151.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Trick Room lasts through every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 1,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 1,
+        "heals": []
+       },
+       "high": {
+        "dealt": 1,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "glaciallance",
+     "effectiveName": "Glacial Lance",
+     "effectiveType": "Ice",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 108,
+     "max": 127,
+     "minPercent": 86.4,
+     "maxPercent": 101.6,
+     "rolls": [
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      118,
+      118,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127
+     ],
+     "ohkoChance": 0.125,
+     "description": "Glacial Lance: 108–127 HP (86.4–101.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.125,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Trick Room lasts through every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 17,
+      "high": 0,
+      "average": 8.1875,
+      "min": 0,
+      "max": 17,
+      "koChance": 0.125,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 108,
+        "heals": []
+       },
+       "high": {
+        "dealt": 125,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "foulplay",
+     "effectiveName": "Foul Play",
+     "effectiveType": "Dark",
+     "effectivePower": 95,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 116,
+     "max": 140,
+     "minPercent": 66.28571428571428,
+     "maxPercent": 80,
+     "rolls": [
+      116,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132,
+      132,
+      134,
+      134,
+      138,
+      138,
+      140
+     ],
+     "ohkoChance": 0,
+     "description": "Foul Play: 116–140 HP (66.3–80.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Trick Room lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 59,
+      "high": 35,
+      "average": 46.5,
+      "min": 35,
+      "max": 59,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 116,
+        "heals": []
+       },
+       "high": {
+        "dealt": 140,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Trick Room: slower Pokémon move first."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 0,
+     "average": 21.875000000000004,
+     "high": 175,
+     "min": 0,
+     "max": 175,
+     "koChance": 0.8749999999999998,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 1,
+     "maximum": 155,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 125,
+     "maximum": 125,
+     "low": 48,
+     "average": 35.3125,
+     "high": 0,
+     "min": 0,
+     "max": 48,
+     "koChance": 0.125,
+     "heals": [
+      "Sitrus Berry: +31 HP."
+     ],
+     "faintsBeforeMoving": 0.125,
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.8749999999999998
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.352900000000091,
+ "preflight": []
+}

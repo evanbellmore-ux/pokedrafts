@@ -1,0 +1,560 @@
+{
+ "id": "FI11",
+ "title": "Close Combat into a Dynamaxed intact Eiscue: neutral (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Lucario (110) before Eiscue (90): the face's hit at its doubled HP; Eiscue-Noice's Max Strike then hits Venusaur. Before this fix a Dynamaxed face kept the busted form's 2x figure.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 40,
+   "classes": 23,
+   "ms": 30,
+   "decisions": {
+    "fail:": 19,
+    "roll": 19,
+    "secondary": 10
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       102,
+       0.0625
+      ],
+      [
+       103,
+       0.0625
+      ],
+      [
+       104,
+       0.125
+      ],
+      [
+       105,
+       0.125
+      ],
+      [
+       106,
+       0.125
+      ],
+      [
+       107,
+       0.125
+      ],
+      [
+       108,
+       0.125
+      ],
+      [
+       109,
+       0.125
+      ],
+      [
+       110,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 106.4375,
+     "min": 102,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 104
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 300,
+     "maximum": 300,
+     "dist": [
+      [
+       300,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 300,
+     "min": 300,
+     "max": 300,
+     "modeTieUp": 300,
+     "modeTieDown": 300
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "headbutt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 53,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p1a: Lucario|spe|1": 1,
+      "|-unboost|p1b: Venusaur|spe|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       110,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 110,
+     "min": 110,
+     "max": 110,
+     "modeTieUp": 110,
+     "modeTieDown": 110
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 300,
+     "maximum": 300,
+     "dist": [
+      [
+       300,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 300,
+     "min": 300,
+     "max": 300,
+     "modeTieUp": 300,
+     "modeTieDown": 300
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "headbutt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p1a: Lucario|spe|1": 1,
+      "|-unboost|p1b: Venusaur|spe|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 7,
+   "ms": 7,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Lucario",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       102,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 102,
+     "min": 102,
+     "max": 102,
+     "modeTieUp": 102,
+     "modeTieDown": 102
+    },
+    "opponent-left": {
+     "species": "Eiscue",
+     "start": 300,
+     "maximum": 300,
+     "dist": [
+      [
+       300,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 300,
+     "min": 300,
+     "max": 300,
+     "modeTieUp": 300,
+     "modeTieDown": 300
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "closecombat",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Eiscue|ability: Ice Face": 1,
+      "|-unboost|p1a: Lucario|def|1": 1,
+      "|-unboost|p1a: Lucario|spd|1": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "headbutt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 53,
+       "dmgMax": 53,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Strike": 1,
+      "|-unboost|p1a: Lucario|spe|1": 1,
+      "|-unboost|p1b: Venusaur|spe|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 145,
+   "maximum": 145,
+   "low": 145,
+   "high": 145,
+   "average": 145,
+   "min": 145,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     145,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 110,
+   "high": 102,
+   "average": 106.4375,
+   "min": 102,
+   "max": 110,
+   "koChance": 0,
+   "dist": [
+    [
+     102,
+     0.0625
+    ],
+    [
+     103,
+     0.0625
+    ],
+    [
+     104,
+     0.125
+    ],
+    [
+     105,
+     0.125
+    ],
+    [
+     106,
+     0.125
+    ],
+    [
+     107,
+     0.125
+    ],
+    [
+     108,
+     0.125
+    ],
+    [
+     109,
+     0.125
+    ],
+    [
+     110,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 300,
+   "maximum": 300,
+   "low": 300,
+   "high": 300,
+   "average": 300,
+   "min": 300,
+   "max": 300,
+   "koChance": 0,
+   "dist": [
+    [
+     300,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

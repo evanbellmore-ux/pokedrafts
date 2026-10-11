@@ -1,0 +1,524 @@
+{
+ "id": "V21",
+ "title": "Life Orb Heat Wave: one Life Orb hit",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Life Orb recoil once for a spread move (probe 15).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 376,
+   "classes": 175,
+   "ms": 301,
+   "decisions": {
+    "sample": 212,
+    "accuracy": 392,
+    "fail:": 392,
+    "roll": 392,
+    "secondary": 392
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       138,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 138,
+     "min": 138,
+     "max": 138,
+     "modeTieUp": 138,
+     "modeTieDown": 138
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       22,
+       0.0625
+      ],
+      [
+       28,
+       0.125
+      ],
+      [
+       30,
+       0.1875
+      ],
+      [
+       35,
+       0.1875
+      ],
+      [
+       38,
+       0.1875
+      ],
+      [
+       43,
+       0.1875
+      ],
+      [
+       46,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 35.125,
+     "min": 22,
+     "max": 46,
+     "modeTieUp": 43,
+     "modeTieDown": 30
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.125
+      ],
+      [
+       147,
+       0.1875
+      ],
+      [
+       148,
+       0.3125
+      ],
+      [
+       149,
+       0.125
+      ],
+      [
+       151,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.875,
+     "min": 144,
+     "max": 151,
+     "modeTieUp": 148,
+     "modeTieDown": 148
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 32,
+       "dmgMax": 39,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 109,
+       "dmgMax": 133,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Charizard|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 17,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:": 8,
+    "roll": 8,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       138,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 138,
+     "min": 138,
+     "max": 138,
+     "modeTieUp": 138,
+     "modeTieDown": 138
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       46,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 46,
+     "min": 46,
+     "max": 46,
+     "modeTieUp": 46,
+     "modeTieDown": 46
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       151,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 151,
+     "min": 151,
+     "max": 151,
+     "modeTieUp": 151,
+     "modeTieDown": 151
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 32,
+       "dmgMax": 32,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 109,
+       "dmgMax": 109,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Charizard|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 20,
+   "classes": 11,
+   "ms": 16,
+   "decisions": {
+    "sample": 20,
+    "accuracy": 8,
+    "fail:": 8,
+    "roll": 8,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       138,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 138,
+     "min": 138,
+     "max": 138,
+     "modeTieUp": 138,
+     "modeTieDown": 138
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       22,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 22,
+     "min": 22,
+     "max": 22,
+     "modeTieUp": 22,
+     "modeTieDown": 22
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "heatwave",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 133,
+       "dmgMax": 133,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Charizard|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 138,
+   "high": 138,
+   "average": 138,
+   "min": 138,
+   "max": 138,
+   "koChance": 0,
+   "dist": [
+    [
+     138,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 46,
+   "high": 22,
+   "average": 35.125,
+   "min": 22,
+   "max": 46,
+   "koChance": 0,
+   "dist": [
+    [
+     22,
+     0.0625
+    ],
+    [
+     28,
+     0.125
+    ],
+    [
+     30,
+     0.1875
+    ],
+    [
+     35,
+     0.1875
+    ],
+    [
+     38,
+     0.1875
+    ],
+    [
+     43,
+     0.1875
+    ],
+    [
+     46,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 151,
+   "high": 144,
+   "average": 147.875,
+   "min": 144,
+   "max": 151,
+   "koChance": 0,
+   "dist": [
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.1875
+    ],
+    [
+     148,
+     0.3125
+    ],
+    [
+     149,
+     0.125
+    ],
+    [
+     151,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

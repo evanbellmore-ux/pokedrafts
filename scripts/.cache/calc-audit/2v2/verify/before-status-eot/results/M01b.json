@@ -1,0 +1,601 @@
+{
+ "id": "M01b",
+ "title": "Outrage into Rage Powder",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Rage Powder takes the random target (validTarget for randomNormal: adjacent).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 268,
+   "classes": 135,
+   "ms": 193,
+   "decisions": {
+    "sample": 144,
+    "fail:": 128,
+    "roll": 128,
+    "random": 128
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       27,
+       0.0625
+      ],
+      [
+       30,
+       0.0625
+      ],
+      [
+       32,
+       0.0625
+      ],
+      [
+       33,
+       0.0625
+      ],
+      [
+       35,
+       0.0625
+      ],
+      [
+       36,
+       0.0625
+      ],
+      [
+       38,
+       0.0625
+      ],
+      [
+       39,
+       0.0625
+      ],
+      [
+       41,
+       0.0625
+      ],
+      [
+       42,
+       0.0625
+      ],
+      [
+       44,
+       0.0625
+      ],
+      [
+       45,
+       0.0625
+      ],
+      [
+       47,
+       0.0625
+      ],
+      [
+       50,
+       0.0625
+      ],
+      [
+       51,
+       0.0625
+      ],
+      [
+       53,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 40.1875,
+     "min": 27,
+     "max": 53,
+     "modeTieUp": 53,
+     "modeTieDown": 27
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 28,
+   "classes": 15,
+   "ms": 24,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8,
+    "random": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       53,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 53,
+     "min": 53,
+     "max": 53,
+     "modeTieUp": 53,
+     "modeTieDown": 53
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 136,
+       "dmgMax": 136,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 28,
+   "classes": 15,
+   "ms": 22,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8,
+    "random": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Amoonguss",
+     "start": 189,
+     "maximum": 189,
+     "dist": [
+      [
+       27,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 27,
+     "min": 27,
+     "max": 27,
+     "modeTieUp": 27,
+     "modeTieDown": 27
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 162,
+       "dmgMax": 162,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "ragepowder",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2a: Amoonguss|move: Rage Powder": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 189,
+   "maximum": 189,
+   "low": 53,
+   "high": 27,
+   "average": 40.1875,
+   "min": 27,
+   "max": 53,
+   "koChance": 0,
+   "dist": [
+    [
+     27,
+     0.0625
+    ],
+    [
+     30,
+     0.0625
+    ],
+    [
+     32,
+     0.0625
+    ],
+    [
+     33,
+     0.0625
+    ],
+    [
+     35,
+     0.0625
+    ],
+    [
+     36,
+     0.0625
+    ],
+    [
+     38,
+     0.0625
+    ],
+    [
+     39,
+     0.0625
+    ],
+    [
+     41,
+     0.0625
+    ],
+    [
+     42,
+     0.0625
+    ],
+    [
+     44,
+     0.0625
+    ],
+    [
+     45,
+     0.0625
+    ],
+    [
+     47,
+     0.0625
+    ],
+    [
+     50,
+     0.0625
+    ],
+    [
+     51,
+     0.0625
+    ],
+    [
+     53,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

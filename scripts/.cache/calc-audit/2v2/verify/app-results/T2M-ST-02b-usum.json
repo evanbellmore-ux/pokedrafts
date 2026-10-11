@@ -1,0 +1,276 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sleeptalk",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 0.25,
+      "kind": "calculated",
+      "min": 72,
+      "max": 85,
+      "minPercent": 30.638297872340424,
+      "maxPercent": 36.17021276595745,
+      "koChance": 0,
+      "row": {
+       "moveId": "woodhammer",
+       "effectiveName": "Wood Hammer",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 72,
+       "max": 85,
+       "minPercent": 30.638297872340424,
+       "maxPercent": 36.17021276595745,
+       "rolls": [
+        72,
+        73,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85
+       ],
+       "ohkoChance": 0,
+       "description": "Wood Hammer: 72–85 HP (30.6–36.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.25,
+      "kind": "calculated",
+      "min": 72,
+      "max": 85,
+      "minPercent": 30.638297872340424,
+      "maxPercent": 36.17021276595745,
+      "koChance": 0,
+      "row": {
+       "moveId": "woodhammer",
+       "effectiveName": "Wood Hammer",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 72,
+       "max": 85,
+       "minPercent": 30.638297872340424,
+       "maxPercent": 36.17021276595745,
+       "rolls": [
+        72,
+        73,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85
+       ],
+       "ohkoChance": 0,
+       "description": "Wood Hammer: 72–85 HP (30.6–36.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Sleep Talk calls Rest.",
+      "chance": 0.5
+     },
+     {
+      "text": "Rest fails: Komala is already asleep.",
+      "chance": 0.5
+     },
+     {
+      "text": "Sleep Talk calls Wood Hammer.",
+      "chance": 0.5
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 127.125,
+    "high": 112,
+    "min": 112,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 215.453125,
+    "high": 235,
+    "min": 150,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 215.453125,
+    "high": 235,
+    "min": 150,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 140,
+     "average": 127.125,
+     "high": 112,
+     "min": 112,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 215.453125,
+     "high": 235,
+     "min": 150,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 215.453125,
+     "high": 235,
+     "min": 150,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.431699999999182,
+ "preflight": []
+}

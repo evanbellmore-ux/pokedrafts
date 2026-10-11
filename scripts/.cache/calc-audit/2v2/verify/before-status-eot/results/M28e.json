@@ -1,0 +1,567 @@
+{
+ "id": "M28e",
+ "title": "Burning Bulwark burns a spread contact attacker before its hits",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "The burn comes in TryHit: Brutal Swing into Snorlax and Venusaur at half damage.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 154,
+   "classes": 27,
+   "ms": 139,
+   "decisions": {
+    "sample": 140,
+    "fail:": 240,
+    "roll": 240
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       220,
+       0.25
+      ],
+      [
+       221,
+       0.375
+      ],
+      [
+       222,
+       0.375
+      ]
+     ],
+     "koChance": 0,
+     "average": 221.125,
+     "min": 220,
+     "max": 222,
+     "modeTieUp": 222,
+     "modeTieDown": 221
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       143,
+       0.3125
+      ],
+      [
+       144,
+       0.5
+      ],
+      [
+       145,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 143.875,
+     "min": 143,
+     "max": 145,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 15,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 10,
+       "dmgMax": 12,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 20,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       222,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 222,
+     "min": 222,
+     "max": 222,
+     "modeTieUp": 222,
+     "modeTieDown": 222
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       145,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 145,
+     "min": 145,
+     "max": 145,
+     "modeTieUp": 145,
+     "modeTieDown": 145
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 13,
+       "dmgMax": 13,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 10,
+       "dmgMax": 10,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 16,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 147,
+     "maximum": 147,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       220,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 220,
+     "min": 220,
+     "max": 220,
+     "modeTieUp": 220,
+     "modeTieDown": 220
+    },
+    "opponent-left": {
+     "species": "Gouging Fire",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       143,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 143,
+     "min": 143,
+     "max": 143,
+     "modeTieUp": 143,
+     "modeTieDown": 143
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 15,
+       "dmgMax": 15,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 12,
+       "dmgMax": 12,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Gouging Fire|move: Protect": 1,
+      "|-status|p1a: Sandaconda|brn": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "burningbulwark",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Gouging Fire|move: Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 147,
+   "maximum": 147,
+   "low": 147,
+   "high": 147,
+   "average": 147,
+   "min": 147,
+   "max": 147,
+   "koChance": 0,
+   "dist": [
+    [
+     147,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 222,
+   "high": 220,
+   "average": 221.125,
+   "min": 220,
+   "max": 222,
+   "koChance": 0,
+   "dist": [
+    [
+     220,
+     0.25
+    ],
+    [
+     221,
+     0.375
+    ],
+    [
+     222,
+     0.375
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 145,
+   "high": 143,
+   "average": 143.875,
+   "min": 143,
+   "max": 145,
+   "koChance": 0,
+   "dist": [
+    [
+     143,
+     0.3125
+    ],
+    [
+     144,
+     0.5
+    ],
+    [
+     145,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

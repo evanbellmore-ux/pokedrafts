@@ -1,0 +1,777 @@
+{
+ "id": "V09b",
+ "title": "Earthquake with an immune ally still counts it",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Charizard is immune but counted: Snorlax 91, Venusaur 75 at the lowest roll (probe c5).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 4088,
+   "classes": 2645,
+   "ms": 2354,
+   "decisions": {
+    "sample": 492,
+    "fail:": 2160,
+    "roll": 2160,
+    "secondary": 1200
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       67,
+       0.0625
+      ],
+      [
+       68,
+       0.0625
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       73,
+       0.0625
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       76,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 74.0625,
+     "min": 67,
+     "max": 80,
+     "modeTieUp": 80,
+     "modeTieDown": 70
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       88,
+       0.00390625
+      ],
+      [
+       90,
+       0.015625
+      ],
+      [
+       91,
+       0.01953125
+      ],
+      [
+       92,
+       0.01171875
+      ],
+      [
+       93,
+       0.05078125
+      ],
+      [
+       94,
+       0.03515625
+      ],
+      [
+       95,
+       0.0390625
+      ],
+      [
+       96,
+       0.078125
+      ],
+      [
+       97,
+       0.0390625
+      ],
+      [
+       98,
+       0.04296875
+      ],
+      [
+       99,
+       0.08984375
+      ],
+      [
+       100,
+       0.0546875
+      ],
+      [
+       101,
+       0.02734375
+      ],
+      [
+       102,
+       0.08984375
+      ],
+      [
+       103,
+       0.06640625
+      ],
+      [
+       104,
+       0.02734375
+      ],
+      [
+       105,
+       0.08203125
+      ],
+      [
+       106,
+       0.046875
+      ],
+      [
+       107,
+       0.0390625
+      ],
+      [
+       108,
+       0.0625
+      ],
+      [
+       109,
+       0.015625
+      ],
+      [
+       110,
+       0.03125
+      ],
+      [
+       111,
+       0.03125
+      ]
+     ],
+     "koChance": 0,
+     "average": 100.9375,
+     "min": 88,
+     "max": 111,
+     "modeTieUp": 102,
+     "modeTieDown": 99
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 108,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Charizard": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 14,
+   "decisions": {
+    "sample": 16,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       80,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 80,
+     "min": 80,
+     "max": 80,
+     "modeTieUp": 80,
+     "modeTieDown": 80
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       111,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 111,
+     "min": 111,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 111
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 91,
+       "dmgMax": 91,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Charizard": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 11,
+   "decisions": {
+    "sample": 16,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       67,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 67,
+     "min": 67,
+     "max": 67,
+     "modeTieUp": 67,
+     "modeTieDown": 67
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       88,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 88,
+     "min": 88,
+     "max": 88,
+     "modeTieUp": 88,
+     "modeTieDown": 88
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 108,
+       "dmgMax": 108,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-immune|p1b: Charizard": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 80,
+   "high": 67,
+   "average": 74.0625,
+   "min": 67,
+   "max": 80,
+   "koChance": 0,
+   "dist": [
+    [
+     67,
+     0.0625
+    ],
+    [
+     68,
+     0.0625
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     73,
+     0.0625
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     76,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 111,
+   "high": 88,
+   "average": 100.9375,
+   "min": 88,
+   "max": 111,
+   "koChance": 0,
+   "dist": [
+    [
+     88,
+     0.00390625
+    ],
+    [
+     90,
+     0.015625
+    ],
+    [
+     91,
+     0.01953125
+    ],
+    [
+     92,
+     0.01171875
+    ],
+    [
+     93,
+     0.05078125
+    ],
+    [
+     94,
+     0.03515625
+    ],
+    [
+     95,
+     0.0390625
+    ],
+    [
+     96,
+     0.078125
+    ],
+    [
+     97,
+     0.0390625
+    ],
+    [
+     98,
+     0.04296875
+    ],
+    [
+     99,
+     0.08984375
+    ],
+    [
+     100,
+     0.0546875
+    ],
+    [
+     101,
+     0.02734375
+    ],
+    [
+     102,
+     0.08984375
+    ],
+    [
+     103,
+     0.06640625
+    ],
+    [
+     104,
+     0.02734375
+    ],
+    [
+     105,
+     0.08203125
+    ],
+    [
+     106,
+     0.046875
+    ],
+    [
+     107,
+     0.0390625
+    ],
+    [
+     108,
+     0.0625
+    ],
+    [
+     109,
+     0.015625
+    ],
+    [
+     110,
+     0.03125
+    ],
+    [
+     111,
+     0.03125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

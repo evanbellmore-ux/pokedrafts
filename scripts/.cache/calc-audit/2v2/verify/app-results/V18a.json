@@ -1,0 +1,447 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.8
+     },
+     {
+      "position": 2,
+      "chance": 0.2
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 97,
+      "max": 115,
+      "minPercent": 41.27659574468085,
+      "maxPercent": 48.93617021276596,
+      "koChance": 0.8500000000000001,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 97,
+       "max": 115,
+       "minPercent": 41.27659574468085,
+       "maxPercent": 48.93617021276596,
+       "rolls": [
+        97,
+        99,
+        99,
+        100,
+        102,
+        103,
+        105,
+        105,
+        106,
+        108,
+        109,
+        109,
+        111,
+        112,
+        114,
+        115
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.2
+     },
+     {
+      "position": 2,
+      "chance": 0.8
+     }
+    ],
+    "moves": 0.35000000000000003,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.65
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 0.35000000000000003,
+      "kind": "calculated",
+      "min": 55,
+      "max": 66,
+      "minPercent": 30.05464480874317,
+      "maxPercent": 36.0655737704918,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 55,
+       "max": 66,
+       "minPercent": 30.05464480874317,
+       "maxPercent": 36.0655737704918,
+       "rolls": [
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 55–66 HP (30.1–36.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Quick Claw: Snorlax moves first in its priority bracket.",
+      "chance": 0.2
+     },
+     {
+      "text": "Snorlax faints (Rough Skin).",
+      "chance": 0.15000000000000002
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 235,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": [],
+    "faintsBeforeMoving": 0.65
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 128,
+    "average": 161.95625,
+    "high": 183,
+    "min": 117,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 55,
+     "max": 66,
+     "minPercent": 30.05464480874317,
+     "maxPercent": 36.0655737704918,
+     "rolls": [
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 55–66 HP (30.1–36.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.348876953125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 4
+      }
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 128,
+      "high": 117,
+      "average": 122.875,
+      "min": 117,
+      "max": 128,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 55,
+        "heals": []
+       },
+       "high": {
+        "dealt": 66,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 97,
+     "max": 115,
+     "minPercent": 41.27659574468085,
+     "maxPercent": 48.93617021276596,
+     "rolls": [
+      97,
+      99,
+      99,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115
+     ],
+     "ohkoChance": 0.8125,
+     "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.8125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 100,
+      "low": 3,
+      "high": 0,
+      "average": 0.3125,
+      "min": 0,
+      "max": 3,
+      "koChance": 0.8125,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 97,
+        "heals": []
+       },
+       "high": {
+        "dealt": 100,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Garchomp has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 235,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": [],
+     "faintsBeforeMoving": 0.65
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 128,
+     "average": 161.95625,
+     "high": 183,
+     "min": 117,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.5786999999999125,
+ "preflight": []
+}

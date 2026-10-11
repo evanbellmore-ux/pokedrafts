@@ -1,0 +1,357 @@
+
+== T2-SI01 sv: Garchomp Dig; its ally Excadrill's Earthquake (allAdjacent) then hits it underground at 2x, the foes at the spread 0.75
+  |move|p1a: Chomp|Dig||[still]
+  |-prepare|p1a: Chomp|Dig
+  |move|p1b: Drill|Earthquake|p2a: Lax4|[spread] p1a,p2a,p2b
+  |-damage|p1a: Chomp|45/183
+  |-damage|p1a: Chomp|45/183
+  |-damage|p2a: Lax4|142/235
+  |-damage|p2a: Lax4|142/235
+  |-damage|p2b: Lax8|142/235
+  |-damage|p2b: Lax8|142/235
+  |move|p2b: Lax8|Splash|p2b: Lax8
+  |move|p2a: Lax4|Splash|p2a: Lax4
+  |turn|2
+
+== T2-SI01c sv: control: Garchomp Splash; the same Earthquake
+  |move|p1a: Chomp|Splash|p1a: Chomp
+  |move|p1b: Drill|Earthquake|p2a: Lax4|[spread] p1a,p2a,p2b
+  |-damage|p1a: Chomp|114/183
+  |-damage|p1a: Chomp|114/183
+  |-damage|p2a: Lax4|142/235
+  |-damage|p2a: Lax4|142/235
+  |-damage|p2b: Lax8|142/235
+  |-damage|p2b: Lax8|142/235
+  |move|p2b: Lax8|Splash|p2b: Lax8
+  |move|p2a: Lax4|Splash|p2a: Lax4
+  |turn|2
+
+== T2-SI02 sv: Garchomp Dig; a foe's Body Slam at it misses; the other foe's Earthquake (spread) hits it at 2x and the others at 0.75
+  |move|p1a: Chomp|Dig||[still]
+  |-prepare|p1a: Chomp|Dig
+  |move|p2b: Hippo|Earthquake|p1a: Chomp|[spread] p2a,p1a,p1b
+  |-damage|p2a: Slammer|169/235
+  |-damage|p2a: Slammer|169/235
+  |-damage|p1a: Chomp|85/183
+  |-damage|p1a: Chomp|85/183
+  |-damage|p1b: Lax1|169/235
+  |-damage|p1b: Lax1|169/235
+  |move|p2a: Slammer|Body Slam|p1a: Chomp|[miss]
+  |-miss|p2a: Slammer|p1a: Chomp
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI02b sv: Garchomp Dig; a foe's Thunderbolt at it misses
+  |move|p1a: Chomp|Dig||[still]
+  |-prepare|p1a: Chomp|Dig
+  |move|p2a: Rai|Thunderbolt|p1a: Chomp|[miss]
+  |-miss|p2a: Rai|p1a: Chomp
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI03 sv: Dragonite Fly; a foe's Hurricane at it hits; the other foe's Gust at it hits at 2x
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p2b: Pidge|Gust|p1a: Nite
+  |-damage|p1a: Nite|130/166
+  |-damage|p1a: Nite|130/166
+  |move|p2a: Peli|Hurricane|p1a: Nite
+  |-damage|p1a: Nite|70/166
+  |-damage|p1a: Nite|70/166
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI03c sv: control: Dragonite Splash; the same Hurricane and Gust
+  |move|p1a: Nite|Splash|p1a: Nite
+  |move|p2b: Pidge|Gust|p1a: Nite
+  |-damage|p1a: Nite|148/166
+  |-damage|p1a: Nite|148/166
+  |move|p2a: Peli|Hurricane|p1a: Nite
+  |-damage|p1a: Nite|88/166
+  |-damage|p1a: Nite|88/166
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI04 champions: Dragonite Fly; a foe's Rock Slide (allAdjacentFoes) misses it, hits its ally with the spread modifier
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p2a: Tar|Rock Slide|p1a: Nite|[spread] p1b
+  |-miss|p2a: Tar|p1a: Nite
+  |-damage|p1b: Lax1|177/235
+  |-damage|p1b: Lax1|177/235
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI04c champions: control: Dragonite Splash; the same Rock Slide
+  |move|p1a: Nite|Splash|p1a: Nite
+  |move|p2a: Tar|Rock Slide|p1a: Nite|[spread] p1a,p1b
+  |-supereffective|p1a: Nite|1
+  |-damage|p1a: Nite|82/166
+  |-damage|p1a: Nite|82/166
+  |-damage|p1b: Lax1|177/235
+  |-damage|p1b: Lax1|177/235
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI04d champions: Dragonite Fly; a foe's Thunder at it hits, Smack Down at it hits and grounds it; then a slower Earthquake hits it
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p2b: Chomp|Earthquake|p1a: Nite|[spread] p2a,p1b
+  |-miss|p2b: Chomp|p1a: Nite
+  |-supereffective|p2a: Tar|1
+  |-damage|p2a: Tar|67/175
+  |-damage|p2a: Tar|67/175
+  |-damage|p1b: Lax1|153/235
+  |-damage|p1b: Lax1|153/235
+  |move|p2a: Tar|Smack Down|p1a: Nite
+  |-supereffective|p1a: Nite|1
+  |-damage|p1a: Nite|88/166
+  |-damage|p1a: Nite|88/166
+  |-start|p1a: Nite|Smack Down
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI05 swsh: Lopunny Bounce; a foe's Gust at it (power 2x), the other's Twister at it
+  |move|p1a: Bun|Bounce||[still]
+  |-prepare|p1a: Bun|Bounce
+  |move|p2a: Pidge|Gust|p1a: Bun
+  |-damage|p1a: Bun|104/140
+  |-damage|p1a: Bun|104/140
+  |move|p2b: Nite|Twister|p1a: Bun|[spread] p1a,p1b
+  |-damage|p1a: Bun|70/140
+  |-damage|p1a: Bun|70/140
+  |-damage|p1b: Lax1|219/235
+  |-damage|p1b: Lax1|219/235
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI05c swsh: control: Lopunny Splash; the same Gust and Twister
+  |move|p1a: Bun|Splash|p1a: Bun
+  |move|p2a: Pidge|Gust|p1a: Bun
+  |-damage|p1a: Bun|122/140
+  |-damage|p1a: Bun|122/140
+  |move|p2b: Nite|Twister|p1a: Bun|[spread] p1a,p1b
+  |-damage|p1a: Bun|104/140
+  |-damage|p1a: Bun|104/140
+  |-damage|p1b: Lax1|219/235
+  |-damage|p1b: Lax1|219/235
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI06 usum: Kingdra Dive; a foe's Surf (allAdjacent) hits it at 2x, its ally and the foe's own ally at 0.75
+  |move|p1a: King|Dive||[still]
+  |-prepare|p1a: King|Dive
+  |move|p2a: Star|Surf|p1a: King|[spread] p2b,p1a,p1b
+  |-resisted|p1a: King
+  |-damage|p2b: Lax2|201/235
+  |-damage|p2b: Lax2|201/235
+  |-damage|p1a: King|130/150
+  |-damage|p1a: King|130/150
+  |-damage|p1b: Lax1|201/235
+  |-damage|p1b: Lax1|201/235
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI06c usum: control: Kingdra Splash; the same Surf
+  |move|p1a: King|Splash|p1a: King
+  |move|p2a: Star|Surf|p1a: King|[spread] p2b,p1a,p1b
+  |-resisted|p1a: King
+  |-damage|p2b: Lax2|201/235
+  |-damage|p2b: Lax2|201/235
+  |-damage|p1a: King|140/150
+  |-damage|p1a: King|140/150
+  |-damage|p1b: Lax1|201/235
+  |-damage|p1b: Lax1|201/235
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI07 sv: Dragapult Phantom Force; a foe's Earthquake misses it; a No Guard Machamp's Close Combat at it hits
+  |move|p1a: Pult|Phantom Force||[still]
+  |-prepare|p1a: Pult|Phantom Force
+  |move|p2a: Chomp|Earthquake|p1a: Pult|[spread] p2b,p1b
+  |-miss|p2a: Chomp|p1a: Pult
+  |-damage|p2b: Champ|101/165
+  |-damage|p2b: Champ|101/165
+  |-damage|p1b: Lax1|160/235
+  |-damage|p1b: Lax1|160/235
+  |move|p2b: Champ|Knock Off|p1a: Pult
+  |-supereffective|p1a: Pult
+  |-damage|p1a: Pult|85/163
+  |-damage|p1a: Pult|85/163
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |turn|2
+
+== T2-SI08-sv sv: Dragonite Fly; a Poison-type Toxapex's Toxic at it, then a Snorlax's Toxic at it
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p2a: Pex|Toxic|p1a: Nite
+  |-status|p1a: Nite|tox
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Lax|Toxic|p1a: Nite|[miss]
+  |-miss|p2b: Lax|p1a: Nite
+  |-damage|p1a: Nite|156/166 tox|[from] psn
+  |-damage|p1a: Nite|156/166 tox|[from] psn
+  |turn|2
+
+== T2-SI08-usum usum: Dragonite Fly; a Poison-type Toxapex's Toxic at it, then a Snorlax's Toxic at it
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p2a: Pex|Toxic|p1a: Nite
+  |-status|p1a: Nite|tox
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Lax|Toxic|p1a: Nite|[miss]
+  |-miss|p2b: Lax|p1a: Nite
+  |-damage|p1a: Nite|156/166 tox|[from] psn
+  |-damage|p1a: Nite|156/166 tox|[from] psn
+  |turn|2
+
+== T2-SI09 sv: Dragonite Fly; a foe's Gravity; then a slower foe's Thunderbolt at it hits
+  |move|p1a: Nite|Fly||[still]
+  |move|p2a: Gong|Gravity|p2a: Gong
+  |-fieldstart|move: Gravity
+  |-activate|p1a: Nite|move: Gravity
+  |cant|p1b: Lax1|move: Gravity|Splash
+  |move|p2b: Slow|Thunderbolt|p1a: Nite
+  |-damage|p1a: Nite|141/166
+  |-damage|p1a: Nite|141/166
+
+== T2-CR01 sv: Dragonite Fly; a foe's High Jump Kick at it misses and crashes (half its maximum HP)
+  |move|p1a: Nite|Fly||[still]
+  |move|p2a: Lee|High Jump Kick|p1a: Nite|[miss]
+  |-miss|p2a: Lee|p1a: Nite
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== T2-CR02 sv: a foe uses Protect; High Jump Kick at it crashes
+  |move|p1a: Nite|Protect|p1a: Nite
+  |move|p2a: Lee|High Jump Kick|p1a: Nite
+  |-activate|p1a: Nite|move: Protect
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== T2-CR03 sv: High Jump Kick at a Ghost type (immune) crashes; Supercell Slam at a protected one crashes too
+  |move|p1b: Nite|Protect|p1b: Nite
+  |move|p2b: Ball|Supercell Slam|p1b: Nite
+  |-activate|p1b: Nite|move: Protect
+  |-damage|p2b: Ball|68/135|[from] supercellslam
+  |-damage|p2b: Ball|68/135|[from] supercellslam
+  |move|p1a: Ghost|Splash|p1a: Ghost
+  |move|p2a: Lee|High Jump Kick|p1a: Ghost
+  |-immune|p1a: Ghost
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+
+== T2-CR04 usum: Jump Kick at a Ghost type crashes (gen 7)
+  |move|p1a: Ghost|Splash|p1a: Ghost
+  |move|p2a: Lee|Jump Kick|p1a: Ghost
+  |-immune|p1a: Ghost
+  |-damage|p2a: Lee|63/125|[from] jumpkick
+  |-damage|p2a: Lee|63/125|[from] jumpkick
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+
+== T2-CR05 champions: High Jump Kick into Protect crashes; Magic Guard keeps it off
+  |move|p1b: Chomp|Protect|p1b: Chomp
+  |move|p1a: Nite|Protect|p1a: Nite
+  |move|p2a: Lee|High Jump Kick|p1a: Nite
+  |-activate|p1a: Nite|move: Protect
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |-damage|p2a: Lee|63/125|[from] highjumpkick
+  |move|p2b: Fable|High Jump Kick|p1b: Chomp
+  |-activate|p1b: Chomp|move: Protect
+
+== T2-SI10 usum: Alolan Marowak (Lightning Rod) Dig; a foe's Thunderbolt at its ally is redirected to it and misses (no Sp. Atk rise)
+  |move|p1a: Wak|Dig||[still]
+  |move|p2b: Lax2|Splash|p2b: Lax2
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2a: Slow|Thunderbolt|p1a: Wak|[miss]
+  |-activate|p1a: Wak|ability: Lightning Rod
+  |-miss|p2a: Slow|p1a: Wak
+
+== T2-SI11 sv: Dragonite Fly; a foe's Thunder Wave at it misses; the other foe's Growl misses it and lowers its ally
+  |move|p1a: Nite|Fly||[still]
+  |move|p2a: Rai|Thunder Wave|p1a: Nite|[miss]
+  |-miss|p2a: Rai|p1a: Nite
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Lax|Growl|p1a: Nite|[spread] p1b
+  |-miss|p2b: Lax|p1a: Nite
+  |-unboost|p1b: Lax1|atk|1
+
+== T2-SI11b sv: Dragonite Fly; its ally's Pollen Puff at it misses; a foe's Haze (field) clears its stages; a foe's Perish Song reaches it
+  |move|p1a: Nite|Fly||[still]
+  |move|p2a: Weez|Haze|p2a: Weez
+  |move|p2b: Toed|Perish Song|p2b: Toed
+  |-miss|p2b: Toed|p1a: Nite
+  |-start|p1b: Bee|perish3|[silent]
+  |-start|p2a: Weez|perish3|[silent]
+  |-start|p2b: Toed|perish3|[silent]
+  |move|p1b: Bee|Pollen Puff|p1a: Nite|[miss]
+  |-miss|p1b: Bee|p1a: Nite
+  |-start|p2a: Weez|perish3
+  |-start|p2b: Toed|perish3
+  |-start|p1b: Bee|perish3
+
+== T2-SI13 sv: Garchomp Dig; Helping Hand from its ally at it after it moved (fails: it moved); an Earthquake from its ally hits it at 2x in Sandstorm (no sand damage underground)
+  |move|p1a: Chomp|Dig||[still]
+  |move|p1b: Hippo|Earthquake|p2a: Lax4|[spread] p1a,p2a,p2b
+  |-damage|p1a: Chomp|85/183
+  |-damage|p1a: Chomp|85/183
+  |-damage|p2a: Lax4|169/235
+  |-damage|p2a: Lax4|169/235
+  |-damage|p2b: Lax8|169/235
+  |-damage|p2b: Lax8|169/235
+  |move|p2b: Lax8|Splash|p2b: Lax8
+  |move|p2a: Lax4|Splash|p2a: Lax4
+  |-weather|Sandstorm|[upkeep]
+  |-damage|p2b: Lax8|155/235|[from] Sandstorm
+  |-damage|p2b: Lax8|155/235|[from] Sandstorm
+  |-damage|p2a: Lax4|155/235|[from] Sandstorm
+  |-damage|p2a: Lax4|155/235|[from] Sandstorm
+
+== T2-SI12b champions: turn 1 Dragonite Fly; turn 2 fully paralysed (forced); a faster foe's Thunderbolt and a slower foe's Body Slam at it
+  |move|p2a: Rai|Splash|p2a: Rai
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Slammer|Splash|p2b: Slammer
+  |upkeep
+  |turn|2
+  |-status|p1a: Nite|par
+  |move|p2a: Rai|Thunderbolt|p1a: Nite|[miss]
+  |-miss|p2a: Rai|p1a: Nite
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Slammer|Body Slam|p1a: Nite|[miss]
+  |-miss|p2b: Slammer|p1a: Nite
+  |cant|p1a: Nite|par
+  |upkeep
+  |turn|3
+  volatiles after turn 2: 
+
+== T2-SI12c champions: turn 1 Dragonite Fly; turn 2 no paralysis; a faster foe's Thunderbolt and a slower foe's Body Slam at it
+  |move|p2a: Rai|Splash|p2a: Rai
+  |move|p1a: Nite|Fly||[still]
+  |-prepare|p1a: Nite|Fly
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Slammer|Splash|p2b: Slammer
+  |upkeep
+  |turn|2
+  |move|p2a: Rai|Thunderbolt|p1a: Nite|[miss]
+  |-miss|p2a: Rai|p1a: Nite
+  |move|p1a: Nite|Fly|p2a: Rai|[from] lockedmove|[miss]
+  |-miss|p1a: Nite|p2a: Rai
+  |move|p1b: Lax1|Splash|p1b: Lax1
+  |move|p2b: Slammer|Body Slam|p1a: Nite
+  |-damage|p1a: Nite|100/166
+  |-damage|p1a: Nite|100/166
+  |upkeep
+  |turn|3
+  volatiles after turn 2: 

@@ -1,0 +1,698 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 230,
+    "maximum": 230
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "payday",
+    "effectiveName": "G-Max Gold Rush",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 40,
+      "max": 48,
+      "minPercent": 17.02127659574468,
+      "maxPercent": 20.425531914893615,
+      "koChance": 0,
+      "row": {
+       "moveId": "payday",
+       "effectiveName": "G-Max Gold Rush",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 17.02127659574468,
+       "maxPercent": 20.425531914893615,
+       "rolls": [
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "G-Max Gold Rush: 40–48 HP (17.0–20.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "G-Max Gold Rush: Snorlax (opponent's, 2) is confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "G-Max Gold Rush: Snorlax (opponent's, 1) is confused.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 230,
+    "maximum": 230,
+    "low": 230,
+    "average": 230,
+    "high": 230,
+    "min": 230,
+    "max": 230,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 226.60562500000003,
+    "high": 235,
+    "min": 207,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "losses": [
+     {
+      "text": "Snorlax (opponent's, 1) hurts itself in confusion: 23–28 HP.",
+      "chance": 0.33
+     }
+    ],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 195,
+    "average": 183.105625,
+    "high": 187,
+    "min": 159,
+    "max": 195,
+    "koChance": 0,
+    "heals": [],
+    "losses": [
+     {
+      "text": "Snorlax (opponent's, 2) hurts itself in confusion: 23–28 HP.",
+      "chance": 0.33
+     }
+    ],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "payday",
+     "effectiveName": "G-Max Gold Rush",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 40,
+     "max": 48,
+     "minPercent": 17.02127659574468,
+     "maxPercent": 20.425531914893615,
+     "rolls": [
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "G-Max Gold Rush: 40–48 HP (17.0–20.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 8,
+      "fasterChance": 0.9991416806733469,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 195,
+      "high": 187,
+      "average": 191.5,
+      "min": 187,
+      "max": 195,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 40,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 230,
+     "maximum": 230,
+     "low": 230,
+     "average": 230,
+     "high": 230,
+     "min": 230,
+     "max": 230,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 226.60562500000003,
+     "high": 235,
+     "min": 207,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "losses": [
+      {
+       "text": "Snorlax (opponent's, 1) hurts itself in confusion: 23–28 HP.",
+       "chance": 0.33
+      }
+     ],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 195,
+     "average": 183.105625,
+     "high": 187,
+     "min": 159,
+     "max": 195,
+     "koChance": 0,
+     "heals": [],
+     "losses": [
+      {
+       "text": "Snorlax (opponent's, 2) hurts itself in confusion: 23–28 HP.",
+       "chance": 0.33
+      }
+     ],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.9565999999995256,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 230,
+    "maximum": 230
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 230,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "meowth",
+       "nature": "Serious",
+       "abilityId": "pickup",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "mechanic": "gigantamax",
+       "configuration": {
+        "gender": "M",
+        "dynamaxLevel": 10,
+        "gigantamax": true
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 207,
+        "chance": 0.020625
+       },
+       {
+        "hp": 208,
+        "chance": 0.061875
+       },
+       {
+        "hp": 209,
+        "chance": 0.0825
+       },
+       {
+        "hp": 210,
+        "chance": 0.061875
+       },
+       {
+        "hp": 211,
+        "chance": 0.0825
+       },
+       {
+        "hp": 212,
+        "chance": 0.020625
+       },
+       {
+        "hp": 235,
+        "chance": 0.67
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 159,
+        "chance": 0.0012890625
+       },
+       {
+        "hp": 160,
+        "chance": 0.0038671875
+       },
+       {
+        "hp": 161,
+        "chance": 0.0090234375
+       },
+       {
+        "hp": 162,
+        "chance": 0.019335937500000004
+       },
+       {
+        "hp": 163,
+        "chance": 0.0322265625
+       },
+       {
+        "hp": 164,
+        "chance": 0.0322265625
+       },
+       {
+        "hp": 165,
+        "chance": 0.0425390625
+       },
+       {
+        "hp": 166,
+        "chance": 0.04640625
+       },
+       {
+        "hp": 167,
+        "chance": 0.0348046875
+       },
+       {
+        "hp": 168,
+        "chance": 0.03867187500000001
+       },
+       {
+        "hp": 169,
+        "chance": 0.0348046875
+       },
+       {
+        "hp": 170,
+        "chance": 0.01546875
+       },
+       {
+        "hp": 171,
+        "chance": 0.01546875
+       },
+       {
+        "hp": 172,
+        "chance": 0.0038671875
+       },
+       {
+        "hp": 187,
+        "chance": 0.04187500000000001
+       },
+       {
+        "hp": 189,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 190,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 192,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 193,
+        "chance": 0.12562500000000001
+       },
+       {
+        "hp": 195,
+        "chance": 0.12562500000000001
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,548 @@
+{
+ "id": "V18b",
+ "title": "Quick Draw on the slower attacker",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Quick Draw (30%) for an attacking move.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 110,
+   "classes": 29,
+   "ms": 68,
+   "decisions": {
+    "chance:quickdraw": 2,
+    "fail:": 89,
+    "roll": 89,
+    "secondary": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Slowbro-Galar",
+     "start": 60,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0.9999999999999999,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       148,
+       0.01875
+      ],
+      [
+       149,
+       0.0375
+      ],
+      [
+       150,
+       0.075
+      ],
+      [
+       151,
+       0.0375
+      ],
+      [
+       152,
+       0.0375
+      ],
+      [
+       153,
+       0.075
+      ],
+      [
+       154,
+       0.01875
+      ],
+      [
+       183,
+       0.7
+      ]
+     ],
+     "koChance": 0,
+     "average": 173.4375,
+     "min": 148,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0.7,
+     "moved": 0.3,
+     "cant": {},
+     "orderAll": {
+      "1": 0.3,
+      "2": 0.7
+     },
+     "orderMoved": {
+      "1": 0.3
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.3,
+       "landed": 0.3,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 0.9999999999999989,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999989,
+     "cant": {},
+     "orderAll": {
+      "1": 0.7,
+      "2": 0.29999999999999993
+     },
+     "orderMoved": {
+      "1": 0.7,
+      "2": 0.29999999999999993
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999989,
+       "landed": 0.9999999999999989,
+       "ko": 0.9999999999999989,
+       "dmgMin": 72,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 12,
+   "classes": 11,
+   "ms": 7,
+   "decisions": {
+    "chance:quickdraw": 2,
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Slowbro-Galar",
+     "start": 60,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       154,
+       0.3
+      ],
+      [
+       183,
+       0.7
+      ]
+     ],
+     "koChance": 0,
+     "average": 174.29999999999998,
+     "min": 154,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0.7,
+     "moved": 0.3,
+     "cant": {},
+     "orderAll": {
+      "1": 0.3,
+      "2": 0.7
+     },
+     "orderMoved": {
+      "1": 0.3
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.3,
+       "landed": 0.3,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.7,
+      "2": 0.3
+     },
+     "orderMoved": {
+      "1": 0.7,
+      "2": 0.3
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 12,
+   "classes": 11,
+   "ms": 6,
+   "decisions": {
+    "chance:quickdraw": 2,
+    "fail:": 3,
+    "roll": 3,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Slowbro-Galar",
+     "start": 60,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       148,
+       0.3
+      ],
+      [
+       183,
+       0.7
+      ]
+     ],
+     "koChance": 0,
+     "average": 172.5,
+     "min": 148,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0.7,
+     "moved": 0.3,
+     "cant": {},
+     "orderAll": {
+      "1": 0.3,
+      "2": 0.7
+     },
+     "orderMoved": {
+      "1": 0.3
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.3,
+       "landed": 0.3,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 0.7,
+      "2": 0.3
+     },
+     "orderMoved": {
+      "1": 0.7,
+      "2": 0.3
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 85,
+       "dmgMax": 85,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 60,
+   "maximum": 170,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 0.9999999999999999,
+   "dist": [
+    [
+     0,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 173.4375,
+   "min": 148,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     148,
+     0.01875
+    ],
+    [
+     149,
+     0.0375
+    ],
+    [
+     150,
+     0.075
+    ],
+    [
+     151,
+     0.0375
+    ],
+    [
+     152,
+     0.0375
+    ],
+    [
+     153,
+     0.075
+    ],
+    [
+     154,
+     0.01875
+    ],
+    [
+     183,
+     0.7
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

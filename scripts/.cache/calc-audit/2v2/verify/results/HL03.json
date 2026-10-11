@@ -1,0 +1,1511 @@
+{
+ "id": "HL03",
+ "title": "Brave Bird's recoil takes the attacker to its Sitrus Berry (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Recoil (a third of the damage) at the Update after the move, then the Sitrus Berry (+43).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 36,
+   "classes": 26,
+   "ms": 64,
+   "decisions": {
+    "fail:": 11,
+    "roll": 11
+   },
+   "slots": {
+    "own-left": {
+     "species": "Braviary",
+     "start": 95,
+     "maximum": 175,
+     "dist": [
+      [
+       106,
+       0.0625
+      ],
+      [
+       107,
+       0.1875
+      ],
+      [
+       108,
+       0.1875
+      ],
+      [
+       109,
+       0.1875
+      ],
+      [
+       110,
+       0.1875
+      ],
+      [
+       111,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 108.8125,
+     "min": 106,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 107,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       58,
+       0.0625
+      ],
+      [
+       60,
+       0.0625
+      ],
+      [
+       61,
+       0.125
+      ],
+      [
+       63,
+       0.0625
+      ],
+      [
+       64,
+       0.125
+      ],
+      [
+       66,
+       0.0625
+      ],
+      [
+       67,
+       0.125
+      ],
+      [
+       69,
+       0.0625
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       72,
+       0.125
+      ],
+      [
+       73,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 66.0625,
+     "min": 58,
+     "max": 73,
+     "modeTieUp": 72,
+     "modeTieDown": 61,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Braviary|hp|[from] Recoil": 1,
+      "|-enditem|p1a: Braviary|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Braviary|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 0.0625,
+       "damage:-82": 0.125,
+       "damage:-84": 0.125,
+       "damage:-85": 0.0625,
+       "damage:-87": 0.125,
+       "damage:-88": 0.0625,
+       "damage:-90": 0.125,
+       "damage:-91": 0.0625,
+       "damage:-93": 0.125,
+       "damage:-94": 0.0625,
+       "damage:-96": 0.0625
+      },
+      "own-left": {
+       "damage:recoil:-27": 0.1875,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:43": 1,
+       "damage:recoil:-28": 0.1875,
+       "damage:recoil:-29": 0.1875,
+       "damage:recoil:-30": 0.1875,
+       "damage:recoil:-31": 0.1875,
+       "damage:recoil:-32": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 11,
+       "max": 16
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -81,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -32,
+       "max": -27,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 11,
+    "classes": 11,
+    "ms": 64,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Braviary",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        106,
+        0.0625
+       ],
+       [
+        107,
+        0.1875
+       ],
+       [
+        108,
+        0.1875
+       ],
+       [
+        109,
+        0.1875
+       ],
+       [
+        110,
+        0.1875
+       ],
+       [
+        111,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 108.8125,
+      "min": 106,
+      "max": 111,
+      "modeTieUp": 111,
+      "modeTieDown": 107,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        58,
+        0.0625
+       ],
+       [
+        60,
+        0.0625
+       ],
+       [
+        61,
+        0.125
+       ],
+       [
+        63,
+        0.0625
+       ],
+       [
+        64,
+        0.125
+       ],
+       [
+        66,
+        0.0625
+       ],
+       [
+        67,
+        0.125
+       ],
+       [
+        69,
+        0.0625
+       ],
+       [
+        70,
+        0.125
+       ],
+       [
+        72,
+        0.125
+       ],
+       [
+        73,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 66.0625,
+      "min": 58,
+      "max": 73,
+      "modeTieUp": 72,
+      "modeTieDown": 61,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Braviary",
+     "start": 95,
+     "maximum": 175,
+     "dist": [
+      [
+       111,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 111,
+     "min": 111,
+     "max": 111,
+     "modeTieUp": 111,
+     "modeTieDown": 111,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       73,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 73,
+     "min": 73,
+     "max": 73,
+     "modeTieUp": 73,
+     "modeTieDown": 73,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Braviary|hp|[from] Recoil": 1,
+      "|-enditem|p1a: Braviary|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Braviary|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 1
+      },
+      "own-left": {
+       "damage:recoil:-27": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:43": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 16,
+       "max": 16
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -81,
+       "max": -81,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -27,
+       "max": -27,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Braviary",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        111,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 111,
+      "min": 111,
+      "max": 111,
+      "modeTieUp": 111,
+      "modeTieDown": 111,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        73,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 73,
+      "min": 73,
+      "max": 73,
+      "modeTieUp": 73,
+      "modeTieDown": 73,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Braviary",
+     "start": 95,
+     "maximum": 175,
+     "dist": [
+      [
+       106,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 106,
+     "min": 106,
+     "max": 106,
+     "modeTieUp": 106,
+     "modeTieDown": 106,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       58,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 58,
+     "min": 58,
+     "max": 58,
+     "modeTieUp": 58,
+     "modeTieDown": 58,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bravebird",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Braviary|hp|[from] Recoil": 1,
+      "|-enditem|p1a: Braviary|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Braviary|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-96": 1
+      },
+      "own-left": {
+       "damage:recoil:-32": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:43": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 11,
+       "max": 11
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -96
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -96,
+       "mass": 1
+      },
+      "own-left": {
+       "min": -32,
+       "max": -32,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Braviary",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        106,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 106,
+      "min": 106,
+      "max": 106,
+      "modeTieUp": 106,
+      "modeTieDown": 106,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        58,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 58,
+      "min": 58,
+      "max": 58,
+      "modeTieUp": 58,
+      "modeTieDown": 58,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 95,
+   "maximum": 175,
+   "low": 111,
+   "high": 106,
+   "average": 108.8125,
+   "min": 106,
+   "max": 111,
+   "koChance": 0,
+   "dist": [
+    [
+     106,
+     0.0625
+    ],
+    [
+     107,
+     0.1875
+    ],
+    [
+     108,
+     0.1875
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     110,
+     0.1875
+    ],
+    [
+     111,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 73,
+   "high": 58,
+   "average": 66.0625,
+   "min": 58,
+   "max": 73,
+   "koChance": 0,
+   "dist": [
+    [
+     58,
+     0.0625
+    ],
+    [
+     60,
+     0.0625
+    ],
+    [
+     61,
+     0.125
+    ],
+    [
+     63,
+     0.0625
+    ],
+    [
+     64,
+     0.125
+    ],
+    [
+     66,
+     0.0625
+    ],
+    [
+     67,
+     0.125
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     73,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 95,
+   "maximum": 175,
+   "low": 111,
+   "high": 106,
+   "average": 108.8125,
+   "min": 106,
+   "max": 111,
+   "koChance": 0,
+   "dist": [
+    [
+     106,
+     0.0625
+    ],
+    [
+     107,
+     0.1875
+    ],
+    [
+     108,
+     0.1875
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     110,
+     0.1875
+    ],
+    [
+     111,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 73,
+   "high": 58,
+   "average": 66.0625,
+   "min": 58,
+   "max": 73,
+   "koChance": 0,
+   "dist": [
+    [
+     58,
+     0.0625
+    ],
+    [
+     60,
+     0.0625
+    ],
+    [
+     61,
+     0.125
+    ],
+    [
+     63,
+     0.0625
+    ],
+    [
+     64,
+     0.125
+    ],
+    [
+     66,
+     0.0625
+    ],
+    [
+     67,
+     0.125
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     72,
+     0.125
+    ],
+    [
+     73,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

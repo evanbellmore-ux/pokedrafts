@@ -1,0 +1,318 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 300,
+    "maximum": 470
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "painsplit",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": -25,
+       "max": -25
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "effectiveName": "Max Strike",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 112,
+      "max": 133,
+      "minPercent": 47.65957446808511,
+      "maxPercent": 56.59574468085107,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Max Strike",
+       "effectiveType": "Normal",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 112,
+       "max": 133,
+       "minPercent": 47.65957446808511,
+       "maxPercent": 56.59574468085107,
+       "rolls": [
+        112,
+        114,
+        115,
+        117,
+        118,
+        120,
+        120,
+        121,
+        123,
+        124,
+        126,
+        127,
+        129,
+        130,
+        132,
+        133
+       ],
+       "ohkoChance": 0,
+       "description": "Max Strike: 112–133 HP (47.7–56.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 135,
+    "low": 125,
+    "average": 125,
+    "high": 125,
+    "min": 125,
+    "max": 125,
+    "koChance": 0,
+    "heals": [
+     "Pain Split: +25 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 123,
+    "average": 112.4375,
+    "high": 102,
+    "min": 102,
+    "max": 123,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 300,
+    "maximum": 470,
+    "low": 275,
+    "average": 275,
+    "high": 275,
+    "min": 275,
+    "max": 275,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Max Strike",
+     "effectiveType": "Normal",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 112,
+     "max": 133,
+     "minPercent": 47.65957446808511,
+     "maxPercent": 56.59574468085107,
+     "rolls": [
+      112,
+      114,
+      115,
+      117,
+      118,
+      120,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130,
+      132,
+      133
+     ],
+     "ohkoChance": 0,
+     "description": "Max Strike: 112–133 HP (47.7–56.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 123,
+      "high": 102,
+      "average": 112.4375,
+      "min": 102,
+      "max": 123,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 112,
+        "heals": []
+       },
+       "high": {
+        "dealt": 133,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 135,
+     "low": 125,
+     "average": 125,
+     "high": 125,
+     "min": 125,
+     "max": 125,
+     "koChance": 0,
+     "heals": [
+      "Pain Split: +25 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 123,
+     "average": 112.4375,
+     "high": 102,
+     "min": 102,
+     "max": 123,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 300,
+     "maximum": 470,
+     "low": 275,
+     "average": 275,
+     "high": 275,
+     "min": 275,
+     "max": 275,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.6622999999999593,
+ "preflight": []
+}

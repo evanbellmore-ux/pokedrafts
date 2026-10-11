@@ -1,0 +1,1383 @@
+{
+ "id": "BB05",
+ "title": "Life Orb after the stolen Sitrus Berry and Rough Skin (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "20 → 56 → 38 (Rough Skin) → 24 (Life Orb).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 14,
+   "classes": 6,
+   "ms": 24,
+   "decisions": {
+    "fail:": 9,
+    "roll": 9
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 20,
+     "maximum": 145,
+     "dist": [
+      [
+       24,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 24,
+     "min": 24,
+     "max": 24,
+     "modeTieUp": 24,
+     "modeTieDown": 24,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       80,
+       0.0625
+      ],
+      [
+       82,
+       0.0625
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       93,
+       0.125
+      ],
+      [
+       96,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 88.625,
+     "min": 80,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 84,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 87,
+       "dmgMax": 103,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1,
+      "|-damage|p1a: Scizor|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Scizor|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-87": 0.125,
+       "enditem:sitrusberry": 1,
+       "damage:-90": 0.125,
+       "damage:-91": 0.125,
+       "damage:-94": 0.125,
+       "damage:-95": 0.125,
+       "damage:-97": 0.125,
+       "damage:-99": 0.125,
+       "damage:-101": 0.0625,
+       "damage:-103": 0.0625
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1,
+       "damage:roughskin:-18": 1,
+       "damage:lifeorb:-14": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 4,
+       "max": 4
+      },
+      "opponent-left": {
+       "min": -103,
+       "max": -87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -103,
+       "max": -87,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 9,
+    "classes": 1,
+    "ms": 24,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        24,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 24,
+      "min": 24,
+      "max": 24,
+      "modeTieUp": 24,
+      "modeTieDown": 24,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        80,
+        0.0625
+       ],
+       [
+        82,
+        0.0625
+       ],
+       [
+        84,
+        0.125
+       ],
+       [
+        86,
+        0.125
+       ],
+       [
+        88,
+        0.125
+       ],
+       [
+        89,
+        0.125
+       ],
+       [
+        92,
+        0.125
+       ],
+       [
+        93,
+        0.125
+       ],
+       [
+        96,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 88.625,
+      "min": 80,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 84,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 10,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 20,
+     "maximum": 145,
+     "dist": [
+      [
+       24,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 24,
+     "min": 24,
+     "max": 24,
+     "modeTieUp": 24,
+     "modeTieDown": 24,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       96,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 96,
+     "min": 96,
+     "max": 96,
+     "modeTieUp": 96,
+     "modeTieDown": 96,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 87,
+       "dmgMax": 87,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1,
+      "|-damage|p1a: Scizor|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Scizor|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-87": 1,
+       "enditem:sitrusberry": 1
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1,
+       "damage:roughskin:-18": 1,
+       "damage:lifeorb:-14": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 4,
+       "max": 4
+      },
+      "opponent-left": {
+       "min": -87,
+       "max": -87
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -87,
+       "max": -87,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 10,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        24,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 24,
+      "min": 24,
+      "max": 24,
+      "modeTieUp": 24,
+      "modeTieDown": 24,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        96,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 96,
+      "min": 96,
+      "max": 96,
+      "modeTieUp": 96,
+      "modeTieDown": 96,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Scizor",
+     "start": 20,
+     "maximum": 145,
+     "dist": [
+      [
+       24,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 24,
+     "min": 24,
+     "max": 24,
+     "modeTieUp": 24,
+     "modeTieDown": 24,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "lifeorb": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       80,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 80,
+     "min": 80,
+     "max": 80,
+     "modeTieUp": 80,
+     "modeTieDown": 80,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "bugbite",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 103,
+       "dmgMax": 103,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Garchomp|Sitrus Berry|[from] stealeat|[move] Bug Bite|[of] p1a: Scizor": 1,
+      "|-heal|p1a: Scizor|hp|[from] item: Sitrus Berry": 1,
+      "|-damage|p1a: Scizor|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-damage|p1a: Scizor|hp|[from] item: Life Orb": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-103": 1,
+       "enditem:sitrusberry": 1
+      },
+      "own-left": {
+       "heal:sitrusberry:36": 1,
+       "damage:roughskin:-18": 1,
+       "damage:lifeorb:-14": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 4,
+       "max": 4
+      },
+      "opponent-left": {
+       "min": -103,
+       "max": -103
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -103,
+       "max": -103,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Scizor",
+      "start": null,
+      "maximum": 145,
+      "dist": [
+       [
+        24,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 24,
+      "min": 24,
+      "max": 24,
+      "modeTieUp": 24,
+      "modeTieDown": 24,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "lifeorb": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        80,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 80,
+      "min": 80,
+      "max": 80,
+      "modeTieUp": 80,
+      "modeTieDown": 80,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 20,
+   "maximum": 145,
+   "low": 24,
+   "high": 24,
+   "average": 24,
+   "min": 24,
+   "max": 24,
+   "koChance": 0,
+   "dist": [
+    [
+     24,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 96,
+   "high": 80,
+   "average": 88.625,
+   "min": 80,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     80,
+     0.0625
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     96,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 20,
+   "maximum": 145,
+   "low": 24,
+   "high": 24,
+   "average": 24,
+   "min": 24,
+   "max": 24,
+   "koChance": 0,
+   "dist": [
+    [
+     24,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 96,
+   "high": 80,
+   "average": 88.625,
+   "min": 80,
+   "max": 96,
+   "koChance": 0,
+   "dist": [
+    [
+     80,
+     0.0625
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     96,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

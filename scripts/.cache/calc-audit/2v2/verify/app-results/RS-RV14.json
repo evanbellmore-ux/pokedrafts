@@ -1,0 +1,368 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "wakeupslap",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 278,
+      "max": 330,
+      "minPercent": 118.29787234042553,
+      "maxPercent": 140.4255319148936,
+      "koChance": 1,
+      "row": {
+       "moveId": "wakeupslap",
+       "effectiveName": "Wake-Up Slap",
+       "effectiveType": "Fighting",
+       "effectivePower": 140,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 278,
+       "max": 330,
+       "minPercent": 118.29787234042553,
+       "maxPercent": 140.4255319148936,
+       "rolls": [
+        278,
+        282,
+        284,
+        288,
+        290,
+        296,
+        300,
+        302,
+        306,
+        308,
+        312,
+        314,
+        318,
+        320,
+        324,
+        330
+       ],
+       "ohkoChance": 1,
+       "description": "Wake-Up Slap: 278–330 HP (118.3–140.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 140."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": [],
+    "faintsBeforeMoving": 1
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "wakeupslap",
+     "effectiveName": "Wake-Up Slap",
+     "effectiveType": "Fighting",
+     "effectivePower": 140,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 278,
+     "max": 330,
+     "minPercent": 118.29787234042553,
+     "maxPercent": 140.4255319148936,
+     "rolls": [
+      278,
+      282,
+      284,
+      288,
+      290,
+      296,
+      300,
+      302,
+      306,
+      308,
+      312,
+      314,
+      318,
+      320,
+      324,
+      330
+     ],
+     "ohkoChance": 1,
+     "description": "Wake-Up Slap: 278–330 HP (118.3–140.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 140."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Wake-Up Slap cures the target's status after the first use."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 235,
+        "heals": []
+       },
+       "high": {
+        "dealt": 235,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 63,
+     "max": 75,
+     "minPercent": 38.18181818181819,
+     "maxPercent": 45.45454545454545,
+     "rolls": [
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 63–75 HP (38.2–45.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Sleep wears off at random"
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 102,
+      "high": 90,
+      "average": 96.25,
+      "min": 90,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 63,
+        "heals": []
+       },
+       "high": {
+        "dealt": 75,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": [],
+     "faintsBeforeMoving": 1
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.084100000000035,
+ "preflight": []
+}

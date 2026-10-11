@@ -1,0 +1,237 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "ragepowder",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "dragonpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 57,
+      "max": 67,
+      "minPercent": 36.774193548387096,
+      "maxPercent": 43.225806451612904,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonpulse",
+       "effectiveName": "Dragon Pulse",
+       "effectiveType": "Dragon",
+       "effectivePower": 85,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 57,
+       "max": 67,
+       "minPercent": 36.774193548387096,
+       "maxPercent": 43.225806451612904,
+       "rolls": [
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Pulse: 57–67 HP (36.8–43.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 98,
+    "average": 93.4375,
+    "high": 88,
+    "min": 88,
+    "max": 98,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 189,
+    "maximum": 189,
+    "low": 189,
+    "average": 189,
+    "high": 189,
+    "min": 189,
+    "max": 189,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonpulse",
+     "effectiveName": "Dragon Pulse",
+     "effectiveType": "Dragon",
+     "effectivePower": 85,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 57,
+     "max": 67,
+     "minPercent": 36.774193548387096,
+     "maxPercent": 43.225806451612904,
+     "rolls": [
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Pulse: 57–67 HP (36.8–43.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 98,
+      "high": 88,
+      "average": 93.4375,
+      "min": 88,
+      "max": 98,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 57,
+        "heals": []
+       },
+       "high": {
+        "dealt": 67,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 2.8132000000000517,
+ "preflight": []
+}

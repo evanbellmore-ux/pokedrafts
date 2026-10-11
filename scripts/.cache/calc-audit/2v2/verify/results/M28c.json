@@ -1,0 +1,1649 @@
+{
+ "id": "M28c",
+ "title": "Spiky Shield's damage makes a Liechi Berry due only after the hits",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Spiky Shield (18) in TryHit takes Sandaconda to 32, under a quarter, with no Update before the hits: Brutal Swing at +0, the Liechi Berry after it.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 196,
+   "classes": 69,
+   "ms": 574,
+   "decisions": {
+    "sample": 140,
+    "fail:": 240,
+    "roll": 240
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 50,
+     "maximum": 147,
+     "dist": [
+      [
+       32,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 32,
+     "max": 32,
+     "modeTieUp": 32,
+     "modeTieDown": 32,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       204,
+       0.0625
+      ],
+      [
+       205,
+       0.1875
+      ],
+      [
+       206,
+       0.1875
+      ],
+      [
+       207,
+       0.1875
+      ],
+      [
+       208,
+       0.1875
+      ],
+      [
+       209,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 206.8125,
+     "min": 204,
+     "max": 209,
+     "modeTieUp": 209,
+     "modeTieDown": 205,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       130,
+       0.0625
+      ],
+      [
+       131,
+       0.25
+      ],
+      [
+       132,
+       0.25
+      ],
+      [
+       133,
+       0.25
+      ],
+      [
+       134,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 132.25,
+     "min": 130,
+     "max": 134,
+     "modeTieUp": 133,
+     "modeTieDown": 131,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 26,
+       "dmgMax": 31,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Sandaconda|hp|[from] Spiky Shield|[of] p2b: Chesnaught": 1,
+      "|-enditem|p1a: Sandaconda|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Sandaconda|atk|1|[from] item: Liechi Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "damage:spikyshield:-18": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "damage:-26": 0.1875,
+       "damage:-27": 0.1875,
+       "damage:-28": 0.1875,
+       "damage:-29": 0.1875,
+       "damage:-30": 0.1875,
+       "damage:-31": 0.0625
+      },
+      "opponent-right": {
+       "damage:-21": 0.1875,
+       "damage:-22": 0.25,
+       "damage:-23": 0.25,
+       "damage:-24": 0.25,
+       "damage:-25": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -18,
+       "max": -18
+      },
+      "own-right": {
+       "min": -31,
+       "max": -26
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -31,
+       "max": -26,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Chesnaught|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 120,
+    "classes": 60,
+    "ms": 574,
+    "decisions": {
+     "tie2": 120
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        32,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 32,
+      "min": 32,
+      "max": 32,
+      "modeTieUp": 32,
+      "modeTieDown": 32,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        204,
+        0.0625
+       ],
+       [
+        205,
+        0.1875
+       ],
+       [
+        206,
+        0.1875
+       ],
+       [
+        207,
+        0.1875
+       ],
+       [
+        208,
+        0.1875
+       ],
+       [
+        209,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 206.8125,
+      "min": 204,
+      "max": 209,
+      "modeTieUp": 209,
+      "modeTieDown": 205,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Chesnaught",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        130,
+        0.0625
+       ],
+       [
+        131,
+        0.25
+       ],
+       [
+        132,
+        0.25
+       ],
+       [
+        133,
+        0.25
+       ],
+       [
+        134,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 132.25,
+      "min": 130,
+      "max": 134,
+      "modeTieUp": 133,
+      "modeTieDown": 131,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 49,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 50,
+     "maximum": 147,
+     "dist": [
+      [
+       32,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 32,
+     "max": 32,
+     "modeTieUp": 32,
+     "modeTieDown": 32,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       209,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 209,
+     "min": 209,
+     "max": 209,
+     "modeTieUp": 209,
+     "modeTieDown": 209,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       134,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 134,
+     "min": 134,
+     "max": 134,
+     "modeTieUp": 134,
+     "modeTieDown": 134,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 26,
+       "dmgMax": 26,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 21,
+       "dmgMax": 21,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Sandaconda|hp|[from] Spiky Shield|[of] p2b: Chesnaught": 1,
+      "|-enditem|p1a: Sandaconda|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Sandaconda|atk|1|[from] item: Liechi Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "damage:spikyshield:-18": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "damage:-26": 1
+      },
+      "opponent-right": {
+       "damage:-21": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -18,
+       "max": -18
+      },
+      "own-right": {
+       "min": -26,
+       "max": -26
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -21,
+       "max": -21
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -26,
+       "max": -26,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -21,
+       "max": -21,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Chesnaught|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 2,
+    "ms": 49,
+    "decisions": {
+     "tie2": 4
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        32,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 32,
+      "min": 32,
+      "max": 32,
+      "modeTieUp": 32,
+      "modeTieDown": 32,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        209,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 209,
+      "min": 209,
+      "max": 209,
+      "modeTieUp": 209,
+      "modeTieDown": 209,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Chesnaught",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        134,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 134,
+      "min": 134,
+      "max": 134,
+      "modeTieUp": 134,
+      "modeTieDown": 134,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 22,
+   "classes": 11,
+   "ms": 40,
+   "decisions": {
+    "sample": 24,
+    "fail:": 8,
+    "roll": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sandaconda",
+     "start": 50,
+     "maximum": 147,
+     "dist": [
+      [
+       32,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 32,
+     "min": 32,
+     "max": 32,
+     "modeTieUp": 32,
+     "modeTieDown": 32,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {
+      "atk:1": 1
+     },
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       204,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 204,
+     "min": 204,
+     "max": 204,
+     "modeTieUp": 204,
+     "modeTieDown": 204,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Chesnaught",
+     "start": 163,
+     "maximum": 163,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       130,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 130,
+     "min": 130,
+     "max": 130,
+     "modeTieUp": 130,
+     "modeTieDown": 130,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "brutalswing",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 31,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 25,
+       "dmgMax": 25,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Chesnaught|move: Protect": 1,
+      "|-damage|p1a: Sandaconda|hp|[from] Spiky Shield|[of] p2b: Chesnaught": 1,
+      "|-enditem|p1a: Sandaconda|Liechi Berry|[eat]": 1,
+      "|-boost|p1a: Sandaconda|atk|1|[from] item: Liechi Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:protect": 1
+      },
+      "own-left": {
+       "damage:spikyshield:-18": 1,
+       "enditem:liechiberry:eat": 1,
+       "boost:atk:1": 1
+      },
+      "own-right": {
+       "damage:-31": 1
+      },
+      "opponent-right": {
+       "damage:-25": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -18,
+       "max": -18
+      },
+      "own-right": {
+       "min": -31,
+       "max": -31
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -25
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -18,
+       "max": -18,
+       "mass": 1
+      },
+      "own-right": {
+       "min": -31,
+       "max": -31,
+       "mass": 1
+      },
+      "opponent-right": {
+       "min": -25,
+       "max": -25,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-left": {
+     "moveId": "spikyshield",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Chesnaught|move: Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 2,
+    "ms": 41,
+    "decisions": {
+     "tie2": 4
+    },
+    "slots": {
+     "own-left": {
+      "species": "Sandaconda",
+      "start": null,
+      "maximum": 147,
+      "dist": [
+       [
+        32,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 32,
+      "min": 32,
+      "max": 32,
+      "modeTieUp": 32,
+      "modeTieDown": 32,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {
+       "atk:1": 1
+      },
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        204,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 204,
+      "min": 204,
+      "max": 204,
+      "modeTieUp": 204,
+      "modeTieDown": 204,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Chesnaught",
+      "start": null,
+      "maximum": 163,
+      "dist": [
+       [
+        163,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 163,
+      "min": 163,
+      "max": 163,
+      "modeTieUp": 163,
+      "modeTieDown": 163,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        130,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 130,
+      "min": 130,
+      "max": 130,
+      "modeTieUp": 130,
+      "modeTieDown": 130,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 50,
+   "maximum": 147,
+   "low": 32,
+   "high": 32,
+   "average": 32,
+   "min": 32,
+   "max": 32,
+   "koChance": 0,
+   "dist": [
+    [
+     32,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 209,
+   "high": 204,
+   "average": 206.8125,
+   "min": 204,
+   "max": 209,
+   "koChance": 0,
+   "dist": [
+    [
+     204,
+     0.0625
+    ],
+    [
+     205,
+     0.1875
+    ],
+    [
+     206,
+     0.1875
+    ],
+    [
+     207,
+     0.1875
+    ],
+    [
+     208,
+     0.1875
+    ],
+    [
+     209,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 134,
+   "high": 130,
+   "average": 132.25,
+   "min": 130,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     0.0625
+    ],
+    [
+     131,
+     0.25
+    ],
+    [
+     132,
+     0.25
+    ],
+    [
+     133,
+     0.25
+    ],
+    [
+     134,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 50,
+   "maximum": 147,
+   "low": 32,
+   "high": 32,
+   "average": 32,
+   "min": 32,
+   "max": 32,
+   "koChance": 0,
+   "dist": [
+    [
+     32,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 209,
+   "high": 204,
+   "average": 206.8125,
+   "min": 204,
+   "max": 209,
+   "koChance": 0,
+   "dist": [
+    [
+     204,
+     0.0625
+    ],
+    [
+     205,
+     0.1875
+    ],
+    [
+     206,
+     0.1875
+    ],
+    [
+     207,
+     0.1875
+    ],
+    [
+     208,
+     0.1875
+    ],
+    [
+     209,
+     0.1875
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 163,
+   "maximum": 163,
+   "low": 163,
+   "high": 163,
+   "average": 163,
+   "min": 163,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     163,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 134,
+   "high": 130,
+   "average": 132.25,
+   "min": 130,
+   "max": 134,
+   "koChance": 0,
+   "dist": [
+    [
+     130,
+     0.0625
+    ],
+    [
+     131,
+     0.25
+    ],
+    [
+     132,
+     0.25
+    ],
+    [
+     133,
+     0.25
+    ],
+    [
+     134,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

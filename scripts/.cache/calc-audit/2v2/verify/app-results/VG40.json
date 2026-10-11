@@ -1,0 +1,190 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 5,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "sludgebomb",
+     "effectiveName": "Sludge Bomb",
+     "effectiveType": "Poison",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 58,
+     "max": 70,
+     "minPercent": 37.41935483870968,
+     "maxPercent": 45.16129032258064,
+     "rolls": [
+      58,
+      58,
+      60,
+      60,
+      62,
+      62,
+      62,
+      64,
+      64,
+      64,
+      66,
+      66,
+      66,
+      68,
+      68,
+      70
+     ],
+     "ohkoChance": 0,
+     "description": "Sludge Bomb: 58–70 HP (37.4–45.2% of maximum HP). Applied: Life Orb.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Venusaur's Overgrow is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "faintsFirst": true,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 1,
+       "highest": 1
+      }
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 97,
+      "high": 85,
+      "average": 91.375,
+      "min": 85,
+      "max": 97,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 70,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 64,
+     "max": 76,
+     "minPercent": 41.830065359477125,
+     "maxPercent": 49.673202614379086,
+     "rolls": [
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      76
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 64–76 HP (41.8–49.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Snorlax's Thick Fat is suppressed by Neutralizing Gas.",
+      "Charizard's Blaze is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 89,
+      "high": 77,
+      "average": 83.4375,
+      "min": 77,
+      "max": 89,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 64,
+        "heals": []
+       },
+       "high": {
+        "dealt": 76,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Charizard, Venusaur and Snorlax."
+  ]
+ },
+ "ms": 2.0799000000001797,
+ "preflight": []
+}

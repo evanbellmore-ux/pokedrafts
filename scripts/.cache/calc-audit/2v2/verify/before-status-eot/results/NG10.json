@@ -1,0 +1,605 @@
+{
+ "id": "NG10",
+ "title": "Two gas holders: Garchomp's Dragon Claw into Dragonite (Multiscale suppressed), Weezing's Sludge Bomb into Weezing-Galar (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "two holders",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 2610,
+   "classes": 131,
+   "ms": 1223,
+   "decisions": {
+    "tie2": 8402,
+    "fail:": 1584,
+    "roll": 1584,
+    "secondary": 1296
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       68,
+       0.0625
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.125
+      ],
+      [
+       73,
+       0.125
+      ],
+      [
+       74,
+       0.125
+      ],
+      [
+       76,
+       0.125
+      ],
+      [
+       77,
+       0.125
+      ],
+      [
+       79,
+       0.125
+      ],
+      [
+       80,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 74.25,
+     "min": 68,
+     "max": 80,
+     "modeTieUp": 79,
+     "modeTieDown": 70
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       26,
+       0.0625
+      ],
+      [
+       28,
+       0.125
+      ],
+      [
+       32,
+       0.125
+      ],
+      [
+       34,
+       0.125
+      ],
+      [
+       38,
+       0.125
+      ],
+      [
+       40,
+       0.125
+      ],
+      [
+       44,
+       0.125
+      ],
+      [
+       46,
+       0.125
+      ],
+      [
+       50,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 37.5,
+     "min": 26,
+     "max": 50,
+     "modeTieUp": 46,
+     "modeTieDown": 28
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 114,
+   "classes": 11,
+   "ms": 68,
+   "decisions": {
+    "tie2": 402,
+    "fail:": 48,
+    "roll": 48,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       80,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 80,
+     "min": 80,
+     "max": 80,
+     "modeTieUp": 80,
+     "modeTieDown": 80
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       50,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 50,
+     "min": 50,
+     "max": 50,
+     "modeTieUp": 50,
+     "modeTieDown": 50
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 116,
+       "dmgMax": 116,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 114,
+   "classes": 11,
+   "ms": 61,
+   "decisions": {
+    "tie2": 402,
+    "fail:": 48,
+    "roll": 48,
+    "secondary": 16
+   },
+   "slots": {
+    "own-left": {
+     "species": "Weezing",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "opponent-left": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       68,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 68,
+     "min": 68,
+     "max": 68,
+     "modeTieUp": 68,
+     "modeTieDown": 68
+    },
+    "opponent-right": {
+     "species": "Dragonite",
+     "start": 166,
+     "maximum": 166,
+     "dist": [
+      [
+       26,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 26,
+     "min": 26,
+     "max": 26,
+     "modeTieUp": 26,
+     "modeTieDown": 26
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sludgebomb",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 72,
+       "dmgMax": 72,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 140,
+       "dmgMax": 140,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 80,
+   "high": 68,
+   "average": 74.25,
+   "min": 68,
+   "max": 80,
+   "koChance": 0,
+   "dist": [
+    [
+     68,
+     0.0625
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.125
+    ],
+    [
+     73,
+     0.125
+    ],
+    [
+     74,
+     0.125
+    ],
+    [
+     76,
+     0.125
+    ],
+    [
+     77,
+     0.125
+    ],
+    [
+     79,
+     0.125
+    ],
+    [
+     80,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 166,
+   "maximum": 166,
+   "low": 50,
+   "high": 26,
+   "average": 37.5,
+   "min": 26,
+   "max": 50,
+   "koChance": 0,
+   "dist": [
+    [
+     26,
+     0.0625
+    ],
+    [
+     28,
+     0.125
+    ],
+    [
+     32,
+     0.125
+    ],
+    [
+     34,
+     0.125
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     40,
+     0.125
+    ],
+    [
+     44,
+     0.125
+    ],
+    [
+     46,
+     0.125
+    ],
+    [
+     50,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "speed tie at the start: own-left and opponent-left (80)"
+ ]
+}

@@ -1,0 +1,576 @@
+{
+ "id": "IF07",
+ "title": "Genesect-Douse holding a Douse Drive: Water Techno Blast into Snorlax, Water Pulse into it (SwSh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "data/moves.ts technoblast onModifyType: the Drive's type (Water, no STAB); Water Pulse neutral into Genesect's Bug/Steel. Download's +1 Attack at the start (the foes' Defense total is lower).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 122,
+   "classes": 73,
+   "ms": 74,
+   "decisions": {
+    "fail:": 60,
+    "roll": 60,
+    "secondary": 50
+   },
+   "slots": {
+    "own-left": {
+     "species": "Genesect-Douse",
+     "start": 146,
+     "maximum": 146,
+     "dist": [
+      [
+       107,
+       0.0625
+      ],
+      [
+       109,
+       0.1875
+      ],
+      [
+       110,
+       0.25
+      ],
+      [
+       112,
+       0.25
+      ],
+      [
+       113,
+       0.25
+      ]
+     ],
+     "koChance": 0,
+     "average": 110.875,
+     "min": 107,
+     "max": 113,
+     "modeTieUp": 113,
+     "modeTieDown": 110
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       177,
+       0.0625
+      ],
+      [
+       178,
+       0.0625
+      ],
+      [
+       179,
+       0.125
+      ],
+      [
+       180,
+       0.125
+      ],
+      [
+       181,
+       0.0625
+      ],
+      [
+       182,
+       0.125
+      ],
+      [
+       183,
+       0.125
+      ],
+      [
+       184,
+       0.125
+      ],
+      [
+       185,
+       0.0625
+      ],
+      [
+       186,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 181.8125,
+     "min": 177,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 179
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "technoblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Genesect-Douse",
+     "start": 146,
+     "maximum": 146,
+     "dist": [
+      [
+       113,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 113,
+     "min": 113,
+     "max": 113,
+     "modeTieUp": 113,
+     "modeTieDown": 113
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       186,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 186,
+     "min": 186,
+     "max": 186,
+     "modeTieUp": 186,
+     "modeTieDown": 186
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "technoblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Genesect-Douse",
+     "start": 146,
+     "maximum": 146,
+     "dist": [
+      [
+       107,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 107,
+     "min": 107,
+     "max": 107,
+     "modeTieUp": 107,
+     "modeTieDown": 107
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       177,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 177,
+     "min": 177,
+     "max": 177,
+     "modeTieUp": 177,
+     "modeTieDown": 177
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "technoblast",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "waterpulse",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 39,
+       "dmgMax": 39,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 146,
+   "maximum": 146,
+   "low": 113,
+   "high": 107,
+   "average": 110.875,
+   "min": 107,
+   "max": 113,
+   "koChance": 0,
+   "dist": [
+    [
+     107,
+     0.0625
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     110,
+     0.25
+    ],
+    [
+     112,
+     0.25
+    ],
+    [
+     113,
+     0.25
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 186,
+   "high": 177,
+   "average": 181.8125,
+   "min": 177,
+   "max": 186,
+   "koChance": 0,
+   "dist": [
+    [
+     177,
+     0.0625
+    ],
+    [
+     178,
+     0.0625
+    ],
+    [
+     179,
+     0.125
+    ],
+    [
+     180,
+     0.125
+    ],
+    [
+     181,
+     0.0625
+    ],
+    [
+     182,
+     0.125
+    ],
+    [
+     183,
+     0.125
+    ],
+    [
+     184,
+     0.125
+    ],
+    [
+     185,
+     0.0625
+    ],
+    [
+     186,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

@@ -1,0 +1,577 @@
+{
+ "id": "M24c",
+ "title": "Max Overgrowth sets Grassy Terrain: a later Earthquake halved",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Venusaur (145) first; Garchomp's Earthquake into Venusaur, Snorlax and Blastoise at 0.5 (grounded).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 300,
+   "classes": 129,
+   "ms": 197,
+   "decisions": {
+    "sample": 184,
+    "fail:": 288,
+    "roll": 288
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 310,
+     "maximum": 310,
+     "dist": [
+      [
+       273,
+       0.0625
+      ],
+      [
+       274,
+       0.25
+      ],
+      [
+       276,
+       0.25
+      ],
+      [
+       277,
+       0.25
+      ],
+      [
+       279,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 276.125,
+     "min": 273,
+     "max": 279,
+     "modeTieUp": 277,
+     "modeTieDown": 274
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       190,
+       0.0625
+      ],
+      [
+       192,
+       0.1875
+      ],
+      [
+       193,
+       0.1875
+      ],
+      [
+       195,
+       0.25
+      ],
+      [
+       196,
+       0.1875
+      ],
+      [
+       198,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 194.3125,
+     "min": 190,
+     "max": 198,
+     "modeTieUp": 195,
+     "modeTieDown": 195
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 180,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Overgrowth": 1,
+      "|-fieldstart|move: Grassy Terrain": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 37,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 37,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 24,
+   "classes": 13,
+   "ms": 19,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 310,
+     "maximum": 310,
+     "dist": [
+      [
+       279,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 279,
+     "min": 279,
+     "max": 279,
+     "modeTieUp": 279,
+     "modeTieDown": 279
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       198,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 198,
+     "min": 198,
+     "max": 198,
+     "modeTieUp": 198,
+     "modeTieDown": 198
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 180,
+       "dmgMax": 180,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Overgrowth": 1,
+      "|-fieldstart|move: Grassy Terrain": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 31,
+       "dmgMax": 31,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 37,
+       "dmgMax": 37,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 24,
+   "classes": 13,
+   "ms": 17,
+   "decisions": {
+    "sample": 24,
+    "fail:": 12,
+    "roll": 12
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 310,
+     "maximum": 310,
+     "dist": [
+      [
+       273,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 273,
+     "min": 273,
+     "max": 273,
+     "modeTieUp": 273,
+     "modeTieDown": 273
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       190,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 190,
+     "min": 190,
+     "max": 190,
+     "modeTieUp": 190,
+     "modeTieDown": 190
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    },
+    "opponent-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "energyball",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 212,
+       "dmgMax": 212,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|effective|Max Overgrowth": 1,
+      "|-fieldstart|move: Grassy Terrain": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 37,
+       "dmgMax": 37,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 310,
+   "maximum": 310,
+   "low": 279,
+   "high": 273,
+   "average": 276.125,
+   "min": 273,
+   "max": 279,
+   "koChance": 0,
+   "dist": [
+    [
+     273,
+     0.0625
+    ],
+    [
+     274,
+     0.25
+    ],
+    [
+     276,
+     0.25
+    ],
+    [
+     277,
+     0.25
+    ],
+    [
+     279,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 198,
+   "high": 190,
+   "average": 194.3125,
+   "min": 190,
+   "max": 198,
+   "koChance": 0,
+   "dist": [
+    [
+     190,
+     0.0625
+    ],
+    [
+     192,
+     0.1875
+    ],
+    [
+     193,
+     0.1875
+    ],
+    [
+     195,
+     0.25
+    ],
+    [
+     196,
+     0.1875
+    ],
+    [
+     198,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

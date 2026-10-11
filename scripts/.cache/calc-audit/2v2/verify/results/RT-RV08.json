@@ -1,0 +1,1511 @@
+{
+ "id": "RT-RV08",
+ "title": "Tera types at the end of turn: sand on a Tera Fire Garchomp, Black Sludge and Salt Cure on a Tera Water Toxapex",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Tera Fire Garchomp is not a Ground type: sand 183/16 = 11. Tera Water Toxapex is not Poison: Black Sludge −1/8 (15) and sand 7, Salt Cure 1/4 (31).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 8,
+   "classes": 8,
+   "ms": 14,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 100,
+     "maximum": 125,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "saltcure": 1
+     },
+     "boosts": {},
+     "item": {
+      "blacksludge": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Garchomp|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 1,
+    "ms": 14,
+    "decisions": {
+     "tie2": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        139,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        47,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 47,
+      "min": 47,
+      "max": 47,
+      "modeTieUp": 47,
+      "modeTieDown": 47,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "saltcure": 1
+      },
+      "boosts": {},
+      "item": {
+       "blacksludge": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        221,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 221,
+      "min": 221,
+      "max": 221,
+      "modeTieUp": 221,
+      "modeTieDown": 221,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -11,
+      "max": -11,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -7,
+      "max": -7,
+      "koChance": 0,
+      "facts": {},
+      "index": 7
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Black Sludge",
+      "chance": 1,
+      "min": -15,
+      "max": -15,
+      "koChance": 0,
+      "facts": {},
+      "index": 13
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Salt Cure",
+      "chance": 1,
+      "min": -31,
+      "max": -31,
+      "koChance": 0,
+      "facts": {},
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 8,
+   "classes": 8,
+   "ms": 18,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 100,
+     "maximum": 125,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "saltcure": 1
+     },
+     "boosts": {},
+     "item": {
+      "blacksludge": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Garchomp|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 1,
+    "ms": 18,
+    "decisions": {
+     "tie2": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        139,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        47,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 47,
+      "min": 47,
+      "max": 47,
+      "modeTieUp": 47,
+      "modeTieDown": 47,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "saltcure": 1
+      },
+      "boosts": {},
+      "item": {
+       "blacksludge": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        221,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 221,
+      "min": 221,
+      "max": 221,
+      "modeTieUp": 221,
+      "modeTieDown": 221,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -11,
+      "max": -11,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -7,
+      "max": -7,
+      "koChance": 0,
+      "facts": {},
+      "index": 7
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Black Sludge",
+      "chance": 1,
+      "min": -15,
+      "max": -15,
+      "koChance": 0,
+      "facts": {},
+      "index": 13
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Salt Cure",
+      "chance": 1,
+      "min": -31,
+      "max": -31,
+      "koChance": 0,
+      "facts": {},
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 8,
+   "classes": 8,
+   "ms": 14,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 150,
+     "maximum": 183,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Clefable",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       170,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 170,
+     "min": 170,
+     "max": 170,
+     "modeTieUp": 170,
+     "modeTieDown": 170,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Toxapex",
+     "start": 100,
+     "maximum": 125,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "saltcure": 1
+     },
+     "boosts": {},
+     "item": {
+      "blacksludge": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p1a: Garchomp|Protect": 1
+     },
+     "effects": {
+      "own-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Toxapex|Protect": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "singleturn:protect": 1
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 1,
+    "ms": 14,
+    "decisions": {
+     "tie2": 8
+    },
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        139,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Clefable",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        170,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 170,
+      "min": 170,
+      "max": 170,
+      "modeTieUp": 170,
+      "modeTieDown": 170,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Toxapex",
+      "start": null,
+      "maximum": 125,
+      "dist": [
+       [
+        47,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 47,
+      "min": 47,
+      "max": 47,
+      "modeTieUp": 47,
+      "modeTieDown": 47,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "saltcure": 1
+      },
+      "boosts": {},
+      "item": {
+       "blacksludge": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        221,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 221,
+      "min": 221,
+      "max": 221,
+      "modeTieUp": 221,
+      "modeTieDown": 221,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -11,
+      "max": -11,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -7,
+      "max": -7,
+      "koChance": 0,
+      "facts": {},
+      "index": 7
+     },
+     {
+      "slot": "opponent-right",
+      "effect": "Sandstorm",
+      "chance": 1,
+      "min": -14,
+      "max": -14,
+      "koChance": 0,
+      "facts": {},
+      "index": 10
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Black Sludge",
+      "chance": 1,
+      "min": -15,
+      "max": -15,
+      "koChance": 0,
+      "facts": {},
+      "index": 13
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Salt Cure",
+      "chance": 1,
+      "min": -31,
+      "max": -31,
+      "koChance": 0,
+      "facts": {},
+      "index": 16
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:sandstorm": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 150,
+   "maximum": 183,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 100,
+   "maximum": 125,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 150,
+   "maximum": 183,
+   "low": 139,
+   "high": 139,
+   "average": 139,
+   "min": 139,
+   "max": 139,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 170,
+   "high": 170,
+   "average": 170,
+   "min": 170,
+   "max": 170,
+   "koChance": 0,
+   "dist": [
+    [
+     170,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 100,
+   "maximum": 125,
+   "low": 47,
+   "high": 47,
+   "average": 47,
+   "min": 47,
+   "max": 47,
+   "koChance": 0,
+   "dist": [
+    [
+     47,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 221,
+   "high": 221,
+   "average": 221,
+   "min": 221,
+   "max": 221,
+   "koChance": 0,
+   "dist": [
+    [
+     221,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -11,
+   "max": -11,
+   "koChance": 0,
+   "facts": {},
+   "index": 3
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -7,
+   "max": -7,
+   "koChance": 0,
+   "facts": {},
+   "index": 7
+  },
+  {
+   "slot": "opponent-right",
+   "effect": "Sandstorm",
+   "chance": 1,
+   "min": -14,
+   "max": -14,
+   "koChance": 0,
+   "facts": {},
+   "index": 10
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Black Sludge",
+   "chance": 1,
+   "min": -15,
+   "max": -15,
+   "koChance": 0,
+   "facts": {},
+   "index": 13
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Salt Cure",
+   "chance": 1,
+   "min": -31,
+   "max": -31,
+   "koChance": 0,
+   "facts": {},
+   "index": 16
+  }
+ ]
+}

@@ -1,0 +1,277 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 201,
+    "maximum": 201
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 140,
+    "maximum": 140
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "moonblast",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 156,
+      "max": 186,
+      "minPercent": 85.24590163934425,
+      "maxPercent": 101.63934426229508,
+      "koChance": 0.0625,
+      "row": {
+       "moveId": "moonblast",
+       "effectiveName": "Moonblast",
+       "effectiveType": "Fairy",
+       "effectivePower": 95,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 156,
+       "max": 186,
+       "minPercent": 85.24590163934425,
+       "maxPercent": 101.63934426229508,
+       "rolls": [
+        156,
+        158,
+        158,
+        162,
+        164,
+        164,
+        168,
+        170,
+        170,
+        174,
+        174,
+        176,
+        180,
+        180,
+        182,
+        186
+       ],
+       "ohkoChance": 0.0625,
+       "description": "Moonblast: 156–186 HP (85.2–101.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 201,
+    "maximum": 201,
+    "low": 201,
+    "average": 201,
+    "high": 201,
+    "min": 201,
+    "max": 201,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 27,
+    "average": 13.0625,
+    "high": 0,
+    "min": 0,
+    "max": 27,
+    "koChance": 0.0625,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 140,
+    "maximum": 140,
+    "low": 140,
+    "average": 140,
+    "high": 140,
+    "min": 140,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "moonblast",
+     "effectiveName": "Moonblast",
+     "effectiveType": "Fairy",
+     "effectivePower": 95,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 156,
+     "max": 186,
+     "minPercent": 85.24590163934425,
+     "maxPercent": 101.63934426229508,
+     "rolls": [
+      156,
+      158,
+      158,
+      162,
+      164,
+      164,
+      168,
+      170,
+      170,
+      174,
+      174,
+      176,
+      180,
+      180,
+      182,
+      186
+     ],
+     "ohkoChance": 0.0625,
+     "description": "Moonblast: 156–186 HP (85.2–101.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Xerneas's Fairy Aura is suppressed by Neutralizing Gas.",
+      "Garchomp's Rough Skin is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.0625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 27,
+      "high": 0,
+      "average": 13.0625,
+      "min": 0,
+      "max": 27,
+      "koChance": 0.0625,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 156,
+        "heals": []
+       },
+       "high": {
+        "dealt": 183,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Xerneas, Snorlax and Garchomp."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 201,
+     "maximum": 201,
+     "low": 201,
+     "average": 201,
+     "high": 201,
+     "min": 201,
+     "max": 201,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 27,
+     "average": 13.0625,
+     "high": 0,
+     "min": 0,
+     "max": 27,
+     "koChance": 0.0625,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 140,
+     "maximum": 140,
+     "low": 140,
+     "average": 140,
+     "high": 140,
+     "min": 140,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.625500000000102,
+ "preflight": []
+}

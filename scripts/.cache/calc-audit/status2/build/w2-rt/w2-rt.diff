@@ -1,0 +1,940 @@
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/ai/evaluate.ts app/(app)/training/ai/evaluate.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/ai/evaluate.ts	2026-10-11 16:15:29.756298700 -0400
++++ app/(app)/training/ai/evaluate.ts	2026-10-11 16:22:33.603550500 -0400
+@@ -7,7 +7,7 @@
+ // below 100% (doubles-turn.ts turnFacts; one Serene Grace doubles to 100% happens); rollouts sample them. Documented, not corrected.
+ import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
+ import {
+-  DOUBLES_SLOTS, foesOf, slotSide, type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesSideId,
++  DOUBLES_SLOTS, foesOf, slotSide, startId, type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesSideId,
+   type DoublesSlotId, type DoublesStart, type DoublesTurnInput,
+ } from "@/app/lib/battle/doubles-types";
+ import type { BattleRuntime } from "@/app/lib/battle/runtime";
+@@ -84,8 +84,12 @@
+ const cellKey = (cell: CellActions) => `${jointActionKey(cell.opponent)}|${jointActionKey(cell.own)}`;
+ const addTerms = (a: Terms, b: Terms, scale = 1): Terms => ({ total: a.total + scale * b.total, lasting: a.lasting + scale * b.lasting, keep: a.keep + scale * b.keep });
+ const ZERO: Terms = { total: 0, lasting: 0, keep: 0 };
+-/** status2 T2: with the turn-level inputs (the field's turns left, the entry ranks, the battle's last move...), which a cell's prelude worlds can differ in. */
+-export const inputKey = (input: DoublesTurnInput) => JSON.stringify([input.field, input.pokemon, input.weatherTurns, input.canSwitch, input.fieldTurns, input.entryOrder, input.battleLastMove, input.faintedLastTurn, input.echoedVoice]);
++/**
++ * status2 T2: with the turn-level inputs (the field's turns left, the entry ranks, the battle's last move...), which a cell's
++ * prelude worlds can differ in. status2 R-T: and the benches, the replacements and the hazards (a prelude switch changes the
++ * bench; the AI's replacement pick follows it).
++ */
++export const inputKey = (input: DoublesTurnInput) => JSON.stringify([input.field, input.pokemon, input.weatherTurns, input.canSwitch, input.fieldTurns, input.entryOrder, input.battleLastMove, input.faintedLastTurn, input.echoedVoice, input.bench, input.replacement, input.hazards]);
+ 
+ /**
+  * The field clock after this turn's countdown (SPEC 10.5): an effect up before the turn loses one turn; one set this turn
+@@ -187,7 +191,9 @@
+  * bench); the outcome's volatiles, sleep counter and perish count; with the end of turn applied (status-eot SPEC §6) the
+  * HP as it stands, otherwise the residual pass added to each surviving Pokémon (clamped; `residual` is read only then);
+  * the hazards that landed this turn (the outcome's sides) and the field clock counted down one turn; the side's wipe
+- * chance when it has no living bench and no unseen members.
++ * chance when it has no living bench and no unseen members. status2 R-T (SPEC2 §6 R): a slot's occupant at the end is a
++ * newcomer where the outcome names its bench id (`mons[slot].id`, a MonKey), and the Pokémon that left (`benched`) are back
++ * on their bench with their HP and state as they left.
+  */
+ export function postFromOutcome(args: {
+   view: AiView; base: PostState; residual: Readonly<Record<MonKey, number>> | (() => Readonly<Record<MonKey, number>>); outcome: DoublesOutcome; start: DoublesStart;
+@@ -201,13 +207,17 @@
+   const placed = new Set<MonKey>();
+   const mons: PostMon[] = [];
+   for (const slot of DOUBLES_SLOTS) {
+-    const key = world.keys[slot];
+     const mon = outcome.mons[slot];
++    // status2 R-T: the occupant at the end: a newcomer by its bench id (the bridge's ids are MonKeys: sim/bridge.ts benchOf),
++    // else the Pokémon that started the turn there.
++    const newcomer = !!mon?.id;
++    const key = newcomer ? mon!.id as MonKey : world.keys[slot];
+     if (!key || !mon) continue;
+     placed.add(key);
+     const before = base.mons.find((each) => each.key === key);
+-    const maxHp = start[slot]?.maximum ?? before?.maxHp ?? 1;
+-    const change = residual[key] ?? 0;
++    const maxHp = (newcomer ? before?.maxHp : start[slot]?.maximum ?? before?.maxHp) ?? 1;
++    // The residual pass (the end of turn not applied) is of the Pokémon in battle now: a newcomer has none.
++    const change = newcomer ? 0 : residual[key] ?? 0;
+     // Ally Switch: the Pokémon that started in `slot` stands in its partner's place after the turn (ADDENDUM §6).
+     const at = outcome.positions?.[slotSide(slot)] === "swapped" ? partnerOf(slot) : slot;
+     const next = carriedNext(mon);
+@@ -219,6 +229,26 @@
+       ...(next ? { carried: next } : {}),
+     });
+   }
++  // status2 R-T (SPEC2 §6 R): the Pokémon that left during the turn (E2's benched), back on their side's bench with their
++  // state as they left (HP after Regenerator, a status Natural Cure cured), off the field: no residual of theirs.
++  for (const side of ["own", "opponent"] as const) {
++    for (const left of outcome.benched?.[side] ?? []) {
++      const starter = left.id === startId(left.slot);
++      const key = starter ? world.keys[left.slot] : left.id as MonKey;
++      if (!key || placed.has(key)) continue;
++      placed.add(key);
++      const before = base.mons.find((each) => each.key === key);
++      const maxHp = (starter ? start[left.slot]?.maximum ?? before?.maxHp : before?.maxHp) ?? 1;
++      const next = carriedNext(left);
++      mons.push({
++        key, side, slot: null, known: before?.known ?? view.mons.some((each) => each.key === key), build: left.build,
++        hp: left.hp.map((entry) => ({ hp: Math.max(0, Math.min(maxHp, entry.hp)), chance: entry.chance })),
++        maxHp, volatiles: [], protected: false,
++        ...(left.sleepTurns !== undefined ? { sleepTurns: left.sleepTurns } : {}),
++        ...(next ? { carried: next } : {}),
++      });
++    }
++  }
+   for (const mon of base.mons) {
+     if (placed.has(mon.key)) continue;
+     // status2 T1: Aromatherapy or Heal Bell cured this side's Pokémon not in battle (outcome.sides.benchCured).
+@@ -281,7 +311,8 @@
+   const worldsOf = (cell: CellActions): EngineWorlds => {
+     const key = cellKey(cell);
+     let worlds = bridged.get(key);
+-    if (!worlds) bridged.set(key, worlds = timed("bridge", () => services.engineWorlds(cell)));
++    // status2 R-T: the AI's own replacement pick in the engine input and the prelude is the rollouts' ReplacePolicy.
++    if (!worlds) bridged.set(key, worlds = timed("bridge", () => services.engineWorlds(cell, replace)));
+     return worlds;
+   };
+   const engineLeft = () => budget.engineCalls - used.engineCalls;
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/model/ai-view.ts app/(app)/training/model/ai-view.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/model/ai-view.ts	2026-10-11 16:15:29.737022100 -0400
++++ app/(app)/training/model/ai-view.ts	2026-10-11 16:22:00.167085500 -0400
+@@ -114,8 +114,12 @@
+ export interface TurnServices {
+   readonly view: AiView;
+   readonly worlds: readonly BeliefWorld[];
+-  /** Bridge + splits + prelude on belief world 0 for one pairing. The caller memoises by jointActionKey. */
+-  engineWorlds(cell: CellActions): EngineWorlds;
++  /**
++   * Bridge + splits + prelude on belief world 0 for one pairing. The caller memoises by jointActionKey. status2 R-T:
++   * `replace`, the AI's own replacement pick for a Pokémon of its side that switches out by its choice (in the engine input
++   * and before the moves); absent: its first bench Pokémon. Memoised per policy.
++   */
++  engineWorlds(cell: CellActions, replace?: ReplacePolicy): EngineWorlds;
+   /** One rollout on belief world (sample mod worlds.length); sample n uses the decision's seed n for every cell. */
+   rollout(cell: CellActions, sample: number, replace: ReplacePolicy): PostState;
+   /** End-of-turn HP change per Pokémon active now, no moves (belief world 0; cached per decision). */
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/bridge.ts app/(app)/training/sim/bridge.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/bridge.ts	2026-10-11 16:15:29.688478900 -0400
++++ app/(app)/training/sim/bridge.ts	2026-10-11 16:46:04.214904300 -0400
+@@ -3,14 +3,17 @@
+ // "opponent" is the AI. Prototypes: scripts/.cache/training/design/probe/{bridge-probe.ts,prelude-probe.ts}.
+ import { CHARGE_TURN_MOVES, SEMI_INVULNERABLE_MOVES } from "@/app/lib/battle/doubles-actions";
+ import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
+-import { DOUBLES_SLOTS, slotSide, type DoublesCarried, type DoublesPokemonInput, type DoublesSideId, type DoublesSlotId, type DoublesTurnInput } from "@/app/lib/battle/doubles-types";
++import {
++  DOUBLES_SLOTS, slotSide, type DoublesBenchPokemon, type DoublesCarried, type DoublesHazards, type DoublesPokemonInput, type DoublesSideId, type DoublesSlotId,
++  type DoublesTurnInput,
++} from "@/app/lib/battle/doubles-types";
+ import { createBuild, createConditions, getBuildStats, validateBuild } from "@/app/lib/battle/model";
+ import type { BattleRuntime } from "@/app/lib/battle/runtime";
+ import type { BattleBuild, BattleConditions, MoveContext, SideConditions } from "@/app/lib/battle/types";
+ import { BERSERK_BERRIES, CANT_SUPPRESS } from "@/app/lib/battle/hit-loop";
+ import { intimidatedKey } from "@/app/lib/battle/intimidate";
+ import { ENTRY_ABILITIES } from "@/app/lib/battle/uses-to-ko";
+-import type { CellActions, FieldClock, MonKey } from "../model/ai-view";
++import type { CellActions, FieldClock, MonKey, ReplacePolicy } from "../model/ai-view";
+ import { showdownPosition, slotAt } from "../model/positions";
+ import type { PublicMon } from "../model/public-state";
+ import type { SideID } from "../model/showdown-types";
+@@ -31,11 +34,13 @@
+  * Volatiles with no effect the engine reads (status-eot SPEC §6): legality the request already applies (choicelock,
+  * lockedmove, Torment, Throat Chop, Imprison, C8), counters (stall: the public streak, below; Laser Focus), this turn's
+  * protection and redirection, what the build carries (Charge, Flash Fire, Unburden, Slow Start), trapping (no switch in
+- * the turn).
++ * the turn). status2 R-T: Chilly Reception's own volatile, which a prelude copy holds from the turn's start (pinned
++ * data/moves.ts chillyreception priorityChargeCallback; its condition only prints the -prepare line): the move is the action's.
+  */
+ const IGNORED_VOLATILES: ReadonlySet<string> = new Set([
+   "charge", "flashfire", "unburden", "slowstart", "choicelock", "lockedmove", "torment", "throatchop",
+   "trapper", "stall", "laserfocus", "imprison", "protect", "helpinghand", "followme", "ragepowder", "endure",
++  "chillyreception",
+ ]);
+ /**
+  * Volatiles mapped into the engine input (DoublesCarried and the build): the end of turn and the moves read them. status2
+@@ -53,7 +58,11 @@
+ ]);
+ /** status2 T2: Safeguard, Mist and Lucky Chant from an earlier turn go into the side conditions (T2E §4.6.1). */
+ const MAPPED_SIDE: ReadonlySet<string> = new Set(["reflect", "lightscreen", "auroraveil", "tailwind", "safeguard", "mist", "luckychant"]);
+-const IGNORED_SIDE: ReadonlySet<string> = new Set(["spikes", "toxicspikes", "stealthrock", "stickyweb"]);
++/**
++ * status2 R-T (SPEC2 §6 R): the entry hazards go into DoublesTurnInput.hazards (a newcomer's entry reads them; Defog, Court
++ * Change, Tidy Up, Rapid Spin and Mortal Spin move or clear them), with their layers. Champions has no G-Max Steelsurge.
++ */
++const HAZARD_SIDE: ReadonlySet<string> = new Set(["spikes", "toxicspikes", "stealthrock", "stickyweb"]);
+ const ROOMS: ReadonlySet<string> = new Set(["trickroom", "gravity", "wonderroom", "magicroom", "fairylock"]);
+ const NOT_MODELLED_ABILITIES: ReadonlySet<string> = new Set([...Object.keys(ENTRY_ABILITIES), "download", "protosynthesis", "quarkdrive"]);
+ /**
+@@ -196,6 +205,75 @@
+   | { kind: "rollout"; reasons: string[] };
+ 
+ /**
++ * status2 R-T (SPEC2 §6 R, ADDENDUM2 §6 R-T, USER-DECISIONS Q1): a side's living bench (DoublesTurnInput.bench) in party
++ * order (sim/side.ts pokemon, the order a switch request lists it), each under its MonKey as its id: the AI's own exactly,
++ * the player's from the belief world (its believed sets; HP and status public). Each with its build as liveBuild gives it (a
++ * benched Pokémon's stages, volatiles and ability state start fresh as it comes in), the sleep and freeze counters and
++ * once-a-battle effects it keeps, and its moves (Assist's party: pinned data/moves.ts assist reads each party member's
++ * moveSlots). A bench Pokémon the engine would refuse is a rollout reason, not an engine issue.
++ */
++export function benchOf(battle: ClonedBattle, side: SideID, ctx: { runtime: BattleRuntime; keys: MemberKeys; aiSide: SideID; publicOf?: (key: MonKey) => PublicMon | null }, reasons: Set<string>): { entries: DoublesBenchPokemon[]; mons: Pokemon[] } {
++  const entries: DoublesBenchPokemon[] = [];
++  const mons: Pokemon[] = [];
++  for (const mon of battle[side].pokemon as readonly Pokemon[]) {
++    if (mon.fainted || mon.isActive || mon.hp <= 0) continue;
++    const id = keyOfPokemon(mon, ctx.aiSide, ctx.keys);
++    const live = liveBuild(mon, ctx.runtime);
++    if (!live) { reasons.add(`${mon.species.name} is not in the engine's catalog.`); continue; }
++    // A Protean or Libero used before it left is unused again as it comes in (pinned switchIn: a fresh abilityState; its flag
++    // stays on the benched Pokémon's old state until then, sim/pokemon.ts clearVolatile).
++    const build = isTypeChanger(live.abilityId) ? { ...live, abilityActive: true } : live;
++    const issue = validateBuild(build, ctx.runtime)[0];
++    if (issue) reasons.add(`${mon.name} on the bench: ${issue.message}`);
++    const pub = ctx.publicOf?.(id) ?? null;
++    const once = onceUsedOf(mon, ctx.runtime);
++    const kept: NonNullable<DoublesBenchPokemon["carried"]> = { ...sleepFreezeOf(mon, pub, reasons), ...(once ? { onceUsed: once } : {}) };
++    entries.push({ id, build, ...(Object.keys(kept).length ? { carried: kept } : {}), moves: mon.moveSlots.map((each) => each.id) });
++    mons.push(mon);
++  }
++  return { entries, mons };
++}
++type BenchCtx = { runtime: BattleRuntime; keys: MemberKeys; aiSide: SideID; publicOf?: (key: MonKey) => PublicMon | null };
++type Benches = { own: ReturnType<typeof benchOf>; opponent: ReturnType<typeof benchOf>; reasons: string[] };
++/** Both benches of a battle, once per battle and context (a decision bridges every cell on belief world 0's one battle). */
++const benchCache = new WeakMap<ClonedBattle, { ctx: BenchCtx; value: Benches }>();
++function benchesOf(battle: ClonedBattle, ctx: BenchCtx): Benches {
++  const known = benchCache.get(battle);
++  if (known && known.ctx.runtime === ctx.runtime && known.ctx.keys === ctx.keys && known.ctx.aiSide === ctx.aiSide && known.ctx.publicOf === ctx.publicOf) return known.value;
++  const reasons = new Set<string>();
++  const other: SideID = ctx.aiSide === "p1" ? "p2" : "p1";
++  const value: Benches = { own: benchOf(battle, other, ctx, reasons), opponent: benchOf(battle, ctx.aiSide, ctx, reasons), reasons: [] };
++  value.reasons = [...reasons];
++  benchCache.set(battle, { ctx: { runtime: ctx.runtime, keys: ctx.keys, aiSide: ctx.aiSide, publicOf: ctx.publicOf }, value });
++  return value;
++}
++/** status2 R-T: a side's entry hazards as the turn starts (DoublesTurnInput.hazards: the public side conditions, with their layers); null: none. */
++export function hazardsOf(battle: ClonedBattle, side: SideID): DoublesHazards | null {
++  const conditions = battle[side].sideConditions as Record<string, { layers?: number } | undefined>;
++  const spikes = Math.min(3, Number(conditions.spikes?.layers ?? 0));
++  const toxicSpikes = Math.min(2, Number(conditions.toxicspikes?.layers ?? 0));
++  const out: DoublesHazards = {
++    ...(conditions.stealthrock ? { stealthRock: true as const } : {}),
++    ...(spikes > 0 ? { spikes: spikes as 1 | 2 | 3 } : {}),
++    ...(toxicSpikes > 0 ? { toxicSpikes: toxicSpikes as 1 | 2 } : {}),
++    ...(conditions.stickyweb ? { stickyWeb: true as const } : {}),
++  };
++  return Object.keys(out).length ? out : null;
++}
++/**
++ * status2 R-T (USER-DECISIONS Q9): the player's replacement as the rollouts pick it (sim/rollout.ts replacementChoice): its
++ * healthiest bench Pokémon by HP share, the first in party order among equals.
++ */
++export function healthiestOf(mons: readonly Pokemon[]): number {
++  let best = -1, top = -Infinity;
++  mons.forEach((mon, index) => {
++    const share = mon.maxhp ? mon.hp / mon.maxhp : 0;
++    if (share > top) { top = share; best = index; }
++  });
++  return best;
++}
++
++/**
+  * Whether sim/splits.ts forks a sleeping or frozen Pokémon's BeforeMove into weighted engine inputs. It no longer does:
+  * the engine's own BeforeMove takes the sleep and freeze counts (status-eot SPEC §6: carried.sleep, carried.freeze from
+  * the public counts), and splits.ts keeps only Protect.
+@@ -211,6 +289,34 @@
+ const effectOf = (mon: Pokemon, id: string) => (mon.volatiles as Record<string, Effect | undefined>)[id];
+ 
+ /**
++ * Turns lost to sleep (cant lines, and Rest) and Champions turns lost to freeze, from the public counts (`pub`); a sleeper
++ * with no public counts is a rollout reason. Both counters last through a switch (pinned data/conditions.ts and Champions'
++ * slp / frz keep statusState), so a benched Pokémon keeps them too (DoublesBenchPokemon.carried).
++ */
++function sleepFreezeOf(mon: Pokemon, pub: PublicMon | null, reasons: Set<string>): Pick<DoublesCarried, "sleep" | "freeze"> {
++  const out: Pick<DoublesCarried, "sleep" | "freeze"> = {};
++  if (mon.status === "slp") {
++    if (!pub) reasons.add(`${mon.name}: its sleep needs the public counts.`);
++    else out.sleep = { attempts: pub.statusElapsed, rest: !!countsOf(pub).restSleep };
++  }
++  if (mon.status === "frz") out.freeze = { attempts: pub ? pub.statusElapsed : Math.max(0, 3 - Number(mon.statusState.time ?? 3)) };
++  return out;
++}
++/**
++ * Generation 9's once-a-battle effects it has had (the belief battle's flags, from their public lines: tracker.ts onceUsed);
++ * Battle Bond counts in Scarlet/Violet only (Champions rejects it: C22). They are the Pokémon's, kept on the bench.
++ */
++function onceUsedOf(mon: Pokemon, runtime: BattleRuntime): DoublesCarried["onceUsed"] | undefined {
++  const flags = mon as unknown as { bondTriggered?: boolean; swordBoost?: boolean; shieldBoost?: boolean; syrupTriggered?: boolean };
++  const once: NonNullable<DoublesCarried["onceUsed"]>[number][] = [
++    ...(flags.bondTriggered && runtime.profile.id === "scarlet_violet" ? ["battlebond" as const] : []),
++    ...(flags.swordBoost ? ["intrepidsword" as const] : []), ...(flags.shieldBoost ? ["dauntlessshield" as const] : []),
++    ...(flags.syrupTriggered ? ["supersweetsyrup" as const] : []),
++  ];
++  return once.length ? once : undefined;
++}
++
++/**
+  * A Pokémon's state from earlier turns as the engine takes it (status-eot SPEC §6, ADDENDUM §6). From the public counts
+  * (`pub`, sim/tracker.ts): turns lost to sleep (cant lines) and Rest, Champions turns lost to freeze, confusion's
+  * attempts (-activate lines) and Axe Kick, bad poison's ticks this stint. From the belief battle, exact per belief
+@@ -230,10 +336,7 @@
+     // are rollouts.
+     if (mon.status === "frz") reasons.add(`${name} is frozen: the turn's thaw is split before the engine.`);
+     if (mon.status === "slp" && mon.ability === "earlybird") reasons.add(`${name} is asleep with Early Bird: the turn's wake is split before the engine.`);
+-  } else {
+-    if (mon.status === "slp" && counted("its sleep")) carried.sleep = { attempts: pub!.statusElapsed, rest: !!countsOf(pub!).restSleep };
+-    if (mon.status === "frz") carried.freeze = { attempts: pub ? pub.statusElapsed : Math.max(0, 3 - Number(mon.statusState.time ?? 3)) };
+-  }
++  } else Object.assign(carried, sleepFreezeOf(mon, pub, reasons));
+   if (mon.status === "tox") carried.toxic = Math.min(15, pub ? pub.statusElapsed : Number(mon.statusState.stage ?? 0));
+   if (mon.volatiles.confusion && counted("its confusion")) {
+     const shown = pub!.volatiles.find((each) => each.id === "confusion");
+@@ -394,15 +497,8 @@
+   if (mon.volatiles.nightmare) carried.nightmare = true;
+   if (mon.volatiles.telekinesis) carried.telekinesis = turnsOf("telekinesis", 2) as 1 | 2;
+   if (mon.volatiles.embargo) carried.embargo = turnsOf("embargo", 4) as 1 | 2 | 3 | 4;
+-  // Generation 9's once-a-battle effects it has had (the belief battle's flags, from their public lines: tracker.ts
+-  // onceUsed); Battle Bond counts in Scarlet/Violet only (Champions rejects it: C22).
+-  const flags = mon as unknown as { bondTriggered?: boolean; swordBoost?: boolean; shieldBoost?: boolean; syrupTriggered?: boolean };
+-  const once: NonNullable<DoublesCarried["onceUsed"]>[number][] = [
+-    ...(flags.bondTriggered && runtime.profile.id === "scarlet_violet" ? ["battlebond" as const] : []),
+-    ...(flags.swordBoost ? ["intrepidsword" as const] : []), ...(flags.shieldBoost ? ["dauntlessshield" as const] : []),
+-    ...(flags.syrupTriggered ? ["supersweetsyrup" as const] : []),
+-  ];
+-  if (once.length) carried.onceUsed = once;
++  const once = onceUsedOf(mon, runtime);
++  if (once) carried.onceUsed = once;
+   // A working Mental Herb beside a volatile it cures is not a battle state (it cures at the holder's Update): a belief
+   // world's item the public lines rule out.
+   const herb = mon.item === "mentalherb" && !battle.field.pseudoWeather.magicroom && mon.ability !== "klutz" && !mon.volatiles.embargo;
+@@ -422,6 +518,12 @@
+   /** The tracker's public view of a Pokémon by key (services.ts publicOf): the counts carried state reads. */
+   publicOf?: (key: MonKey) => PublicMon | null;
+   earlier?: Partial<Record<DoublesSlotId, EarlierThisTurn>>;
++  /**
++   * status2 R-T: the AI's own replacement pick (ai/switches.ts replacePolicy, the rollouts' ReplacePolicy) for a Pokémon of
++   * its side that switches out by its own choice this turn. Absent: none is passed for the AI's side (the engine's default,
++   * its first bench Pokémon not in play, with its turn fact).
++   */
++  replace?: ReplacePolicy;
+ }): BridgeResult {
+   const { runtime, keys, aiSide, switched } = ctx;
+   const reasons = new Set<string>();
+@@ -432,7 +534,7 @@
+   if (battle.field.weather && !WEATHER[battle.field.weather]) reasons.add(`Weather ${battle.field.weather} is not modelled.`);
+   for (const id of Object.keys(battle.field.pseudoWeather)) if (!ROOMS.has(id)) reasons.add(`Field effect ${id} is not modelled.`);
+   for (const side of ["p1", "p2"] as const) {
+-    for (const id of Object.keys(battle[side].sideConditions)) if (!MAPPED_SIDE.has(id) && !IGNORED_SIDE.has(id)) reasons.add(`Side effect ${id} is not modelled.`);
++    for (const id of Object.keys(battle[side].sideConditions)) if (!MAPPED_SIDE.has(id) && !HAZARD_SIDE.has(id)) reasons.add(`Side effect ${id} is not modelled.`);
+   }
+ 
+   const pokemon = {} as Record<DoublesSlotId, DoublesPokemonInput | null>;
+@@ -569,7 +671,32 @@
+       ...(lastMoveTarget !== undefined ? { lastMoveTarget } : {}),
+     };
+   }
++  // status2 R-T (SPEC2 §6 R): each side's living bench, the replacements and the entry hazards (engine orientation: "own" is
++  // the player's side, "opponent" the AI's).
++  const other: SideID = aiSide === "p1" ? "p2" : "p1";
++  const showdownSide = (side: DoublesSideId): SideID => (side === "own" ? other : aiSide);
++  const benches = benchesOf(battle, ctx);
++  for (const reason of benches.reasons) reasons.add(reason);
+   if (reasons.size) return { kind: "rollout", reasons: [...reasons] };
++  const bench: Record<DoublesSideId, DoublesBenchPokemon[]> = { own: benches.own.entries, opponent: benches.opponent.entries };
++  // Who comes in for a Pokémon its own player switches out mid-turn (U-turn, Parting Shot, Eject Button...): the player's
++  // healthiest bench Pokémon (the rollouts' rule, Q9); the AI's own pick (its ReplacePolicy, as its rollouts apply it).
++  const replacement: Partial<Record<DoublesSlotId, string>> = {};
++  const healthiest = healthiestOf(benches.own.mons);
++  for (const slot of DOUBLES_SLOTS) {
++    const side = slotSide(slot);
++    if (!pokemon[slot] || !bench[side].length) continue;
++    if (side === "own") replacement[slot] = bench.own[healthiest].id;
++    else if (ctx.replace) {
++      const [pick] = ctx.replace("opponent", [slot], bench.opponent.map((each) => each.id as MonKey));
++      if (pick && bench.opponent.some((each) => each.id === pick)) replacement[slot] = pick;
++    }
++  }
++  const hazards: Partial<Record<DoublesSideId, DoublesHazards>> = {};
++  for (const side of ["own", "opponent"] as const) {
++    const up = hazardsOf(battle, showdownSide(side));
++    if (up) hazards[side] = up;
++  }
+   // status2 T2: a Trace holder's copied Intimidate acted as it was copied (its Start, before this turn or in the prelude), and
+   // its drops are in the foes' stages from the public lines: stored, so the start settle does not apply it again
+   // (doubles-start.ts copiedIntimidateStored; conformance 4b, V10 against V06: Gardevoir tracing Incineroar's Intimidate).
+@@ -581,7 +708,6 @@
+   }
+   const canSwitch = (side: SideID) => battle[side].pokemon.some((each) => !each.fainted && !each.isActive);
+   const weatherTurns = Number(battle.field.weatherState?.duration ?? 0);
+-  const other: SideID = aiSide === "p1" ? "p2" : "p1";
+   const switches: Record<DoublesSideId, boolean> = { own: canSwitch(other), opponent: canSwitch(aiSide) };
+   // status2 T2 (ADDENDUM2 §6, T2E §4.6.2): the turns the terrain, Gravity and Magic Room have left before this turn's
+   // countdown (the belief battle's durations from their public starts: fieldClock); 1 ends at this end of turn.
+@@ -610,6 +736,7 @@
+   const lastMove = battle.lastMove?.id ?? null;
+   const input: DoublesTurnInput = {
+     runtime, field: fieldConditions(battle, aiSide), pokemon, canSwitch: switches,
++    bench, ...(Object.keys(replacement).length ? { replacement } : {}), ...(Object.keys(hazards).length ? { hazards } : {}),
+     ...(battle.field.weather && weatherTurns > 0 ? { weatherTurns } : {}),
+     ...(Object.keys(fieldTurns).length ? { fieldTurns } : {}),
+     ...(ranked.length ? { entryOrder } : {}),
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/prelude.ts app/(app)/training/sim/prelude.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/prelude.ts	2026-10-11 16:15:29.695224900 -0400
++++ app/(app)/training/sim/prelude.ts	2026-10-11 16:21:39.030554500 -0400
+@@ -13,10 +13,23 @@
+ // moves is a rollout. At most PRELUDE_WORLDS_BOUND worlds per cell, above it the old text. The per-turn flags
+ // (statsRaisedThisTurn, statsLoweredThisTurn, usedItemThisTurn) are cleared on the copy first (status2 Step 1 #11, C19: a
+ // belief battle's are not this turn's), so after the prelude they are what this turn's switches and Mega Evolutions did.
++//
++// status2 R-T (T2E §4.8, SPEC2 §6 R): a replacement asked before the first move (Emergency Exit after entry hazards; Eject
++// Pack and Eject Button after a switch-in's entry) is answered as the rollouts answer one (sim/rollout.ts replacementChoice:
++// the AI's ReplacePolicy, the player's healthiest living bench Pokémon) and the copy runs on to its first move.
++import type { ReplacePolicy } from "../model/ai-view";
++import type { SideID } from "../model/showdown-types";
++import type { MemberKeys } from "./choices";
++import { replacementChoice } from "./rollout";
+ import { PRNG, State, type BattleAction, type ClonedBattle, type PRNGSeed } from "./sim";
+ 
+ const STOP = { stop: "prelude" } as const;
+ 
++/** Who answers a replacement asked before the moves (status2 R-T). */
++export type PreludeReplace = { aiSide: SideID; keys: MemberKeys; replace: ReplacePolicy };
++/** At most this many replacement requests before the moves (each answered, then the copy runs on). */
++const PRELUDE_REPLACEMENTS = 8;
++
+ export type PreludeWorld = { battle: ClonedBattle; weight: number };
+ export type PreludeResult = { kind: "stopped"; worlds: PreludeWorld[] } | { kind: "rollout"; reasons: string[] };
+ /** At most this many weighted prelude worlds per cell (three or four tied switches with entry effects go above it). */
+@@ -70,7 +83,7 @@
+ const isPokemon = (item: unknown) => !!item && typeof item === "object" && "species" in item && "side" in item;
+ 
+ /** One run of the prelude under `ch`'s choices: the stopped copy, or a rollout. */
+-function runOnce(json: string, choices: { p1: string; p2: string }, seed: string, ch: Chooser): { kind: "stopped"; battle: ClonedBattle } | { kind: "rollout"; reasons: string[] } {
++function runOnce(json: string, choices: { p1: string; p2: string }, seed: string, ch: Chooser, answer?: PreludeReplace): { kind: "stopped"; battle: ClonedBattle } | { kind: "rollout"; reasons: string[] } {
+   const clone = State.deserializeBattle(json);
+   clone.restart(() => {});
+   clone.prng = new PRNG(`sodium,${seed}` as PRNGSeed);
+@@ -126,23 +139,33 @@
+   };
+   try {
+     clone.makeChoices(choices.p1, choices.p2);
++    // status2 R-T: a replacement asked before the moves (the queue still holds them: the battle is mid-turn), answered for
++    // each side as the rollouts do; the copy goes on to its first move (STOP) or the turn's end.
++    for (let asked = 0; answer && !clone.ended && clone.requestState === "switch" && asked < PRELUDE_REPLACEMENTS; asked++) {
++      const p1 = replacementChoice(clone, "p1", answer.aiSide, answer.keys, answer.replace) ?? "";
++      const p2 = replacementChoice(clone, "p2", answer.aiSide, answer.keys, answer.replace) ?? "";
++      clone.makeChoices(p1, p2);
++    }
+   } catch (error) {
+     clone.runAction = runAction;
+     if (error === STOP) return { kind: "stopped", battle: clone };
+     return { kind: "rollout", reasons: [`Prelude failed: ${String((error as Error)?.message ?? error).slice(0, 80)}`] };
+   }
+-  // No move was reached: the turn ended (all switches) or a replacement is asked mid-turn (Eject Pack, Emergency Exit).
++  // No move was reached: the turn ended (all switches), or a replacement is asked mid-turn with no one to answer it.
+   clone.runAction = runAction;
+   return { kind: "rollout", reasons: [clone.ended ? "The battle ended before the moves." : "A replacement is needed before the moves."] };
+ }
+ 
+-/** Every prelude world of the cell (status2 Step 1 #15), each with its weight (summing to 1), or a rollout. */
+-export function runPreludeWorlds(json: string, choices: { p1: string; p2: string }, seed: string): PreludeResult {
++/**
++ * Every prelude world of the cell (status2 Step 1 #15), each with its weight (summing to 1), or a rollout. `answer` (status2
++ * R-T): who answers a replacement asked before the moves; without it that is a rollout as before.
++ */
++export function runPreludeWorlds(json: string, choices: { p1: string; p2: string }, seed: string, answer?: PreludeReplace): PreludeResult {
+   const worlds: PreludeWorld[] = [];
+   let prefix: number[] | null = [];
+   while (prefix) {
+     const ch: Chooser = new Chooser(prefix);
+-    const run = runOnce(json, choices, seed, ch);
++    const run = runOnce(json, choices, seed, ch, answer);
+     if (run.kind === "rollout") return run;
+     worlds.push({ battle: run.battle, weight: ch.weight });
+     if (worlds.length > PRELUDE_WORLDS_BOUND) return { kind: "rollout", reasons: ["Speed tie between switches with an entry effect."] };
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/rollout.ts app/(app)/training/sim/rollout.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/rollout.ts	2026-10-11 16:15:29.685448600 -0400
++++ app/(app)/training/sim/rollout.ts	2026-10-11 16:21:38.960647600 -0400
+@@ -12,7 +12,11 @@
+ 
+ export type RolloutResult = { battle: ClonedBattle; replacements: number; error: string | null };
+ 
+-function replacementChoice(battle: ClonedBattle, side: SideID, aiSide: SideID, keys: MemberKeys, replace: ReplacePolicy): string | null {
++/**
++ * A side's answer to a mid-turn switch request on `battle` (null: none asked of it): the AI's side by its ReplacePolicy, the
++ * player's by its healthiest living bench members (status2 R-T: the prelude answers its own requests the same way).
++ */
++export function replacementChoice(battle: ClonedBattle, side: SideID, aiSide: SideID, keys: MemberKeys, replace: ReplacePolicy): string | null {
+   const request = battle[side].activeRequest;
+   if (!request || !("forceSwitch" in request)) return null;
+   const pokemon = request.side.pokemon;
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/services.ts app/(app)/training/sim/services.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/services.ts	2026-10-11 16:15:29.689514900 -0400
++++ app/(app)/training/sim/services.ts	2026-10-11 16:21:11.081951700 -0400
+@@ -31,6 +31,9 @@
+   midTurn?: boolean;
+ };
+ 
++/** status2 R-T: with no ReplacePolicy given, the AI's side takes its first options (its request's living bench order). */
++const firstOptions: ReplacePolicy = (_side, slots, options) => options.slice(0, slots.length);
++
+ const PROTECT_LINE = /^\|-singleturn\|(p[12])([ab]): [^|]*\|(?:move: )?(Protect|Endure|Wide Guard|Quick Guard|King's Shield|Spiky Shield|Baneful Bunker|Obstruct|Silk Trap|Burning Bulwark|Max Guard)/;
+ 
+ export function createTurnServices(inputs: AiInputs, worlds: readonly BeliefWorld[], ctx: ServicesContext): TurnServices {
+@@ -97,16 +100,37 @@
+   };
+ 
+   const publicOf = (key: MonKey) => inputs.public.mons[`${key.startsWith("own:") ? other : ai}:${key.slice(key.indexOf(":") + 1)}`] ?? null;
+-  const memo = new Map<string, EngineWorlds>();
+-  function engineWorlds(cell: CellActions): EngineWorlds {
++  // status2 R-T: one memo per replacement policy (the AI's ReplacePolicy decides its own replacements in the engine input and
++  // the prelude), and one for none.
++  const memos = new WeakMap<ReplacePolicy, Map<string, EngineWorlds>>();
++  const plain = new Map<string, EngineWorlds>();
++  function engineWorlds(cell: CellActions, replace?: ReplacePolicy): EngineWorlds {
+     const key = `${jointActionKey(cell.own)}|${jointActionKey(cell.opponent)}`;
++    let memo = replace ? memos.get(replace) : plain;
++    if (!memo) memos.set(replace!, memo = new Map());
+     const known = memo.get(key);
+     if (known) return known;
+-    const result = computeEngineWorlds(cell, key);
++    const result = computeEngineWorlds(cell, key, replace ? memoised(replace) : undefined);
+     memo.set(key, result);
+     return result;
+   }
+-  function computeEngineWorlds(cell: CellActions, key: string): EngineWorlds {
++  /** The policy's pick for each (side, slots, options), kept for the decision (one bridge per cell and prelude world asks it). */
++  const picks = new WeakMap<ReplacePolicy, ReplacePolicy>();
++  function memoised(replace: ReplacePolicy): ReplacePolicy {
++    let known = picks.get(replace);
++    if (!known) {
++      const cache = new Map<string, MonKey[]>();
++      known = (side, slots, options) => {
++        const id = `${side}|${slots.join(",")}|${options.join(",")}`;
++        let pick = cache.get(id);
++        if (!pick) cache.set(id, pick = replace(side, slots, options));
++        return pick;
++      };
++      picks.set(replace, known);
++    }
++    return known;
++  }
++  function computeEngineWorlds(cell: CellActions, key: string, replace: ReplacePolicy | undefined): EngineWorlds {
+     let choices: { p1: string; p2: string };
+     try {
+       choices = choicesFor(cell, world0);
+@@ -121,7 +145,9 @@
+     let preludes: { battle: ClonedBattle; weight: number }[] = [{ battle: world0.battle, weight: 1 }];
+     let source: "live" | "prelude" = "live";
+     if (needsPrelude(cell)) {
+-      const prelude = runPreludeWorlds(world0.json, choices, seedHex(seedBase, "prelude", key));
++      // status2 R-T (T2E §4.8): a replacement asked before the moves (Emergency Exit after entry hazards) is answered by the
++      // rollouts' rules: the AI's ReplacePolicy (its first living bench Pokémon without one), the player's healthiest.
++      const prelude = runPreludeWorlds(world0.json, choices, seedHex(seedBase, "prelude", key), { aiSide: ai, keys: world0.keys, replace: replace ?? firstOptions });
+       spent.preludes += prelude.kind === "stopped" ? prelude.worlds.length : 1;
+       if (prelude.kind === "rollout") return { kind: "rollout", reasons: prelude.reasons };
+       preludes = prelude.worlds;
+@@ -131,7 +157,7 @@
+     const engine: EngineWorld[] = [];
+     for (const prelude of preludes) {
+       const earlier = earlierOf(prelude.battle, source === "prelude");
+-      const bridged = bridgeTurn(prelude.battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched, publicOf, earlier });
++      const bridged = bridgeTurn(prelude.battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched, publicOf, earlier, replace });
+       if (bridged.kind === "rollout") return bridged;
+       const split = splitWorlds(bridged.input, { runtime, slotKeys: bridged.keys, publicOf });
+       if (split.kind === "rollout") return split;
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/tracker.ts app/(app)/training/sim/tracker.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/sim/tracker.ts	2026-10-11 16:15:29.689514900 -0400
++++ app/(app)/training/sim/tracker.ts	2026-10-11 16:43:13.459283800 -0400
+@@ -10,6 +10,13 @@
+ 
+ export type PublicTracker = {
+   push(lines: readonly string[]): void;
++  /**
++   * status2 R-T: the viewer's own choice for its current request, once the battle took it (a choice string: "move 1 2, move
++   * 3"), before the lines it plays. Its own Pokémon's last move then keeps the target it was chosen at (pinned
++   * pokemon.lastMoveTargetLoc: the action's targetLoc), where its move line names none ("[still]": Future Sight into a slot
++   * already holding one) or another (a retarget, a redirection). The viewer's own choices are its own knowledge.
++   */
++  chose(choice: string): void;
+   state(): PublicState;
+   observations(): TurnObservations[];
+ };
+@@ -165,6 +172,8 @@
+   after: { key: string; mark: PublicCounts["berserk"] | null }[];
+   /** status2 T1: the item Fling threw (`-enditem|user|item|[from] move: Fling`). */
+   flung?: string;
++  /** status2 R-T: its user's last target is the chosen one whatever this move's lines say (the viewer's choice, or an Instruct's). */
++  targetKnown?: true;
+ };
+ type MoveEvent = { key: string; moveId: string; snapshot: Record<string, Omit<SpeedSnapshot, "key" | "moveId">>; trickRoom: boolean; weather: string; terrain: string };
+ type TurnBuilder = {
+@@ -254,6 +263,16 @@
+   /** status2 T2: an Ally Switch happened this turn, and the Pokémon that fainted this turn (PublicCounts.lastTargetUnknown). */
+   let swappedThisTurn = false;
+   const faintedNow = new Set<string>();
++  /**
++   * status2 R-T: the target loc each of the viewer's own Pokémon was chosen to move at this turn (PublicTracker.chose; null:
++   * a move chosen with no target), until its own move line. Cleared at |turn| and as it leaves.
++   */
++  const chosenTarget = new Map<string, number | null>();
++  /**
++   * status2 R-T: Pokémon an Instruct makes use their last move (the `-singleturn|X|move: Instruct` line), until that move's
++   * line: its last target stays (pinned data/moves.ts instruct queues it at lastMoveTargetLoc, which moveUsed writes back).
++   */
++  const instructed = new Set<string>();
+ 
+   function newBuilder(n: number): TurnBuilder {
+     return { turn: n, moveEvents: [], damage: [], reveals: [], entries: [], windows: new Map(), starting: [], actions: new Map(), movesStarted: false, quickClaw: new Set(), helpingHand: new Set(), acted: new Set() };
+@@ -543,6 +562,8 @@
+     for (const mon of Object.values(mons)) mon.volatiles = mon.volatiles.filter((each) => each.id !== "lockon" || n - each.since < 2);
+     swappedThisTurn = false;
+     faintedNow.clear();
++    chosenTarget.clear();
++    instructed.clear();
+     // Fairy Lock ends silently after two end-of-turn countdowns (pinned data/moves.ts fairylock condition duration 2).
+     field.rooms = field.rooms.filter((room) => room.id !== "fairylock" || n - room.since < 2);
+     // Wish resolves at the end of the turn after it; Future Sight two turns after (data/conditions.ts futuremove endingTurn).
+@@ -571,6 +592,8 @@
+     if (old && old !== mon.key) {
+       const leaving = mons[old];
+       if (command === "switch" && !tags.from && !builder.movesStarted && !afterUpkeep) actionOf(old, { kind: "switch", toKey: mon.key });
++      chosenTarget.delete(old);
++      instructed.delete(old);
+       leaving.position = null;
+       clearStint(leaving);
+     }
+@@ -638,17 +661,36 @@
+     mon.actions++;
+     mon.lastMove = moveId;
+     if (!mon.choiceMove || mon.choiceMove === "struggle") mon.choiceMove = moveId;
+-    mon.lastMoveTarget = targetRef && targetRef.position !== null && !("notarget" in tags) ? { side: targetRef.side, position: targetRef.position } : null;
+-    // status2 T2: whether the line's target is the chosen one (PublicCounts.lastTargetUnknown): no foe redirector up, no
+-    // Pokémon of that side fainted this turn (a retarget), no Encore begun this turn before it moved, no Ally Switch this turn.
+-    delete mon.lastTargetUnknown;
+-    if (targetRef && targetRef.position !== null) {
+-      const side = targetRef.side;
+-      const redirector = side !== mon.side && active[side].some((key) => !!key && mons[key].volatiles.some((each) => each.id === "followme" || each.id === "ragepowder"));
+-      const retarget = Object.values(mons).some((each) => each.side === side && faintedNow.has(each.key));
+-      const encore = volatile(mon, "encore");
+-      if (redirector || retarget || swappedThisTurn || (encore && encore.since === since() && !encore.targetMovedFirst)) mon.lastTargetUnknown = true;
+-    }
++    // status2 R-T: the move an Instruct made it use runs at its last target loc (pinned instruct onHit: resolveAction with
++    // targetLoc lastMoveTargetLoc, then runMove's moveUsed writes the same loc back): its last target stays, unless it had none.
++    const wasInstructed = instructed.delete(mon.key);
++    const instructedMove = wasInstructed && (!!mon.lastMoveTarget || !!mon.lastTargetUnknown);
++    // The viewer's own choice for it this turn (PublicTracker.chose): its own action's line, not a called, locked or
++    // instructed one.
++    const chosen = !tags.from && !wasInstructed ? chosenTarget.get(mon.key) : undefined;
++    if (!tags.from && !wasInstructed) chosenTarget.delete(mon.key);
++    if (!instructedMove) {
++      mon.lastMoveTarget = targetRef && targetRef.position !== null && !("notarget" in tags) ? { side: targetRef.side, position: targetRef.position } : null;
++      // status2 T2: whether the line's target is the chosen one (PublicCounts.lastTargetUnknown): no foe redirector up, no
++      // Pokémon of that side fainted this turn (a retarget), no Encore begun this turn before it moved, no Ally Switch this turn.
++      delete mon.lastTargetUnknown;
++      if (targetRef && targetRef.position !== null) {
++        const side = targetRef.side;
++        const redirector = side !== mon.side && active[side].some((key) => !!key && mons[key].volatiles.some((each) => each.id === "followme" || each.id === "ragepowder"));
++        const retarget = Object.values(mons).some((each) => each.side === side && faintedNow.has(each.key));
++        const encore = volatile(mon, "encore");
++        if (redirector || retarget || swappedThisTurn || (encore && encore.since === since() && !encore.targetMovedFirst)) mon.lastTargetUnknown = true;
++      }
++      // status2 R-T: the viewer's own Pokémon chosen at a target: that loc is its lastMoveTargetLoc (pinned runMove moveUsed's
++      // targetLoc, the action's), whatever its line names: none ("[still]", sim/battle.ts attrLastMove blanks it), a retarget
++      // after the chosen target fainted, a redirection.
++      if (typeof chosen === "number" && chosen !== 0) {
++        const position = (Math.abs(chosen) - 1) as 0 | 1;
++        mon.lastMoveTarget = { side: chosen > 0 ? other(mon.side) : mon.side, position };
++        delete mon.lastTargetUnknown;
++        move.targetKnown = true;
++      }
++    } else move.targetKnown = true;
+     mon.thisResult = true;
+     if (!tags.from) {
+       // R4: one PP per own move line without [from]; +1 per Pressure Pokémon of the other side it targets or hits.
+@@ -884,6 +926,8 @@
+         if (!mon) break;
+         if (tags.of) { showAbility(mon, effectId(parts[3]?.startsWith("ability: ") ? parts[3] : "")); break; }   // a blocked move (Armor Tail …), not this Pokémon's action
+         mon.actions++; mon.thisResult = null; mon.lock = null;
++        // status2 R-T: the action it was chosen for (or an Instruct's) did not run: no move writes its last target.
++        if (!instructed.delete(mon.key)) chosenTarget.delete(mon.key);
+         for (const id of SINGLE_MOVE) removeVolatile(mon, id);
+         if (parts[3] === "slp" || parts[3] === "frz") mon.statusElapsed++;
+         if (parts[3] === "recharge") removeVolatile(mon, "mustrecharge");
+@@ -925,7 +969,7 @@
+           addVolatile(mon, { id, since: since(), elapsed: 0 });
+         } else if (["followme", "ragepowder", "roost", "protect", "endure", "destinybond"].includes(id)) {
+           addVolatile(mon, { id, since: since(), elapsed: 0 });
+-        }
++        } else if (id === "instruct") instructed.add(mon.key);
+         break;
+       }
+       case "-singlemove": {
+@@ -1063,6 +1107,16 @@
+         if (side === "p1" || side === "p2") sides[side].conditions = sides[side].conditions.filter((each) => each.id !== effectId(parts[3]));
+         break;
+       }
++      case "-swapsideconditions": {
++        // status2 R-T: Court Change swaps the two sides' conditions of its list, each with its own state (layers, turns left,
++        // setter: pinned data/moves.ts courtchange onHitField moves the effect states), before its -activate line; the slot
++        // conditions (Wish, Future Sight) stay.
++        const swaps = (each: PublicCondition) => COURT_CHANGE.has(each.id);
++        const p1 = sides.p1.conditions, p2 = sides.p2.conditions;
++        sides.p1.conditions = [...p1.filter((each) => !swaps(each)), ...p2.filter(swaps)];
++        sides.p2.conditions = [...p2.filter((each) => !swaps(each)), ...p1.filter(swaps)];
++        break;
++      }
+       case "-start": {
+         const mon = activeMon(parts[2]);
+         if (!mon) break;
+@@ -1218,7 +1272,7 @@
+           // open move (its chosen target is not public); Mummy giving its ability (setAbility: a new ability state,
+           // "-activate|holder|ability: Mummy|<changed>|[ability] Old": PS/sim/pokemon.ts setAbility).
+           if (id === "battlebond") onceUsed(mon, "battlebond");
+-          if ((id === "lightningrod" || id === "stormdrain") && move && mons[move.user]) mons[move.user].lastTargetUnknown = true;
++          if ((id === "lightningrod" || id === "stormdrain") && move && mons[move.user] && !move.targetKnown) mons[move.user].lastTargetUnknown = true;
+           if (id === "mummy") {
+             const changed = activeMon(parts[4]);
+             if (changed && changed !== mon) { changed.ability = { abilityId: "mummy", how: "changed" }; newEntry(changed); }
+@@ -1331,6 +1385,16 @@
+     push(lines) {
+       for (const text of lines) if (text.startsWith("|")) line(text);
+     },
++    chose(choice) {
++      // One part per active position of the viewer's side, in position order (sim/side.ts choose); a move part's number
++      // after the move is its target loc (positive: a foe's position, negative: its own side's). Switches and passes name none.
++      choice.split(",").map((part) => part.trim()).forEach((part, position) => {
++        const key = active[viewer][position];
++        const match = /^move\s+\S+(?:\s+(-?\d+))?/.exec(part);
++        if (!key || !match) return;
++        chosenTarget.set(key, match[1] !== undefined ? Number(match[1]) : null);
++      });
++    },
+     state() {
+       return {
+         viewer, turn,
+@@ -1344,6 +1408,11 @@
+   };
+ }
+ 
++/** status2 R-T: the side conditions Court Change swaps (pinned data/moves.ts courtchange onHitField's list). */
++const COURT_CHANGE: ReadonlySet<string> = new Set([
++  "mist", "lightscreen", "reflect", "spikes", "safeguard", "tailwind", "toxicspikes", "stealthrock", "waterpledge", "firepledge", "grasspledge", "stickyweb",
++  "auroraveil", "luckychant", "gmaxsteelsurge", "gmaxcannonade", "gmaxvinelash", "gmaxwildfire", "gmaxvolcalith",
++]);
+ /** "-singlemove" effects: they last until the user's next move (Destiny Bond, Grudge, Glaive Rush). */
+ const SINGLE_MOVE: readonly string[] = ["destinybond", "grudge", "glaiverush"];
+ /** Volatiles Baton Pass does not pass (pinned data: noCopy). */
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/worker/worker-handler.ts app/(app)/training/worker/worker-handler.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training/worker/worker-handler.ts	2026-10-11 16:15:29.680886400 -0400
++++ app/(app)/training/worker/worker-handler.ts	2026-10-11 16:17:03.143643500 -0400
+@@ -472,7 +472,10 @@
+           question = null;
+         }
+         if (state !== s) return false;
+-      } else if (s.host.choose("p2", step.choose).ok !== step.ok) return false;
++      } else {
++        if (s.host.choose("p2", step.choose).ok !== step.ok) return false;
++        if (step.ok) s.trackers.p2.chose(step.choose);
++      }
+     }
+     s.ai = { requestId: event.requestId, controller, committed: true };
+     if (at.kind !== "switch") {
+@@ -638,7 +641,13 @@
+       let result: Awaited<ReturnType<typeof decide>> | null = null;
+       // Recorded for checkpoints: Resume replays each decide (the AI's state) and each choice in this order.
+       const steps: AiStep[] = [];
+-      const send = (choice: string) => { const chosen = s.host.choose("p2", choice); steps.push({ choose: choice, ok: chosen.ok }); return chosen; };
++      const send = (choice: string) => {
++        const chosen = s.host.choose("p2", choice);
++        steps.push({ choose: choice, ok: chosen.ok });
++        // status2 R-T: the AI's seat knows its own choice (its Pokémon's chosen targets: tracker.chose).
++        if (chosen.ok) s.trackers.p2.chose(choice);
++        return chosen;
++      };
+       for (const salt of ["ai", "ai-retry"]) {
+         steps.push({ decide: salt });
+         try {
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/scripts-training/conformance.ts scripts/training/conformance.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/scripts-training/conformance.ts	2026-10-11 16:15:29.833800700 -0400
++++ scripts/training/conformance.ts	2026-10-11 16:35:45.461966100 -0400
+@@ -12,17 +12,20 @@
+ import { join } from "node:path";
+ import { Battle as BattleCtor, PRNG, State, toID, type Battle, type ClonedBattle } from "@pokedrafts/showdown-sim";
+ import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
+-import { DOUBLES_SLOTS, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
++import { DOUBLES_SLOTS, startId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+ import { getBuildStats } from "@/app/lib/battle/model";
+ import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
+ import type { AiInputs, BeliefWorld } from "@/app/(app)/training/model/ai-inputs";
+-import type { CellActions, TurnServices } from "@/app/(app)/training/model/ai-view";
++import type { CellActions, ReplacePolicy, TurnServices } from "@/app/(app)/training/model/ai-view";
+ import { DEFAULT_INFO, PERFECT_INFORMATION, type InfoSettings } from "@/app/(app)/training/model/info";
+ import type { PublicState } from "@/app/(app)/training/model/public-state";
+ import { createRandom, seedHex } from "@/app/(app)/training/model/random";
+ import type { ShowdownRequest, SideID } from "@/app/(app)/training/model/showdown-types";
+ import { buildBeliefBattle } from "@/app/(app)/training/sim/belief-battle";
++import { keyOfPokemon } from "@/app/(app)/training/sim/bridge";
+ import { identName, isFainted, legalJointActions, toChoiceString, type MemberKeys } from "@/app/(app)/training/sim/choices";
++import { isMidTurn } from "@/app/(app)/training/sim/requests";
++import { replacementChoice } from "@/app/(app)/training/sim/rollout";
+ import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
+ import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
+ import { runMatch } from "./lib/match";
+@@ -69,16 +72,35 @@
+  * position, since an Ally Switch swaps the side's two (pinned sim/battle.ts swapPosition) while E2's outcomes stay keyed
+  * by the starting slot (EOT-5).
+  */
+-function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID, afterTurn = false): { hp: Partial<Record<DoublesSlotId, number>>; dirty: boolean; lines: string[] } | null {
++function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID, afterTurn = false, keys?: MemberKeys): { hp: Partial<Record<DoublesSlotId, number>>; byKey: Partial<Record<string, number>>; dirty: boolean; lines: string[] } | null {
+   const battle = clone(json);
+   battle.prng = new PRNG(seed as `sodium,${string}`);
+-  let snap: Partial<Record<DoublesSlotId, number>> | null = null;
++  type Read = { hp: Partial<Record<DoublesSlotId, number>>; byKey: Partial<Record<string, number>> };
++  let snap: Read | null = null;
+   const started = startingMons(battle, aiSide);
+-  const read = () => startingHP(started);
++  // status2 R-T: every Pokémon's HP by its engine key too (a newcomer's, a leaver's on the bench), wherever it stands.
++  const everyone = [...battle.p1.pokemon, ...battle.p2.pokemon];
++  const read = (): Read => ({ hp: startingHP(started), byKey: keys ? Object.fromEntries(everyone.map((mon) => [keyOfPokemon(mon as never, aiSide, keys), mon.hp])) : {} });
+   const fieldEvent = battle.fieldEvent.bind(battle);
+   battle.fieldEvent = (id: string, ...rest: unknown[]) => { if (id === "Residual" && !snap) snap = read(); return fieldEvent(id, ...rest); };
+   const before = battle.log.length;
+   if (!battle.choose("p1", choices.p1) || !battle.choose("p2", choices.p2)) return null;
++  const chosenEnd = battle.log.length;
++  // status2 R-T (SPEC2 §6 R): a replacement asked mid-turn (U-turn, Parting Shot, Eject Button, a Red Card's foe...), and with
++  // a read after the turn one asked after the residual for a living Pokémon (Emergency Exit), is answered as the engine input
++  // names it: the player's healthiest bench Pokémon, the AI's first (the services here pass no ReplacePolicy). A side that
++  // replaces twice in one turn is not a clean sample (one pick per slot in the input).
++  const switched: Record<SideID, number> = { p1: 0, p2: 0 };
++  const livingFlagged = (side: SideID) => {
++    const request = battle[side].activeRequest as ShowdownRequest | null;
++    return !!request && "forceSwitch" in request && request.forceSwitch.some((flag, position) => flag && !!battle[side].active[position] && !battle[side].active[position]!.fainted);
++  };
++  for (let asked = 0; keys && asked < 8 && !battle.ended && battle.requestState === "switch"; asked++) {
++    if (!isMidTurn(battle) && !(afterTurn && (livingFlagged("p1") || livingFlagged("p2")))) break;
++    const answer = { p1: replacementChoice(battle, "p1", aiSide, keys, firstOptions) ?? "", p2: replacementChoice(battle, "p2", aiSide, keys, firstOptions) ?? "" };
++    for (const side of ["p1", "p2"] as const) switched[side] += answer[side].split(",").filter((part) => part.trim().startsWith("switch")).length;
++    battle.makeChoices(answer.p1, answer.p2);
++  }
+   const lines = battle.log.slice(before);
+   // A flinch is Fake Out's (100%) only when Fake Out hit that Pokémon (it fails into a Ghost or a protected target); any
+   // other flinch is a chance secondary (Iron Head 30%, Rock Slide 30%).
+@@ -120,10 +142,15 @@
+     const move = battle.dex.moves.get(moveId) as { secondaries?: readonly { chance?: number; boosts?: object; self?: { boosts?: object } }[] | null };
+     return (move.secondaries ?? []).some((each) => (each.chance ?? 100) * (graced ? 2 : 1) < 100 && (!!each.boosts || !!each.self?.boosts));
+   });
+-  const dirty = chanceBoost || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
+-    || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|switch|") || line.startsWith("|-mega|"));
+-  return { hp: afterTurn ? read() : snap ?? read(), dirty, lines: stripTime(lines) };
++  // A voluntary switch (the turn's own choices) leaves the sample out as before; an answered replacement's does not.
++  const voluntary = battle.log.slice(before, chosenEnd).some((line) => line.startsWith("|switch|"));
++  const dirty = chanceBoost || voluntary || switched.p1 > 1 || switched.p2 > 1 || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
++    || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|-mega|"));
++  const at = afterTurn ? read() : snap ?? read();
++  return { hp: at.hp, byKey: at.byKey, dirty, lines: stripTime(lines) };
+ }
++/** status2 R-T: with no ReplacePolicy (the services' engine input then names none for the AI's side), its first bench Pokémon. */
++const firstOptions: ReplacePolicy = (_side, slots, options) => options.slice(0, slots.length);
+ 
+ type Report = {
+   parity: { decisions: number; equal: number; diffs: string[] };
+@@ -414,13 +441,21 @@
+       const outcome = calculateDoublesOutcomes(engineWorld.input);
+       if (outcome.status !== "ready") { applied = false; continue; }
+       if (outcome.endOfTurn !== "applied") applied = false;
+-      for (const each of outcome.outcomes) for (const slot of DOUBLES_SLOTS) {
+-        const key = engineWorld.keys[slot];
+-        const mon = each.mons[slot];
+-        if (!key || !mon) continue;
+-        const low = Math.min(...mon.hp.map((entry) => entry.hp)), high = Math.max(...mon.hp.map((entry) => entry.hp));
++      const widen = (key: string | null | undefined, hp: readonly { hp: number }[]) => {
++        if (!key || !hp.length) return;
++        const low = Math.min(...hp.map((entry) => entry.hp)), high = Math.max(...hp.map((entry) => entry.hp));
+         const known = range[key];
+         range[key] = known ? [Math.min(known[0], low), Math.max(known[1], high)] : [low, high];
++      };
++      for (const each of outcome.outcomes) {
++        // status2 R-T: a slot's occupant at the end (a newcomer by its bench id, a MonKey) and each Pokémon that left (benched).
++        for (const slot of DOUBLES_SLOTS) {
++          const mon = each.mons[slot];
++          if (mon) widen(mon.id ?? engineWorld.keys[slot], mon.hp);
++        }
++        for (const side of ["own", "opponent"] as const) {
++          for (const left of each.benched?.[side] ?? []) widen(left.id === startId(left.slot) ? engineWorld.keys[left.slot] : left.id, left.hp);
++        }
+       }
+     }
+     let choices: Record<SideID, string>;
+@@ -433,7 +468,7 @@
+     } catch { continue; }
+     if (applied) report.bridge.applied++;
+     for (let n = 0; n < 64; n++) {
+-      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2", applied);
++      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2", applied, keys);
+       if (!played || played.dirty) continue;
+       report.bridge.clean++;
+       const seen = (what: string, test: (line: string) => boolean) => { if (played.lines.some(test)) report.coverage[what] = (report.coverage[what] ?? 0) + 1; };
+@@ -441,14 +476,14 @@
+       seen("turn.trick", (line) => line.startsWith("|-item|") && (line.includes("[from] move: Trick") || line.includes("[from] move: Switcheroo")));
+       seen("turn.substitute", (line) => line.startsWith("|-start|") && line.includes("Substitute"));
+       seen("turn.substitutehit", (line) => line.startsWith("|-activate|") && line.includes("Substitute|[damage]"));
++      seen("turn.replacement", (line) => line.startsWith("|switch|") || line.startsWith("|drag|"));
+       let inside = true;
+-      for (const slot of DOUBLES_SLOTS) {
+-        const mon = services.view.mons.find((entry) => entry.slot === slot);
+-        const bounds = mon ? range[mon.key] : undefined;
+-        const hp = played.hp[slot];
++      // Every Pokémon the engine gives a range (the slots' starting Pokémon, status2 R-T: the newcomers and the leavers), by key.
++      for (const [key, bounds] of Object.entries(range)) {
++        const hp = played.byKey[key];
+         if (bounds && hp !== undefined && (hp < bounds[0] || hp > bounds[1])) {
+           inside = false;
+-          if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${slot} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`);
++          if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${key} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`);
+           // The first one's log, to see what the engine missed.
+           if (report.bridge.outside.length === 1) report.bridge.outside.push(...played.lines.slice(-40).map((line) => `  ${line}`));
+         }
+diff -ru --strip-trailing-cr scripts/.cache/calc-audit/status2/build/w2-rt/pre/scripts-training/lib/match.ts scripts/training/lib/match.ts
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/scripts-training/lib/match.ts	2026-10-11 16:15:29.821014700 -0400
++++ scripts/training/lib/match.ts	2026-10-11 16:17:24.869328600 -0400
+@@ -248,7 +248,9 @@
+ 
+   const commit = async (side: SideID, choice: string): Promise<void> => {
+     choices[side].push(choice);
+-    let result = host.choose(side, choice);
++    // status2 R-T: each seat's tracker knows its own accepted choices (PublicTracker.chose: its Pokémon's chosen targets).
++    const choose = (text: string) => { const done = host.choose(side, text); if (done.ok) trackers[side].chose(text); return done; };
++    let result = choose(choice);
+     if (result.ok) return;
+     const last = decisions.filter((entry) => entry.side === side).at(-1);
+     if (result.requestChanged && !options.forced) {
+@@ -257,7 +259,7 @@
+         const retry = await decide(side, host.requestId, true);
+         retry.record.recovery = { kind: "retry", error: result.error, trapShown: true };
+         decisions.push(retry.record);
+-        result = host.choose(side, retry.choice);
++        result = choose(retry.choice);
+         choices[side].push(retry.choice);
+         if (result.ok) return;
+       } catch (error) {
+@@ -266,8 +268,8 @@
+     }
+     const fallback = fallbackChoice(side, host.request(side)!, keys, trackers[side]);
+     if (last) last.recovery = { kind: "fallback", error: result.ok ? "" : result.error, trapShown: !result.ok && result.requestChanged };
+-    let final = host.choose(side, fallback);
+-    if (!final.ok) final = host.choose(side, "default");
++    let final = choose(fallback);
++    if (!final.ok) final = choose("default");
+     choices[side].push(fallback);
+     if (!final.ok) errors.push({ side, stage: "commit", message: `${choice} → ${final.error}` });
+   };
+--- scripts/.cache/calc-audit/status2/build/w2-rt/pre/training-sim-fixtures.ts	2026-10-11 16:15:29.865775700 -0400
++++ tests/unit/training-sim-fixtures.ts	2026-10-11 16:18:05.889454300 -0400
+@@ -53,7 +53,8 @@
+   let requestId = 1;
+   return {
+     battle, keys, own, opponent, tracker,
+-    step(p1: string, p2: string) { battle.makeChoices(p1, p2); pump(); requestId++; },
++    // status2 R-T: the AI's seat knows its own choices (PublicTracker.chose), as the worker tells its tracker.
++    step(p1: string, p2: string) { battle.makeChoices(p1, p2); if (p2) tracker.chose(p2); pump(); requestId++; },
+     inputs(info: InfoView = PERFECT_INFORMATION) {
+       const oracle = createTestOracle(battle, "p2", info, keys);
+       return aiInputs({ side: "p2", requestId, request: battle.p2.activeRequest as ShowdownRequest, own: opponent, sheet: redactSheet(sheetFromSets(own), info), tracker, info, oracle });

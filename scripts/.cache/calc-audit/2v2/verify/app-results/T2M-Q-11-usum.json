@@ -1,0 +1,308 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 202,
+    "maximum": 202
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 137,
+    "maximum": 137
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "electrify",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Electrify: its move is Electric type this turn.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "hiddenpower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 136,
+      "max": 168,
+      "minPercent": 67.32673267326733,
+      "maxPercent": 83.16831683168317,
+      "koChance": 0,
+      "row": {
+       "moveId": "hiddenpower",
+       "effectiveName": "Hidden Power",
+       "effectiveType": "Electric",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 136,
+       "max": 168,
+       "minPercent": 67.32673267326733,
+       "maxPercent": 83.16831683168317,
+       "rolls": [
+        136,
+        144,
+        144,
+        144,
+        144,
+        148,
+        148,
+        148,
+        156,
+        156,
+        156,
+        156,
+        160,
+        160,
+        160,
+        168
+       ],
+       "ohkoChance": 0,
+       "description": "Hidden Power: 136–168 HP (67.3–83.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Hidden Power Fire, 60 power."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 202,
+    "maximum": 202,
+    "low": 66,
+    "average": 50.25,
+    "high": 34,
+    "min": 34,
+    "max": 66,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 137,
+    "maximum": 137,
+    "low": 137,
+    "average": 137,
+    "high": 137,
+    "min": 137,
+    "max": 137,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "hiddenpower",
+     "effectiveName": "Hidden Power",
+     "effectiveType": "Fire",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 11,
+     "max": 14,
+     "minPercent": 5.445544554455446,
+     "maxPercent": 6.9306930693069315,
+     "rolls": [
+      11,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      12,
+      13,
+      13,
+      13,
+      13,
+      13,
+      13,
+      13,
+      14
+     ],
+     "ohkoChance": 0,
+     "description": "Hidden Power: 11–14 HP (5.4–6.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Hidden Power Fire, 60 power."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 19,
+      "fewest": 15,
+      "fasterChance": 0.9999999999999989,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 202,
+      "low": 191,
+      "high": 188,
+      "average": 189.5,
+      "min": 188,
+      "max": 191,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 11,
+        "heals": []
+       },
+       "high": {
+        "dealt": 14,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 202,
+     "maximum": 202,
+     "low": 66,
+     "average": 50.25,
+     "high": 34,
+     "min": 34,
+     "max": 66,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 137,
+     "maximum": 137,
+     "low": 137,
+     "average": 137,
+     "high": 137,
+     "min": 137,
+     "max": 137,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.6278000000002066,
+ "preflight": []
+}

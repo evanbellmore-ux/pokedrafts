@@ -1,0 +1,956 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 245,
+    "maximum": 245
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 123,
+    "maximum": 123
+   },
+   "opponent-right": {
+    "hp": 229,
+    "maximum": 229
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "icespinner",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 48,
+      "max": 57,
+      "minPercent": 20.96069868995633,
+      "maxPercent": 24.890829694323145,
+      "koChance": 0,
+      "row": {
+       "moveId": "icespinner",
+       "effectiveName": "Ice Spinner",
+       "effectiveType": "Ice",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 48,
+       "max": 57,
+       "minPercent": 20.96069868995633,
+       "maxPercent": 24.890829694323145,
+       "rolls": [
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57
+       ],
+       "ohkoChance": 0,
+       "description": "Ice Spinner: 48–57 HP (21.0–24.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Iron Hands's Quark Drive ends.",
+        "chance": 1
+       },
+       {
+        "text": "Iron Hands's Booster Energy is used up: Quark Drive boosts its Attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "drainpunch",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 206,
+      "max": 246,
+      "minPercent": 84.08163265306122,
+      "maxPercent": 100.40816326530613,
+      "koChance": 0.0625,
+      "row": {
+       "moveId": "drainpunch",
+       "effectiveName": "Drain Punch",
+       "effectiveType": "Fighting",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 206,
+       "max": 246,
+       "minPercent": 84.08163265306122,
+       "maxPercent": 100.40816326530613,
+       "rolls": [
+        206,
+        210,
+        212,
+        216,
+        216,
+        218,
+        222,
+        224,
+        228,
+        230,
+        230,
+        234,
+        236,
+        240,
+        242,
+        246
+       ],
+       "ohkoChance": 0.0625,
+       "description": "Drain Punch: 206–246 HP (84.1–100.4% of maximum HP). Applied: Quark Drive.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 245,
+    "maximum": 245,
+    "low": 39,
+    "average": 19.4375,
+    "high": 0,
+    "min": 0,
+    "max": 39,
+    "koChance": 0.0625,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 123,
+    "maximum": 123,
+    "low": 123,
+    "average": 123,
+    "high": 123,
+    "min": 123,
+    "max": 123,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 229,
+    "maximum": 229,
+    "low": 229,
+    "average": 229,
+    "high": 229,
+    "min": 229,
+    "max": 229,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "icespinner",
+     "effectiveName": "Ice Spinner",
+     "effectiveType": "Ice",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 48,
+     "max": 57,
+     "minPercent": 20.96069868995633,
+     "maxPercent": 24.890829694323145,
+     "rolls": [
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57
+     ],
+     "ohkoChance": 0,
+     "description": "Ice Spinner: 48–57 HP (21.0–24.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Iron Hands's Booster Energy is still held (assumes Electric Terrain has been up since it entered).",
+      "Iron Hands's Quark Drive boosts its Attack (its highest stat), on Electric Terrain. Assumes no stage changes since it activated."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "A field change would change an ability"
+     },
+     "afterUse": {
+      "start": 229,
+      "low": 181,
+      "high": 172,
+      "average": 177.1875,
+      "min": 172,
+      "max": 181,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 48,
+        "heals": []
+       },
+       "high": {
+        "dealt": 57,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "drainpunch",
+     "effectiveName": "Drain Punch",
+     "effectiveType": "Fighting",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 206,
+     "max": 246,
+     "minPercent": 84.08163265306122,
+     "maxPercent": 100.40816326530613,
+     "rolls": [
+      206,
+      210,
+      212,
+      216,
+      216,
+      218,
+      222,
+      224,
+      228,
+      230,
+      230,
+      234,
+      236,
+      240,
+      242,
+      246
+     ],
+     "ohkoChance": 0.0625,
+     "description": "Drain Punch: 206–246 HP (84.1–100.4% of maximum HP). Applied: Quark Drive.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Iron Hands's Booster Energy is still held (assumes Electric Terrain has been up since it entered).",
+      "Iron Hands's Quark Drive boosts its Attack (its highest stat), on Electric Terrain. Assumes no stage changes since it activated."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.0625,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 245,
+      "low": 39,
+      "high": 0,
+      "average": 19.4375,
+      "min": 0,
+      "max": 39,
+      "koChance": 0.0625,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 206,
+        "heals": []
+       },
+       "high": {
+        "dealt": 245,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 245,
+     "maximum": 245,
+     "low": 39,
+     "average": 19.4375,
+     "high": 0,
+     "min": 0,
+     "max": 39,
+     "koChance": 0.0625,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 123,
+     "maximum": 123,
+     "low": 123,
+     "average": 123,
+     "high": 123,
+     "min": 123,
+     "max": 123,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 229,
+     "maximum": 229,
+     "low": 229,
+     "average": 229,
+     "high": 229,
+     "min": 229,
+     "max": 229,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.975000000000364,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 245,
+    "maximum": 245
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 123,
+    "maximum": 123
+   },
+   "opponent-right": {
+    "hp": 229,
+    "maximum": 229
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.9375,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 3,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 5,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 9,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 11,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 15,
+        "chance": 0.13333333333333336
+       },
+       {
+        "hp": 17,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 21,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 23,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 27,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 29,
+        "chance": 0.13333333333333336
+       },
+       {
+        "hp": 33,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 35,
+        "chance": 0.06666666666666668
+       },
+       {
+        "hp": 39,
+        "chance": 0.06666666666666668
+       }
+      ],
+      "build": {
+       "speciesId": "cetitan",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 123,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "pincurchin",
+       "nature": "Serious",
+       "abilityId": "electricsurge",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 229,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "ironhands",
+       "nature": "Serious",
+       "abilityId": "quarkdrive",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "settledBoostedStat": "atk"
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.0625,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "cetitan",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 123,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "pincurchin",
+       "nature": "Serious",
+       "abilityId": "electricsurge",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 229,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "ironhands",
+       "nature": "Serious",
+       "abilityId": "quarkdrive",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "settledBoostedStat": "atk"
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,192 @@
+
+### T2A-CR1: High Jump Kick into a Protect user: Showdown crashes the kicker for half its maximum HP
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes no protecting move was used last turn.
+  app step own-left protect: moves 1 skipped [] facts []
+  app step opponent-left highjumpkick: moves 1 skipped [] facts []
+  app hp own-left: 166/166.000/166 [166–166] ko 0 heals [] losses null
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app hp opponent-left: 125/125.000/125 [125–125] ko 0 heals [] losses null
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app eot own-left: 166/166.000/166 [166–166]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 125/125.000/125 [125–125]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  oracle own-left Dragonite: 166/166.000/166 [166–166] ko 0 boosts {} status {"":1} vol {} | turn 166/166.000/166 [166–166]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Hitmonlee: 63/63.000/63 [63–63] ko 0 boosts {} status {"":1} vol {} | turn 63/63.000/63 [63–63]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle step own-left protect: moved 1 cant {} lines {"|-singleturn|p1a: Dragonite|Protect":1}
+  oracle step opponent-left highjumpkick: moved 1 cant {} lines {"|-activate|p1a: Dragonite|move: Protect":1,"|-damage|p2b: Hitmonlee|hp|[from] highjumpkick":1}
+  mismatches: 11
+    opponent-left low: expected 63 got 125 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    opponent-left high: expected 63 got 125 (mode of the all-highest-rolls walk, ties to the lower HP)
+    opponent-left average: expected 63 got 125
+    opponent-left min: expected 63 got 125
+    opponent-left max: expected 63 got 125
+    own-left→own-left hit: expected "reached 1" got "missing"
+    endOfTurn opponent-left low: expected 63 got 125 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    endOfTurn opponent-left high: expected 63 got 125 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn opponent-left average: expected 63 got 125
+    endOfTurn opponent-left min: expected 63 got 125
+    endOfTurn opponent-left max: expected 63 got 125
+
+### T2A-CR2: Champions: High Jump Kick into a Ghost type (immune): crash
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step opponent-left highjumpkick: moves 1 skipped [] facts []
+  app hp own-left: 135/135.000/135 [135–135] ko 0 heals [] losses null
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app hp opponent-left: 153/153.000/153 [153–153] ko 0 heals [] losses null
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app eot own-left: 135/135.000/135 [135–135]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 153/153.000/153 [153–153]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  oracle own-left Gengar: 135/135.000/135 [135–135] ko 0 boosts {} status {"":1} vol {} | turn 135/135.000/135 [135–135]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Hawlucha: 77/77.000/77 [77–77] ko 0 boosts {} status {"":1} vol {} | turn 77/77.000/77 [77–77]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle step opponent-left highjumpkick: moved 1 cant {} lines {"|-immune|p1a: Gengar":1,"|-damage|p2b: Hawlucha|hp|[from] highjumpkick":1}
+  mismatches: 10
+    opponent-left low: expected 77 got 153 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    opponent-left high: expected 77 got 153 (mode of the all-highest-rolls walk, ties to the lower HP)
+    opponent-left average: expected 77 got 153
+    opponent-left min: expected 77 got 153
+    opponent-left max: expected 77 got 153
+    endOfTurn opponent-left low: expected 77 got 153 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    endOfTurn opponent-left high: expected 77 got 153 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn opponent-left average: expected 77 got 153
+    endOfTurn opponent-left min: expected 77 got 153
+    endOfTurn opponent-left max: expected 77 got 153
+
+### T2A-CR3: Supercell Slam into Wide Guard? no: into a Protect user, then a later move by the kicker's ally
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes no protecting move was used last turn.
+  app step own-left protect: moves 1 skipped [] facts []
+  app step opponent-left supercellslam: moves 1 skipped [] facts []
+  app step opponent-right bodyslam: moves 1 skipped [] facts []
+  app hp own-left: 166/166.000/166 [166–166] ko 0 heals [] losses null
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app hp opponent-left: 98/91.250/84 [84–98] ko 0 heals ["Sitrus Berry: +33 HP."] losses null
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app eot own-left: 166/166.000/166 [166–166]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 98/91.250/84 [84–98]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  oracle own-left Dragonite: 166/166.000/166 [166–166] ko 0 boosts {} status {"":1} vol {} | turn 166/166.000/166 [166–166]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Electrode: 0/0.000/0 [0–0] ko 1 boosts {} status {"":1} vol {} | turn 0/0.000/0 [0–0]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle step own-left protect: moved 1 cant {} lines {"|-singleturn|p1a: Dragonite|Protect":1}
+  oracle step opponent-left supercellslam: moved 1 cant {} lines {"|-activate|p1a: Dragonite|move: Protect":1,"|-damage|p2b: Electrode|hp|[from] supercellslam":1}
+  oracle step opponent-right bodyslam: moved 1 cant {} lines {}
+  mismatches: 14
+    opponent-left low: expected 0 got 98 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    opponent-left high: expected 0 got 84 (mode of the all-highest-rolls walk, ties to the lower HP)
+    opponent-left koChance: expected 1 got 0
+    opponent-left average: expected 0 got 91.25
+    opponent-left min: expected 0 got 84
+    opponent-left max: expected 0 got 98
+    own-left→own-left hit: expected "reached 1" got "missing"
+    opponent-right→opponent-left hit.koChance: expected 1 got 0
+    endOfTurn opponent-left low: expected 0 got 98 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    endOfTurn opponent-left high: expected 0 got 84 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn opponent-left koChance: expected 1 got 0
+    endOfTurn opponent-left average: expected 0 got 91.25
+
+### T2A-VS1: Burning Jealousy as the last action into a foe whose Attack rose this turn: burn, end-of-turn burn damage
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step opponent-left swordsdance: moves 1 skipped [] facts []
+  app step own-left burningjealousy: moves 1 skipped [] facts []
+  app hp own-left: 145/145.000/145 [145–145] ko 0 heals [] losses null
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app hp opponent-left: 77/69.125/61 [61–77] ko 0 heals [] losses null
+  app hp opponent-right: 223/222.188/220 [220–223] ko 0 heals [] losses null
+  app eot own-left: 145/145.000/145 [145–145]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 77/69.125/61 [61–77]
+  app eot opponent-right: 223/222.188/220 [220–223]
+  oracle own-left Torkoal: 145/145.000/145 [145–145] ko 0 boosts {} status {"":1} vol {} | turn 145/145.000/145 [145–145]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Lucario: 77/69.125/61 [61–77] ko 0 boosts {"atk:2":1} status {"brn":1} vol {} | turn 68/60.125/52 [52–68]
+  oracle opponent-right Snorlax: 223/222.188/220 [220–223] ko 0 boosts {} status {"":1} vol {} | turn 223/222.188/220 [220–223]
+  oracle step own-left burningjealousy: moved 1 cant {} lines {"|-status|p2b: Lucario|brn":1}
+  oracle step opponent-left swordsdance: moved 1 cant {} lines {"|-boost|p2b: Lucario|atk|2":1}
+  oracle residual opponent-left brn: 1 -9..-9 {}
+  mismatches: 6
+    endOfTurn opponent-left low: expected 68 got 77 (mode of the all-lowest-rolls walk, ties to the higher HP)
+    endOfTurn opponent-left high: expected 52 got 61 (mode of the all-highest-rolls walk, ties to the lower HP)
+    endOfTurn opponent-left average: expected 60.125 got 69.125
+    endOfTurn opponent-left min: expected 52 got 61
+    endOfTurn opponent-left max: expected 68 got 77
+    endOfTurn opponent-left residual brn: expected "brn 1 -9..-9 ko 0" got "missing" ([])
+
+### T2A-VS2: USUM: Core Enforcer as the last action into a badly poisoned Poison Heal Gliscor that moved
+  app: not-estimated — Core Enforcer is not modelled in 2v2.
+  oracle own-left Zygarde: 183/183.000/183 [183–183] ko 0 boosts {} status {"":1} vol {} | turn 183/183.000/183 [183–183]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Gliscor: 55/51.000/46 [46–55] ko 0 boosts {} status {"tox":1} vol {"gastroacid":1} | turn 46/42.000/37 [37–46]
+  oracle opponent-right Snorlax: 202/198.500/195 [195–202] ko 0 boosts {} status {"":1} vol {} | turn 202/198.500/195 [195–202]
+  oracle step own-left coreenforcer: moved 1 cant {} lines {}
+  oracle residual opponent-left psn: 1 -9..-9 {}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Core Enforcer is not modelled in 2v2.)
+
+### T2A-VS3: SwSh: Spectral Thief as the last action into a foe at +2 Attack (E2 stages)
+  app: ready
+  app facts: Every move hits; no critical hits; added effects below 100% do not happen.
+  app step own-left spectralthief: moves 1 skipped [] facts []
+  app hp own-left: 165/165.000/165 [165–165] ko 0 heals [] losses null
+  app hp own-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app hp opponent-left: 0/0.000/0 [0–0] ko 1 heals [] losses null
+  app hp opponent-right: 235/235.000/235 [235–235] ko 0 heals [] losses null
+  app eot own-left: 165/165.000/165 [165–165]
+  app eot own-right: 235/235.000/235 [235–235]
+  app eot opponent-left: 0/0.000/0 [0–0]
+  app eot opponent-right: 235/235.000/235 [235–235]
+  app E2 outcome 1.0000: own-left {"atk":0,"def":0,"spa":0,"spd":0,"spe":0}  [] | own-right {"atk":0,"def":0,"spa":0,"spd":0,"spe":0}  [] | opponent-left {"atk":2,"def":0,"spa":0,"spd":0,"spe":0}  [] | opponent-right {"atk":0,"def":0,"spa":0,"spd":0,"spe":0}  []
+  oracle own-left Marshadow: 165/165.000/165 [165–165] ko 0 boosts {"atk:2":1} status {"":1} vol {} | turn 165/165.000/165 [165–165]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Lucario: 0/0.000/0 [0–0] ko 1 boosts {} status {"":1} vol {} | turn 0/0.000/0 [0–0]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle step own-left spectralthief: moved 1 cant {} lines {"|move|p1a: Marshadow|Spectral Thief||[still]":1,"|-boost|p1a: Marshadow|atk|2":1}
+  mismatches: 1
+    E2 own-left stage atk:2: expected 1 got 0
+
+### T2A-VS4: Alluring Voice as the last action into a foe whose Attack rose this turn (E2 confusion)
+  app: not-estimated — Alluring Voice is not modelled in 2v2.
+  oracle own-left Sylveon: 170/170.000/170 [170–170] ko 0 boosts {} status {"":1} vol {} | turn 170/170.000/170 [170–170]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Lucario: 79/73.875/67 [67–79] ko 0 boosts {"atk:2":1} status {"":1} vol {"confusion":1} | turn 79/73.875/67 [67–79]
+  oracle opponent-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle step own-left alluringvoice: moved 1 cant {} lines {"|-start|p2b: Lucario|confusion":1}
+  oracle step opponent-left swordsdance: moved 1 cant {} lines {"|-boost|p2b: Lucario|atk|2":1}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Alluring Voice is not modelled in 2v2.)
+
+### T2A-BB1: Champions: Greninja (Battle Bond) knocks a foe out with a later action: Showdown checks species greninjabond
+  preflight: own-left greninja: abilityId: Greninja with Battle Bond counts as Greninja-Bond, which is not available in Champions (pinned Showdown team validator). | own-left greninja: abilityId: Engine ability missing: Battle Bond.
+
+### T2A-SI1: Garchomp Dig with a later Earthquake from its ally (today: semiInvulnerable)
+  app: not-estimated — Garchomp is semi-invulnerable after Dig: later moves are not modelled.
+  oracle own-left Garchomp: 45/32.375/19 [19–45] ko 0 boosts {} status {"":1} vol {"dig":1,"twoturnmove":1} | turn 45/32.375/19 [19–45]
+  oracle own-right Excadrill: 185/185.000/185 [185–185] ko 0 boosts {} status {"":1} vol {} | turn 185/185.000/185 [185–185]
+  oracle opponent-left Snorlax: 142/134.625/126 [126–142] ko 0 boosts {} status {"":1} vol {} | turn 142/134.625/126 [126–142]
+  oracle opponent-right Snorlax: 142/134.625/126 [126–142] ko 0 boosts {} status {"":1} vol {} | turn 142/134.625/126 [126–142]
+  oracle step own-left dig: moved 1 cant {} lines {"|move|p1a: Garchomp|Dig||[still]":1}
+  oracle step own-right earthquake: moved 1 cant {} lines {}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Garchomp is semi-invulnerable after Dig: later moves are not modelled.)
+
+### T2A-AF1: Aftermath: a contact knockout of Garbodor (Champions) with a later action
+  app: not-estimated — Aftermath is not modelled in 2v2.
+  oracle own-left Garchomp: 83/77.875/72 [72–83] ko 0 boosts {} status {"":1} vol {} | turn 83/77.875/72 [72–83]
+  oracle own-right Snorlax: 235/235.000/235 [235–235] ko 0 boosts {} status {"":1} vol {} | turn 235/235.000/235 [235–235]
+  oracle opponent-left Garbodor: 0/0.000/0 [0–0] ko 1 boosts {} status {"":1} vol {} | turn 0/0.000/0 [0–0]
+  oracle opponent-right Snorlax: 206/206.000/206 [206–206] ko 0 boosts {} status {"":1} vol {} | turn 206/206.000/206 [206–206]
+  oracle step own-left dragonclaw: moved 1 cant {} lines {"|-damage|p1a: Garchomp|hp|[from] ability: Aftermath|[of] p2b: Garbodor":1}
+  oracle step opponent-right bodyslam: moved 1 cant {} lines {"|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp":1}
+  mismatches: 1
+    turn status: expected "ready" got "not-estimated" (Aftermath is not modelled in 2v2.)

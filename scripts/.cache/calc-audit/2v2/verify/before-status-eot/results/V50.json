@@ -1,0 +1,646 @@
+{
+ "id": "V50",
+ "title": "Electromorphosis charges the next Electric move",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Hit by Night Slash first, Bellibolt's Thunderbolt doubles.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 240,
+   "classes": 129,
+   "ms": 133,
+   "decisions": {
+    "fail:": 119,
+    "roll": 119,
+    "secondary": 112
+   },
+   "slots": {
+    "own-left": {
+     "species": "Bellibolt",
+     "start": 184,
+     "maximum": 184,
+     "dist": [
+      [
+       124,
+       0.0625
+      ],
+      [
+       126,
+       0.125
+      ],
+      [
+       127,
+       0.1875
+      ],
+      [
+       129,
+       0.125
+      ],
+      [
+       130,
+       0.1875
+      ],
+      [
+       132,
+       0.125
+      ],
+      [
+       133,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 129.25,
+     "min": 124,
+     "max": 133,
+     "modeTieUp": 133,
+     "modeTieDown": 127
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       4,
+       0.0625
+      ],
+      [
+       6,
+       0.0625
+      ],
+      [
+       7,
+       0.0625
+      ],
+      [
+       9,
+       0.0625
+      ],
+      [
+       10,
+       0.0625
+      ],
+      [
+       12,
+       0.0625
+      ],
+      [
+       13,
+       0.0625
+      ],
+      [
+       15,
+       0.0625
+      ],
+      [
+       16,
+       0.0625
+      ],
+      [
+       18,
+       0.0625
+      ],
+      [
+       19,
+       0.0625
+      ],
+      [
+       21,
+       0.0625
+      ],
+      [
+       22,
+       0.0625
+      ],
+      [
+       24,
+       0.0625
+      ],
+      [
+       25,
+       0.0625
+      ],
+      [
+       27,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 15.5,
+     "min": 4,
+     "max": 27,
+     "modeTieUp": 27,
+     "modeTieDown": 4
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 118,
+       "dmgMax": 141,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Bellibolt|Charge|Night Slash|[from] ability: Electromorphosis": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Bellibolt",
+     "start": 184,
+     "maximum": 184,
+     "dist": [
+      [
+       133,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 133,
+     "min": 133,
+     "max": 133,
+     "modeTieUp": 133,
+     "modeTieDown": 133
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       27,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 27,
+     "min": 27,
+     "max": 27,
+     "modeTieUp": 27,
+     "modeTieDown": 27
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 118,
+       "dmgMax": 118,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 51,
+       "dmgMax": 51,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Bellibolt|Charge|Night Slash|[from] ability: Electromorphosis": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Bellibolt",
+     "start": 184,
+     "maximum": 184,
+     "dist": [
+      [
+       124,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 124,
+     "min": 124,
+     "max": 124,
+     "modeTieUp": 124,
+     "modeTieDown": 124
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       4,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 4,
+     "min": 4,
+     "max": 4,
+     "modeTieUp": 4,
+     "modeTieDown": 4
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 141,
+       "dmgMax": 141,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "nightslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 60,
+       "dmgMax": 60,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Bellibolt|Charge|Night Slash|[from] ability: Electromorphosis": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 184,
+   "maximum": 184,
+   "low": 133,
+   "high": 124,
+   "average": 129.25,
+   "min": 124,
+   "max": 133,
+   "koChance": 0,
+   "dist": [
+    [
+     124,
+     0.0625
+    ],
+    [
+     126,
+     0.125
+    ],
+    [
+     127,
+     0.1875
+    ],
+    [
+     129,
+     0.125
+    ],
+    [
+     130,
+     0.1875
+    ],
+    [
+     132,
+     0.125
+    ],
+    [
+     133,
+     0.1875
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 27,
+   "high": 4,
+   "average": 15.5,
+   "min": 4,
+   "max": 27,
+   "koChance": 0,
+   "dist": [
+    [
+     4,
+     0.0625
+    ],
+    [
+     6,
+     0.0625
+    ],
+    [
+     7,
+     0.0625
+    ],
+    [
+     9,
+     0.0625
+    ],
+    [
+     10,
+     0.0625
+    ],
+    [
+     12,
+     0.0625
+    ],
+    [
+     13,
+     0.0625
+    ],
+    [
+     15,
+     0.0625
+    ],
+    [
+     16,
+     0.0625
+    ],
+    [
+     18,
+     0.0625
+    ],
+    [
+     19,
+     0.0625
+    ],
+    [
+     21,
+     0.0625
+    ],
+    [
+     22,
+     0.0625
+    ],
+    [
+     24,
+     0.0625
+    ],
+    [
+     25,
+     0.0625
+    ],
+    [
+     27,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

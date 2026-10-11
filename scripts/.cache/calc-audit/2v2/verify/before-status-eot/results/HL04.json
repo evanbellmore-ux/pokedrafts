@@ -1,0 +1,462 @@
+{
+ "id": "HL04",
+ "title": "Cheek Pouch with its own Sitrus Berry after Rough Skin, capped at the maximum (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Dedenne 80/142 - 17 = 63, Sitrus +35 = 98, Cheek Pouch +47 capped: 142.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 21,
+   "classes": 16,
+   "ms": 13,
+   "decisions": {
+    "accuracy": 6,
+    "fail:": 6,
+    "roll": 6,
+    "secondary": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 80,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       0.0625
+      ],
+      [
+       103,
+       0.1875
+      ],
+      [
+       105,
+       0.25
+      ],
+      [
+       109,
+       0.1875
+      ],
+      [
+       111,
+       0.25
+      ],
+      [
+       115,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 107.125,
+     "min": 99,
+     "max": 115,
+     "modeTieUp": 111,
+     "modeTieDown": 105
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Dedenne|hp|[from] item: Sitrus Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 80,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       115,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 115,
+     "min": 115,
+     "max": 115,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 68,
+       "dmgMax": 68,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Dedenne|hp|[from] item: Sitrus Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "accuracy": 1,
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Dedenne",
+     "start": 80,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "playrough",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Dedenne|hp|[from] ability: Rough Skin|[of] p2b: Garchomp": 1,
+      "|-enditem|p1a: Dedenne|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Dedenne|hp|[from] item: Sitrus Berry": 1,
+      "|-heal|p1a: Dedenne|hp|[from] ability: Cheek Pouch": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 80,
+   "maximum": 142,
+   "low": 142,
+   "high": 142,
+   "average": 142,
+   "min": 142,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 115,
+   "high": 99,
+   "average": 107.125,
+   "min": 99,
+   "max": 115,
+   "koChance": 0,
+   "dist": [
+    [
+     99,
+     0.0625
+    ],
+    [
+     103,
+     0.1875
+    ],
+    [
+     105,
+     0.25
+    ],
+    [
+     109,
+     0.1875
+    ],
+    [
+     111,
+     0.25
+    ],
+    [
+     115,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 6 whole-turn replays"
+ ]
+}

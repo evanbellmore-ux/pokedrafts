@@ -1,0 +1,588 @@
+{
+ "id": "V33",
+ "title": "Disguise broken by Fake Out, then a second attack",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Scrappy Fake Out breaks Disguise (1/8 of its HP) and flinches Mimikyu; Flamethrower is not blocked.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 31,
+   "classes": 20,
+   "ms": 17,
+   "decisions": {
+    "fail:": 13,
+    "roll": 13,
+    "secondary": 13
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Mimikyu",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       51,
+       0.0625
+      ],
+      [
+       53,
+       0.125
+      ],
+      [
+       54,
+       0.125
+      ],
+      [
+       56,
+       0.1875
+      ],
+      [
+       57,
+       0.125
+      ],
+      [
+       59,
+       0.125
+      ],
+      [
+       60,
+       0.1875
+      ],
+      [
+       62,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 56.6875,
+     "min": 51,
+     "max": 62,
+     "modeTieUp": 60,
+     "modeTieDown": 56
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 27,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Mimikyu|ability: Disguise": 1,
+      "|-damage|p2a: Mimikyu|hp|[from] pokemon: Mimikyu-Busted": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "flinch": 1
+     },
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Mimikyu|flinch": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 5,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Mimikyu",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       62,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 62,
+     "min": 62,
+     "max": 62,
+     "modeTieUp": 62,
+     "modeTieDown": 62
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 27,
+       "dmgMax": 27,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Mimikyu|ability: Disguise": 1,
+      "|-damage|p2a: Mimikyu|hp|[from] pokemon: Mimikyu-Busted": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 52,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "flinch": 1
+     },
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Mimikyu|flinch": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kangaskhan",
+     "start": 180,
+     "maximum": 180,
+     "dist": [
+      [
+       180,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 180,
+     "min": 180,
+     "max": 180,
+     "modeTieUp": 180,
+     "modeTieDown": 180
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Mimikyu",
+     "start": 130,
+     "maximum": 130,
+     "dist": [
+      [
+       51,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 51,
+     "min": 51,
+     "max": 51,
+     "modeTieUp": 51,
+     "modeTieDown": 51
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "fakeout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 33,
+       "dmgMax": 33,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2a: Mimikyu|ability: Disguise": 1,
+      "|-damage|p2a: Mimikyu|hp|[from] pokemon: Mimikyu-Busted": 1
+     }
+    },
+    "own-right": {
+     "moveId": "flamethrower",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "shadowclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "flinch": 1
+     },
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Mimikyu|flinch": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 180,
+   "maximum": 180,
+   "low": 180,
+   "high": 180,
+   "average": 180,
+   "min": 180,
+   "max": 180,
+   "koChance": 0,
+   "dist": [
+    [
+     180,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 130,
+   "maximum": 130,
+   "low": 62,
+   "high": 51,
+   "average": 56.6875,
+   "min": 51,
+   "max": 62,
+   "koChance": 0,
+   "dist": [
+    [
+     51,
+     0.0625
+    ],
+    [
+     53,
+     0.125
+    ],
+    [
+     54,
+     0.125
+    ],
+    [
+     56,
+     0.1875
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     59,
+     0.125
+    ],
+    [
+     60,
+     0.1875
+    ],
+    [
+     62,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

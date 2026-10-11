@@ -1,0 +1,540 @@
+A3-MC-01-swsh: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right growl: 
+      hit own-left blocked: Magic Coat: Growl goes back to Jolteon. (1)
+      hit own-right effect: −1 Attack. (1)
+      hit opponent-right effect: −1 Attack. (1)
+      hit opponent-left effect: −1 Attack. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-MC-01-usum: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right growl: 
+      hit own-left blocked: Magic Coat: Growl goes back to Jolteon. (1)
+      hit own-right effect: −1 Attack. (1)
+      hit opponent-right effect: −1 Attack. (1)
+      hit opponent-left effect: −1 Attack. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-MC-02-Sableye-usum: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Sableye go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right thunderwave: 
+      hit own-left blocked: Magic Coat: Thunder Wave goes back to Absol. (1)
+      hit opponent-right no-damage: Prankster: Absol is not affected. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MC-02-Clefable-usum: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right thunderwave: 
+      hit own-left blocked: Magic Coat: Thunder Wave goes back to Absol. (1)
+      hit opponent-right effect: Is paralysed. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MC-03-swsh: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step own-right thunderwave: 
+      hit own-left blocked: Magic Coat: Thunder Wave goes back to Togekiss. (1)
+      hit own-right effect: Is paralysed. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MC-04-usum: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right stealthrock: Magic Coat: Stealth Rock goes back to Smeargle's side. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MC-05-swsh: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right leer: 
+      hit own-left blocked: Magic Coat: Leer goes back to Haxorus. (1)
+      hit own-right effect: −1 Defense. (1)
+      hit opponent-right effect: −1 Defense. (1)
+      hit opponent-left effect: −1 Defense. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SN-01-usum: ready: match
+   step own-left snatch: Snatch: Absol takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-right swordsdance: Snatch: Absol takes Swords Dance. (1)
+      hit own-left effect: +2 Attack. (1)
+   step opponent-left bodyslam: 
+      hit own-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Absol has not used Minimize.
+A3-SN-02-usum: ready: match
+   step own-left snatch: Snatch: Sableye takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-right reflect: Snatch: Sableye takes Reflect. (1) / Reflect starts on Sableye's side. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-SN-03-usum: ready: 1 mismatches
+   opponent-right→opponent-right effect start:substitute: expected 0.25, got 1 (["Substitute: 33 HP. (0.25)","Snatch: Absol takes Substitute. (0.75)"])
+   step own-left snatch: Snatch: Absol takes the next move that can be snatched this turn. (0.75) skipped: Fully paralysed.
+      hit own-left effect: 
+   step opponent-right substitute: Snatch: Absol takes Substitute. (0.75)
+      hit opponent-right effect: Substitute: 33 HP. (0.25)
+      hit own-left effect: Substitute: 35 HP. (0.75)
+   step opponent-left bodyslam: 
+      hit own-left calculated: Its Substitute breaks. (0.75)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Absol has not used Minimize.
+A3-SN-04-usum: ready: match
+   step own-left snatch: Snatch: Umbreon takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-right wideguard: Snatch: Umbreon takes Wide Guard. (1)
+   step own-right rockslide: 
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SN-05-usum: ready: match
+   step own-left snatch: Snatch: Absol takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-right healbell: Snatch: Absol takes Heal Bell. (1) / Heal Bell also cures the statuses of your side's Pokémon not in battle. (1)
+      hit own-left no-damage: 
+      hit own-right effect: Its burn is cured. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SN-06-usum: ready: match
+   step own-left snatch: Snatch: Absol takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-left tailwind: Snatch: Absol takes Tailwind. (1) / Tailwind starts on Absol's side. (1)
+   step opponent-right bodyslam: 
+      hit own-right calculated: 
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (yours) has not used Minimize. / Assumes Snorlax (opponent's) has not used Minimize.
+A3-CS-01-swsh: ready: match
+   step own-left craftyshield: Crafty Shield: status moves aimed at Klefki's side are blocked this turn. (1)
+   step opponent-right thunderwave: 
+      hit own-right blocked: Crafty Shield blocks Thunder Wave. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-CS-02-usum: ready: match
+   step own-right protect: 
+   step opponent-left protect: 
+   step opponent-right protect: 
+   step own-left craftyshield: Crafty Shield fails: no Pokémon moves after it. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes no protecting move was used last turn.
+A3-CS-03-usum: ready: match
+   step own-right magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-right effect: 
+   step own-left craftyshield: Crafty Shield: status moves aimed at Klefki's side are blocked this turn. (1)
+   step opponent-right thunderwave: 
+      hit own-right blocked: Crafty Shield blocks Thunder Wave. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MB-01-usum: ready: 72 mismatches
+   own-left low: expected 147, got 74 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   own-left high: expected 147, got 60 (mode of the all-highest-rolls walk, ties to the lower HP)
+   own-left average: expected 147, got 67.5
+   own-left min: expected 147, got 60
+   own-left max: expected 147, got 74
+   own-right low: expected 183, got 128 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   own-right high: expected 183, got 117 (mode of the all-highest-rolls walk, ties to the lower HP)
+   own-right average: expected 183, got 122.875
+   own-right min: expected 183, got 117
+   own-right max: expected 183, got 128
+   opponent-left low: expected 160, got 131 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   opponent-left high: expected 147, got 118 (mode of the all-highest-rolls walk, ties to the lower HP)
+   opponent-left average: expected 154.0625, got 125.0625
+   opponent-left min: expected 147, got 118
+   opponent-left max: expected 160, got 131
+   own-right→own-left hit.kind: expected "blocked", got "calculated"
+   opponent-left→own-right hit.kind: expected "blocked", got "calculated"
+   endOfTurn own-left low: expected 147, got 74 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   endOfTurn own-left high: expected 147, got 60 (mode of the all-highest-rolls walk, ties to the lower HP)
+   endOfTurn own-left average: expected 147, got 67.5
+   endOfTurn own-left min: expected 147, got 60
+   endOfTurn own-left max: expected 147, got 74
+   endOfTurn own-right low: expected 183, got 128 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   endOfTurn own-right high: expected 183, got 117 (mode of the all-highest-rolls walk, ties to the lower HP)
+   endOfTurn own-right average: expected 183, got 122.875
+   step own-left matblock: Mat Block: damaging moves aimed at Greninja's side are blocked this turn. (1)
+   step own-right earthquake: 
+      hit own-left calculated: 
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes the attacker's first turn in battle. / Assumes Garchomp has not used Minimize.
+A3-MB-02-usum: ready: 54 mismatches
+   own-left low: expected 147, got 18 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   own-left high: expected 147, got 0 (mode of the all-highest-rolls walk, ties to the lower HP)
+   own-left koChance: expected 0, got 0.1015625
+   own-left average: expected 147, got 7.41015625
+   own-left min: expected 147, got 0
+   own-left max: expected 147, got 18
+   own-right low: expected 205, got 107 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   own-right high: expected 205, got 89 (mode of the all-highest-rolls walk, ties to the lower HP)
+   own-right average: expected 205, got 98.75
+   own-right min: expected 205, got 89
+   own-right max: expected 205, got 107
+   opponent-left→own-left hit.koChance: expected 0, got 0.1015625
+   opponent-left→own-left hit.kind: expected "blocked", got "calculated"
+   opponent-right→own-left hit.kind: expected "blocked", got "calculated"
+   opponent-right→own-right hit.kind: expected "blocked", got "calculated"
+   endOfTurn own-left low: expected 147, got 18 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   endOfTurn own-left high: expected 147, got 0 (mode of the all-highest-rolls walk, ties to the lower HP)
+   endOfTurn own-left koChance: expected 0, got 0.1015625
+   endOfTurn own-left average: expected 147, got 7.41015625
+   endOfTurn own-left min: expected 147, got 0
+   endOfTurn own-left max: expected 147, got 18
+   endOfTurn own-right low: expected 205, got 107 (mode of the all-lowest-rolls walk, ties to the higher HP)
+   endOfTurn own-right high: expected 205, got 89 (mode of the all-highest-rolls walk, ties to the lower HP)
+   endOfTurn own-right average: expected 205, got 98.75
+   endOfTurn own-right min: expected 205, got 89
+   step own-left matblock: Mat Block: damaging moves aimed at Greninja's side are blocked this turn. (1)
+   step opponent-right rockslide: 
+      hit own-left calculated: 
+      hit own-right calculated: 
+   step opponent-left bodyslam: 
+      hit own-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes the attacker's first turn in battle. / Assumes Greninja has not used Minimize.
+A3-LC-01-usum: ready: match
+   step own-left luckychant: Lucky Chant starts on Clefable's side. (1)
+   step opponent-right frostbreath: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-01-sv: ready: match
+   step own-left mist: Mist starts on Lapras's side. (1)
+   step opponent-right snarl: 
+      hit own-left calculated: 
+      hit own-right calculated: 
+   step own-right surf: 
+      hit own-left blocked: Water Absorb: no damage, and it regains HP. (1)
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-01-swsh: ready: match
+   step own-left mist: Mist starts on Lapras's side. (1)
+   step opponent-right snarl: 
+      hit own-left calculated: 
+      hit own-right calculated: 
+   step own-right surf: 
+      hit own-left blocked: Water Absorb: no damage, and it regains HP. (1)
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-02-swsh: ready: match
+   step opponent-right growl: Jolteon: −1 Attack. (1)
+      hit own-left effect: −1 Attack. (1)
+      hit own-right effect: Mirror Armor: the drop goes back to Jolteon. (1)
+   step own-left mist: Mist starts on Lapras's side. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-03-usum: ready: match
+   step own-left mist: Mist starts on Lapras's side. (1)
+   step opponent-right partingshot: 
+      hit own-left effect: Mist: its stats are not lowered. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-04-sv: ready: match
+   step opponent-right snarl: 
+      hit own-left calculated: 
+      hit own-right calculated: 
+   step own-right surf: 
+      hit own-left blocked: Water Absorb: no damage, and it regains HP. (1)
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-CC-01-sv: ready: match
+   step opponent-right tailwind: Tailwind starts on Talonflame's side. (1)
+   step own-left courtchange: Court Change: the two sides' conditions are swapped. (1)
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Talonflame has not used Minimize. / Assumes Snorlax (yours) has not used Minimize.
+A3-CC-01-champions: ready: match
+   step opponent-right tailwind: Tailwind starts on Talonflame's side. (1)
+   step own-left courtchange: Court Change: the two sides' conditions are swapped. (1)
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Talonflame has not used Minimize. / Assumes Snorlax (yours) has not used Minimize.
+A3-CC-02-swsh: ready: match
+   step own-right wideguard: 
+   step own-left courtchange: 
+   step opponent-right rockslide: 
+      hit own-left blocked: Wide Guard blocks Rock Slide. (1)
+      hit own-right blocked: Wide Guard blocks Rock Slide. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-DF-01-sv: ready: match
+   step own-left defog: Defog: Reflect ends on Snorlax (opponent's, 2)'s side. (1) / Defog: the Electric Terrain ends. (1)
+      hit opponent-right effect: −1 evasion. (1)
+   step opponent-left thunderbolt: 
+      hit own-right calculated: 
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 2) has not used Minimize.
+A3-DF-02-usum: ready: match
+   step own-left defog: Defog: Reflect ends on Snorlax (opponent's, 2)'s side. (1)
+      hit opponent-right effect: −1 evasion. (1)
+   step opponent-left thunderbolt: 
+      hit own-right calculated: 
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 2) has not used Minimize.
+A3-DF-03-champions: ready: 1 mismatches
+   E2 opponent-right stage evasion:-1: expected 1, got 0
+   step own-left defog: 
+      hit opponent-right effect: −1 evasion. (1) / Defiant: +2 Attack. (1)
+   step opponent-right ironhead: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-DF-04-sv: ready: match
+   step own-left defog: Defog: Reflect ends on Snorlax (opponent's, 2)'s side. (1)
+      hit opponent-right effect: 
+   step own-right bodyslam: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 1) has not used Minimize.
+A3-DF-05-sv: not-estimated (A weather or terrain change this turn would change Quark Drive.): match
+A3-MR-01-sv: ready: match
+   step own-left magicroom: Magic Room starts. (1)
+   step own-right earthquake: 
+      hit own-left calculated: 
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MR-02-champions: ready: match
+   step own-left magicroom: Magic Room ends. (1)
+   step opponent-right bodyslam: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 1) has not used Minimize.
+A3-MR-03-sv: ready: match
+   step own-left magicroom: Magic Room starts. (1)
+   step own-right earthquake: 
+      hit own-left calculated: 
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-WR-01-sv: ready: match
+   step own-left wonderroom: Wonder Room starts. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Chansey has not used Minimize.
+A3-WR-02-champions: ready: match
+   step own-left wonderroom: Wonder Room ends. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Clefable has not used Minimize.
+A3-SP-01-usum: ready: match
+   step own-left mudsport: Mud Sport starts. (1)
+   step opponent-right thunderbolt: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SP-02-usum: ready: match
+   step opponent-right flamethrower: 
+      hit own-right calculated: 
+   step own-left watersport: Water Sport starts. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-CG-01-champions: ready: match
+   step own-left corrosivegas: 
+      hit own-right effect: Loses its Sitrus Berry. (1)
+      hit opponent-right effect: Loses its Sitrus Berry. (1)
+      hit opponent-left effect: Loses its Leftovers. (1)
+   step opponent-right bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Clefable has not used Minimize.
+A3-CG-02-swsh: ready: match
+   step own-left corrosivegas: 
+      hit own-right effect: Corrosive Gas fails: Excadrill holds no item. (1)
+      hit opponent-right effect: Sticky Hold: Gastrodon keeps its item. (1)
+      hit opponent-left effect: Loses its Air Balloon. (1)
+   step own-right earthquake: 
+      hit own-left no-damage: Earthquake has no effect on Weezing. (1)
+      hit opponent-right calculated: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-BE-01-usum: ready: match
+   step own-left bestow: Bestow: Lapras gets Sitrus Berry; Togekiss holds no item. (1)
+      hit own-right effect: 
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-RC-01-champions: ready: match
+   step opponent-right dragonclaw: 
+      hit own-left calculated: 
+   step own-left recycle: Recycle: Snorlax (yours) gets Sitrus Berry back. (1)
+      hit own-left effect: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-RC-02-sv: not-estimated (Recycle needs Snorlax (yours)'s item from an earlier turn.): match
+A3-TT-01-sv: ready: match
+   step own-left teatime: Teatime fails: no Pokémon holds a Berry. (1)
+      hit own-left no-damage: 
+      hit own-right no-damage: 
+      hit opponent-right blocked: Good as Gold: Gholdengo is not affected. (1)
+      hit opponent-left no-damage: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-TT-02-champions: ready: match
+   step own-left teatime: 
+      hit own-left no-damage: 
+      hit own-right effect: Eats its Sitrus Berry: no effect (Magic Room). (1)
+      hit opponent-right no-damage: 
+      hit opponent-left effect: Eats its Oran Berry: no effect (Magic Room). (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (yours) has not used Minimize.
+A3-TT-03-sv: ready: match
+   step own-left teatime: 
+      hit own-left no-damage: 
+      hit own-right effect: Eats its Figy Berry. (1) / Figy Berry: it becomes confused. (1)
+      hit opponent-right no-damage: 
+      hit opponent-left no-damage: 
+   step own-right bodyslam:  skipped: Hurts itself in confusion: 22–26 HP.
+      hit opponent-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 2) has not used Minimize.
+A3-SC-01-sv: ready: match
+   step own-left stuffcheeks: 
+      hit own-left effect: +2 Defense. (1) / Eats its Sitrus Berry. (1)
+   step opponent-left bodyslam: 
+      hit own-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Greedent has not used Minimize.
+A3-SC-02-champions: ready: match
+   step own-left stuffcheeks: 
+      hit own-left effect: +2 Defense. (1) / Eats its Sitrus Berry: no effect (Magic Room). (1)
+   step opponent-left bodyslam: 
+      hit own-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Swalot has not used Minimize.
+A3-HB-01-sv: ready: match
+   step own-left healbell: Heal Bell also cures the statuses of your side's Pokémon not in battle. (1)
+      hit own-left no-damage: 
+      hit own-right effect: Its sleep is cured. (1)
+   step own-right bodyslam: 
+      hit opponent-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's, 2) has not used Minimize.
+A3-AR-01-usum: ready: match
+   step own-left aromatherapy: Azumarill's Sap Sipper: +1 Attack. (1) / Aromatherapy also cures the statuses of your side's Pokémon not in battle. (1)
+      hit own-left no-damage: 
+      hit own-right no-damage: Sap Sipper: Azumarill is not affected. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-PU-01-usum: ready: match
+   step own-left purify: 
+      hit opponent-right effect: Its poison is cured. (1)
+      hit own-left no-damage: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-PS-01-usum: ready: match
+   step own-left psychoshift: Alakazam's burn is cured. (1)
+      hit opponent-right effect: Is burned. (1)
+   step opponent-right bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-MC-06-swsh: ready: 1 mismatches
+   E2 opponent-right stage evasion:-1: expected 1, got 0
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right defog: Defog: Reflect ends on Corviknight's side. (1) / Defog: the Electric Terrain ends. (1)
+      hit own-left blocked: Magic Coat: Defog goes back to Corviknight. (1)
+      hit opponent-right effect: −1 evasion. (1)
+   step own-right bodyslam: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Snorlax (opponent's) has not used Minimize.
+A3-MC-07-usum: ready: match
+   step own-left magiccoat: Magic Coat: reflectable moves aimed at Clefable go back to their users this turn. (1)
+      hit own-left effect: 
+   step opponent-right purify: 
+      hit own-left blocked: Magic Coat: Purify goes back to Smeargle. (1)
+      hit opponent-right effect: Its poison is cured. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SN-07-usum: ready: match
+   step own-left snatch: Snatch: Absol (yours) takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-left snatch: Snatch: Absol (opponent's) takes the next move that can be snatched this turn. (1)
+      hit opponent-left effect: 
+   step opponent-right swordsdance: Snatch: Absol (yours) takes Swords Dance. (0.5) / Snatch: Absol (opponent's) takes Swords Dance. (0.5)
+      hit own-left effect: +2 Attack. (0.5)
+      hit opponent-left effect: +2 Attack. (0.5)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SN-08-usum: ready: match
+   step own-left snatch: Snatch: Absol takes the next move that can be snatched this turn. (1)
+      hit own-left effect: 
+   step opponent-right mist: Snatch: Absol takes Mist. (1) / Mist starts on Absol's side. (1)
+   step opponent-left growl: 
+      hit own-left effect: Mist: its stats are not lowered. (1)
+      hit own-right effect: Mist: its stats are not lowered. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-LC-02-usum: ready: match
+   step own-left luckychant: Lucky Chant starts on Clefable's side. (1)
+   step opponent-right scald: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MI-05-usum: ready: match
+   step own-left mist: Mist starts on Lapras's side. (1)
+   step opponent-right screech: 
+      hit own-left effect: −2 Defense. (1)
+   step opponent-left bodyslam: 
+      hit own-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-WR-03-sv: ready: match
+   step own-left wonderroom: Wonder Room starts. (1)
+   step opponent-right bodypress: 
+      hit opponent-left calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MR-04-swsh: ready: match
+   step own-left magicroom: Magic Room ends. (1)
+   step own-right magicroom: Magic Room starts. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-CG-03-champions: ready: match
+   step own-left corrosivegas: 
+      hit own-right effect: Corrosive Gas fails: Clefable holds no item. (1)
+      hit opponent-right effect: Loses its Leftovers. (1)
+      hit opponent-left no-damage: Snorlax (1) is behind a Substitute. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-TT-04-swsh: ready: match
+   step own-left teatime: 
+      hit own-left no-damage: 
+      hit own-right effect: Eats its Sitrus Berry. (1)
+      hit opponent-right no-damage: 
+      hit opponent-left effect: Eats its Lum Berry. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SC-03-swsh: ready: match
+   step own-left stuffcheeks: 
+      hit own-left effect: Its Defense cannot go higher. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-SC-04-sv: ready: match
+   step own-left stuffcheeks: 
+      hit own-left effect: +2 Defense. (1) / Eats its Pomeg Berry. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-HB-02-usum: ready: match
+   step own-left healbell: Heal Bell also cures the statuses of your side's Pokémon not in battle. (1)
+      hit own-left no-damage: 
+      hit own-right no-damage: Soundproof: Exploud is not affected. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-HB-03-sv: ready: match
+   step own-left healbell: Heal Bell also cures the statuses of your side's Pokémon not in battle. (1)
+      hit own-left no-damage: 
+      hit own-right no-damage: Good as Gold: Gholdengo is not affected. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-PS-02-swsh: ready: match
+   step own-left psychoshift: Alakazam's bad poison is cured. (1)
+      hit opponent-right effect: Is badly poisoned. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-PS-03-usum: ready: match
+   step own-left psychoshift: 
+      hit opponent-right effect: Safeguard: Snorlax (2) is not affected. (1)
+   step opponent-right bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+A3-PS-04-usum: ready: match
+   step own-left psychoshift: 
+      hit opponent-right no-damage: Arcanine is immune. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-RC-03-swsh: ready: match
+   step opponent-right knockoff: 
+      hit own-left calculated: 
+   step own-left recycle: 
+      hit own-left effect: Recycle fails: Snorlax (yours) has used no item. (1)
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-RC-04-sv: ready: match
+   step opponent-right dragonclaw: 
+      hit own-left calculated: 
+   step own-left recycle: Recycle: Snorlax (yours) gets Sitrus Berry back. (1)
+      hit own-left effect: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen.
+A3-MB-03-usum: ready: match
+   step own-left matblock: Mat Block fails: it is not Greninja's first turn. (1)
+   step opponent-left bodyslam: 
+      hit own-right calculated: 
+   turn facts: Every move hits; no critical hits; added effects below 100% do not happen. / Assumes Lapras has not used Minimize.
+
+68/73 cases match.

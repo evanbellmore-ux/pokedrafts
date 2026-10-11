@@ -1,0 +1,848 @@
+{
+ "id": "K05b",
+ "title": "Two attacks into the last foe, which attacks back (swsh)",
+ "game": "swsh",
+ "format": "gen8doublescustomgame",
+ "checks": "Dragon Claw, then Air Slash into Snorlax, then its Body Slam into Charizard.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 1055,
+   "classes": 120,
+   "ms": 452,
+   "decisions": {
+    "fail:": 1053,
+    "roll": 1053,
+    "accuracy": 104,
+    "secondary": 1040
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ],
+      [
+       80,
+       0.125
+      ],
+      [
+       81,
+       0.125
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 83.4375,
+     "min": 77,
+     "max": 89,
+     "modeTieUp": 89,
+     "modeTieDown": 80
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       115,
+       0.00390625
+      ],
+      [
+       116,
+       0.00390625
+      ],
+      [
+       117,
+       0.0078125
+      ],
+      [
+       118,
+       0.01953125
+      ],
+      [
+       119,
+       0.01171875
+      ],
+      [
+       120,
+       0.01953125
+      ],
+      [
+       121,
+       0.04296875
+      ],
+      [
+       122,
+       0.01953125
+      ],
+      [
+       123,
+       0.03515625
+      ],
+      [
+       124,
+       0.06640625
+      ],
+      [
+       125,
+       0.03515625
+      ],
+      [
+       126,
+       0.04296875
+      ],
+      [
+       127,
+       0.078125
+      ],
+      [
+       128,
+       0.0390625
+      ],
+      [
+       129,
+       0.0390625
+      ],
+      [
+       130,
+       0.0859375
+      ],
+      [
+       131,
+       0.04296875
+      ],
+      [
+       132,
+       0.03515625
+      ],
+      [
+       133,
+       0.078125
+      ],
+      [
+       134,
+       0.046875
+      ],
+      [
+       135,
+       0.03125
+      ],
+      [
+       136,
+       0.06640625
+      ],
+      [
+       137,
+       0.02734375
+      ],
+      [
+       138,
+       0.0234375
+      ],
+      [
+       139,
+       0.0390625
+      ],
+      [
+       140,
+       0.0234375
+      ],
+      [
+       141,
+       0.01171875
+      ],
+      [
+       142,
+       0.01953125
+      ],
+      [
+       144,
+       0.00390625
+      ]
+     ],
+     "koChance": 0,
+     "average": 129.8125,
+     "min": 115,
+     "max": 144,
+     "modeTieUp": 130,
+     "modeTieDown": 130
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 76,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "accuracy": 1,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       89,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 89,
+     "min": 89,
+     "max": 89,
+     "modeTieUp": 89,
+     "modeTieDown": 89
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       144,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 144,
+     "min": 144,
+     "max": 144,
+     "modeTieUp": 144,
+     "modeTieDown": 144
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 52,
+       "dmgMax": 52,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 64,
+       "dmgMax": 64,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 5,
+   "classes": 5,
+   "ms": 4,
+   "decisions": {
+    "fail:": 3,
+    "roll": 3,
+    "accuracy": 1,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       77,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 77,
+     "min": 77,
+     "max": 77,
+     "modeTieUp": 77,
+     "modeTieDown": 77
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       115,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 115,
+     "min": 115,
+     "max": 115,
+     "modeTieUp": 115,
+     "modeTieDown": 115
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 0,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "airslash",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 63,
+       "dmgMax": 63,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Sitrus Berry|[eat]": 1,
+      "|-heal|p2b: Snorlax|hp|[from] item: Sitrus Berry": 1
+     }
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "3": 1
+     },
+     "orderMoved": {
+      "3": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 76,
+       "dmgMax": 76,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 89,
+   "high": 77,
+   "average": 83.4375,
+   "min": 77,
+   "max": 89,
+   "koChance": 0,
+   "dist": [
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ],
+    [
+     80,
+     0.125
+    ],
+    [
+     81,
+     0.125
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 144,
+   "high": 115,
+   "average": 129.8125,
+   "min": 115,
+   "max": 144,
+   "koChance": 0,
+   "dist": [
+    [
+     115,
+     0.00390625
+    ],
+    [
+     116,
+     0.00390625
+    ],
+    [
+     117,
+     0.0078125
+    ],
+    [
+     118,
+     0.01953125
+    ],
+    [
+     119,
+     0.01171875
+    ],
+    [
+     120,
+     0.01953125
+    ],
+    [
+     121,
+     0.04296875
+    ],
+    [
+     122,
+     0.01953125
+    ],
+    [
+     123,
+     0.03515625
+    ],
+    [
+     124,
+     0.06640625
+    ],
+    [
+     125,
+     0.03515625
+    ],
+    [
+     126,
+     0.04296875
+    ],
+    [
+     127,
+     0.078125
+    ],
+    [
+     128,
+     0.0390625
+    ],
+    [
+     129,
+     0.0390625
+    ],
+    [
+     130,
+     0.0859375
+    ],
+    [
+     131,
+     0.04296875
+    ],
+    [
+     132,
+     0.03515625
+    ],
+    [
+     133,
+     0.078125
+    ],
+    [
+     134,
+     0.046875
+    ],
+    [
+     135,
+     0.03125
+    ],
+    [
+     136,
+     0.06640625
+    ],
+    [
+     137,
+     0.02734375
+    ],
+    [
+     138,
+     0.0234375
+    ],
+    [
+     139,
+     0.0390625
+    ],
+    [
+     140,
+     0.0234375
+    ],
+    [
+     141,
+     0.01171875
+    ],
+    [
+     142,
+     0.01953125
+    ],
+    [
+     144,
+     0.00390625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 0,
+   "maximum": 154,
+   "low": 0,
+   "high": 0,
+   "average": 0,
+   "min": 0,
+   "max": 0,
+   "koChance": 1,
+   "dist": [
+    [
+     0,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [
+  "validate lowest: equal to 1 whole-turn replays",
+  "validate highest: equal to 1 whole-turn replays",
+  "validate all: equal to 936 whole-turn replays"
+ ]
+}

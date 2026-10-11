@@ -1,0 +1,1990 @@
+{
+ "id": "G4-LOZ-01-sv",
+ "title": "Leech Seed from a heal-blocked seeder into Liquid Ooze (Ooze holder faster) (GA4a)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "TryHeal's handlers: the faster holder's handler first.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 24,
+   "classes": 18,
+   "ms": 28,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7,
+    "secondary": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       45,
+       0.0625
+      ],
+      [
+       47,
+       0.125
+      ],
+      [
+       51,
+       0.1875
+      ],
+      [
+       53,
+       0.1875
+      ],
+      [
+       57,
+       0.125
+      ],
+      [
+       59,
+       0.1875
+      ],
+      [
+       63,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 54.25,
+     "min": 45,
+     "max": 63,
+     "modeTieUp": 59,
+     "modeTieDown": 51,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {
+      "healblock:2": 1
+     },
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Water/Poison": 1
+     },
+     "ability": {
+      "liquidooze": 1
+     },
+     "forme": {
+      "tentacruel": 1
+     },
+     "stored": {
+      "90/85/100/140/152": 1
+     },
+     "weight": {
+      "550": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Psychic": 1
+     },
+     "ability": {
+      "armortail": 1
+     },
+     "forme": {
+      "farigiraf": 1
+     },
+     "stored": {
+      "110/90/130/90/112": 1
+     },
+     "weight": {
+      "1600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 110,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-92": 0.125,
+       "start:healblock": 1,
+       "damage:-96": 0.1875,
+       "damage:-98": 0.125,
+       "damage:-102": 0.1875,
+       "damage:-104": 0.1875,
+       "damage:-108": 0.125,
+       "damage:-110": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -110,
+       "max": -92
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -110,
+       "max": -92,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 7,
+    "classes": 7,
+    "ms": 28,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        26,
+        0.0625
+       ],
+       [
+        28,
+        0.125
+       ],
+       [
+        32,
+        0.1875
+       ],
+       [
+        34,
+        0.1875
+       ],
+       [
+        38,
+        0.125
+       ],
+       [
+        40,
+        0.1875
+       ],
+       [
+        44,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 35.25,
+      "min": 26,
+      "max": 44,
+      "modeTieUp": 40,
+      "modeTieDown": 32,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {
+       "healblock:1": 1
+      },
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Water/Poison": 1
+      },
+      "ability": {
+       "liquidooze": 1
+      },
+      "forme": {
+       "tentacruel": 1
+      },
+      "stored": {
+       "90/85/100/140/152": 1
+      },
+      "weight": {
+       "550": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Psychic": 1
+      },
+      "ability": {
+       "armortail": 1
+      },
+      "forme": {
+       "farigiraf": 1
+      },
+      "stored": {
+       "110/90/130/90/112": 1
+      },
+      "weight": {
+       "1600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Liquid Ooze",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       63,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 63,
+     "min": 63,
+     "max": 63,
+     "modeTieUp": 63,
+     "modeTieDown": 63,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {
+      "healblock:2": 1
+     },
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Water/Poison": 1
+     },
+     "ability": {
+      "liquidooze": 1
+     },
+     "forme": {
+      "tentacruel": 1
+     },
+     "stored": {
+      "90/85/100/140/152": 1
+     },
+     "weight": {
+      "550": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Psychic": 1
+     },
+     "ability": {
+      "armortail": 1
+     },
+     "forme": {
+      "farigiraf": 1
+     },
+     "stored": {
+      "110/90/130/90/112": 1
+     },
+     "weight": {
+      "1600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 92,
+       "dmgMax": 92,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-92": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -92,
+       "max": -92
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -92,
+       "max": -92,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        44,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 44,
+      "min": 44,
+      "max": 44,
+      "modeTieUp": 44,
+      "modeTieDown": 44,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {
+       "healblock:1": 1
+      },
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Water/Poison": 1
+      },
+      "ability": {
+       "liquidooze": 1
+      },
+      "forme": {
+       "tentacruel": 1
+      },
+      "stored": {
+       "90/85/100/140/152": 1
+      },
+      "weight": {
+       "550": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Psychic": 1
+      },
+      "ability": {
+       "armortail": 1
+      },
+      "forme": {
+       "farigiraf": 1
+      },
+      "stored": {
+       "110/90/130/90/112": 1
+      },
+      "weight": {
+       "1600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Liquid Ooze",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 7,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       45,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 45,
+     "min": 45,
+     "max": 45,
+     "modeTieUp": 45,
+     "modeTieDown": 45,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Grass/Poison": 1
+     },
+     "ability": {
+      "overgrow": 1
+     },
+     "forme": {
+      "venusaur": 1
+     },
+     "stored": {
+      "102/103/120/120/100": 1
+     },
+     "weight": {
+      "1000": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {
+      "healblock:2": 1
+     },
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Tentacruel",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Water/Poison": 1
+     },
+     "ability": {
+      "liquidooze": 1
+     },
+     "forme": {
+      "tentacruel": 1
+     },
+     "stored": {
+      "90/85/100/140/152": 1
+     },
+     "weight": {
+      "550": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal/Psychic": 1
+     },
+     "ability": {
+      "armortail": 1
+     },
+     "forme": {
+      "farigiraf": 1
+     },
+     "stored": {
+      "110/90/130/90/112": 1
+     },
+     "weight": {
+      "1600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 110,
+       "dmgMax": 110,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1a: Venusaur|move: Heal Block": 1
+     },
+     "effects": {
+      "own-left": {
+       "damage:-110": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": -110,
+       "max": -110
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -110,
+       "max": -110,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 7,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        26,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 26,
+      "min": 26,
+      "max": 26,
+      "modeTieUp": 26,
+      "modeTieDown": 26,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Grass/Poison": 1
+      },
+      "ability": {
+       "overgrow": 1
+      },
+      "forme": {
+       "venusaur": 1
+      },
+      "stored": {
+       "102/103/120/120/100": 1
+      },
+      "weight": {
+       "1000": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {
+       "healblock:1": 1
+      },
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Tentacruel",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        136,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 136,
+      "min": 136,
+      "max": 136,
+      "modeTieUp": 136,
+      "modeTieDown": 136,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Water/Poison": 1
+      },
+      "ability": {
+       "liquidooze": 1
+      },
+      "forme": {
+       "tentacruel": 1
+      },
+      "stored": {
+       "90/85/100/140/152": 1
+      },
+      "weight": {
+       "550": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal/Psychic": 1
+      },
+      "ability": {
+       "armortail": 1
+      },
+      "forme": {
+       "farigiraf": 1
+      },
+      "stored": {
+       "110/90/130/90/112": 1
+      },
+      "weight": {
+       "1600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "own-left",
+      "effect": "Liquid Ooze",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 6
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 63,
+   "high": 45,
+   "average": 54.25,
+   "min": 45,
+   "max": 63,
+   "koChance": 0,
+   "dist": [
+    [
+     45,
+     0.0625
+    ],
+    [
+     47,
+     0.125
+    ],
+    [
+     51,
+     0.1875
+    ],
+    [
+     53,
+     0.1875
+    ],
+    [
+     57,
+     0.125
+    ],
+    [
+     59,
+     0.1875
+    ],
+    [
+     63,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 195,
+   "maximum": 195,
+   "low": 195,
+   "high": 195,
+   "average": 195,
+   "min": 195,
+   "max": 195,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 44,
+   "high": 26,
+   "average": 35.25,
+   "min": 26,
+   "max": 44,
+   "koChance": 0,
+   "dist": [
+    [
+     26,
+     0.0625
+    ],
+    [
+     28,
+     0.125
+    ],
+    [
+     32,
+     0.1875
+    ],
+    [
+     34,
+     0.1875
+    ],
+    [
+     38,
+     0.125
+    ],
+    [
+     40,
+     0.1875
+    ],
+    [
+     44,
+     0.125
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 136,
+   "high": 136,
+   "average": 136,
+   "min": 136,
+   "max": 136,
+   "koChance": 0,
+   "dist": [
+    [
+     136,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 195,
+   "maximum": 195,
+   "low": 195,
+   "high": 195,
+   "average": 195,
+   "min": 195,
+   "max": 195,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "opponent-left",
+   "effect": "Leech Seed",
+   "other": "own-left",
+   "chance": 1,
+   "min": -19,
+   "max": -19,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "own-left",
+   "effect": "Liquid Ooze",
+   "other": "opponent-left",
+   "chance": 1,
+   "min": -19,
+   "max": -19,
+   "koChance": 0,
+   "facts": {},
+   "index": 6
+  }
+ ]
+}

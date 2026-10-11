@@ -1,0 +1,291 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-right": {
+    "hp": 330,
+    "maximum": 330
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "spikyshield",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "inferno",
+    "effectiveName": "Inferno Overdrive",
+    "effectiveType": "Fire",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 69,
+      "max": 81,
+      "minPercent": 42.331288343558285,
+      "maxPercent": 49.693251533742334,
+      "koChance": 0,
+      "row": {
+       "moveId": "inferno",
+       "effectiveName": "Inferno Overdrive",
+       "effectiveType": "Fire",
+       "effectivePower": 180,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 69,
+       "max": 81,
+       "minPercent": 42.331288343558285,
+       "maxPercent": 49.693251533742334,
+       "rolls": [
+        69,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        75,
+        76,
+        77,
+        78,
+        78,
+        79,
+        80,
+        81
+       ],
+       "ohkoChance": 0,
+       "description": "Inferno Overdrive: 69–81 HP (42.3–49.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle.",
+        "Protect: Inferno Overdrive breaks through at 1/4 damage."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 94,
+    "average": 88.1875,
+    "high": 82,
+    "min": 82,
+    "max": 94,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "inferno",
+     "effectiveName": "Inferno Overdrive",
+     "effectiveType": "Fire",
+     "effectivePower": 180,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 276,
+     "max": 326,
+     "minPercent": 169.32515337423314,
+     "maxPercent": 200,
+     "rolls": [
+      276,
+      278,
+      282,
+      284,
+      290,
+      294,
+      296,
+      300,
+      302,
+      306,
+      308,
+      312,
+      314,
+      318,
+      320,
+      326
+     ],
+     "ohkoChance": 1,
+     "description": "Inferno Overdrive: 276–326 HP (169.3–200.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 1
+     },
+     "afterUse": {
+      "start": 163,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 163,
+        "heals": []
+       },
+       "high": {
+        "dealt": 163,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 163,
+     "maximum": 163,
+     "low": 94,
+     "average": 88.1875,
+     "high": 82,
+     "min": 82,
+     "max": 94,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 330,
+     "maximum": 330,
+     "low": 330,
+     "average": 330,
+     "high": 330,
+     "min": 330,
+     "max": 330,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.224999999999909,
+ "preflight": []
+}

@@ -1,0 +1,60 @@
+
+### Q21 sv: Snorlax Focus Energy with Scope Lens, Body Slam next turn: crit certain  (1 runs)
+ start: p1a Blissey 330/330 | p1b Chansey 325/325 | p2a Snorlax 235/235 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 after moves: p1a Blissey [17:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Blissey [330:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+ turn 2 end of turn: p1a Blissey [17:1] | p1b Chansey [325:1] | p2a Snorlax [235:1] | p2b Shuckle [95:1]
+   1  |-start|p2a: Snorlax|move: Focus Energy
+   1  |-crit|p1a: Blissey
+
+### Q23 champions: Healer ally cures a burned partner 1/2; Shed Skin 1/3  (4 runs)
+ start: p1a Audino 178/178 | p1b Snorlax 235/235 | p2a Garchomp 183/183 | p2b Arbok 135/135
+ turn 1 after moves: p1a Audino [178:1] | p1b Snorlax [235:1] | p2a Garchomp [183:1] | p2b Arbok [135:1]
+ turn 1 end of turn: p1a Audino [178:1] | p1b Snorlax [221:0.5 235:0.5] | p2a Garchomp [183:1] | p2b Arbok [127:0.67 135:0.33]
+   0.67  |-damage|p2b: Arbok|127/135 brn|[from] brn
+   0.5  |-damage|p1b: Snorlax|221/235 brn|[from] brn
+   0.5  |-activate|p1a: Audino|ability: Healer
+   0.5  |-curestatus|p1b: Snorlax|brn|[msg]
+   0.33  |-activate|p2b: Arbok|ability: Shed Skin
+   0.33  |-curestatus|p2b: Arbok|brn|[msg]
+
+### Q24 sv: Thunder Wave (foe) and Heal Pulse (ally) into Gholdengo (Good as Gold)  (1 runs)
+ start: p1a Jolteon 140/140 | p1b Chansey 325/325 | p2a Gholdengo 81/162 | p2b Shuckle 95/95
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Gholdengo [81:1] | p2b Shuckle [95:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Chansey [325:1] | p2a Gholdengo [81:1] | p2b Shuckle [95:1]
+   1  |move|p1a: Jolteon|Thunder Wave|p2a: Gholdengo
+   1  |-immune|p2a: Gholdengo|[from] ability: Good as Gold
+   1  |move|p2a: Gholdengo|Splash|p2a: Gholdengo
+   1  |move|p1b: Chansey|Splash|p1b: Chansey
+   1  |move|p2b: Shuckle|Heal Pulse|p2a: Gholdengo
+
+### Q25 sv: Jolteon Thunder Wave at Snorlax with a Lightning Rod Raichu partner; Breloom Spore into Sap Sipper Azumarill  (3 runs)
+ start: p1a Jolteon 140/140 | p1b Breloom 135/135 | p2a Snorlax 235/235 | p2b Raichu 135/135
+ turn 1 after moves: p1a Jolteon [140:1] | p1b Breloom [135:1] | p2a Snorlax [235:1] | p2b Raichu [135:1]
+ turn 1 end of turn: p1a Jolteon [140:1] | p1b Breloom [135:1] | p2a Snorlax [235:1] | p2b Raichu [135:1]
+   1  |move|p1a: Jolteon|Thunder Wave|p2b: Raichu
+   1  |-activate|p2b: Raichu|ability: Lightning Rod
+   1  |-ability|p2b: Raichu|Lightning Rod|boost
+   1  |-boost|p2b: Raichu|spa|1
+   1  |move|p2b: Raichu|Splash|p2b: Raichu
+   1  |move|p1b: Breloom|Spore|p2b: Raichu
+   1  |-status|p2b: Raichu|slp|[from] move: Spore
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:159
+    if (++res.runs > (probe.maxRuns ?? 50_000)) throw new Error("too many runs");
+                                                      ^
+
+Error: too many runs
+    at enumerate (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-sim.ts:159:55)
+    at <anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:249:77)
+    at Object.<anonymous> (C:\Users\evanb\OneDrive\pokedrafts\scripts\.cache\calc-audit\status-eot\design\status-probes-2.ts:272:4)
+    at Module._compile (node:internal/modules/cjs/loader:1854:14)
+    at Object.transformer (C:\Users\evanb\OneDrive\pokedrafts\node_modules\tsx\dist\register-BOkp8V6j.cjs:9:3176)
+    at Module.load (node:internal/modules/cjs/loader:1577:32)
+    at Module._load (node:internal/modules/cjs/loader:1379:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:326:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:231:7)
+
+Node.js v24.16.0

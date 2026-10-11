@@ -1,0 +1,699 @@
+{
+ "id": "M12a",
+ "title": "Plus and Minus partners both at 1.5x Sp. Atk",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Overdrive (both foes, 0.75) and Thunderbolt into Blastoise, each at 1.5x Sp. Atk (data/abilities.ts plus, minus).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 2584,
+   "classes": 389,
+   "ms": 1195,
+   "decisions": {
+    "sample": 412,
+    "fail:": 2720,
+    "roll": 2720,
+    "secondary": 1920
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "own-right": {
+     "species": "Toxtricity-Low-Key",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       44,
+       0.00390625
+      ],
+      [
+       45,
+       0.0078125
+      ],
+      [
+       46,
+       0.015625
+      ],
+      [
+       47,
+       0.03515625
+      ],
+      [
+       48,
+       0.0390625
+      ],
+      [
+       49,
+       0.05078125
+      ],
+      [
+       50,
+       0.078125
+      ],
+      [
+       51,
+       0.0703125
+      ],
+      [
+       52,
+       0.078125
+      ],
+      [
+       53,
+       0.1015625
+      ],
+      [
+       54,
+       0.078125
+      ],
+      [
+       55,
+       0.0859375
+      ],
+      [
+       56,
+       0.10546875
+      ],
+      [
+       57,
+       0.06640625
+      ],
+      [
+       58,
+       0.0625
+      ],
+      [
+       59,
+       0.0625
+      ],
+      [
+       60,
+       0.03515625
+      ],
+      [
+       61,
+       0.01953125
+      ],
+      [
+       62,
+       0.00390625
+      ]
+     ],
+     "koChance": 0,
+     "average": 53.6875,
+     "min": 44,
+     "max": 62,
+     "modeTieUp": 56,
+     "modeTieDown": 56
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       0.25
+      ],
+      [
+       2,
+       0.125
+      ],
+      [
+       4,
+       0.125
+      ],
+      [
+       8,
+       0.125
+      ],
+      [
+       10,
+       0.125
+      ],
+      [
+       14,
+       0.0625
+      ],
+      [
+       16,
+       0.125
+      ],
+      [
+       20,
+       0.0625
+      ]
+     ],
+     "koChance": 0.25,
+     "average": 7.125,
+     "min": 0,
+     "max": 20,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0.25,
+       "dmgMin": 134,
+       "dmgMax": 162,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 13,
+   "decisions": {
+    "sample": 16,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "own-right": {
+     "species": "Toxtricity-Low-Key",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       62,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 62,
+     "min": 62,
+     "max": 62,
+     "modeTieUp": 62,
+     "modeTieDown": 62
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       20,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 20,
+     "min": 20,
+     "max": 20,
+     "modeTieUp": 20,
+     "modeTieDown": 20
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 134,
+       "dmgMax": 134,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 35,
+       "dmgMax": 35,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 58,
+       "dmgMax": 58,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 16,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Toxtricity",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "own-right": {
+     "species": "Toxtricity-Low-Key",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       44,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 44,
+     "min": 44,
+     "max": 44,
+     "modeTieUp": 44,
+     "modeTieDown": 44
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       0,
+       1
+      ]
+     ],
+     "koChance": 1,
+     "average": 0,
+     "min": 0,
+     "max": 0,
+     "modeTieUp": 0,
+     "modeTieDown": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "overdrive",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 1,
+       "dmgMin": 162,
+       "dmgMax": 162,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "thunderbolt",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 69,
+       "dmgMax": 69,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 62,
+   "high": 44,
+   "average": 53.6875,
+   "min": 44,
+   "max": 62,
+   "koChance": 0,
+   "dist": [
+    [
+     44,
+     0.00390625
+    ],
+    [
+     45,
+     0.0078125
+    ],
+    [
+     46,
+     0.015625
+    ],
+    [
+     47,
+     0.03515625
+    ],
+    [
+     48,
+     0.0390625
+    ],
+    [
+     49,
+     0.05078125
+    ],
+    [
+     50,
+     0.078125
+    ],
+    [
+     51,
+     0.0703125
+    ],
+    [
+     52,
+     0.078125
+    ],
+    [
+     53,
+     0.1015625
+    ],
+    [
+     54,
+     0.078125
+    ],
+    [
+     55,
+     0.0859375
+    ],
+    [
+     56,
+     0.10546875
+    ],
+    [
+     57,
+     0.06640625
+    ],
+    [
+     58,
+     0.0625
+    ],
+    [
+     59,
+     0.0625
+    ],
+    [
+     60,
+     0.03515625
+    ],
+    [
+     61,
+     0.01953125
+    ],
+    [
+     62,
+     0.00390625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 20,
+   "high": 0,
+   "average": 7.125,
+   "min": 0,
+   "max": 20,
+   "koChance": 0.25,
+   "dist": [
+    [
+     0,
+     0.25
+    ],
+    [
+     2,
+     0.125
+    ],
+    [
+     4,
+     0.125
+    ],
+    [
+     8,
+     0.125
+    ],
+    [
+     10,
+     0.125
+    ],
+    [
+     14,
+     0.0625
+    ],
+    [
+     16,
+     0.125
+    ],
+    [
+     20,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

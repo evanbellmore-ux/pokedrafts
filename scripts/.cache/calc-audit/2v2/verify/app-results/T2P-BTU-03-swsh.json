@@ -1,0 +1,391 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 125,
+    "maximum": 125
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "toxic",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Is badly poisoned.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "beatup",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 10,
+      "max": 13,
+      "minPercent": 8,
+      "maxPercent": 10.4,
+      "koChance": 0,
+      "row": {
+       "moveId": "beatup",
+       "effectiveName": "Beat Up",
+       "effectiveType": "Dark",
+       "effectivePower": 10,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 10,
+       "max": 13,
+       "minPercent": 8,
+       "maxPercent": 10.4,
+       "rolls": [
+        [
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         6
+        ],
+        [
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         6,
+         7
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Beat Up: 10–13 HP (8.0–10.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Beat Up: 2 hits (Thievul 10, Snorlax 16 power).",
+        "No one-use KO chance for multiple hits.",
+        "Attacker: the defender just switched in — no."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Badly poisoned.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 125,
+    "maximum": 125,
+    "low": 115,
+    "average": 114.8125,
+    "high": 112,
+    "min": 112,
+    "max": 115,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "beatup",
+     "effectiveName": "Beat Up",
+     "effectiveType": "Dark",
+     "effectivePower": 10,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 16,
+     "max": 20,
+     "minPercent": 12.8,
+     "maxPercent": 16,
+     "rolls": [
+      [
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       6
+      ],
+      [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       7
+      ],
+      [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       7
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Beat Up: 16–20 HP (12.8–16.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Beat Up: 3 hits (Thievul 10, Grimmsnarl 17, Snorlax 16 power).",
+      "Attacker: the defender just switched in — no."
+     ],
+     "reason": null,
+     "hits": 3,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.0000017464597823166405,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 109,
+      "high": 105,
+      "average": 108.75,
+      "min": 105,
+      "max": 109,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 16,
+        "heals": []
+       },
+       "high": {
+        "dealt": 20,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Badly poisoned.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 125,
+     "maximum": 125,
+     "low": 115,
+     "average": 114.8125,
+     "high": 112,
+     "min": 112,
+     "max": 115,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Bad poison",
+     "chance": 1,
+     "min": -10,
+     "max": -10,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 2.805899999999383,
+ "preflight": []
+}

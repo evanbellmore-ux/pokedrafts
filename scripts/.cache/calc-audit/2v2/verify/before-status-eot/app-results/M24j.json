@@ -1,0 +1,189 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "A weather or terrain change this turn would change Electric Seed.",
+  "start": {
+   "own-left": {
+    "hp": 280,
+    "maximum": 280
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Max Lightning",
+     "effectiveType": "Electric",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 39,
+     "max": 47,
+     "minPercent": 25.161290322580644,
+     "maxPercent": 30.32258064516129,
+     "rolls": [
+      39,
+      40,
+      40,
+      41,
+      42,
+      42,
+      42,
+      42,
+      43,
+      44,
+      44,
+      45,
+      45,
+      45,
+      46,
+      47
+     ],
+     "ohkoChance": 0,
+     "description": "Max Lightning: 39–47 HP (25.2–30.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.554931640625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Max Lightning changes the field.",
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 116,
+      "high": 108,
+      "average": 112.0625,
+      "min": 108,
+      "max": 116,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 47,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 52,
+     "max": 63,
+     "minPercent": 33.76623376623377,
+     "maxPercent": 40.909090909090914,
+     "rolls": [
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      58,
+      60,
+      60,
+      61,
+      61,
+      63
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 102,
+      "high": 91,
+      "average": 96.6875,
+      "min": 91,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 52,
+        "heals": []
+       },
+       "high": {
+        "dealt": 63,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.5949000000000524,
+ "preflight": []
+}

@@ -1,0 +1,1684 @@
+{
+ "id": "RS-RV16b",
+ "title": "Fire Punch into a frozen Pokémon behind a Substitute (SV)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "frz onDamagingHit needs a hit on the Pokémon: behind the Substitute it stays frozen (1/5 thaw at its BeforeMove).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 82,
+   "classes": 11,
+   "ms": 172,
+   "decisions": {
+    "fail:substitute": 6,
+    "roll": 72,
+    "secondary": 72,
+    "chance:frz": 72,
+    "fail:": 66
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       126,
+       0.012500000000000002
+      ],
+      [
+       128,
+       0.012500000000000002
+      ],
+      [
+       129,
+       0.025000000000000005
+      ],
+      [
+       131,
+       0.012500000000000002
+      ],
+      [
+       132,
+       0.025000000000000005
+      ],
+      [
+       134,
+       0.025000000000000005
+      ],
+      [
+       135,
+       0.012500000000000002
+      ],
+      [
+       137,
+       0.025000000000000005
+      ],
+      [
+       138,
+       0.012500000000000002
+      ],
+      [
+       140,
+       0.025000000000000005
+      ],
+      [
+       141,
+       0.012500000000000002
+      ],
+      [
+       219,
+       0.8000000000000002
+      ]
+     ],
+     "koChance": 0,
+     "average": 201.98749999999998,
+     "min": 126,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219,
+     "status": {
+      "": 0.9999999999999993
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999993
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.8000000000000002,
+      "1": 0.20000000000000026
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999993
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999993
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999993
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999993
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       0.9999999999999993
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.20000000000000026,
+      "frz": 0.8000000000000002
+     },
+     "volatiles": {
+      "substitute": 0.9999999999999993
+     },
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999993
+     },
+     "sub": [
+      [
+       71,
+       0.06249999999999999
+      ],
+      [
+       72,
+       0.1875000000000001
+      ],
+      [
+       73,
+       0.1875000000000001
+      ],
+      [
+       74,
+       0.24999999999999997
+      ],
+      [
+       75,
+       0.1875000000000001
+      ],
+      [
+       76,
+       0.12499999999999999
+      ]
+     ],
+     "timesAttacked": {
+      "0": 0.9999999999999993
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       0.9999999999999993
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 0.9999999999999993
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999993
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999993
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "firepunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 29,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 24,
+        "takenMax": 29,
+        "breaks": 0
+       }
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 0.9999999999999993,
+     "faintedAtPick": 0,
+     "moved": 0.20000000000000026,
+     "cant": {
+      "frz": 0.8000000000000002
+     },
+     "orderAll": {
+      "2": 0.9999999999999993
+     },
+     "orderMoved": {
+      "2": 0.20000000000000026
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.20000000000000026,
+       "landed": 0.20000000000000026,
+       "ko": 0,
+       "dmgMin": 78,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p2b: Snorlax|frz": 0.8000000000000002
+     },
+     "effects": {
+      "opponent-left": {
+       "cant:frz": 0.8000000000000002,
+       "curestatus:frz": 0.20000000000000026
+      },
+      "own-left": {
+       "damage:-78": 0.012500000000000002,
+       "damage:-79": 0.025000000000000005,
+       "damage:-81": 0.012500000000000002,
+       "damage:-82": 0.025000000000000005,
+       "damage:-84": 0.012500000000000002,
+       "damage:-85": 0.025000000000000005,
+       "damage:-87": 0.025000000000000005,
+       "damage:-88": 0.012500000000000002,
+       "damage:-90": 0.025000000000000005,
+       "damage:-91": 0.012500000000000002,
+       "damage:-93": 0.012500000000000002
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-left": {
+       "min": -93,
+       "max": -78
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -93,
+       "max": -78,
+       "mass": 0.20000000000000026
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 72,
+    "classes": 6,
+    "ms": 172,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Hariyama",
+      "start": null,
+      "maximum": 219,
+      "dist": [
+       [
+        126,
+        0.012500000000000002
+       ],
+       [
+        128,
+        0.012500000000000002
+       ],
+       [
+        129,
+        0.025000000000000005
+       ],
+       [
+        131,
+        0.012500000000000002
+       ],
+       [
+        132,
+        0.025000000000000005
+       ],
+       [
+        134,
+        0.025000000000000005
+       ],
+       [
+        135,
+        0.012500000000000002
+       ],
+       [
+        137,
+        0.025000000000000005
+       ],
+       [
+        138,
+        0.012500000000000002
+       ],
+       [
+        140,
+        0.025000000000000005
+       ],
+       [
+        141,
+        0.012500000000000002
+       ],
+       [
+        219,
+        0.8000000000000002
+       ]
+      ],
+      "koChance": 0,
+      "average": 201.98749999999998,
+      "min": 126,
+      "max": 219,
+      "modeTieUp": 219,
+      "modeTieDown": 219,
+      "status": {
+       "": 0.9999999999999993
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999993
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.8000000000000002,
+       "1": 0.20000000000000026
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999993
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999993
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999993
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999993
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        0.9999999999999993
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.20000000000000026,
+       "frz": 0.8000000000000002
+      },
+      "volatiles": {
+       "substitute": 0.9999999999999993
+      },
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999993
+      },
+      "sub": [
+       [
+        71,
+        0.06249999999999999
+       ],
+       [
+        72,
+        0.1875000000000001
+       ],
+       [
+        73,
+        0.1875000000000001
+       ],
+       [
+        74,
+        0.24999999999999997
+       ],
+       [
+        75,
+        0.1875000000000001
+       ],
+       [
+        76,
+        0.12499999999999999
+       ]
+      ],
+      "timesAttacked": {
+       "0": 0.9999999999999993
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        0.9999999999999993
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 0.9999999999999993
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999993
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999993
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999993,
+     "weather:": 0.9999999999999993
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 7,
+   "classes": 6,
+   "ms": 28,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 2,
+    "secondary": 2,
+    "chance:frz": 2,
+    "fail:": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       141,
+       0.2
+      ],
+      [
+       219,
+       0.8
+      ]
+     ],
+     "koChance": 0,
+     "average": 203.40000000000003,
+     "min": 141,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.8,
+      "1": 0.2
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.2,
+      "frz": 0.8
+     },
+     "volatiles": {
+      "substitute": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [
+      [
+       76,
+       1
+      ]
+     ],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "firepunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 24,
+       "dmgMax": 24,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 24,
+        "takenMax": 24,
+        "breaks": 0
+       }
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.2,
+     "cant": {
+      "frz": 0.8
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.2
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.2,
+       "landed": 0.2,
+       "ko": 0,
+       "dmgMin": 78,
+       "dmgMax": 78,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p2b: Snorlax|frz": 0.8
+     },
+     "effects": {
+      "opponent-left": {
+       "cant:frz": 0.8,
+       "curestatus:frz": 0.2
+      },
+      "own-left": {
+       "damage:-78": 0.2
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-left": {
+       "min": -78,
+       "max": -78
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -78,
+       "max": -78,
+       "mass": 0.2
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 1,
+    "ms": 28,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Hariyama",
+      "start": null,
+      "maximum": 219,
+      "dist": [
+       [
+        141,
+        0.2
+       ],
+       [
+        219,
+        0.8
+       ]
+      ],
+      "koChance": 0,
+      "average": 203.40000000000003,
+      "min": 141,
+      "max": 219,
+      "modeTieUp": 219,
+      "modeTieDown": 219,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.8,
+       "1": 0.2
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.2,
+       "frz": 0.8
+      },
+      "volatiles": {
+       "substitute": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [
+       [
+        76,
+        1
+       ]
+      ],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 7,
+   "classes": 6,
+   "ms": 17,
+   "decisions": {
+    "fail:substitute": 1,
+    "roll": 2,
+    "secondary": 2,
+    "chance:frz": 2,
+    "fail:": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       126,
+       0.2
+      ],
+      [
+       219,
+       0.8
+      ]
+     ],
+     "koChance": 0,
+     "average": 200.40000000000003,
+     "min": 126,
+     "max": 219,
+     "modeTieUp": 219,
+     "modeTieDown": 219,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.8,
+      "1": 0.2
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 0.2,
+      "frz": 0.8
+     },
+     "volatiles": {
+      "substitute": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [
+      [
+       71,
+       1
+      ]
+     ],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "firepunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 29,
+       "dmgMax": 29,
+       "truncated": 0,
+       "sub": {
+        "mass": 1,
+        "takenMin": 29,
+        "takenMax": 29,
+        "breaks": 0
+       }
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Snorlax|move: Substitute|[damage]": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "activate:substitute:damage": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {}
+    },
+    "opponent-left": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0.2,
+     "cant": {
+      "frz": 0.8
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 0.2
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.2,
+       "landed": 0.2,
+       "ko": 0,
+       "dmgMin": 93,
+       "dmgMax": 93,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p2b: Snorlax|frz": 0.8
+     },
+     "effects": {
+      "opponent-left": {
+       "cant:frz": 0.8,
+       "curestatus:frz": 0.2
+      },
+      "own-left": {
+       "damage:-93": 0.2
+      }
+     },
+     "change": {
+      "opponent-left": {
+       "min": 0,
+       "max": 0
+      },
+      "own-left": {
+       "min": -93,
+       "max": -93
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-left": {
+       "min": -93,
+       "max": -93,
+       "mass": 0.2
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 1,
+    "ms": 18,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Hariyama",
+      "start": null,
+      "maximum": 219,
+      "dist": [
+       [
+        126,
+        0.2
+       ],
+       [
+        219,
+        0.8
+       ]
+      ],
+      "koChance": 0,
+      "average": 200.40000000000003,
+      "min": 126,
+      "max": 219,
+      "modeTieUp": 219,
+      "modeTieDown": 219,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.8,
+       "1": 0.2
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 0.2,
+       "frz": 0.8
+      },
+      "volatiles": {
+       "substitute": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [
+       [
+        71,
+        1
+       ]
+      ],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Blastoise",
+      "start": null,
+      "maximum": 154,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 219,
+   "maximum": 219,
+   "low": 219,
+   "high": 219,
+   "average": 201.98749999999998,
+   "min": 126,
+   "max": 219,
+   "koChance": 0,
+   "dist": [
+    [
+     126,
+     0.012500000000000002
+    ],
+    [
+     128,
+     0.012500000000000002
+    ],
+    [
+     129,
+     0.025000000000000005
+    ],
+    [
+     131,
+     0.012500000000000002
+    ],
+    [
+     132,
+     0.025000000000000005
+    ],
+    [
+     134,
+     0.025000000000000005
+    ],
+    [
+     135,
+     0.012500000000000002
+    ],
+    [
+     137,
+     0.025000000000000005
+    ],
+    [
+     138,
+     0.012500000000000002
+    ],
+    [
+     140,
+     0.025000000000000005
+    ],
+    [
+     141,
+     0.012500000000000002
+    ],
+    [
+     219,
+     0.8000000000000002
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999993
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999993
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999993
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 219,
+   "maximum": 219,
+   "low": 219,
+   "high": 219,
+   "average": 201.98749999999998,
+   "min": 126,
+   "max": 219,
+   "koChance": 0,
+   "dist": [
+    [
+     126,
+     0.012500000000000002
+    ],
+    [
+     128,
+     0.012500000000000002
+    ],
+    [
+     129,
+     0.025000000000000005
+    ],
+    [
+     131,
+     0.012500000000000002
+    ],
+    [
+     132,
+     0.025000000000000005
+    ],
+    [
+     134,
+     0.025000000000000005
+    ],
+    [
+     135,
+     0.012500000000000002
+    ],
+    [
+     137,
+     0.025000000000000005
+    ],
+    [
+     138,
+     0.012500000000000002
+    ],
+    [
+     140,
+     0.025000000000000005
+    ],
+    [
+     141,
+     0.012500000000000002
+    ],
+    [
+     219,
+     0.8000000000000002
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999993
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     0.9999999999999993
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     0.9999999999999993
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

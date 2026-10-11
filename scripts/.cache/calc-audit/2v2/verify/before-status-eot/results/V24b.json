@@ -1,0 +1,684 @@
+{
+ "id": "V24b",
+ "title": "Shell Bell (single target)",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Shell Bell heals 1/8 of the damage dealt before Snorlax's Body Slam.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 145,
+   "classes": 42,
+   "ms": 64,
+   "decisions": {
+    "fail:": 117,
+    "roll": 117,
+    "secondary": 104
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 100,
+     "maximum": 183,
+     "dist": [
+      [
+       46,
+       0.0234375
+      ],
+      [
+       47,
+       0.02734375
+      ],
+      [
+       48,
+       0.05859375
+      ],
+      [
+       49,
+       0.1015625
+      ],
+      [
+       50,
+       0.078125
+      ],
+      [
+       51,
+       0.0703125
+      ],
+      [
+       52,
+       0.125
+      ],
+      [
+       53,
+       0.10546875
+      ],
+      [
+       54,
+       0.08203125
+      ],
+      [
+       55,
+       0.1015625
+      ],
+      [
+       56,
+       0.078125
+      ],
+      [
+       57,
+       0.0703125
+      ],
+      [
+       58,
+       0.0546875
+      ],
+      [
+       59,
+       0.0234375
+      ]
+     ],
+     "koChance": 0,
+     "average": 52.6875,
+     "min": 46,
+     "max": 59,
+     "modeTieUp": 52,
+     "modeTieDown": 52
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       91,
+       0.0625
+      ],
+      [
+       92,
+       0.0625
+      ],
+      [
+       94,
+       0.0625
+      ],
+      [
+       95,
+       0.0625
+      ],
+      [
+       97,
+       0.125
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       100,
+       0.0625
+      ],
+      [
+       101,
+       0.125
+      ],
+      [
+       103,
+       0.0625
+      ],
+      [
+       104,
+       0.0625
+      ],
+      [
+       106,
+       0.0625
+      ],
+      [
+       107,
+       0.125
+      ],
+      [
+       109,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 100.125,
+     "min": 91,
+     "max": 109,
+     "modeTieUp": 107,
+     "modeTieDown": 97
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Garchomp|hp|[from] item: Shell Bell|[of] p2a: Snorlax": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 100,
+     "maximum": 183,
+     "dist": [
+      [
+       57,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 57,
+     "min": 57,
+     "max": 57,
+     "modeTieUp": 57,
+     "modeTieDown": 57
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       109,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 109,
+     "min": 109,
+     "max": 109,
+     "modeTieUp": 109,
+     "modeTieDown": 109
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 97,
+       "dmgMax": 97,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Garchomp|hp|[from] item: Shell Bell|[of] p2a: Snorlax": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 55,
+       "dmgMax": 55,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 2,
+    "roll": 2,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 100,
+     "maximum": 183,
+     "dist": [
+      [
+       48,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 48,
+     "min": 48,
+     "max": 48,
+     "modeTieUp": 48,
+     "modeTieDown": 48
+    },
+    "own-right": {
+     "species": "Charizard",
+     "start": 153,
+     "maximum": 153,
+     "dist": [
+      [
+       153,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 153,
+     "min": 153,
+     "max": 153,
+     "modeTieUp": 153,
+     "modeTieDown": 153
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       91,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 91,
+     "min": 91,
+     "max": 91,
+     "modeTieUp": 91,
+     "modeTieDown": 91
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 115,
+       "dmgMax": 115,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-heal|p1a: Garchomp|hp|[from] item: Shell Bell|[of] p2a: Snorlax": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "bodyslam",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 66,
+       "dmgMax": 66,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p2a: Snorlax|hp|[from] ability: Rough Skin|[of] p1a: Garchomp": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 100,
+   "maximum": 183,
+   "low": 57,
+   "high": 48,
+   "average": 52.6875,
+   "min": 46,
+   "max": 59,
+   "koChance": 0,
+   "dist": [
+    [
+     46,
+     0.0234375
+    ],
+    [
+     47,
+     0.02734375
+    ],
+    [
+     48,
+     0.05859375
+    ],
+    [
+     49,
+     0.1015625
+    ],
+    [
+     50,
+     0.078125
+    ],
+    [
+     51,
+     0.0703125
+    ],
+    [
+     52,
+     0.125
+    ],
+    [
+     53,
+     0.10546875
+    ],
+    [
+     54,
+     0.08203125
+    ],
+    [
+     55,
+     0.1015625
+    ],
+    [
+     56,
+     0.078125
+    ],
+    [
+     57,
+     0.0703125
+    ],
+    [
+     58,
+     0.0546875
+    ],
+    [
+     59,
+     0.0234375
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 153,
+   "maximum": 153,
+   "low": 153,
+   "high": 153,
+   "average": 153,
+   "min": 153,
+   "max": 153,
+   "koChance": 0,
+   "dist": [
+    [
+     153,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 109,
+   "high": 91,
+   "average": 100.125,
+   "min": 91,
+   "max": 109,
+   "koChance": 0,
+   "dist": [
+    [
+     91,
+     0.0625
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     94,
+     0.0625
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     97,
+     0.125
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     100,
+     0.0625
+    ],
+    [
+     101,
+     0.125
+    ],
+    [
+     103,
+     0.0625
+    ],
+    [
+     104,
+     0.0625
+    ],
+    [
+     106,
+     0.0625
+    ],
+    [
+     107,
+     0.125
+    ],
+    [
+     109,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

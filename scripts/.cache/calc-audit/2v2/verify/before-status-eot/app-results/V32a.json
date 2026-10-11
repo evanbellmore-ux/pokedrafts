@@ -1,0 +1,241 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "protect",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "effectiveName": "Devastating Drake",
+    "effectiveType": "Dragon",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 48,
+      "max": 57,
+      "minPercent": 20.425531914893615,
+      "maxPercent": 24.25531914893617,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Devastating Drake",
+       "effectiveType": "Dragon",
+       "effectivePower": 160,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 48,
+       "max": 57,
+       "minPercent": 20.425531914893615,
+       "maxPercent": 24.25531914893617,
+       "rolls": [
+        48,
+        49,
+        49,
+        50,
+        50,
+        51,
+        52,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55,
+        55,
+        56,
+        57
+       ],
+       "ohkoChance": 0,
+       "description": "Devastating Drake: 48–57 HP (20.4–24.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle.",
+        "Protect: Devastating Drake breaks through at 1/4 damage."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 187,
+    "average": 182.625,
+    "high": 178,
+    "min": 178,
+    "max": 187,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Devastating Drake",
+     "effectiveType": "Dragon",
+     "effectivePower": 160,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 193,
+     "max": 228,
+     "minPercent": 82.12765957446808,
+     "maxPercent": 97.02127659574468,
+     "rolls": [
+      193,
+      195,
+      198,
+      199,
+      202,
+      204,
+      207,
+      208,
+      211,
+      213,
+      216,
+      217,
+      220,
+      222,
+      225,
+      228
+     ],
+     "ohkoChance": 0,
+     "description": "Devastating Drake: 193–228 HP (82.1–97.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 42,
+      "high": 7,
+      "average": 25.125,
+      "min": 7,
+      "max": 42,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 193,
+        "heals": []
+       },
+       "high": {
+        "dealt": 228,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied.",
+   "Assumes no protecting move was used last turn."
+  ]
+ },
+ "ms": 5.338399999999865,
+ "preflight": []
+}

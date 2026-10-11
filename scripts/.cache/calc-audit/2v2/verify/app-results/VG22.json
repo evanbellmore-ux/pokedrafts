@@ -1,0 +1,108 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragontail",
+     "effectiveName": "Dragon Tail",
+     "effectiveType": "Dragon",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 37,
+     "max": 45,
+     "minPercent": 26.42857142857143,
+     "maxPercent": 32.142857142857146,
+     "rolls": [
+      37,
+      37,
+      39,
+      39,
+      39,
+      40,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Tail: 37–45 HP (26.4–32.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Garchomp's Rough Skin is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 103,
+      "high": 95,
+      "average": 99.3125,
+      "min": 95,
+      "max": 103,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 37,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Garchomp, Venusaur and Snorlax."
+  ]
+ },
+ "ms": 1.826300000000174,
+ "preflight": []
+}

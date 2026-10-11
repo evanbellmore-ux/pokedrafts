@@ -1,0 +1,516 @@
+{
+ "id": "F31a",
+ "title": "Throat Chop before a slower sound move",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Kingambit (102) chops Sylveon (80) first: Hyper Voice cannot be used (throatchop onBeforeMove).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 124,
+   "classes": 45,
+   "ms": 82,
+   "decisions": {
+    "sample": 120,
+    "fail:": 44,
+    "roll": 44,
+    "secondary": 44
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-right": {
+     "species": "Sylveon",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       121,
+       0.0625
+      ],
+      [
+       122,
+       0.1875
+      ],
+      [
+       123,
+       0.0625
+      ],
+      [
+       124,
+       0.125
+      ],
+      [
+       125,
+       0.1875
+      ],
+      [
+       126,
+       0.0625
+      ],
+      [
+       127,
+       0.125
+      ],
+      [
+       128,
+       0.1875
+      ]
+     ],
+     "koChance": 0,
+     "average": 124.8125,
+     "min": 121,
+     "max": 128,
+     "modeTieUp": 128,
+     "modeTieDown": 122
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Sylveon|Throat Chop|[silent]": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "move: Throat Chop": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Sylveon|move: Throat Chop": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 21,
+   "classes": 10,
+   "ms": 16,
+   "decisions": {
+    "sample": 24,
+    "fail:": 4,
+    "roll": 4,
+    "secondary": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-right": {
+     "species": "Sylveon",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       128,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 128,
+     "min": 128,
+     "max": 128,
+     "modeTieUp": 128,
+     "modeTieDown": 128
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 42,
+       "dmgMax": 42,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Sylveon|Throat Chop|[silent]": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "move: Throat Chop": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Sylveon|move: Throat Chop": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 21,
+   "classes": 10,
+   "ms": 14,
+   "decisions": {
+    "sample": 24,
+    "fail:": 4,
+    "roll": 4,
+    "secondary": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Kingambit",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       175,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 175,
+     "min": 175,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175
+    },
+    "own-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-right": {
+     "species": "Sylveon",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       121,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 121,
+     "min": 121,
+     "max": 121,
+     "modeTieUp": 121,
+     "modeTieDown": 121
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "throatchop",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 49,
+       "dmgMax": 49,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p2a: Sylveon|Throat Chop|[silent]": 1
+     }
+    },
+    "opponent-right": {
+     "moveId": "hypervoice",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 0,
+     "cant": {
+      "move: Throat Chop": 1
+     },
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {},
+     "hits": {},
+     "lines": {
+      "|cant|p2a: Sylveon|move: Throat Chop": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 175,
+   "average": 175,
+   "min": 175,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     175,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 170,
+   "maximum": 170,
+   "low": 128,
+   "high": 121,
+   "average": 124.8125,
+   "min": 121,
+   "max": 128,
+   "koChance": 0,
+   "dist": [
+    [
+     121,
+     0.0625
+    ],
+    [
+     122,
+     0.1875
+    ],
+    [
+     123,
+     0.0625
+    ],
+    [
+     124,
+     0.125
+    ],
+    [
+     125,
+     0.1875
+    ],
+    [
+     126,
+     0.0625
+    ],
+    [
+     127,
+     0.125
+    ],
+    [
+     128,
+     0.1875
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

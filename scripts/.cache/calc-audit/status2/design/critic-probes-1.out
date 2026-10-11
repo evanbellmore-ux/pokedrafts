@@ -1,0 +1,267 @@
+
+== CR01 sv: Snorlax (Sitrus, 1 turn left) at 100 HP under Heal Block; everyone uses Splash
+  |-end|p2a: Blocked|move: Heal Block
+  |-enditem|p2a: Blocked|Sitrus Berry|[eat]
+  |-heal|p2a: Blocked|158/235|[from] item: Sitrus Berry
+  |-heal|p2a: Blocked|158/235|[from] item: Sitrus Berry
+  |turn|2
+
+== CR01 sv: Snorlax (Sitrus, 2 turns left) at 100 HP under Heal Block; everyone uses Splash
+  |turn|2
+
+== CR01 sv: Snorlax (Leftovers, 1 turn left) at 100 HP under Heal Block; everyone uses Splash
+  |-end|p2a: Blocked|move: Heal Block
+  |turn|2
+
+== CR02 usum: Snorlax (Sitrus, 1 turn left) at 100 HP under Embargo; everyone uses Splash
+  |-end|p2a: Embargoed|Embargo
+  |-enditem|p2a: Embargoed|Sitrus Berry|[eat]
+  |-heal|p2a: Embargoed|158/235|[from] item: Sitrus Berry
+  |-heal|p2a: Embargoed|158/235|[from] item: Sitrus Berry
+  |turn|2
+
+== CR02 usum: Snorlax (Sitrus, 2 turns left) at 100 HP under Embargo; everyone uses Splash
+  |turn|2
+
+== CR02 usum: Snorlax (Leftovers, 1 turn left) at 100 HP under Embargo; everyone uses Splash
+  |-end|p2a: Embargoed|Embargo
+  |turn|2
+
+### CR03 sv: Ditto Transform into a Garchomp whose types were set to Water with an added Grass and which was hit 3 times  (128 runs)
+ turn 1 after moves: p1a Ditto [123:1] | p1b Shuckle [95:1] | p2a Garchomp [183:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Ditto [123:1] | p1b Shuckle [95:1] | p2a Garchomp [183:1] | p2b Lax1 [235:1]
+   [1] T1 end: Ditto species Garchomp, types Water/Grass (base Water, added Grass), timesAttacked 3, weighthg 950, ability roughskin
+   [1] T1 moves: Ditto species Garchomp, types Water/Grass (base Water, added Grass), timesAttacked 3, weighthg 950, ability roughskin
+   1  |move|p2a: Garchomp|Splash|p2a: Garchomp
+   1  |move|p1a: Ditto|Transform|p2a: Garchomp
+   1  |-transform|p1a: Ditto|p2a: Garchomp
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |turn|2
+
+### CR04 usum: Absol (2 Stockpile layers, 100 HP) Snatch; Swalot (1 layer, 100 HP) Swallow  (1 runs)
+ turn 1 after moves: p1a Absol [140:1] | p1b Shuckle [95:1] | p2a Swalot [100:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Absol [140:1] | p1b Shuckle [95:1] | p2a Swalot [100:1] | p2b Lax1 [235:1]
+   [1] T1 end: Absol 140/140 0 layers 0 | Swalot 100/175 def+1 spd+1 layers 1
+   [1] T1 moves: Absol 140/140 0 layers 0 | Swalot 100/175 def+1 spd+1 layers 1
+   1  |move|p1a: Absol|Snatch|p1a: Absol
+   1  |move|p2a: Swalot|Swallow|p2a: Swalot
+   1  |-activate|p1a: Absol|move: Snatch|[of] p2a: Swalot
+   1  |move|p1a: Absol|Swallow|p1a: Absol|[from] Snatch
+   1  |-heal|p1a: Absol|140/140
+   1  |-unboost|p1a: Absol|def|2
+   1  |-unboost|p1a: Absol|spd|2
+   1  |-end|p1a: Absol|Stockpile
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |turn|2
+
+### CR05 champions: Grapploct Octolock into Defiant Kingambit; Grapploct's ally Espathra (Opportunist)  (1 runs)
+ turn 1 after moves: p1a Grapploct [155:1] | p1b Espathra [170:1] | p2a Kingambit [175:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Grapploct [155:1] | p1b Espathra [170:1] | p2a Kingambit [175:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Grapploct(155/155) 0 [-] | p1b:Espathra(170/170) atk+4 [-] | p2a:Kingambit(175/175) atk+4 def-1 spd-1 [octolock] | p2b:Lax1(235/235) 0 [-]
+   [1] T1 moves: p1a:Grapploct(155/155) 0 [-] | p1b:Espathra(170/170) 0 [-] | p2a:Kingambit(175/175) 0 [octolock] | p2b:Lax1(235/235) 0 [-]
+   1  |move|p1b: Espathra|Splash|p1b: Espathra
+   1  |move|p2a: Kingambit|Splash|p2a: Kingambit
+   1  |move|p1a: Grapploct|Octolock|p2a: Kingambit
+   1  |-start|p2a: Kingambit|move: Octolock|[of] p1a: Grapploct
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |-unboost|p2a: Kingambit|def|1
+   1  |-ability|p2a: Kingambit|Defiant|boost
+   1  |-boost|p2a: Kingambit|atk|2
+   1  |-unboost|p2a: Kingambit|spd|1
+   1  |-ability|p1b: Espathra|Opportunist|boost
+   1  |-boost|p1b: Espathra|atk|4
+   1  |turn|2
+
+### CR06 sv: Incineroar Entrainment into Snorlax under Incineroar's side's Mist; Incineroar's ally Corviknight (Mirror Armor)  (1 runs)
+ turn 1 after moves: p1a Incineroar [170:1] | p1b Corviknight [173:1] | p2a Snorlax [235:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Incineroar [170:1] | p1b Corviknight [173:1] | p2a Snorlax [235:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Incineroar(170/170) 0 [-] | p1b:Corviknight(173/173) 0 [-] | p2a:Snorlax(235/235) atk-2 [-] | p2b:Lax1(235/235) atk-1 [-]
+   [1] T1 moves: p1a:Incineroar(170/170) 0 [-] | p1b:Corviknight(173/173) 0 [-] | p2a:Snorlax(235/235) atk-2 [-] | p2b:Lax1(235/235) atk-1 [-]
+   1  |move|p1a: Incineroar|Entrainment|p2a: Snorlax
+   1  |-ability|p2a: Snorlax|Intimidate|Thick Fat|[from] move: Entrainment|[of] p1a: Incineroar
+   1  |-ability|p2a: Snorlax|Intimidate|boost
+   1  |-activate|p1a: Incineroar|move: Mist
+   1  |-ability|p1b: Corviknight|Mirror Armor
+   1  |-unboost|p2a: Snorlax|atk|1
+   1  |move|p1b: Corviknight|Splash|p1b: Corviknight
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |move|p2a: Snorlax|Splash|p2a: Snorlax
+   1  |turn|2
+
+### CR07 sv: Smack Down then the ally's Earthquake into Skarmory  (32 runs)
+ turn 1 after moves: p1a Smeargle [15:1] | p1b Shuckle [70:1] | p2a Skarmory [55:1] | p2b Garchomp [183:1]
+ turn 1 end of turn: p1a Smeargle [15:1] | p1b Shuckle [70:1] | p2a Skarmory [55:1] | p2b Garchomp [183:1]
+   1  |move|p1a: Smeargle|Smack Down|p2a: Skarmory
+   1  |-damage|p2a: Skarmory|135/140
+   1  |-start|p2a: Skarmory|Smack Down
+   0.5  |move|p2b: Garchomp|Earthquake|p1a: Smeargle|[spread] p2a,p1a,p1b
+   1  |-damage|p2a: Skarmory|55/140
+   1  |-damage|p1a: Smeargle|15/130
+   1  |-damage|p1b: Shuckle|70/95
+   1  |move|p2a: Skarmory|Splash|p2a: Skarmory
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |turn|2
+   0.5  |move|p2b: Garchomp|Earthquake|p1b: Shuckle|[spread] p2a,p1a,p1b
+
+### CR07 sv: control: no Smack Down  (32 runs)
+ turn 1 after moves: p1a Smeargle [15:1] | p1b Shuckle [70:1] | p2a Skarmory [140:1] | p2b Garchomp [183:1]
+ turn 1 end of turn: p1a Smeargle [15:1] | p1b Shuckle [70:1] | p2a Skarmory [140:1] | p2b Garchomp [183:1]
+   1  |move|p1a: Smeargle|Splash|p1a: Smeargle
+   0.5  |move|p2b: Garchomp|Earthquake|p1a: Smeargle|[spread] p1a,p1b
+   1  |-immune|p2a: Skarmory
+   1  |-damage|p1a: Smeargle|15/130
+   1  |-damage|p1b: Shuckle|70/95
+   1  |move|p2a: Skarmory|Splash|p2a: Skarmory
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |turn|2
+   0.5  |move|p2b: Garchomp|Earthquake|p1b: Shuckle|[spread] p1a,p1b
+
+== CR07 sv: Skarmory Ingrain then its ally's Earthquake (one run, lowest rolls)
+  |move|p2a: Skarmory|Ingrain|p2a: Skarmory
+  |-start|p2a: Skarmory|move: Ingrain
+  |move|p2b: Hippowdon|Earthquake|p1a: Lax1|[spread] p2a,p1a,p1b
+  |-damage|p2a: Skarmory|72/140
+  |-damage|p2a: Skarmory|72/140
+  |-damage|p1a: Lax1|169/235
+  |-damage|p1a: Lax1|169/235
+  |-damage|p1b: Shuckle|71/95
+  |-damage|p1b: Shuckle|71/95
+  |move|p1a: Lax1|Splash|p1a: Lax1
+  |move|p1b: Shuckle|Splash|p1b: Shuckle
+  |-heal|p2a: Skarmory|80/140|[from] Ingrain
+  |-heal|p2a: Skarmory|80/140|[from] Ingrain
+  |turn|2
+
+== CR07 sv: Snorlax Magnet Rise then its ally's Earthquake (one run, lowest rolls)
+  |move|p2a: Snorlax|Magnet Rise|p2a: Snorlax
+  |-start|p2a: Snorlax|Magnet Rise
+  |move|p2b: Hippowdon|Earthquake|p1a: Lax1|[spread] p1a,p1b
+  |-immune|p2a: Snorlax
+  |-damage|p1a: Lax1|169/235
+  |-damage|p1a: Lax1|169/235
+  |-damage|p1b: Shuckle|71/95
+  |-damage|p1b: Shuckle|71/95
+  |move|p1a: Lax1|Splash|p1a: Lax1
+  |move|p1b: Shuckle|Splash|p1b: Shuckle
+  |turn|2
+
+### CR08 sv: a foe Garchomp eats its Liechi Berry at the turn's first Update; Espathra (Opportunist, slow) and control: the partner uses Splash first  (1 runs)
+ turn 1 after moves: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Espathra(170/170) atk+1 [-] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   [1] T1 moves: p1a:Espathra(170/170) atk+1 [-] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   1  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+   1  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+   1  |move|p1b: Smeargle|Splash|p1b: Smeargle
+   1  |-ability|p1a: Espathra|Opportunist|boost
+   1  |-boost|p1a: Espathra|atk|1
+   1  |move|p1a: Espathra|Splash|p1a: Espathra
+   1  |move|p2a: Garchomp|Splash|p2a: Garchomp
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |turn|2
+
+### CR08 sv: a foe Garchomp eats its Liechi Berry at the turn's first Update; Espathra (Opportunist, slow) and the partner's Gastro Acid on Espathra first  (1 runs)
+ turn 1 after moves: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Espathra(170/170) 0 [gastroacid] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   [1] T1 moves: p1a:Espathra(170/170) 0 [gastroacid] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   1  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+   1  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+   1  |move|p1b: Smeargle|Gastro Acid|p1a: Espathra
+   1  |move|p1a: Espathra|Splash|p1a: Espathra
+   1  |move|p2a: Garchomp|Splash|p2a: Garchomp
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |turn|2
+
+### CR08 sv: a foe Garchomp eats its Liechi Berry at the turn's first Update; Espathra (Opportunist, slow) and the partner's Skill Swap with Espathra first  (1 runs)
+ turn 1 after moves: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Espathra [170:1] | p1b Smeargle [130:1] | p2a Garchomp [40:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Espathra(170/170) 0 [-] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   [1] T1 moves: p1a:Espathra(170/170) 0 [-] | p1b:Smeargle(130/130) 0 [-] | p2a:Garchomp(40/183) atk+1 [-] | p2b:Lax1(235/235) 0 [-]
+   1  |-enditem|p2a: Garchomp|Liechi Berry|[eat]
+   1  |-boost|p2a: Garchomp|atk|1|[from] item: Liechi Berry
+   1  |move|p1b: Smeargle|Skill Swap|p1a: Espathra
+   1  |-activate|p1b: Smeargle|Skill Swap|||[of] p1a: Espathra
+   1  |move|p1a: Espathra|Splash|p1a: Espathra
+   1  |move|p2a: Garchomp|Splash|p2a: Garchomp
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |turn|2
+
+### CR09 sv: Teatime in sun; Trevenant (Harvest, Sitrus); Ambipom (Pickup) beside Trevenant  (1 runs)
+ turn 1 after moves: p1a Sinistcha [146:1] | p1b Shuckle [95:1] | p2a Trevenant [160:1] | p2b Ambipom [150:1]
+ turn 1 end of turn: p1a Sinistcha [146:1] | p1b Shuckle [95:1] | p2a Trevenant [160:1] | p2b Ambipom [150:1]
+   [1] T1 end: p1a:Sinistcha(146/146) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Trevenant(160/160) 0 [-] | p2b:Ambipom(150/150 sitrusberry) 0 [-] | Trevenant lastItem -
+   [1] T1 moves: p1a:Sinistcha(146/146) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Trevenant(160/160) 0 [-] | p2b:Ambipom(150/150) 0 [-] | Trevenant lastItem sitrusberry
+   1  |move|p2b: Ambipom|Splash|p2b: Ambipom
+   1  |move|p1a: Sinistcha|Teatime|p1a: Sinistcha
+   1  |-enditem|p2a: Trevenant|Sitrus Berry|[eat]
+   1  |-heal|p2a: Trevenant|160/160|[from] item: Sitrus Berry|[of] p1a: Sinistcha
+   1  |move|p2a: Trevenant|Splash|p2a: Trevenant
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |-item|p2b: Ambipom|Sitrus Berry|[from] ability: Pickup
+   1  |turn|2
+
+### CR09 sv: Teatime in sun; Trevenant (Harvest, Sitrus); control: Snorlax beside Trevenant  (1 runs)
+ turn 1 after moves: p1a Sinistcha [146:1] | p1b Shuckle [95:1] | p2a Trevenant [160:1] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Sinistcha [146:1] | p1b Shuckle [95:1] | p2a Trevenant [160:1] | p2b Lax1 [235:1]
+   [1] T1 end: p1a:Sinistcha(146/146) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Trevenant(160/160 sitrusberry) 0 [-] | p2b:Lax1(235/235) 0 [-] | Trevenant lastItem -
+   [1] T1 moves: p1a:Sinistcha(146/146) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Trevenant(160/160) 0 [-] | p2b:Lax1(235/235) 0 [-] | Trevenant lastItem sitrusberry
+   1  |move|p1a: Sinistcha|Teatime|p1a: Sinistcha
+   1  |-enditem|p2a: Trevenant|Sitrus Berry|[eat]
+   1  |-heal|p2a: Trevenant|160/160|[from] item: Sitrus Berry|[of] p1a: Sinistcha
+   1  |move|p2a: Trevenant|Splash|p2a: Trevenant
+   1  |move|p2b: Lax1|Splash|p2b: Lax1
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |-item|p2a: Trevenant|Sitrus Berry|[from] ability: Harvest
+   1  |turn|2
+
+### CR10 sv: Snorlax (fast) Body Slam into a slower Snorlax under Reflect, the target with Minimize and Glaive Rush: every roll  (48 runs)
+ turn 1 after moves: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [0:1]
+ turn 1 end of turn: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Bench [235:1]
+
+### CR10 sv: Snorlax (fast) Body Slam into a slower Snorlax under Reflect, the target with Minimize: every roll  (12 runs)
+ turn 1 after moves: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [90:0.0625 91:0.0625 94:0.0625 95:0.125 98:0.0625 99:0.0625 102:0.125 103:0.0625 106:0.0625 107:0.125 110:0.0625 111:0.125]
+ turn 1 end of turn: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [90:0.0625 91:0.0625 94:0.0625 95:0.125 98:0.0625 99:0.0625 102:0.125 103:0.0625 106:0.0625 107:0.125 110:0.0625 111:0.125]
+
+### CR10 sv: Snorlax (fast) Body Slam into a slower Snorlax under Reflect, the target with Glaive Rush: every roll  (12 runs)
+ turn 1 after moves: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [90:0.0625 91:0.0625 94:0.0625 95:0.125 98:0.0625 99:0.0625 102:0.125 103:0.0625 106:0.0625 107:0.125 110:0.0625 111:0.125]
+ turn 1 end of turn: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [90:0.0625 91:0.0625 94:0.0625 95:0.125 98:0.0625 99:0.0625 102:0.125 103:0.0625 106:0.0625 107:0.125 110:0.0625 111:0.125]
+
+### CR10 sv: Snorlax (fast) Body Slam into a slower Snorlax under Reflect, the target with neither: every roll  (12 runs)
+ turn 1 after moves: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [162:0.0625 163:0.0625 164:0.0625 165:0.125 166:0.0625 167:0.0625 168:0.125 169:0.0625 170:0.0625 171:0.125 172:0.0625 173:0.125]
+ turn 1 end of turn: p1a Slammer [235:1] | p1b Shuckle [95:1] | p2a Lax2 [235:1] | p2b Target [162:0.0625 163:0.0625 164:0.0625 165:0.125 166:0.0625 167:0.0625 168:0.125 169:0.0625 170:0.0625 171:0.125 172:0.0625 173:0.125]
+
+### CR10b sv: the Glaive Rush holder (Garchomp, faster) uses Splash before Snorlax's Body Slam: the drawback is gone (every roll)  (10 runs)
+ turn 1 after moves: p1a Snorlax [235:1] | p1b Shuckle [95:1] | p2a Garchomp [134:0.0625 136:0.0625 137:0.125 139:0.125 140:0.125 142:0.125 143:0.125 145:0.0625 146:0.125 148:0.0625] | p2b Lax1 [235:1]
+ turn 1 end of turn: p1a Snorlax [235:1] | p1b Shuckle [95:1] | p2a Garchomp [134:0.0625 136:0.0625 137:0.125 139:0.125 140:0.125 142:0.125 143:0.125 145:0.0625 146:0.125 148:0.0625] | p2b Lax1 [235:1]
+   [1] T1 end: Garchomp glaiverush false
+   [1] T1 moves: Garchomp glaiverush false
+
+### CR11 usum: Snorlax asleep with Nightmare; its ally Heal Bell first  (1 runs)
+ turn 1 after moves: p1a Lax1 [201:1] | p1b Shuckle [95:1] | p2a Sleeper [235:1] | p2b Blissey [330:1]
+ turn 1 end of turn: p1a Lax1 [201:1] | p1b Shuckle [95:1] | p2a Sleeper [235:1] | p2b Blissey [330:1]
+   [1] T1 end: p1a:Lax1(201/235) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Sleeper(235/235) 0 [-] | p2b:Blissey(330/330) 0 [-]
+   [1] T1 moves: p1a:Lax1(201/235) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Sleeper(235/235) 0 [-] | p2b:Blissey(330/330) 0 [-]
+   1  |move|p2b: Blissey|Heal Bell|p2b: Blissey
+   1  |-activate|p2b: Blissey|move: Heal Bell
+   1  |-curestatus|p2a: Sleeper|slp|[msg]
+   1  |-end|p2a: Sleeper|Nightmare|[silent]
+   1  |move|p1a: Lax1|Splash|p1a: Lax1
+   1  |move|p2a: Sleeper|Tackle|p1a: Lax1
+   1  |-damage|p1a: Lax1|201/235
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |turn|2
+
+### CR11 usum: Snorlax asleep with Nightmare; its ally control: Splash  (1 runs)
+ turn 1 after moves: p1a Lax1 [235:1] | p1b Shuckle [95:1] | p2a Sleeper [235:1] | p2b Blissey [330:1]
+ turn 1 end of turn: p1a Lax1 [235:1] | p1b Shuckle [95:1] | p2a Sleeper [177:1] | p2b Blissey [330:1]
+   [1] T1 end: p1a:Lax1(235/235) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Sleeper(177/235) 0 [nightmare] | p2b:Blissey(330/330) 0 [-]
+   [1] T1 moves: p1a:Lax1(235/235) 0 [-] | p1b:Shuckle(95/95) 0 [-] | p2a:Sleeper(235/235) 0 [nightmare] | p2b:Blissey(330/330) 0 [-]
+   1  |move|p2b: Blissey|Splash|p2b: Blissey
+   1  |move|p1a: Lax1|Splash|p1a: Lax1
+   1  |cant|p2a: Sleeper|slp
+   1  |move|p1b: Shuckle|Splash|p1b: Shuckle
+   1  |-damage|p2a: Sleeper|177/235 slp|[from] Nightmare
+   1  |turn|2

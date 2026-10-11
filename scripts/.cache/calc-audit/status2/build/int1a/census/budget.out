@@ -1,0 +1,75 @@
+tier2 budgets probe: seed 7, 8000 Champions + 2000 Scarlet/Violet turns, 69146 ms (engine copy of this tree's app/lib/battle, integration 1a)
+  anchor gone in this tree, not recorded: doubles-turn.ts:   if (!selfDestruct && (info.drain || (user.itemId === "shel
+
+== Champions (usage-weighted, census-sim's sampler): 8000 turns (7296 ready, 704 not estimated, 0 engine throws)
+  "Too many cases to follow." today: turn 0, end of turn 0, E2 0
+  engine errors ("This matchup could not be calculated"): 0
+  world-state load (max of worlds/1500 and entries/200000, moves and end of turn), ready turns:
+    ≤ 1/1000 5868 | ≤ 1/100 1408 | ≤ 1/64 12 | ≤ 1/32 6 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 2 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+  calculation load (calculations/160, shared by the three walks), ready turns:
+    ≤ 1/1000 922 | ≤ 1/100 1519 | ≤ 1/64 1725 | ≤ 1/32 2763 | ≤ 1/20 282 | ≤ 1/16 15 | ≤ 1/8 41 | ≤ 1/4 21 | ≤ 1/2 8 | ≤ 1 0 | > 1 (over) 0
+  pairwise-step load (reruns/48, states/STATE_BUDGET), ready turns:
+    ≤ 1/1000 7139 | ≤ 1/100 156 | ≤ 1/64 1 | ≤ 1/32 0 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 0 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+  end-of-turn load (worlds/1500, entries/200000 after each handler group), ready turns with the end of turn ready:
+    ≤ 1/1000 5869 | ≤ 1/100 1176 | ≤ 1/64 10 | ≤ 1/32 6 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 2 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+    worlds     p50 1 p90 2 p99 4 max 26
+    entries    p50 18 p90 58 p99 421 max 24870
+    calcs      p50 2 p90 5 p99 10 max 58
+    eotWorlds  p50 1 p90 2 p99 4 max 25
+    eotEntries p50 16 p90 51 p99 389 max 24870
+    reruns     p50 0 p90 0 p99 0 max 0
+    states     p50 0 p90 0 p99 0.002 max 0.011
+    tie        p50 0 p90 0 p99 0 max 0
+  E2 (calculateDoublesOutcomes): 7296 ready; end of turn applied 7062
+    E2 world-state load: ≤ 1/1000 5870 | ≤ 1/100 1406 | ≤ 1/64 12 | ≤ 1/32 6 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 2 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+    E2 calculation load: ≤ 1/1000 922 | ≤ 1/100 1519 | ≤ 1/64 1725 | ≤ 1/32 2778 | ≤ 1/20 269 | ≤ 1/16 14 | ≤ 1/8 40 | ≤ 1/4 21 | ≤ 1/2 8 | ≤ 1 0 | > 1 (over) 0
+    E2 end-of-turn load: ≤ 1/1000 5881 | ≤ 1/100 1163 | ≤ 1/64 10 | ≤ 1/32 6 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 2 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+    E2 outcomes per turn: p50 1 p90 2 p99 3 max 10
+  by trigger (turns with it; over the budget if its branches multiplied the turn's peak load by m):
+    moody (E2 ×20 at 28.2): 1 turns, 1 ready; worst world-state load 0.0007 (over if ×1500), worst calculation load 0.013; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    form line (×2 at 29): none in the sample
+    cud chew holder: 12 turns, 10 ready; worst world-state load 0.0013 (over if ×750), worst calculation load 0.031; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    harvest (×2): 1 turns, 1 ready; worst world-state load 0.0007 (over if ×1500), worst calculation load 0.013; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    pickup (≤×3): none in the sample
+    attract (×2 per BeforeMove): none in the sample
+    acupressure (≤×7): 1 turns, 0 ready; worst world-state load 0.0000 (over if ×∞), worst calculation load 0.000; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    conversion 2 (≤×7): none in the sample
+    trace (≤×2): 31 turns, 0 ready; worst world-state load 0.0000 (over if ×∞), worst calculation load 0.000; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    drag (≤×4, R): 43 turns, 38 ready; worst world-state load 0.0101 (over if ×99), worst calculation load 0.037; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 0, ×20 0
+    spread heal (C12 joint): 388 turns, 350 ready; worst world-state load 0.1244 (over if ×9), worst calculation load 0.094; world-state ×2 over 0, ×8 0, ×20 2; calculations ×2 over 0, ×7 0; E2 end-of-turn ×2 over 0, ×16 2, ×20 2
+    future sight user (lands later): none in the sample
+  headroom for a landing's 16 rolls on one factor (end-of-turn entries ×16 over 200 000): 2 (0.03 %); ×20 (Moody in E2): 2 (0.03 %)
+
+== Scarlet/Violet (Random Battle Doubles sets): 2000 turns (1712 ready, 190 not estimated, 0 engine throws)
+  "Too many cases to follow." today: turn 0, end of turn 0
+  engine errors ("This matchup could not be calculated"): 0
+  world-state load (max of worlds/1500 and entries/200000, moves and end of turn), ready turns:
+    ≤ 1/1000 1065 | ≤ 1/100 645 | ≤ 1/64 1 | ≤ 1/32 0 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 1 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+  calculation load (calculations/160, shared by the three walks), ready turns:
+    ≤ 1/1000 1 | ≤ 1/100 1 | ≤ 1/64 26 | ≤ 1/32 1262 | ≤ 1/20 386 | ≤ 1/16 24 | ≤ 1/8 12 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+  pairwise-step load (reruns/48, states/STATE_BUDGET), ready turns:
+    ≤ 1/1000 1641 | ≤ 1/100 71 | ≤ 1/64 0 | ≤ 1/32 0 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 0 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+  end-of-turn load (worlds/1500, entries/200000 after each handler group), ready turns with the end of turn ready:
+    ≤ 1/1000 1130 | ≤ 1/100 499 | ≤ 1/64 1 | ≤ 1/32 0 | ≤ 1/20 0 | ≤ 1/16 0 | ≤ 1/8 1 | ≤ 1/4 0 | ≤ 1/2 0 | ≤ 1 0 | > 1 (over) 0
+    worlds     p50 1 p90 2 p99 6 max 12
+    entries    p50 35 p90 109 p99 473 max 14460
+    calcs      p50 5 p90 7 p99 10 max 20
+    eotWorlds  p50 1 p90 2 p99 6 max 12
+    eotEntries p50 30 p90 92 p99 414 max 14460
+    reruns     p50 0 p90 0 p99 0 max 0
+    states     p50 0 p90 0 p99 0.002 max 0.007
+    tie        p50 0 p90 0 p99 0 max 0
+  by trigger (turns with it; over the budget if its branches multiplied the turn's peak load by m):
+    moody (E2 ×20 at 28.2): 9 turns, 7 ready; worst world-state load 0.0033 (over if ×300), worst calculation load 0.031; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0
+    form line (×2 at 29): 131 turns, 118 ready; worst world-state load 0.0053 (over if ×188), worst calculation load 0.081; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0
+    cud chew holder: none in the sample
+    harvest (×2): 17 turns, 16 ready; worst world-state load 0.0027 (over if ×375), worst calculation load 0.056; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0
+    pickup (≤×3): 39 turns, 34 ready; worst world-state load 0.0067 (over if ×150), worst calculation load 0.063; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0
+    attract (×2 per BeforeMove): none in the sample
+    acupressure (≤×7): none in the sample
+    conversion 2 (≤×7): none in the sample
+    trace (≤×2): none in the sample
+    drag (≤×4, R): 11 turns, 11 ready; worst world-state load 0.0027 (over if ×375), worst calculation load 0.037; world-state ×2 over 0, ×8 0, ×20 0; calculations ×2 over 0, ×7 0
+    spread heal (C12 joint): 30 turns, 23 ready; worst world-state load 0.0723 (over if ×14), worst calculation load 0.063; world-state ×2 over 0, ×8 0, ×20 1; calculations ×2 over 0, ×7 0
+    future sight user (lands later): none in the sample
+  headroom for a landing's 16 rolls on one factor (end-of-turn entries ×16 over 200 000): 1 (0.06 %); ×20 (Moody in E2): 1 (0.06 %)

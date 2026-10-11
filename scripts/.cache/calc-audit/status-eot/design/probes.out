@@ -1,0 +1,429 @@
+
+### E1. order 5: speed before subOrder (Grassy 5.2 / Leftovers 5.4)
+ start:       {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Tyranitar":"87/175","p2b Toxapex":"62/125"}
+ [turn 1] after moves: {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Tyranitar":"87/175","p2b Toxapex":"62/125"}
+ [turn 1] after turn:  {"p1a Garchomp":"113/183","p1b Snorlax":"145/235","p2a Tyranitar":"97/175","p2b Toxapex":"69/125"} 
+     |-heal|p1a: Garchomp|102/183|[from] Grassy Terrain
+     |-heal|p1a: Garchomp|113/183|[from] item: Leftovers
+     |-heal|p2a: Tyranitar|97/175|[from] Grassy Terrain
+     |-heal|p2b: Toxapex|69/125|[from] Grassy Terrain
+     |-heal|p1b: Snorlax|131/235|[from] Grassy Terrain
+     |-heal|p1b: Snorlax|145/235|[from] item: Leftovers
+     |upkeep
+     |turn|2
+
+### E2. order 5 under Trick Room
+ start:       {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Tyranitar":"87/175","p2b Toxapex":"62/125"}
+ [turn 1] after moves: {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Tyranitar":"87/175","p2b Toxapex":"62/125"}
+ [turn 1] after turn:  {"p1a Garchomp":"113/183","p1b Snorlax":"145/235","p2a Tyranitar":"97/175","p2b Toxapex":"69/125"} 
+     |-heal|p1b: Snorlax|131/235|[from] Grassy Terrain
+     |-heal|p1b: Snorlax|145/235|[from] item: Leftovers
+     |-heal|p2b: Toxapex|69/125|[from] Grassy Terrain
+     |-heal|p2a: Tyranitar|97/175|[from] Grassy Terrain
+     |-heal|p1a: Garchomp|102/183|[from] Grassy Terrain
+     |-heal|p1a: Garchomp|113/183|[from] item: Leftovers
+     |upkeep
+     |turn|2
+
+### E3. Leech Seed used this turn drains now
+ start:       {"p1a Venusaur":"77/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"77/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"99/155","p1b Snorlax":"235/235","p2a Garchomp":"161/183","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Garchomp|161/183|[from] Leech Seed|[of] p1a: Venusaur
+     |-heal|p1a: Venusaur|99/155|[silent]
+     |upkeep
+     |turn|2
+
+### E4. Leech Seed source knocked out later in the turn
+ start:       {"p1a Venusaur":"1/155","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"0/155","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"0/155","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Toxapex":"125/125"} (request switch)
+     |upkeep
+
+### E5. Leech Seed source faints to sand first
+ start:       {"p1a Venusaur":"1/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"1/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"0/155","p1b Snorlax":"221/235","p2a Garchomp":"183/183","p2b Toxapex":"118/125"} (request switch)
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1a: Venusaur|0 fnt|[from] Sandstorm
+     |-damage|p2b: Toxapex|118/125|[from] Sandstorm
+     |-damage|p1b: Snorlax|221/235|[from] Sandstorm
+     |faint|p1a: Venusaur
+     |upkeep
+
+### E6. Fire Spin this turn damages at this end of turn
+ start:       {"p1a Charizard":"153/153","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Blastoise":"154/154"}
+ [turn 1] after moves: {"p1a Charizard":"153/153","p1b Snorlax":"235/235","p2a Snorlax":"225/235","p2b Blastoise":"154/154"}
+ [turn 1] after turn:  {"p1a Charizard":"153/153","p1b Snorlax":"235/235","p2a Snorlax":"196/235","p2b Blastoise":"154/154"} 
+     |-damage|p2a: Snorlax|196/235|[from] move: Fire Spin|[partiallytrapped]
+     |upkeep
+     |turn|2
+
+### E6b. Fire Spin, trapper knocked out after trapping: no trap damage
+ start:       {"p1a Charizard":"1/153","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Blastoise":"154/154"}
+ [turn 1] after moves: {"p1a Charizard":"0/153","p1b Snorlax":"235/235","p2a Snorlax":"219/235","p2b Blastoise":"154/154"}
+ [turn 1] after turn:  {"p1a Charizard":"0/153","p1b Snorlax":"235/235","p2a Snorlax":"219/235","p2b Blastoise":"154/154"} (request switch)
+     |-end|p2a: Snorlax|Fire Spin|[partiallytrapped]|[silent]
+     |upkeep
+
+### E7. Sitrus at the weather's Update, then Leftovers
+ start:       {"p1a Snorlax":"120/235","p1b Garchomp":"183/183","p2a Tyranitar":"175/175","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"120/235","p1b Garchomp":"183/183","p2a Tyranitar":"175/175","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"164/235","p1b Garchomp":"183/183","p2a Tyranitar":"175/175","p2b Toxapex":"118/125"} 
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p2b: Toxapex|118/125|[from] Sandstorm
+     |-damage|p1a: Snorlax|106/235|[from] Sandstorm
+     |-enditem|p1a: Snorlax|Sitrus Berry|[eat]
+     |-heal|p1a: Snorlax|164/235|[from] item: Sitrus Berry
+     |upkeep
+     |turn|2
+
+### E7b. Burn takes it below half: Sitrus at the final Update
+ start:       {"p1a Snorlax":"120/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"120/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"164/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"} 
+     |-damage|p1a: Snorlax|106/235 brn|[from] brn
+     |upkeep
+     |-enditem|p1a: Snorlax|Sitrus Berry|[eat]
+     |-heal|p1a: Snorlax|164/235 brn|[from] item: Sitrus Berry
+     |turn|2
+
+### E8. Wish, Perish Song, Yawn used this turn
+ start:       {"p1a Snorlax":"94/235","p1b Gengar":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"94/235","p1b Gengar":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"94/235","p1b Gengar":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-start|p1b: Gengar|perish3
+     |-start|p2a: Garchomp|perish3
+     |-start|p2b: Toxapex|perish3
+     |-start|p1a: Snorlax|perish3
+     |upkeep
+     |turn|2
+ [turn 2] after moves: {"p1a Snorlax":"94/235","p1b Gengar":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 2] after turn:  {"p1a Snorlax":"211/235","p1b Gengar":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-heal|p1a: Snorlax|211/235|[from] move: Wish|[wisher] Snorlax
+     |-end|p1b: Gengar|move: Yawn|[silent]
+     |-status|p1b: Gengar|slp
+     |-start|p1b: Gengar|perish2
+     |-start|p2a: Garchomp|perish2
+     |-start|p2b: Toxapex|perish2
+     |-start|p1a: Snorlax|perish2
+     |upkeep
+     |turn|3
+ random calls: sample:slp[3]
+
+### E9. Healer (Champions) cures the ally before its poison
+ start:       {"p1a Audino":"178/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Audino":"178/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Audino":"178/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"} 
+     |-activate|p1a: Audino|ability: Healer
+     |-curestatus|p1b: Garchomp|psn|[msg]
+     |upkeep
+     |turn|2
+ random calls: healer:1/2=true
+
+### E9b. Healer (SV) chance
+ start:       {"p1a Audino":"178/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Audino":"178/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Audino":"178/178","p1b Garchomp":"161/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"} 
+     |-damage|p1b: Garchomp|161/183 psn|[from] psn
+     |upkeep
+     |turn|2
+ random calls: healer:3/10
+
+### E10. Salt Cure (Champions) this turn
+ start:       {"p1a Garganacl":"175/175","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Garganacl":"175/175","p1b Snorlax":"235/235","p2a Garchomp":"171/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Garganacl":"175/175","p1b Snorlax":"235/235","p2a Garchomp":"160/183","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Garchomp|160/183|[from] Salt Cure
+     |upkeep
+     |turn|2
+
+### E11. Sand and Grassy Terrain with one turn left
+ start:       {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Blastoise":"77/154","p2b Gengar":"67/135"}
+ [turn 1] after moves: {"p1a Garchomp":"91/183","p1b Snorlax":"117/235","p2a Blastoise":"77/154","p2b Gengar":"67/135"}
+ [turn 1] after turn:  {"p1a Garchomp":"102/183","p1b Snorlax":"131/235","p2a Blastoise":"86/154","p2b Gengar":"75/135"} 
+     |-weather|none
+     |-heal|p2b: Gengar|75/135|[from] Grassy Terrain
+     |-heal|p1a: Garchomp|102/183|[from] Grassy Terrain
+     |-heal|p2a: Blastoise|86/154|[from] Grassy Terrain
+     |-heal|p1b: Snorlax|131/235|[from] Grassy Terrain
+     |-fieldend|move: Grassy Terrain
+     |upkeep
+     |turn|2
+
+### E12. Emergency Exit at the end of turn
+ start:       {"p1a Golisopod":"77/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Golisopod":"77/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Golisopod":"68/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} (request switch)
+     |-damage|p1a: Golisopod|68/150 brn|[from] brn
+     |upkeep
+     |-activate|p1a: Golisopod|ability: Emergency Exit
+
+### E13. Yawn ends -> sleep -> Bad Dreams (SV Darkrai)
+ start:       {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Darkrai":"145/145","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Darkrai":"145/145","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"206/235","p1b Garchomp":"183/183","p2a Darkrai":"145/145","p2b Toxapex":"125/125"} 
+     |-end|p1a: Snorlax|move: Yawn|[silent]
+     |-status|p1a: Snorlax|slp
+     |-damage|p1a: Snorlax|206/235 slp|[from] ability: Bad Dreams|[of] p2a: Darkrai
+     |upkeep
+     |turn|2
+
+### E14. Speed Boost at turn 1
+ start:       {"p1a Blaziken":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Blaziken":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Blaziken":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-boost|p1a: Blaziken|spe|1
+     |upkeep
+     |turn|2
+
+### E15. Toxic this turn, then Poison Heal
+ start:       {"p1a Gengar":"135/135","p1b Gliscor":"75/150","p2a Snorlax":"235/235","p2b Garchomp":"183/183"}
+ [turn 1] after moves: {"p1a Gengar":"135/135","p1b Gliscor":"75/150","p2a Snorlax":"235/235","p2b Garchomp":"183/183"}
+ [turn 1] after turn:  {"p1a Gengar":"135/135","p1b Gliscor":"93/150","p2a Snorlax":"221/235","p2b Garchomp":"183/183"} 
+     |-heal|p1b: Gliscor|93/150 tox|[from] ability: Poison Heal
+     |-damage|p2a: Snorlax|221/235 tox|[from] psn
+     |upkeep
+     |turn|2
+ [turn 2] after moves: {"p1a Gengar":"135/135","p1b Gliscor":"93/150","p2a Snorlax":"221/235","p2b Garchomp":"183/183"}
+ [turn 2] after turn:  {"p1a Gengar":"135/135","p1b Gliscor":"111/150","p2a Snorlax":"193/235","p2b Garchomp":"183/183"} 
+     |-heal|p1b: Gliscor|111/150 tox|[from] ability: Poison Heal
+     |-damage|p2a: Snorlax|193/235 tox|[from] psn
+     |upkeep
+     |turn|3
+
+### E16. Dig / Fly charge turn at the end of turn
+ start:       {"p1a Garchomp":"91/183","p1b Charizard":"76/153","p2a Snorlax":"117/235","p2b Blastoise":"77/154"}
+ [turn 1] after moves: {"p1a Garchomp":"91/183","p1b Charizard":"76/153","p2a Snorlax":"117/235","p2b Blastoise":"77/154"}
+ [turn 1] after turn:  {"p1a Garchomp":"91/183","p1b Charizard":"67/153","p2a Snorlax":"117/235","p2b Blastoise":"77/154"} 
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1b: Charizard|67/153|[from] Sandstorm
+     |-damage|p2b: Blastoise|68/154|[from] Sandstorm
+     |-damage|p2a: Snorlax|103/235|[from] Sandstorm
+     |-heal|p2b: Blastoise|77/154|[from] Grassy Terrain
+     |-heal|p2a: Snorlax|117/235|[from] Grassy Terrain
+     |upkeep
+     |turn|2
+
+### E17. U-turn last: replacement before the end of turn
+ start:       {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {}
+ [turn 1] after turn:  {"p1a Snorlax":"206/235","p1b Garchomp":"183/183","p2a Garchomp":"153/183","p2b Toxapex":"125/125"} (request switch)
+     |-damage|p2a: Garchomp|153/183
+     |-damage|p1a: Snorlax|206/235|[from] ability: Rough Skin|[of] p2a: Garchomp
+
+### E18. Harvest restores Sitrus and it is eaten again (chance forced)
+ start:       {"p1a Exeggutor":"68/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Exeggutor":"44/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Exeggutor":"86/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-item|p1a: Exeggutor|Sitrus Berry|[from] ability: Harvest
+     |upkeep
+     |-enditem|p1a: Exeggutor|Sitrus Berry|[eat]
+     |-heal|p1a: Exeggutor|86/170|[from] item: Sitrus Berry
+     |turn|2
+ random calls: harvest:1/2=true
+
+### E19. Ghost Curse this turn
+ start:       {"p1a Gengar":"135/135","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Gengar":"68/135","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Gengar":"68/135","p1b Snorlax":"235/235","p2a Garchomp":"138/183","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Garchomp|138/183|[from] Curse
+     |upkeep
+     |turn|2
+
+### E20. Moody samples
+ start:       {"p1a Glalie":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Glalie":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Glalie":"155/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-boost|p1a: Glalie|def|2
+     |-unboost|p1a: Glalie|spe|1
+     |upkeep
+     |turn|2
+ random calls: sample:moody[5] sample:moody[4]
+
+### E21. Shed Skin cures before burn (forced)
+ start:       {"p1a Dragonite":"166/166","p1b Arbok":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Dragonite":"166/166","p1b Arbok":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Dragonite":"166/166","p1b Arbok":"135/135","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-activate|p1b: Arbok|ability: Shed Skin
+     |-curestatus|p1b: Arbok|brn|[msg]
+     |upkeep
+     |turn|2
+ random calls: shedskin:33/100=true
+
+### E22. Sandstorm and Grassy Terrain used this turn
+ start:       {"p1a Tyranitar":"87/175","p1b Rillaboom":"87/175","p2a Garchomp":"91/183","p2b Blastoise":"77/154"}
+ [turn 1] after moves: {"p1a Tyranitar":"87/175","p1b Rillaboom":"87/175","p2a Garchomp":"91/183","p2b Blastoise":"77/154"}
+ [turn 1] after turn:  {"p1a Tyranitar":"97/175","p1b Rillaboom":"87/175","p2a Garchomp":"102/183","p2b Blastoise":"77/154"} 
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1b: Rillaboom|77/175|[from] Sandstorm
+     |-damage|p2b: Blastoise|68/154|[from] Sandstorm
+     |-heal|p2a: Garchomp|102/183|[from] Grassy Terrain
+     |-heal|p1b: Rillaboom|87/175|[from] Grassy Terrain
+     |-heal|p2b: Blastoise|77/154|[from] Grassy Terrain
+     |-heal|p1a: Tyranitar|97/175|[from] Grassy Terrain
+     |upkeep
+     |turn|2
+
+### E23. Leech Seed into a source from two slots; Big Root
+ start:       {"p1a Venusaur":"77/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Blastoise":"154/154"}
+ [turn 1] after moves: {"p1a Venusaur":"77/155","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Blastoise":"154/154"}
+ [turn 1] after turn:  {"p1a Venusaur":"131/155","p1b Snorlax":"235/235","p2a Garchomp":"161/183","p2b Blastoise":"135/154"} 
+     |-damage|p2a: Garchomp|161/183|[from] Leech Seed|[of] p1a: Venusaur
+     |-heal|p1a: Venusaur|106/155|[silent]
+     |-damage|p2b: Blastoise|135/154|[from] Leech Seed|[of] p1a: Venusaur
+     |-heal|p1a: Venusaur|131/155|[silent]
+     |upkeep
+     |turn|2
+
+### E24. Leech Seed into Liquid Ooze
+ start:       {"p1a Venusaur":"155/155","p1b Snorlax":"235/235","p2a Tentacruel":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"155/155","p1b Snorlax":"235/235","p2a Tentacruel":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"136/155","p1b Snorlax":"235/235","p2a Tentacruel":"136/155","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Tentacruel|136/155|[from] Leech Seed|[of] p1a: Venusaur
+     |-damage|p1a: Venusaur|136/155|[from] ability: Liquid Ooze|[of] p2a: Tentacruel
+     |upkeep
+     |turn|2
+
+### E25. Perish 1 faints at the end of turn
+ start:       {"p1a Snorlax":"117/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"117/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"0/235","p1b Garchomp":"183/183","p2a Gengar":"135/135","p2b Toxapex":"125/125"} (request switch)
+     |-heal|p1a: Snorlax|131/235|[from] item: Leftovers
+     |-start|p1a: Snorlax|perish0
+     |upkeep
+     |faint|p1a: Snorlax
+
+### E26. Speed tie, both poisoned
+ start:       {"p1a Garchomp":"183/183","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Garchomp":"183/183","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Garchomp":"161/183","p1b Snorlax":"235/235","p2a Garchomp":"161/183","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Garchomp|161/183 psn|[from] psn
+     |-damage|p1a: Garchomp|161/183 psn|[from] psn
+     |upkeep
+     |turn|2
+
+### E27. Bad Dreams holder faints first
+ start:       {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Darkrai":"1/145","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Darkrai":"1/145","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"235/235","p1b Garchomp":"183/183","p2a Darkrai":"0/145","p2b Toxapex":"125/125"} (request switch)
+     |-damage|p2a: Darkrai|0 fnt|[from] psn
+     |faint|p2a: Darkrai
+     |upkeep
+
+### E28. Toxic Orb activates at the end of turn 1
+ start:       {"p1a Gliscor":"75/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Gliscor":"75/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Gliscor":"75/150","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-status|p1a: Gliscor|tox|[from] item: Toxic Orb
+     |upkeep
+     |turn|2
+
+### E29a. Mutual Leech Seed, tie order p1a first, p2a
+ start:       {"p1a Venusaur":"10/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"10/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"0/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"} (request switch)
+     |-damage|p1a: Venusaur|0 fnt|[from] Leech Seed|[of] p2a: Venusaur
+     |faint|p1a: Venusaur
+     |upkeep
+
+### E29b. Mutual Leech Seed, tie order p2a first, p1a
+ start:       {"p1a Venusaur":"10/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"10/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"10/155","p1b Snorlax":"235/235","p2a Venusaur":"155/155","p2b Toxapex":"125/125"} 
+     |-damage|p2a: Venusaur|136/155|[from] Leech Seed|[of] p1a: Venusaur
+     |-heal|p1a: Venusaur|29/155|[silent]
+     |-damage|p1a: Venusaur|10/155|[from] Leech Seed|[of] p2a: Venusaur
+     |-heal|p2a: Venusaur|155/155|[silent]
+     |upkeep
+     |turn|2
+
+### E30. Sitrus after all sand damage
+ start:       {"p1a Snorlax":"120/235","p1b Gengar":"135/135","p2a Blastoise":"154/154","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Snorlax":"120/235","p1b Gengar":"135/135","p2a Blastoise":"154/154","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Snorlax":"164/235","p1b Gengar":"127/135","p2a Blastoise":"145/154","p2b Toxapex":"118/125"} 
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1b: Gengar|127/135|[from] Sandstorm
+     |-damage|p2a: Blastoise|145/154|[from] Sandstorm
+     |-damage|p2b: Toxapex|118/125|[from] Sandstorm
+     |-damage|p1a: Snorlax|106/235|[from] Sandstorm
+     |-enditem|p1a: Snorlax|Sitrus Berry|[eat]
+     |-heal|p1a: Snorlax|164/235|[from] item: Sitrus Berry
+     |upkeep
+     |turn|2
+
+### E31. Healer holder faints to sand first
+ start:       {"p1a Audino":"1/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Audino":"1/178","p1b Garchomp":"183/183","p2a Snorlax":"235/235","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Audino":"0/178","p1b Garchomp":"161/183","p2a Snorlax":"221/235","p2b Toxapex":"118/125"} (request switch)
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1a: Audino|0 fnt|[from] Sandstorm
+     |-damage|p2b: Toxapex|118/125|[from] Sandstorm
+     |-damage|p2a: Snorlax|221/235|[from] Sandstorm
+     |faint|p1a: Audino
+     |-damage|p1b: Garchomp|161/183 psn|[from] psn
+     |upkeep
+
+### E32. Tailwind this turn reorders Leftovers
+ start:       {"p1a Snorlax":"117/235","p1b Toxapex":"62/125","p2a Blastoise":"77/154","p2b Venusaur":"77/155"}
+ [turn 1] after moves: {"p1a Snorlax":"117/235","p1b Toxapex":"62/125","p2a Blastoise":"77/154","p2b Venusaur":"77/155"}
+ [turn 1] after turn:  {"p1a Snorlax":"131/235","p1b Toxapex":"69/125","p2a Blastoise":"86/154","p2b Venusaur":"86/155"} 
+     |-heal|p1b: Toxapex|69/125|[from] item: Leftovers
+     |-heal|p1a: Snorlax|131/235|[from] item: Leftovers
+     |-heal|p2b: Venusaur|86/155|[from] item: Leftovers
+     |-heal|p2a: Blastoise|86/154|[from] item: Leftovers
+     |upkeep
+     |turn|2
+
+### E33. Trapper faints to sand first
+ start:       {"p1a Charizard":"1/153","p1b Snorlax":"235/235","p2a Snorlax":"235/235","p2b Blastoise":"154/154"}
+ [turn 1] after moves: {"p1a Charizard":"1/153","p1b Snorlax":"235/235","p2a Snorlax":"219/235","p2b Blastoise":"154/154"}
+ [turn 1] after turn:  {"p1a Charizard":"0/153","p1b Snorlax":"221/235","p2a Snorlax":"205/235","p2b Blastoise":"145/154"} (request switch)
+     |-weather|Sandstorm|[upkeep]
+     |-damage|p1a: Charizard|0 fnt|[from] Sandstorm
+     |-damage|p2b: Blastoise|145/154|[from] Sandstorm
+     |-damage|p1b: Snorlax|221/235|[from] Sandstorm
+     |-damage|p2a: Snorlax|205/235|[from] Sandstorm
+     |faint|p1a: Charizard
+     |-end|p2a: Snorlax|Fire Spin|[partiallytrapped]|[silent]
+     |upkeep
+
+### E34. Ingrain and Aqua Ring this turn
+ start:       {"p1a Venusaur":"77/155","p1b Blastoise":"77/154","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Venusaur":"77/155","p1b Blastoise":"77/154","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Venusaur":"86/155","p1b Blastoise":"86/154","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-heal|p1b: Blastoise|86/154|[from] Aqua Ring
+     |-heal|p1a: Venusaur|86/155|[from] Ingrain
+     |upkeep
+     |turn|2
+
+### E35. G-Max Wildfire this turn
+ start:       {"p1a Charizard":"153/153","p1b Snorlax":"235/235","p2a Blastoise":"154/154","p2b Venusaur":"155/155"}
+ [turn 1] after moves: {"p1a Charizard":"306/306","p1b Snorlax":"235/235","p2a Blastoise":"116/154","p2b Venusaur":"155/155"}
+ [turn 1] after turn:  {"p1a Charizard":"306/306","p1b Snorlax":"235/235","p2a Blastoise":"91/154","p2b Venusaur":"130/155"} 
+     |-damage|p2b: Venusaur|130/155|[from] G-Max Wildfire
+     |-damage|p2a: Blastoise|91/154|[from] G-Max Wildfire
+     |upkeep
+     |turn|2
+
+### E36. Cloud Nine stops the weather's residuals
+ start:       {"p1a Golduck":"155/155","p1b Snorlax":"235/235","p2a Blastoise":"154/154","p2b Venusaur":"155/155"}
+ [turn 1] after moves: {"p1a Golduck":"155/155","p1b Snorlax":"235/235","p2a Blastoise":"154/154","p2b Venusaur":"155/155"}
+ [turn 1] after turn:  {"p1a Golduck":"155/155","p1b Snorlax":"235/235","p2a Blastoise":"154/154","p2b Venusaur":"155/155"} 
+     |-weather|Sandstorm|[upkeep]
+     |upkeep
+     |turn|2
+
+### E37. Dynamax this turn does not end
+ ERROR Not all choices done
+
+### E38. Harvest in the sun is certain
+ start:       {"p1a Exeggutor":"68/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after moves: {"p1a Exeggutor":"44/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"}
+ [turn 1] after turn:  {"p1a Exeggutor":"86/170","p1b Snorlax":"235/235","p2a Garchomp":"183/183","p2b Toxapex":"125/125"} 
+     |-weather|SunnyDay|[upkeep]
+     |-item|p1a: Exeggutor|Sitrus Berry|[from] ability: Harvest
+     |upkeep
+     |-enditem|p1a: Exeggutor|Sitrus Berry|[eat]
+     |-heal|p1a: Exeggutor|86/170|[from] item: Sitrus Berry
+     |turn|2

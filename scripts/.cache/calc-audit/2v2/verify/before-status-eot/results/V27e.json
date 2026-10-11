@@ -1,0 +1,631 @@
+{
+ "id": "V27e",
+ "title": "Lash Out after Icy Wind",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Icy Wind lowered Incineroar's Speed: Lash Out doubles.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 392,
+   "classes": 185,
+   "ms": 224,
+   "decisions": {
+    "sample": 36,
+    "accuracy": 48,
+    "fail:": 240,
+    "roll": 240,
+    "secondary": 48
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       161,
+       0.0625
+      ],
+      [
+       162,
+       0.5
+      ],
+      [
+       163,
+       0.4375
+      ]
+     ],
+     "koChance": 0,
+     "average": 162.375,
+     "min": 161,
+     "max": 163,
+     "modeTieUp": 162,
+     "modeTieDown": 162
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       228,
+       0.0625
+      ],
+      [
+       229,
+       0.9375
+      ]
+     ],
+     "koChance": 0,
+     "average": 228.9375,
+     "min": 228,
+     "max": 229,
+     "modeTieUp": 229,
+     "modeTieDown": 229
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       66,
+       0.0625
+      ],
+      [
+       67,
+       0.0625
+      ],
+      [
+       68,
+       0.0625
+      ],
+      [
+       69,
+       0.0625
+      ],
+      [
+       70,
+       0.125
+      ],
+      [
+       71,
+       0.0625
+      ],
+      [
+       72,
+       0.0625
+      ],
+      [
+       73,
+       0.125
+      ],
+      [
+       74,
+       0.0625
+      ],
+      [
+       75,
+       0.0625
+      ],
+      [
+       76,
+       0.125
+      ],
+      [
+       77,
+       0.0625
+      ],
+      [
+       78,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 72.1875,
+     "min": 66,
+     "max": 78,
+     "modeTieUp": 76,
+     "modeTieDown": 70
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lashout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 9,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 6,
+       "dmgMax": 7,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Incineroar|spe|1": 1,
+      "|-unboost|p1b: Snorlax|spe|1": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 16,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       163,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 163,
+     "min": 163,
+     "max": 163,
+     "modeTieUp": 163,
+     "modeTieDown": 163
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       229,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 229,
+     "min": 229,
+     "max": 229,
+     "modeTieUp": 229,
+     "modeTieDown": 229
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       78,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 78,
+     "min": 78,
+     "max": 78,
+     "modeTieUp": 78,
+     "modeTieDown": 78
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lashout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 67,
+       "dmgMax": 67,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 7,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 6,
+       "dmgMax": 6,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Incineroar|spe|1": 1,
+      "|-unboost|p1b: Snorlax|spe|1": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 18,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 16,
+    "accuracy": 8,
+    "fail:": 10,
+    "roll": 10,
+    "secondary": 8
+   },
+   "slots": {
+    "own-left": {
+     "species": "Incineroar",
+     "start": 170,
+     "maximum": 170,
+     "dist": [
+      [
+       161,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 161,
+     "min": 161,
+     "max": 161,
+     "modeTieUp": 161,
+     "modeTieDown": 161
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       228,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 228,
+     "min": 228,
+     "max": 228,
+     "modeTieUp": 228,
+     "modeTieDown": 228
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    },
+    "opponent-right": {
+     "species": "Weavile",
+     "start": 145,
+     "maximum": 145,
+     "dist": [
+      [
+       66,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 66,
+     "min": 66,
+     "max": 66,
+     "modeTieUp": 66,
+     "modeTieDown": 66
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "lashout",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "opponent-right": {
+     "moveId": "icywind",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 9,
+       "dmgMax": 9,
+       "truncated": 0
+      },
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 7,
+       "dmgMax": 7,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-unboost|p1a: Incineroar|spe|1": 1,
+      "|-unboost|p1b: Snorlax|spe|1": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 170,
+   "maximum": 170,
+   "low": 163,
+   "high": 161,
+   "average": 162.375,
+   "min": 161,
+   "max": 163,
+   "koChance": 0,
+   "dist": [
+    [
+     161,
+     0.0625
+    ],
+    [
+     162,
+     0.5
+    ],
+    [
+     163,
+     0.4375
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 229,
+   "high": 228,
+   "average": 228.9375,
+   "min": 228,
+   "max": 229,
+   "koChance": 0,
+   "dist": [
+    [
+     228,
+     0.0625
+    ],
+    [
+     229,
+     0.9375
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 145,
+   "maximum": 145,
+   "low": 78,
+   "high": 66,
+   "average": 72.1875,
+   "min": 66,
+   "max": 78,
+   "koChance": 0,
+   "dist": [
+    [
+     66,
+     0.0625
+    ],
+    [
+     67,
+     0.0625
+    ],
+    [
+     68,
+     0.0625
+    ],
+    [
+     69,
+     0.0625
+    ],
+    [
+     70,
+     0.125
+    ],
+    [
+     71,
+     0.0625
+    ],
+    [
+     72,
+     0.0625
+    ],
+    [
+     73,
+     0.125
+    ],
+    [
+     74,
+     0.0625
+    ],
+    [
+     75,
+     0.0625
+    ],
+    [
+     76,
+     0.125
+    ],
+    [
+     77,
+     0.0625
+    ],
+    [
+     78,
+     0.0625
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

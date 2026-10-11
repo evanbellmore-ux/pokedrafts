@@ -1,0 +1,451 @@
+{
+ "id": "VG09",
+ "title": "Klutz suppressed: Golurk's Life Orb Shadow Punch boosts and costs HP",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "items work for a suppressed Klutz",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 18,
+   "classes": 12,
+   "ms": 8,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       148,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 148,
+     "min": 148,
+     "max": 148,
+     "modeTieUp": 148,
+     "modeTieDown": 148
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       81,
+       0.0625
+      ],
+      [
+       84,
+       0.125
+      ],
+      [
+       85,
+       0.1875
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.1875
+      ],
+      [
+       91,
+       0.1875
+      ],
+      [
+       93,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 87.75,
+     "min": 81,
+     "max": 93,
+     "modeTieUp": 91,
+     "modeTieDown": 85
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 62,
+       "dmgMax": 74,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Golurk|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 4,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       148,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 148,
+     "min": 148,
+     "max": 148,
+     "modeTieUp": 148,
+     "modeTieDown": 148
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       93,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 93,
+     "min": 93,
+     "max": 93,
+     "modeTieUp": 93,
+     "modeTieDown": 93
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 62,
+       "dmgMax": 62,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Golurk|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 3,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Golurk",
+     "start": 164,
+     "maximum": 164,
+     "dist": [
+      [
+       148,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 148,
+     "min": 148,
+     "max": 148,
+     "modeTieUp": 148,
+     "modeTieDown": 148
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       81,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 81,
+     "min": 81,
+     "max": 81,
+     "modeTieUp": 81,
+     "modeTieDown": 81
+    },
+    "opponent-right": {
+     "species": "Weezing-Galar",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "shadowpunch",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 74,
+       "dmgMax": 74,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-damage|p1a: Golurk|hp|[from] item: Life Orb": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 164,
+   "maximum": 164,
+   "low": 148,
+   "high": 148,
+   "average": 148,
+   "min": 148,
+   "max": 148,
+   "koChance": 0,
+   "dist": [
+    [
+     148,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 93,
+   "high": 81,
+   "average": 87.75,
+   "min": 81,
+   "max": 93,
+   "koChance": 0,
+   "dist": [
+    [
+     81,
+     0.0625
+    ],
+    [
+     84,
+     0.125
+    ],
+    [
+     85,
+     0.1875
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.1875
+    ],
+    [
+     91,
+     0.1875
+    ],
+    [
+     93,
+     0.125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

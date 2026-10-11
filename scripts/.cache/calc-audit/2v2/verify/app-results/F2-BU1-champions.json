@@ -1,0 +1,694 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "burnup",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 35,
+      "max": 42,
+      "minPercent": 22.727272727272727,
+      "maxPercent": 27.27272727272727,
+      "koChance": 0,
+      "row": {
+       "moveId": "burnup",
+       "effectiveName": "Burn Up",
+       "effectiveType": "Fire",
+       "effectivePower": 130,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 35,
+       "max": 42,
+       "minPercent": 22.727272727272727,
+       "maxPercent": 27.27272727272727,
+       "rolls": [
+        35,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        41,
+        42
+       ],
+       "ohkoChance": 0,
+       "description": "Burn Up: 35–42 HP (22.7–27.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Burn Up: Arcanine becomes ??? type.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "hydropump",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 66,
+      "max": 78,
+      "minPercent": 40,
+      "maxPercent": 47.27272727272727,
+      "koChance": 0,
+      "row": {
+       "moveId": "hydropump",
+       "effectiveName": "Hydro Pump",
+       "effectiveType": "Water",
+       "effectivePower": 110,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 66,
+       "max": 78,
+       "minPercent": 40,
+       "maxPercent": 47.27272727272727,
+       "rolls": [
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78
+       ],
+       "ohkoChance": 0,
+       "description": "Hydro Pump: 66–78 HP (40.0–47.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 99,
+    "average": 93.875,
+    "high": 87,
+    "min": 87,
+    "max": 99,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: ???.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 119,
+    "average": 115.875,
+    "high": 112,
+    "min": 112,
+    "max": 119,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "burnup",
+     "effectiveName": "Burn Up",
+     "effectiveType": "Fire",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 35,
+     "max": 42,
+     "minPercent": 22.727272727272727,
+     "maxPercent": 27.27272727272727,
+     "rolls": [
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Burn Up: 35–42 HP (22.7–27.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Burn Up removes its Fire type",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 119,
+      "high": 112,
+      "average": 115.875,
+      "min": 112,
+      "max": 119,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 35,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "hydropump",
+     "effectiveName": "Hydro Pump",
+     "effectiveType": "Water",
+     "effectivePower": 110,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 132,
+     "max": 156,
+     "minPercent": 80,
+     "maxPercent": 94.54545454545455,
+     "rolls": [
+      132,
+      132,
+      134,
+      134,
+      138,
+      138,
+      140,
+      140,
+      144,
+      144,
+      146,
+      146,
+      150,
+      150,
+      152,
+      156
+     ],
+     "ohkoChance": 0,
+     "description": "Hydro Pump: 132–156 HP (80.0–94.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 33,
+      "high": 9,
+      "average": 22.75,
+      "min": 9,
+      "max": 33,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 132,
+        "heals": []
+       },
+       "high": {
+        "dealt": 156,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 99,
+     "average": 93.875,
+     "high": 87,
+     "min": 87,
+     "max": 99,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: ???.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 119,
+     "average": 115.875,
+     "high": 112,
+     "min": 112,
+     "max": 119,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.547500000000582,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 87,
+        "chance": 0.0625
+       },
+       {
+        "hp": 89,
+        "chance": 0.0625
+       },
+       {
+        "hp": 90,
+        "chance": 0.125
+       },
+       {
+        "hp": 92,
+        "chance": 0.125
+       },
+       {
+        "hp": 93,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.125
+       },
+       {
+        "hp": 96,
+        "chance": 0.125
+       },
+       {
+        "hp": 98,
+        "chance": 0.125
+       },
+       {
+        "hp": 99,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "arcanine",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       },
+       "types": [
+        "???"
+       ]
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 112,
+        "chance": 0.0625
+       },
+       {
+        "hp": 113,
+        "chance": 0.0625
+       },
+       {
+        "hp": 114,
+        "chance": 0.125
+       },
+       {
+        "hp": 115,
+        "chance": 0.25
+       },
+       {
+        "hp": 116,
+        "chance": 0.0625
+       },
+       {
+        "hp": 117,
+        "chance": 0.125
+       },
+       {
+        "hp": 118,
+        "chance": 0.25
+       },
+       {
+        "hp": 119,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "blastoise",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

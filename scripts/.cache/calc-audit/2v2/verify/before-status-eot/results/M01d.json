@@ -1,0 +1,647 @@
+{
+ "id": "M01d",
+ "title": "Outrage with one foe protecting (Champions)",
+ "game": "champions",
+ "format": "gen9championsdoublescustomgame",
+ "checks": "Half the time Outrage picks the protecting Blastoise and is blocked.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 210,
+   "classes": 139,
+   "ms": 136,
+   "decisions": {
+    "sample": 82,
+    "fail:": 64,
+    "roll": 64,
+    "random": 64
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       13,
+       0.03125
+      ],
+      [
+       14,
+       0.03125
+      ],
+      [
+       16,
+       0.03125
+      ],
+      [
+       17,
+       0.03125
+      ],
+      [
+       19,
+       0.03125
+      ],
+      [
+       20,
+       0.03125
+      ],
+      [
+       22,
+       0.03125
+      ],
+      [
+       23,
+       0.03125
+      ],
+      [
+       25,
+       0.03125
+      ],
+      [
+       26,
+       0.03125
+      ],
+      [
+       28,
+       0.03125
+      ],
+      [
+       29,
+       0.03125
+      ],
+      [
+       31,
+       0.03125
+      ],
+      [
+       32,
+       0.03125
+      ],
+      [
+       34,
+       0.03125
+      ],
+      [
+       35,
+       0.03125
+      ],
+      [
+       155,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 89.5,
+     "min": 13,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 120,
+       "dmgMax": 142,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Blastoise|move: Protect": 0.5
+     }
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Blastoise|Protect": 1
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 30,
+   "classes": 19,
+   "ms": 22,
+   "decisions": {
+    "sample": 22,
+    "fail:": 4,
+    "roll": 4,
+    "random": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       35,
+       0.5
+      ],
+      [
+       155,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 95,
+     "min": 35,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 35
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 120,
+       "dmgMax": 120,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Blastoise|move: Protect": 0.5
+     }
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Blastoise|Protect": 1
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 30,
+   "classes": 19,
+   "ms": 20,
+   "decisions": {
+    "sample": 22,
+    "fail:": 4,
+    "roll": 4,
+    "random": 4
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235
+    },
+    "opponent-left": {
+     "species": "Blastoise",
+     "start": 154,
+     "maximum": 154,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154
+    },
+    "opponent-right": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       13,
+       0.5
+      ],
+      [
+       155,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 13,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 13
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "outrage",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 142,
+       "dmgMax": 142,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-activate|p2b: Blastoise|move: Protect": 0.5
+     }
+    },
+    "opponent-left": {
+     "moveId": "protect",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-singleturn|p2b: Blastoise|Protect": 1
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 154,
+   "maximum": 154,
+   "low": 154,
+   "high": 154,
+   "average": 154,
+   "min": 154,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     154,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 13,
+   "average": 89.5,
+   "min": 13,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     13,
+     0.03125
+    ],
+    [
+     14,
+     0.03125
+    ],
+    [
+     16,
+     0.03125
+    ],
+    [
+     17,
+     0.03125
+    ],
+    [
+     19,
+     0.03125
+    ],
+    [
+     20,
+     0.03125
+    ],
+    [
+     22,
+     0.03125
+    ],
+    [
+     23,
+     0.03125
+    ],
+    [
+     25,
+     0.03125
+    ],
+    [
+     26,
+     0.03125
+    ],
+    [
+     28,
+     0.03125
+    ],
+    [
+     29,
+     0.03125
+    ],
+    [
+     31,
+     0.03125
+    ],
+    [
+     32,
+     0.03125
+    ],
+    [
+     34,
+     0.03125
+    ],
+    [
+     35,
+     0.03125
+    ],
+    [
+     155,
+     0.5
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

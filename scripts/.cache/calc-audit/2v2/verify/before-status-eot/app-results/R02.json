@@ -1,0 +1,185 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Protean changes Greninja's type: later moves are not modelled.",
+  "start": {
+   "own-left": {
+    "hp": 147,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "icebeam",
+     "effectiveName": "Ice Beam",
+     "effectiveType": "Ice",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 32,
+     "max": 38,
+     "minPercent": 20.77922077922078,
+     "maxPercent": 24.675324675324674,
+     "rolls": [
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      38
+     ],
+     "ohkoChance": 0,
+     "description": "Ice Beam: 32–38 HP (20.8–24.7% of maximum HP). Applied: Protean.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Protean unused since switch-in — yes."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 5,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 122,
+      "high": 116,
+      "average": 119.4375,
+      "min": 116,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 32,
+        "heals": []
+       },
+       "high": {
+        "dealt": 38,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 24.489795918367346,
+     "maxPercent": 29.25170068027211,
+     "rolls": [
+      36,
+      36,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      39,
+      40,
+      41,
+      41,
+      42,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 36–43 HP (24.5–29.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Protean unused since switch-in — yes."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.9979248046875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 147,
+      "low": 111,
+      "high": 104,
+      "average": 107.5,
+      "min": 104,
+      "max": 111,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "End-of-turn effects are not applied."
+  ]
+ },
+ "ms": 3.4769999999998618,
+ "preflight": []
+}

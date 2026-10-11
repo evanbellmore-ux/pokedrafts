@@ -1,0 +1,816 @@
+{
+ "id": "M22c",
+ "title": "Revenge into the ally whose Earthquake hit it (USUM)",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "attackedBy holds the ally's damaging hit: Revenge into Garchomp at 120.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 29706,
+   "classes": 5945,
+   "ms": 13395,
+   "decisions": {
+    "sample": 3968,
+    "fail:": 33660,
+    "roll": 33660
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       125,
+       0.0625
+      ],
+      [
+       126,
+       0.0625
+      ],
+      [
+       128,
+       0.125
+      ],
+      [
+       129,
+       0.0625
+      ],
+      [
+       131,
+       0.125
+      ],
+      [
+       132,
+       0.0625
+      ],
+      [
+       134,
+       0.125
+      ],
+      [
+       135,
+       0.125
+      ],
+      [
+       137,
+       0.0625
+      ],
+      [
+       138,
+       0.125
+      ],
+      [
+       140,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 132.5625,
+     "min": 125,
+     "max": 140,
+     "modeTieUp": 138,
+     "modeTieDown": 128
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       84,
+       0.0625
+      ],
+      [
+       86,
+       0.0625
+      ],
+      [
+       87,
+       0.125
+      ],
+      [
+       89,
+       0.0625
+      ],
+      [
+       90,
+       0.125
+      ],
+      [
+       92,
+       0.0625
+      ],
+      [
+       93,
+       0.125
+      ],
+      [
+       95,
+       0.0625
+      ],
+      [
+       96,
+       0.125
+      ],
+      [
+       98,
+       0.0625
+      ],
+      [
+       99,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 92.125,
+     "min": 84,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 87
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       0.0625
+      ],
+      [
+       83,
+       0.125
+      ],
+      [
+       85,
+       0.125
+      ],
+      [
+       86,
+       0.125
+      ],
+      [
+       88,
+       0.125
+      ],
+      [
+       89,
+       0.125
+      ],
+      [
+       91,
+       0.125
+      ],
+      [
+       92,
+       0.125
+      ],
+      [
+       94,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 87.75,
+     "min": 82,
+     "max": 94,
+     "modeTieUp": 92,
+     "modeTieDown": 83
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.0625
+      ],
+      [
+       150,
+       0.125
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.0625
+      ],
+      [
+       154,
+       0.125
+      ],
+      [
+       156,
+       0.125
+      ],
+      [
+       157,
+       0.0625
+      ],
+      [
+       159,
+       0.125
+      ],
+      [
+       160,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 154.0625,
+     "min": 147,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 150
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 94,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 16,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 12,
+    "fail:": 14,
+    "roll": 14
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       99,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 99,
+     "min": 99,
+     "max": 99,
+     "modeTieUp": 99,
+     "modeTieDown": 99
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       94,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 94,
+     "min": 94,
+     "max": 94,
+     "modeTieUp": 94,
+     "modeTieDown": 94
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       160,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 160,
+     "min": 160,
+     "max": 160,
+     "modeTieUp": 160,
+     "modeTieDown": 160
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 84,
+       "dmgMax": 84,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 79,
+       "dmgMax": 79,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 75,
+       "dmgMax": 75,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 61,
+       "dmgMax": 61,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 16,
+   "classes": 11,
+   "ms": 12,
+   "decisions": {
+    "sample": 12,
+    "fail:": 14,
+    "roll": 14
+   },
+   "slots": {
+    "own-left": {
+     "species": "Hariyama",
+     "start": 219,
+     "maximum": 219,
+     "dist": [
+      [
+       125,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 125,
+     "min": 125,
+     "max": 125,
+     "modeTieUp": 125,
+     "modeTieDown": 125
+    },
+    "own-right": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       84,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 84,
+     "min": 84,
+     "max": 84,
+     "modeTieUp": 84,
+     "modeTieDown": 84
+    },
+    "opponent-left": {
+     "species": "Venusaur",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       82,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 82,
+     "min": 82,
+     "max": 82,
+     "modeTieUp": 82,
+     "modeTieDown": 82
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       147,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 147,
+     "min": 147,
+     "max": 147,
+     "modeTieUp": 147,
+     "modeTieDown": 147
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "revenge",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 99,
+       "dmgMax": 99,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    },
+    "own-right": {
+     "moveId": "earthquake",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 94,
+       "dmgMax": 94,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 88,
+       "dmgMax": 88,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 73,
+       "dmgMax": 73,
+       "truncated": 0
+      }
+     },
+     "lines": {}
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 219,
+   "maximum": 219,
+   "low": 140,
+   "high": 125,
+   "average": 132.5625,
+   "min": 125,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     125,
+     0.0625
+    ],
+    [
+     126,
+     0.0625
+    ],
+    [
+     128,
+     0.125
+    ],
+    [
+     129,
+     0.0625
+    ],
+    [
+     131,
+     0.125
+    ],
+    [
+     132,
+     0.0625
+    ],
+    [
+     134,
+     0.125
+    ],
+    [
+     135,
+     0.125
+    ],
+    [
+     137,
+     0.0625
+    ],
+    [
+     138,
+     0.125
+    ],
+    [
+     140,
+     0.0625
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 183,
+   "maximum": 183,
+   "low": 99,
+   "high": 84,
+   "average": 92.125,
+   "min": 84,
+   "max": 99,
+   "koChance": 0,
+   "dist": [
+    [
+     84,
+     0.0625
+    ],
+    [
+     86,
+     0.0625
+    ],
+    [
+     87,
+     0.125
+    ],
+    [
+     89,
+     0.0625
+    ],
+    [
+     90,
+     0.125
+    ],
+    [
+     92,
+     0.0625
+    ],
+    [
+     93,
+     0.125
+    ],
+    [
+     95,
+     0.0625
+    ],
+    [
+     96,
+     0.125
+    ],
+    [
+     98,
+     0.0625
+    ],
+    [
+     99,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 155,
+   "maximum": 155,
+   "low": 94,
+   "high": 82,
+   "average": 87.75,
+   "min": 82,
+   "max": 94,
+   "koChance": 0,
+   "dist": [
+    [
+     82,
+     0.0625
+    ],
+    [
+     83,
+     0.125
+    ],
+    [
+     85,
+     0.125
+    ],
+    [
+     86,
+     0.125
+    ],
+    [
+     88,
+     0.125
+    ],
+    [
+     89,
+     0.125
+    ],
+    [
+     91,
+     0.125
+    ],
+    [
+     92,
+     0.125
+    ],
+    [
+     94,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 160,
+   "high": 147,
+   "average": 154.0625,
+   "min": 147,
+   "max": 160,
+   "koChance": 0,
+   "dist": [
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.0625
+    ],
+    [
+     150,
+     0.125
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.0625
+    ],
+    [
+     154,
+     0.125
+    ],
+    [
+     156,
+     0.125
+    ],
+    [
+     157,
+     0.0625
+    ],
+    [
+     159,
+     0.125
+    ],
+    [
+     160,
+     0.125
+    ]
+   ]
+  }
+ },
+ "warnings": []
+}

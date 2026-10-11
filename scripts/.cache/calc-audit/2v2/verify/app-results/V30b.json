@@ -1,0 +1,256 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "expandingforce",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 121,
+      "max": 144,
+      "minPercent": 66.12021857923497,
+      "maxPercent": 78.68852459016394,
+      "koChance": 0,
+      "row": {
+       "moveId": "expandingforce",
+       "effectiveName": "Expanding Force",
+       "effectiveType": "Psychic",
+       "effectivePower": 120,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 121,
+       "max": 144,
+       "minPercent": 66.12021857923497,
+       "maxPercent": 78.68852459016394,
+       "rolls": [
+        121,
+        123,
+        124,
+        126,
+        127,
+        129,
+        130,
+        132,
+        133,
+        135,
+        136,
+        138,
+        139,
+        141,
+        142,
+        144
+       ],
+       "ohkoChance": 0,
+       "description": "Expanding Force: 121–144 HP (66.1–78.7% of maximum HP). Applied: Psychic.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One target: no spread reduction, 1.5x power from Psychic Terrain (assumes the target's partner is absent or fainted).",
+        "Move power: 120."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 143,
+    "maximum": 143,
+    "low": 143,
+    "average": 143,
+    "high": 143,
+    "min": 143,
+    "max": 143,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": null,
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 62,
+    "average": 50.5,
+    "high": 39,
+    "min": 39,
+    "max": 62,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "expandingforce",
+     "effectiveName": "Expanding Force",
+     "effectiveType": "Psychic",
+     "effectivePower": 120,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 121,
+     "max": 144,
+     "minPercent": 66.12021857923497,
+     "maxPercent": 78.68852459016394,
+     "rolls": [
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130,
+      132,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141,
+      142,
+      144
+     ],
+     "ohkoChance": 0,
+     "description": "Expanding Force: 121–144 HP (66.1–78.7% of maximum HP). Applied: Psychic.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One target: no spread reduction, 1.5x power from Psychic Terrain (assumes the target's partner is absent or fainted).",
+      "Move power: 120."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 62,
+      "high": 39,
+      "average": 50.5,
+      "min": 39,
+      "max": 62,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 121,
+        "heals": []
+       },
+       "high": {
+        "dealt": 144,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 143,
+     "maximum": 143,
+     "low": 143,
+     "average": 143,
+     "high": 143,
+     "min": 143,
+     "max": 143,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": null,
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 62,
+     "average": 50.5,
+     "high": 39,
+     "min": 39,
+     "max": 62,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.4437000000000353,
+ "preflight": []
+}

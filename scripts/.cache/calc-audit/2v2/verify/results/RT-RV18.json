@@ -1,0 +1,1408 @@
+{
+ "id": "RT-RV18",
+ "title": "Bad poison at stage 15 stays 15; Poison Heal under Psychic Noise's Heal Block",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Snorlax loses 14 × 15 = 210; Gliscor neither heals (Heal Block) nor takes damage (Poison Heal returns false).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 12,
+   "classes": 6,
+   "ms": 16,
+   "decisions": {
+    "fail:": 7,
+    "roll": 7,
+    "secondary": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 230,
+     "maximum": 235,
+     "dist": [
+      [
+       230,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 230,
+     "min": 230,
+     "max": 230,
+     "modeTieUp": 230,
+     "modeTieDown": 230,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "15": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gliscor",
+     "start": 100,
+     "maximum": 150,
+     "dist": [
+      [
+       46,
+       0.0625
+      ],
+      [
+       48,
+       0.125
+      ],
+      [
+       49,
+       0.1875
+      ],
+      [
+       51,
+       0.1875
+      ],
+      [
+       52,
+       0.1875
+      ],
+      [
+       54,
+       0.125
+      ],
+      [
+       55,
+       0.125
+      ]
+     ],
+     "koChance": 0,
+     "average": 51,
+     "min": 46,
+     "max": 55,
+     "modeTieUp": 52,
+     "modeTieDown": 49,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "2": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1b: Gliscor|move: Heal Block": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-45": 0.125,
+       "start:healblock": 1,
+       "damage:-46": 0.125,
+       "damage:-48": 0.1875,
+       "damage:-49": 0.1875,
+       "damage:-51": 0.1875,
+       "damage:-52": 0.125,
+       "damage:-54": 0.0625
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -54,
+       "max": -45
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -54,
+       "max": -45,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "own-left": {}
+   },
+   "afterTurn": {
+    "runs": 7,
+    "classes": 1,
+    "ms": 16,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        20,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 20,
+      "min": 20,
+      "max": 20,
+      "modeTieUp": 20,
+      "modeTieDown": 20,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "15": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gliscor",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        46,
+        0.0625
+       ],
+       [
+        48,
+        0.125
+       ],
+       [
+        49,
+        0.1875
+       ],
+       [
+        51,
+        0.1875
+       ],
+       [
+        52,
+        0.1875
+       ],
+       [
+        54,
+        0.125
+       ],
+       [
+        55,
+        0.125
+       ]
+      ],
+      "koChance": 0,
+      "average": 51,
+      "min": 46,
+      "max": 55,
+      "modeTieUp": 52,
+      "modeTieDown": 49,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "3": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 1,
+      "min": -210,
+      "max": -210,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 230,
+     "maximum": 235,
+     "dist": [
+      [
+       230,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 230,
+     "min": 230,
+     "max": 230,
+     "modeTieUp": 230,
+     "modeTieDown": 230,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "15": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gliscor",
+     "start": 100,
+     "maximum": 150,
+     "dist": [
+      [
+       55,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 55,
+     "min": 55,
+     "max": 55,
+     "modeTieUp": 55,
+     "modeTieDown": 55,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "2": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 45,
+       "dmgMax": 45,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1b: Gliscor|move: Heal Block": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-45": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -45,
+       "max": -45
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -45,
+       "max": -45,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "own-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        20,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 20,
+      "min": 20,
+      "max": 20,
+      "modeTieUp": 20,
+      "modeTieDown": 20,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "15": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gliscor",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        55,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 55,
+      "min": 55,
+      "max": 55,
+      "modeTieUp": 55,
+      "modeTieDown": 55,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "3": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 1,
+      "min": -210,
+      "max": -210,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 9,
+   "decisions": {
+    "fail:": 1,
+    "roll": 1,
+    "secondary": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Snorlax",
+     "start": 230,
+     "maximum": 235,
+     "dist": [
+      [
+       230,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 230,
+     "min": 230,
+     "max": 230,
+     "modeTieUp": 230,
+     "modeTieDown": 230,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "15": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Gliscor",
+     "start": 100,
+     "maximum": 150,
+     "dist": [
+      [
+       46,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 46,
+     "min": 46,
+     "max": 46,
+     "modeTieUp": 46,
+     "modeTieDown": 46,
+     "status": {
+      "tox": 1
+     },
+     "volatiles": {
+      "healblock": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {
+      "2": 1
+     },
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 140,
+     "maximum": 140,
+     "dist": [
+      [
+       140,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 140,
+     "min": 140,
+     "max": 140,
+     "modeTieUp": 140,
+     "modeTieDown": 140,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Bronzong",
+     "start": 142,
+     "maximum": 142,
+     "dist": [
+      [
+       142,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 142,
+     "min": 142,
+     "max": 142,
+     "modeTieUp": 142,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "opponent-right": {
+     "moveId": "psychicnoise",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "own-right": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 54,
+       "dmgMax": 54,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-start|p1b: Gliscor|move: Heal Block": 1
+     },
+     "effects": {
+      "own-right": {
+       "damage:-54": 1,
+       "start:healblock": 1
+      }
+     },
+     "change": {
+      "own-right": {
+       "min": -54,
+       "max": -54
+      },
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "own-right": {
+       "min": -54,
+       "max": -54,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "own-left": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 9,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        20,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 20,
+      "min": 20,
+      "max": 20,
+      "modeTieUp": 20,
+      "modeTieDown": 20,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "15": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Gliscor",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        46,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 46,
+      "min": 46,
+      "max": 46,
+      "modeTieUp": 46,
+      "modeTieDown": 46,
+      "status": {
+       "tox": 1
+      },
+      "volatiles": {
+       "healblock": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {
+       "3": 1
+      },
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        140,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 140,
+      "min": 140,
+      "max": 140,
+      "modeTieUp": 140,
+      "modeTieDown": 140,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Bronzong",
+      "start": null,
+      "maximum": 142,
+      "dist": [
+       [
+        142,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 142,
+      "min": 142,
+      "max": 142,
+      "modeTieUp": 142,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "psn",
+      "chance": 1,
+      "min": -210,
+      "max": -210,
+      "koChance": 0,
+      "facts": {},
+      "index": 3
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 230,
+   "maximum": 235,
+   "low": 230,
+   "high": 230,
+   "average": 230,
+   "min": 230,
+   "max": 230,
+   "koChance": 0,
+   "dist": [
+    [
+     230,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 150,
+   "low": 55,
+   "high": 46,
+   "average": 51,
+   "min": 46,
+   "max": 55,
+   "koChance": 0,
+   "dist": [
+    [
+     46,
+     0.0625
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     49,
+     0.1875
+    ],
+    [
+     51,
+     0.1875
+    ],
+    [
+     52,
+     0.1875
+    ],
+    [
+     54,
+     0.125
+    ],
+    [
+     55,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 142,
+   "maximum": 142,
+   "low": 142,
+   "high": 142,
+   "average": 142,
+   "min": 142,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 230,
+   "maximum": 235,
+   "low": 20,
+   "high": 20,
+   "average": 20,
+   "min": 20,
+   "max": 20,
+   "koChance": 0,
+   "dist": [
+    [
+     20,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 100,
+   "maximum": 150,
+   "low": 55,
+   "high": 46,
+   "average": 51,
+   "min": 46,
+   "max": 55,
+   "koChance": 0,
+   "dist": [
+    [
+     46,
+     0.0625
+    ],
+    [
+     48,
+     0.125
+    ],
+    [
+     49,
+     0.1875
+    ],
+    [
+     51,
+     0.1875
+    ],
+    [
+     52,
+     0.1875
+    ],
+    [
+     54,
+     0.125
+    ],
+    [
+     55,
+     0.125
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 140,
+   "maximum": 140,
+   "low": 140,
+   "high": 140,
+   "average": 140,
+   "min": 140,
+   "max": 140,
+   "koChance": 0,
+   "dist": [
+    [
+     140,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 142,
+   "maximum": 142,
+   "low": 142,
+   "high": 142,
+   "average": 142,
+   "min": 142,
+   "max": 142,
+   "koChance": 0,
+   "dist": [
+    [
+     142,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "psn",
+   "chance": 1,
+   "min": -210,
+   "max": -210,
+   "koChance": 0,
+   "facts": {},
+   "index": 3
+  }
+ ]
+}

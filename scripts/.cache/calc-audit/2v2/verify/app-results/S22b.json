@@ -1,0 +1,308 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 126
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "synthesis",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": 63,
+       "max": 63
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "shadowball",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 51,
+      "minPercent": 33.33333333333333,
+      "maxPercent": 40.476190476190474,
+      "koChance": 0,
+      "row": {
+       "moveId": "shadowball",
+       "effectiveName": "Shadow Ball",
+       "effectiveType": "Ghost",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 42,
+       "max": 51,
+       "minPercent": 33.33333333333333,
+       "maxPercent": 40.476190476190474,
+       "rolls": [
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        51
+       ],
+       "ohkoChance": 0,
+       "description": "Shadow Ball: 42–51 HP (33.3–40.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 126,
+    "low": 81,
+    "average": 76.9375,
+    "high": 72,
+    "min": 72,
+    "max": 81,
+    "koChance": 0,
+    "heals": [
+     "Synthesis: +63 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 163,
+    "average": 163,
+    "high": 163,
+    "min": 163,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "shadowball",
+     "effectiveName": "Shadow Ball",
+     "effectiveType": "Ghost",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 42,
+     "max": 51,
+     "minPercent": 33.33333333333333,
+     "maxPercent": 40.476190476190474,
+     "rolls": [
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      51
+     ],
+     "ohkoChance": 0,
+     "description": "Shadow Ball: 42–51 HP (33.3–40.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 60,
+      "low": 18,
+      "high": 9,
+      "average": 13.9375,
+      "min": 9,
+      "max": 18,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 42,
+        "heals": []
+       },
+       "high": {
+        "dealt": 51,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 126,
+     "low": 81,
+     "average": 76.9375,
+     "high": 72,
+     "min": 72,
+     "max": 81,
+     "koChance": 0,
+     "heals": [
+      "Synthesis: +63 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 163,
+     "maximum": 163,
+     "low": 163,
+     "average": 163,
+     "high": 163,
+     "min": 163,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.3945000000003347,
+ "preflight": []
+}

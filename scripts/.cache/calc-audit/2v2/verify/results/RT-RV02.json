@@ -1,0 +1,1355 @@
+{
+ "id": "RT-RV02",
+ "title": "Trick Room this turn reorders a mutual Leech Seed",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "Under Trick Room Venusaur's seed drains first: Jolteon 10 + 19 = 29, then 29 − 17 = 12; Venusaur 100 − 19 + 17 = 98.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 11,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 10,
+     "maximum": 140,
+     "dist": [
+      [
+       10,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 10,
+     "min": 10,
+     "max": 10,
+     "modeTieUp": 10,
+     "modeTieDown": 10,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "trickroom",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Trick Room|[of] p1b: Farigiraf": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:trickroom": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 11,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        98,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 98,
+      "min": 98,
+      "max": 98,
+      "modeTieUp": 98,
+      "modeTieDown": 98,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        12,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 12,
+      "min": 12,
+      "max": 12,
+      "modeTieUp": 12,
+      "modeTieDown": 12,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": 19,
+      "max": 19,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -17,
+      "max": -17,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     },
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": 17,
+      "max": 17,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 14,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 10,
+     "maximum": 140,
+     "dist": [
+      [
+       10,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 10,
+     "min": 10,
+     "max": 10,
+     "modeTieUp": 10,
+     "modeTieDown": 10,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "trickroom",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Trick Room|[of] p1b: Farigiraf": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:trickroom": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 14,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        98,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 98,
+      "min": 98,
+      "max": 98,
+      "modeTieUp": 98,
+      "modeTieDown": 98,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        12,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 12,
+      "min": 12,
+      "max": 12,
+      "modeTieUp": 12,
+      "modeTieDown": 12,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": 19,
+      "max": 19,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -17,
+      "max": -17,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     },
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": 17,
+      "max": 17,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 17,
+   "decisions": {},
+   "slots": {
+    "own-left": {
+     "species": "Venusaur",
+     "start": 100,
+     "maximum": 155,
+     "dist": [
+      [
+       100,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 100,
+     "min": 100,
+     "max": 100,
+     "modeTieUp": 100,
+     "modeTieDown": 100,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "own-right": {
+     "species": "Farigiraf",
+     "start": 195,
+     "maximum": 195,
+     "dist": [
+      [
+       195,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 195,
+     "min": 195,
+     "max": 195,
+     "modeTieUp": 195,
+     "modeTieDown": 195,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-left": {
+     "species": "Jolteon",
+     "start": 10,
+     "maximum": 140,
+     "dist": [
+      [
+       10,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 10,
+     "min": 10,
+     "max": 10,
+     "modeTieUp": 10,
+     "modeTieDown": 10,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "leechseed": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0
+    }
+   },
+   "steps": {
+    "own-right": {
+     "moveId": "trickroom",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {},
+     "lines": {
+      "|-fieldstart|move: Trick Room|[of] p1b: Farigiraf": 1
+     },
+     "effects": {},
+     "change": {
+      "own-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {
+      "field": {
+       "fieldstart:trickroom": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-left": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 17,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Venusaur",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        98,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 98,
+      "min": 98,
+      "max": 98,
+      "modeTieUp": 98,
+      "modeTieDown": 98,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "own-right": {
+      "species": "Farigiraf",
+      "start": null,
+      "maximum": 195,
+      "dist": [
+       [
+        195,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 195,
+      "min": 195,
+      "max": 195,
+      "modeTieUp": 195,
+      "modeTieDown": 195,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-left": {
+      "species": "Jolteon",
+      "start": null,
+      "maximum": 140,
+      "dist": [
+       [
+        12,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 12,
+      "min": 12,
+      "max": 12,
+      "modeTieUp": 12,
+      "modeTieDown": 12,
+      "status": {
+       "": 1
+      },
+      "volatiles": {
+       "leechseed": 1
+      },
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0
+     }
+    },
+    "residuals": [
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": -19,
+      "max": -19,
+      "koChance": 0,
+      "facts": {},
+      "index": 2
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": 19,
+      "max": 19,
+      "koChance": 0,
+      "facts": {},
+      "index": 5
+     },
+     {
+      "slot": "opponent-left",
+      "effect": "Leech Seed",
+      "other": "own-left",
+      "chance": 1,
+      "min": -17,
+      "max": -17,
+      "koChance": 0,
+      "facts": {},
+      "index": 8
+     },
+     {
+      "slot": "own-left",
+      "effect": "Leech Seed",
+      "other": "opponent-left",
+      "chance": 1,
+      "min": 17,
+      "max": 17,
+      "koChance": 0,
+      "facts": {},
+      "index": 11
+     }
+    ],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 100,
+   "maximum": 155,
+   "low": 100,
+   "high": 100,
+   "average": 100,
+   "min": 100,
+   "max": 100,
+   "koChance": 0,
+   "dist": [
+    [
+     100,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 195,
+   "maximum": 195,
+   "low": 195,
+   "high": 195,
+   "average": 195,
+   "min": 195,
+   "max": 195,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 10,
+   "maximum": 140,
+   "low": 10,
+   "high": 10,
+   "average": 10,
+   "min": 10,
+   "max": 10,
+   "koChance": 0,
+   "dist": [
+    [
+     10,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 100,
+   "maximum": 155,
+   "low": 98,
+   "high": 98,
+   "average": 98,
+   "min": 98,
+   "max": 98,
+   "koChance": 0,
+   "dist": [
+    [
+     98,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 195,
+   "maximum": 195,
+   "low": 195,
+   "high": 195,
+   "average": 195,
+   "min": 195,
+   "max": 195,
+   "koChance": 0,
+   "dist": [
+    [
+     195,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 10,
+   "maximum": 140,
+   "low": 12,
+   "high": 12,
+   "average": 12,
+   "min": 12,
+   "max": 12,
+   "koChance": 0,
+   "dist": [
+    [
+     12,
+     1
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [
+  {
+   "slot": "own-left",
+   "effect": "Leech Seed",
+   "other": "opponent-left",
+   "chance": 1,
+   "min": -19,
+   "max": -19,
+   "koChance": 0,
+   "facts": {},
+   "index": 2
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Leech Seed",
+   "other": "own-left",
+   "chance": 1,
+   "min": 19,
+   "max": 19,
+   "koChance": 0,
+   "facts": {},
+   "index": 5
+  },
+  {
+   "slot": "opponent-left",
+   "effect": "Leech Seed",
+   "other": "own-left",
+   "chance": 1,
+   "min": -17,
+   "max": -17,
+   "koChance": 0,
+   "facts": {},
+   "index": 8
+  },
+  {
+   "slot": "own-left",
+   "effect": "Leech Seed",
+   "other": "opponent-left",
+   "chance": 1,
+   "min": 17,
+   "max": 17,
+   "koChance": 0,
+   "facts": {},
+   "index": 11
+  }
+ ]
+}
