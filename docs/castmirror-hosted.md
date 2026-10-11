@@ -72,6 +72,20 @@ production query mismatch.
   pins, bounded strings, GraphQL integer IDs, regions, difficulty, and metric.
   An auto-zone sentinel remains unverified requested context, not benchmark scope.
 
+Required comparison failures may include an optional `diagnostic` alongside the
+existing controlled HTTP 502 `error`. Data-validation labels come from a closed
+allowlist of assertion groups (for example, `upstream.casts.pagination` or
+`normalized.overall.fight`); transport failures use the fixed
+`transport.log-service` label. Untagged or invalid data-error labels become
+`data.unclassified`, and other errors carry no diagnostic. The escaping exception
+owns the label: an earlier swallowed Boss failure cannot overwrite it. A label
+identifies an assertion group, **not an offending value or a confirmed provider
+schema mismatch**. No query text/variables, identities, report contents, stacks,
+causes, or arbitrary error properties are returned or logged by this diagnostic.
+Cancellation/deadline errors omit it, Boss-only failures remain partial successes,
+and validation predicates, request settlement, cache rules, and Execution
+availability are unchanged.
+
 ## Hosted Execution API
 
 All availability endpoints are stateless. They make **zero WCL requests,
