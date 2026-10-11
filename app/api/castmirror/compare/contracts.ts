@@ -176,6 +176,8 @@ function positiveID(value: unknown): value is number {
 }
 function finite(value: unknown): value is number { return typeof value === 'number' && Number.isFinite(value); }
 function nonnegative(value: unknown): value is number { return finite(value) && value >= 0; }
+function resourceType(value: unknown): value is number { return finite(value) && Number.isInteger(value) && value >= -MAX_INT - 1 && value <= MAX_INT; }
+const LUST_RE = /bloodlust|heroism|time warp|fury of the aspects|primal rage|harrier|ancient hysteria|netherwinds|drums of|feral hysteria/i;
 function requireData(condition: unknown): asserts condition { if (!condition) throw new ComparisonDataError(); }
 function reportIdentity(value: unknown): boolean {
   return record(value) && string(value.code, 128) && !value.code.startsWith('a:') && positiveID(value.fightID);
@@ -215,11 +217,15 @@ export function assertUpstreamData(document: string, value: unknown): void {
     const rankings = data.encounter.characterRankings;
     requireData(record(rankings) && Array.isArray(rankings.rankings) && rankings.rankings.length <= 100 && typeof rankings.hasMorePages === 'boolean');
     requireData(rankings.rankings.every((r) => {
-      if (!record(r) || !string(r.name, 128)) return false;
-      // The canonical pool ignores anonymous/inaccessible entries before
-      // reading their identity, amounts, or talents; do not reject them.
+      if (!record(r)) return false;
+      // Match the canonical usable-pool filter before validating evidence.
+      // Unnamed/anonymous/inaccessible rows never contribute a reference.
+      if (r.name == null || r.name === '') return true;
+      if (!string(r.name, 128)) return false;
       if (r.name.toLowerCase() === 'anonymous' || r.report == null) return true;
-      if (!record(r.report) || !string(r.report.code, 128)) return false;
+      if (!record(r.report)) return false;
+      if (r.report.code == null || r.report.code === '') return true;
+      if (!string(r.report.code, 128)) return false;
       if (r.report.code.startsWith('a:')) return true;
       return positiveID(r.report.fightID) && nonnegative(r.amount)
         && (r.talents == null || (Array.isArray(r.talents) && r.talents.every((t) => record(t) && positiveID(t.talentID))));
@@ -234,17 +240,19 @@ export function assertUpstreamData(document: string, value: unknown): void {
   if (document.includes('masterData')) {
     requireData(record(report.masterData) && Array.isArray(report.masterData.actors));
     const selection = /actors\(type:\s*"Player"\)\s*\{([^}]*)\}/.exec(document)?.[1] ?? '';
-    requireData(report.masterData.actors.every((a) => record(a) && string(a.name, 128) && (!/\bid\b/.test(selection) || positiveID(a.id))));
+    // Unnamed roster actors cannot match; selected identity is still required
+    // by sideActor and final normalization, including a positive actor ID.
+    requireData(report.masterData.actors.every((a) => record(a) && (a.name == null || string(a.name, 128)) && (!/\bid\b/.test(selection) || positiveID(a.id))));
     if (document.includes('abilities {')) {
       requireData(Array.isArray(report.masterData.abilities));
-      requireData(report.masterData.abilities.every((a) => record(a) && positiveID(a.gameID) && (a.name == null || string(a.name))));
+      requireData(report.masterData.abilities.every((a) => record(a) && (a.gameID === 0 || positiveID(a.gameID)) && (a.name == null || string(a.name))));
     }
   }
   if (document.includes('fights(')) {
     requireData(Array.isArray(report.fights));
-    requireData(report.fights.every((f) => record(f) && positiveID(f.id) && finite(f.startTime)));
+    requireData(report.fights.every((f) => record(f) && positiveID(f.id)));
     if (document.includes('endTime kill')) {
-      requireData(report.visibility === 'public' && record(report.zone) && positiveID(report.zone.id));
+      requireData(report.visibility === 'public' && (report.zone == null || (record(report.zone) && positiveID(report.zone.id))));
       requireData(report.fights.every((f) => record(f) && finite(f.startTime) && finite(f.endTime) && f.endTime > f.startTime
         && positiveID(f.encounterID) && [3, 4, 5].includes(Number(f.difficulty)) && typeof f.kill === 'boolean'));
     }
@@ -258,14 +266,14 @@ export function assertUpstreamData(document: string, value: unknown): void {
       requireData(Object.hasOwn(events, 'nextPageTimestamp') && (events.nextPageTimestamp === null || nonnegative(events.nextPageTimestamp)));
     }
     if (document.includes('dataType: Casts')) {
-      // Canonical snapshots tolerate absent/null maxima (r.max ?? 0). Only
-      // validate a supplied maximum; never coerce or fill the upstream value.
+      // The core skips null/untyped snapshots and accepts signed resource keys.
+      // Typed evidence remains numeric; optional maxima are never filled/coerced.
       requireData(events.data.every((e) => record(e) && (e.type !== 'cast' || (finite(e.timestamp) && positiveID(e.abilityGameID)
-        && (e.classResources == null || (Array.isArray(e.classResources) && e.classResources.every((r) => record(r) && nonnegative(r.type) && nonnegative(r.amount)
-          && (r.max == null || nonnegative(r.max)))))))));
+        && (e.classResources == null || (Array.isArray(e.classResources) && e.classResources.every((r) => r === null || (record(r)
+          && (r.type == null || (resourceType(r.type) && nonnegative(r.amount) && (r.max == null || nonnegative(r.max))))))))))));
     }
     if (document.includes('dataType: Resources')) {
-      requireData(events.data.every((e) => record(e) && (e.type !== 'resourcechange' || (nonnegative(e.resourceChangeType)
+      requireData(events.data.every((e) => record(e) && (e.type !== 'resourcechange' || e.resourceChangeType == null || (resourceType(e.resourceChangeType)
         && (e.resourceChange == null || finite(e.resourceChange)) && (e.waste == null || nonnegative(e.waste))))));
     }
     if (document.includes('abilityID: $aid')) {
@@ -277,12 +285,13 @@ export function assertUpstreamData(document: string, value: unknown): void {
     const table = report.table.data;
     if (document.includes('dataType: Summary')) requireData(Array.isArray(table.composition));
     if (document.includes('dataType: DamageDone') || document.includes('dataType: Healing')) {
-      requireData(Array.isArray(table.entries) && table.entries.every((e) => record(e) && string(e.name) && nonnegative(e.total)));
+      requireData(Array.isArray(table.entries) && table.entries.every((e) => record(e) && nonnegative(e.total) && (string(e.name) || (e.total === 0 && e.name == null))));
     }
     if (document.includes('dataType: Buffs')) {
       const auras = table.auras ?? table.entries;
-      requireData(Array.isArray(auras) && auras.every((a) => record(a) && string(a.name) && (a.bands == null || (Array.isArray(a.bands)
-        && a.bands.every((b) => record(b) && finite(b.startTime) && finite(b.endTime) && b.endTime >= b.startTime)))));
+      requireData(Array.isArray(auras) && auras.every((a) => record(a) && (a.name == null || string(a.name))
+        && (!LUST_RE.test(typeof a.name === 'string' ? a.name : '') || a.bands == null || (Array.isArray(a.bands)
+          && a.bands.every((b) => record(b) && finite(b.startTime) && finite(b.endTime) && b.endTime >= b.startTime)))));
     }
   }
 }
