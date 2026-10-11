@@ -5,7 +5,7 @@ import {
   type CompareHandlerOptions,
 } from "../../app/api/castmirror/compare/service";
 import { buildComparison } from "../../app/api/castmirror/compare/core.mjs";
-import { ComparisonDataError, type ComparisonClient, type CompareParams } from "../../app/api/castmirror/compare/contracts";
+import { ComparisonDataError, normalizeComparison, type ComparisonClient, type CompareParams } from "../../app/api/castmirror/compare/contracts";
 import { LogServiceError } from "../../app/api/castmirror/lib";
 import { wclFixture, worldCalls, talents } from "../helpers/castmirror-wcl.mjs";
 import {
@@ -1077,4 +1077,215 @@ describe("CastMirror fixed data diagnostics", () => {
       assert.equal(vi.getTimerCount(), 0);
     });
   }
+});
+
+describe("CastMirror numeric ability keys stay separate from actor/fight IDs", () => {
+  // Synthetic Float boundaries, not observed production spell IDs or meanings.
+  const keys = [0, -1, -2147483648, -2147483649, 2147483648, 4294967295, 0.5, Number.MAX_SAFE_INTEGER + 1, Number.MAX_VALUE];
+  const modes = ["named", "null name", "missing name", "unmapped"] as const;
+
+  for (const key of keys) {
+    for (const mode of modes) {
+      test(`default handler preserves canonical ${mode} lookup for finite key ${key}`, async () => {
+        const f = wclFixture();
+        const overall = f.entry("Overall", { amount: 2200 });
+        const boss = f.entry("Boss", { amount: 1400 });
+        f.rankings = ({ metric }: RankingQuery) => [metric === "dps" ? overall : boss];
+        const captured: Array<{ value: Record<string, unknown>; before: Record<string, unknown> }> = [];
+        const capture = (value: Record<string, unknown>) => {
+          captured.push({ value, before: structuredClone(value) });
+          return Object.freeze(value);
+        };
+        const query: NonNullable<CompareHandlerOptions["query"]> = async (document, variables = {}) => {
+          const data = await f.client.query(document, variables);
+          if (variables?.code !== f.player.report.code) return data;
+          const report = data.reportData.report;
+          if (document.includes("abilities {") && mode !== "unmapped") {
+            assert.equal(report.masterData.abilities.length, 1);
+            const ability: Record<string, unknown> = { ...report.masterData.abilities[0], gameID: key, name: "Synthetic numeric-key spell" };
+            if (mode === "null name") ability.name = null;
+            if (mode === "missing name") delete ability.name;
+            report.masterData.abilities = [capture(ability)];
+          }
+          if (document.includes("dataType: Casts")) {
+            report.events.data = report.events.data.map((event: Record<string, unknown>) => capture({ ...event, abilityGameID: key }));
+          }
+          return data;
+        };
+        const params: CompareParams = { ...f.params, code: f.player.report.code, fightID: f.player.report.fightID };
+        const expected = normalizeComparison(await buildComparison({ query }, params), params).comparison;
+        const response = await handlerWith({ query })(request({ name: params.name, code: params.code, fightID: String(params.fightID) }));
+        assert.equal(response.status, 200); assertPrivate(response);
+        const out = await response.json();
+        assert.deepEqual(out, { ...expected, executionStatus: out.executionStatus });
+        const name = mode === "named" ? "Synthetic numeric-key spell" : String(key);
+        assert.deepEqual(out.a.casts, [[0, name], [10, name]]);
+        assert.equal(out.a.code, params.code); assert.equal(out.a.fightID, params.fightID); assert.equal(out.a.actorID, 1);
+        assert.ok(out.bossReference);
+        assert.equal(out.b.name, overall.name); assert.equal(out.bossReference.b.name, boss.name);
+        assert.equal(out.executionStatus.state, "unsupported");
+        assert.deepEqual(out.executionStatus.capabilities, { build: false, reference: false });
+        assert.equal("comparisonID" in out, false);
+        assert.ok(captured.length >= 4);
+        for (const { value, before } of captured) {
+          assert.deepEqual(value, before, "the adapter/core must not mutate or coerce raw ability evidence");
+          assert.ok(Object.isFrozen(value));
+        }
+      });
+    }
+  }
+
+  for (const metric of ["dps", "hps"]) {
+    test(`finite unused ability metadata does not change ${metric} comparison evidence`, async () => {
+      const f = wclFixture();
+      f.params.metric = metric;
+      const reference = f.entry("Reference"); f.rankings = () => [reference];
+      const req = () => request({ name: f.params.name, metric });
+      const baseline = await (await handlerWith({ query: f.client.query.bind(f.client) })(req())).json();
+      const handler = handlerWith({ query: async (document, variables) => {
+        const data = await f.client.query(document, variables);
+        if (document.includes("abilities {")) data.reportData.report.masterData.abilities.push(
+          ...keys.map((gameID) => Object.freeze({ gameID, name: null })),
+        );
+        return data;
+      } });
+      const response = await handler(req()); assert.equal(response.status, 200); assertPrivate(response);
+      assert.deepEqual(await response.json(), baseline);
+    });
+  }
+
+  const invalidKeys: Array<[string, unknown]> = [
+    ["missing", undefined], ["null", null], ["numeric string", "2147483648"],
+    ["NaN", NaN], ["Infinity", Infinity], ["negative Infinity", -Infinity],
+    ["object", {}], ["boolean", true], ["array", []],
+  ];
+  for (const location of ["metadata", "cast"]) {
+    for (const [label, key] of invalidKeys) {
+      test(`invalid ${location} ability key (${label}) fails safely without coercion or caching`, async () => {
+        const f = wclFixture(); f.rankings = () => [f.entry("Top")];
+        const captured: Array<{ value: Record<string, unknown>; before: Record<string, unknown> }> = [];
+        const capture = (value: Record<string, unknown>, field: string) => {
+          if (label === "missing") delete value[field]; else value[field] = key;
+          captured.push({ value, before: structuredClone(value) });
+          return Object.freeze(value);
+        };
+        const handler = handlerWith({ query: async (document, variables) => {
+          const data = await f.client.query(document, variables);
+          if (variables?.code !== f.player.report.code) return data;
+          if (location === "metadata" && document.includes("abilities {")) {
+            data.reportData.report.masterData.abilities = data.reportData.report.masterData.abilities.map((a: Record<string, unknown>) => capture({ ...a }, "gameID"));
+          }
+          if (location === "cast" && document.includes("dataType: Casts")) {
+            data.reportData.report.events.data = data.reportData.report.events.data.map((e: Record<string, unknown>) => capture({ ...e }, "abilityGameID"));
+          }
+          return data;
+        } });
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const before = f.calls.length;
+          const response = await handler(request({ name: f.params.name }));
+          assert.equal(response.status, 502); assertPrivate(response);
+          assert.deepEqual(await response.json(), {
+            error: new ComparisonDataError().message,
+            diagnostic: location === "metadata" ? "upstream.report.abilities" : "upstream.casts.evidence",
+          });
+          assert.ok(f.calls.length > before, "malformed required evidence is not cached");
+        }
+        assert.ok(captured.length >= 2);
+        for (const { value, before } of captured) assert.deepEqual(value, before);
+      });
+    }
+  }
+
+  const invalidAbilities: Array<[string, unknown]> = [
+    ["missing list", undefined], ["null list", null], ["object list", {}],
+    ["null row", [null]], ["array row", [[]]],
+    ["malformed name", [{ gameID: 2147483648, name: { synthetic: "not a name" } }]],
+  ];
+  for (const [label, abilities] of invalidAbilities) {
+    test(`ability ${label} is still a controlled uncached failure`, async () => {
+      const f = wclFixture(); f.rankings = () => [f.entry("Top")];
+      const handler = handlerWith({ query: async (document, variables) => {
+        const data = await f.client.query(document, variables);
+        if (variables?.code === f.player.report.code && document.includes("abilities {")) {
+          data.reportData.report.masterData.abilities = structuredClone(abilities);
+        }
+        return data;
+      } });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const before = f.calls.length;
+        const response = await handler(request({ name: f.params.name }));
+        assert.equal(response.status, 502); assertPrivate(response);
+        assert.deepEqual(await response.json(), { error: new ComparisonDataError().message, diagnostic: "upstream.report.abilities" });
+        assert.ok(f.calls.length > before);
+      }
+    });
+  }
+
+  for (const location of ["actor", "fight"]) {
+    for (const id of [0, -1, 2147483648, 0.5, "1"]) {
+      test(`${location} ID ${JSON.stringify(id)} retains strict positive Int32 validation`, async () => {
+        const f = wclFixture(); f.rankings = () => [f.entry("Top")];
+        const handler = handlerWith({ query: async (document, variables) => {
+          const data = await f.client.query(document, variables);
+          if (variables?.code === f.player.report.code && document.includes("abilities {")) {
+            const report = data.reportData.report;
+            if (location === "actor") report.masterData.actors[0].id = id; else report.fights[0].id = id;
+          }
+          return data;
+        } });
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const before = f.calls.length;
+          const response = await handler(request({ name: f.params.name }));
+          assert.equal(response.status, 502); assertPrivate(response);
+          assert.deepEqual(await response.json(), {
+            error: new ComparisonDataError().message,
+            diagnostic: location === "actor" ? "upstream.report.actors" : "upstream.report.fights",
+          });
+          assert.ok(f.calls.length > before);
+        }
+      });
+    }
+  }
+
+  test("the maximum positive Int32 actor ID remains valid through the actual default handler", async () => {
+    const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top];
+    f.actorFor(f.player).id = 2147483647;
+    const response = await handlerWith({ query: f.client.query.bind(f.client) })(request({ name: f.params.name }));
+    assert.equal(response.status, 200); assertPrivate(response);
+    const out = await response.json();
+    assert.equal(out.a.actorID, 2147483647);
+    assert.equal(out.a.code, f.player.report.code); assert.equal(out.a.fightID, f.player.report.fightID);
+    assert.deepEqual(out.a.casts, [[0, "Fireball"], [10, "Fireball"]]);
+    assert.ok(f.calls.some((call: QueryCall) => call.query.includes("dataType: Casts") && call.variables.src === 2147483647));
+  });
+
+  test("Boss-only malformed ability metadata remains isolated, retryable, and never warms a partial result", async () => {
+    const f = wclFixture(); const overall = f.entry("Overall"); const boss = f.entry("Boss");
+    f.rankings = ({ metric }: RankingQuery) => [metric === "dps" ? overall : boss];
+    let malformed = true;
+    const handler = handlerWith({ query: async (document, variables) => {
+      const data = await f.client.query(document, variables);
+      if (malformed && variables?.code === boss.report.code && document.includes("abilities {")) {
+        data.reportData.report.masterData.abilities[0].gameID = "synthetic-invalid-ability-key";
+      }
+      return data;
+    } });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const before = f.calls.length;
+      const response = await handler(request({ name: f.params.name }));
+      assert.equal(response.status, 200); assertPrivate(response);
+      const out = await response.json();
+      assert.equal(out.b.name, overall.name); assert.equal(out.a.code, f.player.report.code);
+      assert.equal(out.bossReference, null); assert.ok(out.bossReferenceError);
+      assert.equal("diagnostic" in out, false);
+      assert.equal(JSON.stringify(out).includes("synthetic-invalid-ability-key"), false);
+      assert.ok(f.calls.length > before);
+    }
+    malformed = false;
+    const recovered = await handler(request({ name: f.params.name })); assert.equal(recovered.status, 200);
+    const out = await recovered.json(); assert.equal(out.bossReference.b.name, boss.name);
+    const before = f.calls.length;
+    assert.deepEqual(await (await handler(request({ name: f.params.name }))).json(), out);
+    assert.equal(f.calls.length, before, "only a complete recovered comparison is cached");
+  });
 });

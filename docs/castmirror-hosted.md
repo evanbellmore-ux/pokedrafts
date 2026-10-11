@@ -52,6 +52,18 @@ strict; malformed usable evidence is not silently discarded. Query-level fixture
 project only the selected GraphQL fields so unsolicited metadata cannot hide a
 production query mismatch.
 
+[WCL `ReportAbility.gameID`](https://ru.warcraftlogs.com/v2-api-docs/warcraft/reportability.doc.html)
+is a **Float**, not an actor/fight GraphQL Int ID. Ability metadata and consumed
+cast `abilityGameID` values therefore use finite-number validation, preserving
+the core's exact numeric Map lookup and `String(gameID)` fallback for missing
+names or unmapped keys. There is no coercion, positive-only gate, or Int32 ceiling
+for these two lookup keys. Missing/null/nonnumeric/nonfinite keys, malformed
+metadata rows or names, and malformed consumed timing/resource evidence still
+fail closed. Actor/fight IDs retain their positive Int32 limits. The zero, signed,
+fractional, and large finite keys in regressions are **synthetic boundaries**, not
+observed production values; an ability assertion-group diagnostic does not reveal
+which production row or field failed.
+
 - `compare` keeps `maxDuration = 60`, with a 55-second invocation deadline.
   Cancellation covers OAuth, WCL fetches, and retry sleeps. Outstanding queries
   are aborted and settled before returning; required failures are controlled
@@ -82,9 +94,9 @@ owns the label: an earlier swallowed Boss failure cannot overwrite it. A label
 identifies an assertion group, **not an offending value or a confirmed provider
 schema mismatch**. No query text/variables, identities, report contents, stacks,
 causes, or arbitrary error properties are returned or logged by this diagnostic.
-Cancellation/deadline errors omit it, Boss-only failures remain partial successes,
-and validation predicates, request settlement, cache rules, and Execution
-availability are unchanged.
+Cancellation/deadline errors omit it, and Boss-only failures remain partial
+successes. The diagnostic mechanism does not alter validation, request settlement,
+cache rules, or Execution availability.
 
 ## Hosted Execution API
 
