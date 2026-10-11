@@ -2,7 +2,7 @@ import { buildComparison } from './core.mjs';
 import { clientIp, LogServiceError, rateOk, wcl, type WclQueryOptions } from '../lib';
 import { getHostedExecutionAvailability, NO_STORE_HEADERS } from '../execution/availability';
 import {
-  assertUpstreamData, ComparisonDataError, InputError, normalizeComparison, parseCompareRequest,
+  assertUpstreamData, comparisonDataDiagnostic, ComparisonDataError, InputError, normalizeComparison, parseCompareRequest,
   type ComparisonClient, type CompareParams,
 } from './contracts';
 
@@ -151,11 +151,12 @@ export function createCompareHandler(options: CompareHandlerOptions = {}) {
         }
       }
     } catch (error) {
+      const diagnostic = error instanceof LogServiceError ? 'transport.log-service' : comparisonDataDiagnostic(error);
       response = request.signal.aborted
         ? json({ error: 'The comparison request was canceled.' }, 499)
         : timedOut
           ? json({ error: 'The comparison exceeded its request deadline. Try again later.' }, 504)
-          : json({ error: safeFailure(error) }, 502);
+          : json({ error: safeFailure(error), ...(diagnostic ? { diagnostic } : {}) }, 502);
     } finally {
       // Promise.all in the canonical builder can reject while its independent
       // Boss branch is still fetching. Abort it, then settle every started

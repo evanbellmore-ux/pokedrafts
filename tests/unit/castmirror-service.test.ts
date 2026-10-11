@@ -5,7 +5,8 @@ import {
   type CompareHandlerOptions,
 } from "../../app/api/castmirror/compare/service";
 import { buildComparison } from "../../app/api/castmirror/compare/core.mjs";
-import type { ComparisonClient, CompareParams } from "../../app/api/castmirror/compare/contracts";
+import { ComparisonDataError, type ComparisonClient, type CompareParams } from "../../app/api/castmirror/compare/contracts";
+import { LogServiceError } from "../../app/api/castmirror/lib";
 import { wclFixture, worldCalls, talents } from "../helpers/castmirror-wcl.mjs";
 import {
   comparisonFixture, pageFixture, button, spells, state, compareRequests, controlledTimers, deferred,
@@ -268,7 +269,16 @@ describe("CastMirror request and response validation", () => {
         const response = await handler(request(mutation === "wrong pin" ? { code: "Player0123456789", fightID: "7" } : {}));
         assert.equal(response.status, 502);
         assertPrivate(response);
-        assert.match((await response.json()).error, /incomplete|incompatible/i);
+        const out = await response.json();
+        assert.equal(out.error, new ComparisonDataError().message);
+        const labels: Record<string, string> = {
+          "missing actor": "normalized.player.identity", "wrong encounter": "normalized.player.scope",
+          "zero duration": "normalized.overall.fight", "non-kill": "normalized.player.fight",
+          "malformed casts": "normalized.player.casts", "non-finite amount": "normalized.overall.ranking",
+          "wrong pin": "normalized.requested-pin",
+        };
+        assert.equal(out.diagnostic, labels[mutation]);
+        assert.deepEqual(Object.keys(out).sort(), ["diagnostic", "error"]);
       }
       assert.equal(builder.mock.calls.length, 2);
     });
@@ -287,7 +297,10 @@ describe("CastMirror request and response validation", () => {
     } });
     const response = await handler(request({ name: f.params.name }));
     assert.equal(response.status, 502);
-    assert.match((await response.json()).error, /incomplete|incompatible/i);
+    assertPrivate(response);
+    const out = await response.json();
+    assert.equal(out.error, new ComparisonDataError().message);
+    assert.equal(out.diagnostic, "upstream.casts.pagination");
   });
 
   test("missing output/PI evidence is not silently accepted as zero damage/no external buffs", async () => {
@@ -307,7 +320,10 @@ describe("CastMirror request and response validation", () => {
       } });
       const response = await handler(request({ name: f.params.name }));
       assert.equal(response.status, 502, missing);
-      assert.match((await response.json()).error, /incomplete|incompatible/i);
+      assertPrivate(response);
+      const out = await response.json();
+      assert.equal(out.error, new ComparisonDataError().message);
+      assert.equal(out.diagnostic, missing === "table" ? "upstream.damage.entries" : "upstream.pi.envelope");
     }
   });
 
@@ -833,7 +849,10 @@ describe("CastMirror cancellation, deadlines and settled work", () => {
           return awaitAbort(options.signal, () => { active--; settled++; });
         }
         await bossStarted.promise;
-        throw new Error("synthetic required Overall failure NOT_A_REAL_TOKEN");
+        const out = await underlying(document, variables);
+        const rankings = out.worldData.encounter.characterRankings;
+        rankings.rankings = rankings.rankings.map((entry: Record<string, unknown>) => ({ ...entry, amount: "NOT_A_REAL_TOKEN" }));
+        return out;
       }
       return underlying(document, variables);
     });
@@ -841,7 +860,10 @@ describe("CastMirror cancellation, deadlines and settled work", () => {
     const response = await handler(request({ name: f.params.name }));
     assert.equal(response.status, 502);
     assert.equal(active, 0); assert.equal(settled, 1);
-    assert.doesNotMatch((await response.json()).error, /NOT_A_REAL_TOKEN|synthetic required/);
+    assertPrivate(response);
+    const out = await response.json();
+    assert.equal(out.diagnostic, "upstream.world.entries");
+    assert.doesNotMatch(JSON.stringify(out), /NOT_A_REAL_TOKEN|synthetic required/);
     assert.ok(query.mock.calls.every((call) => call[2]?.signal?.aborted));
     broken = false;
     const retry = await handler(request({ name: f.params.name }));
@@ -901,4 +923,158 @@ describe("CastMirror cancellation, deadlines and settled work", () => {
     assert.equal(builder.mock.calls.length, 2);
     assert.equal(vi.getTimerCount(), 0);
   });
+});
+
+describe("CastMirror fixed data diagnostics", () => {
+  for (const kind of ["tagged", "untagged", "forged", "accessor", "generic", "transport"]) {
+    test(`${kind} error projects only an allowlisted label without values, properties or getters`, async () => {
+      const secret = "NOT_A_REAL_TOKEN_OR_REPORT";
+      const error = kind === "generic" ? new Error("synthetic failure " + secret)
+        : kind === "transport" ? new LogServiceError("response")
+          : new ComparisonDataError(kind === "tagged" ? "normalized.context" : undefined);
+      const getter = vi.fn(() => secret);
+      Object.assign(error, { cause: { token: secret }, rawBody: secret, document: secret, variables: { code: secret } });
+      if (kind === "forged" || kind === "generic" || kind === "transport") {
+        Object.defineProperty(error, "diagnostic", { value: kind === "generic" ? "normalized.context" : secret });
+      }
+      if (kind === "accessor") Object.defineProperty(error, "diagnostic", { get: getter });
+      const builder = vi.fn(async () => { throw error; });
+      const handler = handlerWith({ builder });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await handler(request());
+        assert.equal(response.status, 502);
+        assertPrivate(response);
+        const out = await response.json();
+        const diagnostic = kind === "generic" ? undefined : kind === "transport" ? "transport.log-service"
+          : kind === "tagged" ? "normalized.context" : "data.unclassified";
+        assert.equal(out.diagnostic, diagnostic);
+        assert.deepEqual(Object.keys(out).sort(), diagnostic ? ["diagnostic", "error"] : ["error"]);
+        assert.doesNotMatch(JSON.stringify(out), /NOT_A_REAL_TOKEN_OR_REPORT|rawBody|variables|document|cause|stack/);
+        if (error instanceof ComparisonDataError) assert.equal(out.error, new ComparisonDataError().message);
+      }
+      assert.equal(getter.mock.calls.length, 0);
+      assert.equal(builder.mock.calls.length, 2);
+    });
+  }
+
+  test("typed resource failure through the default builder has a fixed upstream label and is not cached", async () => {
+    const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top];
+    const underlying = f.client.query.bind(f.client); let mutations = 0;
+    const handler = handlerWith({ query: async (document, variables = {}) => {
+      const out = await underlying(document, variables);
+      if (variables.code === f.player.report.code && document.includes("dataType: Resources")) {
+        out.reportData.report.events.data[0].resourceChange = "NOT_A_REAL_TOKEN_OR_REPORT";
+        mutations++;
+      }
+      return out;
+    } });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await handler(request({ name: f.params.name }));
+      assert.equal(response.status, 502); assertPrivate(response);
+      const out = await response.json();
+      assert.equal(out.error, new ComparisonDataError().message);
+      assert.equal(out.diagnostic, "upstream.resources.evidence");
+      assert.doesNotMatch(JSON.stringify(out), /NOT_A_REAL_TOKEN_OR_REPORT/);
+    }
+    assert.equal(mutations, 2);
+  });
+
+  test("an actual-core Boss query validation failure stays partial, retries and warms only after recovery", async () => {
+    const f = wclFixture(); const overall = f.entry("Overall"), boss = f.entry("Boss");
+    f.rankings = ({ metric }: RankingQuery) => [metric === "dps" ? overall : boss];
+    const underlying = f.client.query.bind(f.client); let broken = true, failures = 0;
+    const handler = handlerWith({ query: async (document, variables = {}) => {
+      const out = await underlying(document, variables);
+      if (broken && document.includes("characterRankings") && variables.metric === "bossdps") {
+        out.worldData.encounter.characterRankings.hasMorePages = "NOT_A_REAL_TOKEN_OR_REPORT";
+        failures++;
+      }
+      return out;
+    } });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await handler(request({ name: f.params.name }));
+      assert.equal(response.status, 200); assertPrivate(response);
+      const out = await response.json();
+      assert.equal(out.b.name, overall.name); assert.equal(out.bossReference, null);
+      assert.equal("diagnostic" in out, false);
+      assert.doesNotMatch(out.bossReferenceError, /NOT_A_REAL_TOKEN_OR_REPORT|upstream\./);
+    }
+    assert.equal(failures, 2);
+    broken = false;
+    const recovered = await handler(request({ name: f.params.name }));
+    assert.equal(recovered.status, 200);
+    assert.equal((await recovered.json()).bossReference.b.name, boss.name);
+    const calls = f.calls.length;
+    assert.equal((await handler(request({ name: f.params.name }))).status, 200);
+    assert.equal(f.calls.length, calls);
+  });
+
+  test("class metadata failure identifies its assertion group, not a class value", async () => {
+    const builder: NonNullable<CompareHandlerOptions["builder"]> = async (client, params) => {
+      await client.query("query { gameData { classes { id name } } }");
+      return comparisonFor(params);
+    };
+    const response = await handlerWith({ builder, query: async () => ({ gameData: { classes: [{ id: 0, name: "SyntheticUnknown" }] } }) })(request());
+    assert.equal(response.status, 502); assertPrivate(response);
+    assert.deepEqual(await response.json(), { error: new ComparisonDataError().message, diagnostic: "upstream.classes.entries" });
+  });
+
+  test("ambiguous event selectors use the fixed generic event envelope label", async () => {
+    const builder: NonNullable<CompareHandlerOptions["builder"]> = async (client, params) => {
+      await client.query("query { reportData { report { events(dataType: Casts) { data } events(dataType: Resources) { data } } } }");
+      return comparisonFor(params);
+    };
+    const response = await handlerWith({ builder, query: async () => ({ reportData: { report: {} } }) })(request());
+    assert.equal(response.status, 502);
+    assert.equal((await response.json()).diagnostic, "upstream.events.envelope");
+  });
+
+  test("a swallowed query failure cannot replace the diagnostic of the escaping required normalization failure", async () => {
+    const builder: NonNullable<CompareHandlerOptions["builder"]> = async (client, params) => {
+      await assert.rejects(client.query("query { worldData { encounter { name characterRankings } } }"), ComparisonDataError);
+      const out = comparisonFor(params); out.b.durSec = 0;
+      return out;
+    };
+    const response = await handlerWith({ builder, query: async () => ({ worldData: { encounter: { name: "SyntheticBoss", characterRankings: {} } } }) })(request());
+    assert.equal(response.status, 502); assertPrivate(response);
+    assert.equal((await response.json()).diagnostic, "normalized.overall.fight");
+  });
+
+  test("Boss-only tagged validation failure remains a partial uncached success without fatal diagnostics", async () => {
+    const builder = vi.fn(async (_client: ComparisonClient, params: CompareParams) => {
+      const out = comparisonFor(params); out.bossReference.b.casts = [[NaN, "SyntheticSpell"]];
+      return out;
+    });
+    const handler = handlerWith({ builder });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await handler(request());
+      assert.equal(response.status, 200); assertPrivate(response);
+      const out = await response.json();
+      assert.equal(out.b.name, "OverallWinner"); assert.equal(out.bossReference, null);
+      assert.equal("diagnostic" in out, false);
+      assert.doesNotMatch(out.bossReferenceError, /normalized\.|NaN|SyntheticSpell/);
+      assert.equal(out.executionStatus.state, "unsupported");
+    }
+    assert.equal(builder.mock.calls.length, 2);
+  });
+
+  for (const kind of ["cancellation", "deadline"]) {
+    test(`${kind} takes precedence over an escaping tagged error without emitting a diagnostic`, async () => {
+      vi.useFakeTimers();
+      const started = deferred(), release = deferred();
+      const builder: NonNullable<CompareHandlerOptions["builder"]> = async () => {
+        started.resolve(undefined); await release.promise;
+        throw new ComparisonDataError("normalized.context");
+      };
+      const controller = new AbortController();
+      const pending = handlerWith({ builder, deadlineMs: 25 })(request({}, { signal: controller.signal }));
+      await started.promise;
+      if (kind === "cancellation") controller.abort(); else await vi.advanceTimersByTimeAsync(25);
+      release.resolve(undefined);
+      const response = await pending;
+      assert.equal(response.status, kind === "cancellation" ? 499 : 504); assertPrivate(response);
+      assert.deepEqual(Object.keys(await response.json()), ["error"]);
+      assert.equal(vi.getTimerCount(), 0);
+    });
+  }
 });
