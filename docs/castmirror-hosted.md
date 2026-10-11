@@ -43,6 +43,14 @@ identity as fight streams; probe caches also include the normalized realm.
 Ambiguous actors or spec-summary names fail closed instead of borrowing a
 namesake's evidence. Raw resource snapshots may omit `max`, as the canonical
 aggregator already supports; a supplied maximum must still be a valid number.
+Raw validation follows the core's consumption rules: signed numeric resource keys
+are retained, null/untyped snapshots are skipped, and unnamed/unmirrorable or
+irrelevant metadata does not invalidate otherwise complete comparisons. A missing
+zone stays null (unverified), never an invented scope. Selected actor/fight identity,
+public visibility, pagination, usable rankings, and consumed numeric values remain
+strict; malformed usable evidence is not silently discarded. Query-level fixtures
+project only the selected GraphQL fields so unsolicited metadata cannot hide a
+production query mismatch.
 
 - `compare` keeps `maxDuration = 60`, with a 55-second invocation deadline.
   Cancellation covers OAuth, WCL fetches, and retry sleeps. Outstanding queries

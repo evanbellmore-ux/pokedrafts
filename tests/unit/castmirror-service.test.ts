@@ -6,7 +6,7 @@ import {
 } from "../../app/api/castmirror/compare/service";
 import { buildComparison } from "../../app/api/castmirror/compare/core.mjs";
 import type { ComparisonClient, CompareParams } from "../../app/api/castmirror/compare/contracts";
-import { wclFixture, worldCalls } from "../helpers/castmirror-wcl.mjs";
+import { wclFixture, worldCalls, talents } from "../helpers/castmirror-wcl.mjs";
 import {
   comparisonFixture, pageFixture, button, spells, state, compareRequests, controlledTimers, deferred,
 } from "../helpers/castmirror-page.mjs";
@@ -363,6 +363,218 @@ describe("CastMirror request and response validation", () => {
       }
       assert.ok(captured.length >= 2, "invalid snapshots must not produce a warm success");
       for (const { raw, before } of captured) assert.deepEqual(raw, before);
+    });
+  }
+
+  for (const mutation of [
+    "unnamed unrelated actor", "signed snapshot type", "null snapshot", "empty snapshot", "untyped snapshot",
+    "untyped resource event", "signed resource event", "unmirrorable ranking", "zero-ID unused ability",
+    "unnamed zero-damage row", "unnamed non-lust aura", "unrelated aura bands", "null zone", "minimum snapshot type", "minimum resource event",
+  ]) {
+    test(`supported or ignored raw shape: ${mutation} succeeds through the default hosted handler`, async () => {
+      const f = wclFixture(); const overall = f.entry("Overall"), boss = f.entry("Boss");
+      f.rankings = ({ metric }: RankingQuery) => [metric === "dps" ? overall : boss];
+      const updates = { name: f.params.name, code: f.player.report.code, fightID: String(f.player.report.fightID) };
+      const baselineResponse = await handlerWith({ query: f.client.query.bind(f.client) })(request(updates));
+      assert.equal(baselineResponse.status, 200);
+      const baseline = await baselineResponse.json();
+      let mutations = 0;
+      const underlying = f.client.query.bind(f.client);
+      const handler = handlerWith({ query: async (document, variables = {}) => {
+        const out = await underlying(document, variables);
+        const report = out.reportData?.report;
+        if (mutation === "unmirrorable ranking" && document.includes("characterRankings")) {
+          out.worldData.encounter.characterRankings.rankings.push(Object.freeze({ name: null, report: null })); mutations++;
+        }
+        if (variables.code !== f.player.report.code) return out;
+        if (mutation === "unnamed unrelated actor" && document.includes("masterData")) {
+          report.masterData.actors.push(Object.freeze({ id: 999, name: null, server: null })); mutations++;
+        }
+        if (mutation === "zero-ID unused ability" && document.includes("abilities {")) {
+          report.masterData.abilities.push(Object.freeze({ gameID: 0, name: null })); mutations++;
+        }
+        if (document.includes("dataType: Casts")) {
+          const resource = mutation === "signed snapshot type" || mutation === "minimum snapshot type"
+            ? { type: mutation === "minimum snapshot type" ? -2147483648 : -1, amount: 100, max: 100 }
+            : mutation === "null snapshot" ? null : mutation === "empty snapshot" ? {}
+              : mutation === "untyped snapshot" ? { type: null } : undefined;
+          if (resource !== undefined) {
+            for (const event of report.events.data) event.classResources.push(resource === null ? null : Object.freeze(resource));
+            mutations++;
+          }
+        }
+        if (["untyped resource event", "signed resource event", "minimum resource event"].includes(mutation) && document.includes("dataType: Resources")) {
+          report.events.data.push(Object.freeze({ type: "resourcechange", resourceChangeType: mutation === "minimum resource event"
+            ? -2147483648 : mutation === "signed resource event" ? -1 : null, resourceChange: 50, waste: 5 })); mutations++;
+        }
+        if (mutation === "unnamed zero-damage row" && document.includes("dataType: DamageDone")) {
+          report.table.data.entries.push(Object.freeze({ name: null, total: 0 })); mutations++;
+        }
+        if ((mutation === "unnamed non-lust aura" || mutation === "unrelated aura bands") && document.includes("table(dataType: Buffs")) {
+          report.table.data.auras.push(Object.freeze({ name: mutation === "unrelated aura bands" ? "Unrelated Buff" : null,
+            bands: mutation === "unrelated aura bands" ? "not consumed by the comparison" : null })); mutations++;
+        }
+        if (mutation === "null zone" && document.includes("zone {")) { report.zone = null; mutations++; }
+        return out;
+      } });
+      const response = await handler(request(updates));
+      assert.equal(response.status, 200); assertPrivate(response);
+      const out = await response.json();
+      assert.ok(mutations > 0, "the default builder must exercise the raw mutation");
+      assert.equal(out.a.actorID, f.actorFor(f.player).id);
+      assert.equal(out.a.code, f.player.report.code); assert.equal(out.a.fightID, f.player.report.fightID);
+      assert.equal(out.b.name, overall.name); assert.equal(out.bossReference.b.name, boss.name);
+      assert.equal(out.bossReference.rankingMetric, "bossdps");
+      assert.equal("bossReferenceError" in out, false);
+      assert.equal(out.executionStatus.state, "unsupported");
+      assert.deepEqual(out.executionStatus.capabilities, { build: false, reference: false });
+      if (mutation === "signed snapshot type" || mutation === "minimum snapshot type") {
+        baseline.a.resources[mutation === "minimum snapshot type" ? "-2147483648" : "-1"] = { max: 100, spentSnap: 0, gained: 0, waste: 0, series: [[0, 100], [10, 100]] };
+      } else if (mutation === "signed resource event" || mutation === "minimum resource event") {
+        baseline.a.resources[mutation === "minimum resource event" ? "-2147483648" : "-1"] = { max: 0, spentSnap: 0, gained: 50, waste: 5, series: [] };
+      } else if (mutation === "null zone") { baseline.a.scope.zone = null; }
+      assert.deepEqual(out, baseline, "ignored metadata cannot alter or invent comparison evidence");
+    });
+  }
+
+  test("recent-report discovery ignores unused nullable fight timing without changing the selected kill", async () => {
+    const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top]; f.ranks = [];
+    const underlying = f.client.query.bind(f.client);
+    let discovery = 0;
+    const response = await handlerWith({ query: async (document, variables = {}) => {
+      if (document.includes("recentReports")) return { characterData: { character: { recentReports: { data: [{ code: f.player.report.code }] } } } };
+      const out = await underlying(document, variables);
+      if (document.includes("killType: Kills")) {
+        out.reportData.report.fights.unshift({ id: 2, encounterID: 43, difficulty: 4, startTime: null }); discovery++;
+      }
+      return out;
+    } })(request({ name: f.params.name }));
+    assert.equal(response.status, 200); assertPrivate(response);
+    const out = await response.json();
+    assert.equal(discovery, 1);
+    assert.equal(out.a.code, f.player.report.code); assert.equal(out.a.fightID, f.player.report.fightID);
+    assert.equal(out.a.actorID, f.actorFor(f.player).id); assert.equal(out.a.amount, 1000);
+    assert.equal(out.b.name, top.name); assert.equal(out.bossReference.b.name, top.name);
+  });
+
+  test("query-level fixtures expose only report fields selected by the actual comparison documents", async () => {
+    const f = wclFixture({ playerHero: "Sunfury" });
+    const entries = [
+      f.entry("SunA", { hero: "Sunfury", talents: talents(100) }),
+      f.entry("SunB", { hero: "Sunfury", talents: talents(100) }),
+      f.entry("SpellA", { hero: "Spellslinger", talents: talents(200) }),
+      f.entry("SpellB", { hero: "Spellslinger", talents: talents(200) }),
+    ];
+    f.rankings = () => entries;
+    const underlying = f.client.query.bind(f.client);
+    let heads = 0;
+    const response = await handlerWith({ query: async (document, variables = {}) => {
+      const out = await underlying(document, variables);
+      if (document.includes("masterData")) {
+        const report = out.reportData.report; heads++;
+        for (const [field, selected] of [["visibility", /\bvisibility\b/.test(document)], ["zone", document.includes("zone {")],
+          ["fights", document.includes("fights(")]] as const) {
+          assert.equal(Object.hasOwn(report, field), selected, `unsolicited or missing report.${field}`);
+        }
+        assert.equal(Object.hasOwn(report.masterData, "abilities"), document.includes("abilities {"));
+      }
+      return out;
+    } })(request({ name: f.params.name }));
+    assert.equal(response.status, 200); assert.ok(heads >= 3);
+  });
+
+  for (const [label, name] of [["null", null], ["array", ["Arcane Phoenix"]], ["object", { signature: "Arcane Phoenix" }]] as const) {
+    test(`zero-total hero-probe row with ${label} name cannot invent a hero vote`, async () => {
+      const f = wclFixture({ playerHero: "Sunfury" });
+      const entries = [
+        f.entry("SunA", { hero: "Sunfury", talents: talents(100) }), f.entry("SunB", { hero: "Sunfury", talents: talents(100) }),
+        f.entry("SpellA", { hero: "Spellslinger", talents: talents(200) }), f.entry("SpellB", { hero: "Spellslinger", talents: talents(200) }),
+      ];
+      f.rankings = () => entries;
+      const underlying = f.client.query.bind(f.client);
+      const baselineResponse = await handlerWith({ query: underlying })(request({ name: f.params.name }));
+      assert.equal(baselineResponse.status, 200);
+      const baseline = await baselineResponse.json(); let mutations = 0;
+      const response = await handlerWith({ query: async (document, variables = {}) => {
+        const out = await underlying(document, variables);
+        if (variables.code === entries[2].report.code && document.includes("dataType: DamageDone")) {
+          out.reportData.report.table.data.entries.push(Object.freeze({ name, total: 0 })); mutations++;
+        }
+        return out;
+      } })(request({ name: f.params.name }));
+      assert.ok(mutations > 0, "the raw row must reach the candidate hero probe");
+      assertPrivate(response);
+      if (name === null) {
+        assert.equal(response.status, 200);
+        const out = await response.json(); assert.deepEqual(out, baseline);
+        assert.equal(out.b.name, entries[0].name); assert.equal(out.bossReference.b.name, entries[0].name);
+      } else {
+        assert.equal(response.status, 502);
+        assert.match((await response.json()).error, /incomplete|incompatible/);
+      }
+    });
+  }
+
+  for (const [mutation, field, value] of [
+    ["typed snapshot missing amount", "amount", undefined], ["typed snapshot negative amount", "amount", -1],
+    ["typed snapshot string amount", "amount", "100"], ["typed snapshot nonfinite amount", "amount", NaN],
+    ["typed snapshot string type", "type", "-1"], ["typed snapshot fractional type", "type", 0.5],
+    ["typed snapshot positive overflow", "type", 2147483648], ["typed snapshot negative overflow", "type", -2147483649],
+    ["resource event positive overflow", "resourceChangeType", 2147483648], ["resource event negative overflow", "resourceChangeType", -2147483649],
+    ["resource event string type", "resourceChangeType", "-1"], ["resource event nonfinite gain", "resourceChange", Infinity],
+    ["resource event string gain", "resourceChange", "50"], ["resource event negative waste", "waste", -1],
+    ["usable ranking nonfinite amount", "amount", NaN], ["usable ranking missing fight", "fightID", undefined],
+    ["usable ranking malformed talents", "talents", [{ talentID: "100" }]],
+    ["consumed damage missing name", "name", null], ["consumed damage negative total", "total", -1],
+    ["consumed lust malformed bands", "bands", "invalid"], ["consumed lust nonfinite start", "startTime", NaN],
+    ["consumed lust reversed window", "endTime", 1],
+    ["selected actor missing ID", "id", null], ["selected actor unnamed", "name", null],
+    ["selected report nonpublic", "visibility", "private"], ["selected fight wrong encounter", "encounterID", 43],
+    ["selected fight wrong difficulty", "difficulty", 5], ["selected fight zero duration", "endTime", 100000],
+    ["selected fight non-kill", "kill", false],
+  ] as const) {
+    test(`consumed raw evidence remains a safe uncached failure: ${mutation}`, async () => {
+      const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top];
+      const underlying = f.client.query.bind(f.client); let mutations = 0;
+      const rankingBefore = structuredClone(top);
+      const handler = handlerWith({ query: async (document, variables = {}) => {
+        const out = await underlying(document, variables);
+        if (mutation.startsWith("usable ranking") && document.includes("characterRankings") && variables.metric === "dps") {
+          const rank = out.worldData.encounter.characterRankings.rankings[0];
+          out.worldData.encounter.characterRankings.rankings[0] = field === "fightID"
+            ? { ...rank, report: { ...rank.report, fightID: value } } : { ...rank, [field]: value };
+          mutations++;
+        }
+        if (variables.code !== f.player.report.code) return out;
+        const report = out.reportData.report;
+        if (mutation.startsWith("typed snapshot") && document.includes("dataType: Casts")) {
+          report.events.data[0].classResources[0][field] = value; mutations++;
+        }
+        if (mutation.startsWith("resource event") && document.includes("dataType: Resources")) {
+          report.events.data[0][field] = value; mutations++;
+        }
+        if (mutation.startsWith("consumed damage") && document.includes("dataType: DamageDone")) {
+          report.table.data.entries[0][field] = value; mutations++;
+        }
+        if (mutation.startsWith("consumed lust") && document.includes("table(dataType: Buffs")) {
+          const aura = report.table.data.auras[0];
+          if (field === "bands") aura.bands = value; else aura.bands[0][field] = value;
+          mutations++;
+        }
+        if (mutation.startsWith("selected actor") && document.includes("abilities {")) {
+          report.masterData.actors[0][field] = value; mutations++;
+        }
+        if (mutation.startsWith("selected report") && document.includes("visibility")) { report[field] = value; mutations++; }
+        if (mutation.startsWith("selected fight") && document.includes("endTime kill")) { report.fights[0][field] = value; mutations++; }
+        return out;
+      } });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await handler(request({ name: f.params.name }));
+        assert.equal(response.status, 502, mutation); assertPrivate(response);
+        assert.match((await response.json()).error, /incomplete|incompatible|identity/i);
+      }
+      assert.ok(mutations >= 2, "malformed consumed evidence cannot become a cached success");
+      assert.deepEqual(top, rankingBefore, "response mutations must not contaminate shared ranking fixtures");
     });
   }
 

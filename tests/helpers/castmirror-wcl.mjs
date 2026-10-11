@@ -102,14 +102,19 @@ export function wclFixture({ playerPI = false, playerHero = null, playerServer =
         } } };
       }
       if (query.includes('masterData')) {
+        const fightSelection = /fights\([^)]*\)\s*\{([^}]*)\}/.exec(query)?.[1];
+        const fight = {
+          id: fightID, encounterID: 42, difficulty: 4, size: 20,
+          friendlyPlayers: [...report.actors].filter(([identity]) => sides.has(identity)).map(([, a]) => a.id),
+          startTime, endTime: startTime + durSec * 1000, kill: true,
+        };
         return { reportData: { report: {
-          visibility: 'public', zone: { id: 99 },
-          masterData: { actors, abilities: [...report.abilities].map(([name, gameID]) => ({ name, gameID })) },
-          fights: [{
-            id: fightID, encounterID: 42, difficulty: 4, size: 20,
-            friendlyPlayers: [...report.actors].filter(([identity]) => sides.has(identity)).map(([, a]) => a.id),
-            startTime, endTime: startTime + durSec * 1000, kill: true,
-          }],
+          ...(/\bvisibility\b/.test(query) ? { visibility: 'public' } : {}),
+          ...(/\bzone\s*\{/.test(query) ? { zone: { id: 99 } } : {}),
+          masterData: { actors, ...(query.includes('abilities {')
+            ? { abilities: [...report.abilities].map(([name, gameID]) => ({ name, gameID })) } : {}) },
+          ...(fightSelection ? { fights: [Object.fromEntries(Object.entries(fight)
+            .filter(([field]) => new RegExp(`\\b${field}\\b`).test(fightSelection)))] } : {}),
         } } };
       }
       if (query.includes('dataType: Casts')) {
