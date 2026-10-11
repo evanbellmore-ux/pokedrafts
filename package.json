@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run castmirror:check",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -11,7 +12,9 @@
     "test": "vitest run --config vitest.unit.config.ts",
     "test:db": "vitest run --config vitest.db.config.ts",
     "test:battle-data:source": "vitest run --config vitest.battle-data.config.ts",
-    "check": "npm run lint && npm run typecheck && npm run test",
+    "castmirror:sync": "node scripts/sync-castmirror.mjs",
+    "castmirror:check": "node scripts/sync-castmirror.mjs --check",
+    "check": "npm run castmirror:check && npm run lint && npm run typecheck && npm run test",
     "seed:dex": "tsx scripts/seed-pokemon-dex.ts",
     "seed:sprites": "tsx scripts/link-sprites.ts",
     "seed:types": "node scripts/backfill-pokemon-types.mjs",

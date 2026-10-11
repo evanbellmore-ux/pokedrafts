@@ -1,0 +1,490 @@
+let classes = null;
+
+async function ensureClasses(c) {
+  if (classes) return classes;
+  const g = await c.query(`query { gameData { classes { id name } } }`);
+  classes = new Map(g.gameData.classes.map((x) => [x.id, x.name.replace(/\s+/g, '')]));
+  return classes;
+}
+
+const PI_SPELL = 10060;
+
+// Power Infusion
+
+/** Did this player receive Power Infusion on this fight? */
+async function fightHasPI(c, code, fightID, playerName) {
+  const res = await c.query(
+    `query($code: String!, $fid: [Int]!, $aid: Float!) {
+       reportData { report(code: $code) {
+         masterData { actors(type: "Player") { id name } }
+         events(fightIDs: $fid, startTime: 0, endTime: 999999999999, dataType: Buffs, abilityID: $aid, limit: 2000) { data }
+       } }
+     }`, { code, fid: [fightID], aid: PI_SPELL });
+  const rep = res.reportData.report;
+  const wanted = playerName.trim().toLowerCase();
+  const actor = rep?.masterData.actors.find((a) => a.name?.toLowerCase() === wanted);
+  if (!actor) return false;
+  return (rep.events?.data ?? []).some((e) =>
+    (e.type === 'applybuff' || e.type === 'refreshbuff') && e.targetID === actor.id);
+}
+
+/** Hero-tree signature abilities: exact names that appear in a player's
+ * casts or damage/healing table only when that hero tree is taken.
+ * Verified live where noted; a name that never matches is harmless. */
+const HERO_SIG = {
+  'Vampiric Strike': "San'layn", 'Infliction of Sorrow': "San'layn", 'The Blood is Life': "San'layn", 'Blood Mist': "San'layn",
+  "Reaper's Mark": 'Deathbringer', 'Wave of Souls': 'Deathbringer', 'Soul Rupture': 'Deathbringer', 'Exterminate': 'Deathbringer',
+  "Rider's Champion": 'Rider of the Apocalypse', "Mograine's Death and Decay": 'Rider of the Apocalypse', "Whitemane's Death Coil": 'Rider of the Apocalypse', "Trollbane's Icy Fury": 'Rider of the Apocalypse', "Nazgrim's Conquest": 'Rider of the Apocalypse',
+  'Arcane Phoenix': 'Sunfury', 'Glorious Incandescence': 'Sunfury', 'Excess Fire': 'Sunfury', 'Burden of Power': 'Sunfury',
+  'Arcane Splinter': 'Spellslinger', 'Frost Splinter': 'Spellslinger', 'Splinterstorm': 'Spellslinger',
+  'Frostfire Bolt': 'Frostfire', 'Frostfire Burst': 'Frostfire', 'Excess Frost': 'Frostfire',
+  'Demolish': 'Colossus', 'Colossal Might': 'Colossus',
+  "Slayer's Strike": 'Slayer', 'Overwhelming Blades': 'Slayer',
+  'Thunder Blast': 'Mountain Thane', 'Avatar of the Storm': 'Mountain Thane', 'Lightning Strike': 'Mountain Thane',
+  'Dawnlight': 'Herald of the Sun', "Sun's Avatar": 'Herald of the Sun',
+  'Hammer of Light': 'Templar', "Light's Guidance": 'Templar',
+  'Holy Bulwark': 'Lightsmith', 'Sacred Weapon': 'Lightsmith', 'Lesser Weapon': 'Lightsmith', 'Lesser Bulwark': 'Lightsmith', 'Blessing of the Forge': 'Lightsmith', 'Armory of Light': 'Lightsmith', 'Pillar of Lights': 'Lightsmith',
+  'Black Arrow': 'Dark Ranger', 'Bleak Arrows': 'Dark Ranger', 'Phantom Pain': 'Dark Ranger',
+  'Lunar Storm': 'Sentinel', 'Sentinel Watch': 'Sentinel',
+  'Vicious Hunt': 'Pack Leader', 'Pack Coordination': 'Pack Leader', 'Boar Charge': 'Pack Leader', 'Bear Summon (Howl of the Pack Leader)': 'Pack Leader', 'Stampede': 'Pack Leader',
+  'Moonlight Chakram': 'Sentinel',
+  'Unseen Blade': 'Trickster', 'Coup de Grace': 'Trickster', 'Fazed': 'Trickster',
+  'Hunt Them Down': 'Deathstalker', "Deathstalker's Mark": 'Deathstalker', 'Corrupt the Blood': 'Deathstalker',
+  'Fatebound Coin (Tails)': 'Fatebound', 'Fatebound Coin (Heads)': 'Fatebound', 'Fate Intertwined': 'Fatebound', 'Hand of Fate': 'Fatebound',
+  'Void Blast': 'Voidweaver', 'Entropic Rift': 'Voidweaver', 'Collapsing Void': 'Voidweaver', 'Void Shield': 'Voidweaver', 'Voidwraith': 'Voidweaver',
+  'Piety': 'Oracle',
+  'Premonition of Insight': 'Oracle', 'Premonition of Piety': 'Oracle', 'Premonition of Solace': 'Oracle', 'Premonition of Clairvoyance': 'Oracle',
+  'Power Surge': 'Archon', 'Manifested Power': 'Archon',
+  'Ruination': 'Diabolist', 'Infernal Bolt': 'Diabolist', 'Chaos Salvo': 'Diabolist',
+  'Wither': 'Hellcaller', 'Malevolence': 'Hellcaller', 'Blackened Soul': 'Hellcaller',
+  'Soul Anathema': 'Soul Harvester', 'Demonic Soul': 'Soul Harvester',
+  'Flurry Strikes': 'Shado-Pan', 'Wisdom of the Wall': 'Shado-Pan',
+  'Celestial Conduit': 'Conduit of the Celestials', 'Strength of the Black Ox': 'Conduit of the Celestials', 'Courage of the White Tiger': 'Conduit of the Celestials', 'Flight of the Red Crane': 'Conduit of the Celestials',
+  'Aspect of Harmony': 'Master of Harmony', 'Purified Spirit': 'Master of Harmony',
+  'Ravage': 'Druid of the Claw', 'Dreadful Wound': 'Druid of the Claw',
+  'Bloodseeker Vines': 'Wildstalker', 'Symbiotic Blooms': 'Wildstalker',
+  'Dream Surge': 'Keeper of the Grove', 'Treants of the Moon': 'Keeper of the Grove',
+  'Boundless Moonlight': "Elune's Chosen", 'Lunar Insight': "Elune's Chosen", 'Red Moon': "Elune's Chosen", 'Moonless Night': "Elune's Chosen",
+  'Bursting Growth': 'Wildstalker',
+  'Tempest': 'Stormbringer', 'Awakening Storms': 'Stormbringer',
+  'Surging Totem': 'Totemic', 'Lively Totems': 'Totemic',
+  'Call of the Ancestors': 'Farseer', 'Ancestral Swiftness': 'Farseer',
+  'Engulf': 'Flameshaper', 'Consume Flame': 'Flameshaper',
+  'Chrono Flame': 'Chronowarden', 'Temporal Burst': 'Chronowarden',
+  'Mass Disintegrate': 'Scalecommander', 'Mass Eruption': 'Scalecommander', 'Bombardments': 'Scalecommander',
+  "Reaver's Glaive": 'Aldrachi Reaver', 'Art of the Glaive': 'Aldrachi Reaver', 'Wounded Quarry': 'Aldrachi Reaver',
+  'Demonsurge': 'Fel-Scarred', 'Soul Sunder': 'Fel-Scarred',
+  // Devourer (Midnight): Void-Scarred mirrors Fel-Scarred's surge pattern;
+  // Annihilator is the void-cataclysm tree (shared with Vengeance)
+  'Voidsurge': 'Void-Scarred', 'Voidblade': 'Void-Scarred', 'Hungering Slash': 'Void-Scarred',
+  'Collapsing Star': 'Annihilator', 'Voidfall Meteor': 'Annihilator', 'Soulburst': 'Annihilator', 'Eradicate': 'Annihilator', 'Catastrophe': 'Annihilator',
+};
+
+/** Hero tree of a set of ability names, or null when nothing matches. */
+function heroOf(names) {
+  const votes = new Map();
+  for (const n of names) {
+    const tree = HERO_SIG[n];
+    if (tree) votes.set(tree, (votes.get(tree) ?? 0) + 1);
+  }
+  const sorted = [...votes.entries()].sort((a, b) => b[1] - a[1]);
+  return sorted.length && (sorted.length === 1 || sorted[0][1] > sorted[1][1]) ? sorted[0][0] : null;
+}
+
+const heroCandCache = new Map();
+
+/** Hero tree of one ranked player, from their damage/healing table names. */
+async function heroOfCandidate(c, cand, metric) {
+  const key = JSON.stringify([cand.report.code, cand.report.fightID, cand.name.trim().toLowerCase(), metric]);
+  if (heroCandCache.has(key)) return heroCandCache.get(key);
+  const head = await c.query(
+    `query($code: String!) { reportData { report(code: $code) { masterData { actors(type: "Player") { id name } } } } }`,
+    { code: cand.report.code });
+  const actor = head.reportData.report?.masterData.actors.find((a) => a.name?.toLowerCase() === cand.name.toLowerCase());
+  let tree = null;
+  if (actor) {
+    const tbl = await c.query(
+      `query($code: String!, $fid: [Int]!, $src: Int!) {
+         reportData { report(code: $code) { table(dataType: ${metric === 'hps' ? 'Healing' : 'DamageDone'}, fightIDs: $fid, sourceID: $src) } }
+       }`, { code: cand.report.code, fid: [cand.report.fightID], src: actor.id });
+    tree = heroOf(new Set((tbl.reportData.report?.table?.data?.entries ?? []).map((e) => e.name)));
+  }
+  heroCandCache.set(key, tree);
+  return tree;
+}
+
+/** Split ranked entries (with combatantInfo talents) into the two hero-tree
+ * groups: hero nodes are ~10+ talent IDs that always travel together and
+ * split the field. Returns [{ids, entries}] (0, 1, or 2 blocks). */
+function heroBlocks(entries) {
+  const withTalents = entries.filter((e) => Array.isArray(e.talents) && e.talents.length);
+  if (withTalents.length < 4) return [];
+  const masks = new Map(); // talentID -> bitmask string of which entries have it
+  for (const [i, e] of withTalents.entries()) {
+    for (const t of e.talents) {
+      const id = t.talentID;
+      masks.set(id, (masks.get(id) ?? '').padEnd(i, '0') + '1');
+    }
+  }
+  const n = withTalents.length;
+  const groups = new Map(); // mask -> ids
+  for (const [id, m0] of masks) {
+    const m = m0.padEnd(n, '0');
+    const ones = [...m].filter((x) => x === '1').length;
+    if (ones < 2 || ones / n >= 0.95) continue; // a rare tree still counts; a universal talent never does
+    groups.set(m, (groups.get(m) ?? []).concat(id));
+  }
+  const blocks = [...groups.entries()]
+    .filter(([, ids]) => ids.length >= 5)
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 2)
+    .map(([mask, ids]) => ({
+      ids: new Set(ids),
+      entries: withTalents.filter((_, i) => mask[i] === '1'),
+    }));
+  // the two blocks must be disjoint sets of players to be hero trees
+  if (blocks.length === 2) {
+    const set1 = new Set(blocks[0].entries);
+    if (blocks[1].entries.some((e) => set1.has(e))) return [blocks[0]];
+  }
+  return blocks;
+}
+
+/** Spec of one player on one specific fight, from the summary composition. */
+async function specFromFight(c, code, fightID, name) {
+  const sum = await c.query(
+    `query($code: String!, $fid: [Int]!) {
+       reportData { report(code: $code) { table(dataType: Summary, fightIDs: $fid) } }
+     }`, { code, fid: [fightID] });
+  const me = (sum.reportData.report?.table?.data?.composition ?? [])
+    .find((p) => p.name?.toLowerCase() === name.trim().toLowerCase());
+  return me?.specs?.[0]?.spec;
+}
+
+async function sideHead(c, code, fightID) {
+  const head = await c.query(
+    `query($code: String!, $fid: [Int]!) {
+       reportData { report(code: $code) {
+         visibility zone { id }
+         masterData { actors(type: "Player") { id name server } abilities { gameID name } }
+         fights(fightIDs: $fid) { id encounterID difficulty size friendlyPlayers startTime endTime kill }
+       } }
+     }`, { code, fid: [fightID] });
+  return head.reportData.report;
+}
+
+function sideActor(rep, fightID, who, { strict = false } = {}) {
+  const identity = typeof who === 'string' ? { name: who } : who;
+  const wanted = identity.name?.trim().toLowerCase();
+  const matches = rep?.masterData.actors.filter((a) =>
+    (identity.actorID == null || a.id === identity.actorID) && a.name?.toLowerCase() === wanted &&
+    (strict ? !!identity.server && !!a.server && slugify(a.server) === slugify(identity.server)
+      : !identity.server || !a.server || slugify(a.server) === slugify(identity.server))) ?? [];
+  if (matches.length !== 1) throw new Error(`actor identity missing or ambiguous for ${identity.name} on fight ${fightID}`);
+  return matches[0];
+}
+
+export async function fetchFightSide(c, code, fightID, who, metric, { head = null, scope = null, publicOnly = false } = {}) {
+  const rep = head ?? await sideHead(c, code, fightID);
+  const fight = rep?.fights?.find((f) => f.id === fightID);
+  const actor = sideActor(rep, fightID, who, { strict: !!scope });
+  if (!fight) throw new Error(`fight not found in ${code}#${fightID}`);
+  if (publicOnly && rep.visibility !== 'public') throw new Error('Execution reference is no longer public');
+  if (scope && (!fight.kill || fight.encounterID !== scope.encounter || fight.difficulty !== scope.difficulty || rep.zone?.id !== scope.zone || (scope.size !== 0 && scope.size !== fight.size) || !fight.friendlyPlayers?.includes(actor.id))) throw new Error('Execution reference no longer matches the verified scope/roster');
+  const abilityName = new Map(rep.masterData.abilities.map((a) => [a.gameID, a.name ?? String(a.gameID)]));
+
+  const casts = [];
+  const snap = new Map();
+  const noteSnapshot = (t, resList) => {
+    for (const r of resList ?? []) {
+      if (r?.type == null) continue;
+      const s = snap.get(r.type) ?? { max: 0, series: [], spent: 0, last: null };
+      s.max = Math.max(s.max, r.max ?? 0);
+      if (s.last != null && r.amount < s.last) s.spent += s.last - r.amount;
+      s.last = r.amount;
+      if (!s.series.length || t - s.series[s.series.length - 1][0] >= 1.5) s.series.push([t, r.amount]);
+      snap.set(r.type, s);
+    }
+  };
+  let cursor = fight.startTime, castPages = 0;
+  while (cursor !== null && cursor < fight.endTime) {
+    if (++castPages > 20) throw new Error('Cast stream page cap reached');
+    const page = await c.query(
+      `query($code: String!, $fid: [Int]!, $s: Float!, $e: Float!, $src: Int!) {
+         reportData { report(code: $code) {
+           events(fightIDs: $fid, startTime: $s, endTime: $e, dataType: Casts, sourceID: $src, includeResources: true, limit: 10000) { data nextPageTimestamp }
+         } }
+       }`, { code, fid: [fightID], s: cursor, e: fight.endTime, src: actor.id });
+    const ev = page.reportData.report?.events;
+    if (!Array.isArray(ev?.data) || !Object.hasOwn(ev, 'nextPageTimestamp')) throw new Error('Incomplete analysis stream');
+    for (const e of ev.data) {
+      if (e.type !== 'cast') continue;
+      const t = Math.round((e.timestamp - fight.startTime) / 100) / 10;
+      casts.push([t, abilityName.get(e.abilityGameID) ?? String(e.abilityGameID)]);
+      noteSnapshot(t, e.classResources);
+    }
+    const next = ev.nextPageTimestamp ?? null;
+    if (next !== null && (!Number.isFinite(next) || next <= cursor || next > fight.endTime)) throw new Error('Analysis stream cursor did not advance');
+    cursor = next;
+  }
+
+  const gains = new Map();
+  cursor = fight.startTime;
+  let resourcePages = 0;
+  while (cursor !== null && cursor < fight.endTime) {
+    if (++resourcePages > 20) throw new Error('Resource stream page cap reached');
+    const page = await c.query(
+      `query($code: String!, $fid: [Int]!, $s: Float!, $e: Float!, $src: Int!) {
+         reportData { report(code: $code) {
+           events(fightIDs: $fid, startTime: $s, endTime: $e, dataType: Resources, targetID: $src, limit: 10000) { data nextPageTimestamp }
+         } }
+       }`, { code, fid: [fightID], s: cursor, e: fight.endTime, src: actor.id });
+    const ev = page.reportData.report?.events;
+    if (!Array.isArray(ev?.data) || !Object.hasOwn(ev, 'nextPageTimestamp')) throw new Error('Incomplete analysis stream');
+    for (const e of ev.data) {
+      if (e.type !== 'resourcechange' || e.resourceChangeType == null) continue;
+      const g = gains.get(e.resourceChangeType) ?? { gained: 0, waste: 0 };
+      g.gained += e.resourceChange ?? 0;
+      g.waste += e.waste ?? 0;
+      gains.set(e.resourceChangeType, g);
+    }
+    const next = ev.nextPageTimestamp ?? null;
+    if (next !== null && (!Number.isFinite(next) || next <= cursor || next > fight.endTime)) throw new Error('Analysis stream cursor did not advance');
+    cursor = next;
+  }
+  const resources = {};
+  for (const type of new Set([...snap.keys(), ...gains.keys()])) {
+    const s = snap.get(type);
+    const g = gains.get(type);
+    resources[type] = {
+      max: s?.max ?? 0,
+      spentSnap: Math.round(s?.spent ?? 0),
+      gained: Math.round(g?.gained ?? 0),
+      waste: Math.round(g?.waste ?? 0),
+      series: (s?.series ?? []).filter((_, i, a) => a.length <= 400 || i % Math.ceil(a.length / 400) === 0),
+    };
+  }
+
+  const tbl = await c.query(
+    `query($code: String!, $fid: [Int]!, $src: Int!) {
+       reportData { report(code: $code) {
+         table(dataType: ${metric === 'hps' ? 'Healing' : 'DamageDone'}, fightIDs: $fid, sourceID: $src)
+       } }
+     }`, { code, fid: [fightID], src: actor.id });
+  const dmg = {};
+  for (const e of tbl.reportData.report?.table?.data?.entries ?? []) if (e.total) dmg[e.name] = e.total;
+
+  // Bloodlust-family windows in this FIGHT — raid-wide, any variant, any
+  // caster, regardless of who received it or whether this player was alive
+  const LUST_RE = /bloodlust|heroism|time warp|fury of the aspects|primal rage|harrier|ancient hysteria|netherwinds|drums of|feral hysteria/i;
+  const bt = await c.query(
+    `query($code: String!, $fid: [Int]!) {
+       reportData { report(code: $code) { table(dataType: Buffs, fightIDs: $fid) } }
+     }`, { code, fid: [fightID] });
+  const auras = bt.reportData.report?.table?.data?.auras ?? bt.reportData.report?.table?.data?.entries ?? [];
+  const durSec = Math.round((fight.endTime - fight.startTime) / 1000);
+  const raw = [];
+  for (const a of auras) {
+    if (!LUST_RE.test(a.name ?? '')) continue;
+    for (const b of a.bands ?? []) {
+      const s = Math.max(0, Math.round((b.startTime - fight.startTime) / 100) / 10);
+      const e2 = Math.min(durSec, Math.round((b.endTime - fight.startTime) / 100) / 10);
+      if (e2 > s) raw.push([s, e2]);
+    }
+  }
+  raw.sort((x, y) => x[0] - y[0]);
+  const lust = [];
+  for (const w of raw) {
+    const last = lust[lust.length - 1];
+    if (last && w[0] <= last[1] + 1) last[1] = Math.max(last[1], w[1]);
+    else lust.push([w[0], w[1]]);
+  }
+
+  return { name: actor.name, actorID: actor.id, ...(actor.server ? { server: actor.server } : {}),
+    scope: { zone: rep.zone?.id ?? null, encounter: fight.encounterID ?? null, difficulty: fight.difficulty ?? null, size: fight.size ?? null },
+    durSec, kill: !!fight.kill, casts, dmg, resources, lust };
+}
+
+/** Hidden rankings fallback: scan the character's recent reports for their
+ * newest kill of the encounter at this difficulty. */
+async function recentKillFor(c, name, slug, region, encounter, wclDiff) {
+  const rr = await c.query(
+    `query($name: String!, $slug: String!, $region: String!) {
+       characterData { character(name: $name, serverSlug: $slug, serverRegion: $region) {
+         recentReports(limit: 10) { data { code } }
+       } }
+     }`, { name, slug, region });
+  const reports = rr.characterData.character?.recentReports?.data ?? [];
+  const wanted = name.trim().toLowerCase();
+  for (const r of reports) {
+    const rep = await c.query(
+      `query($code: String!) {
+         reportData { report(code: $code) {
+           masterData { actors(type: "Player") { name } }
+           fights(killType: Kills) { id encounterID difficulty startTime }
+         } }
+       }`, { code: r.code });
+    const rp = rep.reportData.report;
+    if (!rp) continue;
+    if (!rp.masterData.actors.some((a) => a.name?.toLowerCase() === wanted)) continue;
+    const fight = rp.fights.filter((f) => f.encounterID === encounter && f.difficulty === wclDiff).pop();
+    if (fight) return { code: r.code, fightID: fight.id };
+  }
+  return null;
+}
+
+export async function buildComparison(c, params) {
+  const { name, server, region, encounter, difficulty, metric, code, fightID } = params;
+  const pin = code && fightID ? { code, fightID } : null;
+  const slug = slugify(server);
+  const reg = region.toLowerCase();
+
+  await ensureClasses(c);
+
+  const cd = await c.query(
+    `query($name: String!, $slug: String!, $region: String!, $enc: Int!, $diff: Int!, $metric: CharacterRankingMetricType!) {
+       characterData { character(name: $name, serverSlug: $slug, serverRegion: $region) {
+         classID
+         encounterRankings(encounterID: $enc, difficulty: $diff, metric: $metric)
+       } }
+     }`, { name, slug, region: reg, enc: encounter, diff: difficulty, metric });
+  const ch = cd.characterData.character;
+  if (!ch) throw new Error(`character "${name}" on ${server}-${region} not found`);
+  const ranks = ch.encounterRankings?.ranks ?? [];
+  let best;
+  let spec;
+  if (pin) {
+    // mirror one specific kill, not the best one
+    const match = ranks.find((r) => r.report?.code === pin.code && r.report?.fightID === pin.fightID);
+    if (match) {
+      best = { report: match.report, amount: match.amount, rankPercent: match.rankPercent };
+      spec = match.spec;
+    } else {
+      spec = await specFromFight(c, pin.code, pin.fightID, name);
+      if (!spec) throw new Error(`could not determine ${name}'s spec on ${pin.code}#${pin.fightID}`);
+      best = { report: pin, amount: 0, rankPercent: null };
+    }
+  } else if (ranks.length) {
+    const top = ranks.slice().sort((a, b) => b.amount - a.amount)[0];
+    best = { report: top.report, amount: top.amount, rankPercent: top.rankPercent };
+    spec = top.spec;
+  } else {
+    const local = await recentKillFor(c, name, slug, reg, encounter, difficulty);
+    if (!local) {
+      throw new Error(ch.encounterRankings?.error
+        ? `${name}'s rankings are hidden on the log service, and no recent public kill of this encounter was found`
+        : `${name} has no ranked kill of this encounter at this difficulty`);
+    }
+    spec = await specFromFight(c, local.code, local.fightID, name);
+    if (!spec) throw new Error(`could not determine ${name}'s spec from the found kill`);
+    best = { report: { code: local.code, fightID: local.fightID }, amount: 0, rankPercent: null };
+  }
+  const className = classes.get(ch.classID) ?? 'Unknown';
+
+  // Reuse full-fight streams when a parse wins both rankings (or is A itself).
+  const sides = new Map(), piChecks = new Map(), heroChecks = new Map(), heads = new Map();
+  const sideKey = (code, fid, who) => JSON.stringify([code, fid, typeof who === 'string' ? who.trim().toLowerCase() : who.actorID ?? who.name, metric]);
+  const memo = (map, key, read) => {
+    if (!map.has(key)) map.set(key, read());
+    return map.get(key);
+  };
+  const readSide = async (code, fid, who) => {
+    const head = await memo(heads, JSON.stringify([code, fid]), () => sideHead(c, code, fid));
+    const actor = sideActor(head, fid, who);
+    return memo(sides, sideKey(code, fid, { actorID: actor.id }), () => fetchFightSide(c, code, fid, who, metric, { head }));
+  };
+  const readPI = (code, fid, who) => memo(piChecks, sideKey(code, fid, who), () => fightHasPI(c, code, fid, who));
+  const readHero = (cand) => memo(heroChecks, sideKey(cand.report.code, cand.report.fightID, cand.name), () => heroOfCandidate(c, cand, metric));
+
+  // fairness: one check on the player's own kill decides each ranking pool.
+  // No Power Infusion -> the log service filters to no-external-buff parses
+  // server-side (externalBuffs: Exclude); with PI, anything goes.
+  const aHasPI = await readPI(best.report.code, best.report.fightID, name);
+  const mine = await readSide(best.report.code, best.report.fightID, { name, server });
+  if (!best.amount) best.amount = Math.round(Object.values(mine.dmg).reduce((a, b) => a + b, 0) / Math.max(1, mine.durSec));
+  const aHero = heroOf(new Set([...mine.casts.map((x) => x[1]), ...Object.keys(mine.dmg)]));
+
+  const referenceFor = async (rankingMetric) => {
+    let excluded = !aHasPI;
+    let encName = null;
+    // pages 1-3: deeper pages let hero clustering see the off-meta tree
+    const fetchRankings = async (xb) => {
+      const out = [];
+      for (let page = 1; page <= 3; page++) {
+        const wr = await c.query(
+          `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter) {
+             worldData { encounter(id: $enc) {
+               name
+               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb)
+             } }
+           }`, { enc: encounter, cls: className, spec, diff: difficulty, metric: rankingMetric, page, xb });
+        const encData = wr.worldData.encounter;
+        encName = encData?.name ?? encName;
+        const got = encData?.characterRankings?.rankings ?? [];
+        out.push(...got);
+        if (got.length < 100 || !encData?.characterRankings?.hasMorePages) break;
+      }
+      return out;
+    };
+    let rankings = await fetchRankings(excluded ? 'Exclude' : 'Any');
+    if (!rankings.length && excluded) {
+      excluded = false; // no externals-free parses ranked at all — fall back
+      rankings = await fetchRankings('Any');
+    }
+    // Anonymous uploads can't be actor-matched. Damage #1 may be A's own parse.
+    const usable = rankings.filter((r) =>
+      r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:') &&
+      (metric === 'dps' || !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code)));
+    if (!usable.length) throw new Error(`no mirrorable ${rankingMetric} world rankings for ${spec} ${className} on this encounter/difficulty`);
+
+    // Match hero trees independently in each metric's leaderboard.
+    const blocks = heroBlocks(usable);
+    for (const bl of blocks) bl.tree = await readHero(bl.entries[0]);
+    const blockOf = (entry) => blocks.find((bl) => bl.entries.includes(entry));
+    const wanted = params.hero || aHero;
+    const wantedBlock = wanted ? blocks.find((bl) => bl.tree === wanted) : null;
+    const pool = wantedBlock ? wantedBlock.entries : usable;
+    const top = pool[0];
+    const bHasPI = excluded ? false : await readPI(top.report.code, top.report.fightID, top.name);
+    // Analysis stays DPS/HPS; bossdps selects a reference, not a target filter.
+    const theirs = await readSide(top.report.code, top.report.fightID, { name: top.name, server: top.server?.name });
+    const bHero = blockOf(top)?.tree
+      ?? heroOf(new Set([...theirs.casts.map((x) => x[1]), ...Object.keys(theirs.dmg)]));
+    const altTree = blocks.find((bl) => bl.tree && bl.tree !== (bHero ?? wanted))?.tree ?? null;
+    return {
+      encName, rankingMetric,
+      pi: { a: aHasPI, b: bHasPI, excluded },
+      hero: { a: aHero, b: bHero, alt: altTree, requested: params.hero || null },
+      b: { server: top.server?.name ?? '?', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs },
+    };
+  };
+
+  const [overall, boss] = await Promise.all([
+    referenceFor(metric),
+    metric === 'dps'
+      ? referenceFor('bossdps').then((reference) => ({ reference }), (err) => ({ error: String(err?.message ?? err) }))
+      : null,
+  ]);
+  const out = {
+    encounter: { id: encounter, name: overall.encName ?? `#${encounter}` }, difficulty, metric, spec, className,
+    pi: overall.pi, hero: overall.hero,
+    a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine },
+    b: overall.b,
+  };
+  if (boss) {
+    out.bossReference = boss.reference ? {
+      b: boss.reference.b, pi: boss.reference.pi, hero: boss.reference.hero, rankingMetric: 'bossdps',
+    } : null;
+    if (!boss.reference) out.bossReferenceError = boss.error || 'boss-damage reference unavailable';
+  }
+  return out;
+}
+
+/** Realm-slug normalization for the log-service API ("Mal'Ganis" -> "malganis"). */
+export function slugify(value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_]+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+}
