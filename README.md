@@ -33,6 +33,25 @@ forms/items/abilities, explicit field conditions and damage/KO assumptions.
 Calculations run locally; no calculator migration or seed is required.
 See [calculator usage, limitations and data maintenance](docs/champions-calculator.md).
 
+## Hosted CastMirror
+
+`/castmirror` (also `/CastMirror`) serves `public/castmirror.html` and the
+server-only `/api/castmirror` routes. This is a **separate integration** from the
+standalone [CastMirror repository](https://github.com/evanbellmore-ux/cast-mirror):
+merging that repository does not update this site. See
+[the hosted port and maintenance contract](docs/castmirror-hosted.md).
+
+The hosted port provides independent Overall/Boss damage references (Healing
+for HPS), preserves the selected player kill, and switches loaded references
+locally. **Execution is visible but unavailable**: the real encounter catalogs
+are not score-ready, no top-ten-per-boss benchmark set has been completed, and
+this serverless release has no durable benchmark worker or hydration service.
+It does not invent a score, winner, verified scope, or coverage.
+
+`npm run castmirror:check` checks generated parity against the pinned source
+snapshot and also runs first in `npm run check`. Source updates are explicit;
+ordinary builds never fetch upstream or need a sibling checkout.
+
 ## Local setup
 
 1. Install Node 20+ and run `npm install`.
