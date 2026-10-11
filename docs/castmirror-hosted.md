@@ -57,7 +57,9 @@ aggregator already supports; a supplied maximum must still be a valid number.
   lookups per IP/hour/warm instance). Cache hits do not spend another admission.
 - Character-dependent comparison and availability responses use private no-store
   headers, not shared HTTP caching. WCL credentials remain server-side, using
-  existing `WCL_CLIENT_ID` / `WCL_CLIENT_SECRET` configuration.
+  existing `WCL_CLIENT_ID` / `WCL_CLIENT_SECRET` configuration. Valid positive,
+  finite OAuth lifetimes are accepted even when longer than seven days; only the
+  warm token cache is capped at seven days, with a one-minute expiry safety margin.
 - Request inputs are validated before queries, including paired public report
   pins, bounded strings, GraphQL integer IDs, regions, difficulty, and metric.
   An auto-zone sentinel remains unverified requested context, not benchmark scope.

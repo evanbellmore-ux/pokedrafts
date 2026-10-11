@@ -5,6 +5,7 @@
 const TOKEN_URL = 'https://www.warcraftlogs.com/oauth/token';
 const API_URL = 'https://www.warcraftlogs.com/api/v2/client';
 const METADATA_TTL = 600_000;
+const TOKEN_CACHE_MAX_SECONDS = 604_800;
 
 let apiToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -94,11 +95,11 @@ async function authenticate(force = false, options: WclQueryOptions = {}): Promi
   }
   options.signal?.throwIfAborted();
   if (!res.ok || !isRecord(json) || typeof json.access_token !== 'string' || !json.access_token || json.access_token.length > 16_384
-    || typeof json.expires_in !== 'number' || !Number.isFinite(json.expires_in) || json.expires_in <= 0 || json.expires_in > 604_800) {
+    || typeof json.expires_in !== 'number' || !Number.isFinite(json.expires_in) || json.expires_in <= 0) {
     throw new LogServiceError('oauth');
   }
   apiToken = json.access_token;
-  tokenExpiresAt = Date.now() + json.expires_in * 1000;
+  tokenExpiresAt = Date.now() + Math.min(json.expires_in, TOKEN_CACHE_MAX_SECONDS) * 1000;
   return apiToken;
 }
 

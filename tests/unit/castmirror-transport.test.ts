@@ -90,7 +90,7 @@ describe("CastMirror actual WCL/OAuth transport validation", () => {
     ["oversized token", { access_token: "x".repeat(16385), expires_in: 3600 }],
     ["missing expiry", { access_token: token }], ["non-numeric expiry", { access_token: token, expires_in: "3600" }],
     ["non-positive expiry", { access_token: token, expires_in: 0 }],
-    ["out-of-bounds expiry", { access_token: token, expires_in: 604801 }],
+    ["negative expiry", { access_token: token, expires_in: -1 }],
   ] as const) {
     test(`invalid OAuth ${label} cannot be cached or sent to GraphQL`, async () => {
       const network = transport(() => Response.json(body));
@@ -184,6 +184,25 @@ describe("CastMirror actual WCL/OAuth transport validation", () => {
     assert.equal(network.mock.calls.length, 4);
     assert.equal(vi.getTimerCount(), 0);
   });
+
+  for (const expiresIn of [604801, 5184000, Number.MAX_VALUE]) {
+    test(`valid OAuth lifetime ${expiresIn} is accepted while its local cache stays bounded`, async () => {
+      vi.useFakeTimers();
+      const start = 2_000_000, cacheLimit = 7 * 24 * 60 * 60 * 1000;
+      vi.setSystemTime(new Date(start));
+      const network = transport((url) => url === oauthURL
+        ? Response.json({ access_token: token, expires_in: expiresIn }) : Response.json({ data: {} }));
+      const { wcl } = await import("../../app/api/castmirror/lib");
+      assert.deepEqual(await wcl("query Synthetic"), {});
+      vi.setSystemTime(new Date(start + cacheLimit - 60_001));
+      assert.deepEqual(await wcl("query Synthetic"), {});
+      assert.equal(network.mock.calls.filter(([url]) => url === oauthURL).length, 1);
+      vi.setSystemTime(new Date(start + cacheLimit - 60_000));
+      assert.deepEqual(await wcl("query Synthetic"), {});
+      assert.deepEqual(network.mock.calls.map(([url]) => url), [oauthURL, apiURL, apiURL, oauthURL, apiURL]);
+      assert.equal(vi.getTimerCount(), 0);
+    });
+  }
 
   test("OAuth cache expires at its safety margin and a cold module cannot rely on another instance's token", async () => {
     vi.useFakeTimers(); vi.setSystemTime(new Date(2000000));
