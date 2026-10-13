@@ -1,0 +1,19 @@
+run | battles | decisions | p50 | p95 | max
+determinism-a | 20 | 172 | 18 | 563 | 878
+determinism-b | 20 | 172 | 23 | 567 | 837
+reads-habitbot-open | 400 | 4036 | 19 | 434 | 903
+reads-maxdamage-open | 400 | 3604 | 20 | 435 | 961
+safe-habitbot-open | 400 | 4192 | 20 | 418 | 912
+safe-maxdamage-open | 400 | 3862 | 20 | 427 | 863
+safe-maxdamage-perfect | 400 | 3824 | 21 | 444 | 1082
+safe-maxdamage-suggested | 100 | 848 | 22 | 556 | 1169
+safe-maxdamage-usage | 100 | 1166 | 18 | 412 | 911
+safe-random-closed | 200 | 2286 | 31 | 423 | 1189
+safe-random-open | 200 | 2158 | 21 | 432 | 941
+safe-safe-open | 200 | 2338 | 231 | 490 | 1374
+safefirst-maxdamage-open | 400 | 3802 | 22 | 397 | 950
+worst p95 run (nearest-rank): determinism-b 567 ms
+vs final2-s1seeds: 3240 battles, 3240 hash equal, 0 differ, 0 missing; runs here 13, there 13; its worst p95 run determinism-a 4195 ms
+vs int2-s1seeds: 3240 battles, 3240 hash equal, 0 differ, 0 missing; runs here 13, there 13; its worst p95 run determinism-a 4756 ms
+vs int1a-s1seeds: 3240 battles, 2482 hash equal, 758 differ, 0 missing (runs: determinism-a, determinism-b, reads-habitbot-open, reads-maxdamage-open, safe-habitbot-open, safe-maxdamage-open, safe-maxdamage-perfect, safe-maxdamage-suggested, safe-maxdamage-usage, safe-random-closed, safe-random-open, safe-safe-open, safefirst-maxdamage-open); runs here 13, there 13; its worst p95 run determinism-a 601 ms
+vs s1-main: 3240 battles, 0 hash equal, 0 differ, 3240 missing; runs here 13, there 13; its worst p95 run determinism-b 575 ms

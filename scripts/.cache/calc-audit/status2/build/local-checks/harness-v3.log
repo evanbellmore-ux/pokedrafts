@@ -1,0 +1,32 @@
+
+ RUN  v5.0.0 C:/Users/evanb/s2check
+
+ ❯ scripts/.cache/calc-audit/2v2/verify/v3/harness.test.ts (25 tests | 1 failed) 1901ms
+   ❯ the wave 2 bookkeeping (2)
+     × gen-tests.ts --keep-rows keeps a row whose case does not load, byte for byte and in place; other rows are generated again 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/.cache/calc-audit/2v2/verify/v3/harness.test.ts > the wave 2 bookkeeping > gen-tests.ts --keep-rows keeps a row whose case does not load, byte for byte and in place; other rows are generated again
+Error: spawnSync npx ENOENT
+ ❯ scripts/.cache/calc-audit/2v2/verify/v3/harness.test.ts:246:5
+    244|     fs.writeFileSync(path.join(dir, "compare.json"), JSON.stringify(re…
+    245|     // The first file: the two cases that agree. The second keeps a st…
+    246|     execFileSync("npx", ["--no-install", "tsx", gen, `--compare=${dir}…
+       |     ^
+    247|     const rowsOf = (file: string) => fs.readFileSync(file, "utf8").spl…
+    248|     const [first, second] = rowsOf(path.join(dir, "a.test.ts"));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 24 passed (25)
+   Start at  11:07:53
+   Duration  3.62s (tests 54%, transform 28%, import 17%, setup 1%)
+
+
+real	0m5.226s
+user	0m0.075s
+sys	0m0.091s
+EXIT 1
