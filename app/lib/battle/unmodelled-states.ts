@@ -36,12 +36,11 @@ function joinOr(names: string[]) {
 
 const cache = new WeakMap<BattleRuntime, string[]>();
 
-export function unmodelledBattleStates(runtime: BattleRuntime): string[] {
-  const cached = cache.get(runtime);
-  if (cached) return cached;
+/** The entries of `states` the game has (a Pokémon with one of its abilities or moves), each naming only those present. */
+function statesFor(runtime: BattleRuntime, states: readonly StateEntry[]): string[] {
   const abilities = new Set(runtime.catalog.species.flatMap((species) => species.abilities));
   const moves = new Set(runtime.catalog.species.flatMap((species) => species.moves ?? []));
-  const states = STATES.flatMap((state) => {
+  return states.flatMap((state) => {
     if (state.games && !state.games.includes(runtime.profile.id)) return [];
     const names = [
       ...(state.abilities ?? []).filter((id) => abilities.has(id)).map((id) => runtime.abilitiesById.get(id)?.name ?? id),
@@ -50,6 +49,54 @@ export function unmodelledBattleStates(runtime: BattleRuntime): string[] {
     if ((state.abilities || state.moves) && !names.length) return [];
     return [state.text(joinOr(names))];
   });
+}
+
+export function unmodelledBattleStates(runtime: BattleRuntime): string[] {
+  const cached = cache.get(runtime);
+  if (cached) return cached;
+  const states = statesFor(runtime, STATES);
   cache.set(runtime, states);
+  return states;
+}
+
+/** Names of the moves of `ids` some Pokémon of the game learns, joined with "or" ("" when none). */
+function learnt(runtime: BattleRuntime, ids: readonly string[]): string {
+  const moves = new Set(runtime.catalog.species.flatMap((species) => species.moves ?? []));
+  return joinOr(ids.filter((id) => moves.has(id)).map((id) => runtime.movesById.get(id)?.name ?? id));
+}
+
+/** Gastro Acid and Core Enforcer suppress an ability from an earlier turn; these replace it (no 2v2 input sets either). */
+const SUPPRESSING = ["gastroacid", "coreenforcer"];
+const REPLACING = ["worryseed", "simplebeam", "entrainment", "skillswap", "roleplay", "doodle"];
+
+/**
+ * The 2v2 note's states (status2 IN §5.6, ADDENDUM2 §5.2 with C21 and C28), with the 1v1 note's entry rules: the earlier-turn
+ * states the 2v2 calculator has no input for. The 1v1 entries 2v2 sets or works out are gone (Wide Guard and its kin, Max
+ * Guard, a partner's Battery and kin, the Ruin abilities and Neutralizing Gas, Foresight and Miracle Eye, Glaive Rush, a
+ * semi-invulnerable target, Minimize, a Substitute, Ingrain, Roost, Telekinesis, Power Trick, the stage swaps, the Doubles
+ * order), and so are the G-Max side conditions and Uproar (each an input now). Review 2 (R6-4): a grounding by Smack Down or
+ * Thousand Arrows or a Magnet Rise from an earlier turn (PS/data/moves.ts smackdown, magnetrise: volatiles that outlast the
+ * turn) and the stats Power Split, Guard Split or Speed Swap left (storedStats) have no 2v2 input, so they stay listed.
+ */
+const DOUBLES_STATES: StateEntry[] = [
+  { text: () => "A Sky Drop from an earlier turn", moves: ["skydrop"] },
+  { text: (names) => `A ${names} waiting for the next Pokémon to come in`, moves: ["healingwish", "lunardance"] },
+  { text: (names) => `${names} from an earlier turn`, moves: ["torment", "throatchop"] },
+  { text: (names) => `A move locked in by ${names}`, moves: ["outrage", "petaldance", "thrash", "ragingfury"] },
+  { text: (names) => `Grounding or lifting from ${names} on an earlier turn`, moves: ["smackdown", "thousandarrows", "magnetrise"] },
+  { text: (names) => `Stats shared or swapped by ${names} on an earlier turn`, moves: ["powersplit", "guardsplit", "speedswap"] },
+];
+
+const doublesCache = new WeakMap<BattleRuntime, string[]>();
+
+/** The 2v2 Field conditions' note "Battle states that cannot be set here" (BattleConditions with variant "doubles"). */
+export function unmodelledDoublesStates(runtime: BattleRuntime): string[] {
+  const cached = doublesCache.get(runtime);
+  if (cached) return cached;
+  const suppressed = learnt(runtime, SUPPRESSING), replaced = learnt(runtime, REPLACING);
+  const ability = suppressed && replaced ? `An ability suppressed by ${suppressed}, or replaced by ${replaced}, on an earlier turn`
+    : suppressed ? `An ability suppressed by ${suppressed} on an earlier turn` : replaced ? `An ability replaced by ${replaced} on an earlier turn` : null;
+  const states = [...(ability ? [ability] : []), ...statesFor(runtime, DOUBLES_STATES)];
+  doublesCache.set(runtime, states);
   return states;
 }

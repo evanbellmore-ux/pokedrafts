@@ -10,14 +10,15 @@ import { seedHex } from "../model/random";
 import type { SideID } from "../model/showdown-types";
 import { jointActionKey, withoutMega, type JointAction } from "../model/view-types";
 import { buildBeliefBattle, type BeliefBattle } from "./belief-battle";
-import { bridgeTurn, fieldClock, keyOfPokemon, needsPrelude, startInput } from "./bridge";
+import { bridgeTurn, fieldClock, keyOfPokemon, needsPrelude, startInput, type EarlierThisTurn } from "./bridge";
 import { ChoiceBuildError, toChoiceString, type MemberKeys } from "./choices";
 import { buildOf, observe, otherSide, revealedKeys } from "./observe";
-import { runPrelude } from "./prelude";
+import { runPreludeWorlds } from "./prelude";
 import { runResidual } from "./residual";
 import { runRollout } from "./rollout";
 import { State, type ClonedBattle } from "./sim";
-import { slotAt } from "../model/positions";
+import { countsOf } from "./tracker";
+import { showdownPosition, slotAt } from "../model/positions";
 import { splitWorlds } from "./splits";
 
 export type ServicesContext = {
@@ -29,6 +30,9 @@ export type ServicesContext = {
   /** The request is a mid-turn replacement (U-turn, Parting Shot, Eject Button/Pack, Red Card). */
   midTurn?: boolean;
 };
+
+/** status2 R-T: with no ReplacePolicy given, the AI's side takes its first options (its request's living bench order). */
+const firstOptions: ReplacePolicy = (_side, slots, options) => options.slice(0, slots.length);
 
 const PROTECT_LINE = /^\|-singleturn\|(p[12])([ab]): [^|]*\|(?:move: )?(Protect|Endure|Wide Guard|Quick Guard|King's Shield|Spiky Shield|Baneful Bunker|Obstruct|Silk Trap|Burning Bulwark|Max Guard)/;
 
@@ -96,16 +100,37 @@ export function createTurnServices(inputs: AiInputs, worlds: readonly BeliefWorl
   };
 
   const publicOf = (key: MonKey) => inputs.public.mons[`${key.startsWith("own:") ? other : ai}:${key.slice(key.indexOf(":") + 1)}`] ?? null;
-  const memo = new Map<string, EngineWorlds>();
-  function engineWorlds(cell: CellActions): EngineWorlds {
+  // status2 R-T: one memo per replacement policy (the AI's ReplacePolicy decides its own replacements in the engine input and
+  // the prelude), and one for none.
+  const memos = new WeakMap<ReplacePolicy, Map<string, EngineWorlds>>();
+  const plain = new Map<string, EngineWorlds>();
+  function engineWorlds(cell: CellActions, replace?: ReplacePolicy): EngineWorlds {
     const key = `${jointActionKey(cell.own)}|${jointActionKey(cell.opponent)}`;
+    let memo = replace ? memos.get(replace) : plain;
+    if (!memo) memos.set(replace!, memo = new Map());
     const known = memo.get(key);
     if (known) return known;
-    const result = computeEngineWorlds(cell, key);
+    const result = computeEngineWorlds(cell, key, replace ? memoised(replace) : undefined);
     memo.set(key, result);
     return result;
   }
-  function computeEngineWorlds(cell: CellActions, key: string): EngineWorlds {
+  /** The policy's pick for each (side, slots, options), kept for the decision (one bridge per cell and prelude world asks it). */
+  const picks = new WeakMap<ReplacePolicy, ReplacePolicy>();
+  function memoised(replace: ReplacePolicy): ReplacePolicy {
+    let known = picks.get(replace);
+    if (!known) {
+      const cache = new Map<string, MonKey[]>();
+      known = (side, slots, options) => {
+        const id = `${side}|${slots.join(",")}|${options.join(",")}`;
+        let pick = cache.get(id);
+        if (!pick) cache.set(id, pick = replace(side, slots, options));
+        return pick;
+      };
+      picks.set(replace, known);
+    }
+    return known;
+  }
+  function computeEngineWorlds(cell: CellActions, key: string, replace: ReplacePolicy | undefined): EngineWorlds {
     let choices: { p1: string; p2: string };
     try {
       choices = choicesFor(cell, world0);
@@ -115,22 +140,67 @@ export function createTurnServices(inputs: AiInputs, worlds: readonly BeliefWorl
     }
     const refused = refusal(choices);
     if (refused) return { kind: "skip", reasons: [`Belief world 0 rejects this choice: ${refused.replace(/^[w+ choice] /, "")}`] };
-    let battle = world0.battle;
+    // status2 Step 1 #15 (T2E §4.8.2): the prelude's tied switches, Mega Evolutions and entry handlers and its samples as
+    // weighted prelude worlds, each bridged and split on its own (any one rolling out makes the cell a rollout).
+    let preludes: { battle: ClonedBattle; weight: number }[] = [{ battle: world0.battle, weight: 1 }];
     let source: "live" | "prelude" = "live";
     if (needsPrelude(cell)) {
-      spent.preludes++;
-      const prelude = runPrelude(world0.json, choices, seedHex(seedBase, "prelude", key));
+      // status2 R-T (T2E §4.8): a replacement asked before the moves (Emergency Exit after entry hazards) is answered by the
+      // rollouts' rules: the AI's ReplacePolicy (its first living bench Pokémon without one), the player's healthiest.
+      const prelude = runPreludeWorlds(world0.json, choices, seedHex(seedBase, "prelude", key), { aiSide: ai, keys: world0.keys, replace: replace ?? firstOptions });
+      spent.preludes += prelude.kind === "stopped" ? prelude.worlds.length : 1;
       if (prelude.kind === "rollout") return { kind: "rollout", reasons: prelude.reasons };
-      battle = prelude.battle;
+      preludes = prelude.worlds;
       source = "prelude";
     }
-    const switched = new Set<DoublesSlotId>(DOUBLES_SLOTS.filter((slot) => (slot.startsWith("own") ? cell.own : cell.opponent)[slot]?.kind === "switch"));
-    const bridged = bridgeTurn(battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched, publicOf });
-    if (bridged.kind === "rollout") return bridged;
-    const split = splitWorlds(bridged.input, { runtime, slotKeys: bridged.keys, publicOf });
-    if (split.kind === "rollout") return split;
-    const engine: EngineWorld[] = split.worlds.map((world) => ({ weight: world.weight, input: world.input, keys: bridged.keys, notes: [...bridged.notes, ...world.notes] }));
+    const chosenSwitches = DOUBLES_SLOTS.filter((slot) => (slot.startsWith("own") ? cell.own : cell.opponent)[slot]?.kind === "switch");
+    const engine: EngineWorld[] = [];
+    for (const prelude of preludes) {
+      // status2 R-T: a Pokémon that came in during the prelude for one that left by a replacement (Eject Pack after an
+      // entry's Intimidate or a Mega Evolution's) switched in this turn too, and takes no action: its predecessor's queued
+      // move was cancelled as it left (pinned sim/battle-actions.ts switchIn, queue.cancelAction).
+      const switched = new Set<DoublesSlotId>([...chosenSwitches, ...(source === "prelude" ? cameIn(prelude.battle) : [])]);
+      const earlier = earlierOf(prelude.battle, source === "prelude");
+      const bridged = bridgeTurn(prelude.battle, cell, { runtime, keys: world0.keys, aiSide: ai, switched, publicOf, earlier, replace });
+      if (bridged.kind === "rollout") return bridged;
+      const split = splitWorlds(bridged.input, { runtime, slotKeys: bridged.keys, publicOf });
+      if (split.kind === "rollout") return split;
+      for (const world of split.worlds) engine.push({ weight: prelude.weight * world.weight, input: world.input, keys: bridged.keys, notes: [...bridged.notes, ...world.notes] });
+    }
     return { kind: "engine", source, worlds: engine };
+  }
+
+  /** status2 R-T: the slots a prelude copy holds a Pokémon in that is not the one world 0 holds there (a replacement it made). */
+  function cameIn(battle: ClonedBattle): DoublesSlotId[] {
+    return DOUBLES_SLOTS.filter((slot) => {
+      const { side, position } = showdownPosition(slot, ai);
+      const now = battle[side].active[position], before = world0.battle[side].active[position];
+      return !!now && !now.fainted && (!before || keyOfPokemon(now, ai, world0.keys) !== keyOfPokemon(before, ai, world0.keys));
+    });
+  }
+
+  /**
+   * What happened to each active Pokémon earlier this turn before the moves (status2 Step 1 #11, ADDENDUM2 C19): the
+   * tracker's public flags (on the battle's first turn the leads' entry lines before |turn|1; nextTurn clears them from turn
+   * 2), and after a prelude its copy's flags (cleared before it ran: this turn's switches and Mega Evolutions).
+   */
+  function earlierOf(battle: ClonedBattle, prelude: boolean): Partial<Record<DoublesSlotId, EarlierThisTurn>> {
+    const out: Partial<Record<DoublesSlotId, EarlierThisTurn>> = {};
+    for (const slot of DOUBLES_SLOTS) {
+      const { side, position } = showdownPosition(slot, ai);
+      const mon = battle[side].active[position];
+      if (!mon || mon.fainted) continue;
+      const flagged = mon as unknown as { statsRaisedThisTurn?: boolean; statsLoweredThisTurn?: boolean; usedItemThisTurn?: boolean };
+      const pub = publicOf(keyOfPokemon(mon, ai, world0.keys));
+      const shown = pub ? countsOf(pub).thisTurn ?? {} : {};
+      const flags: EarlierThisTurn = {
+        ...((shown.statsRaised || (prelude && flagged.statsRaisedThisTurn)) ? { statsRaised: true as const } : {}),
+        ...((shown.statsLowered || (prelude && flagged.statsLoweredThisTurn)) ? { statsLowered: true as const } : {}),
+        ...((shown.usedItem || (prelude && flagged.usedItemThisTurn)) ? { usedItem: true as const } : {}),
+      };
+      if (Object.keys(flags).length) out[slot] = flags;
+    }
+    return out;
   }
 
   function postState(battle: ClonedBattle, world: BeliefBattle, protectedKeys: ReadonlySet<MonKey>): PostState {

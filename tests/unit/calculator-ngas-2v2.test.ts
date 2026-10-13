@@ -243,16 +243,18 @@ describe("Neutralizing Gas in the 2v2 turn: facts, start rows, the moves pane an
     const gas: Mon = { species: "Weezing-Galar", ability: "Neutralizing Gas", move: null };
     const levitate: Mon = { species: "Weezing-Galar", ability: "Levitate", move: null };
     expect(calculateDoublesTurn(await input(turn(swalot, gas)))).toMatchObject({ status: "not-estimated", reason: "Gastro Acid with Neutralizing Gas is not modelled in 2v2." });
-    expect(calculateDoublesTurn(await input(turn(klefki, gas)))).toMatchObject({ status: "not-estimated", reason: "Magic Room with Neutralizing Gas is not modelled in 2v2." });
+    // status2 (SPEC2 §8.4): Magic Room left GAS_CHANGING_MOVES; it changes what the gas suppresses only through an Ability
+    // Shield (gasShieldGuard), and no one here holds one.
+    expect(calculateDoublesTurn(await input(turn(klefki, gas))).status).toBe("ready");
     // Without the gas, a status move nothing follows changes no HP (doubles-turn-guards.test.ts): Swalot (75) moves last.
     expect(calculateDoublesTurn(await input(turn({ ...swalot, ability: "Sticky Hold" }, levitate))).status).toBe("ready");
   });
 
-  it("still names Commander with Dondozo on its side under the gas", async () => {
+  it("follows Commander with Dondozo on its side under the gas: the gas from the lead stops Commander (status2 PR, PR-CMD-02)", async () => {
     const c = asCase({ id: "-", game: "sv", title: "", reason: "", slots: {
       "own-left": { species: "Tatsugiri", ability: "Commander", move: null }, "own-right": { species: "Dondozo", ability: "Unaware", move: null },
       "opponent-left": { species: "Weezing-Galar", ability: "Neutralizing Gas", move: null }, "opponent-right": { species: "Garchomp", ability: "Rough Skin", move: "Dragon Claw", target: "own-right" },
     } });
-    expect(calculateDoublesTurn(await input(c))).toMatchObject({ status: "not-estimated", reason: "Commander is not modelled in 2v2." });
+    expect(calculateDoublesTurn(await input(c)).status).toBe("ready");
   });
 });

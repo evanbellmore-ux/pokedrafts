@@ -447,13 +447,8 @@ describe("not estimated: Track A's reasons (SPEC §2.4)", () => {
   it("has the exact texts", () => {
     expect(REASONS.needsLastMove("Encore", "Garchomp")).toBe("Encore needs Garchomp's move from the last turn.");
     expect(REASONS.encoreChange("Garchomp")).toBe("Encore changes Garchomp's move: not modelled.");
-    expect(REASONS.needsMoves("Gengar")).toBe("Imprison needs Gengar's moves.");
-    expect(REASONS.groundingChange("Magnet Rise", "Magnezone")).toBe("Magnet Rise changes whether Magnezone is grounded: later moves are not modelled.");
-    expect(REASONS.withDynamax("Pain Split")).toBe("Pain Split with a Dynamaxed Pokémon is not modelled in 2v2.");
-    expect(REASONS.faceSelfHit("Disguise")).toBe("Disguise against a confusion self-hit is not modelled in 2v2.");
-    expect(REASONS.landing("Future Sight")).toBe("Future Sight landing is not modelled in 2v2.");
-    expect(REASONS.formChange("Zen Mode", "Darmanitan")).toBe("Zen Mode changing Darmanitan's form is not modelled in 2v2.");
-    expect(REASONS.overTime("Salt Cure")).toBe("Salt Cure's damage over time is not modelled in 2v2.");
+    expect(REASONS.needsMoves("Imprison", "Gengar")).toBe("Imprison needs Gengar's moves.");
+    expect(REASONS.formChange("Power Construct", "Zygarde")).toBe("Power Construct changing Zygarde's form is not modelled in 2v2.");
   });
 
   it("gives each where its turn meets it", async () => {
@@ -461,19 +456,24 @@ describe("not estimated: Track A's reasons (SPEC §2.4)", () => {
     const rows: [string, DoublesTurnInput][] = [
       ["Encore needs Garchomp's move from the last turn.", turn(sv, [act(mon("whimsicott", "prankster"), "encore", PL), idle(lax()), act(chomp(), "dragonclaw", OR), idle(toise())])],
       ["Disable needs Garchomp's move from the last turn.", turn(sv, [act(gengar(), "disable", PL), idle(lax()), act(chomp(), "dragonclaw", OR), idle(toise())])],
-      ["Encore changes Garchomp's move: not modelled.", turn(sv, [act(mon("whimsicott", "prankster"), "encore", PL), idle(lax()), act(chomp({ lastMove: "earthquake" }), "dragonclaw", OR), idle(toise())])],
       ["Imprison needs Gengar's moves.", turn(sv, [act(gengar(), "imprison"), idle(lax()), act(chomp(), "poisonjab", OR), act(toise(), "waterpulse", OR)])],
-      ["Disguise against a confusion self-hit is not modelled in 2v2.", turn(sv, [act(gengar(), "confuseray", PL), idle(lax()), act(mon("mimikyu", "disguise"), "playrough", OR), idle(toise())])],
-      ["Roost changes Dragonite's type: later moves are not modelled.", turn(sv, [act(mon("dragonite", "multiscale", { hp: 100, nature: "Jolly", evs: { spe: 252 } }), "roost"), idle(lax()), act(chomp(), "earthquake"), idle(toise())])],
-      ["Sleep Talk is not modelled in 2v2.", turn(sv, [act(lax({ status: "slp" }), "sleeptalk"), idle(toise()), act(chomp(), "dragonclaw", OL), idle(saur())])],
-      ["Uproar is not modelled in 2v2.", turn(sv, [act(mon("noivern", "infiltrator"), "uproar"), idle(toise()), idle(lax({ status: "slp" })), idle(saur())])],
+      ["Sleep Talk needs Snorlax's moves.", turn(sv, [act(lax({ status: "slp" }), "sleeptalk"), idle(toise()), act(chomp(), "dragonclaw", OL), idle(saur())])],
       ["Grimmsnarl switches out: the replacement is not known.", turn(sv, [act(mon("grimmsnarl", "prankster", { evs: { spe: 4 } }), "partingshot", PL), idle(lax()), act(chomp(), "dragonclaw", OR), idle(toise())])],
     ];
     for (const [text, input] of rows) expect(reason(input)).toBe(text);
+    // status2 wave 1a: modelled now (D's Encore rewrite of a spread move, S's Disguise self-hit, A2's Roost type change);
+    // wave 1b: CL's Uproar (its hit wakes the sleeping Snorlax).
+    for (const input of [
+      turn(sv, [act(mon("noivern", "infiltrator"), "uproar"), idle(toise()), idle(lax({ status: "slp" })), idle(saur())]),
+      turn(sv, [act(mon("whimsicott", "prankster"), "encore", PL), idle(lax()), act(chomp({ lastMove: "earthquake" }), "dragonclaw", OR), idle(toise())]),
+      turn(sv, [act(gengar(), "confuseray", PL), idle(lax()), act(mon("mimikyu", "disguise"), "playrough", OR), idle(toise())]),
+      turn(sv, [act(mon("dragonite", "multiscale", { hp: 100, nature: "Jolly", evs: { spe: 252 } }), "roost"), idle(lax()), act(chomp(), "earthquake"), idle(toise())]),
+    ]) expect(calculateDoublesTurn(input).status).toBe("ready");
     const swsh = await game("sword_shield");
     const dynamax = turn(swsh, [act(gengar({ hp: 40 }), "painsplit", PL), idle(lax()), act(chomp(), "dragonclaw", OR), idle(toise())]);
     dynamax.pokemon[PL] = { ...dynamax.pokemon[PL]!, build: { ...dynamax.pokemon[PL]!.build, mechanic: "dynamax" } as BattleBuild };
-    expect(reason(dynamax)).toBe("Pain Split with a Dynamaxed Pokémon is not modelled in 2v2.");
+    // status2 M: Pain Split averages with the undynamaxed HP (doubles-max.ts painSplitHP).
+    expect(calculateDoublesTurn(dynamax).status).toBe("ready");
   });
 
   it("keeps a switching move with no Pokémon to switch in, and one into Clear Body, estimated", async () => {

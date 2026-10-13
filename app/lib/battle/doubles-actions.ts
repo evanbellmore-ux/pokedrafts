@@ -9,7 +9,7 @@ export { CONFUSING_BERRIES, RESIST_BERRIES } from "./hit-loop";
 /** The protecting moves (data/moves.ts stallingMove with a protect volatile): each blocks moves with the protect flag. */
 export const PROTECT_MOVES: Readonly<Record<string, ProtectKind>> = {
   protect: "protect", detect: "protect", kingsshield: "kingsshield", spikyshield: "spikyshield", banefulbunker: "banefulbunker",
-  obstruct: "obstruct", silktrap: "silktrap", burningbulwark: "burningbulwark",
+  obstruct: "obstruct", silktrap: "silktrap", burningbulwark: "burningbulwark", maxguard: "maxguard",
 };
 
 /**
@@ -20,7 +20,7 @@ export const PROTECT_MOVES: Readonly<Record<string, ProtectKind>> = {
  */
 export const PROTECT_CONTACT: Readonly<Record<ProtectKind, { stages?: Partial<Record<"atk" | "def" | "spe", number>>; damage?: number; status?: "psn" | "brn" } | null>> = {
   protect: null, kingsshield: { stages: { atk: -1 } }, spikyshield: { damage: 8 }, banefulbunker: { status: "psn" },
-  obstruct: { stages: { def: -2 } }, silktrap: { stages: { spe: -1 } }, burningbulwark: { status: "brn" },
+  obstruct: { stages: { def: -2 } }, silktrap: { stages: { spe: -1 } }, burningbulwark: { status: "brn" }, maxguard: null,
 };
 
 /** The screens and Tailwind (data/moves.ts sideCondition on the user's side, target allySide), by the side flag each sets. */
@@ -57,21 +57,14 @@ export const NO_EFFECT_MOVES: ReadonlySet<string> = new Set(kindOf("N"));
 
 /**
  * Status moves the turn never estimates, wherever they come (presence guards: `{Move} is not modelled.`): Revival Blessing
- * (kind P), and the L moves that change HP during the moves (Purify, Stuff Cheeks, Swallow, Teatime), so the HP after the
- * moves would not hold either. (Bestow of a Berry and Recycle are guarded where they are used: doubles-status.ts.)
+ * (kind P). status2: Purify, Stuff Cheeks, Swallow and Teatime left it with their kind (A1, A3; integration 1a).
  */
-export const HP_STATUS_MOVES: ReadonlySet<string> = new Set([...kindOf("P"), "purify", "stuffcheeks", "swallow", "teatime"]);
-
-/** Moves the 2v2 turn does not model at all (SPEC §2.2 presence rows): `{Move} is not modelled in 2v2.` Flame Burst's splash damage (status-eot C17). */
-export const PRESENCE_MOVES: ReadonlySet<string> = new Set([
-  "spotlight", "round", "beakblast", "shelltrap", "beatup", "fusionbolt", "fusionflare", "counter", "mirrorcoat", "metalburst", "comeuppance", "flameburst",
-]);
-
-/** Moves the turn does not follow, as presence guards with the `{Move} is not modelled in 2v2.` text: Sky Drop (it lifts its target). */
-export const PENDING_MOVES: ReadonlySet<string> = new Set(["skydrop"]);
+export const HP_STATUS_MOVES: ReadonlySet<string> = new Set(kindOf("P"));
 
 /** Moves whose user faints as they start (data/moves.ts selfdestruct "always": sim/battle-actions.ts useMoveInner faints it after TryMove, before any hit). */
 export const SELF_DESTRUCT_MOVES: ReadonlySet<string> = new Set(["explosion", "selfdestruct", "mistyexplosion"]);
+/** Moves that cost their user half its maximum HP as they hit (data/moves.ts mindblown, steelbeam, chloroblast; status2: shared by doubles-turn.ts and doubles-reactions.ts). */
+export const SELF_COST_MOVES: ReadonlySet<string> = new Set(["mindblown", "steelbeam", "chloroblast"]);
 /** The moves Damp stops (data/abilities.ts damp onAnyTryMove). */
 export const DAMP_MOVES: ReadonlySet<string> = new Set(["explosion", "mindblown", "mistyexplosion", "selfdestruct"]);
 /**
@@ -81,8 +74,12 @@ export const DAMP_MOVES: ReadonlySet<string> = new Set(["explosion", "mindblown"
 export const VOLATILE_SECONDARY_MOVES: ReadonlySet<string> = new Set(["psychicnoise", "coreenforcer", "burningjealousy", "alluringvoice", "spectralthief"]);
 /** Damaging moves whose 100% secondary confuses (data/moves.ts dynamicpunch, chatter: chance 100, volatileStatus confusion). */
 export const CONFUSING_MOVES: ReadonlySet<string> = new Set(["dynamicpunch", "chatter"]);
-/** The moves with callsMove (data/moves.ts: they use a move picked from the battle or at random), and Instruct (its target uses its move again). */
-export const CALLING_MOVES: ReadonlySet<string> = new Set(["assist", "copycat", "mefirst", "metronome", "mirrormove", "naturepower", "sleeptalk", "instruct"]);
+/**
+ * Pinned Showdown's callsMove moves (data/moves.ts: Assist, Copycat, Me First, Metronome, Mirror Move, Nature Power, Sleep Talk;
+ * not Instruct): Protean and Libero skip their PrepareHit (data/abilities.ts protean onPrepareHit) and wait for the called
+ * move's (doubles-typing.ts proteanGuard; status2 CL-7, in place of CALLING_MOVES, whose guard members CL models).
+ */
+export const CALLS_MOVE: ReadonlySet<string> = new Set(["assist", "copycat", "mefirst", "metronome", "mirrormove", "naturepower", "sleeptalk"]);
 /** The Pledge moves (data/moves.ts firepledge, grasspledge, waterpledge onPrepareHit: two different ones from partners combine). */
 export const PLEDGE_MOVES: ReadonlySet<string> = new Set(["firepledge", "grasspledge", "waterpledge"]);
 /** Moves that take a type from their user as they hit (data/moves.ts burnup, doubleshock self.onHit setType). */
@@ -93,38 +90,6 @@ export const DRAG_MOVES: ReadonlySet<string> = new Set(["dragontail", "circlethr
 export const ANCHORING_ABILITIES: ReadonlySet<string> = new Set(["suctioncups", "guarddog"]);
 /** The busted form an intact Disguise or Ice Face takes on after the hit it takes (data/abilities.ts disguise, iceface onUpdate). */
 export const BUSTED_FORMS: Readonly<Record<string, string>> = { mimikyu: "mimikyubusted", mimikyutotem: "mimikyubustedtotem", eiscue: "eiscuenoice" };
-/**
- * Items of an intact Disguise or Ice Face holder that act on a hit that deals it no damage (DamagingHit and Hit run
- * with damage 0, sim/battle-actions.ts spreadMoveHit): not followed (doubles-turn.ts faceHit).
- */
-export const FACE_REACTIVE_ITEMS: ReadonlySet<string> = new Set([
-  "rockyhelmet", "airballoon", "keeberry", "marangaberry", "jabocaberry", "rowapberry", "stickybarb", "cellbattery", "absorbbulb", "luminousmoss", "snowball",
-  "ejectbutton", "redcard",
-]);
-/** Moves whose hit does more to its target than damage, the stages and statuses of stat-moves.ts and a flinch (doubles-turn.ts faceHit). */
-export const FACE_UNSAFE_MOVES: ReadonlySet<string> = new Set([
-  "knockoff", "thief", "covet", "bugbite", "pluck", "incinerate", "smackdown", "thousandarrows", "clearsmog", "spectralthief", "saltcure", "throatchop",
-  "psychicnoise", "coreenforcer", "alluringvoice", "burningjealousy", "anchorshot", "spiritshackle", "thousandwaves", "jawlock", "ceaselessedge", "stoneaxe",
-  "circlethrow", "dragontail", "mortalspin", "rapidspin", "uturn", "voltswitch", "flipturn", "finalgambit", "relicsong", "fellstinger", "bind", "wrap",
-  "firespin", "infestation", "magmastorm", "sandtomb", "snaptrap", "thundercage", "whirlpool", "clamp", "sparklingaria", "smellingsalts", "wakeupslap",
-]);
-/**
- * G-Max moves' effects beyond MAX_MOVE_EFFECTS (data/moves.ts gmax* self.onHit) for doubles-turn.ts maxEffects:
- * `foeStages` and `foeStatus` on each foe, `side` a screen on the user's side, `gravity`, `curesAllies`; `guard`
- * "later" while a later action follows (confusion, infatuation, a critical-hit stage, a Berry restored at random),
- * "always" for HP it heals. G-Max Tartness's evasion drop on each foe (self.onHit boost) changes no calculation, but
- * meets the foes' TryBoost and sets off Defiant, Competitive, Mirror Armor and Eject Pack. The others change nothing this
- * turn's HP or order reads (residual damage, hazards, trapping, Torment, PP, Yawn).
- */
-export const GMAX_EFFECTS: Readonly<Record<string, {
-  foeStages?: Partial<Record<"atk" | "def" | "spa" | "spd" | "spe" | "accuracy" | "evasion", number>>; foeStatus?: "par" | "psn"; side?: "auroraVeil"; gravity?: true;
-  curesAllies?: true; guard?: "later" | "always";
-}>> = {
-  "G-Max Foam Burst": { foeStages: { spe: -2 } }, "G-Max Tartness": { foeStages: { evasion: -1 } }, "G-Max Volt Crash": { foeStatus: "par" }, "G-Max Malodor": { foeStatus: "psn" },
-  "G-Max Resonance": { side: "auroraVeil" }, "G-Max Gravitas": { gravity: true }, "G-Max Sweetness": { curesAllies: true },
-  "G-Max Smite": { guard: "later" }, "G-Max Gold Rush": { guard: "later" }, "G-Max Cuddle": { guard: "later" }, "G-Max Chi Strike": { guard: "later" },
-  "G-Max Replenish": { guard: "later" }, "G-Max Finale": { guard: "always" },
-};
 /** Moves Gravity stops in BeforeMove (data/moves.ts flags.gravity; data/moves.ts gravity condition onBeforeMove). */
 export const GRAVITY_MOVES: ReadonlySet<string> = new Set(["bounce", "floatyfall", "fly", "flyingpress", "highjumpkick", "jumpkick", "magnetrise", "skydrop", "splash", "telekinesis"]);
 /** Moves that land at the end of a later turn (data/moves.ts flags.futuremove): no damage this turn. */
@@ -139,29 +104,29 @@ export const SWITCH_MOVES: ReadonlySet<string> = new Set(["uturn", "voltswitch",
 /**
  * Status moves that, with Neutralizing Gas on the field, can end it or change what it suppresses (doubles-turn.ts
  * statusMove): they change or suppress an ability (Gastro Acid, Worry Seed, Simple Beam, Entrainment, Skill Swap, Role
- * Play, Doodle, Transform), drag a Pokémon out (Roar, Whirlwind), or move, remove or switch off an Ability Shield (Trick,
- * Switcheroo, Bestow, Corrosive Gas, Embargo, Magic Room).
+ * Play, Doodle, Transform), drag a Pokémon out (Roar, Whirlwind), or move an Ability Shield (Trick, Switcheroo). status2
+ * (SPEC2 §8.4): Bestow, Corrosive Gas, Embargo and Magic Room left it; gasShieldGuard follows a Shield they change.
  */
 export const GAS_CHANGING_MOVES: ReadonlySet<string> = new Set([
   "gastroacid", "worryseed", "simplebeam", "entrainment", "skillswap", "roleplay", "doodle", "transform", "roar", "whirlwind",
-  "trick", "switcheroo", "bestow", "corrosivegas", "embargo", "magicroom",
+  "trick", "switcheroo",
 ]);
 /** Abilities that replace an attacker's on contact (data/abilities.ts mummy, lingeringaroma, wanderingspirit onDamagingHit). */
 export const ABILITY_REPLACERS: ReadonlySet<string> = new Set(["mummy", "lingeringaroma", "wanderingspirit"]);
+/** The Choice items (data/items.ts isChoice): a move used sets choicelock (doubles-status.ts beforeMove). */
+export const CHOICE_ITEMS: ReadonlySet<string> = new Set(["choiceband", "choicescarf", "choicespecs"]);
 /** Dance moves (data/moves.ts flags.dance), which a Dancer copies (sim/battle-actions.ts runMove). */
 export const DANCE_MOVES: ReadonlySet<string> = new Set([
   "aquastep", "clangoroussoul", "dragondance", "featherdance", "fierydance", "lunardance", "petaldance", "quiverdance", "revelationdance", "swordsdance",
   "teeterdance", "victorydance",
 ]);
-/** G-Max moves whose status is random (data/moves.ts gmaxbefuddle, gmaxstunshock). */
-export const RANDOM_STATUS_MAX_MOVES: ReadonlySet<string> = new Set(["G-Max Befuddle", "G-Max Stun Shock"]);
 /** Status moves that set the weather or a terrain (data/moves.ts weather, terrain). */
 export const FIELD_MOVES: ReadonlySet<string> = new Set([
   "sunnyday", "raindance", "sandstorm", "snowscape", "hail", "electricterrain", "grassyterrain", "mistyterrain", "psychicterrain",
 ]);
 
 /** Moves Stalwart and Propeller Tail need not ignore redirection for: their own tracksTarget (data/moves.ts). */
-export const TRACKS_TARGET_MOVES: ReadonlySet<string> = new Set(["snipeshot"]);
+export const TRACKS_TARGET_MOVES: ReadonlySet<string> = new Set(["snipeshot", "skydrop"]);
 /** Abilities that keep a move on its chosen target (sim/battle.ts getTarget; data/abilities.ts stalwart, propellertail onModifyMove tracksTarget). */
 export const TRACKING_ABILITIES: ReadonlySet<string> = new Set(["stalwart", "propellertail"]);
 
@@ -225,35 +190,34 @@ export const MODELLED_THIRD_PARTY: ReadonlySet<string> = new Set([
   "battery", "powerspot", "steelyspirit",
   // Neutralizing Gas from the turn's start (calculate.ts settleDoublesStart's DoublesGas); its end is guarded (doubles-turn.ts gasEnds).
   "neutralizinggas",
+  // status2 wave 1b (ADDENDUM2 §2.4): K's reactions (doubles-reactions.ts: Flower Veil and Pastel Veil against a damaging
+  // move's added effect, Aftermath, Innards Out, Cotton Down, Battle Bond, Receiver and Power of Alchemy at a faint), PR's
+  // presence (doubles-presence.ts: Dancer, Commander, Poison Puppeteer), ST's start (doubles-start.ts: Imposter, a start copy's
+  // Opportunist and Mirror Herb, which D models in the turn), FC's Room Service as a pseudo-weather starts
+  // (doubles-fieldchange.ts), and Pickup at the end of the turn (doubles-eot.ts, with item history).
+  "flowerveil", "pastelveil", "aftermath", "innardsout", "cottondown", "battlebond", "receiver", "powerofalchemy",
+  "dancer", "commander", "poisonpuppeteer", "imposter", "opportunist", "mirrorherb", "roomservice", "pickup",
+  // status2 wave 2 (R): the switch family (doubles-switch.ts): with the side's bench given its holder leaves and the
+  // replacement comes in (Eject Pack's onAnySwitchIn among the entry's handlers); without one, a switch with a later action
+  // is REASONS.switchesOut and one without leaves the end of turn not estimated (as for any switch-out).
+  "ejectpack", "ejectbutton", "redcard", "emergencyexit", "wimpout",
 ]);
-
-/** Third-party handlers guarded wherever the Pokémon is in the turn (presence): `{Ability or item} is not modelled in 2v2.` and the SPEC's own texts. */
-export const PRESENCE_THIRD_PARTY: ReadonlySet<string> = new Set([
-  "poisonpuppeteer", "imposter",
-]);
-
-/** Abilities a knockout reacts with that the turn does not follow (onSourceAfterFaint, onAllyFaint): guarded when one happens with a later action. */
-export const FAINT_REACTIONS: ReadonlySet<string> = new Set(["receiver", "powerofalchemy"]);
 
 /**
- * Third-party handlers guarded when they act (events): Flower Veil and Pastel Veil keeping a foe's drop or status of a
- * damaging move off their side (veilGuard; a status move's are modelled, doubles-status.ts canStatus and applyBoosts),
- * Aftermath and Innards Out as their holder is knocked out, Dancer on a dance move, Commander with Dondozo on its side,
- * Room Service as Trick Room starts, the faint reactions the turn does not follow, and Pickup at the end of the turn
- * (doubles-eot.ts).
+ * Third-party handlers guarded when they act (events): Symbiosis passing its item on but after a Fling (doubles-guards.ts
+ * symbiosisPass; its other guards: symbiosisAfterAction, symbiosisReceived, symbiosisEndOfTurn). The switch family is
+ * modelled since status2 wave 2 (MODELLED_THIRD_PARTY).
  */
 export const EVENT_THIRD_PARTY: ReadonlySet<string> = new Set([
-  "flowerveil", "pastelveil", "aftermath", "innardsout", "dancer", "commander", "roomservice", ...FAINT_REACTIONS, "battlebond",
-  "symbiosis", "mirrorherb", "opportunist", "cottondown", "ejectpack", "ejectbutton", "redcard", "emergencyexit", "wimpout", "pickup",
+  "symbiosis",
 ]);
 
-/** Every third-party handler the engine does not follow: guarded, by presence or as an event. */
-export const GUARDED_THIRD_PARTY: ReadonlySet<string> = new Set([...PRESENCE_THIRD_PARTY, ...EVENT_THIRD_PARTY]);
+/** Every third-party handler the engine does not follow: guarded as an event (status2 integration 1b: no presence one is left). */
+export const GUARDED_THIRD_PARTY: ReadonlySet<string> = new Set([...EVENT_THIRD_PARTY]);
 
 // "Not estimated" reasons (SPEC §2.2; status-eot SPEC §2.4, ADDENDUM §2.4), the parts in braces filled from the turn.
 export const REASONS = {
   tooMany: "Too many cases to follow.",
-  notModelledBefore: (move: string) => `${move} is not modelled and comes before another move.`,
   notModelled: (move: string) => `${move} is not modelled.`,
   notIn2v2: (name: string) => `${name} is not modelled in 2v2.`,
   // status-eot SPEC §2.4 (moves phase; the last three are end-of-turn reasons).
@@ -261,25 +225,16 @@ export const REASONS = {
   needsLastMove: (move: string, name: string) => `${move} needs ${name}'s move from the last turn.`,
   /** Encore: lastMove differs from its queued move. */
   encoreChange: (name: string) => `Encore changes ${name}'s move: not modelled.`,
-  /** The Imprison user's moves undefined. */
-  needsMoves: (name: string) => `Imprison needs ${name}'s moves.`,
-  /** Ingrain (ungrounded user), Magnet Rise, with a later damaging move into it. */
-  groundingChange: (move: string, name: string) => `${move} changes whether ${name} is grounded: later moves are not modelled.`,
-  /** Pain Split. */
-  withDynamax: (move: string) => `${move} with a Dynamaxed Pokémon is not modelled in 2v2.`,
-  /** An intact Disguise or Ice Face against a confusion self-hit. */
-  faceSelfHit: (ability: string) => `${ability} against a confusion self-hit is not modelled in 2v2.`,
+  /** The user's moves undefined: Imprison (status2 C36: one key; Imprison passes "Imprison", so its text is unchanged), Sleep Talk. */
+  needsMoves: (move: string, name: string) => `${move} needs ${name}'s moves.`,
   /** Berserk or Anger Shell after a confusion self-hit keeps its holder's healing Berry at or under its line: a later hit or the end of turn. */
   berryLocked: (ability: string, item: string) => `${item} after a confusion self-hit with ${ability} is not modelled in 2v2.`,
-  /** Stored Power, Power Trip (the user's) or Punishment (the target's) reading an accuracy or evasion stage above 0 from this turn. */
-  hiddenStages: (move: string, name: string) => `${move} with ${name}'s accuracy or evasion stage from this turn is not modelled in 2v2.`,
-  /** A target's Starf, Ganlon or Apicot Berry (or Lansat with Cheek Pouch) eaten at the Update between two hits of one move. */
+  /** status2 Step 1 #2: the same lock left by a Champions Sheer Force hit (a later hit or status move reaching the holder, its own status move). */
+  berryLockedSheerForce: (ability: string, item: string) => `${item} held by ${ability} after a Sheer Force hit is not modelled in 2v2.`,
+  /** W's continuation (doubles-pairs.ts continueHits): a target's Starf, Ganlon or Apicot Berry (or Lansat with Cheek Pouch) eaten between two hits where the user fainted at that hit or a recoil or Shell Bell reads the stopped hits. */
   berryBetweenHits: (item: string, move: string) => `${item} between the hits of ${move} is not modelled in 2v2.`,
-  /** Sparkling Aria's burn cure when its user faints in the move with a Life Orb (the faint's timing decides it). */
-  ariaFaint: (name: string) => `Sparkling Aria's burn cure after ${name} faints in the move is not modelled in 2v2.`,
-  landing: (move: string) => `${move} landing is not modelled in 2v2.`,
+  /** A form change at the end of turn the turn does not follow (Power Construct, where its maximum HP changes: E2), or a hidden one (H). */
   formChange: (ability: string, name: string) => `${ability} changing ${name}'s form is not modelled in 2v2.`,
-  overTime: (move: string) => `${move}'s damage over time is not modelled in 2v2.`,
   // ADDENDUM §2.4.
   /** Dragon Darts after its ally's Ally Switch (A2, p1:149). */
   dartsAimSelf: "Dragon Darts aimed where its user now stands is not modelled in 2v2.",
@@ -289,22 +244,58 @@ export const REASONS = {
   intoSubstitute: (what: string) => `${what} into a Substitute is not modelled in 2v2.`,
   /** A multi-hit move, and the Pokémon has an effect the engine's per-hit damages read (§4.13.6). */
   subPerHit: (move: string, name: string, what: string) => `${move} into ${name}'s Substitute with ${what} is not modelled in 2v2.`,
-  focusBand: "Focus Band is not modelled.",
-  maxGuard: "Max Guard is not modelled.",
-  allyEffect: (effect: string) => `${effect} against an ally's move is not modelled.`,
-  spreadHeal: (move: string) => `${move} heals from more than one target: not modelled.`,
   spreadEffect: (move: string, name: string) => `${move}'s effect on ${name} from more than one target is not modelled.`,
   switchesOut: (name: string) => `${name} switches out: the replacement is not known.`,
   copiesRise: (name: string) => `${name} copying a stat rise is not modelled in 2v2.`,
-  faceMultiHit: (ability: string) => `${ability} against a multi-hit move is not modelled in 2v2.`,
   fieldChange: (name: string) => `A weather or terrain change this turn would change ${name}.`,
-  activates: (move: string, name: string) => `${move} would activate ${name}.`,
-  semiInvulnerable: (name: string, move: string) => `${name} is semi-invulnerable after ${move}: later moves are not modelled.`,
-  randomStatus: (move: string) => `${move}'s random status is not modelled in 2v2.`,
-  typeChange: (by: string, name: string) => `${by} changes ${name}'s type: later moves are not modelled.`,
-  takesDouble: (move: string, name: string) => `${move} doubles the damage ${name} takes: later moves are not modelled.`,
-  pledges: (move: string, other: string) => `${move} with ${other} is not modelled in 2v2.`,
   gasEnds: "Neutralizing Gas ending is not modelled in 2v2.",
   withGas: (name: string) => `${name} with Neutralizing Gas is not modelled in 2v2.`,
   gasShield: "An Ability Shield change under Neutralizing Gas is not modelled in 2v2.",
+  /** status2 R (SPEC2 §2.4, Step 2): a Neutralizing Gas holder that comes in mid-turn (the other Pokémon's abilities would end). R-E calls it. */
+  entersWithGas: (name: string) => `${name}'s Neutralizing Gas coming in is not modelled in 2v2.`,
+  // status2 SPEC2 §2.4 (Step 0a writes every key; a track starts calling it).
+  /** A1: an ability Start the turn does not follow (Supreme Overlord; Forecast on Castform, Flower Gift on Cherrim). */
+  abilityStart: (ability: string, name: string) => `${ability} starting on ${name} is not modelled in 2v2.`,
+  /** A1: an ability End it does not follow (Zen Mode, Illusion: Gastro Acid where the game allows it). */
+  abilityEnd: (ability: string, name: string) => `${ability} ending on ${name} is not modelled in 2v2.`,
+  /** A1, SwSh: Transform into a Dynamaxed target. */
+  /** D (the settle, F1's rule): an Imposter holder whose slot across is empty. */
+  imposterAcross: (name: string) => `${name}'s Imposter with no Pokémon across is not modelled in 2v2.`,
+  /**
+   * A2: Electrify or Ion Deluge on a move whose type is set as it is used, a Z-Move or a Max Move ("Electrify", "Ion
+   * Deluge"); Synchronoise from a two-type user with an added type ("an added type"); Natural Gift with "Embargo" or
+   * "Heal Block"; PR: "the rainbow", "the swamp", "a Pokémon that switched in this turn" (ADDENDUM2 §2.4).
+   */
+  combo: (move: string, what: string) => `${move} with ${what} is not modelled in 2v2.`,
+  /** A2: Conversion with no move-slot order. */
+  needsFirstMove: (name: string) => `Conversion needs ${name}'s first move.`,
+  /** A2: Conversion 2 when the last move's type as used is not known (an own-type move, a Z-Move or Max Move last turn). */
+  needsLastMoveType: (move: string, name: string) => `${move} needs the type of ${name}'s last move.`,
+  /** A2: Attract or Captivate between species that can be either gender, with no gender set. */
+  needsGender: (move: string, name: string) => `${move} needs ${name}'s gender.`,
+  /** A3 Recycle (the moves), E Harvest (the end of turn): the item it used before this turn is not known. */
+  needsLastItem: (move: string, name: string) => `${move} needs ${name}'s item from an earlier turn.`,
+  // status2 ADDENDUM2 §2.4.
+  /** N: a used Protean or Libero (abilityActive false) whose types the input does not give. */
+  typeUnknown: (name: string, ability: string) => `${name}'s type after ${ability} is not known.`,
+  /** N: a tie the entry order decides (a redirection at one Speed, Dancers at one stored Speed) with the order Unknown ("Follow Me", "Rage Powder", "Spotlight", "Lightning Rod", "Storm Drain", "Dancer"). */
+  needsEntryOrder: (by: string, a: string, b: string) => `${by} needs whether ${a} or ${b} came in first.`,
+  /** PR: a Choice item Dancer's copy of another dance where the input does not say whether a Choice lock from an earlier turn holds it. */
+  needsChoiceLock: (by: string, name: string, item: string) => `${by} needs whether ${name} is locked into a move by ${item}.`,
+  /** CL: Copycat before any action of the turn with battleLastMove absent. */
+  needsLastMoveUsed: (move: string) => `${move} needs the last move used before this turn.`,
+  /** CL: Instruct into a Pokémon whose last move is an earlier turn's single-target move with lastMoveTarget absent. */
+  needsLastTarget: (move: string, name: string) => `${move} needs the target of ${name}'s last move.`,
+  /** Assist (R-E, doubles-calling.ts): the side has no bench in the input, or a party member's moves are not given. */
+  needsParty: (move: string, name: string) => `${move} needs the moves of ${name}'s party.`,
+  /** PR: a multi-hit contact move into a heating Beak Blast holder whose burn would land after the first hit. */
+  intoBeakBlast: (move: string, name: string) => `${move} into ${name}'s Beak Blast is not modelled in 2v2.`,
+  /** E2: a landing from a Pokémon not in battle with two holders of one partner boost on its side. */
+  landingPartners: (move: string, ability: string) => `${move} landing with two ${ability} holders on its user's side is not modelled in 2v2.`,
+  /** E2: a landing given as a bare move id (C33). */
+  needsLandingUser: (move: string) => `${move} landing needs its user.`,
+  /** E2: cudChew true (a Berry, not known which; C33). */
+  needsCudChewBerry: (name: string) => `Cud Chew needs ${name}'s Berry from the last turn.`,
+  /** R (review 2): hazards from before the turn with no DoublesHazards.order, where a newcomer's knock-out decides whether a later one acts. */
+  hazardOrder: (hazards: string, where: string) => `The order ${hazards} went up on ${where} is not known.`,
 } as const;

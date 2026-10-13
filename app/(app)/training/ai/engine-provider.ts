@@ -7,7 +7,7 @@
 import { DOUBLES_SLOTS, slotSide, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { AiInputs } from "../model/ai-inputs";
-import type { AiView, MonKey } from "../model/ai-view";
+import type { AiView, MonKey, MonView } from "../model/ai-view";
 import type {
   CellMethod, DecideOptions, DecisionProvider, DecisionStats, HabitsRecord, MegaPolicy, MegaStats, PlayerModel, PlayerPrediction,
   PlayerQuestion, TieBreaker, TurnDecision,
@@ -87,11 +87,14 @@ const checkAbort = (signal: AbortSignal) => { if (signal.aborted) throw abortErr
 /** Display names for the read: the species shown; "your" / "its" when both sides show the same species. */
 export function readNames(view: AiView, runtime: BattleRuntime): (key: MonKey) => string {
   const nameOf = (speciesId: string) => runtime.speciesById.get(speciesId)?.name ?? speciesId;
+  // status2 T1: a transformed Pokémon (its build its target's species: bridge.ts liveBuild) goes by its own name, as the log
+  // names it.
+  const shown = (mon: MonView) => nameOf(mon.build.transformedFrom?.speciesId ?? mon.build.speciesId);
   return (key) => {
     const mon = view.mons.find((each) => each.key === key);
     if (!mon) return key.slice(key.indexOf(":") + 1);
-    const name = nameOf(mon.build.speciesId);
-    const mirrored = view.mons.some((other) => other.side !== mon.side && nameOf(other.build.speciesId) === name);
+    const name = shown(mon);
+    const mirrored = view.mons.some((other) => other.side !== mon.side && shown(other) === name);
     return mirrored ? `${mon.side === "own" ? "your" : "its"} ${name}` : name;
   };
 }

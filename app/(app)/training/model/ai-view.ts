@@ -1,4 +1,4 @@
-import type { DoublesSideId, DoublesSlotId, DoublesTurnInput } from "@/app/lib/battle/doubles-types";
+import type { DoublesOutcomeMon, DoublesSideId, DoublesSlotId, DoublesTurnInput } from "@/app/lib/battle/doubles-types";
 import type { BattleBuild, BattleConditions } from "@/app/lib/battle/types";
 import type { BeliefWorld } from "./ai-inputs";
 import type { TurnRecord } from "./decision";
@@ -95,6 +95,11 @@ export type PostMon = {
   perishCount?: number;
   sleepTurns?: number;
   protected: boolean;
+  /**
+   * status2 T1 (SPEC2 §6), engine outcomes only: the state from this turn the next turn's engine reads (E2's DoublesOutcomeMon
+   * fields of the same names). No value term weighs it (SPEC2 Q7).
+   */
+  carried?: Partial<Pick<DoublesOutcomeMon, "stockpile" | "stages" | "pendingCopy" | "lastItem" | "berryLocked" | "berryWeaken" | "turnsLeft" | "charging" | "onceUsed" | "cudChew">>;
 };
 export type PostState = {
   chance: number;
@@ -109,8 +114,12 @@ export type PostState = {
 export interface TurnServices {
   readonly view: AiView;
   readonly worlds: readonly BeliefWorld[];
-  /** Bridge + splits + prelude on belief world 0 for one pairing. The caller memoises by jointActionKey. */
-  engineWorlds(cell: CellActions): EngineWorlds;
+  /**
+   * Bridge + splits + prelude on belief world 0 for one pairing. The caller memoises by jointActionKey. status2 R-T:
+   * `replace`, the AI's own replacement pick for a Pokémon of its side that switches out by its choice (in the engine input
+   * and before the moves); absent: its first bench Pokémon. Memoised per policy.
+   */
+  engineWorlds(cell: CellActions, replace?: ReplacePolicy): EngineWorlds;
   /** One rollout on belief world (sample mod worlds.length); sample n uses the decision's seed n for every cell. */
   rollout(cell: CellActions, sample: number, replace: ReplacePolicy): PostState;
   /** End-of-turn HP change per Pokémon active now, no moves (belief world 0; cached per decision). */

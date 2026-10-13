@@ -91,9 +91,13 @@ describe("third-party handlers (SPEC §8.4)", () => {
     for (const id of ["sweetveil", "magicbounce", "goodasgold", "oblivious", "owntempo", "synchronize", "earlybird", "healer", "hydration", "shedskin", "baddreams", "bigroot"]) {
       expect(MODELLED_THIRD_PARTY.has(id), id).toBe(true);
     }
-    // Flower Veil and Pastel Veil are modelled against status moves (doubles-status.ts canStatus, applyBoosts) and stay
-    // guarded against a damaging move's added effect (doubles-turn.ts veilGuard); Pickup acts at the end of turn (E2).
-    for (const id of ["flowerveil", "pastelveil", "pickup"]) expect(GUARDED_THIRD_PARTY.has(id), id).toBe(true);
+    // Flower Veil and Pastel Veil are modelled against status moves (doubles-status.ts canStatus, applyBoosts) and, since
+    // status2 wave 1b, against a damaging move's added effect (doubles-reactions.ts veil); Pickup acts at the end of turn
+    // (doubles-eot.ts). The switch family is modelled since wave 2's replacement (doubles-switch.ts); Symbiosis stays
+    // guarded as an event (after any item use but a Fling).
+    for (const id of ["flowerveil", "pastelveil", "pickup"]) expect(MODELLED_THIRD_PARTY.has(id), id).toBe(true);
+    for (const id of ["ejectpack", "ejectbutton", "redcard", "emergencyexit", "wimpout"]) expect(MODELLED_THIRD_PARTY.has(id), id).toBe(true);
+    expect([...GUARDED_THIRD_PARTY]).toEqual(["symbiosis"]);
   });
 });
 

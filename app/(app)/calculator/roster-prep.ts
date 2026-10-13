@@ -396,7 +396,7 @@ export function toggleMatchupMega(current: PreparedMatchup, owner: MoveOwner, fo
   let holder = slot.build;
   let otherBuild = current[otherSide].build;
   let stored = false;
-  if (options.storeCopiedIntimidate !== false && !reverting && holder.abilityId === "trace" && settings.abilityId !== "trace" && holder.copiedIntimidateStored !== intimidatedKey(otherBuild, current.runtime)
+  if (options.storeCopiedIntimidate !== false && !reverting && holder.abilityId === "trace" && settings.abilityId !== "trace" && !holder.copiedIntimidateStored?.split(",").includes(intimidatedKey(otherBuild, current.runtime))
     && tracedAbility(holder, otherBuild, current.field.magicRoom).abilityId === "intimidate") {
     const sideOf = (entry: BattleSide) => entry === "attacker" ? current.field.attackerSide : current.field.defenderSide;
     const result = applyIntimidate({ ...holder, abilityId: "intimidate" }, otherBuild, {

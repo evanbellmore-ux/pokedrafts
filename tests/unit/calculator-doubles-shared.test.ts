@@ -11,7 +11,8 @@ import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calcu
 import { getRosterPanel } from "@/app/(app)/calculator/roster-prep";
 import { createBuild, createConditions, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { usualAbility } from "@/app/lib/battle/move-defaults";
-import { createBattleRuntime } from "@/app/lib/battle/runtime";
+import { championsRuntime, createBattleRuntime } from "@/app/lib/battle/runtime";
+import { unmodelledDoublesStates } from "@/app/lib/battle/unmodelled-states";
 import type { BattleBuild, MoveDamageResult, NativeCatalog } from "@/app/lib/battle/types";
 import svCatalog from "@/data/battle/scarlet_violet/catalog.json";
 import { positionalIn } from "../fixtures/naming";
@@ -277,7 +278,9 @@ describe("BattleConditions 2v2 variant", () => {
     expect(sides[0]).not.toContain("Charge: Blastoise");
     expect(sides[1]).toMatch(/^[^>]*><legend[^>]*>Opponent&#x27;s side<\/legend>[\s\S]*Charge: Blastoise[\s\S]*Charge: Pikachu/);
     expect(html).toMatch(/data-doubles-charge="own-left"[^>]*checked=""/);
-    expect(note(html)).toBe(note(conditions()));
+    // status2 (NU, IN §5.6): the 2v2 note lists the 2v2's own states (unmodelledDoublesStates), not the 1v1's.
+    expect(note(html)).not.toBe(note(conditions()));
+    for (const state of unmodelledDoublesStates(championsRuntime)) expect(note(html)).toContain(`<li>${state.replace(/'/g, "&#x27;")}.</li>`);
     expect(note(html)).toContain("Battle states that cannot be set here");
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
     expect(new Set(ids).size).toBe(ids.length);

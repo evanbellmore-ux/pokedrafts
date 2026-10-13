@@ -1,14 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { Button } from "@/app/components/ui";
 import { beatUpPartyOptions } from "@/app/lib/battle/count-moves";
 import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
-import { allyOf, DOUBLES_SLOTS, doublesNameParts, foesOf, nameText, slotSide, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { allyOf, DOUBLES_SLOTS, doublesNameParts, foesOf, nameText, slotSide, turnBenchNames, type DoublesSideId, type DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { movesSpeciesId } from "@/app/lib/battle/imposter";
 import { mimicryState } from "@/app/lib/battle/mimicry";
 import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleConditions, BattleMechanic } from "@/app/lib/battle/types";
 import { DoublesCarriedContext, type CarriedControl } from "./BattleConditions";
+import { applyDoublesEarlier } from "./doubles-inputs";
+import { EarlierTurnContext } from "./EarlierTurnFields";
 import type { BuildSettings } from "./BuildSettings";
 import type { CalculatorTab } from "./CalculatorTabs";
 import type { DoublesCardView } from "./DoublesCard";
@@ -16,12 +19,13 @@ import DoublesMoves from "./DoublesMoves";
 import DoublesSettings from "./DoublesSettings";
 import DoublesSummary from "./DoublesSummary";
 import {
-  activateDoublesMoveSlot, applyDoublesIntimidate, carriedAbilityOn, carriedIssueTexts, carriedOptions, chooseDoublesMove, dismissDoublesReplacement, doublesBuildIssues, doublesFainted,
-  doublesIntimidateResult, doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove, focusDoublesMoves, getDoublesTurnInput, intimidateFoes,
-  NO_CARRIED_OPTIONS, replaceDoublesMove, selectDoublesRoster, setDoublesCarried, setDoublesCharged, setDoublesField, setDoublesMovesInto, setDoublesTarget,
-  toggleDoublesMechanic, toggleDoublesMega, updateDoublesBuild, updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
+  activateDoublesMoveSlot, applyDoublesCommander, applyDoublesIntimidate, carriedAbilityOn, carriedIssueTexts, carriedOptions, chooseDoublesMove, commanderAlly,
+  dismissDoublesReplacement, doublesBuildIssues, doublesFainted, doublesIntimidateResult, doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove,
+  focusDoublesMoves, getDoublesTurnInput, intimidateFoes, NO_CARRIED_OPTIONS, replaceDoublesMove, selectDoublesRoster, setDoublesCarried, setDoublesCharged, setDoublesSwitchedIn,
+  setDoublesField, setDoublesMovesInto, setDoublesTarget, switchedInOptions, toggleDoublesMechanic, toggleDoublesMega, traceCopiesIntimidate, updateDoublesBuild,
+  updateDoublesHP, updateDoublesMoveContext, type CalculatorState, type DoublesMatchup,
 } from "./doubles-prep";
-import { cardReached, turnHP } from "./doubles-format";
+import { cardReached, slotSwitches, turnHP } from "./doubles-format";
 import { getBuildHealth, getSettledHealth, type DamageRollMode } from "./hp-preview";
 import KeepWhileHidden from "./KeepWhileHidden";
 import { RosterPicker } from "./LeagueMatchupPicker";
@@ -303,11 +307,26 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     return foes.length === 2 ? "Apply Intimidate to both foes" : foes.length === 1 ? `Apply Intimidate to ${names[foes[0]]}` : null;
   }
 
+  /**
+   * The apply action PokemonPanel has no button for (status2 ADDENDUM2 §5.2): the Intimidate a Trace holder copies as it
+   * comes in ("Apply Trace's Intimidate to both foes"), or Commander from a Tatsugiri beside a Dondozo ("Apply Commander
+   * to Dondozo"). Null when neither applies.
+   */
+  function applyAction(slot: DoublesSlotId): { label: string; run: (state: CalculatorState, key: number) => CalculatorState } | null {
+    if (traceCopiesIntimidate(doubles, slot)) {
+      const label = intimidateLabel(slot);
+      return label ? { label: label.replace("Apply Intimidate", "Apply Trace's Intimidate"), run: applyDoublesIntimidate } : null;
+    }
+    const dondozo = commanderAlly(doubles, slot);
+    return dondozo ? { label: `Apply Commander to ${names[dondozo]}`, run: applyDoublesCommander } : null;
+  }
+
   function renderEditor(slot: DoublesSlotId) {
     const combatant = doubles.slots[slot];
     const other = otherBuild(slot);
     const intimidate = intimidateLabel(slot);
-    return (
+    const apply = applyAction(slot);
+    const panel = (
       <PokemonPanel
         runtime={runtime}
         gameType="Doubles"
@@ -332,7 +351,23 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
         roster={desktopRosters ? undefined : renderRoster(slot)}
       />
     );
+    if (!apply) return panel;
+    return (
+      <>
+        {panel}
+        <div data-doubles-apply={slot} className="mt-3 min-w-0">
+          {/* The label names a Pokémon, so it wraps (over Button's nowrap), as PokemonPanel's Intimidate button does. */}
+          <Button size="sm" variant="secondary" className="min-h-11 max-w-full whitespace-normal! wrap-anywhere" onClick={() => update((state) => apply.run(state, combatant.key))}>
+            {apply.label}
+          </Button>
+          <p role="status" className="mt-1 wrap-anywhere text-xs text-text">{doublesIntimidateResult(doubles, slot)}</p>
+        </div>
+      </>
+    );
   }
+
+  // status2 R-U: the bench Pokémon's names as the turn's own text gives them (turnBenchNames of its input).
+  const benchNames = turnBenchNames(input);
 
   function summaryCards() {
     const ready = turn?.status === "ready" ? turn : null;
@@ -349,6 +384,9 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
         afterTurn: !!shown?.afterTurn,
         reached: !fainted[slot] && cardReached(ready, slot, runtime),
         fainted: fainted[slot],
+        switchedIn: !!doubles.history[slot].switchedIn,
+        // status2 R-U: who left this slot and who came in (its card shows them below its own HP).
+        switches: ready && !fainted[slot] ? slotSwitches(ready, slot, names, benchNames) : null,
         issues: issues[slot],
         mimicry: mimicryState(combatant.build, otherBuild(slot), { terrain: field.terrain, magicRoom: field.magicRoom }),
         rosterPanel: rosterPanels[combatant.role],
@@ -364,6 +402,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
           runtime={runtime}
           cards={summaryCards()}
           names={names}
+          benchNames={benchNames}
           turn={turn}
           blockedReason={blockedReason}
           rollMode={rollMode}
@@ -382,6 +421,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             selectTab("moves");
           }}
           onChooseMove={(owner: MoveOwner, moveId: string | null) => update((state) => chooseDoublesMove(state, owner, moveId))}
+          onSwitchedIn={(key: number, on: boolean) => update((state) => setDoublesSwitchedIn(state, key, on))}
           onShowMoves={showMoves}
           onTargetChange={(owner: MoveOwner, target: DoublesSlotId) => update((state) => setDoublesTarget(state, owner, target))}
           onShowStep={showStep}
@@ -403,7 +443,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
       return {
         slot, side: slotSide(slot) === "own" ? "attackerSide" : "defenderSide", name: names[slot], value,
         issues: carriedIssueTexts(turnIssues[slot], names[slot]),
-        options: fainted[slot] ? NO_CARRIED_OPTIONS : carriedOptions(combatant.build, runtime, !!value.sleep?.rest, carriedAbilityOn(doubles, slot)),
+        options: fainted[slot] ? NO_CARRIED_OPTIONS : switchedInOptions(carriedOptions(combatant.build, runtime, !!value.sleep?.rest, carriedAbilityOn(doubles, slot)), doubles, slot),
         onChange: (carried) => setCalc((state) => setDoublesCarried(state, combatant.key, carried)),
       };
     });
@@ -418,6 +458,12 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
       <div data-calculator-mode-only="2v2" hidden={!active}>
         {/* DoublesSettings renders Field conditions, which reads the state-from-earlier-turns controls from this context. */}
         <DoublesCarriedContext.Provider value={carriedControls()}>
+          {/* status2 NU: the earlier-turn controls read the matchup, the turn's input issues and change the state through this. */}
+          {/* status2 R-U: the Bench adds from each side's roster panel (rosters) through the whole state (update). */}
+          <EarlierTurnContext.Provider value={{
+            doubles, issues: turn?.status === "issues" ? turn.issues : null, apply: (change) => setCalc((state) => applyDoublesEarlier(state, change)),
+            rosters: { own: rosterPanels.own.choices, opponent: rosterPanels.opponent.choices }, update,
+          }}>
           <DoublesSettings
             runtime={runtime}
             names={names}
@@ -432,6 +478,7 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             charged={doubles.charged}
             onChargedChange={(slot: DoublesSlotId, charged: boolean) => setCalc((state) => setDoublesCharged(state, doubles.slots[slot].key, charged))}
           />
+          </EarlierTurnContext.Provider>
         </DoublesCarriedContext.Provider>
       </div>
     );

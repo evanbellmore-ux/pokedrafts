@@ -10,7 +10,7 @@ import type { ShowdownSet, SideID } from "../model/showdown-types";
 import { identName, type MemberKeys } from "./choices";
 import { volatileStates } from "./effects";
 import { Battle, Dex, FORMAT, State, toID, type ClonedBattle, type ModdedDex, type WritablePokemon, type WritableSide } from "./sim";
-import { shownPercent } from "./tracker";
+import { countsOf, shownPercent, type StoredEvent } from "./tracker";
 
 export type BeliefBattle = { battle: ClonedBattle; json: string; keys: MemberKeys; approximations: string[] };
 
@@ -26,7 +26,7 @@ const DURATION: Record<string, { base: number; item?: string }> = {
 };
 const LAYERED: ReadonlySet<string> = new Set(["spikes", "toxicspikes"]);
 /** Tracked as side conditions with layers = slot position + 1; slot conditions in the simulator (sim/side.ts slotConditions). */
-const SLOT_CONDITIONS: ReadonlySet<string> = new Set(["wish", "futuresight", "doomdesire"]);
+const SLOT_CONDITIONS: ReadonlySet<string> = new Set(["wish", "futuresight", "doomdesire", "healingwish", "lunardance"]);
 /** Future Sight's stored move data (pinned data/moves.ts futuresight onTry). */
 const FUTURE_SIGHT_DATA = {
   id: "futuresight", name: "Future Sight", accuracy: 100, basePower: 120, category: "Special", priority: 0,
@@ -59,6 +59,61 @@ function nameKeys(entries: { key: string; set: ShowdownSet }[]): Map<string, str
     for (const name of [set.name, set.species, dex().species.get(set.species).baseSpecies]) { map.set(name, key); map.set(toID(name), key); }
   }
   return map;
+}
+
+type StatId = "atk" | "def" | "spa" | "spd" | "spe";
+type Stats = Record<StatId, number>;
+const STAT_IDS: readonly StatId[] = ["atk", "def", "spa", "spd", "spe"];
+
+/** A Pokémon's stored stats in `speciesId`'s form with no change (pinned sim/pokemon.ts setSpecies: battle.spreadModify). */
+function formStats(battle: ClonedBattle, speciesId: string, set: object): Stats {
+  const stats = (battle as unknown as { spreadModify(base: object, set: object): Stats }).spreadModify(battle.dex.species.get(speciesId).baseStats, set);
+  return Object.fromEntries(STAT_IDS.map((stat) => [stat, stats[stat]])) as Stats;
+}
+/**
+ * status2 T1: stored stats after a stint's changes in log order (pinned data/moves.ts powersplit / guardsplit floor averages,
+ * speedswap, powertrick / powershift swaps, sim/pokemon.ts transformInto's copy), each partner's own as they stood then (its
+ * form then and its changes before). null when a partner is not in the battle.
+ */
+function replayStored(battle: ClonedBattle, start: Stats, events: readonly StoredEvent[], monOf: (key: string) => WritablePokemon | null): Stats | null {
+  const out = { ...start };
+  for (const event of events) {
+    if (event.move === "powertrick" || event.move === "powershift") { [out.atk, out.def] = [out.def, out.atk]; continue; }
+    const partner = event.partner ? monOf(event.partner.key) : null;
+    if (!event.partner || !partner) return null;
+    const theirs = replayStored(battle, formStats(battle, event.partner.speciesId, partner.set), event.partner.stored, monOf);
+    if (!theirs) return null;
+    if (event.move === "transform") Object.assign(out, theirs);
+    else if (event.move === "speedswap") out.spe = theirs.spe;
+    else for (const stat of event.move === "powersplit" ? ["atk", "spa"] as const : ["def", "spd"] as const) out[stat] = Math.floor((out[stat] + theirs[stat]) / 2);
+  }
+  return out;
+}
+/**
+ * status2 T1: the ability state the public lines decide (tracker.ts PublicCounts), on the active Pokémon's fresh one:
+ * Champions' Berserk / Anger Shell lock (checkedBerserk / checkedAngerShell false after a confusion self-hit, or after a
+ * single hit with secondaries from a Sheer Force user: data/mods/champions/abilities.ts, PS/sim/battle-actions.ts
+ * afterMoveSecondaryEvent), Ripen's weakened Berry (berryWeaken), Opportunist's pending copy (boosts). A lock the lines
+ * cannot decide (`unknown`) stays off here; the bridge rolls the cell out.
+ */
+function abilityStateOf(battle: ClonedBattle, bp: WritablePokemon, mon: PublicMon, monOf: (key: string) => WritablePokemon | null) {
+  const counts = countsOf(mon);
+  const state = bp.abilityState as Record<string, unknown>;
+  // Protean and Libero's once-per-entry flag only from their own type change (tracker.ts typeChanger), not a Soak or Reflect
+  // Type on the holder.
+  if ((bp.ability === "protean" || bp.ability === "libero") && counts.typeChanger) state[bp.ability] = true;
+  // Gastro Acid suppresses the ability's handlers (pinned sim/pokemon.ts ignoringAbility): none of the rest is written then.
+  if (mon.volatiles.some((each) => each.id === "gastroacid")) return;
+  const flag = bp.ability === "berserk" ? "checkedBerserk" : bp.ability === "angershell" ? "checkedAngerShell" : null;
+  const mark = counts.berserk;
+  if (flag && mark && mark.kind !== "unknown") {
+    const data = mark.kind === "move" ? battle.dex.moves.get(mark.move) as unknown as { secondaries?: readonly unknown[] | null; hasSheerForceBoost?: boolean } : null;
+    const sheerForce = mark.kind === "move" && monOf(mark.by)?.ability === "sheerforce" && !!data?.secondaries?.length && !data.hasSheerForceBoost;
+    if (mark.kind === "confusion" || sheerForce) state[flag] = false;
+  }
+  if (bp.ability === "ripen" && counts.ripen === "weaken") state.berryWeaken = true;
+  const rises = Object.entries(counts.copyRises ?? {}).filter(([, amount]) => (amount ?? 0) > 0);
+  if (bp.ability === "opportunist" && rises.length) state.boosts = Object.fromEntries(rises);
 }
 
 export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime: BattleRuntime): BeliefBattle {
@@ -99,6 +154,7 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
 
   // 3. Every field, per Pokémon.
   const transforms: [WritablePokemon, string][] = [];
+  const reflected: [WritablePokemon, string][] = [];
   for (const side of ["p1", "p2"] as const) {
     const isAI = side === ai;
     order[side].forEach((entry, index) => {
@@ -107,6 +163,9 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
       const mon: PublicMon | undefined = pub.mons[key];
       const request = entry.request;
       const active = index < battle[side].active.length;
+      // status2 T1: an Imposter that transformed as this battle's leads entered is untransformed first (pinned sim/pokemon.ts
+      // clearVolatile); the public -transform line, if any, transforms it again below, into its real target.
+      if (bp.transformed) (bp as unknown as { clearVolatile(includeSwitchFlags?: boolean): void }).clearVolatile(false);
       // Form: as shown (temporary forms such as Aegislash-Blade keep the details' name), else its own request's details;
       // formeChange, permanent for Megas.
       const shownSpecies = mon?.speciesId ?? (request ? speciesOfDetails(request.details) : undefined);
@@ -157,17 +216,12 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
       bp.boosts = mon ? { ...mon.boosts } : { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, accuracy: 0, evasion: 0 };
 
       // Item: its own side's from the request; the other side's as shown, else the world's set (construction may have used it).
+      // status2 T1: the item it last used or ate (pinned pokemon.lastItem) from the public lines (tracker.ts PublicCounts.lastItem).
       const setItem = toID(entry.set.item);
-      if (request) {
-        bp.item = request.item;
-        bp.lastItem = mon?.item.state === "gone" && mon.item.how === "consumed" ? mon.item.itemId : "";
-      } else if (mon?.item.state === "gone") {
-        bp.item = "";
-        bp.lastItem = mon.item.how === "consumed" ? mon.item.itemId : "";
-      } else {
-        bp.item = mon?.item.state === "held" ? mon.item.itemId : setItem;
-        bp.lastItem = "";
-      }
+      bp.lastItem = mon ? countsOf(mon).lastItem ?? "" : "";
+      if (request) bp.item = request.item;
+      else if (mon?.item.state === "gone") bp.item = "";
+      else bp.item = mon?.item.state === "held" ? mon.item.itemId : setItem;
       bp.itemKnockedOff = false;
       bp.itemState = battle.initEffectState({ id: bp.item, target: bp });
       bp.usedItemThisTurn = false;
@@ -181,6 +235,10 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
       bp.abilityState = battle.initEffectState({ id: ability, target: bp });
       const fallen = mon?.volatiles.find((each) => each.id === "fallen");
       if (fallen) bp.abilityState.fallen = fallen.layers ?? 0;
+      // status2 Step 1 #16 (T2E finding 3): Cud Chew's Berry from the public eat line (tracker PublicCounts.cudChew), due at
+      // this turn's 28.2 (PS/data/abilities.ts cudchew: counter 1 as a turn starts after the eat), so rollouts re-eat it.
+      const chewed = mon ? countsOf(mon).cudChew : undefined;
+      if (ability === "cudchew" && chewed && active && !fainted) Object.assign(bp.abilityState, { berry: battle.dex.items.get(chewed.berry), counter: 1 });
 
       // PP: its own actives from the request; everyone else maxpp − shown uses (R4).
       const requestMoves = isAI && active && !fainted && "active" in inputs.request ? inputs.request.active[index]?.moves ?? [] : [];
@@ -204,10 +262,15 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
       bp.activeTurns = Math.max(0, (mon?.activeTurns ?? 0) - (active && !fainted ? 1 : 0));
       bp.attackedBy = [];
       if (pub.sides[side].megaUsed) { bp.canMegaEvo = null; bp.canMegaEvoX = null; bp.canMegaEvoY = null; }
-      // Once-per-battle entry abilities have fired if it entered before (pinned data/abilities.ts supersweetsyrup,
-      // zerotohero, battlebond, intrepidsword, dauntlessshield flags on the Pokémon).
+      // Once-per-battle entry abilities have fired if it entered before (pinned data/abilities.ts zerotohero's flag on the
+      // Pokémon). status2 T2: Supersweet Syrup, Battle Bond, Intrepid Sword and Dauntless Shield's flags from their public lines
+      // (tracker.ts PublicCounts.onceUsed): a Pokémon that never had the ability has not used it, whatever its entries.
       const entered = bp.previouslySwitchedIn > 0;
-      Object.assign(bp, { syrupTriggered: entered, heroMessageDisplayed: entered, bondTriggered: entered, swordBoost: entered, shieldBoost: entered });
+      const once = mon ? countsOf(mon).onceUsed ?? [] : [];
+      Object.assign(bp, {
+        syrupTriggered: once.includes("supersweetsyrup"), heroMessageDisplayed: entered, bondTriggered: once.includes("battlebond"),
+        swordBoost: once.includes("intrepidsword"), shieldBoost: once.includes("dauntlessshield"),
+      });
       // Public type changes (Protean, Soak, Reflect Type, Forest's Curse); Protean and Libero act once per entry.
       const typechange = mon?.volatiles.find((each) => each.id === "typechange");
       const typeadd = mon?.volatiles.find((each) => each.id === "typeadd");
@@ -217,9 +280,10 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
           bp.addedType = "";
           bp.apparentType = bp.types.join("/");
           bp.knownType = true;
-          if (bp.ability === "protean" || bp.ability === "libero") bp.abilityState[bp.ability] = true;
-        } else approximations.add("Type change not rebuilt.");
+        } else if (typechange.speciesId) reflected.push([bp, typechange.speciesId]);
+        else approximations.add("Type change not rebuilt.");
       }
+      // (status2 T1: Protean and Libero's flag is abilityStateOf's, from their own type change only.)
       if (typeadd?.moveId && active && !fainted) bp.addedType = typeadd.moveId;
       if (mon?.transformedInto) transforms.push([bp, mon.transformedInto]);
     });
@@ -232,12 +296,69 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
       bp.volatiles = {};
       if (!mon || bp.fainted || index >= battle[side].active.length) return;
       Object.assign(bp.volatiles, volatileStates({ battle, mon: bp, pub: mon, turn, random, monOf, own: side === ai, approximations }));
+      abilityStateOf(battle, bp, mon, monOf);
     });
   }
-  // Transform, in log order, after everything else.
+  // Transform, in log order, after everything else. Its public stages and crit volatiles are the tracker's (copied at the
+  // -transform line, then changed by later lines), and so are the type changes after it (status2 T1).
   for (const [bp, targetKey] of transforms) {
     const target = monOf(targetKey);
-    if (target && !bp.fainted) { try { bp.transformInto(target, null); } catch { approximations.add("Transform not rebuilt."); } }
+    if (!target || bp.fainted) continue;
+    const keep = { boosts: { ...bp.boosts }, volatiles: { ...bp.volatiles }, ability: bp.ability };
+    // A target that fainted (or left) since still gave it its form: transformInto refuses a fainted one, so it is up for the call.
+    const down = target.fainted;
+    if (down) target.fainted = false;
+    let done = false;
+    try { done = bp.transformInto(target, null); } catch { done = false; }
+    if (down) target.fainted = true;
+    if (!done) { approximations.add("Transform not rebuilt."); continue; }
+    bp.boosts = keep.boosts;
+    bp.volatiles = keep.volatiles;
+    const key = [...monOfKey].find(([, each]) => each === bp)?.[0] ?? "";
+    const mon = pub.mons[key];
+    // The ability it copied then (its own request's for the AI's side; the target's as shown at the -transform line), not
+    // one the target got since (Skill Swap).
+    const copied = mon ? countsOf(mon).stored?.find((event) => event.move === "transform")?.partner : undefined;
+    if (key.startsWith(`${ai}:`)) bp.ability = keep.ability;
+    else if (copied) bp.ability = copied.ability ?? target.baseAbility;
+    // transformInto gave it a fresh ability state: the public lines since rebuild it (Protean's flag, the Berserk lock...).
+    if (mon) abilityStateOf(battle, bp, mon, monOf);
+    // Its copied moves' PP (5 each, sim/pokemon.ts transformInto): its own request's, else less the public uses since.
+    const requestMoves = key.startsWith(`${ai}:`) && "active" in inputs.request ? inputs.request.active[bp.position]?.moves ?? [] : [];
+    for (const slot of bp.moveSlots) {
+      const fromRequest = requestMoves.find((each) => each.id === slot.id && each.pp !== undefined);
+      slot.pp = fromRequest?.pp ?? Math.max(0, slot.pp - (mon?.movesUsed[slot.id] ?? 0));
+      slot.used = (mon?.movesUsed[slot.id] ?? 0) > 0;
+    }
+    // Its types: the target's then (its public change, copied at the -transform line, or after; else the target's form then).
+    const typechange = mon?.volatiles.find((each) => each.id === "typechange");
+    const typeadd = mon?.volatiles.find((each) => each.id === "typeadd");
+    const then = mon ? countsOf(mon).stored?.find((event) => event.move === "transform")?.partner : undefined;
+    const form = then ? battle.dex.species.get(then.speciesId) : null;
+    if (typechange?.moveId) bp.types = typechange.moveId.split("/");
+    else if (form?.exists) bp.types = [...form.types];
+    bp.apparentType = bp.types.join("/");
+    bp.addedType = typeadd?.moveId ?? "";
+  }
+  // status2 T1: Reflect Type's copy of its target's form's types then (the line names none: tracker.ts speciesId), set after
+  // the transforms as a transformed copier's own change.
+  for (const [bp, speciesId] of reflected) {
+    const form = battle.dex.species.get(speciesId);
+    if (!form.exists) { approximations.add("Type change not rebuilt."); continue; }
+    bp.types = [...form.types];
+    bp.apparentType = bp.types.join("/");
+    bp.knownType = true;
+  }
+  // status2 T1: the stored-stat changes of each active Pokémon's stint (Power Split, Guard Split, Speed Swap, Power Trick,
+  // Transform) replayed in log order on its own form's stats (tracker.ts PublicCounts.stored).
+  for (const [key, bp] of monOfKey) {
+    const mon = pub.mons[key];
+    const events = mon ? countsOf(mon).stored : undefined;
+    if (!events?.length || bp.fainted || !bp.isActive) continue;
+    const stats = replayStored(battle, formStats(battle, bp.species.id, bp.set), events, monOf);
+    if (!stats) { approximations.add("Stored stats not rebuilt."); continue; }
+    Object.assign(bp.storedStats as Record<StatId, number>, stats);
+    (bp as unknown as { speed: number }).speed = stats.spe;
   }
 
   // Sides and field.
@@ -263,6 +384,10 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
         // data/moves.ts wish condition: startingTurn is the overflowed turn count at use (turn - 1, sim/battle.ts
         // getOverflowedTurnCount); it heals source.maxhp / 2 at the end of the next turn.
         slot.wish = battle.initEffectState({ id: "wish", target: s, isSlotCondition: true, source: setter, sourceSlot: setter.getSlot(), hp: setter.maxhp / 2, startingTurn: condition.since - 1 });
+      } else if (condition.id === "healingwish" || condition.id === "lunardance") {
+        // status2 gap fix: a Healing Wish or Lunar Dance waiting for a hurt or statused Pokémon at this position (pinned
+        // data/moves.ts healingwish, lunardance condition onSwap: no duration).
+        slot[condition.id] = battle.initEffectState({ id: condition.id, target: s, isSlotCondition: true, source: setter, sourceSlot: setter.getSlot() });
       } else {
         // data/conditions.ts futuremove: hits at the end of endingTurn = use turn + 1 (onStart (turn - 1) + 2).
         slot.futuremove = battle.initEffectState({ id: "futuremove", target: s, isSlotCondition: true, source: setter, sourceSlot: setter.getSlot(), targetSlot: `${side}${"ab"[condition.layers - 1]}`, endingTurn: condition.since + 1, move: condition.id, moveData: { ...FUTURE_SIGHT_DATA } });
@@ -306,6 +431,16 @@ export function buildBeliefBattle(inputs: AiInputs, world: BeliefWorld, runtime:
     battle.field.pseudoWeather[room.id] = battle.initEffectState({ id: room.id, ...(setter ? { source: setter, sourceSlot: setter.getSlot() } : {}), duration: turnsLeft(room) ?? 5 });
   }
   battle.lastMove = pub.lastMove ? battle.dex.getActiveMove(pub.lastMove) : null;
+  // status2 T2 (ADDENDUM2 §6 entryOrder): the active Pokémon's ability states in the order they began (tracker.ts
+  // PublicCounts.entry: switch-ins, Mega Evolutions, ability changes), newer than every state built above (pinned
+  // initEffectState's effectOrder orders the RedirectTarget and SwitchIn ties among abilities, and Dancer's); one with no
+  // public record keeps its place after them (the bridge passes no rank for it).
+  const counter = battle as unknown as { effectOrder: number };
+  const actives = (["p1", "p2"] as const).flatMap((side) => order[side].map((entry, index) => ({ bp: battle[side].pokemon[index], mon: pub.mons[`${side}:${entry.key}`] })))
+    .filter(({ bp }) => bp.isActive && !bp.fainted)
+    .map(({ bp, mon }) => ({ bp, entry: mon ? countsOf(mon).entry : undefined, built: Number(bp.abilityState.effectOrder ?? 0) }))
+    .sort((a, b) => (a.entry ?? Infinity) - (b.entry ?? Infinity) || a.built - b.built);
+  for (const { bp } of actives) bp.abilityState.effectOrder = counter.effectOrder++;
 
   // 4. Showdown's own upkeep recomputes disabled moves, Choice lock, trapping and both requests (pinned sim/battle.ts:1623).
   // Replacements. Fainted Pokémon are flagged only once the turn's queue is empty, after the residual phase (pinned

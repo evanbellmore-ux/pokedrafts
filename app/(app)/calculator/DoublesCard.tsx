@@ -15,7 +15,9 @@ import { RosterPicker } from "./LeagueMatchupPicker";
 import MechanicControls, { RetainedConfiguration, TeraTypeField } from "./MechanicControls";
 import PokemonChooser from "./PokemonChooser";
 import PokemonName from "./PokemonName";
-import { actionFact, ARROW, cardHPLabel, conditionsLine, FAINTED, rollDescription, shownHP, targetName, type DoublesNames } from "./doubles-format";
+import {
+  actionFact, ARROW, cardHPLabel, conditionsLine, factLine, FAINTED, leaverText, rollDescription, shownHP, targetName, type DoublesNames, type SlotSwitches,
+} from "./doubles-format";
 import { getBuildHealth, settledText, type DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type Combatant, type MoveOwner, type MoveReplacement, type RosterChoice, type RosterPanel } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -33,6 +35,13 @@ export type DoublesCardView = {
   reached: boolean;
   /** Its HP is 0: it fainted before the turn, so the card shows no move or target and the turn leaves it out. */
   fainted?: boolean;
+  /** status2: it switched in this turn (No move, doubles-inputs switchDoublesIn): the card's Switched in choice is on. */
+  switchedIn?: boolean;
+  /**
+   * status2 R-U: who left this slot during the turn and who came in (doubles-format slotSwitches): the card shows each leaver's
+   * line and each newcomer's HP below its own. Null or absent: no switch.
+   */
+  switches?: SlotSwitches | null;
   issues: BuildIssue[]; mimicry: MimicryState | null;
   rosterPanel: RosterPanel; rosterDisabled: (choice: RosterChoice) => string | null;
 };
@@ -45,6 +54,8 @@ export type DoublesCardHandlers = {
   onToggleMechanic: (owner: MoveOwner, mechanic: BattleMechanic) => void;
   onActivateMove: (owner: MoveOwner, slotIndex: number) => void;
   onChooseMove: (owner: MoveOwner, moveId: string | null) => void;
+  /** status2: Switched in on or off for the Pokémon with this Combatant key (doubles-inputs setDoublesSwitchedIn); absent: no such choice. */
+  onSwitchedIn?: (key: number, on: boolean) => void;
   onShowMoves: (owner: MoveOwner) => void;
   onTargetChange: (owner: MoveOwner, target: DoublesSlotId) => void;
 };
@@ -85,12 +96,53 @@ export type DoublesCardTarget = {
 };
 
 /**
+ * status2 R-U (SPEC2 §5.2, F4 §5.4): the slot's switches on its card (data-doubles-switches), below its own HP: each leaver's
+ * line ("Garchomp switches out at 98–130 HP."), then each newcomer ("Corviknight comes in.", with its share of the turn when
+ * below 1) with its HP as the card's own (after the turn, or after the moves), its conditions and its KO chance.
+ */
+function SwitchesBlock({ slotId, label, switches, rollMode, afterTurn }: { slotId: DoublesSlotId; label: string; switches: SlotSwitches; rollMode: DamageRollMode; afterTurn: boolean }) {
+  return (
+    <div data-doubles-switches={slotId} className="mt-1 min-w-0 border-t border-line pt-1">
+      {switches.left.map((entry, index) => (
+        <p key={`left-${index}`} data-doubles-leaver={slotId} className="wrap-anywhere text-xs tabular-nums text-muted">{factLine({ text: leaverText(entry), chance: entry.chance })}</p>
+      ))}
+      {switches.entered.map((entry, index) => {
+        const hp = entry.hp;
+        const shown = hp ? shownHP(hp, rollMode) : 0;
+        const fraction = hp?.maximum ? shown / hp.maximum : 0;
+        const range = hp && hp.min !== hp.max ? ` (${hp.min}–${hp.max})` : "";
+        const ko = hp && hp.koChance > 0 ? chanceText(hp.koChance) : null;
+        const text = hp ? `${shown} of ${hp.maximum} HP ${afterTurn ? "after the turn" : "after the moves"}, ${rollDescription(rollMode)}${range}.${ko ? ` KO chance: ${ko}.` : ""} Turn start HP: ${hp.start}.` : "";
+        return (
+          <div key={`entered-${index}`} data-doubles-newcomer={slotId} className="mt-1 min-w-0">
+            <p className="wrap-anywhere text-xs font-semibold text-text">{factLine({ text: `${entry.name} comes in.`, chance: entry.chance })}</p>
+            {hp && (
+              <>
+                <p className="wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(true, rollMode, undefined, afterTurn)}</p>
+                <p className="tabular-nums"><span className="text-base font-bold text-text">{shown}</span><span className="text-sm text-muted"> / {hp.maximum} HP</span></p>
+                <div role="meter" aria-label={`${entry.name} projected HP in place of ${label}`} aria-valuemin={0} aria-valuemax={hp.maximum} aria-valuenow={shown} aria-valuetext={text} title={text} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
+                  <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
+                  {range && <div data-hp-range aria-hidden="true" className="absolute inset-y-0 bg-text/25" style={{ left: `${hp.min / hp.maximum * 100}%`, width: `${(hp.max - hp.min) / hp.maximum * 100}%` }} />}
+                </div>
+                {hp.conditions?.length ? <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{conditionsLine(hp.conditions)}</p> : null}
+                <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{`Turn start: ${hp.start} / ${hp.maximum}`}{ko && ` · KO chance: ${ko}`}</p>
+                {hp.heals.length > 0 && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{hp.heals.join(" ")}</p>}
+              </>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
  * A 2v2 card: the Pokémon, its HP after the turn (or after the moves when the end of turn is not estimated) with its
  * statuses and other conditions then, its move and its target (data-doubles-slot).
  */
-export default function DoublesCard({ view, names, nameParts, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange }: Props) {
+export default function DoublesCard({ view, names, nameParts, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange }: Props) {
   const id = useId();
-  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false, afterTurn = false } = view;
+  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false, afterTurn = false, switchedIn = false, switches = null } = view;
   // The full name in every label ("Garchomp (yours, 1)"); the heading shows it as PokemonName does.
   const label = names[slotId];
   const owner = getMoveOwner(slot);
@@ -186,6 +238,7 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
           {hp && hp.heals.length > 0 && <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{hp.heals.join(" ")}</p>}
         </>
       ) : <p className="mt-2 wrap-anywhere text-sm font-semibold text-danger">{unavailable}</p>}
+      {switches && <SwitchesBlock slotId={slotId} label={label} switches={switches} rollMode={rollMode} afterTurn={afterTurn} />}
       <div className="mt-1 flex flex-wrap gap-x-3">
         <button type="button" aria-label={`Change ${label}`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)} className={linkButton}>Change<span className="sr-only sm:not-sr-only"> Pokémon</span></button>
         <button ref={editRef} type="button" aria-label={`Edit ${label} HP`} aria-expanded={editingHP} aria-controls={`${id}-hp-editor`} onClick={() => editingHP ? finishHP() : setEditingHP(true)} className={linkButton}>Edit HP</button>
@@ -244,10 +297,14 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
           })}
         </div>
         <div className={`${styles.doublesQuickMoves} mt-1`}>
-          <button type="button" data-doubles-no-move={slotId} aria-label={`${label}: no move`} aria-pressed={action.moveId === null} onClick={() => onChooseMove(owner, null)}
-            className={`min-h-11 min-w-0 rounded-lg border px-1.5 font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${action.moveId === null ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}><span className="text-xs">No move</span></button>
+          <button type="button" data-doubles-no-move={slotId} aria-label={`${label}: no move`} aria-pressed={action.moveId === null && !switchedIn} onClick={() => onChooseMove(owner, null)}
+            className={`min-h-11 min-w-0 rounded-lg border px-1.5 font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${action.moveId === null && !switchedIn ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}><span className="text-xs">No move</span></button>
+          {onSwitchedIn && (
+            <button type="button" data-doubles-switched-in={slotId} aria-label={`${label}: switched in this turn`} aria-pressed={switchedIn} onClick={() => onSwitchedIn(slot.key, !switchedIn)}
+              className={`min-h-11 min-w-0 rounded-lg border px-1.5 font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${switchedIn ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}><span className="wrap-anywhere text-xs">Switched in</span></button>
+          )}
           <button type="button" data-doubles-all-moves={slotId} aria-label={`${label}: all moves`} aria-controls={movesControl} onClick={() => onShowMoves(owner)}
-            className={`min-h-11 min-w-0 rounded-lg border px-1.5 font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${offList ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}><span className="text-xs">All moves</span></button>
+            className={`${onSwitchedIn ? styles.doublesQuickMovesRow : ""} min-h-11 min-w-0 rounded-lg border px-1.5 font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${offList ? "border-accent-border bg-accent-soft" : "border-line hover:bg-panel-hover"}`}><span className="text-xs">All moves</span></button>
         </div>
         {offList && <p className="mt-1 flex min-w-0 flex-wrap items-center gap-1 text-xs text-text"><span className="wrap-anywhere font-semibold">Move: {moveName}</span>{move && <TypeBadge type={effective?.type ?? move.type} />}</p>}
         {action.moveId && rule && (

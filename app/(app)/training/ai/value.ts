@@ -56,9 +56,12 @@ function stageValue(stage: number | null | undefined, decay: number): number {
 }
 
 const SPEED_CACHE = new Map<string, number>();
-/** turnSpeed, memoised by everything it reads (the cache is bounded). */
+/**
+ * turnSpeed, memoised by everything it reads (the cache is bounded); status2 T1: a stored Speed that is not the form's own
+ * (Speed Swap, Transform: BattleBuild.storedStats, which turnSpeed's makePokemon reads).
+ */
 function speedOf(build: BattleBuild, tailwind: boolean, conditions: BattleConditions, runtime: BattleRuntime): number {
-  const key = JSON.stringify([runtime.identity, build.speciesId, build.nature, build.game === "champions" ? build.points : build.native, build.boosts.spe, build.status, build.itemId, build.abilityId, build.abilityActive, tailwind, conditions.weather, conditions.terrain]);
+  const key = JSON.stringify([runtime.identity, build.speciesId, build.nature, build.game === "champions" ? build.points : build.native, build.boosts.spe, build.status, build.itemId, build.abilityId, build.abilityActive, tailwind, conditions.weather, conditions.terrain, build.storedStats?.spe ?? null]);
   let speed = SPEED_CACHE.get(key);
   if (speed === undefined) {
     speed = turnSpeed(build, tailwind, conditions, runtime);

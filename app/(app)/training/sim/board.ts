@@ -48,6 +48,7 @@ const FIELD_NAMES: Record<string, string> = {
   wonderroom: "Wonder Room", fairylock: "Fairy Lock", tailwind: "Tailwind", reflect: "Reflect", lightscreen: "Light Screen",
   auroraveil: "Aurora Veil", safeguard: "Safeguard", mist: "Mist", spikes: "Spikes", toxicspikes: "Toxic Spikes",
   stealthrock: "Stealth Rock", stickyweb: "Sticky Web", luckychant: "Lucky Chant", wideguard: "Wide Guard", quickguard: "Quick Guard", wish: "Wish", futuresight: "Future Sight",
+  healingwish: "Healing Wish", lunardance: "Lunar Dance",
 };
 /** Base turns, and the item that lengthens it to 8 (pinned data/moves.ts durationCallback: rocks, Light Clay, Terrain Extender). */
 const DURATION: Record<string, { base: number; item?: string }> = {
@@ -165,8 +166,8 @@ function fieldView(state: PublicState, battle: Battle, sheet: SheetView, runtime
   const effect = (condition: PublicCondition): FieldEffectView => {
     const rule = DURATION[condition.id];
     const label = FIELD_NAMES[condition.id] ?? condition.id;
-    // Wish and Future Sight carry their slot in layers (sim/tracker.ts); hazards their layer count.
-    const name = condition.layers > 1 && !["wish", "futuresight"].includes(condition.id) ? `${label} (${condition.layers})` : label;
+    // Wish, Future Sight, Healing Wish and Lunar Dance carry their slot in layers (sim/tracker.ts); hazards their layer count.
+    const name = condition.layers > 1 && !["wish", "futuresight", "healingwish", "lunardance"].includes(condition.id) ? `${label} (${condition.layers})` : label;
     if (!rule) return { id: condition.id, name, turns: null };
     let base = rule.base;
     if (rule.item) {

@@ -9,7 +9,7 @@
 // The L2 Illusion and Transform slice plays the same checks with fixed teams (tests/fixtures/training-teams.ts
 // ILLUSION_TRANSFORM: the AI's Zoroark leads disguised and its Imposter Ditto transforms; your Garchomp and Ditto), so the
 // gate sees an Illusion, a Transform and look-alikes, which the pools' teams never bring.
-//   npx tsx scripts/training/leak.ts [--battles 40 (dice 60)] [--fields sp,nature,…] [--l2 40] [--l2-illusion 8] [--seat safe]
+//   npx tsx scripts/training/leak.ts [--battles 40 (dice 60)] [--fields sp,nature,…] [--l2 40] [--l2-illusion 16] [--seat safe]
 import { join } from "node:path";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO } from "@/app/(app)/training/model/info";
 import { l1Fields, runL1Field } from "./lib/leak-l1";
@@ -41,7 +41,10 @@ async function main(): Promise<void> {
     rows.push({ gate: "L2 (your direction, youSee closed)", threshold: "0 hits over 40 battles", result: `${l2.hits.length} hits in ${l2.messages} messages over ${l2.battles} battles (${l2.forfeits} forfeited on a locked turn)`, status: l2.hits.length === 0 && l2.errors.length === 0 && l2.battles >= Math.min(40, l2Battles) ? "pass" : "fail", detail: [...l2.hits.slice(0, 10), ...l2.errors.slice(0, 5)].join(" | ") });
     rows.push({ gate: "L2 saved battles (replay boards, Resume, sealed checkpoints)", threshold: "every battle replayed, its boards = the battle's; 0 hits (above)", result: `${l2.replays} replays (${l2.replayBoards} boards; ${l2.replayBoardsEqual} of ${l2.replays} equal to the battle's boards), ${l2.resumes} resumed, ${l2.checkpoints} checkpoints sealed`, status: l2.replays === l2.battles && l2.replayBoardsEqual === l2.replays && l2.resumes > 0 && l2.checkpoints > 0 && l2.hits.length === 0 && l2.errors.length === 0 ? "pass" : "fail" });
   }
-  const sliceBattles = Number(args["l2-illusion"] ?? 8);
+  // 16 battles (status2 T1): the slice must show a look-alike (Zoroark beside the Garchomp it copies), which needs the AI's Ditto
+  // replaced while the Illusion stands; with transformed Pokémon valued by the engine the AI keeps Ditto in longer, and the
+  // first 8 battles no longer reach one (0 hits either way).
+  const sliceBattles = Number(args["l2-illusion"] ?? 16);
   if (sliceBattles > 0) {
     const slice = await runL2({
       battles: sliceBattles, seat, info: { aiKnows: DEFAULT_INFO.aiKnows, youSee: CLOSED_TEAM_SHEETS },

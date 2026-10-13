@@ -14,6 +14,7 @@ import {
 } from "./lib/champions-data/sources.mjs";
 import {
   availableSpecies,
+  flingData,
   isAvailable,
   transformChampionsCatalog,
   type AvailableData,
@@ -35,7 +36,7 @@ const sha256 = (value: string) => createHash("sha256").update(value).digest("hex
 type DexSpecies = Omit<ResolvedSpecies, "learnset">;
 type DexMove = Omit<ResolvedMove, "description">;
 type DexAbility = Omit<ResolvedAbility, "description">;
-type DexItem = Omit<ResolvedItem, "description">;
+type DexItem = Omit<ResolvedItem, "description" | "fling"> & { isBerry?: boolean; fling?: unknown };
 type RawLearnset = { inherit?: boolean; learnset?: Record<string, string[]> } | null;
 type DexAPI = {
   gen: number;
@@ -186,7 +187,7 @@ export async function loadChampionsSnapshot(source: string): Promise<ShowdownSna
     })),
     items: dex.items.all().map((row) => ({
       id: row.id, name: row.name, exists: row.exists, isNonstandard: row.isNonstandard,
-      megaStone: row.megaStone, description: describe(row),
+      megaStone: row.megaStone, description: describe(row), fling: flingData(row),
     })),
   };
 }

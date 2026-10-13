@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { loadModule, withVerifiedSources } from "../../scripts/lib/battle-data/sources";
 import { CACHE, ROOT, SHOWDOWN_SOURCE } from "../../scripts/lib/champions-data/sources.mjs";
-import { GMAX_EFFECTS, HP_STATUS_MOVES, MODELLED_STATUS_MOVES, NO_EFFECT_MOVES } from "../../app/lib/battle/doubles-actions";
+import { HP_STATUS_MOVES, MODELLED_STATUS_MOVES, NO_EFFECT_MOVES } from "../../app/lib/battle/doubles-actions";
 import { ACCURACY_DROPS, accuracyDrop } from "../../app/lib/battle/stat-moves";
 import {
   CANTUSETWICE_MOVES, DEFROST_MOVES, FAILENCORE_MOVES, STATUS_MOVE_TABLE, statusEntry, THAWING_MOVES, type StatusEntry, type StatusKind,
@@ -17,7 +17,7 @@ import type { BattleCatalog, BattleGame } from "../../app/lib/battle/types";
  * from the compiled dex the data build makes (node_modules/.cache/champions/showdown-dex-<revision>, `npm run
  * data:champions`; the Champions mod's fields over the base data), Sword/Shield and Ultra Sun/Ultra Moon from the verified
  * source archive's Dex (data/mods/gen8, data/mods/gen7). A data refresh that changes a status move fails here until the
- * table is regenerated (scripts/.cache/calc-audit/status-eot/build/track-a-gen-status-table.ts) and the pipeline follows.
+ * table is regenerated (scripts/.cache/calc-audit/status2/build/gen-status-table.ts) and the pipeline follows.
  */
 type DexMove = Record<string, unknown> & {
   name?: string; exists?: boolean; category?: string; target?: string; priority?: number; type?: string; flags?: Record<string, number>; ignoreImmunity?: unknown;
@@ -83,34 +83,38 @@ beforeAll(async () => {
   });
 }, 600_000);
 
-/** The build's kinds (scripts/.cache/calc-audit/status-eot/design/spec-classify.md with ADDENDUM §2.2: Ally Switch, Trick and Switcheroo are M). */
+/**
+ * The build's kinds (scripts/.cache/calc-audit/status-eot/design/spec-classify.md with ADDENDUM §2.2: Ally Switch, Trick and
+ * Switcheroo are M; status2 integration 1b: Defog and Magic Room are M (ADDENDUM2 §2.2), Spotlight is M (PR)).
+ */
 const KINDS: Record<StatusKind, string> = {
-  M: `acidarmor afteryou agility allyswitch amnesia aquaring aromaticmist babydolleyes barrier bellydrum bulkup calmmind charge charm clangoroussoul
-    coaching coil confide confuseray cosmicpower cottonguard cottonspore curse darkvoid decorate defendorder defensecurl destinybond doubleteam dragoncheer
-    dragondance eerieimpulse endure faketears featherdance filletaway flash flatter floralhealing focusenergy glare grasswhistle growl growth harden haze
-    healingwish healorder healpulse honeclaws howl hypnosis irondefense junglehealing kinesis leechseed leer lifedew lovelykiss lunarblessing lunardance
-    meditate memento metalsound milkdrink moonlight morningsun nastyplot nobleroar painsplit perishsong playnice poisongas poisonpowder quash quiverdance
-    recover refresh rest rockpolish safeguard sandattack scaryface screech sharpen shellsmash shelter shiftgear shoreup sing slackoff sleeppowder smokescreen
-    softboiled spicyextract spore strengthsap stringshot stunspore substitute supersonic swagger sweetkiss sweetscent switcheroo swordsdance synthesis
-    tailglow tailwhip takeheart taunt tearfullook teeterdance thunderwave tickle toxic toxicthread trick venomdrench victorydance willowisp wish withdraw
-    workup yawn`,
+  M: `acidarmor acupressure afteryou agility allyswitch amnesia aquaring aromatherapy aromaticmist autotomize babydolleyes barrier bellydrum bestow bulkup
+    calmmind camouflage charge charm clangoroussoul coaching coil confide confuseray corrosivegas cosmicpower cottonguard cottonspore courtchange
+    craftyshield curse darkvoid decorate defendorder defensecurl defog destinybond doubleteam dragoncheer dragondance eerieimpulse electrify embargo endure
+    faketears featherdance filletaway flash flatter floralhealing flowershield focusenergy foresight forestscurse gearup geomancy glare grasswhistle growl
+    growth guardsplit guardswap harden haze healbell healblock healingwish healorder healpulse heartswap honeclaws howl hypnosis iondeluge irondefense
+    junglehealing kinesis leechseed leer lifedew lovelykiss luckychant lunarblessing lunardance magiccoat magicpowder magicroom magneticflux matblock meditate
+    memento metalsound milkdrink minimize miracleeye mist moonlight morningsun mudsport nastyplot nightmare nobleroar noretreat octolock odorsleuth
+    painsplit perishsong playnice poisongas poisonpowder powder powershift powersplit powerswap powertrick psychoshift psychup purify quash quiverdance
+    recover reflecttype refresh rest rockpolish rototiller safeguard sandattack scaryface screech sharpen shellsmash shelter shiftgear shoreup sing
+    slackoff sleeppowder smokescreen snatch soak softboiled speedswap spicyextract spore spotlight stockpile strengthsap stringshot stuffcheeks stunspore substitute
+    supersonic swagger swallow sweetkiss sweetscent switcheroo swordsdance synthesis tailglow tailwhip takeheart tarshot taunt tearfullook teatime
+    teeterdance telekinesis thunderwave tickle tidyup topsyturvy toxic toxicthread trick trickortreat venomdrench victorydance watersport willowisp wish
+    withdraw wonderroom workup yawn`,
   N: "block celebrate fairylock grudge happyhour holdhands laserfocus lockon meanlook mimic mindreader sketch spiderweb spikes spite splash stealthrock stickyweb torment toxicspikes",
-  C: "disable encore imprison ingrain magnetrise roost",
-  L: `acupressure aromatherapy attract autotomize bestow camouflage captivate conversion conversion2 corrosivegas courtchange craftyshield defog doodle
-    electrify embargo entrainment flowershield foresight forestscurse gastroacid gearup geomancy guardsplit guardswap healbell healblock heartswap iondeluge
-    luckychant magiccoat magicpowder magicroom magneticflux matblock minimize miracleeye mist mudsport nightmare noretreat octolock odorsleuth powder
-    powershift powersplit powerswap powertrick psychoshift psychup purify recycle reflecttype roleplay rototiller simplebeam skillswap snatch soak speedswap
-    stockpile stuffcheeks swallow tarshot teatime telekinesis tidyup topsyturvy transform trickortreat watersport wonderroom worryseed`,
+  C: `attract captivate conversion conversion2 disable doodle encore entrainment gastroacid imprison ingrain magnetrise recycle roleplay
+    roost simplebeam skillswap transform worryseed`,
+  L: "",
   S: "batonpass chillyreception partingshot roar shedtail teleport whirlwind",
   P: "revivalblessing",
   X: `assist auroraveil banefulbunker burningbulwark copycat detect electricterrain extremeevoboost followme grassyterrain gravity hail helpinghand instruct
     kingsshield lightscreen maxguard mefirst metronome mirrormove mistyterrain naturepower obstruct protect psychicterrain quickguard ragepowder raindance
-    reflect sandstorm silktrap sleeptalk snowscape spikyshield spotlight sunnyday tailwind trickroom wideguard`,
+    reflect sandstorm silktrap sleeptalk snowscape spikyshield sunnyday tailwind trickroom wideguard`,
 };
 const kindOf = new Map(Object.entries(KINDS).flatMap(([kind, ids]) => ids.split(/\s+/).filter(Boolean).map((id) => [id, kind as StatusKind])));
 
-/** The table's dex fields of a pinned move (track-a-gen-status-table.ts entryOf). */
-const FLAGS = ["protect", "reflectable", "powder", "sound", "bypasssub", "heal", "wind", "gravity"];
+/** The table's dex fields of a pinned move (status2/build/gen-status-table.ts entryOf; status2 adds the snatch flag, SPEC2 §3.4). */
+const FLAGS = ["protect", "reflectable", "powder", "sound", "bypasssub", "heal", "wind", "gravity", "snatch"];
 function dexFields(move: DexMove): Record<string, unknown> {
   return {
     target: move.target, priority: move.priority, type: move.type,
@@ -140,7 +144,7 @@ describe("the status-move table (status-table.ts)", () => {
     }
   });
 
-  it("gives each the build's kind: 125 M, 20 N, 6 C, 73 L, 7 S, 1 P, 39 X", () => {
+  it("gives each the build's kind: 186 M, 20 N, 19 C, 0 L, 7 S, 1 P, 38 X (status2: no L move is left)", () => {
     const counts: Record<string, number> = {};
     for (const [id, entry] of Object.entries(STATUS_MOVE_TABLE)) {
       expect(entry.kind, id).toBe(kindOf.get(id));
@@ -148,7 +152,7 @@ describe("the status-move table (status-table.ts)", () => {
       // A move keeps its kind in every game (the overrides carry dex fields only).
       for (const game of GAMES) if (statusEntry(id, game)) expect(statusEntry(id, game)!.kind, `${game} ${id}`).toBe(entry.kind);
     }
-    expect(counts).toEqual({ M: 125, N: 20, C: 6, L: 73, S: 7, P: 1, X: 39 });
+    expect(counts).toEqual({ M: 186, N: 20, C: 19, S: 7, P: 1, X: 38 });
     expect(kindOf.size).toBe(271);
   });
 
@@ -185,8 +189,9 @@ describe("the status-move table (status-table.ts)", () => {
 
   it("gives every M or C move with its own onHit, onTry, onTryHit, onHitField or condition a handler", () => {
     // Handled without a key: Defense Curl's volatile only doubles Rollout and Ice Ball, a later turn's; Toxic's condition
-    // only makes a Poison type's use hit a semi-invulnerable target (every move hits; a semi-invulnerable Pokémon is a guard).
-    const GENERIC = new Set(["defensecurl", "toxic"]);
+    // only makes a Poison type's use hit a semi-invulnerable target (every move hits; a semi-invulnerable Pokémon is a guard);
+    // Spotlight's condition is dispatched by its volatile key (doubles-status.ts volatile: the centre of attention, PR).
+    const GENERIC = new Set(["defensecurl", "toxic", "spotlight"]);
     const missing: string[] = [];
     for (const game of GAMES) {
       for (const id of statusMoves(game)) {
@@ -206,6 +211,17 @@ describe("the status-move table (status-table.ts)", () => {
       if (entry.kind === "M" || entry.kind === "C") expect(MODELLED_STATUS_MOVES.has(id), id).toBe(true);
       expect(NO_EFFECT_MOVES.has(id), id).toBe(entry.kind === "N");
       if (entry.kind === "P") expect(HP_STATUS_MOVES.has(id), id).toBe(true);
+    }
+    // status2 (integration 1a): Purify, Stuff Cheeks, Swallow and Teatime are modelled (M), so only kind P is a presence guard.
+    for (const id of ["purify", "stuffcheeks", "swallow", "teatime"]) expect(HP_STATUS_MOVES.has(id), id).toBe(false);
+    expect([...HP_STATUS_MOVES].sort()).toEqual(Object.entries(STATUS_MOVE_TABLE).filter(([, entry]) => entry.kind === "P").map(([id]) => id).sort());
+  });
+
+  it("flags the moves Snatch steals in every game (status2 SPEC2 §3.4)", () => {
+    for (const game of GAMES) {
+      const flagged = statusMoves(game).filter((id) => statusEntry(id, game)!.flags.snatch).sort();
+      expect(flagged, game).toEqual(statusMoves(game).filter((id) => facts[game].moves[id]?.flags?.snatch).sort());
+      expect(flagged.length, game).toBeGreaterThan(0);
     }
   });
 });
@@ -249,10 +265,11 @@ describe("the damaging moves' accuracy drops (stat-moves.ts ACCURACY_DROPS; stat
       expect(ids.filter((id) => accuracyDrop(id, true)).sort()).toEqual(Object.keys(found).filter((id) => found[id] >= 50).sort());
     });
   }
-  it("has G-Max Tartness lower each foe's evasion (doubles-actions.ts GMAX_EFFECTS)", () => {
+  it("has G-Max Tartness lower each foe's evasion (doubles-max.ts maxEffects)", () => {
     const tartness = facts.sword_shield.moves.gmaxtartness as DexMove & { self?: { onHit?: unknown } };
     expect(String(tartness.self?.onHit)).toMatch(/for \(const pokemon of source\.foes\(\)\)[\s\S]*this\.boost\(\{ evasion: -1 \}, pokemon\)/);
-    expect(GMAX_EFFECTS["G-Max Tartness"]).toEqual({ foeStages: { evasion: -1 } });
+    const max = readFileSync(new URL("../../app/lib/battle/doubles-max.ts", import.meta.url), "utf8");
+    expect(max).toContain('const stages = id === "gmaxfoamburst" ? { spe: -2 } : { evasion: -1 };');
   });
 });
 

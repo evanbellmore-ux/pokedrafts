@@ -1,4 +1,5 @@
 import { megaEntries } from "./mega-forms";
+import { buildTypes } from "./mechanics";
 import { getBuildStats } from "./model";
 import type { BattleRuntime } from "./runtime";
 import type { BattleBuild, BattleConditions, CombatStat } from "./types";
@@ -211,7 +212,7 @@ export function applyIntimidateToFoes(
   foes: readonly { build: BattleBuild; tailwind: boolean; name: string }[],
   battle: Omit<IntimidateBattle, "tailwind" | "names"> & { sourceTailwind: boolean; sourceName: string },
   runtime: BattleRuntime,
-): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
+): { source: BattleBuild; foes: BattleBuild[]; lines: string[]; rises: Change } {
   return intimidateAll(source, foes, battle, runtime);
 }
 
@@ -220,7 +221,7 @@ function intimidateAll(
   foes: readonly { build: BattleBuild; tailwind: boolean; name: string | undefined }[],
   battle: Omit<IntimidateBattle, "tailwind" | "names"> & { sourceTailwind: boolean; sourceName: string | undefined },
   runtime: BattleRuntime,
-): { source: BattleBuild; foes: BattleBuild[]; lines: string[] } {
+): { source: BattleBuild; foes: BattleBuild[]; lines: string[]; rises: Change } {
   const gen7 = runtime.profile.id === "ultra_sun_ultra_moon";
   const gen9 = runtime.profile.id === "champions" || runtime.profile.id === "scarlet_violet";
   const speciesName = (build: BattleBuild) => runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
@@ -240,15 +241,14 @@ function intimidateAll(
   const tgts = foes.map((foe, index) => mon(index + 1, foe.name, entryBoosts(foe.build, source, entryBoosts(source, foe.build, null, battle.sourceTailwind, battle, runtime), foe.tailwind, battle, runtime)));
   // The foe whose drop is being resolved: a rise of the source is stored by its Mirror Herb; a target's rise by the source's.
   let tgt = tgts[0];
+  const rises: Change = {};
   // Showdown ignores held items under Magic Room and for a Klutz holder.
   const holds = (m: Mon, id: string) => m.item === id && !battle.magicRoom && m.build.abilityId !== "klutz";
   const ability = (m: Mon) => m.build.abilityId;
   const consumeItem = (m: Mon, what: string) => { lines.push(`${m.name}'s ${itemName(m.item)} ${what} (used up).`); m.item = ""; };
-  // A Terastallized Pokémon has only its Tera type; Stellar keeps the original types.
-  const types = (m: Mon) => {
-    const tera = runtime.profile.tera && m.build.mechanic === "tera" ? m.build.configuration?.teraType : undefined;
-    return tera && tera !== "Stellar" ? [tera] : runtime.speciesById.get(m.build.speciesId)?.types ?? [];
-  };
+  // A Terastallized Pokémon has only its Tera type; Stellar keeps the original types (mechanics.ts buildTypes, which also
+  // reads status2's world types and added type; a game without Terastallization reads none).
+  const types = (m: Mon) => buildTypes(runtime.profile.tera || m.build.mechanic !== "tera" ? m.build : { ...m.build, mechanic: undefined }, runtime);
 
   function boost(m: Mon, other: Mon, input: Change, effect: Effect): void {
     const change: Change = { ...input };
@@ -322,6 +322,11 @@ function intimidateAll(
         boost(m, m, { spe: 1 }, "item");
       }
     }
+    // The rises of the foes (AfterBoost's table after the cap): what a foe's Opportunist or Mirror Herb copies (onFoeAfterBoost),
+    // for a 2v2 caller's other copiers (the source's partner: doubles-prep applyDoublesIntimidate).
+    if (effect !== "Mirror Herb" && m !== src) {
+      for (const stat of STATS) if ((change[stat] ?? 0) > 0) rises[stat] = (rises[stat] ?? 0) + change[stat]!;
+    }
     // The foe's Mirror Herb (Scarlet/Violet) stores this Pokémon's rises.
     if (effect !== "Mirror Herb") {
       const foe = m === src ? tgt : src;
@@ -385,5 +390,5 @@ function intimidateAll(
     };
   };
   if (lines.length === 1) lines.push(tgts.length === 1 ? `${tgts[0].name} is unaffected.` : `${tgts.map((m) => m.name).join(" and ")} are unaffected.`);
-  return { source: finish(src), foes: tgts.map(finish), lines };
+  return { source: finish(src), foes: tgts.map(finish), lines, rises };
 }

@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { settleDoublesStart } from "@/app/lib/battle/calculate";
+import { settleDoublesStart } from "@/app/lib/battle/doubles-start";
 import { calculateDoublesTurn } from "@/app/lib/battle/doubles-turn";
 import {
   DOUBLES_SLOTS, doublesNameParts, doublesNames, duplicateNameParts, nameText,

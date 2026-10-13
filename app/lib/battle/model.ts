@@ -1,5 +1,6 @@
 import { championsRuntime, type BattleRuntime } from "./runtime";
 import { heldItemForm, specialTeraForm, validateMechanic } from "./mechanics";
+import { TERA_TYPES } from "./profiles";
 export { CROWNED_FORMS, heldItemForm } from "./mechanics";
 import { imposterTransforms, NO_TRACE_ABILITIES, tracedAbility } from "./imposter";
 import type {
@@ -311,8 +312,17 @@ export function createConditions(): BattleConditions {
   };
 }
 
-/** Base/pre-transformation training stats, before stages/abilities/items. */
+/**
+ * Base/pre-transformation training stats, before stages/abilities/items. status2 (SPEC2 §3.6; 2v2 only): a build's stored
+ * stats (storedStats: Power Split, Speed Swap, Transform...) in place of its own, with its own HP (a transformed build's from
+ * its own species: transformedFrom).
+ */
 export function getBuildStats(build: BattleBuild, runtime: BattleRuntime = championsRuntime): StatTable | null {
+  if (build.storedStats) {
+    const { storedStats, ...own } = build;
+    const stats = getBuildStats(build.transformedFrom ? { ...own, speciesId: build.transformedFrom.speciesId } : own, runtime);
+    return stats ? { hp: stats.hp, ...storedStats } : null;
+  }
   if (build.game !== runtime.profile.id) return null;
   // Terapagos battles as Terastal, or Stellar once Terastallized: those forms' stats, HP included.
   const species = runtime.speciesById.get(specialTeraForm(build, runtime) ?? build.speciesId);
@@ -380,11 +390,13 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   if (!NATURES.some((nature) => nature.name === build.nature)) issues.push({ field: "nature", message: "Select a valid nature." });
 
   const ability = runtime.abilitiesById.get(build.abilityId);
-  if (!ability || !species.abilities.includes(build.abilityId)) {
+  // status2: an ability the 2v2 turn gave it (abilityChanged: Skill Swap, Role Play, Entrainment...) is any supported catalog ability.
+  if (!ability || (!species.abilities.includes(build.abilityId) && !build.abilityChanged)) {
     issues.push({ field: "abilityId", message: `Select an ability available to this Pokémon in ${label}.` });
   } else {
     for (const reason of ability.unsupported) issues.push({ field: "abilityId", message: reason });
   }
+  issues.push(...status2BuildIssues(build, runtime));
   if (build.faintedAllies !== undefined && (!Number.isInteger(build.faintedAllies) || build.faintedAllies < 0 || build.faintedAllies > 5)) {
     issues.push({ field: "faintedAllies", message: "Fainted allies must be a whole number from 0 to 5." });
   }
@@ -395,7 +407,8 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   if (build.abilityId === "unburden" && build.abilityActive && build.itemId && !build.itemId.endsWith("seed") && build.itemId !== "roomservice") {
     issues.push({ field: "abilityActive", message: "Unburden needs its held item used up." });
   }
-  if (["protean", "libero"].includes(build.abilityId) && !build.abilityActive) {
+  // status2 (integration 1a, T1): a used Protean or Libero is calculated when its types are given (BuildBase.types).
+  if (["protean", "libero"].includes(build.abilityId) && !build.abilityActive && build.types === undefined) {
     issues.push({ field: "abilityActive", message: "Only unused Protean/Libero with unchanged typing is supported." });
   }
   if (build.itemId) {
@@ -437,8 +450,81 @@ export function validateBuild(build: BattleBuild, runtime: BattleRuntime = champ
   return issues;
 }
 
+/** The chart's type names a 2v2 turn's world types may take (SPEC2 §3.2: never Stellar), and "???". */
+const WORLD_TYPES: ReadonlySet<string> = new Set([...TERA_TYPES.filter((type) => type !== "Stellar"), "???"]);
+
+/**
+ * status2 (SPEC2 §3.2; ADDENDUM2 §3.7): the issues of the fields only the 2v2 turn and its controls set (none in 1v1): its
+ * world types, added type, stored stats, weight and suppressed item.
+ */
+function status2BuildIssues(build: BattleBuild, runtime: BattleRuntime): BuildIssue[] {
+  const issues: BuildIssue[] = [];
+  const species = runtime.speciesById.get(build.speciesId);
+  const typeLocked = ["arceus", "silvally"].some((family) => build.speciesId.startsWith(family));
+  if (build.types !== undefined) {
+    const types = build.types;
+    if (!Array.isArray(types) || types.length < 1 || types.length > 2 || new Set(types).size !== types.length || !types.every((type) => WORLD_TYPES.has(type))) {
+      issues.push({ field: "types", message: "Types are one or two of this game's types." });
+    } else if (typeLocked) {
+      issues.push({ field: "types", message: `${species?.name ?? build.speciesId} keeps its own types.` });
+    }
+  }
+  if (build.addedType !== undefined) {
+    const move = build.addedType === "Grass" ? "forestscurse" : build.addedType === "Ghost" ? "trickortreat" : null;
+    if (!move || !runtime.movesById.has(move)) issues.push({ field: "addedType", message: "An added type is Grass or Ghost." });
+    else if (build.mechanic === "tera") issues.push({ field: "addedType", message: "A Terastallized Pokémon has no added type." });
+    else if (typeLocked) issues.push({ field: "addedType", message: `${species?.name ?? build.speciesId} keeps its own types.` });
+  }
+  if (build.storedStats !== undefined && COMBAT_STATS.some((stat) => !isIntegerWithin(build.storedStats![stat], 1, Number.MAX_SAFE_INTEGER))) {
+    issues.push({ field: "storedStats", message: "Stored stats are whole numbers from 1." });
+  }
+  if (build.weighthg !== undefined && !isIntegerWithin(build.weighthg, 1, Number.MAX_SAFE_INTEGER)) {
+    issues.push({ field: "weighthg", message: "Weight is a whole number of hectograms from 1." });
+  }
+  if (build.itemSuppressed && !build.itemId) issues.push({ field: "itemSuppressed", message: "A suppressed item needs a held item." });
+  return issues;
+}
+
+/**
+ * status2 (ADDENDUM2 §3.7, IN §3.5; 2v2 only, none set in 1v1): the side and field keys of an earlier turn's effects. Each
+ * is on or off, and on only in a game with its move.
+ */
+function status2ConditionIssues(field: BattleConditions, runtime: BattleRuntime): BuildIssue[] {
+  const issues: BuildIssue[] = [];
+  const moveName = (id: string, fallback: string) => runtime.movesById.get(id)?.name ?? fallback;
+  const flag = (key: string, value: unknown, moveId: string, name: string) => {
+    if (value === undefined) return;
+    if (typeof value !== "boolean") issues.push({ field: key, message: `${name} must be on or off.` });
+    else if (value && !runtime.movesById.has(moveId)) issues.push({ field: key, message: `${name} is not in this game.` });
+  };
+  for (const sideKey of ["attackerSide", "defenderSide"] as const) {
+    const side = field[sideKey];
+    flag(`${sideKey}.safeguard`, side.safeguard, "safeguard", "Safeguard");
+    flag(`${sideKey}.mist`, side.mist, "mist", "Mist");
+    flag(`${sideKey}.luckyChant`, side.luckyChant, "luckychant", "Lucky Chant");
+    flag(`${sideKey}.swamp`, side.swamp, "grasspledge", "The swamp");
+    if (side.protectName !== undefined && (typeof side.protectName !== "string" || !side.protectName)) {
+      issues.push({ field: `${sideKey}.protectName`, message: "The protection needs its move's name." });
+    }
+    if (side.gmaxResidual !== undefined) {
+      const ids = side.gmaxResidual;
+      if (!Array.isArray(ids) || ids.some((id) => !["gmaxvinelash", "gmaxwildfire", "gmaxcannonade", "gmaxvolcalith"].includes(id))) {
+        issues.push({ field: `${sideKey}.gmaxResidual`, message: "Select G-Max Vine Lash, Wildfire, Cannonade or Volcalith." });
+      } else {
+        for (const id of ids) if (!runtime.movesById.has(id)) issues.push({ field: `${sideKey}.gmaxResidual`, message: `${moveName(id, id)} is not in this game.` });
+      }
+    }
+  }
+  flag("mudSport", field.mudSport, "mudsport", "Mud Sport");
+  flag("waterSport", field.waterSport, "watersport", "Water Sport");
+  flag("ionDeluge", field.ionDeluge, "iondeluge", "Ion Deluge");
+  if (field.allyTarget !== undefined && typeof field.allyTarget !== "boolean") issues.push({ field: "allyTarget", message: "The ally target must be on or off." });
+  return issues;
+}
+
 export function validateConditions(field: BattleConditions, runtime: BattleRuntime = championsRuntime): BuildIssue[] {
   const issues: BuildIssue[] = [];
+  issues.push(...status2ConditionIssues(field, runtime));
   if (!["Singles", "Doubles"].includes(field.gameType)) issues.push({ field: "gameType", message: "Select Singles or Doubles." });
   if (!runtime.profile.weather.includes(field.weather)) issues.push({ field: "weather", message: "Select a supported weather condition." });
   if (!["", "Electric", "Grassy", "Misty", "Psychic"].includes(field.terrain)) issues.push({ field: "terrain", message: "Select a supported terrain." });

@@ -25,6 +25,8 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
   onShowStep: (owner: MoveOwner, moveId: string) => void; onFixSettings: () => void;
   /** The slot whose move the card frames aim at first (tests); afterwards the last slot given a move or a target. */
   defaultAiming?: DoublesSlotId | null;
+  /** status2 R-U: the bench Pokémon's names by id (doubles-types turnBenchNames), for the turn's hits, residuals and switches on a newcomer. */
+  benchNames?: Readonly<Record<string, string>>;
 };
 
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
@@ -33,12 +35,13 @@ const SIDES: { id: DoublesSideId; label: string }[] = [{ id: "own", label: "Your
 /**
  * The move the turn used for a slot's action when it differs (Z-Move, Max Move), from the turn or its start rows, and the
  * type its calculation gave it (Judgment's Plate, Multi-Attack's Memory, Weather Ball's weather...): the step's, else that
- * of a hit it calculated, else its start row's.
+ * of a hit it calculated, else its start row's. The step is the Pokémon's own action, not a later copy of the same move
+ * (a Dancer's copy, an instructed move: DoublesStep.copied).
  */
 function effectiveMove(turn: DoublesTurnResult | null, view: DoublesCardView) {
   const moveId = view.action.moveId;
   if (!moveId || !turn || turn.status === "issues") return undefined;
-  const step = turn.status === "ready" ? turn.steps.find((entry) => entry.slot === view.id && entry.moveId === moveId) : undefined;
+  const step = turn.status === "ready" ? turn.steps.find((entry) => entry.slot === view.id && entry.moveId === moveId && !entry.copied) : undefined;
   const row = turn.startRows.find((entry) => entry.slot === view.id && entry.row.moveId === moveId)?.row;
   if (step) return { name: step.effectiveName, type: step.effectiveType ?? step.hits.find((hit) => hit.row)?.row?.effectiveType ?? row?.effectiveType };
   return row && { name: row.effectiveName, type: row.effectiveType };
@@ -53,7 +56,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
   const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
   // The cards show the turn's HP only for a ready turn with a move, or with an end of turn that acts; otherwise their current HP.
   const projected = !blockedReason && !noMoves && turn?.status === "ready";
-  const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onShowMoves, onTargetChange } = props;
+  const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange } = props;
   // The card frames aim the move of the slot last given a move, a Moves pane or a target.
   const [aiming, setAiming] = useState<DoublesSlotId | null>(props.defaultAiming ?? null);
   const aim = (owner: MoveOwner) => setAiming(DOUBLES_SLOTS.find((slot) => cards[slot].slot.key === owner.key) ?? null);
@@ -61,6 +64,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
     onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic,
     onActivateMove: (owner, index) => { aim(owner); onActivateMove(owner, index); },
     onChooseMove: (owner, moveId) => { aim(owner); onChooseMove(owner, moveId); },
+    ...(onSwitchedIn ? { onSwitchedIn } : {}),
     onShowMoves: (owner) => { aim(owner); onShowMoves(owner); },
     onTargetChange: (owner, target) => { aim(owner); onTargetChange(owner, target); },
   };
@@ -106,7 +110,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
               return (
                 <DoublesCard
                   key={view.slot.key}
-                  view={projected ? view : { ...view, hp: null, reached: false }}
+                  view={projected ? view : { ...view, hp: null, reached: false, switches: null }}
                   names={names}
                   nameParts={nameParts[slot]}
                   runtime={runtime}
@@ -122,7 +126,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
           </div>
         </div>
       ))}
-      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} onShowStep={onShowStep} onFixSettings={onFixSettings} />
+      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} benchNames={props.benchNames} onShowStep={onShowStep} onFixSettings={onFixSettings} />
     </section>
   );
 }

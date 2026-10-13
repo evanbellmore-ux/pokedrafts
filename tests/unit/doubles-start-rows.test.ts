@@ -156,12 +156,7 @@ const CASES: Case[] = [
 /** The cases the turn leaves not estimated, with their reasons. */
 const GUARDED: (Pick<Case, "id" | "game" | "title" | "field" | "slots"> & { reason: string })[] = [
   {id:"SR19b",game:"sv",title:"Perrserker's Helping Hand and Steely Spirit for Forretress's 35-power Gyro Ball with a Metal Coat: the order changes the power",reason:"The partner's Steely Spirit with 2 other power boosts: not calculated (their order can change the damage).",slots:{"own-left":{species:"Forretress",ability:"Sturdy",item:"Metal Coat",boosts:{atk:6},move:"Gyro Ball",target:"opponent-right"},"own-right":{species:"Perrserker",ability:"Steely Spirit",move:"Helping Hand"},"opponent-left":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-right":{species:"Quagsire",ability:"Water Absorb",evs:{spe:212},move:null}}},
-  {id:"SR41",game:"usum",title:"USUM: Clefairy's Spotlight on Snorlax draws Garchomp's Dragon Claw from Clefairy",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Clefairy",ability:"Friend Guard",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
-  {id:"SR44",game:"sv",title:"Lightning Rod Raichu draws Magnezone's Thunderbolt from Snorlax while Garchomp's Power Spot-less Dragon Claw follows",reason:"Skill Swap is not modelled and comes before another move.",slots:{"own-left":{species:"Magnezone",ability:"Magnet Pull",evs:{spe:4},move:"Thunderbolt",target:"opponent-right"},"own-right":{species:"Gengar",ability:"Cursed Body",move:"Skill Swap",target:"opponent-right"},"opponent-left":{species:"Raichu",ability:"Lightning Rod",move:null},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
-  {id:"SR45",game:"swsh",title:"Lightning Rod Manectric and Raichu at the same Speed: Magnezone's Thunderbolt aimed at Snorlax",reason:"Lightning Rod is not modelled in 2v2.",slots:{"own-left":{species:"Magnezone",ability:"Magnet Pull",move:"Thunderbolt",target:"opponent-right"},"own-right":{species:"Manectric",ability:"Lightning Rod",evs:{spe:40},move:null},"opponent-left":{species:"Raichu",ability:"Lightning Rod",move:null},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
-  {id:"SR61",game:"usum",title:"USUM: Starmie's Spotlight on Magic Bounce Espeon is reflected: Starmie draws Garchomp's Dragon Claw",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-right"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Starmie",ability:"Natural Cure",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Espeon",ability:"Magic Bounce",move:null}}},
-  {id:"SR62",game:"usum",title:"USUM: Starmie's Spotlight on a Protecting Snorlax fails: no row into Snorlax",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Starmie",ability:"Natural Cure",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:"Protect"}}},
-  {id:"SR63",game:"usum",title:"USUM: Shiinotic's Spotlight (+3) on Snorlax after Incineroar's faster Fake Out (+3): no row into Snorlax",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Incineroar",ability:"Blaze",evs:{spe:20},move:"Fake Out",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Shiinotic",ability:"Rain Dish",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
+  {id:"SR45",game:"swsh",title:"Lightning Rod Manectric and Raichu at the same Speed: Magnezone's Thunderbolt aimed at Snorlax",reason:"Lightning Rod needs whether Manectric or Raichu came in first.",slots:{"own-left":{species:"Magnezone",ability:"Magnet Pull",move:"Thunderbolt",target:"opponent-right"},"own-right":{species:"Manectric",ability:"Lightning Rod",evs:{spe:40},move:null},"opponent-left":{species:"Raichu",ability:"Lightning Rod",move:null},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
 ];
 
 /**
@@ -272,8 +267,20 @@ const START_ROWS: [string, DoublesSlotId, DoublesSlotId, string, [number, number
   ["SR63","own-left","opponent-left","fakeout",[21,25],null,"21-25"],
 ];
 
+/**
+ * Guarded once, ready now (status2 wave 1a: A1's Skill Swap, A1-SR44-sv agrees with pinned Showdown; wave 1b: PR's Spotlight,
+ * T2P-SPL-01…03 agree); their start rows stay.
+ */
+const NOW_READY: typeof GUARDED = [
+  {id:"SR41",game:"usum",title:"USUM: Clefairy's Spotlight on Snorlax draws Garchomp's Dragon Claw from Clefairy",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Clefairy",ability:"Friend Guard",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
+  {id:"SR61",game:"usum",title:"USUM: Starmie's Spotlight on Magic Bounce Espeon is reflected: Starmie draws Garchomp's Dragon Claw",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-right"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Starmie",ability:"Natural Cure",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Espeon",ability:"Magic Bounce",move:null}}},
+  {id:"SR62",game:"usum",title:"USUM: Starmie's Spotlight on a Protecting Snorlax fails: no row into Snorlax",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Garchomp",ability:"Rough Skin",move:"Dragon Claw",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Starmie",ability:"Natural Cure",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:"Protect"}}},
+  {id:"SR63",game:"usum",title:"USUM: Shiinotic's Spotlight (+3) on Snorlax after Incineroar's faster Fake Out (+3): no row into Snorlax",reason:"Spotlight is not modelled in 2v2.",slots:{"own-left":{species:"Incineroar",ability:"Blaze",evs:{spe:20},move:"Fake Out",target:"opponent-left"},"own-right":{species:"Venusaur",ability:"Overgrow",evs:{spe:4},move:null},"opponent-left":{species:"Shiinotic",ability:"Rain Dish",move:"Spotlight",target:"opponent-right"},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
+  {id:"SR44",game:"sv",title:"Lightning Rod Raichu draws Magnezone's Thunderbolt from Snorlax while Garchomp's Power Spot-less Dragon Claw follows",reason:"Skill Swap is not modelled and comes before another move.",slots:{"own-left":{species:"Magnezone",ability:"Magnet Pull",evs:{spe:4},move:"Thunderbolt",target:"opponent-right"},"own-right":{species:"Gengar",ability:"Cursed Body",move:"Skill Swap",target:"opponent-right"},"opponent-left":{species:"Raichu",ability:"Lightning Rod",move:null},"opponent-right":{species:"Snorlax",ability:"Thick Fat",evs:{spe:4},move:null}}},
+];
+
 const asCase = (g: (typeof GUARDED)[number]): Case => ({ ...g, checks: "", exact: true, hp: {} as Case["hp"], steps: {} });
-const caseOf = (caseId: string): Case => CASES.find((c) => c.id === caseId) ?? asCase(GUARDED.find((g) => g.id === caseId)!);
+const caseOf = (caseId: string): Case => CASES.find((c) => c.id === caseId) ?? asCase([...GUARDED, ...NOW_READY].find((g) => g.id === caseId)!);
 
 describe("the 2v2 turn with a partner's power boost or a redirection against pinned Showdown", () => {
   for (const c of CASES) {
@@ -310,6 +317,10 @@ describe("the 2v2 turn with a partner's power boost or a redirection against pin
       }
     });
   }
+
+  it("is ready where status2 lifted the guard (SR44: Skill Swap; SR41, SR61-SR63: Spotlight)", async () => {
+    for (const g of NOW_READY) expect(calculateDoublesTurn(await input(asCase(g))).status, g.id).toBe("ready");
+  });
 
   it("is not estimated where a turn's result would not be exact, with the reason", async () => {
     for (const g of GUARDED) {

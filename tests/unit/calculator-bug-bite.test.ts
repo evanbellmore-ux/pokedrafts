@@ -326,10 +326,10 @@ describe("the 2v2 turn gives the user its eaten Berry (oracle cases BB01-BB18)",
     expect(z.status === "ready" && z.hp["opponent-left"]).toMatchObject({ low: 95, high: 123, min: 92, max: 135, average: 120.5625, heals: ["Sitrus Berry: +45 HP."] });
   });
 
-  it("is not estimated for a stolen Starf Berry's random stat, or a rise a foe's Opportunist copies", async () => {
+  it("follows a stolen Starf Berry's random stat and a rise a foe's Opportunist copies (status2 D: BB17, BB18 agree with pinned Showdown)", async () => {
     const starf = calculateDoublesTurn(await turnInput("scarlet_violet", { "own-left": scizorAt(), "own-right": venusaur, "opponent-left": toed("starfberry"), "opponent-right": blastoise }));
-    expect(starf).toMatchObject({ status: "not-estimated", reason: "Starf Berry raises a random stat" });
+    expect(starf.status).toBe("ready");
     const copied = calculateDoublesTurn(await turnInput("scarlet_violet", { "own-left": scizorAt(), "own-right": venusaur, "opponent-left": toed("liechiberry"), "opponent-right": { id: "espathra", ability: "opportunist" } }));
-    expect(copied).toMatchObject({ status: "not-estimated", reason: "Opportunist copying a stat rise is not modelled in 2v2." });
+    expect(copied.status).toBe("ready");
   });
 });

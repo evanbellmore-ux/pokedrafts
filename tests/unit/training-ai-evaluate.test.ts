@@ -76,12 +76,13 @@ describe("cell evaluation", () => {
 
   it("rolls out an unmodelled status move: stageASamples in stage A, topped up to stageBSamples in stage B, within the budget", () => {
     const budget = { ...DEFAULT_BUDGET, rolloutSamples: 9 };
-    // Worry Seed is not modelled (status-eot SPEC §2.2 L) and comes before Rotom's move: the turn is not estimated.
-    const seeder: MonSpec = { ...venusaur, moves: ["gigadrain", "sludgebomb", "worryseed", "protect"], points: { hp: 2, spa: 32, spe: 32 } };
+    // Revival Blessing is not modelled (a presence guard, status2 SPEC2 §2.2: it stays so once Worry Seed and the other kind-L
+    // status moves are modelled): the turn is not estimated.
+    const seeder: MonSpec = { side: "own", species: "pawmot", slot: "own-left", moves: ["revivalblessing", "protect", "nuzzle", "closecombat"], ability: "voltabsorb", item: "", nature: "Jolly", points: { hp: 2, atk: 32, spe: 32 } };
     const { evaluator } = setup([garchomp, charizard, kingambit, seeder, rotom], budget);
     const cell: CellActions = {
       opponent: { "opponent-left": { kind: "move", moveId: "dragonclaw", target: "own-right" }, "opponent-right": { kind: "move", moveId: "airslash", target: "own-left" } },
-      own: { "own-left": { kind: "move", moveId: "worryseed", target: "opponent-left" }, "own-right": { kind: "move", moveId: "willowisp", target: "opponent-left" } },
+      own: { "own-left": { kind: "move", moveId: "revivalblessing", target: null }, "own-right": { kind: "move", moveId: "willowisp", target: "opponent-left" } },
     };
     const first = evaluator.evaluate(cell, "A")!;
     expect(first.method).toBe("rollout");

@@ -320,7 +320,7 @@ describe("a Berry an Unnerve or As One holder stopped, once that holder's HP rea
     expect(result.hp["opponent-left"]!.average).toBeCloseTo(164.875, 9);
   });
 
-  it("the attacker that KOs the holder eats after the hit; with recoil after it, not estimated (M29e, M29f, M29c)", async () => {
+  it("the attacker that KOs the holder eats after the hit, before its recoil (M29e, M29f, M29c; status2 K: endsOnKO)", async () => {
     const sv = await loadBattleRuntime("scarlet_violet");
     const plain = ready(calculateDoublesTurn(turn(sv, {
       "own-left": { ...chomp, item: "sitrusberry", hp: 80, move: "dragonclaw", target: "opponent-left" }, "own-right": venusaur(), "opponent-left": tyranitar({ hp: 1 }), "opponent-right": blastoise(),
@@ -332,11 +332,11 @@ describe("a Berry an Unnerve or As One holder stopped, once that holder's HP rea
       "opponent-left": tyranitar({ hp: 1, item: "rockyhelmet" }), "opponent-right": blastoise(),
     })));
     expect(helmet.hp["own-left"]).toMatchObject({ start: 100, low: 115, high: 115, min: 115, max: 115 });
-    const recoil = calculateDoublesTurn(turn(sv, {
+    // The knocking hit's Update eats the Berry (Unnerve's End), then Double-Edge's recoil: 80 + 45 - 10 (pinned Showdown, M29c).
+    const recoil = ready(calculateDoublesTurn(turn(sv, {
       "own-left": { ...chomp, item: "sitrusberry", hp: 80, move: "doubleedge", target: "opponent-left" }, "own-right": venusaur(), "opponent-left": tyranitar({ hp: 30 }), "opponent-right": blastoise(),
-    }));
-    expect(recoil.status).toBe("not-estimated");
-    if (recoil.status === "not-estimated") expect(recoil.reason).toBe("Unnerve is not modelled in 2v2.");
+    })));
+    expect(recoil.hp["own-left"]).toMatchObject({ start: 80, low: 115, high: 115, min: 115, max: 115 });
   });
 
   it("As One (Glastrier): the foe it stopped eats once Foul Play KOs Calyrex (M21a)", async () => {

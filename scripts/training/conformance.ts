@@ -16,15 +16,19 @@ import { DOUBLES_SLOTS, type DoublesSlotId } from "@/app/lib/battle/doubles-type
 import { getBuildStats } from "@/app/lib/battle/model";
 import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
 import type { AiInputs, BeliefWorld } from "@/app/(app)/training/model/ai-inputs";
-import type { CellActions, TurnServices } from "@/app/(app)/training/model/ai-view";
+import type { CellActions, ReplacePolicy, TurnServices } from "@/app/(app)/training/model/ai-view";
 import { DEFAULT_INFO, PERFECT_INFORMATION, type InfoSettings } from "@/app/(app)/training/model/info";
 import type { PublicState } from "@/app/(app)/training/model/public-state";
 import { createRandom, seedHex } from "@/app/(app)/training/model/random";
 import type { ShowdownRequest, SideID } from "@/app/(app)/training/model/showdown-types";
 import { buildBeliefBattle } from "@/app/(app)/training/sim/belief-battle";
+import { keyOfPokemon } from "@/app/(app)/training/sim/bridge";
 import { identName, isFainted, legalJointActions, toChoiceString, type MemberKeys } from "@/app/(app)/training/sim/choices";
+import { isMidTurn } from "@/app/(app)/training/sim/requests";
+import { replacementChoice } from "@/app/(app)/training/sim/rollout";
 import { memberKeys, toShowdownTeam } from "@/app/(app)/training/sim/showdown-set";
 import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
+import { widenWithOutcome, type HpRanges } from "./lib/engine-range";
 import { runMatch } from "./lib/match";
 import { runSavedCheck, type SavedCheck } from "./lib/saved-check";
 import { startingHP, startingMons } from "./lib/starting-mons";
@@ -69,16 +73,35 @@ function playOnce(json: string, seed: string, choices: Partial<Record<SideID, st
  * position, since an Ally Switch swaps the side's two (pinned sim/battle.ts swapPosition) while E2's outcomes stay keyed
  * by the starting slot (EOT-5).
  */
-function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID, afterTurn = false): { hp: Partial<Record<DoublesSlotId, number>>; dirty: boolean; lines: string[] } | null {
+function preResidualHP(json: string, seed: string, choices: Record<SideID, string>, aiSide: SideID, afterTurn = false, keys?: MemberKeys): { hp: Partial<Record<DoublesSlotId, number>>; byKey: Partial<Record<string, number>>; dirty: boolean; lines: string[] } | null {
   const battle = clone(json);
   battle.prng = new PRNG(seed as `sodium,${string}`);
-  let snap: Partial<Record<DoublesSlotId, number>> | null = null;
+  type Read = { hp: Partial<Record<DoublesSlotId, number>>; byKey: Partial<Record<string, number>> };
+  let snap: Read | null = null;
   const started = startingMons(battle, aiSide);
-  const read = () => startingHP(started);
+  // status2 R-T: every Pokémon's HP by its engine key too (a newcomer's, a leaver's on the bench), wherever it stands.
+  const everyone = [...battle.p1.pokemon, ...battle.p2.pokemon];
+  const read = (): Read => ({ hp: startingHP(started), byKey: keys ? Object.fromEntries(everyone.map((mon) => [keyOfPokemon(mon as never, aiSide, keys), mon.hp])) : {} });
   const fieldEvent = battle.fieldEvent.bind(battle);
   battle.fieldEvent = (id: string, ...rest: unknown[]) => { if (id === "Residual" && !snap) snap = read(); return fieldEvent(id, ...rest); };
   const before = battle.log.length;
   if (!battle.choose("p1", choices.p1) || !battle.choose("p2", choices.p2)) return null;
+  const chosenEnd = battle.log.length;
+  // status2 R-T (SPEC2 §6 R): a replacement asked mid-turn (U-turn, Parting Shot, Eject Button, a Red Card's foe...), and with
+  // a read after the turn one asked after the residual for a living Pokémon (Emergency Exit), is answered as the engine input
+  // names it: the player's healthiest bench Pokémon, the AI's first (the services here pass no ReplacePolicy). A side that
+  // replaces twice in one turn is not a clean sample (one pick per slot in the input).
+  const switched: Record<SideID, number> = { p1: 0, p2: 0 };
+  const livingFlagged = (side: SideID) => {
+    const request = battle[side].activeRequest as ShowdownRequest | null;
+    return !!request && "forceSwitch" in request && request.forceSwitch.some((flag, position) => flag && !!battle[side].active[position] && !battle[side].active[position]!.fainted);
+  };
+  for (let asked = 0; keys && asked < 8 && !battle.ended && battle.requestState === "switch"; asked++) {
+    if (!isMidTurn(battle) && !(afterTurn && (livingFlagged("p1") || livingFlagged("p2")))) break;
+    const answer = { p1: replacementChoice(battle, "p1", aiSide, keys, firstOptions) ?? "", p2: replacementChoice(battle, "p2", aiSide, keys, firstOptions) ?? "" };
+    for (const side of ["p1", "p2"] as const) switched[side] += answer[side].split(",").filter((part) => part.trim().startsWith("switch")).length;
+    battle.makeChoices(answer.p1, answer.p2);
+  }
   const lines = battle.log.slice(before);
   // A flinch is Fake Out's (100%) only when Fake Out hit that Pokémon (it fails into a Ghost or a protected target); any
   // other flinch is a chance secondary (Iron Head 30%, Rock Slide 30%).
@@ -120,10 +143,15 @@ function preResidualHP(json: string, seed: string, choices: Record<SideID, strin
     const move = battle.dex.moves.get(moveId) as { secondaries?: readonly { chance?: number; boosts?: object; self?: { boosts?: object } }[] | null };
     return (move.secondaries ?? []).some((each) => (each.chance ?? 100) * (graced ? 2 : 1) < 100 && (!!each.boosts || !!each.self?.boosts));
   });
-  const dirty = chanceBoost || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
-    || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|switch|") || line.startsWith("|-mega|"));
-  return { hp: afterTurn ? read() : snap ?? read(), dirty, lines: stripTime(lines) };
+  // A voluntary switch (the turn's own choices) leaves the sample out as before; an answered replacement's does not.
+  const voluntary = battle.log.slice(before, chosenEnd).some((line) => line.startsWith("|switch|"));
+  const dirty = chanceBoost || voluntary || switched.p1 > 1 || switched.p2 > 1 || lines.some((line) => line.startsWith("|-crit|") || line.startsWith("|-miss|") || (line.startsWith("|-status|") && (!line.includes("[from]") || line.includes("[from] ability:")))
+    || (line.startsWith("|cant|") && line.includes("flinch") && flinchedByChance(line)) || (line.startsWith("|-start|") && line.includes("confusion")) || line.startsWith("|-mega|"));
+  const at = afterTurn ? read() : snap ?? read();
+  return { hp: at.hp, byKey: at.byKey, dirty, lines: stripTime(lines) };
 }
+/** status2 R-T: with no ReplacePolicy (the services' engine input then names none for the AI's side), its first bench Pokémon. */
+const firstOptions: ReplacePolicy = (_side, slots, options) => options.slice(0, slots.length);
 
 type Report = {
   parity: { decisions: number; equal: number; diffs: string[] };
@@ -135,6 +163,8 @@ type Report = {
     mons: number; statMismatch: string[]; hpMismatch: string[]; cells: number; engineCells: number; clean: number; contained: number; outside: string[];
     /** Engine cells whose every world's E2 applied the end of turn (gate 4b read those after the turn). */
     applied: number;
+    /** status2 R-T: the first outside samples with no replacement in them (an answered switch or a drag), each with its log. */
+    outsideOther: string[];
   };
   /** The decisions' cells by method (DecisionStats.byMethod), over both modes. */
   methods: Record<string, number>;
@@ -167,7 +197,7 @@ async function main(): Promise<void> {
     parity: { decisions: 0, equal: 0, diffs: [] },
     equivalence: { decisions: 0, built: 0, requestsP1: 0, requestsP2: 0, clean: 0, cleanSame: 0, hidden: 0, hiddenSame: 0, failures: [], byKind: {} },
     robustness: { decisions: 0, built: 0, played: 0, p1ChoiceValid: 0, failures: [] },
-    bridge: { mons: 0, statMismatch: [], hpMismatch: [], cells: 0, engineCells: 0, clean: 0, contained: 0, outside: [], applied: 0 },
+    bridge: { mons: 0, statMismatch: [], hpMismatch: [], cells: 0, engineCells: 0, clean: 0, contained: 0, outside: [], applied: 0, outsideOther: [] },
     methods: {},
     coverage: {},
     choices: { checked: 0, accepted: 0, unavailable: 0, failures: [] },
@@ -408,20 +438,15 @@ function bridgeCheck(report: Report, inputs: AiInputs, world: BeliefWorld, json:
     report.bridge.engineCells++;
     const carriedKeys = new Set(worlds.worlds.flatMap((engineWorld) => DOUBLES_SLOTS.flatMap((slot) => Object.keys(engineWorld.input.pokemon[slot]?.carried ?? {}))));
     for (const key of carriedKeys) report.coverage[`carried.${key}`] = (report.coverage[`carried.${key}`] ?? 0) + 1;
-    const range: Partial<Record<string, [number, number]>> = {};
+    const range: HpRanges = {};
     let applied = true;
     for (const engineWorld of worlds.worlds) {
       const outcome = calculateDoublesOutcomes(engineWorld.input);
       if (outcome.status !== "ready") { applied = false; continue; }
       if (outcome.endOfTurn !== "applied") applied = false;
-      for (const each of outcome.outcomes) for (const slot of DOUBLES_SLOTS) {
-        const key = engineWorld.keys[slot];
-        const mon = each.mons[slot];
-        if (!key || !mon) continue;
-        const low = Math.min(...mon.hp.map((entry) => entry.hp)), high = Math.max(...mon.hp.map((entry) => entry.hp));
-        const known = range[key];
-        range[key] = known ? [Math.min(known[0], low), Math.max(known[1], high)] : [low, high];
-      }
+      // status2 R-T: a slot's occupant at the end (a newcomer by its id: a bench id, or the other slot's start id), each
+      // Pokémon that left (benched) and, integration 2, each bench Pokémon that stayed on the bench, by MonKey.
+      for (const each of outcome.outcomes) widenWithOutcome(range, each, engineWorld, runtime);
     }
     let choices: Record<SideID, string>;
     try {
@@ -433,7 +458,7 @@ function bridgeCheck(report: Report, inputs: AiInputs, world: BeliefWorld, json:
     } catch { continue; }
     if (applied) report.bridge.applied++;
     for (let n = 0; n < 64; n++) {
-      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2", applied);
+      const played = preResidualHP(json, `sodium,${seedHex(run, index, "containment", k, n)}`, choices, "p2", applied, keys);
       if (!played || played.dirty) continue;
       report.bridge.clean++;
       const seen = (what: string, test: (line: string) => boolean) => { if (played.lines.some(test)) report.coverage[what] = (report.coverage[what] ?? 0) + 1; };
@@ -441,19 +466,24 @@ function bridgeCheck(report: Report, inputs: AiInputs, world: BeliefWorld, json:
       seen("turn.trick", (line) => line.startsWith("|-item|") && (line.includes("[from] move: Trick") || line.includes("[from] move: Switcheroo")));
       seen("turn.substitute", (line) => line.startsWith("|-start|") && line.includes("Substitute"));
       seen("turn.substitutehit", (line) => line.startsWith("|-activate|") && line.includes("Substitute|[damage]"));
+      seen("turn.replacement", (line) => line.startsWith("|switch|") || line.startsWith("|drag|"));
+      // status2 R-T: whether an answered switch or a drag is in it (an engine without R's replacements models neither).
+      const replaced = played.lines.some((line) => line.startsWith("|switch|") || line.startsWith("|drag|"));
       let inside = true;
-      for (const slot of DOUBLES_SLOTS) {
-        const mon = services.view.mons.find((entry) => entry.slot === slot);
-        const bounds = mon ? range[mon.key] : undefined;
-        const hp = played.hp[slot];
+      // Every Pokémon the engine gives a range (the slots' starting Pokémon, status2 R-T: the newcomers and the leavers), by key.
+      for (const [key, bounds] of Object.entries(range)) {
+        const hp = played.byKey[key];
         if (bounds && hp !== undefined && (hp < bounds[0] || hp > bounds[1])) {
           inside = false;
-          if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${slot} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`);
+          if (report.bridge.outside.length < 20) report.bridge.outside.push(`#${index} ${key} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`);
           // The first one's log, to see what the engine missed.
           if (report.bridge.outside.length === 1) report.bridge.outside.push(...played.lines.slice(-40).map((line) => `  ${line}`));
+          if (!replaced && report.bridge.outsideOther.length < 200) report.bridge.outsideOther.push(`#${index} ${key} ${hp} ∉ [${bounds[0]}, ${bounds[1]}] ${choices.p1} / ${choices.p2}${applied ? " (after the turn)" : ""}`, ...played.lines.slice(-60).map((line) => `  ${line}`));
         }
       }
       if (inside) report.bridge.contained++;
+      // status2 R-T: an outside sample with a replacement in it (an answered switch or a drag), and the others (report).
+      else seen(replaced ? "outside.withReplacement" : "outside.other", () => true);
     }
   }
 }

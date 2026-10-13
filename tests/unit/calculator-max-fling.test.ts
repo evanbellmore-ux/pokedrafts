@@ -9,8 +9,8 @@ import type { BattleBuild, BattleConditions, BattleGame, CombatStat, MoveDamageR
  * only, no chance.") stands in for every roll sequence only where the two paths bound them and every later use can be
  * calculated. Two cases where that fails are now not estimated:
  * - the exact search met a later use it cannot calculate on a sequence the paths do not take: a Dynamaxed attacker's Max
- *   Darkness (Max Fling) into a target whose Figy Berry heals it on some sequences, still in once Dynamax ends, when Fling
- *   (needs context) or Counter is used ("A later use cannot be calculated", as the paths themselves say);
+ *   Darkness (Max Fling) into a target whose Figy Berry heals it on some sequences, still in once Dynamax ends, when Counter
+ *   is used ("A later use cannot be calculated", as the paths themselves say);
  * - the highest roll path is still in after the lowest one is out, so the lowest path's count is no guarantee ("Too many
  *   cases to count").
  * Crush Grip, Wring Out and Hard Press no longer take the paths at all: an exact search over their powers counts them.
@@ -41,17 +41,18 @@ const hawlucha = (hp: number, item?: string): Mon => ({ id: "hawlucha", ability:
 const FALLBACK = "Too many roll sequences: lowest and highest rolls only, no chance.";
 
 describe("Max Fling into a Hawlucha holding a Figy Berry at 55%", () => {
-  it("is not estimated: a sequence still in once Dynamax ends uses Fling, which is not calculated", async () => {
-    // Showdown, Weavile: out after 2 uses 0.5625, after 3 0.921143, after 4 (the Iron Ball's Fling) 1; the app said
-    // "Guaranteed 2" and fewest 3 (its high roll path eats the Figy Berry: 84 → 35 → 86).
+  it("is counted: once Dynamax ends, the Iron Ball's Fling finishes every sequence", async () => {
+    // Showdown, Weavile: out after 2 uses 0.5625, after 3 0.921143, after 4 (the Iron Ball's Fling) 1 (status2 F: Fling is
+    // calculated at the item's pinned power; fling/maxfling.ts, maxfling-check.ts against u-oracle2.ts).
     const weavile = await row(SW, "fling", { id: "weavile", ability: "pressure", item: "ironball", dynamax: true }, hawlucha(84, "figyberry"));
-    expect(weavile).toMatchObject({ effectiveName: "Max Darkness", min: 42, max: 49 });
-    expect(weavile.usesToKO).toEqual({ kind: "not-estimated", reason: "A later use cannot be calculated" });
+    expect(weavile).toMatchObject({ effectiveName: "Max Darkness", min: 42, max: 49, usesToKO: { kind: "uses", guaranteed: 4, fewest: 2, limit: 4 } });
+    expect((weavile.usesToKO as { fasterChance: number }).fasterChance).toBeCloseTo(0.921143, 5);
     // The first use is as Showdown's: the high roll eats the Berry.
     expect(weavile.afterUse).toMatchObject({ start: 84, low: 42, high: 86, average: 61.125 });
     // Bisharp: 0.3125, 0.993652, then 1.
     const bisharp = await row(SW, "fling", { id: "bisharp", ability: "defiant", item: "ironball", dynamax: true }, hawlucha(84, "figyberry"));
-    expect(bisharp).toMatchObject({ min: 43, max: 51, usesToKO: { kind: "not-estimated", reason: "A later use cannot be calculated" } });
+    expect(bisharp).toMatchObject({ min: 43, max: 51, usesToKO: { kind: "uses", guaranteed: 4, fewest: 2, limit: 4 } });
+    expect((bisharp.usesToKO as { fasterChance: number }).fasterChance).toBeCloseTo(0.993652, 5);
     expect(bisharp.afterUse).toMatchObject({ start: 84, low: 41, high: 84, average: 71.875 });
   });
 

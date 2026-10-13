@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { REASONS } from "@/app/lib/battle/doubles-actions";
 import { calculateDoublesOutcomes, calculateDoublesTurn } from "@/app/lib/battle/doubles-turn";
 import type { DoublesCarried, DoublesPokemonInput, DoublesSlotId, DoublesStep, DoublesTurnInput, DoublesTurnResult } from "@/app/lib/battle/doubles-types";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
@@ -63,11 +62,6 @@ function ready(input: DoublesTurnInput): Ready {
   expect(result.status, JSON.stringify(result.status === "not-estimated" ? result.reason : result.status === "issues" ? result.issues : "")).toBe("ready");
   return result as Ready;
 }
-function reason(input: DoublesTurnInput): string {
-  const result = calculateDoublesTurn(input);
-  expect(result.status, JSON.stringify(result.status === "issues" ? result.issues : "")).toBe("not-estimated");
-  return result.status === "not-estimated" ? result.reason : "";
-}
 const stepOf = (result: Ready, slot: DoublesSlotId): DoublesStep => {
   const step = result.steps.find((each) => each.slot === slot);
   expect(step, `a step for ${slot}`).toBeDefined();
@@ -87,15 +81,14 @@ function items(input: DoublesTurnInput, slot: DoublesSlotId): string[] {
 describe("the Berserk and Anger Shell lock ends at a later move's AfterMoveSecondary (H1 neighbourhood)", () => {
   // Pinned Showdown (VE-H1-1 to VE-H1-4): after the self-hit the Sitrus Berry stays; a status move that then reaches the holder
   // runs AfterMoveSecondary (checkedAngerShell true), and that action's last Update eats it: 63–80 becomes 80–102.
-  it("is not estimated when a status move then reaches the locked holder at its Berry's line", async () => {
+  it("follows a status move that then reaches the locked holder at its Berry's line (status2 D; VE-H1-1 to VE-H1-4 agree)", async () => {
     const sv = await game(SV);
-    const locked = REASONS.berryLocked("Anger Shell", "Sitrus Berry");
-    expect(reason(turn(sv, [idle(klawf()), idle(lax()), act(mon("amoonguss", "regenerator"), "spore", OL), idle(toise())]))).toBe(locked);
-    expect(reason(turn(sv, [idle(klawf()), idle(lax()), act(mon("dusknoir", "pressure", { hp: 40 }), "painsplit", OL), idle(toise())]))).toBe(locked);
-    expect(reason(turn(sv, [idle(klawf({ item: "" })), idle(lax()), act(mon("hatterene", "magicbounce", { item: "sitrusberry" }), "trick", OL), idle(toise())]))).toBe(locked);
+    ready(turn(sv, [idle(klawf()), idle(lax()), act(mon("amoonguss", "regenerator"), "spore", OL), idle(toise())]));
+    ready(turn(sv, [idle(klawf()), idle(lax()), act(mon("dusknoir", "pressure", { hp: 40 }), "painsplit", OL), idle(toise())]));
+    ready(turn(sv, [idle(klawf({ item: "" })), idle(lax()), act(mon("hatterene", "magicbounce", { item: "sitrusberry" }), "trick", OL), idle(toise())]));
     const usum = await game(USUM);
     const drampa = mon("drampa", "berserk", { item: "sitrusberry", hp: 85, carried: { confusion: { attempts: 0 } } });
-    expect(reason(turn(usum, [idle(drampa), idle(lax()), act(mon("ferrothorn", "ironbarbs"), "thunderwave", OL), idle(toise())]))).toBe(REASONS.berryLocked("Berserk", "Sitrus Berry"));
+    ready(turn(usum, [idle(drampa), idle(lax()), act(mon("ferrothorn", "ironbarbs"), "thunderwave", OL), idle(toise())]));
   });
 
   it("follows a status move that does not reach the holder, or leaves it above the line", async () => {
@@ -134,12 +127,13 @@ describe("accuracy and evasion stages (H2, H8 neighbourhood)", () => {
     near(hpOf(result, PL), [116, 118, 117.875]);
   });
 
-  it("does not estimate Stored Power and Punishment reading a positive accuracy or evasion stage", async () => {
+  it("counts a positive accuracy or evasion stage in Stored Power and Punishment (status2 D: MoveContext.hiddenStages)", async () => {
     const usum = await game(USUM);
-    // VE-H2-12: Showdown's Punishment has 80 power after Double Team (79–94); the calculation would read 60.
-    expect(reason(turn(usum, [act(jolt(), "doubleteam"), idle(saur()), act(mon("weavile", "pressure"), "punishment", OL), idle(toise())]))).toBe(REASONS.hiddenStages("Punishment", "Jolteon"));
+    // VE-H2-12: Showdown's Punishment has 80 power after Double Team (79–94).
+    const punished = ready(turn(usum, [act(jolt(), "doubleteam"), idle(saur()), act(mon("weavile", "pressure"), "punishment", OL), idle(toise())]));
+    expect(stepOf(punished, PL).hits.find((hit) => hit.slot === OL)).toMatchObject({ min: 79, max: 94 });
     const sv = await game(SV);
-    expect(reason(turn(sv, [act(chomp(), "sandattack", PL), idle(saur()), act(mon("malamar", "contrary"), "storedpower", OR), idle(toise())]))).toBe(REASONS.hiddenStages("Stored Power", "Malamar"));
+    ready(turn(sv, [act(chomp(), "sandattack", PL), idle(saur()), act(mon("malamar", "contrary"), "storedpower", OR), idle(toise())]));
     // VE-ST-2: Haze clears it first: ready, Stored Power at 20 (Showdown: Venusaur 160–163).
     const hazed = ready(turn(sv, [act(chomp(), "sandattack", PL), act(mon("milotic", "marvelscale"), "haze"), act(mon("malamar", "contrary"), "storedpower", OR), idle(toise())]));
     near(hpOf(hazed, OR), [160, 163, 161.0625]);
@@ -172,11 +166,15 @@ describe("the target's own Lansat and Starf Berries at a hit's Update (positions
     expect(items(input, PL)).toEqual(["starfberry"]);
   });
 
-  it("is not estimated where it would be eaten between two hits of one move (VE-F1-10, VE-F1-13)", async () => {
+  it("follows it eaten between two hits of one move (status2 W's continuation; VE-F1-10, VE-F1-13 agree with pinned Showdown)", async () => {
     const swsh = await game("sword_shield");
     const bullets = (item: string) => turn(swsh, [act(mon("cinccino", "technician"), "bulletseed", PL), idle(saur()), act(lax({ item, hp: 100 }), "bodyslam", OL), idle(toise())]);
-    expect(reason(bullets("starfberry"))).toBe(REASONS.berryBetweenHits("Starf Berry", "Bullet Seed"));
-    expect(reason(bullets("ganlonberry"))).toBe(REASONS.berryBetweenHits("Ganlon Berry", "Bullet Seed"));
+    const starf = ready(bullets("starfberry"));
+    near(hpOf(starf, PL), [0, 60, 35.695529785156246]);
+    near(hpOf(starf, OL), [0, 150, 64.69158447265644]);
+    const ganlon = ready(bullets("ganlonberry"));
+    near(hpOf(ganlon, PL), [3, 60, 40.13306884765624]);
+    near(hpOf(ganlon, OL), [57, 72, 64.9375]);
   });
 });
 
@@ -192,9 +190,11 @@ describe("Clear Smog's clearBoosts is no drop (M1 neighbourhood)", () => {
 });
 
 describe("Sparkling Aria with its user fainting in the move (H5 neighbourhood)", () => {
-  it("is not estimated where Life Orb may be what knocked the user out (VE-H5-6: Showdown still cures)", async () => {
+  it("cures where Life Orb knocked the user out after the hits (status2 W: faintedInHits; VE-H5-6: Showdown still cures)", async () => {
     const input = turn(await game(SV), [act(mon("primarina", "torrent", { item: "lifeorb", hp: 5 }), "sparklingaria"), null, act(lax({ status: "brn" }), "bodyslam", OL), idle(toise())]);
-    expect(reason(input)).toBe(REASONS.ariaFaint("Primarina"));
+    const result = ready(input);
+    near(hpOf(result, PL), [136, 152, 144.5]);
+    near(hpOf(result, "opponent-right"), [103, 111, 107.25]);
   });
 });
 
@@ -207,9 +207,12 @@ describe("generation 7's one sort and a status its holder's own ability cures (u
     expect(result.facts).toContain("Limber: Hitmonlee is cured of its paralysis as the turn starts.");
   });
 
-  it("sorts a Lum Berry holder's start paralysis at full Speed too (FX02b: the oracle's Lum Berry eats it as it is set)", async () => {
+  // status2 Step 1 #9 (tier2-presence §5.1, TP4·UB2): a Lum Berry held with the paralysis is eaten at the turn's first
+  // Update, after generation 7's one sort, which read the paralysed Speed. FE-FX02b's oracle now sets the paralysis silently
+  // (before, its setStatus ate the Lum Berry at the setup: "Showdown item (none) at the start") and agrees: Venusaur first.
+  it("sorts a Lum Berry holder's start paralysis at the paralysed Speed (FX02b: the Lum Berry waits for the first Update)", async () => {
     const result = ready(turn(await game(USUM), [act(chomp({ status: "par", item: "lumberry" }), "dragonclaw", PL), idle(lax()), act(saur({ hp: 60 }), "gigadrain", OL), idle(toise())]));
-    expect(stepOf(result, OL).order).toEqual([{ position: 1, chance: 1 }]);
-    expect(stepOf(result, PL).moves).toBe(0);
+    expect(stepOf(result, OL).order).toEqual([{ position: 2, chance: 1 }]);
+    expect(stepOf(result, PL).moves).toBe(1);
   });
 });

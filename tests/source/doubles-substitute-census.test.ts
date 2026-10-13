@@ -60,11 +60,13 @@ describe("what a hit into a Substitute meets (ADDENDUM §4.13.10)", () => {
    * path (uses-to-ko.ts TurnStepPart: Ice Spinner and Steel Roller end the terrain), by Track B's end of turn (Rapid Spin
    * and Mortal Spin end their user's Leech Seed and trap, C16; Rapid Spin, Mortal Spin, Ceaseless Edge and Stone Axe's
    * hazards in E2), a hint only (Shell Side Arm's category); existing guards (Core Enforcer: volatileGuard; Flame Burst:
-   * a presence guard, C17); guarded here (G-Max Snooze: Max Moves; Splintered Stormshards: a signature Z-Move).
+   * a presence guard, C17); modelled in doubles-substitute.ts subOnly (status2 T2M §3.22: Splintered Stormshards ends the
+   * terrain); an added effect below 100% (G-Max Snooze's Yawn at 1/2: the turn's rule, "added effects below 100% do not
+   * happen").
    */
-  const MOVES_AFTER_SUB: Record<string, "modelled" | "existing guard" | "guarded"> = {
+  const MOVES_AFTER_SUB: Record<string, "modelled" | "existing guard" | "chance"> = {
     icespinner: "modelled", steelroller: "modelled", rapidspin: "modelled", mortalspin: "modelled", ceaselessedge: "modelled", stoneaxe: "modelled",
-    shellsidearm: "modelled", coreenforcer: "existing guard", flameburst: "existing guard", gmaxsnooze: "guarded", splinteredstormshards: "guarded",
+    shellsidearm: "modelled", coreenforcer: "existing guard", flameburst: "existing guard", gmaxsnooze: "chance", splinteredstormshards: "modelled",
   };
   /** Items with onAfterSubDamage: Air Balloon pops (the part path; the prefix's faint path). */
   const ITEMS_AFTER_SUB: Record<string, "modelled"> = { airballoon: "modelled" };
@@ -140,6 +142,34 @@ describe("SUB_PER_HIT is the engine's per-hit reads of the target (ADDENDUM §4.
     expect(after.sort()).toEqual(["keeberry", "marangaberry", "whiteherb"]);
     for (const each of after) expect(engine.delete(each), each).toBe(true);
     expect([...engine].sort()).toEqual([...SUB_PER_HIT.items].sort());
+  });
+});
+
+describe("what a hit into a Substitute alone still does (status2 T2M §3.22; doubles-substitute.ts subOnly)", () => {
+  const source = readFileSync(join(ROOT, "app/lib/battle/doubles-substitute.ts"), "utf8");
+  const sub = source.slice(source.indexOf("function subOnly"), source.indexOf("/** Track E's Substitute facts"));
+  it("subOnly reads every field of a Max Move's effects (stat-moves.ts MAX_MOVE_EFFECTS) and of a signature Z-Move's but the user's", async () => {
+    const { MAX_MOVE_EFFECTS, Z_MOVE_EFFECTS } = await import("../../app/lib/battle/stat-moves");
+    const maxFields = new Set(Object.values(MAX_MOVE_EFFECTS).flatMap((effect) => Object.keys(effect)));
+    for (const field of maxFields) expect(sub, `MAX_MOVE_EFFECTS ${field}`).toContain(`effect?.${field}`);
+    // A Z-Move's own stage for its user acts through the step's part on any hit (uses-to-ko.ts: zEffect.user on hitAny).
+    const zFields = new Set(Object.values(Z_MOVE_EFFECTS).flatMap((effect) => Object.keys(effect)).filter((field) => field !== "user"));
+    for (const field of zFields) expect(sub, `Z_MOVE_EFFECTS ${field}`).toContain(`z?.${field}`);
+    // The one Z-Move with a stage for its user is a sound move: it passes a Substitute (meetsSubstitute).
+    for (const [name, effect] of Object.entries(Z_MOVE_EFFECTS)) if (effect.user) expect(dex.moves[toId(name)]?.flags?.sound, name).toBe(1);
+  });
+});
+
+describe("what a face's 0-damage hit meets (status2 T2M §3.13; doubles-faces.ts FACE_HIT_ITEMS)", () => {
+  it("every catalog item with a handler a hit runs is classified, and no row is stale", async () => {
+    const { FACE_HIT_ITEMS } = await import("../../app/lib/battle/doubles-faces");
+    const keys = ["onDamagingHit", "onAfterMoveSecondary", "onHit", "onTryHit", "onDamage", "onAfterMoveSecondarySelf", "onSourceTryPrimaryHit"];
+    const found = new Set([...handlers("items", (key) => keys.includes(key))].filter((id) => inCatalogs.items.has(id)));
+    const resist = [...RESIST_BERRIES].filter((id) => inCatalogs.items.has(id));
+    expect([...found].filter((id) => !FACE_HIT_ITEMS[id])).toEqual([]);
+    expect(Object.keys(FACE_HIT_ITEMS).filter((id) => !found.has(id) && !resist.includes(id))).toEqual([]);
+    // The resist Berries: Chilan Berry is eaten by any Normal hit (neutralRow), the others need a super-effective typeMod.
+    for (const berry of resist) expect([berry, FACE_HIT_ITEMS[berry] ?? "super-effective"]).toEqual([berry, berry === "chilanberry" ? "modelled" : "super-effective"]);
   });
 });
 

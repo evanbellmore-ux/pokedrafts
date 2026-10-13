@@ -5,11 +5,42 @@ import type {
   ChampionsMove,
   StatTable,
 } from "../../../app/lib/battle/types";
+import type { FlingData, FlingItem } from "../../../app/lib/battle/fling";
 
 /** Showdown identities only: never infer forms from PokeAPI names or numbers. */
 export function toID(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
+
+/** The items whose fling.effect (an onHit function) the app models by id (app/lib/battle/fling.ts). */
+const FLING_EFFECTS = new Set(["whiteherb", "mentalherb"]);
+const FLING_KEYS = new Set(["basePower", "status", "volatileStatus", "effect"]);
+
+/**
+ * An item's Fling data from the pinned mod's Dex row (PS/data/moves.ts fling onPrepareHit reads item.fling.basePower, then
+ * item.isBerry, item.fling.effect, item.fling.status, item.fling.volatileStatus), or undefined for an item with none (Fling
+ * fails). A shape the app does not model throws, so a rebuild never drops one silently.
+ */
+export function flingData(row: { id: string; isBerry?: boolean; fling?: unknown }): FlingData | undefined {
+  const fling = row.fling as Record<string, unknown> | undefined;
+  if (!fling) return undefined;
+  const unknown = Object.keys(fling).filter((key) => !FLING_KEYS.has(key));
+  if (unknown.length) throw new Error(`Unmodelled Fling data on ${row.id}: ${unknown.join(", ")}.`);
+  const { basePower, status, volatileStatus, effect } = fling;
+  // Flower Sweet has fling.basePower 0: Fling throws it for no damage (sim/battle-actions.ts getDamage returns undefined).
+  if (typeof basePower !== "number" || !Number.isInteger(basePower) || basePower < 0) throw new Error(`Invalid Fling power on ${row.id}.`);
+  if (status !== undefined && !["brn", "par", "psn", "tox"].includes(status as string)) throw new Error(`Unmodelled Fling status on ${row.id}: ${String(status)}.`);
+  if (volatileStatus !== undefined && volatileStatus !== "flinch") throw new Error(`Unmodelled Fling volatile on ${row.id}: ${String(volatileStatus)}.`);
+  if (effect !== undefined && (typeof effect !== "function" || !FLING_EFFECTS.has(row.id))) throw new Error(`Unmodelled Fling effect on ${row.id}.`);
+  return {
+    basePower,
+    ...(status !== undefined ? { status: status as FlingData["status"] } : {}),
+    ...(volatileStatus !== undefined ? { volatileStatus: "flinch" as const } : {}),
+    ...(effect !== undefined ? { effect: row.id as FlingData["effect"] } : {}),
+    ...(row.isBerry ? { berry: true as const } : {}),
+  };
+}
+export type { FlingData, FlingItem };
 
 export type NamedData = { id: string; name: string };
 export type AvailableData = NamedData & {
@@ -64,6 +95,8 @@ export type ResolvedAbility = AvailableData & { description: string };
 export type ResolvedItem = AvailableData & {
   description: string;
   megaStone?: Record<string, string>;
+  /** Fling's data (flingData, from the pinned Dex row); absent when the item cannot be flung. */
+  fling?: FlingData;
 };
 export type ShowdownSnapshot = {
   species: readonly ResolvedSpecies[];
@@ -308,7 +341,7 @@ export function transformChampionsCatalog(
       ],
     };
   });
-  const items = source.items.filter(isAvailable).sort(byID).map((row): ChampionsItem => {
+  const items = source.items.filter(isAvailable).sort(byID).map((row): FlingItem => {
     const calc = engineItems.get(row.id);
     const targets = megaTargets(row.megaStone);
     const unsupported: string[] = [];
@@ -332,6 +365,7 @@ export function transformChampionsCatalog(
       megaStone: targets.length === 1 ? targets[0].formId : null,
       megaEvolves: targets.length === 1 ? targets[0].baseSpeciesId : null,
       megaTargets: targets,
+      ...(row.fling ? { fling: row.fling } : {}),
       unsupported,
     };
   });
