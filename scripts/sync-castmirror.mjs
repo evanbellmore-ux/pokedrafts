@@ -12,14 +12,15 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'manifest.json');
 const REVISION = 'af7d034354abcb4cc4d52719989900a0e0b1b455';
-const ADAPTER = 'castmirror-vercel-v2';
+const ADAPTER = 'castmirror-vercel-v4';
+const PREVIOUS_ADAPTER = 'castmirror-vercel-v3';
 const REPOSITORY = 'https://github.com/evanbellmore-ux/cast-mirror';
 const DECLARATIONS = [
   'classes', 'ensureClasses', 'PI_SPELL', 'fightHasPI', 'HERO_SIG', 'heroOf',
   'heroCandCache', 'heroOfCandidate', 'heroBlocks', 'specFromFight', 'sideHead',
   'sameRealm', 'sideActor', 'fetchFightSide', 'recentKillFor', 'buildComparison',
 ];
-const PATCHES = [
+const PREVIOUS_PATCHES = [
   'request-scoped-class-and-hero-memoization',
   'realm-aware-pi-and-hero-actor-resolution',
   'ambiguous-spec-summary-fails-closed',
@@ -29,6 +30,12 @@ const PATCHES = [
   'supported-region-picker',
   'frozen-execution-capabilities-and-handler-guards',
   'honest-unsupported-execution-projection',
+  'gated-durable-native-reference-capability',
+  'compact-native-response-with-pinned-throughput-streams',
+];
+const PATCHES = [...PREVIOUS_PATCHES,
+  'current-first-immediate-previous-patch-throughput',
+  'escaped-per-side-ranking-patch-labels',
 ];
 const normalize = (text) => text.replace(/\r\n/g, '\n');
 const digest = (text) => createHash('sha256').update(normalize(text)).digest('hex');
@@ -40,6 +47,64 @@ function patch(text, before, after, label) {
     throw new Error(`CastMirror patch anchor changed or ambiguous: ${label}`);
   }
   return text.slice(0, first) + after + text.slice(first + before.length);
+}
+
+// These portable helpers are emitted with the core, not imported at runtime.
+// Partition IDs are opaque. Only unambiguous numeric patch names establish order.
+export function canonicalRankingPatch(value) {
+  if (typeof value !== 'string' || value.length > 128) return null;
+  const match = /^(?:Patch\s+)?(0|[1-9]\d{0,3})\.(0|[1-9]\d{0,3})(?:\.(0|[1-9]\d{0,3}))?$/i.exec(value.trim());
+  if (!match) return null;
+  const parts = match.slice(1).filter((part) => part !== undefined).map(Number);
+  if (parts.length === 3 && parts[2] === 0) parts.pop();
+  return parts.join('.');
+}
+function compareRankingPatches(a, b) {
+  const left = a.split('.').map(Number), right = b.split('.').map(Number);
+  for (let index = 0; index < 3; index++) {
+    const delta = (left[index] ?? 0) - (right[index] ?? 0);
+    if (delta) return delta;
+  }
+  return 0;
+}
+function rankingRecord(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
+function rankingID(value) { return Number.isSafeInteger(value) && value > 0 && value <= 2_147_483_647; }
+export function previousRankingPartition(data, encounter) {
+  if (!rankingID(encounter) || !rankingRecord(data) || data.error != null || data.errors != null || !rankingRecord(data.worldData)
+    || data.worldData.error != null || data.worldData.errors != null) return null;
+  const found = data.worldData.encounter, zone = found?.zone;
+  if (!rankingRecord(found) || found.error != null || found.errors != null || found.id !== encounter
+    || !rankingRecord(zone) || zone.error != null || zone.errors != null || !rankingID(zone.id)
+    || !Array.isArray(zone.partitions) || zone.partitions.length < 2 || zone.partitions.length > 100) return null;
+  const entries = [], ids = new Set(), versions = new Set();
+  for (const entry of zone.partitions) {
+    const version = canonicalRankingPatch(entry?.name);
+    if (!rankingRecord(entry) || !rankingID(entry.id) || typeof entry.default !== 'boolean' || version === null
+      || ids.has(entry.id) || versions.has(version)) return null;
+    ids.add(entry.id); versions.add(version); entries.push({ id: entry.id, version, current: entry.default });
+  }
+  const defaults = entries.filter((entry) => entry.current);
+  if (defaults.length !== 1) return null;
+  const current = defaults[0];
+  if (entries.some((entry) => entry !== current && compareRankingPatches(entry.version, current.version) >= 0)) return null;
+  const previous = entries.filter((entry) => entry !== current)
+    .sort((a, b) => compareRankingPatches(b.version, a.version))[0];
+  return { partition: previous.id, label: { current: current.version, selected: previous.version, fallback: true } };
+}
+async function readPreviousRankingPartition(c, encounter) {
+  const data = await c.query(`query($enc: Int!) {
+    worldData { encounter(id: $enc) { id zone { id partitions { id name default } } } }
+  }`, { enc: encounter });
+  return previousRankingPartition(data, encounter);
+}
+function characterRankingPool(value) {
+  if (!rankingRecord(value) || value.error != null || value.errors != null || !Array.isArray(value.ranks)
+    || value.ranks.length > 10_000 || value.hasMorePages !== undefined && typeof value.hasMorePages !== 'boolean') return null;
+  if (!value.ranks.every((rank) => rankingRecord(rank) && rankingRecord(rank.report)
+    && typeof rank.report.code === 'string' && /^[A-Za-z0-9]{16}$/.test(rank.report.code) && rankingID(rank.report.fightID)
+    && typeof rank.amount === 'number' && Number.isFinite(rank.amount) && rank.amount >= 0
+    && typeof rank.spec === 'string' && rank.spec.trim().length > 0 && rank.spec.length <= 64)) return null;
+  return { rows: value.ranks, exhausted: value.hasMorePages !== true };
 }
 
 /** Select complete top-level declarations, not fragile line ranges. */
@@ -94,6 +159,152 @@ export function validateCore(text) {
   if (/\b(?:process|require|fetch|setTimeout|setInterval|ExecutionRegistry|createServer|apiCompare)\b/.test(text)) {
     throw new Error('Generated core contains a forbidden transport or server-lifecycle dependency');
   }
+}
+
+// Read helper declarations from this reviewed adapter's source, not Function
+// stringification: test loaders and Windows line endings must not alter output.
+function rankingHelpers(helpers) {
+  return extractDeclarations(normalize(readFileSync(fileURLToPath(import.meta.url), 'utf8')), helpers.map((helper) => helper.name))
+    .replace(/^export (?=(?:async )?function )/gm, '');
+}
+
+function adaptRankingPatchFallback(core) {
+  const helpers = rankingHelpers([canonicalRankingPatch, compareRankingPatches, rankingRecord, rankingID, previousRankingPartition,
+    readPreviousRankingPartition, characterRankingPool]);
+  core = patch(core, 'export async function buildComparison(c, params) {',
+    helpers + '\n\nexport async function buildComparison(c, params) {', 'portable previous-patch helpers');
+  core = patch(core, '  const reg = region.toLowerCase();',
+    `  const reg = region.toLowerCase();
+  let previousPatch;
+  const readPreviousPatch = () => previousPatch ??= readPreviousRankingPartition(c, encounter);
+  let aRankingPatch = null;`, 'request-local previous-patch metadata');
+  core = patch(core, '  const ranks = ch.encounterRankings?.ranks ?? [];',
+    `  let ranks = ch.encounterRankings?.ranks ?? [];
+  const currentPool = cd.error == null && cd.errors == null && cd.characterData.error == null && cd.characterData.errors == null
+    && ch.error == null && ch.errors == null ? characterRankingPool(ch.encounterRankings) : null;
+  if (!pin && rankingID(ch.classID) && currentPool?.exhausted && currentPool.rows.length === 0) {
+    const previous = await readPreviousPatch();
+    if (previous) {
+      const data = await c.query(
+        \`query($name: String!, $slug: String!, $region: String!, $enc: Int!, $diff: Int!, $metric: CharacterRankingMetricType!, $partition: Int!) {
+          characterData { character(name: $name, serverSlug: $slug, serverRegion: $region) {
+            classID encounterRankings(encounterID: $enc, difficulty: $diff, metric: $metric, partition: $partition)
+          } }
+        }\`, { name, slug, region: reg, enc: encounter, diff: difficulty, metric, partition: previous.partition });
+      const selected = data?.characterData?.character, selectedPool = characterRankingPool(selected?.encounterRankings);
+      if (!rankingRecord(data) || data.error != null || data.errors != null || !rankingRecord(data.characterData)
+        || data.characterData.error != null || data.characterData.errors != null || !rankingRecord(selected)
+        || selected.error != null || selected.errors != null || selected.classID !== ch.classID
+        || !selectedPool?.exhausted) throw new Error('Incomplete previous-patch character rankings');
+      ranks = selectedPool.rows;
+      if (ranks.length) aRankingPatch = previous.label;
+    }
+  }`, 'empty unpinned character previous-patch selection');
+  core = patch(core,
+    `  const referenceFor = async (rankingMetric) => {
+    let excluded = !aHasPI;
+    let encName = null;
+    // pages 1-3: deeper pages let hero clustering see the off-meta tree
+    const fetchRankings = async (xb) => {
+      const out = [];
+      for (let page = 1; page <= 3; page++) {
+        const wr = await c.query(
+          \`query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter) {
+             worldData { encounter(id: $enc) {
+               name
+               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb)
+             } }
+           }\`, { enc: encounter, cls: className, spec, diff: difficulty, metric: rankingMetric, page, xb });
+        const encData = wr.worldData.encounter;
+        encName = encData?.name ?? encName;
+        const got = encData?.characterRankings?.rankings ?? [];
+        out.push(...got);
+        if (got.length < 100 || !encData?.characterRankings?.hasMorePages) break;
+      }
+      return out;
+    };
+    let rankings = await fetchRankings(excluded ? 'Exclude' : 'Any');
+    if (!rankings.length && excluded) {
+      excluded = false; // no externals-free parses ranked at all — fall back
+      rankings = await fetchRankings('Any');
+    }
+    // Anonymous uploads can't be actor-matched. Damage #1 may be A's own parse.
+    const usable = rankings.filter((r) =>
+      r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:') &&
+      (metric === 'dps' || !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code)));
+`,
+    `  const referenceFor = async (rankingMetric) => {
+    let encName = null, rankingPatch = null;
+    // Each partition retains the existing three-page cap and its own PI policy.
+    const fetchRankings = async (xb, selectedPartition) => {
+      const out = [];
+      let exhausted = false;
+      for (let page = 1; page <= 3; page++) {
+        const document = selectedPartition === null
+          ? \`query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter) {
+             worldData { encounter(id: $enc) {
+               name
+               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb)
+             } }
+           }\`
+          : \`query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter, $partition: Int!) {
+             worldData { encounter(id: $enc) {
+               name
+               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb, partition: $partition)
+             } }
+           }\`;
+        const variables = { enc: encounter, cls: className, spec, diff: difficulty, metric: rankingMetric, page, xb };
+        if (selectedPartition !== null) variables.partition = selectedPartition;
+        const wr = await c.query(document, variables);
+        const encData = wr?.worldData?.encounter, result = encData?.characterRankings;
+        if (!rankingRecord(wr) || wr.error != null || wr.errors != null || !rankingRecord(wr.worldData)
+          || wr.worldData.error != null || wr.worldData.errors != null || !rankingRecord(encData)
+          || encData.error != null || encData.errors != null || typeof encData.name !== 'string' || !encData.name.trim()
+          || !rankingRecord(result) || result.error != null || result.errors != null || !Array.isArray(result.rankings)
+          || result.rankings.length > 100 || !result.rankings.every(rankingRecord)
+          || typeof result.hasMorePages !== 'boolean') throw new Error('Incomplete world ranking search');
+        encName = encData?.name ?? encName;
+        const got = result.rankings;
+        out.push(...got);
+        if (!result.hasMorePages) { exhausted = true; break; }
+        if (got.length < 100) break; // A short unexhausted response cannot authorize patch fallback.
+      }
+      return { rows: out, exhausted };
+    };
+    // Anonymous uploads can't be actor-matched. Damage #1 may be A's own parse.
+    const eligible = (r) =>
+      r.name && r.name.toLowerCase() !== 'anonymous' && r.report?.code && !r.report.code.startsWith('a:') &&
+      (metric === 'dps' || !(r.name.toLowerCase() === name.trim().toLowerCase() && r.report.code === best.report?.code));
+    const searchPool = async (selectedPartition = null) => {
+      let excluded = !aHasPI;
+      let result = await fetchRankings(excluded ? 'Exclude' : 'Any', selectedPartition);
+      let exhausted = result.exhausted;
+      let usable = result.rows.filter(eligible);
+      if (!usable.length && excluded && exhausted) {
+        excluded = false;
+        result = await fetchRankings('Any', selectedPartition);
+        exhausted = exhausted && result.exhausted;
+        usable = result.rows.filter(eligible);
+      }
+      return { usable, excluded, exhausted };
+    };
+    let { usable, excluded, exhausted } = await searchPool();
+    if (!usable.length && exhausted) {
+      const previous = await readPreviousPatch();
+      if (previous) {
+        const selected = await searchPool(previous.partition);
+        usable = selected.usable; excluded = selected.excluded;
+        if (usable.length) rankingPatch = previous.label;
+      }
+    }
+`, 'exhausted eligible world previous-patch selection');
+  core = patch(core,
+    '      b: { server: top.server?.name ?? \'?\', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs },',
+    '      b: { server: top.server?.name ?? \'?\', amount: Math.round(top.amount), code: top.report.code, fightID: top.report.fightID, rankPercent: 100, ...theirs, ...(rankingPatch ? { rankingPatch: { ...rankingPatch } } : {}) },', 'reference previous-patch label');
+  core = patch(core,
+    '    a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine },',
+    '    a: { server, amount: Math.round(best.amount), code: best.report.code, fightID: best.report.fightID, rankPercent: Math.round(best.rankPercent ?? 0), ...mine, ...(aRankingPatch ? { rankingPatch: { ...aRankingPatch } } : {}) },', 'player previous-patch label');
+  return core;
 }
 
 export function generateCore(snapshot) {
@@ -208,6 +419,7 @@ export function generateCore(snapshot) {
   core = patch(core,
     '    const bHasPI = excluded ? false : await readPI(top.report.code, top.report.fightID, top.name);',
     '    const bHasPI = excluded ? false : await readPI(top.report.code, top.report.fightID, { name: top.name, server: top.server?.name });', 'reference PI identity');
+  core = adaptRankingPatchFallback(core);
   const out = `// GENERATED by scripts/sync-castmirror.mjs; do not edit directly.\n// CastMirror ${REVISION}; hosted adapter ${ADAPTER}.\n// Client-keyed WeakMaps only memoize metadata during an invocation.\n\n` + core;
   validateCore(out);
   return out;
@@ -231,15 +443,20 @@ export function generatePage(snapshot) {
     `<script>
 window.MIRROR_API_BASE = '/api/castmirror';
 window.MIRROR_SOURCE_VERSION = '${REVISION}';
-window.MIRROR_EXECUTION_CAPABILITIES = Object.freeze({ build: false, reference: false });
+window.MIRROR_EXECUTION_CAPABILITIES = Object.freeze({ build: false, reference: true });
 </script>
 <script>
 const $ = (id) => document.getElementById(id);`, 'hosted configuration');
   html = patch(html, 'function referenceChoices() {',
     `// Both the release and service must explicitly support an Execution action.
 function executionAllowed(capability) {
-  const status = isExecutionV3() ? comparison.executionV3Status : comparison?.executionStatus;
-  return window.MIRROR_EXECUTION_CAPABILITIES?.[capability] === true &&
+  const status = comparison?.executionV3Status;
+  const pin = comparison?.comparisonID;
+  return isExecutionV3() && status?.state === 'available' &&
+    status?.available === true && status?.backend === 'native' &&
+    status?.analyticalVersion === 'execution-statistical-3' &&
+    typeof pin === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(pin) &&
+    window.MIRROR_EXECUTION_CAPABILITIES?.[capability] === true &&
     status?.capabilities?.[capability] === true;
 }
 function hostedExecutionStatus() {
@@ -262,6 +479,11 @@ function referenceChoices() {`, 'capability helpers');
     referenceMode = 'overall'; restoreExecution = false;
   }
   const choice = referenceChoices().find((c) => c.mode === referenceMode);`, 'unavailable projection');
+  html = patch(html, '    if (isExecutionV3()) D.a = comparison.a;',
+    `    if (isExecutionV3()) {
+      D.a = comparison.a;
+      if (choice?.value?.rankingMetric === 'execution') D.b = comparison.b;
+    }`, 'compact native response retains pinned throughput streams');
   html = patch(html, '    if (!isExecutionV3() && data.executionReference && restoreExecution) {',
     "    if (executionAllowed('reference') && !isExecutionV3() && data.executionReference && restoreExecution) {", 'hero reload guard');
   html = patch(html,
@@ -298,17 +520,34 @@ function referenceChoices() {`, 'capability helpers');
     "  const execution = executionAllowed('reference') && D.rankingMetric === 'execution' ? D.execution : null;", 'evidence guard');
   html = patch(html, '  const rankingMetric = D.rankingMetric || D.metric;',
     "  const rankingMetric = D.rankingMetric === 'execution' && !executionAllowed('reference') ? D.metric : D.rankingMetric || D.metric;", 'rating guard');
+  html = patch(html, 'function render(D) {',
+    rankingHelpers([canonicalRankingPatch, compareRankingPatches]) + `
+function rankingPatchMarkup(side) {
+  const label = side?.rankingPatch;
+  if (label?.fallback !== true || canonicalRankingPatch(label.current) !== label.current
+    || canonicalRankingPatch(label.selected) !== label.selected || typeof label.current !== 'string'
+    || typeof label.selected !== 'string' || compareRankingPatches(label.selected, label.current) >= 0) return '';
+  return '<p class="hint ranking-patch">' + esc('Previous patch: ' + label.selected + ' (current ' + label.current + ')') + '</p>';
+}
+function render(D) {`, 'numeric escaped ranking patch markup');
+  html = patch(html,
+    "        '<h2>' + esc(s.name) + '</h2><p class=\"execution-player-meta\">' + esc(metadata) + '</p>' +",
+    "        '<h2>' + esc(s.name) + '</h2><p class=\"execution-player-meta\">' + esc(metadata) + '</p>' + rankingPatchMarkup(s) +", 'statistical player patch label');
+  html = patch(html,
+    "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' +",
+    "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' + rankingPatchMarkup(s) +", 'throughput per-side patch label');
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
   if (scripts.length !== 2) throw new Error('Unexpected inline-script layout in generated page');
   for (const [index, script] of scripts.entries()) new Script(script[1], { filename: `castmirror-inline-${index}.js` });
   return html;
 }
 
-function readSnapshot(manifest) {
+function readSnapshot(manifest, upgrade = false) {
+  const current = manifest.adapterVersion === ADAPTER && JSON.stringify(manifest.patches) === JSON.stringify(PATCHES);
+  const previous = upgrade && manifest.adapterVersion === PREVIOUS_ADAPTER && JSON.stringify(manifest.patches) === JSON.stringify(PREVIOUS_PATCHES);
   if (manifest.schemaVersion !== 1 || manifest.upstream?.repository !== REPOSITORY ||
-      manifest.upstream?.revision !== REVISION || manifest.adapterVersion !== ADAPTER ||
-      JSON.stringify(manifest.declarations) !== JSON.stringify(DECLARATIONS) ||
-      JSON.stringify(manifest.patches) !== JSON.stringify(PATCHES)) {
+      manifest.upstream?.revision !== REVISION || !current && !previous ||
+      JSON.stringify(manifest.declarations) !== JSON.stringify(DECLARATIONS)) {
     throw new Error('Unexpected CastMirror provenance; review the source pin and adapter explicitly');
   }
   const expected = ['upstream/index.html', 'upstream/throughput.mjs'];
@@ -367,7 +606,7 @@ async function main() {
   }
   if (check && source) throw new Error('--check cannot import or modify the pinned snapshot');
   const manifest = source ? importSource(source) : JSON.parse(readFileSync(MANIFEST, 'utf8'));
-  const snapshot = readSnapshot(manifest);
+  const snapshot = readSnapshot(manifest, !check);
   const generated = {
     'public/castmirror.html': generatePage(snapshot['upstream/index.html']),
     'app/api/castmirror/compare/core.mjs': generateCore(snapshot['upstream/throughput.mjs']),
@@ -387,6 +626,8 @@ async function main() {
       mkdirSync(path.dirname(destination), { recursive: true });
       writeFileSync(destination, text);
     }
+    manifest.adapterVersion = ADAPTER;
+    manifest.patches = PATCHES;
     manifest.generatedFiles = hashes;
     writeFileSync(MANIFEST, json(manifest));
   }

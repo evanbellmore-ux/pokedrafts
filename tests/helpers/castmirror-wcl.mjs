@@ -18,6 +18,11 @@ export function wclFixture({ playerPI = false, playerHero = null, playerServer =
       difficulty: 4, metric: 'dps', zone: 99, code: null, fightID: null, hero: null,
     },
     rankings: () => [],
+    partitions: [],
+    playerRankings: () => fixture.ranks,
+    recentReports: () => [],
+    rankingMetadata: () => ({ worldData: { encounter: { id: fixture.params.encounter,
+      zone: { id: fixture.params.zone, partitions: fixture.partitions } } } }),
   };
   const signature = {
     Sunfury: 'Arcane Phoenix', Spellslinger: 'Arcane Splinter', Oracle: 'Piety', Archon: 'Power Surge',
@@ -67,8 +72,13 @@ export function wclFixture({ playerPI = false, playerHero = null, playerServer =
     async query(query, variables = {}) {
       calls.push({ query, variables: { ...variables } });
       if (query.includes('gameData')) return { gameData: { classes: [{ id: 8, name: 'Mage' }] } };
+      if (query.includes('worldData') && query.includes('partitions')) return await fixture.rankingMetadata(variables);
+      if (query.includes('recentReports')) {
+        return { characterData: { character: { recentReports: { data: await fixture.recentReports(variables) } } } };
+      }
       if (query.includes('encounterRankings')) {
-        return { characterData: { character: { classID: 8, encounterRankings: { ranks: fixture.ranks } } } };
+        const response = await fixture.playerRankings(variables);
+        return { characterData: { character: { classID: 8, encounterRankings: Array.isArray(response) ? { ranks: response } : response } } };
       }
       if (query.includes('characterRankings')) {
         const response = await fixture.rankings(variables);

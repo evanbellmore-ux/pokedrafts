@@ -539,6 +539,11 @@ describe("whole migration set applied by a non-superuser owner (Supabase postgre
         grant execute on all functions in schema extensions to app_owner;
         alter publication supabase_realtime owner to app_owner;
         grant anon, authenticated, service_role to app_owner with admin option;
+        -- The private migration needs externally provisioned owner authority.
+        -- This is migration-only membership, never the runtime LOGIN's grants.
+        grant execution_v3_owner to app_owner;
+        grant usage on schema extensions to execution_v3_owner;
+        grant execute on function extensions.digest(bytea, text) to execution_v3_owner;
       `);
     } finally {
       await setup.end();

@@ -1,7 +1,7 @@
 // Review test (applyability lens): what the README's CLI guidance implies
 // about re-running migration files.
 //
-// 1. The whole twelve-file set is re-runnable in filename order (README.md,
+// 1. The whole migration set is re-runnable in filename order (README.md,
 //    "Applying migrations"), so an operator who lets `supabase db push
 //    --include-all` re-run files that were applied by hand through the SQL
 //    editor ends up in the hardened state.
@@ -21,7 +21,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { asUser, connect, createUser, inviteCodeFor, rpcAs, type Client } from "./harness";
-import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
+import { EXECUTION_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
 
 const RERUN_DB = "pokedrafts_rerun_review";
 
@@ -53,9 +53,10 @@ describe("review: re-running migration files", () => {
     await admin.end();
   });
 
-  it("all twelve files apply a second time in filename order and leave the hardened policy set", async () => {
+  it("all thirteen files apply a second time in filename order and leave the hardened policy set", async () => {
     const migrations = readMigrations();
-    expect(migrations).toHaveLength(12);
+    expect(migrations).toHaveLength(13);
+    expect(migrations.at(-1)?.name).toBe(EXECUTION_MIGRATION);
     for (const migration of migrations) {
       await applyMigration(db, migration);
     }

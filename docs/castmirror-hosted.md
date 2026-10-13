@@ -20,15 +20,25 @@ update this copy. A normal Pokedrafts deployment is required.
   different ranked amounts. A Boss-only failure leaves Overall usable and is
   retryable with another comparison.
 - HPS comparisons offer **Healing #1**, not Boss damage.
-- **Execution is visible but disabled.** Native Execution v3 exists in standalone
-  CastMirror, but this hosted app has no configured reachable durable backend for
-  collection, quota accounting, and retained comparison pins. The block is that
-  missing connection, not mechanic certification or a top-ten benchmark project.
-  A compact notice explains this without exposing diagnostics or inventing a
-  winner, rating, percentile, scope, sample size, or coverage. The vendored page
-  retains the six-category statistical renderer for a future verified connection:
-  incompatible partial ratings are hidden, incomplete observations are labeled,
-  missing values remain unavailable, and sample/confidence appears once.
+- Ranking searches try the current/default patch first. Only validated, exhausted
+  searches with no eligible reference can try the immediate previous patch once,
+  using its actual partition ID from encounter-zone metadata. Current Exclude/Any
+  selection completes before the same policy is tried for the predecessor; errors,
+  hidden data, incomplete pagination and page limits do not authorize fallback.
+  Overall, Boss and Healing select independently. Unpinned players can use previous
+  ranked logs before the existing recent-report fallback, but explicit player kills
+  are never replaced. Selected historical sides show an escaped **Previous patch**
+  label; no older-patch scan or current-patch relabeling occurs.
+- **Execution v3 has a gated Vercel-native path.** The dedicated Node route reuses
+  CastMirror's collector, statistical engine, attribution, role weights, and PI
+  rules. Private Postgres transactions retain the shared quota ledger, ownership,
+  compact peer pools, and server-minted comparison pins. No separate HTTP server,
+  tunnel, Redis, queue, or Supabase service-role credential is required or used.
+  Public collection remains disabled until production provisioning, safe writer
+  cutover, runtime/capacity checks, and real private hosted verification succeed.
+  The six-category renderer hides incompatible partial ratings, labels incomplete
+  observations, keeps missing values unavailable, and shows sample/confidence once.
+  Synthetic tests or a deployed disabled route do not establish native readiness.
 
 The page includes `castmirror-source` and `castmirror-adapter` meta tags plus a
 hidden developer source line for checking the deployed copy. Source identifiers
@@ -83,7 +93,9 @@ which production row or field failed.
   JSON errors, and a Boss-only failure preserves completed Overall data.
 - Complete comparison responses may be cached for ten minutes, bounded to
   32 entries / 8 MiB per warm instance. Failed or partial Boss responses are not
-  cached. Metadata caches are bounded as well; hero/class memoization is keyed
+  cached. Any previous-patch selection also bypasses warm comparison caching so
+  newly populated current rankings are rechecked on the next request. Metadata
+  caches are bounded as well; hero/class memoization is keyed
   to the invocation's client. Warm caches are optimizations, **not shared durable
   storage or distributed rate limits**.
 - Existing fresh-request admission remains in place (12 compares and 30 character
@@ -113,8 +125,9 @@ cache rules, or Execution availability.
 
 ## Hosted Execution API
 
-All availability endpoints are stateless. They make **zero WCL requests,
-filesystem writes, or job dispatches**.
+The three **legacy** availability/build endpoints below remain stateless. They
+make **zero WCL requests, filesystem writes, or job dispatches**. They do not
+activate or proxy the new native route.
 
 | Endpoint | Method | Result |
 | --- | --- | --- |
@@ -124,18 +137,65 @@ filesystem writes, or job dispatches**.
 
 Status validates context; missing/invalid required encounter returns 400.
 Unsupported methods return Next.js 405 responses. Refresh is unconditionally
-forbidden: forwarded loopback headers are not authorization. Comparisons attach
-the same availability state but issue no retained `comparisonID`.
+forbidden: forwarded loopback headers are not authorization. The legacy status
+contract keeps `capabilities.build` and `capabilities.reference` false, with
+`revision`, `scope`, `coverage`, `job`, and `updatedAt` all null. `requestedContext`
+is separate from verified native scope.
 
-The status contract sets `capabilities.build` and `capabilities.reference` to
-`false`, with `revision`, `scope`, `coverage`, `job`, and `updatedAt` all null.
-`requestedContext` is separate from verified Execution scope. No query starts a
-raid scan. Public native statistics require a reachable durable native origin and
-an authenticated connector, or a verified equivalent durable ledger/writer-lease
-and retained-pin service. The existing warm-instance caches/rate buckets and
-Vercel temporary files do not supply those guarantees. Restarting a loopback-only
-standalone listener does not connect this site; this release does not weaken the
-native collector's cache, quota, uncertainty, or historical-evidence protections.
+### Native reference route and trusted pins
+
+`GET /api/castmirror/execution/v3?comparisonID=<uuid>&pi=Any|Exclude` accepts only
+one retained UUID and an optional PI policy (default `Any`). Extra or duplicate
+parameters return 400; missing/expired pins return 409; disabled/unconfigured
+native access returns 503 without opening Postgres or dispatching native WCL work.
+All responses are private/no-store. A successful response is bounded to 1 MiB and
+contains `{ comparisonID, executionReference }`, not raw throughput timelines.
+The browser retains its original pinned A/B streams when rendering these compact
+statistics. `Exclude` never falls back to `Any`.
+
+When configured, the existing comparison handler can mint a trusted compact pin
+from its validated server result. It observes the existing ranking queries to
+verify A/B current-partition provenance independently, and optionally resolves
+native scope inside the **same existing 55-second comparison deadline**. Unknown
+or historic partition provenance remains unknown. Historical A or Overall B
+selection suppresses native pin minting: throughput fallback is not proof of a
+compatible native cohort. An independently historical Boss reference does not
+suppress a valid current Overall A/B pair. Persistence/provenance failure must not
+break a valid throughput comparison or produce a usable native ID.
+Pins expire ten minutes after minting; cached throughput responses never slide
+that expiry or mint a replacement pin on a cache hit. Verification and public/off
+throughput caches are segregated. No arbitrary browser comparison object is stored.
+
+The native route declares `runtime = 'nodejs'`, `maxDuration = 180`, and a
+140-second application deadline. Its job retains the original **one 120-second**
+acquisition budget and a fixed 150-second ownership lease. Hosted mode does not
+wait behind another acquisition; it returns available cached measurements/limits.
+These source declarations are not proof the actual Vercel project supports those
+settings. Existing Overall/Boss/Healing `maxDuration = 60` and 55-second application
+deadline remain unchanged.
+
+### Private persistence and dispatch safety
+
+Migration: `supabase/migrations/20261013120000_castmirror_execution_private.sql`.
+The private `execution_v3` schema must never be exposed through PostgREST. Its
+NOLOGIN owner and executor roles are separate. Browser roles, PUBLIC, and
+service_role have no private-table/function access. The runtime login receives
+only executor membership and fixed transactional functions, not DDL, raw table
+writes, account bootstrap/enablement, or owner membership. Runtime preflight
+rejects elevated roles. The server-only `pg` adapter uses certificate-verifying
+TLS, at most two connections per invocation, and short connection/query/lock
+limits. An ambiguous write latches failure and is not replayed.
+
+Account identity is `sha256('wcl-client:' + WCL_CLIENT_ID)`. Admission and actual
+OAuth/GraphQL dispatch reservations are committed before sends. Quota observation,
+settlement, revision CAS, owner/fence checks, exact-byte immutable history, and
+fenced pool publication retain charged/pending/uncertain debt across process
+termination and redeployment. No database transaction spans provider HTTP. A
+lease expiry is not a refund or permission to replay a dispatched provider call.
+Only verified expired terminal groups may archive, atomically with the reduced
+active ledger; unknown/nonterminal/unbound debt is never pruned. Pools and pins
+have fixed ten-minute TTLs; cache pruning cannot remove accounting/history.
+Neither Vercel temporary files nor process-local Maps are shared quota authority.
 
 ## Source pin and deterministic maintenance
 
@@ -143,18 +203,32 @@ The reviewed source pin is
 `af7d034354abcb4cc4d52719989900a0e0b1b455` from standalone CastMirror main.
 `vendor/castmirror/manifest.json` records origin hashes, the declaration allowlist,
 minimal pinned source files, hosted adaptation names, and generated checksums.
-Only the frontend and required throughput declarations are vendored; credentials,
-raw reports, caches, workers, and server startup are not copied. Adapter
-`castmirror-vercel-v2` omits the standalone native-scope discovery/provenance from
-its extracted comparison core and preserves the existing hosted throughput query
-selection. It does not import `resolveScope`, native acquisition, or a filesystem
-ledger into a serverless invocation.
+The frontend/throughput pin remains independent of the reviewed native pin,
+`9d1c23fc00aba51c0357e4e312a9306bb1fda130`. Its standalone suite passed 1,154
+cases before import. Adapter `castmirror-vercel-v4` preserves successful current
+throughput queries and adds bounded immediate-previous-patch fallback and narrow
+per-side labels. Native binding is an optional server-side hook, not a scoring
+rewrite. Native
+provenance and the explicit transitive inventory live in
+`vendor/castmirror/native-manifest.json`, generated by
+`scripts/sync-castmirror-native.mjs`. The runtime uses only those checked-in native
+modules, with the same WCL transport transpiled from TypeScript for dispatch and
+diagnostics. Credentials, raw reports, caches, legacy workers/registry, and server
+startup are never copied. Native generation rejects dependencies outside its
+reviewed inventory and unrelated server/worker lifecycles. Native adapter
+`castmirror-native-postgres-3` adds three exact-anchor Turbopack tracing annotations
+only to unused local-filesystem branches, including the directory-fsync open on
+Linux. The source SHA and runtime/scoring behavior remain unchanged. Changed or
+ambiguous anchors fail generation. The
+automatic `postbuild` trace guard rejects private files and unreviewed CastMirror
+source roots; it does not strip other app routes' existing runtime assets.
 
 ```sh
 npm run castmirror:check  # verify source hashes, patch anchors, dependencies, outputs
 npm run castmirror:sync   # regenerate from the checked-in pinned snapshot
 npm run check            # parity, lint, typecheck, all configured unit tests
 npm run build            # prebuild checks parity, then creates the Next production build
+npm run castmirror:trace # audit actual build inventories without reading traced private contents
 ```
 
 Neither generation nor normal builds fetch upstream or need the sibling checkout.
@@ -162,6 +236,7 @@ To reconstruct the **currently pinned** snapshot from a local CastMirror checkou
 
 ```sh
 node scripts/sync-castmirror.mjs --import-source /path/to/cast-mirror
+node scripts/sync-castmirror-native.mjs --import-source /path/to/cast-mirror
 ```
 
 The import reads exactly the pinned Git commit, not the working tree. A future
@@ -183,10 +258,61 @@ run in order). Synthetic fixtures establish plumbing, not real benchmark readine
 Explicit ESLint is also run for the CastMirror adapters because the general lint
 config excludes that existing integration.
 
-Before merging a CastMirror change, run `npm run check`, explicit adapter lint,
-`node scripts/check-client-contract.mjs`, and `npm run build`; drive the actual Next
-app in Chrome at desktop/phone widths with controlled fixtures. No database
-migration or seed is required for this integration. Inspect the deployed Vercel
-revision, both URL aliases, the source marker, validated status JSON, disabled
-refresh capability, and independent Overall/Boss behavior. Do not mistake a
-successful standalone test or deployment of unchanged Pokedrafts for live parity.
+Before merging, run the standalone native suite, `npm run check`, explicit adapter
+lint, `npm run test:db`, `node scripts/check-client-contract.mjs`, and `npm run build`.
+The embedded-Postgres tests exercise real local transactions/concurrency and role
+permissions; they do not establish production Supabase access or capacity. Drive
+the actual Next app in Chrome at desktop/phone widths and verify real
+Overall/Boss/Healing responses. Preserve the 82 historical and 27 consumed pilot
+files without baseline regeneration. Inspect the exact Production deployment SHA,
+both URL aliases, source markers, legacy-disabled endpoints, and native gate.
+Do not mistake a standalone test, synthetic fixture, or unchanged deployment for
+working public native Execution.
+
+### Production provisioning and one-writer cutover
+
+1. Verify actual Vercel project runtime, plan/function duration support, and
+   deployment access. Verify real PostgreSQL connectivity, migration/role
+   authority, connection limits, storage usage, and available capacity. No
+   service-role REST credential establishes these permissions or replaces a
+   restricted SQL login. Keep `EXECUTION_NATIVE_ENABLED` and
+   `EXECUTION_RUNTIME_VERIFIED` off until their corresponding checks pass.
+2. An authorized database administrator applies the private migration and
+   provisions a dedicated `LOGIN INHERIT NOSUPERUSER NOBYPASSRLS NOCREATEDB
+   NOCREATEROLE NOREPLICATION` login with executor membership only, no admin option.
+   Deliver its connection string securely; never commit or print it. The database
+   hostname/certificate must verify successfully (use the provider CA if needed).
+3. Stop/disable **every old native acquisition writer for the same WCL client**
+   before exporting its final live ledger and linked live history. A running
+   loopback 8130 process is not persistent hosting and must not remain a second
+   acquisition authority after cutover. Preserve charged, pending, uncertain,
+   legacy, and unbound debt; never manufacture an empty account or reset/resume an
+   old job. Do not migrate or rewrite protected historical/pilot files.
+4. After validating the final live snapshot and exact history hashes, the
+   administrator calls `execution_v3.seed_account(account, exact_ledger_text,
+   history_json)` using bound SQL parameters. History is oldest-first
+   `[{sha256, bytes}]` containing exact UTF-8 JSON including its original newline,
+   not reserialized objects. Bootstrap is admin-only and leaves `enabled=false`.
+   Verify the imported ledger/hash/archive head and retained debt, then the
+   administrator explicitly enables that account. The application cannot seed,
+   enable, or silently replace a missing account.
+5. Configure server-only `EXECUTION_DATABASE_URL`, optional
+   `EXECUTION_DATABASE_CA`, existing `WCL_CLIENT_ID`/`WCL_CLIENT_SECRET`, and a
+   securely generated `EXECUTION_VERIFY_TOKEN`. Set `EXECUTION_RUNTIME_VERIFIED=1`
+   **only after actual hosting/database/cutover checks pass**. With the public flag
+   still off, private verification uses `Authorization: Bearer <verification token>`
+   against the same enabled account; query strings/forwarded headers are not
+   authorization. Do not use `NEXT_PUBLIC_*` credentials or a Supabase service-role
+   key. Private verification does not create a new quota identity.
+6. Run strictly bounded real hosted Mythic DPS, healer, and tank comparisons,
+   including Any/Exclude, unknown/incomplete data, repeated cached requests,
+   contention, and restart/redeployment safety. Verify admission is persisted
+   before dispatch, stale owners cannot publish, and uncertain debt survives.
+   Set `EXECUTION_NATIVE_ENABLED=1` only after these hosted checks succeed, then
+   verify the actual public page and report its exact deployment SHA.
+
+Do not roll back to the old filesystem writer after shared-ledger activity unless
+an administrator reconciles the **latest** shared accounting and disables the new
+writer first. Reusing the pre-cutover file ledger would discard new debt. If any
+access, capacity, migration, cutover, or hosted verification step is blocked, leave
+public native acquisition off and report the exact blocker rather than readiness.
