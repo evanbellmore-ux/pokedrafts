@@ -20,17 +20,22 @@ update this copy. A normal Pokedrafts deployment is required.
   different ranked amounts. A Boss-only failure leaves Overall usable and is
   retryable with another comparison.
 - HPS comparisons offer **Healing #1**, not Boss damage.
-- **Execution is visible but disabled.** Current real encounter catalogs are not
-  score-ready; no real top-ten-per-boss benchmark set or best-observed individual
-  has been selected. This hosted release also has no durable worker/snapshot or
-  cross-instance hydration service. It does not fabricate a winner, score,
-  percentile, reviewed scope, sample size, or coverage. WCL Execution rankings
-  describe raid/team kills, not an individual world #1.
+- **Execution is visible but disabled.** Native Execution v3 exists in standalone
+  CastMirror, but this hosted app has no configured reachable durable backend for
+  collection, quota accounting, and retained comparison pins. The block is that
+  missing connection, not mechanic certification or a top-ten benchmark project.
+  A compact notice explains this without exposing diagnostics or inventing a
+  winner, rating, percentile, scope, sample size, or coverage. The vendored page
+  retains the six-category statistical renderer for a future verified connection:
+  incompatible partial ratings are hidden, incomplete observations are labeled,
+  missing values remain unavailable, and sample/confidence appears once.
 
-The page includes a `castmirror-source` meta tag and a small source-version line
-for checking the deployed copy. Frozen release capabilities and explicit response
-capabilities guard reference rendering, polling, hydration, and refresh. Missing
-or false capabilities fail closed, including inconsistent ready-looking payloads.
+The page includes `castmirror-source` and `castmirror-adapter` meta tags plus a
+hidden developer source line for checking the deployed copy. Source identifiers
+are not primary comparison content. Frozen release capabilities and explicit
+response capabilities guard both v3 and legacy selection, PI controls, acquisition,
+rendering, polling, hydration, hero reload, and refresh. Missing, false, or merely
+truthy capabilities fail closed, including inconsistent ready-looking payloads.
 
 ## Serverless boundaries
 
@@ -39,7 +44,11 @@ not import standalone `apiCompare`, `createServer`, filesystem registries,
 retained comparison-ID Maps, refresh CLI code, or post-response crawls.
 
 Hosted adaptations make PI and hero probes use the same realm-aware actor
-identity as fight streams; probe caches also include the normalized realm.
+identity as fight streams; probe caches also include the normalized realm. The
+reviewed source's portable `sameRealm` helper is explicitly allowlisted so native
+realm spellings and navigation realm names resolve consistently. The adapter
+preserves its full-set actor ambiguity check rather than narrowing away namesakes
+outside a supplied fight roster.
 Ambiguous actors or spec-summary names fail closed instead of borrowing a
 namesake's evidence. Raw resource snapshots may omit `max`, as the canonical
 aggregator already supports; a supplied maximum must still be a valid number.
@@ -117,17 +126,25 @@ the same availability state but issue no retained `comparisonID`.
 The status contract sets `capabilities.build` and `capabilities.reference` to
 `false`, with `revision`, `scope`, `coverage`, `job`, and `updatedAt` all null.
 `requestedContext` is separate from verified Execution scope. No query starts a
-raid scan. Durable production benchmarks, reviewed encounter bindings, shared
-snapshots, cross-instance pins, and authenticated maintenance remain future work.
+raid scan. Public native statistics require a reachable durable native origin and
+an authenticated connector, or a verified equivalent durable ledger/writer-lease
+and retained-pin service. The existing warm-instance caches/rate buckets and
+Vercel temporary files do not supply those guarantees. Restarting a loopback-only
+standalone listener does not connect this site; this release does not weaken the
+native collector's cache, quota, uncertainty, or historical-evidence protections.
 
 ## Source pin and deterministic maintenance
 
 The reviewed source pin is
-`862458f24ac1859b569813f57d104732117ef67c` from standalone CastMirror main.
+`af7d034354abcb4cc4d52719989900a0e0b1b455` from standalone CastMirror main.
 `vendor/castmirror/manifest.json` records origin hashes, the declaration allowlist,
 minimal pinned source files, hosted adaptation names, and generated checksums.
 Only the frontend and required throughput declarations are vendored; credentials,
-raw reports, caches, workers, and server startup are not copied.
+raw reports, caches, workers, and server startup are not copied. Adapter
+`castmirror-vercel-v2` omits the standalone native-scope discovery/provenance from
+its extracted comparison core and preserves the existing hosted throughput query
+selection. It does not import `resolveScope`, native acquisition, or a filesystem
+ledger into a serverless invocation.
 
 ```sh
 npm run castmirror:check  # verify source hashes, patch anchors, dependencies, outputs

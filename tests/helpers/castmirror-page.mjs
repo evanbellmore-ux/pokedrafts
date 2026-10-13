@@ -28,7 +28,7 @@ export function comparisonFixture() {
     },
     executionStatus: {
       state: 'unsupported', capabilities: { build: false, reference: false },
-      reason: 'Hosted Execution references and builds are unavailable; no reviewed benchmarks are installed.',
+      reason: 'Execution statistics are unavailable here until this site is connected.',
       revision: null, scope: null, coverage: null, job: null, updatedAt: null,
     },
   };

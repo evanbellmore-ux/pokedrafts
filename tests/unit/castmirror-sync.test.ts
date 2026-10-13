@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { describe, test } from "vitest";
 import { extractDeclarations, validateCore, generateCore, generatePage } from "../../scripts/sync-castmirror.mjs";
 
-const revision = "862458f24ac1859b569813f57d104732117ef67c";
+const revision = "af7d034354abcb4cc4d52719989900a0e0b1b455";
 const root = new URL("../../", import.meta.url);
 const read = async (name: string) => (await readFile(new URL(name, root), "utf8")).replace(/\r\n/g, "\n");
 const digest = (text: string) => createHash("sha256").update(text).digest("hex");
@@ -17,7 +17,8 @@ describe("CastMirror pinned source generation", () => {
     assert.equal(manifest.schemaVersion, 1);
     assert.equal(manifest.upstream.revision, revision);
     assert.equal(manifest.upstream.repository, "https://github.com/evanbellmore-ux/cast-mirror");
-    assert.equal(manifest.adapterVersion, "castmirror-vercel-v1");
+    assert.equal(manifest.adapterVersion, "castmirror-vercel-v2");
+    assert.ok(manifest.declarations.includes("sameRealm"), "the reviewed source's portable realm helper must be explicitly allowlisted");
     assert.deepEqual(Object.keys(manifest.sourceFiles).sort(), ["upstream/index.html", "upstream/throughput.mjs"]);
     for (const [name, entry] of Object.entries(manifest.sourceFiles) as Array<[string, { sha256: string }]>) {
       assert.equal(digest(await read("vendor/castmirror/" + name)), entry.sha256, name);
@@ -33,7 +34,10 @@ describe("CastMirror pinned source generation", () => {
     assert.equal(digest(page), manifest.generatedFiles["public/castmirror.html"]);
     validateCore(core);
     assert.match(core, /WeakMap/);
-    assert.doesNotMatch(core, /import .*server\.mjs|createServer|ExecutionRegistry|process\./);
+    assert.match(core, /function sameRealm\(left, right\)/);
+    assert.doesNotMatch(core, /const players =|players\.includes\(a\.id\)/, "hosted actor resolution preserves its full-set ambiguity check");
+    assert.doesNotMatch(core, /import .*server\.mjs|createServer|ExecutionRegistry|process\.|resolveScope|executionRankingContext/);
+    assert.doesNotMatch(core, /\$partition|partition: \$partition/, "hosted throughput retains its existing ranking queries, not native acquisition");
     const injection = page.indexOf("window.MIRROR_API_BASE = '/api/castmirror'");
     assert.ok(injection >= 0 && injection < page.indexOf("const $ = (id)"));
     assert.match(page, /Object\.freeze\(\{ build: false, reference: false \}\)/);
@@ -80,6 +84,22 @@ describe("CastMirror pinned source generation", () => {
     const source = await read("vendor/castmirror/upstream/index.html");
     assert.throws(() => generatePage(source.replace("<title>Cast Mirror</title>", "<title>Changed</title>")), /patch anchor.*source metadata/);
     assert.throws(() => generatePage(source + "\n<title>Cast Mirror</title>\n"), /patch anchor.*ambiguous.*source metadata/);
+  });
+
+  test("native-scope isolation cannot silently lose its required core anchor", async () => {
+    const source = await read("vendor/castmirror/upstream/throughput.mjs");
+    assert.throws(() => generateCore(source.replace("const scope = await resolveScope(c,", "const scope = await changedResolveScope(c,")), /patch anchor.*native scope acquisition isolation/);
+  });
+
+  test("hosted actor ambiguity adaptations cannot silently lose their required core anchors", async () => {
+    const source = await read("vendor/castmirror/upstream/throughput.mjs");
+    assert.throws(() => generateCore(source.replace("const players = rep?.fights?", "const changedPlayers = rep?.fights?")), /patch anchor.*hosted actor ambiguity roster binding/);
+    assert.throws(() => generateCore(source.replace("players.includes(a.id)", "players.includes(a.actorID)")), /patch anchor.*hosted actor ambiguity roster narrowing/);
+  });
+
+  test("native acquisition controls cannot silently lose their hosted handler guard", async () => {
+    const source = await read("vendor/castmirror/upstream/index.html");
+    assert.throws(() => generatePage(source.replace("async function loadExecutionV3() {", "async function loadRenamedExecutionV3() {")), /patch anchor.*native statistics handler guard/);
   });
 
   test("unexpected additional application scripts fail the pinned script-layout contract", async () => {

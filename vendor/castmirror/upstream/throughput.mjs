@@ -173,13 +173,25 @@ async function sideHead(c, code, fightID) {
   return head.reportData.report;
 }
 
+function sameRealm(left, right) {
+  if (typeof left !== 'string' || typeof right !== 'string') return false;
+  // Native actor realms omit spaces; ranking/navigation realms retain them.
+  const compact = (value) => value.trim().toLowerCase().replace(/[\s-]+/g, '');
+  const a = compact(left), b = compact(right);
+  if (a && a === b) return true;
+  const slug = (value) => slugify(value).replaceAll('-', '');
+  return !!slug(left) && slug(left) === slug(right);
+}
+
 function sideActor(rep, fightID, who, { strict = false } = {}) {
   const identity = typeof who === 'string' ? { name: who } : who;
   const wanted = identity.name?.trim().toLowerCase();
+  const players = rep?.fights?.find((f) => f.id === fightID)?.friendlyPlayers;
   const matches = rep?.masterData.actors.filter((a) =>
+    (!Array.isArray(players) || players.includes(a.id)) &&
     (identity.actorID == null || a.id === identity.actorID) && a.name?.toLowerCase() === wanted &&
-    (strict ? !!identity.server && !!a.server && slugify(a.server) === slugify(identity.server)
-      : !identity.server || !a.server || slugify(a.server) === slugify(identity.server))) ?? [];
+    (strict ? !!identity.server && !!a.server && sameRealm(a.server, identity.server)
+      : !identity.server || !a.server || sameRealm(a.server, identity.server))) ?? [];
   if (matches.length !== 1) throw new Error(`actor identity missing or ambiguous for ${identity.name} on fight ${fightID}`);
   return matches[0];
 }
@@ -340,14 +352,20 @@ export async function buildComparison(c, params) {
   const reg = region.toLowerCase();
 
   await ensureClasses(c);
+  let executionScope = null;
+  try {
+    const scope = await resolveScope(c, { zone: params.zone, encounter, difficulty });
+    executionScope = Object.fromEntries(['zone', 'encounter', 'difficulty', 'size', 'partition', 'patch'].map((k) => [k, scope[k]]));
+  } catch { /* Throughput still works; unverified Execution partition stays unknown. */ }
+  const partition = executionScope?.partition ?? null;
 
   const cd = await c.query(
-    `query($name: String!, $slug: String!, $region: String!, $enc: Int!, $diff: Int!, $metric: CharacterRankingMetricType!) {
+    `query($name: String!, $slug: String!, $region: String!, $enc: Int!, $diff: Int!, $metric: CharacterRankingMetricType!, $partition: Int) {
        characterData { character(name: $name, serverSlug: $slug, serverRegion: $region) {
          classID
-         encounterRankings(encounterID: $enc, difficulty: $diff, metric: $metric)
+         encounterRankings(encounterID: $enc, difficulty: $diff, metric: $metric, partition: $partition)
        } }
-     }`, { name, slug, region: reg, enc: encounter, diff: difficulty, metric });
+     }`, { name, slug, region: reg, enc: encounter, diff: difficulty, metric, partition });
   const ch = cd.characterData.character;
   if (!ch) throw new Error(`character "${name}" on ${server}-${region} not found`);
   const ranks = ch.encounterRankings?.ranks ?? [];
@@ -412,12 +430,12 @@ export async function buildComparison(c, params) {
       const out = [];
       for (let page = 1; page <= 3; page++) {
         const wr = await c.query(
-          `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter) {
+          `query($enc: Int!, $cls: String!, $spec: String!, $diff: Int!, $metric: CharacterRankingMetricType!, $page: Int!, $xb: ExternalBuffRankFilter, $partition: Int) {
              worldData { encounter(id: $enc) {
                name
-               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb)
+               characterRankings(className: $cls, specName: $spec, difficulty: $diff, metric: $metric, page: $page, includeCombatantInfo: true, externalBuffs: $xb, partition: $partition)
              } }
-           }`, { enc: encounter, cls: className, spec, diff: difficulty, metric: rankingMetric, page, xb });
+           }`, { enc: encounter, cls: className, spec, diff: difficulty, metric: rankingMetric, page, xb, partition });
         const encData = wr.worldData.encounter;
         encName = encData?.name ?? encName;
         const got = encData?.characterRankings?.rankings ?? [];
@@ -477,6 +495,10 @@ export async function buildComparison(c, params) {
     } : null;
     if (!boss.reference) out.bossReferenceError = boss.error || 'boss-damage reference unavailable';
   }
+  Object.defineProperty(out, 'executionRankingContext', { value: {
+    currentPartition: executionScope !== null && ranks.some((r) => r.report?.code === best.report.code && r.report?.fightID === best.report.fightID),
+    scope: executionScope,
+  }, enumerable: false });
   return out;
 }
 

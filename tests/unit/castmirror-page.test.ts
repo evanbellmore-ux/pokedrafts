@@ -25,8 +25,12 @@ function assertHostedInactive(p: Awaited<ReturnType<typeof pageFixture>>, clock:
   assert.equal(p.nodes.get("executionPanel").style.display, "none");
   assert.equal(p.nodes.get("executionBreakdown").children.length, 0);
   assert.equal(p.nodes.get("executionMarkers").children.length, 0);
+  assert.equal(p.nodes.get("executionPiRow").style.display, "none");
+  assert.equal(p.nodes.get("executionBuild").style.display, "none");
+  assert.equal(p.nodes.get("executionCoverage").textContent, "");
+  assert.equal(p.nodes.get("executionState").textContent, "Execution statistics are unavailable here until this site is connected.");
   assert.equal(clock.pending.size, 0, "hosted availability must not start background polling");
-  for (const endpoint of ["execution/status", "execution/reference", "execution/refresh"]) {
+  for (const endpoint of ["execution/status", "execution/reference", "execution/refresh", "execution/v3"]) {
     assert.equal(requestsTo(p, endpoint).length, 0, `${endpoint} must not be fetched by the hosted page`);
   }
   assert.ok(p.requestOptions.every((options: { method?: string }) => options.method !== "POST"));
@@ -54,8 +58,10 @@ describe("CastMirror hosted page local throughput switching", () => {
     assert.doesNotMatch(p.html, /<option>cn<\/option>/, "hosted region choices must match validated server regions");
     assert.ok(p.requests.length >= 2);
     assert.ok(p.requests.every((url: string) => url.startsWith("/api/castmirror/")));
-    assert.match(p.html, /862458f24ac1859b569813f57d104732117ef67c/);
-    assert.match(p.html, /Execution[^<]*(?:unavailable|disabled|unsupported)|(?:unavailable|disabled|unsupported)[^<]*Execution/i);
+    assert.match(p.html, /af7d034354abcb4cc4d52719989900a0e0b1b455/);
+    assert.match(p.html, /Execution<\/b> statistics are not connected on this site yet/);
+    assert.match(p.html, /id="castmirrorSource" hidden/);
+    assert.doesNotMatch(p.html, /encounter catalogs are not score-ready|top-ten-per-boss benchmark set|reviewed, holistic reference/);
     assert.equal(requestsTo(p, "execution/refresh").length, 0);
   });
 
@@ -300,7 +306,8 @@ describe("CastMirror hosted page local throughput switching", () => {
       assert.equal(p.nodes.get("hn2").textContent, winner.name);
       for (const id of ["bars", "deltas", "legend", "windows"]) assert.ok(p.nodes.get(id).htmlTree().includes(escaped(spell)), id);
       assert.ok(p.nodes.get("resources").htmlTree().includes(escaped(winner.name)));
-      assert.ok(p.nodes.get("executionState").textContent.includes(reason));
+      assert.ok(!p.nodes.get("executionState").textContent.includes(reason), "internal availability explanations are not primary player-comparison content");
+      assert.equal(p.nodes.get("executionState").textContent, "Execution statistics are unavailable here until this site is connected.");
       assert.equal(p.nodes.get("executionState").innerHTML, "");
       for (const node of p.nodes.values()) inspect(node);
     }
@@ -335,6 +342,25 @@ describe("CastMirror hosted Execution capability guards", () => {
     assertHostedInactive(p, clock);
   });
 
+  test("native response capabilities are checked explicitly and cannot borrow legacy flags", async () => {
+    const { p, clock } = await setup();
+    await p.runMirror(42, "Test Boss");
+    const requestCount = p.requests.length;
+    p.evaluate("const savedNativeReleaseCapabilities = window.MIRROR_EXECUTION_CAPABILITIES; comparison.executionStatus.capabilities = { build: true, reference: true }");
+    for (const release of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
+      for (const response of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
+        p.evaluate(`window.MIRROR_EXECUTION_CAPABILITIES = ${JSON.stringify(release) ?? "undefined"}`);
+        p.evaluate(`comparison.executionV3Status = { state: 'available', capabilities: ${JSON.stringify(response) ?? "undefined"} }`);
+        for (const capability of ["build", "reference"] as const) {
+          assert.equal(p.evaluate(`executionAllowed('${capability}')`), release?.[capability] === true && response?.[capability] === true);
+        }
+      }
+    }
+    p.evaluate("window.MIRROR_EXECUTION_CAPABILITIES = savedNativeReleaseCapabilities; renderComparison()");
+    assert.equal(p.requests.length, requestCount);
+    assertHostedInactive(p, clock);
+  });
+
   const capabilities = [
     ["missing", undefined], ["null", null], ["unknown empty object", {}],
     ["false", { build: false, reference: false }], ["inconsistent true", { build: true, reference: true }],
@@ -357,6 +383,7 @@ describe("CastMirror hosted Execution capability guards", () => {
       p.nodes.get("executionBuild").click();
       // A disabled UI alone is insufficient: both direct entry points must also fail closed.
       await p.evaluate("buildExecution()");
+      await p.evaluate("loadExecutionV3()");
       await p.evaluate("watchExecution(compareRequest, lastCtx, 0, true)");
       p.evaluate("referenceMode = 'execution'; restoreExecution = true; renderComparison()");
       assert.equal(state(p, "restoreExecution"), false, "a stale synthetic selection must not restore Execution");
@@ -365,6 +392,39 @@ describe("CastMirror hosted Execution capability guards", () => {
       assert.deepEqual(pressed(p), ["overall"]);
       assert.equal(p.nodes.get("hn2").textContent, "OverallWinner");
       assert.equal(compareRequests(p).length, 1);
+    });
+  }
+
+  for (const [label, capability] of capabilities) {
+    test(`${label} native capabilities cannot expose statistics or dispatch acquisition`, async () => {
+      const data = comparisonFixture();
+      data.comparisonID = "synthetic-native-pin-must-not-acquire";
+      data.executionV3Status = { state: "available", analyticalVersion: "execution-statistical-3", capabilities: capability };
+      data.executionStatus = { state: "ready", revision: "synthetic-legacy-not-a-benchmark", capabilities: { build: true, reference: true } };
+      data.executionReference = {
+        b: { ...data.b, name: "SyntheticExecutionWinner" }, rankingMetric: "execution", pi: data.pi, hero: data.hero,
+        execution: { analyticalVersion: "execution-statistical-3", a: { score: 72, mask: "101010" }, b: { score: 94, mask: "011100" } },
+      };
+      const { p, clock } = await setup(() => data);
+      await p.runMirror(42, "Test Boss");
+      const originalPlayer = state(p, "comparison.a"), originalCard = playerCard(p);
+      assertHostedInactive(p, clock);
+      button(p, "execution").click();
+      p.nodes.get("executionBuild").click();
+      await p.evaluate("loadExecutionV3()");
+      await p.evaluate("buildExecution()");
+      await p.evaluate("watchExecution(compareRequest, lastCtx, 0, true)");
+      p.evaluate("executionV3Reference = comparison.executionReference; referenceMode = 'execution'; restoreExecution = true; renderComparison()");
+      assert.equal(state(p, "restoreExecution"), false);
+      assertHostedInactive(p, clock);
+      assert.deepEqual(pressed(p), ["overall"]);
+      assert.equal(playerCard(p), originalCard);
+      assert.deepEqual(state(p, "comparison.a"), originalPlayer);
+      assert.equal(p.nodes.get("hn2").textContent, "OverallWinner");
+      await p.nodes.get("heroRow").querySelectorAll(".lg").find((b: HeroButton) => !b.classList.contains("on")).click();
+      assertHostedInactive(p, clock);
+      assert.deepEqual(pressed(p), ["overall"]);
+      assert.equal(compareRequests(p).length, 2, "only the requested throughput hero reload may fetch");
     });
   }
 

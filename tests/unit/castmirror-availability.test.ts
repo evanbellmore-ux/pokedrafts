@@ -54,9 +54,10 @@ function assertUnavailable(value: Record<string, unknown>) {
   assert.equal(value.state, "unsupported");
   assert.deepEqual(value.capabilities, { build: false, reference: false });
   for (const key of ["scope", "revision", "coverage", "job", "updatedAt"]) assert.equal(value[key], null, `${key} must not invent benchmark metadata`);
-  assert.match(String(value.reason), /unavailable.*hosted|hosted.*unavailable/i);
-  assert.match((value.reasons as string[]).join(" "), /12\.1.*unsupported/);
-  assert.match((value.reasons as string[]).join(" "), /durable|workers/);
+  assert.match(String(value.reason), /statistics.*unavailable.*connected/i);
+  assert.match((value.reasons as string[]).join(" "), /reachable durable native Execution backend/);
+  assert.match((value.reasons as string[]).join(" "), /quota accounting.*retained comparison pins.*durable/);
+  assert.doesNotMatch((value.reasons as string[]).join(" "), /catalog|mechanics|top-ten|score-ready/i);
   for (const key of ["comparisonID", "executionReference", "winner", "score", "benchmark"]) assert.equal(key in value, false, key);
 }
 

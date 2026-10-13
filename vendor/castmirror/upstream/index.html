@@ -42,6 +42,29 @@
   .execution-grid h4 { color: var(--top); }
   .execution-grid p, .execution-grid li { font-size: 12px; color: var(--dim); overflow-wrap: anywhere; }
   .execution-grid ul { padding-left: 20px; margin: 8px 0; }
+  .execution-status.execution-ready { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 0; padding: 0; }
+  .execution-ready button { flex-shrink: 0; margin: 0; background: var(--panel); color: var(--dim); border: 1px solid var(--line); }
+  .execution-ready button:focus-visible { outline: 2px solid var(--you); outline-offset: 2px; }
+  .execution-player .eyebrow { font-size: 10px; margin-bottom: 5px; }
+  .execution-player-meta, .execution-player-details { color: var(--dim); font-size: 12px; margin-top: 6px; overflow-wrap: anywhere; }
+  .execution-player-details { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .execution-rating { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+  .execution-rating b { font: 600 30px/1.2 "IBM Plex Sans", sans-serif; }
+  .execution-rating b span, .execution-rating > span { color: var(--dim); font: 12px "IBM Plex Sans", sans-serif; }
+  #executionBreakdown.execution-comparison { display: block; }
+  .execution-table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+  .execution-table caption { position: absolute; width: 1px; height: 1px; padding: 0; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
+  .execution-table th, .execution-table td { padding: 14px 16px; text-align: left; vertical-align: middle; overflow-wrap: anywhere; }
+  .execution-table thead th { background: var(--panel2); color: var(--text); font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--line); }
+  .execution-table th:first-child { width: 30%; }
+  .execution-table tbody th { color: var(--text); font-size: 14px; font-weight: 500; }
+  .execution-table tbody tr + tr > * { border-top: 1px solid var(--line); }
+  .execution-category-note { display: block; color: var(--dim); font-size: 11px; font-weight: 400; margin-top: 3px; }
+  .execution-value { display: block; color: var(--text); font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .execution-value small { color: var(--dim); font-size: 11px; font-weight: 400; }
+  .execution-value-detail, .execution-percentile, .execution-incomplete { display: block; color: var(--dim); font-size: 11px; margin-top: 3px; }
+  .execution-unavailable { color: var(--dim); font-size: 17px; }
+  .execution-table-note { color: var(--dim); font-size: 12px; margin-top: 10px; }
   .evidence-track { position: relative; height: 30px; border: 1px solid var(--line); background: var(--panel); margin: 12px 0; }
   .evidence-mark { position: absolute; top: 6px; height: 16px; min-width: 3px; background: var(--red); border: 0; border-radius: 2px; padding: 0; }
   .evidence-mark.defense { background: var(--top); opacity: .7; }
@@ -125,6 +148,12 @@
     .execution-grid, .board, .resgrid { grid-template-columns: 1fr; }
     .card h2, .brow .nm { overflow-wrap: anywhere; }
     .brow { grid-template-columns: minmax(0, 120px) minmax(0, 1fr) 90px; }
+    .execution-status.execution-ready { align-items: flex-start; }
+    .execution-table th, .execution-table td { padding: 12px 9px; }
+    .execution-table th:first-child { width: 29%; }
+    .execution-table tbody th { font-size: 12px; }
+    .execution-value { font-size: 15px; }
+    .execution-category-note { font-size: 10px; }
   }
 </style>
 </head>
@@ -137,7 +166,8 @@
   every parse, best first. Pick one and it's laid against the <b>top-ranked parse of the same spec
   on the same fight</b>, on one clock — every button, every cooldown window, side by side.
   For damage, switch between <b>overall #1</b> and <b>boss damage #1</b>.
-  <b>Execution</b> adds a reviewed, holistic reference when the required evidence is available.</p>
+  <b>Execution</b> compares observed combat statistics against a compatible local sample,
+  with unavailable measurements and partial coverage shown explicitly.</p>
 </header>
 
 <form id="form">
@@ -161,17 +191,20 @@
 <div id="out">
   <div class="references" id="referenceRow" role="group" aria-label="Ranking reference" aria-describedby="referenceHint"></div>
   <p class="hint" id="referenceHint" aria-live="polite"></p>
+  <div class="references" id="executionPiRow" role="group" aria-label="Execution Power Infusion policy" aria-describedby="executionPiHint" style="display:none"></div>
+  <p class="hint" id="executionPiHint" style="display:none"></p>
   <div class="execution-status" id="executionStatus" style="display:none" aria-live="polite">
     <p id="executionState"></p>
     <p id="executionCoverage"></p>
     <button type="button" id="executionBuild">Build / refresh Execution references</button>
   </div>
+  <div id="comparisonView">
   <div class="board" id="board"></div>
   <section class="bars" id="executionPanel" style="display:none">
-    <h3>Execution evidence</h3>
+    <h3 id="executionTitle">Execution evidence</h3>
     <p class="hint" id="executionSummary"></p>
     <div class="execution-grid" id="executionBreakdown"></div>
-    <p class="hint">Green: logged personal defensive intervals · gray: external protection · red: reviewed mistakes/deaths. These are separate from offensive casts; click a marker to inspect that time.</p>
+    <p class="hint" id="executionMarkersHint">Green: logged personal defensive intervals · gray: external protection · red: reviewed mistakes/deaths. These are separate from offensive casts; click a marker to inspect that time.</p>
     <div class="execution-grid" id="executionMarkers"></div>
   </section>
   <div class="windows" id="heroRow" style="display:none; margin-top:10px"></div>
@@ -199,6 +232,7 @@
       <div class="lane" id="laneB"></div>
     </div>
   </section>
+  </div>
 </div>
 </div>
 <div id="tip"></div>
@@ -258,6 +292,7 @@ $('form').onsubmit = async (e) => {
   go.disabled = true;
   compareRequest++;
   stopExecutionPolling();
+  resetExecutionV3();
   restoreExecution = false;
   comparison = null;
   lastCtx = null;
@@ -321,6 +356,14 @@ function renderKills(K) {
 
 let lastCtx = null, comparison = null, referenceMode = 'overall', compareRequest = 0;
 let executionTimer = null, executionAttempt = null, restoreExecution = false;
+let executionV3Request = 0, executionV3Pi = 'Any', executionV3Reference = null, executionV3Loading = false, executionV3Error = null;
+function isExecutionV3() { return !!comparison?.executionV3Status; }
+function cancelExecutionV3() { executionV3Request++; executionV3Loading = false; }
+function resetExecutionV3(keepPolicy = false) {
+  cancelExecutionV3();
+  if (!keepPolicy) executionV3Pi = 'Any';
+  executionV3Reference = null; executionV3Error = null;
+}
 function stopExecutionPolling() { if (executionTimer !== null) clearTimeout(executionTimer); executionTimer = null; executionAttempt = null; }
 async function runMirror(encounterId, bossName, code, fightID, hero, context = null) {
   const ctx = context ? { ...context, hero: hero || null } : {
@@ -331,6 +374,7 @@ async function runMirror(encounterId, bossName, code, fightID, hero, context = n
   restoreExecution = !!context && referenceMode === 'execution';
   if (!context) referenceMode = 'overall';
   stopExecutionPolling();
+  resetExecutionV3(!!context);
   const request = ++compareRequest;
   lastCtx = ctx;
   say('mirroring ' + ctx.bossName + (ctx.metric === 'dps'
@@ -352,11 +396,14 @@ async function runMirror(encounterId, bossName, code, fightID, hero, context = n
     lastCtx = { ...ctx, comparisonID: data.comparisonID,
       ...(data.a.actorID != null ? { code: data.a.code, fightID: data.a.fightID, actorID: data.a.actorID, zone: data.a.scope?.zone || ctx.zone } : {}) };
     if (!referenceChoices().find((c) => c.mode === referenceMode)?.available) referenceMode = 'overall';
-    if (data.executionReference && restoreExecution) { referenceMode = 'execution'; restoreExecution = false; }
+    if (!isExecutionV3() && data.executionReference && restoreExecution) { referenceMode = 'execution'; restoreExecution = false; }
     renderComparison();
     say('');
     $('out').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    watchExecution(request, lastCtx);
+    if (isExecutionV3()) {
+      restoreExecution = false;
+      if (referenceMode === 'execution') await loadExecutionV3();
+    } else watchExecution(request, lastCtx);
   } catch (err) {
     if (request === compareRequest) say(err.message, true);
   }
@@ -366,14 +413,27 @@ function referenceChoices() {
   return [
     { mode: 'overall', label: comparison.metric === 'dps' ? 'Overall damage #1' : 'Healing #1', available: true },
     ...(comparison.metric === 'dps' ? [{ mode: 'boss', label: 'Boss damage #1', available: !!comparison.bossReference, value: comparison.bossReference }] : []),
-    ...(comparison.executionStatus || comparison.executionReference ? [{ mode: 'execution', label: 'Execution', available: !!comparison.executionReference, value: comparison.executionReference }] : []),
+    ...(isExecutionV3() ? [{ mode: 'execution', label: 'Execution', available: comparison.executionV3Status.state === 'available' && !!comparison.comparisonID, value: executionV3Reference }]
+      : comparison.executionStatus || comparison.executionReference ? [{ mode: 'execution', label: 'Execution', available: !!comparison.executionReference, value: comparison.executionReference }] : []),
   ];
 }
 function renderComparison() {
   const choice = referenceChoices().find((c) => c.mode === referenceMode);
-  const D = choice?.value ? { ...comparison, ...choice.value } : { ...comparison, rankingMetric: comparison.metric };
-  render(D);
+  // Never display an Overall/Any reference as a substitute for a pending or failed Execution request.
+  const pendingExecution = isExecutionV3() && referenceMode === 'execution' && !choice?.value;
+  $('out').style.display = 'block';
+  $('comparisonView').style.display = pendingExecution ? 'none' : '';
+  if (pendingExecution) {
+    $('executionPanel').style.display = 'none';
+    $('executionBreakdown').innerHTML = '';
+    $('executionMarkers').innerHTML = '';
+  } else {
+    const D = choice?.value ? { ...comparison, ...choice.value } : { ...comparison, rankingMetric: comparison.metric };
+    if (isExecutionV3()) D.a = comparison.a;
+    render(D);
+  }
   renderReferenceControls();
+  renderExecutionPiControls();
   renderExecutionStatus();
 }
 function renderReferenceControls() {
@@ -391,22 +451,114 @@ function renderReferenceControls() {
     button.onclick = () => {
       if (button.disabled || referenceMode === mode) return;
       restoreExecution = false;
-      referenceMode = mode;
-      renderComparison();
+      let pending;
+      if (isExecutionV3() && mode === 'execution') pending = loadExecutionV3();
+      else {
+        if (isExecutionV3()) cancelExecutionV3();
+        referenceMode = mode;
+        renderComparison();
+      }
       [...row.children].find((b) => b.dataset.mode === mode)?.focus({ preventScroll: true });
+      return pending;
     };
     row.append(button);
   }
   const boss = comparison.bossReference?.b;
   const same = boss && boss.code === comparison.b.code && boss.fightID === comparison.b.fightID && boss.name.toLowerCase() === comparison.b.name.toLowerCase();
   hint.textContent = referenceMode === 'execution'
-    ? 'Best observed eligible Execution reference within its documented sample — not an individual world #1. Your selected fight is unchanged.'
+    ? (isExecutionV3()
+      ? 'Your selected fight stays pinned. Peer percentiles are local, not official WCL rankings or a best-player ranking.'
+      : comparison.executionReference?.execution?.analyticalVersion === 'execution-statistical-3'
+      ? 'Local statistical preview, not a world ranking. Your selected fight stays pinned.'
+      : 'Best observed eligible Execution reference within its documented sample — not an individual world #1. Your selected fight is unchanged.')
     : comparison.metric === 'dps' && !boss
       ? 'Boss damage #1 unavailable: ' + (comparison.bossReferenceError || 'no matching boss-damage ranking was returned')
       : (same ? 'Both #1 rankings point to the same parse. ' : '') + 'Highest mirrorable parses with the current hero-tree and external-buff rules. Switching references does not reload your parse.';
 }
 
+function renderExecutionPiControls() {
+  const row = $('executionPiRow'), visible = isExecutionV3() && referenceMode === 'execution';
+  row.innerHTML = '';
+  row.style.display = $('executionPiHint').style.display = visible ? '' : 'none';
+  if (!visible) return;
+  $('executionPiHint').textContent = 'Any includes unknown PI. Exclude requires confirmed absence of Power Infusion; unknown is not absent. No fallback to Any.';
+  row.append(textNode('span', 'Execution Power Infusion', 'wgroup'));
+  for (const policy of ['Any', 'Exclude']) {
+    const button = textNode('button', policy + ' PI', 'ref-choice');
+    button.type = 'button'; button.dataset.pi = policy;
+    button.setAttribute('aria-pressed', String(executionV3Pi === policy));
+    button.onclick = () => {
+      if (executionV3Pi === policy) return;
+      executionV3Pi = policy;
+      const pending = loadExecutionV3();
+      [...row.children].find((b) => b.dataset.pi === policy)?.focus({ preventScroll: true });
+      return pending;
+    };
+    row.append(button);
+  }
+}
+function powerInfusionState(value) { return value === true || value === 'present' ? 'present' : value === false || value === 'absent' ? 'known absent' : 'unknown'; }
+function statisticsSample(sample = {}) {
+  const count = (value, label) => (Number.isSafeInteger(value) && value >= 0 ? value.toLocaleString() : '—')
+    + ' ' + label + (value === 1 ? '' : 's');
+  const confidence = ['insufficient', 'low', 'moderate', 'higher'].includes(sample.confidence) ? sample.confidence : 'unknown';
+  return count(sample.observations, 'observation') + ' · ' + count(sample.players, 'player') + ' · ' + count(sample.kills, 'kill')
+    + ' · ' + (confidence === 'insufficient' ? 'too few peers for ratings' : confidence === 'unknown' ? 'confidence unavailable' : confidence + ' confidence');
+}
+function executionV3Coverage(execution) {
+  const a = statisticsSample(execution.a?.sample), b = statisticsSample(execution.b?.sample);
+  return 'Peer sample · ' + (a === b ? a : 'Selected: ' + a + ' / Reference: ' + b)
+    + (execution.coverage?.acquisition?.state === 'limited' ? ' · Collection limited; available measurements retained.' : '');
+}
+function executionV3Current(request, generation, ctx, policy) {
+  return request === executionV3Request && executionCurrent(generation, ctx) && lastCtx?.actorID === ctx.actorID
+    && isExecutionV3() && referenceMode === 'execution' && executionV3Pi === policy;
+}
+async function loadExecutionV3() {
+  if (!isExecutionV3() || !referenceChoices().find((c) => c.mode === 'execution')?.available) return;
+  const ctx = { ...lastCtx }, generation = compareRequest, policy = executionV3Pi, request = ++executionV3Request;
+  restoreExecution = false;
+  referenceMode = 'execution';
+  executionV3Loading = true; executionV3Error = null; executionV3Reference = null;
+  renderComparison();
+  try {
+    const q = new URLSearchParams({ comparisonID: ctx.comparisonID, pi: policy });
+    const res = await fetch(API + 'execution/v3?' + q, { method: 'GET' }), data = await res.json();
+    if (!executionV3Current(request, generation, ctx, policy)) return;
+    if (data.error || !res.ok) throw new Error(data.error || 'Execution statistics request failed');
+    if (data.comparisonID !== ctx.comparisonID) throw new Error('Execution returned a different comparison; retry this selected fight.');
+    const reference = data.executionReference;
+    if (!reference?.b || reference.rankingMetric !== 'execution' || reference.execution?.analyticalVersion !== 'execution-statistical-3')
+      throw new Error('No Execution statistical reference returned for PI ' + policy + '. No fallback was applied.');
+    if (reference.pi?.excluded !== (policy === 'Exclude') || (reference.execution.piPolicy != null && reference.execution.piPolicy !== policy))
+      throw new Error('Execution returned a different PI policy. No fallback was applied; retry PI ' + policy + '.');
+    executionV3Reference = reference;
+    executionV3Loading = false;
+    renderComparison();
+  } catch (err) {
+    if (!executionV3Current(request, generation, ctx, policy)) return;
+    executionV3Loading = false; executionV3Reference = null; executionV3Error = err.message;
+    renderComparison();
+  }
+}
 function renderExecutionStatus() {
+  if (isExecutionV3()) {
+    const execution = executionV3Reference?.execution;
+    $('executionStatus').style.display = referenceMode === 'execution' ? '' : 'none';
+    $('executionStatus').className = 'execution-status' + (execution ? ' execution-ready' : '');
+    $('executionState').style.display = execution ? 'none' : '';
+    $('executionState').textContent = (executionV3Loading ? 'Loading combat statistics' : executionV3Error ? 'Execution unavailable' : 'Combat statistics')
+      + ' · PI policy: ' + executionV3Pi + (executionV3Error ? ' — ' + executionV3Error : '');
+    $('executionCoverage').textContent = execution ? executionV3Coverage(execution)
+      : 'No statistics loaded for PI ' + executionV3Pi + '. No fallback reference is shown.';
+    $('executionBuild').disabled = executionV3Loading || !referenceChoices().find((c) => c.mode === 'execution')?.available;
+    $('executionBuild').textContent = executionV3Loading ? 'Loading statistics…'
+      : (executionV3Error ? 'Retry' : execution ? 'Refresh' : 'Load') + ' statistics';
+    $('executionBuild').onclick = loadExecutionV3;
+    return;
+  }
+  $('executionStatus').className = 'execution-status';
+  $('executionState').style.display = '';
   const status = comparison.executionStatus;
   $('executionStatus').style.display = status || comparison.executionReference ? '' : 'none';
   if (!status) return;
@@ -427,7 +579,7 @@ function executionCurrent(generation, ctx) {
   return generation === compareRequest && comparison?.comparisonID === ctx.comparisonID && lastCtx?.code === ctx.code && lastCtx?.fightID === ctx.fightID && lastCtx?.hero === ctx.hero;
 }
 async function watchExecution(generation, ctx, attempt = 0, fetchStatus = false) {
-  if (!ctx.comparisonID || !executionCurrent(generation, ctx)) return;
+  if (isExecutionV3() || !ctx.comparisonID || !executionCurrent(generation, ctx)) return;
   try {
     if (fetchStatus) {
       const q = new URLSearchParams({ zone: ctx.zone || 0, encounter: ctx.encounterId, difficulty: ctx.difficulty,
@@ -461,6 +613,7 @@ async function watchExecution(generation, ctx, attempt = 0, fetchStatus = false)
   }
 }
 async function buildExecution() {
+  if (isExecutionV3()) return;
   const ctx = { ...lastCtx }, generation = compareRequest;
   if (!executionCurrent(generation, ctx)) return;
   $('executionBuild').disabled = true;
@@ -492,12 +645,119 @@ function measured(value) {
   if (typeof value === 'object') return Object.entries(value).map(([k, v]) => k + ': ' + measured(v)).join(', ');
   return String(value);
 }
+const EXECUTION_CATEGORIES = [
+  ['avoidance', 'Avoidance', 'Avoidable damage / sec'],
+  ['survival', 'Survival', 'Deaths · fewer is better'],
+  ['incoming', 'Incoming damage', 'Damage taken / sec · contextual'],
+  ['defenses', 'Defensives', 'Personal casts · usage, not effectiveness'],
+  ['output', 'Output', 'Damage / sec'],
+  ['healing', 'Healing', 'Effective healing + used absorbs / sec'],
+];
+const statisticNumber = (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+const statisticScore = (value) => statisticNumber(value) && value <= 100;
+function statisticsComplete(data) {
+  return data?.measurements?.complete === true && data.state !== 'incomplete' && data.measurements.basis !== 'observed-lower-bound';
+}
+function statisticsPercentile(data) {
+  return statisticsComplete(data) && !['missing', 'unknown', 'unsupported', 'unavailable'].includes(data.state)
+    && statisticNumber(data.value) && statisticScore(data.score) && data.scoreEligible !== false && data.sample?.sufficient !== false;
+}
+function executionRatingComparable(execution) {
+  return execution?.comparable === true && execution.comparison?.comparable === true
+    && ['a', 'b'].every((key) => statisticScore(execution[key]?.score))
+    && ['partial', 'full'].includes(execution.a.status) && execution.a.status === execution.b.status
+    && /^[01]{6}$/.test(execution.a.mask) && execution.a.mask !== '000000' && execution.a.mask === execution.b.mask
+    && EXECUTION_CATEGORIES.every(([name], index) => execution.a.mask[index] !== '1'
+      || ['a', 'b'].every((key) => statisticsPercentile(execution[key].components?.[name])));
+}
+function statisticsNumber(value, digits = value >= 100 ? 0 : value >= 1 ? 1 : 2) {
+  return value > 0 && value < .01 ? value.toPrecision(2) : value.toLocaleString(undefined, { maximumFractionDigits: digits });
+}
+function statisticsValue(name, data = {}) {
+  if (['missing', 'unknown', 'unsupported', 'unavailable'].includes(data.state)) return null;
+  const m = data.measurements || {}, first = (...values) => values.find(statisticNumber);
+  if (name === 'survival') {
+    const deaths = first(data.value, m.deathCount);
+    return deaths == null ? null : { value: deaths, unit: deaths === 1 ? 'death' : 'deaths',
+      detail: deaths > 0 && statisticNumber(m.firstDeathSec) ? 'First death ' + fmtT(m.firstDeathSec) : '' };
+  }
+  if (name === 'defenses') {
+    const rate = first(data.value, m.boundedUsesPerMinute), casts = first(m.boundedUses);
+    return casts != null ? { value: casts, unit: casts === 1 ? 'cast' : 'casts',
+      detail: rate == null ? '' : statisticsNumber(rate, 2) + ' / min' }
+      : rate == null ? null : { value: rate, unit: 'casts / min', digits: 2 };
+  }
+  const rate = first(data.value, name === 'output' ? m.usefulDamagePerSecond : m.perSecond);
+  const detail = name === 'output' ? (data.definition?.id === 'native-boss-damage-per-fight-second-v1' ? 'Boss only'
+    : data.definition?.id === 'reviewed-useful-target-damage-per-fight-second-v1' ? 'Boss + reviewed adds' : 'Target scope unverified') : '';
+  if (rate != null) return { value: rate, unit: name === 'healing' ? 'HPS' : 'DPS', detail };
+  const total = first(name === 'output' ? m.usefulDamage : m.total);
+  return total == null ? null : { value: total, unit: name === 'healing' ? 'healing' : 'damage', detail };
+}
+function renderStatisticsCell(name, data = {}) {
+  const cell = document.createElement('td'), value = statisticsValue(name, data);
+  if (!value) {
+    const unavailable = textNode('span', '—', 'execution-unavailable');
+    unavailable.setAttribute('aria-label', 'Unavailable');
+    unavailable.title = 'Measurement unavailable';
+    cell.append(unavailable);
+    return cell;
+  }
+  const complete = statisticsComplete(data), lowerBound = data.measurements?.basis === 'observed-lower-bound';
+  const digits = value.digits ?? (value.value >= 100 ? 0 : value.value >= 1 ? 1 : 2);
+  // Round lower bounds down so the displayed minimum cannot overstate observation.
+  const observed = lowerBound ? Math.floor(value.value * 10 ** digits) / 10 ** digits : value.value;
+  const number = textNode('span', (complete ? '' : lowerBound ? '≥ ' : 'Observed ') + statisticsNumber(observed, digits), 'execution-value');
+  number.append(textNode('small', ' ' + value.unit));
+  cell.append(number);
+  if (value.detail) cell.append(textNode('span', value.detail, 'execution-value-detail'));
+  if (!complete) cell.append(textNode('span', 'Incomplete', 'execution-incomplete'));
+  else if (statisticsPercentile(data)) cell.append(textNode('span', statisticsNumber(data.score, 1) + ' peer percentile', 'execution-percentile'));
+  return cell;
+}
+function renderExecutionStatistics(D, execution) {
+  const comparable = executionRatingComparable(execution), breakdown = $('executionBreakdown');
+  breakdown.className = 'execution-comparison';
+  $('executionSummary').textContent = comparable
+    ? execution.a.status === 'full' ? 'Rating covers all six categories. Percentiles compare peers of the same spec.'
+      : 'Rating covers ' + execution.a.mask.split('').filter((value) => value === '1').length + ' of 6 categories shared by both players. Unavailable categories are not scored.'
+    : 'Measurements only — no fair shared Execution rating is available for these two fights.';
+  const table = document.createElement('table'); table.className = 'execution-table';
+  table.append(textNode('caption', 'Observed combat values and local peer percentiles'));
+  const head = document.createElement('thead'), heading = document.createElement('tr');
+  for (const label of ['Category', D.a?.name || 'Selected player', D.b?.name || 'Reference player']) {
+    const cell = textNode('th', label); cell.setAttribute('scope', 'col'); heading.append(cell);
+  }
+  head.append(heading); table.append(head);
+  const body = document.createElement('tbody');
+  let incomplete = false;
+  for (const [name, label, note] of EXECUTION_CATEGORIES) {
+    const row = document.createElement('tr'); row.dataset.category = name;
+    const title = textNode('th', label); title.setAttribute('scope', 'row');
+    title.append(textNode('span', note, 'execution-category-note')); row.append(title);
+    for (const key of ['a', 'b']) {
+      const data = execution[key]?.components?.[name] || {};
+      if (statisticsValue(name, data) && !statisticsComplete(data)) incomplete = true;
+      row.append(renderStatisticsCell(name, data));
+    }
+    body.append(row);
+  }
+  table.append(body); breakdown.append(table);
+  if (incomplete) breakdown.append(textNode('p', 'Incomplete observations are not comparable totals and have no percentile.', 'execution-table-note'));
+  if (!isExecutionV3()) breakdown.append(textNode('p', executionV3Coverage(execution), 'execution-table-note'));
+}
+
 function renderExecutionEvidence(D, zoomTo) {
   const execution = D.rankingMetric === 'execution' ? D.execution : null;
+  const statistics = execution?.analyticalVersion === 'execution-statistical-3';
+  $('executionTitle').textContent = statistics ? 'Combat statistics' : 'Execution evidence';
+  $('executionMarkersHint').style.display = statistics ? 'none' : '';
   $('executionPanel').style.display = execution ? '' : 'none';
+  $('executionBreakdown').className = 'execution-grid';
   $('executionBreakdown').innerHTML = '';
   $('executionMarkers').innerHTML = '';
   if (!execution) return;
+  if (execution.analyticalVersion === 'execution-statistical-3') { renderExecutionStatistics(D, execution); return; }
   const coverage = execution.coverage || {};
   $('executionSummary').textContent = [
     'Best observed reference within the documented sample (' + execution.status + ')',
@@ -565,17 +825,31 @@ function render(D) {
   const pi = D.pi || {};
   const hero = D.hero || {};
   const rankingMetric = D.rankingMetric || D.metric;
-  const rankTag = rankingMetric === 'execution' ? 'BEST OBSERVED EXECUTION'
+  const liveStatistics = isExecutionV3() && rankingMetric === 'execution';
+  const piTag = (key) => liveStatistics ? ' · PI STATE: ' + powerInfusionState(key === 'a' ? pi.state ?? pi.a : pi.reference ?? pi.b).toUpperCase()
+    : pi[key] ? ' · POWER INFUSION' : '';
+  const rankTag = rankingMetric === 'execution' ? (D.execution?.analyticalVersion === 'execution-statistical-3' ? (liveStatistics ? 'OBSERVED EXECUTION STATISTICS' : 'OBSERVED STATISTICS PREVIEW') : 'BEST OBSERVED EXECUTION')
     : D.metric === 'dps' ? (rankingMetric === 'bossdps' ? 'BOSS DAMAGE #1' : 'OVERALL DAMAGE #1') : 'WORLD #1';
   const referenceTag = hero.b && hero.alt
-    ? 'TOP ' + hero.b.toUpperCase() + (D.metric === 'dps' ? ' · ' + rankTag : '') : rankTag;
+    ? (liveStatistics ? 'REFERENCE ' : 'TOP ') + hero.b.toUpperCase() + (D.metric === 'dps' || liveStatistics ? ' · ' + rankTag : '') : rankTag;
+  const statisticalExecution = rankingMetric === 'execution' && D.execution?.analyticalVersion === 'execution-statistical-3';
+  const comparableRating = statisticalExecution && executionRatingComparable(D.execution);
   $('board').innerHTML = ['you', 'top'].map((cls) => {
-    const s = cls === 'you' ? A : B;
+    const key = cls === 'you' ? 'a' : 'b', s = D[key];
+    if (statisticalExecution) {
+      const state = powerInfusionState(key === 'a' ? pi.state ?? pi.a : pi.reference ?? pi.b);
+      const metadata = [D.spec, D.className, s.server, hero[key]].filter(Boolean).join(' · ');
+      return '<div class="card ' + cls + ' execution-player"><div class="eyebrow">' + (key === 'a' ? 'Selected fight' : 'Ranked reference') + '</div>' +
+        '<h2>' + esc(s.name) + '</h2><p class="execution-player-meta">' + esc(metadata) + '</p>' +
+        '<div class="execution-player-details"><span>' + (statisticNumber(s.durSec) ? fmtT(s.durSec) : '—') + ' fight</span>' +
+        '<span>PI: ' + esc(state[0].toUpperCase() + state.slice(1)) + '</span></div>' +
+        (comparableRating ? '<div class="execution-rating"><b>' + statisticsNumber(D.execution[key].score, 1) + '<span> / 100</span></b><span>Execution rating</span></div>' : '') + '</div>';
+    }
     const rankedLabel = cls === 'top' && rankingMetric === 'bossdps' ? 'Boss DPS' : D.metric.toUpperCase();
     const tag = cls === 'you'
-      ? s.server + (hero.a ? ' · ' + hero.a.toUpperCase() : '') + (pi.a ? ' · POWER INFUSION' : '')
-      : referenceTag + (pi.excluded ? (rankingMetric === 'execution' ? ' · NO POWER INFUSION' : ' · NO EXTERNALS') : '') +
-        ' · ' + s.server + (hero.b && !hero.alt ? ' · ' + hero.b.toUpperCase() : '') + (pi.b ? ' · POWER INFUSION' : '');
+      ? s.server + (hero.a ? ' · ' + hero.a.toUpperCase() : '') + piTag('a')
+      : referenceTag + (pi.excluded ? (liveStatistics ? ' · PI POLICY: EXCLUDE' : rankingMetric === 'execution' ? ' · NO POWER INFUSION' : ' · NO EXTERNALS') : '') +
+        ' · ' + s.server + (hero.b && !hero.alt ? ' · ' + hero.b.toUpperCase() : '') + piTag('b');
     const amountLabel = cls === 'top' && rankingMetric === 'execution' ? rankedLabel + ' (observed, full fight)' : rankedLabel + ' (ranked)';
     return '<div class="card ' + cls + '"><h2>' + esc(s.name) + ' <span class="tag">' + esc(tag) + '</span></h2>' +
       '<div class="stats">' +

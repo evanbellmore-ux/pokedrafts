@@ -15,6 +15,15 @@ interface CharacterParams {
   metric: 'dps' | 'hps';
 }
 
+interface CharacterRank {
+  report: { code: string; fightID: number };
+  rankPercent?: number;
+  amount?: number;
+  duration?: number;
+  startTime?: number;
+  spec?: string;
+}
+
 const characterCache = new Map<string, { at: number; out: unknown }>();
 
 async function apiCharacter(params: CharacterParams) {
@@ -40,7 +49,7 @@ async function apiCharacter(params: CharacterParams) {
   const bosses = zone.encounters.map((e) => {
     const er = ch[`e${e.id}`];
     if (er?.error) hidden = true;
-    const kills = ((er?.ranks ?? []) as any[])
+    const kills = ((er?.ranks ?? []) as CharacterRank[])
       .filter((r) => r.report?.code)
       .map((r) => ({
         code: r.report.code as string, fightID: r.report.fightID as number,
