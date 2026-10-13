@@ -3,7 +3,8 @@
 import { useDeferredValue, useMemo } from "react";
 import type { MatchupResult } from "@/app/lib/battle/calculate";
 import { DOUBLES_SLOTS, type DoublesTurnInput, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
-import { doublesSlotInput, doublesTurnInput, type DoublesMatchup } from "./doubles-prep";
+import { isFaintedBuild, withBench, withTurnEarlier } from "./doubles-inputs";
+import { doublesSlotInput, doublesTurnInput, movesRead, type DoublesMatchup } from "./doubles-prep";
 import { errorMessage } from "./useMatchupCalculation";
 
 export type DoublesEngine = typeof import("@/app/lib/battle/doubles-turn");
@@ -26,25 +27,35 @@ export function doublesIdentity(doubles: DoublesMatchup): string {
 
 /**
  * calculateDoublesTurn and calculateDoublesMoves (the Moves pane's rows), keyed on what they read: the four builds,
- * contexts, Charge flags, states from earlier turns and actions (an Imprison user's quick moves), the field and the game.
+ * contexts, Charge flags, states from earlier turns and actions (an Imprison user's quick moves), the answers about earlier
+ * turns (status2: each slot's history, the field's and the sides' turnEarlier), the Bench, Replacement picks and Hazards (status2
+ * R-U: doubles-inputs withBench), the field and the game.
  * Edits to the same four Pokémon recalculate in the background while the last results show; new Pokémon, a new game or
  * another Moves-pane pair is calculated at once, as useMatchupCalculation does for 1v1. The turn is not recalculated when
  * only the Moves pane changes. Nothing is calculated while `enabled` is false (1v1 view) or before the engine loads.
  */
 export function useDoublesCalculation(engine: DoublesEngine | null, doubles: DoublesMatchup, enabled: boolean): DoublesCalculation | null {
-  const { runtime, field, slots, actions, charged, carried, moves } = doubles;
+  const { runtime, field, slots, actions, charged, carried, history, turnEarlier, bench, moves } = doubles;
   const [a, b, c, d] = [slots["own-left"], slots["own-right"], slots["opponent-left"], slots["opponent-right"]];
   const [actionA, actionB, actionC, actionD] = [actions["own-left"], actions["own-right"], actions["opponent-left"], actions["opponent-right"]];
   const [chargedA, chargedB, chargedC, chargedD] = [charged["own-left"], charged["own-right"], charged["opponent-left"], charged["opponent-right"]];
   const [carriedA, carriedB, carriedC, carriedD] = [carried["own-left"], carried["own-right"], carried["opponent-left"], carried["opponent-right"]];
-  // A Pokémon at 0 HP has fainted before the turn: its slot is empty in the input (doubles-prep doublesTurnInput).
-  const input = useMemo((): DoublesTurnInput => doublesTurnInput(runtime, field, {
-    "own-left": doublesSlotInput({ build: a.build, contexts: a.contexts, moves: a.moves }, chargedA, actionA, carriedA),
-    "own-right": doublesSlotInput({ build: b.build, contexts: b.contexts, moves: b.moves }, chargedB, actionB, carriedB),
-    "opponent-left": doublesSlotInput({ build: c.build, contexts: c.contexts, moves: c.moves }, chargedC, actionC, carriedC),
-    "opponent-right": doublesSlotInput({ build: d.build, contexts: d.contexts, moves: d.moves }, chargedD, actionD, carriedD),
-  }), [runtime, field, a.build, a.contexts, a.moves, b.build, b.contexts, b.moves, c.build, c.contexts, c.moves, d.build, d.contexts, d.moves,
-    chargedA, chargedB, chargedC, chargedD, actionA, actionB, actionC, actionD, carriedA, carriedB, carriedC, carriedD]);
+  const [historyA, historyB, historyC, historyD] = [history["own-left"], history["own-right"], history["opponent-left"], history["opponent-right"]];
+  // A Pokémon at 0 HP has fainted before the turn: its slot is empty in the input (doubles-prep doublesTurnInput). Review 2
+  // (R6-2): the moves another Pokémon's action reads (doubles-prep movesRead).
+  const input = useMemo((): DoublesTurnInput => {
+    const read = movesRead({ "own-left": actionA, "own-right": actionB, "opponent-left": actionC, "opponent-right": actionD },
+      { "own-left": historyA, "own-right": historyB, "opponent-left": historyC, "opponent-right": historyD }, turnEarlier?.battleLastMove,
+      { "own-left": isFaintedBuild(a.build), "own-right": isFaintedBuild(b.build), "opponent-left": isFaintedBuild(c.build), "opponent-right": isFaintedBuild(d.build) });
+    return withBench(withTurnEarlier(doublesTurnInput(runtime, field, {
+      "own-left": doublesSlotInput({ build: a.build, contexts: a.contexts, moves: a.moves }, chargedA, actionA, carriedA, historyA, read["own-left"]),
+      "own-right": doublesSlotInput({ build: b.build, contexts: b.contexts, moves: b.moves }, chargedB, actionB, carriedB, historyB, read["own-right"]),
+      "opponent-left": doublesSlotInput({ build: c.build, contexts: c.contexts, moves: c.moves }, chargedC, actionC, carriedC, historyC, read["opponent-left"]),
+      "opponent-right": doublesSlotInput({ build: d.build, contexts: d.contexts, moves: d.moves }, chargedD, actionD, carriedD, historyD, read["opponent-right"]),
+    }), turnEarlier), bench);
+  }, [runtime, field, a.build, a.contexts, a.moves, b.build, b.contexts, b.moves, c.build, c.contexts, c.moves, d.build, d.contexts, d.moves,
+    chargedA, chargedB, chargedC, chargedD, actionA, actionB, actionC, actionD, carriedA, carriedB, carriedC, carriedD,
+    historyA, historyB, historyC, historyD, turnEarlier, bench]);
   const identity = doublesIdentity(doubles);
   const request = useMemo(() => ({ input, slot: moves.slot, into: moves.into, identity }), [input, moves.slot, moves.into, identity]);
   const deferred = useDeferredValue(request);

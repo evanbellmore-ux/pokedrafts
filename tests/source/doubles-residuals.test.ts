@@ -38,36 +38,44 @@ const inCatalogs = (kind: "abilities" | "items" | "moves", id: string) => CATALO
 const CLASSES: Record<string, { modelled: string } | "state" | "guarded" | "unreachable"> = {
   // Order 1: the weather (data/conditions.ts onFieldResidual), with its per-Pokémon part and the Update after it.
   ...Object.fromEntries(["deltastream", "desolateland", "hail", "primordialsea", "raindance", "sandstorm", "snowscape", "sunnyday"].map((id) => [`condition:${id}:onFieldResidual`, { modelled: "weather" }])),
-  "condition:futuremove:onResidual": "guarded",
+  "condition:futuremove:onResidual": { modelled: "futuremove" },
   "move:wish:onResidual": { modelled: "wish" },
-  "move:firepledge:onResidual": "guarded", "move:gmaxcannonade:onResidual": "guarded", "move:gmaxvinelash:onResidual": "guarded",
-  "move:gmaxvolcalith:onResidual": "guarded", "move:gmaxwildfire:onResidual": "guarded",
+  // status2 E2: the side conditions that damage at 5.1 (one side-residual handler), the Pledges' countdowns.
+  ...Object.fromEntries(["firepledge", "gmaxcannonade", "gmaxvinelash", "gmaxvolcalith", "gmaxwildfire"].map((id) => [`move:${id}:onResidual`, { modelled: "sideresidual" }])),
   "move:grassyterrain:onResidual": { modelled: "grassyterrain" },
   "ability:healer:onResidual": { modelled: "healer" }, "ability:hydration:onResidual": { modelled: "hydration" }, "ability:shedskin:onResidual": { modelled: "shedskin" },
   "item:leftovers:onResidual": { modelled: "leftovers" }, "item:blacksludge:onResidual": { modelled: "blacksludge" },
   "move:aquaring:onResidual": { modelled: "aquaring" }, "move:ingrain:onResidual": { modelled: "ingrain" }, "move:leechseed:onResidual": { modelled: "leechseed" },
   "condition:psn:onResidual": { modelled: "psn" }, "condition:tox:onResidual": { modelled: "tox" }, "condition:brn:onResidual": { modelled: "brn" },
   "item:berry:onResidual": "unreachable", "item:goldberry:onResidual": "unreachable",
-  // Nightmare, Octolock, Telekinesis, Heal Block, Embargo and Uproar are not modelled moves (an end-of-turn guard when last).
-  "move:nightmare:onResidual": "guarded", "move:octolock:onResidual": "guarded", "move:uproar:onResidual": "guarded",
+  // status2 (E1): Nightmare, Octolock and the Telekinesis, Heal Block and Embargo countdowns are modelled; Uproar is guarded.
+  "move:nightmare:onResidual": { modelled: "nightmare" }, "move:octolock:onResidual": { modelled: "octolock" }, "move:uproar:onResidual": { modelled: "uproar" },
   "move:curse:onResidual": { modelled: "curse" },
   "condition:partiallytrapped:onResidual": { modelled: "partiallytrapped" }, "move:saltcure:onResidual": { modelled: "saltcure" },
   "move:syrupbomb:onResidual": { modelled: "syrupbomb" },
-  ...Object.fromEntries(["taunt", "encore", "disable", "magnetrise", "telekinesis", "healblock", "embargo", "throatchop"].map((id) => [`move:${id}:onResidual`, "state"])),
+  // status2 E2: Taunt, Encore and Disable count down (15, 16, 17).
+  ...Object.fromEntries(["taunt", "encore", "disable"].map((id) => [`move:${id}:onResidual`, { modelled: id }])),
+  ...Object.fromEntries(["magnetrise", "throatchop"].map((id) => [`move:${id}:onResidual`, "state"])),
+  ...Object.fromEntries(["telekinesis", "healblock", "embargo"].map((id) => [`move:${id}:onResidual`, { modelled: id }])),
   // Roost's volatile ends at 25: grounding the Orbs (28.3) read under Misty Terrain.
   "move:roost:onResidual": { modelled: "roost" },
   "move:yawn:onResidual": { modelled: "yawn" }, "move:perishsong:onResidual": { modelled: "perishsong" },
-  ...Object.fromEntries(["auroraveil", "firepledge", "gmaxcannonade", "gmaxvinelash", "gmaxvolcalith", "gmaxwildfire", "grasspledge", "lightscreen", "luckychant", "mist",
-    "reflect", "safeguard", "tailwind", "waterpledge"].map((id) => [`move:${id}:onSideResidual`, "state"])),
-  ...Object.fromEntries(["electricterrain", "grassyterrain", "gravity", "magicroom", "mistyterrain", "mudsport", "psychicterrain", "trickroom", "watersport", "wonderroom"]
-    .map((id) => [`move:${id}:onFieldResidual`, "state"])),
+  ...Object.fromEntries(["auroraveil", "gmaxcannonade", "gmaxvinelash", "gmaxvolcalith", "gmaxwildfire", "lightscreen", "luckychant", "mist",
+    "reflect", "safeguard", "tailwind"].map((id) => [`move:${id}:onSideResidual`, "state"])),
+  "move:waterpledge:onSideResidual": { modelled: "pledgewater" }, "move:firepledge:onSideResidual": { modelled: "pledgefire" }, "move:grasspledge:onSideResidual": { modelled: "pledgegrass" },
+  // status2 E2: Gravity, Magic Room and the terrains from before the turn end with one turn left (27.2, 27.6, 27.7).
+  "move:gravity:onFieldResidual": { modelled: "gravity" }, "move:magicroom:onFieldResidual": { modelled: "magicroom" },
+  ...Object.fromEntries(["electricterrain", "grassyterrain", "mistyterrain", "psychicterrain"].map((id) => [`move:${id}:onFieldResidual`, { modelled: "terrain" }])),
+  ...Object.fromEntries(["mudsport", "trickroom", "watersport", "wonderroom"].map((id) => [`move:${id}:onFieldResidual`, "state"])),
   "ability:baddreams:onResidual": { modelled: "baddreams" }, "ability:speedboost:onResidual": { modelled: "speedboost" },
-  "ability:cudchew:onResidual": "guarded", "ability:harvest:onResidual": "guarded", "ability:pickup:onResidual": "guarded", "ability:moody:onResidual": "guarded",
+  "ability:cudchew:onResidual": { modelled: "cudchew" }, "ability:harvest:onResidual": { modelled: "harvest" }, "ability:pickup:onResidual": { modelled: "pickup" }, "ability:moody:onResidual": { modelled: "moody" },
   "ability:slowstart:onResidual": "state",
   "item:stickybarb:onResidual": { modelled: "stickybarb" }, "item:flameorb:onResidual": { modelled: "flameorb" }, "item:toxicorb:onResidual": { modelled: "toxicorb" },
   "ability:hungerswitch:onResidual": { modelled: "hungerswitch" }, "item:whiteherb:onResidual": { modelled: "whiteherb" }, "item:ejectpack:onResidual": { modelled: "ejectpack" },
-  "ability:opportunist:onResidual": "guarded", "item:mirrorherb:onResidual": "guarded",
-  "ability:powerconstruct:onResidual": "guarded", "ability:schooling:onResidual": "guarded", "ability:shieldsdown:onResidual": "guarded", "ability:zenmode:onResidual": "guarded",
+  "ability:opportunist:onResidual": { modelled: "opportunist" }, "item:mirrorherb:onResidual": { modelled: "mirrorherb" },
+  // status2 E2: Zen Mode, Shields Down and Schooling change the form at 29; Power Construct keeps its reason (its maximum HP changes).
+  "ability:powerconstruct:onResidual": "guarded", "ability:schooling:onResidual": { modelled: "schooling" }, "ability:shieldsdown:onResidual": { modelled: "shieldsdown" },
+  "ability:zenmode:onResidual": { modelled: "zenmode" },
   "item:micleberry:onResidual": { modelled: "micleberry" },
   // Dynamax counts its turns (the turn assumes it started this turn); a locked move, Ice Ball and Rollout carry to the next turn.
   "condition:dynamax:onResidual": "state", "condition:lockedmove:onResidual": "state", "move:iceball:onResidual": "state", "move:rollout:onResidual": "state",

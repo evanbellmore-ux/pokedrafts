@@ -227,6 +227,12 @@ export type HitLoopInput = {
   generation: number;
   /** A doubles turn's Unnerve and As One (TurnUnnerve); unset, each side's own stops the other's Berries. */
   unnerve?: TurnUnnerve;
+  /**
+   * status2 (T2M §2.3; a doubles turn only): what the target deals back when a hit knocks it out (`knocked`), before that
+   * hit's Update: Aftermath trunc(baseMaxHP / 4) on contact (data/abilities.ts aftermath, onDamagingHitOrder 1), Innards
+   * Out `innardsOut` HP (the HP it had as the move started: innardsout onDamagingHit). Magic Guard stops both.
+   */
+  koRetaliation?: { aftermath: boolean; innardsOut: number };
 };
 
 /**
@@ -234,7 +240,11 @@ export type HitLoopInput = {
  * still in): `foes` whether the two are foes (each one's own then stops the other's Berries), `target` and
  * `attacker` whether another Pokémon's stops that one's Berries.
  */
-export type TurnUnnerve = { foes: boolean; target: boolean; attacker: boolean };
+export type TurnUnnerve = {
+  foes: boolean; target: boolean; attacker: boolean;
+  /** status2 (T2M §3.7): the Unnerve stopping the attacker's Berries is the target's, gone at the Update of the hit that knocks it out. */
+  endsOnKO?: true;
+};
 
 /** Whether a Berry of the target (`who` "target") or of the attacker is stopped, the other one's ability being `other`. */
 export function berryUnnerved(unnerve: TurnUnnerve | undefined, who: "target" | "attacker", other: string): boolean {
@@ -290,7 +300,8 @@ function modify(value: number, numerator: number, denominator: number): number {
  *    holder has fainted: `knocked`, this hit knocked the target out; data/abilities.ts stickyhold onTakeItem `!pokemon.hp`),
  *    and Bug Bite's and Pluck's living user eats it (stolenEat): its heal and Cheek Pouch's, each at most to the maximum
  *    and none at full HP (battle.heal), and its stages (Contrary reverses, Simple doubles), before the DamagingHit.
- * 3. DamagingHit, by handler order: Rough Skin and Iron Barbs (order 1, 1/8 of base max HP on contact), Rocky
+ * 3. DamagingHit, by handler order: on the hit that knocks the target out (`knocked`), a doubles turn's Aftermath and Innards
+ *    Out (koRetaliation, order 1), Rough Skin and Iron Barbs (order 1, 1/8 of base max HP on contact), Rocky
  *    Helmet (order 2, 1/6 on contact), then abilities (subOrder 7: Mummy and Lingering Aroma replace the
  *    attacker's ability on contact, Wandering Spirit swaps them; Gulp Missile in the Gulping or Gorging form
  *    deals 1/4 on any hit, contact or not, once, and the form changes back, through Magic Guard too, unless
@@ -299,7 +310,8 @@ function modify(value: number, numerator: number, denominator: number): number {
  *    Guard or its Unnerve stops the eating). Each damage is battle.damage's: at least 1, rounded down, none
  *    through the attacker's Magic Guard (onDamage), none once it has fainted.
  * 4. The Update: the attacker eats its HP or pinch berry at its line (the target's Unnerve stops a Berry, not
- *    Berry Juice); a pinch berry raises its stat (Ripen doubles, Contrary reverses, Simple doubles); Lansat's focus and
+ *    Berry Juice, unless it ended with this knocking hit: TurnUnnerve.endsOnKO); a pinch berry raises its stat (Ripen
+ *    doubles, Contrary reverses, Simple doubles); Lansat's focus and
  *    Starf's random rise are the caller's (`ate`: uses-to-ko.ts attackerAte, doubles-turn.ts ateBerry).
  * Pickpocket (onAfterMoveSecondary) and Shell Bell, recoil and Life Orb act only after the hits.
  */
@@ -349,6 +361,11 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knoc
       state.stolen = { item: berry, heal, pouch };
     }
   }
+  // status2: Aftermath and Innards Out on the knocking hit (order 1, before Rocky Helmet; one ability, so never with Rough Skin).
+  if (knocked && input.koRetaliation) {
+    if (input.koRetaliation.aftermath && input.contact) lose("Aftermath", Math.trunc(input.baseMaxHP / 4));
+    if (input.koRetaliation.innardsOut > 0) lose("Innards Out", input.koRetaliation.innardsOut);
+  }
   const rough = ROUGH_SKIN[state.targetAbility];
   if (input.contact && rough) lose(rough, input.baseMaxHP / 8);
   if (input.contact && state.targetItem === "rockyhelmet") lose("Rocky Helmet", input.baseMaxHP / 6);
@@ -372,7 +389,7 @@ export function hitStep(input: HitLoopInput, prev: HitState, dealt: number, knoc
   let ate: string | null = null;
   const item = state.attackerItem;
   if (state.hp > 0 && item && item !== "enigmaberry" && (HEALING_BERRIES.has(item) || PINCH_STAT_BERRIES[item] || LANSAT_STARF.has(item))
-    && (item === "berryjuice" || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
+    && (item === "berryjuice" || (knocked && !!input.unnerve?.endsOnKO) || !berryUnnerved(input.unnerve, "attacker", state.targetAbility))) {
     const berry = berryArithmetic(item, { maxHP: input.maxHP, baseMaxHP: input.baseMaxHP, ability: state.attackerAbility }, input.generation);
     if (state.hp <= berry.line) {
       state.ate = { item, ...berryHeals(berry, state.hp) };

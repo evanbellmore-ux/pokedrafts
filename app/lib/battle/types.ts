@@ -207,15 +207,51 @@ type BuildBase = {
   /**
    * Set only by the calculation, in generation 7: the Speed stage and Unburden state this turn's order was set
    * with, before the item it used at the turn's first Update changed them (pinned Showdown sim/battle.ts runAction
-   * sorts the queue again after an action only from generation 8), and that item's name.
+   * sorts the queue again after an action only from generation 8), and that item's name. status2 Step 1 #9: `status`, the
+   * status that item cured there (a Lum or Cheri Berry against paralysis: the order read the paralysed Speed).
    */
-  firstTurnSpeed?: { spe: number; unburden: boolean; item: string };
+  firstTurnSpeed?: { spe: number; unburden: boolean; item: string; status?: BattleStatus };
   /**
    * Set only by the calculation, for the uses after the first: the stages its Opportunist or Mirror Herb (`by`)
    * stored from a foe's Berry eaten before the move, which it applies after the attacker's first use when the
    * attacker moves first (pinned Showdown onFoeAfterBoost, then onAnyAfterMove).
    */
   pendingCopy?: { stages: Partial<Record<CombatStat, number>>; by: string[] };
+  // ---- status2 (SPEC2 §3.2, ADDENDUM2 §3.2): set only by the 2v2 turn, Training and a 2v2 calculator control; no 1v1 input sets one ----
+  /**
+   * Set only by the 2v2 turn, Training and a 2v2 calculator control: its types after a setType (Soak, Magic Powder,
+   * Reflect Type, Conversion, Conversion 2, Camouflage, Protean, Libero, Color Change, Burn Up, Double Shock, Transform).
+   * One or two of the game's type names, or "???"; never Stellar. Absent: its species'. A form change drops it.
+   */
+  types?: string[];
+  /** Forest's Curse or Trick-or-Treat (sim/pokemon.ts addedType). Terastallizing clears it. */
+  addedType?: "Grass" | "Ghost";
+  /**
+   * Its stored stats (Showdown storedStats) when they are not the build's own: Power Split, Guard Split, Speed Swap, Power
+   * Trick, Power Shift, Transform. HP is never in it. A form change drops it.
+   */
+  storedStats?: Record<"atk" | "def" | "spa" | "spd" | "spe", number>;
+  /** Its weight in hectograms when not the species' (Autotomize, Transform). A form change drops it. */
+  weighthg?: number;
+  /** Its ability is not its species' own (Skill Swap, Role Play, Entrainment, Simple Beam, Worry Seed, Doodle): validateBuild accepts any supported catalog ability. */
+  abilityChanged?: true;
+  /** Its item has no effect (Embargo: sim/pokemon.ts ignoringItem); it can still be taken, and Knock Off still gets 1.5x. */
+  itemSuppressed?: true;
+  // ---- calculation-only markers: the 2v2 turn's calcBuild derives them from the world; no input carries them ----
+  /**
+   * Final modifiers on the damage it takes (C6): Minimize ×2 for the minimize-flag moves, Glaive Rush ×2, Ripen's weakened
+   * Berry ×0.5 (first hit); `hidden`: the defender is hidden by this move: Fly, Dig, Dive ×2 final damage for their move
+   * lists; Bounce and Sky Drop ×2 base power for Gust and Twister (PS/data/moves.ts:1703, 3586, 3748, 5895, 16774-16784).
+   */
+  takenMods?: { minimize?: true; glaiveRush?: true; berryWeaken?: true; hidden?: "fly" | "bounce" | "dig" | "dive" | "skydrop" };
+  tarShot?: true;
+  revealed?: "foresight" | "miracleeye";
+  /** sim/pokemon.ts isGrounded overrides: "pinned" (Smack Down, Ingrain: before the Flying check), "floating" (Magnet Rise, Telekinesis: after Levitate). */
+  grounding?: "pinned" | "floating";
+  /** G-Max Chi Strike layers on it: +n critical-hit stage. */
+  critBoost?: 1 | 2 | 3;
+  /** Laser Focus from last turn: critical-hit ratio at least 5. */
+  laserFocus?: true;
 };
 
 export type ChampionsBuild = BuildBase & {
@@ -267,6 +303,18 @@ export type SideConditions = {
   battery?: boolean;
   powerSpot?: boolean;
   steelySpirit?: boolean;
+  // ---- status2 (SPEC2 §3.2, ADDENDUM2 §3.2), Doubles turn only ----
+  /** Doubles turn only: Mist and Lucky Chant up on the side. */
+  mist?: boolean;
+  luckyChant?: boolean;
+  /** Doubles turn only: Mat Block on the side, for a Z-Move or Max Move only (the quarter and its text): the protection's name. */
+  protectName?: string;
+  /** Doubles turn only: Safeguard up on the side from an earlier turn. */
+  safeguard?: boolean;
+  /** Doubles turn only, SwSh: G-Max damage over time on the side from an earlier turn (onResidual 5.1). */
+  gmaxResidual?: ("gmaxvinelash" | "gmaxwildfire" | "gmaxcannonade" | "gmaxvolcalith")[];
+  /** Doubles turn only: the Grass Pledge + Water Pledge swamp, Speed ×0.25 (turnSpeed's ModifySpe chain). */
+  swamp?: boolean;
 };
 
 export type BattleConditions = {
@@ -293,6 +341,13 @@ export type BattleConditions = {
    * more than one target).
    */
   oneTarget?: boolean;
+  // ---- status2 (SPEC2 §3.2, ADDENDUM2 §3.2), Doubles turn only ----
+  /** Doubles turn only: Mud Sport, Water Sport (Electric, Fire power ×1352/4096) and Ion Deluge (Normal moves become Electric) on the field. */
+  mudSport?: boolean;
+  waterSport?: boolean;
+  ionDeluge?: boolean;
+  /** Doubles turn only: the move's target is the user's ally: the priority shields' and Psychic Terrain's priority blocks do not apply. */
+  allyTarget?: boolean;
 };
 
 /**
@@ -310,6 +365,32 @@ export type MoveContext = {
    * (before the target, or the target switched in) or "last". Unset, it is worked out when it can be.
    */
   turnOrder?: "first" | "last";
+  // ---- status2 (SPEC2 §3.2, ADDENDUM2 §3.2): each set only by the 2v2 turn ----
+  /** Set only by the 2v2 turn: Spit Up's Stockpile layers (base power 100 × layers). */
+  stockpile?: 1 | 2 | 3;
+  /** Set only by the 2v2 turn: Electrify on the user, or Ion Deluge on the field (the move becomes Electric after its ModifyType chain). */
+  retype?: "electrify" | "iondeluge";
+  /** Set only by the 2v2 turn: the positive accuracy and evasion stages its power counts (Stored Power and Power Trip: the user's; Punishment: the target's). */
+  hiddenStages?: number;
+  /** Set only by the 2v2 turn, generation 7 (T2M §3.17): the priority the queue sorted at the turn's start, which the priority shields and Psychic Terrain read. */
+  frozenPriority?: number;
+  /** Set only by the 2v2 turn (T2M §3.28): two or three Helping Hands on the user this turn (one modifier round(4096 × 1.5^n)). */
+  helpingHands?: 2 | 3;
+  /** Set only by the 2v2 turn: a base power that replaces the move's (Round 120, a combined Pledge 150, Present, Magnitude, Fury Cutter, Rollout, Ice Ball, Echoed Voice, Trump Card). */
+  basePower?: number;
+  /** Set only by the 2v2 turn: chained base-power modifiers (Fusion 8192, Me First 6144, Retaliate 8192), as withPowerMods. */
+  powerMods?: number[];
+  /** Set only by the 2v2 turn: a combined Pledge's type and its forced STAB. */
+  retypeTo?: string;
+  forceStab?: true;
+  /** Set only by the 2v2 turn: Pursuit with no switching target. */
+  switching?: false;
+  /** Set only by the 2v2 turn: a two-turn move charged last turn released now (carried.charging): no Power Herb, no pre-hit rise. */
+  released?: true;
+  /** Set only by the 2v2 turn: a one-hit KO move that reaches its target (its damage the target's maximum HP). */
+  ohko?: true;
+  /** Set only by the 2v2 turn (PR): a damageCallback move's fixed hit (Counter, Mirror Coat, Metal Burst, Comeuppance: the damage it returns). */
+  fixedDamage?: number;
 };
 export type BuildIssue = { field: string; message: string };
 

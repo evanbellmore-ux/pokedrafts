@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
-import { DOUBLES_SLOTS } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, type DoublesCarried } from "@/app/lib/battle/doubles-types";
 import { getBuildStats } from "@/app/lib/battle/model";
 import { showdownPosition } from "@/app/(app)/training/model/positions";
 import { createRandom } from "@/app/(app)/training/model/random";
@@ -8,7 +8,7 @@ import type { CellActions, ReplacePolicy } from "@/app/(app)/training/model/ai-v
 import { buildBeliefBattle } from "@/app/(app)/training/sim/belief-battle";
 import { bridgeTurn, needsPrelude, SPLITS_BRANCH_SLEEP } from "@/app/(app)/training/sim/bridge";
 import { toChoiceString } from "@/app/(app)/training/sim/choices";
-import { runPrelude } from "@/app/(app)/training/sim/prelude";
+import { runPreludeWorlds } from "@/app/(app)/training/sim/prelude";
 import { createTurnServices } from "@/app/(app)/training/sim/services";
 import { splitWorlds, thawChance, wakeChance } from "@/app/(app)/training/sim/splits";
 import { PRNG, State, type ClonedBattle, type PRNGSeed } from "@/app/(app)/training/sim/sim";
@@ -131,9 +131,15 @@ describe("bridge", () => {
     if (sub.kind !== "engine") throw new Error(sub.reasons.join(" "));
     const gyarados = sub.input.pokemon["opponent-right"]!;
     expect(gyarados.carried?.substitute).toBe(Math.floor(getBuildStats(gyarados.build, runtime)!.hp / 4));
-    expect(reasonsWith((inputs) => inputs.public.mons["p1:charizard"].volatiles.push({ id: "twoturnmove", since: 1, elapsed: 0, moveId: "solarbeam" }))).toMatch(/twoturnmove is not modelled/);
-    expect(reasonsWith(() => {}, { ...cell, own: { ...cell.own, "own-left": { kind: "move", moveId: "struggle", target: "opponent-right" } } })).toMatch(/struggle is not modelled/);
-    expect(reasonsWith((inputs) => inputs.public.sides.p2.conditions.push({ id: "safeguard", since: 1, layers: 1, setterKey: null }))).toMatch(/Side effect safeguard/);
+    // status2 T2: a charged two-turn move is carried (its request offers only that move: another is not a cell of it),
+    // Struggle is the engine's action, Safeguard a side condition.
+    expect(reasonsWith((inputs) => inputs.public.mons["p1:charizard"].volatiles.push({ id: "twoturnmove", since: 1, elapsed: 0, moveId: "solarbeam" }))).toMatch(/Charizard is locked into Solar Beam/);
+    const charged = bridged((inputs) => inputs.public.mons["p1:charizard"].volatiles.push({ id: "twoturnmove", since: 1, elapsed: 0, moveId: "solarbeam" }), { ...cell, own: { ...cell.own, "own-right": { kind: "move", moveId: "solarbeam", target: "opponent-left" } } });
+    expect(charged.kind === "engine" ? charged.input.pokemon["own-right"]!.carried?.charging : charged.reasons).toBe("solarbeam");
+    const struggle = bridged(() => {}, { ...cell, own: { ...cell.own, "own-left": { kind: "move", moveId: "struggle", target: "opponent-right" } } });
+    expect(struggle.kind === "engine" ? struggle.input.pokemon["own-left"]!.action : struggle.reasons).toEqual({ moveId: "struggle", target: null });
+    const safeguard = bridged((inputs) => inputs.public.sides.p2.conditions.push({ id: "safeguard", since: 1, layers: 1, setterKey: null }));
+    expect(safeguard.kind === "engine" ? safeguard.input.field.defenderSide.safeguard : safeguard.reasons).toBe(true);
   });
 
   it("carries the state from earlier turns: public counts for the hidden ones, the belief battle's per world (status-eot SPEC §6)", () => {
@@ -161,25 +167,29 @@ describe("bridge", () => {
     expect(pokemon["own-left"]!.carried).toEqual(SPLITS_BRANCH_SLEEP ? undefined : { sleep: { attempts: 1, rest: true } });
     expect(pokemon["own-left"]!.lastMove).toBe("fakeout");
     expect(pokemon["own-left"]!.moves).toEqual(belief.battle.p1.active[0]!.moveSlots.map((each) => each.id));
-    expect(pokemon["own-right"]!.carried).toEqual({ yawn: true, perish: 2 });
+    // status2 T2: a protecting move carries the stall counter (1: none last turn).
+    expect(pokemon["own-right"]!.carried).toEqual({ yawn: true, perish: 2, stall: 1 });
     expect(pokemon["own-right"]!.build.focusEnergy).toBe(true);
-    expect(pokemon["opponent-right"]!.carried).toEqual({ toxic: 3, leechSeed: "own-right" });
+    expect(pokemon["opponent-right"]!.carried).toEqual({ toxic: 3, leechSeed: "own-right", stall: 1 });
     // The trap's move (public: its -activate line) names the residual.
-    expect(pokemon["opponent-left"]!.carried).toEqual({ trap: { source: "own-left", bindingBand: false, move: "firespin" } });
+    expect(pokemon["opponent-left"]!.carried).toEqual({ trap: { source: "own-left", bindingBand: false, move: "firespin" }, stall: 1 });
     expect(result.input.canSwitch).toEqual({ own: true, opponent: true });
     expect(result.input.weatherTurns).toBe(Number(belief.battle.field.weatherState.duration));
     // The engine runs it: Gyarados's bad poison stage 3 → 4/16, the drain into Charizard.
     const outcomes = calculateDoublesOutcomes(result.input);
     expect(outcomes.status).toBe("ready");
-    // Without the public counts a confused Pokémon is a rollout; Ingrain on a Flying type too.
+    // Without the public counts a confused Pokémon is a rollout.
     const confused = seat.inputs();
     confused.public.mons["p1:charizard"].volatiles.push({ id: "confusion", since: confused.public.turn, elapsed: 1 });
     const confusedBelief = buildBeliefBattle(confused, seat.truthWorld(), runtime);
     expect(bridgeTurn(confusedBelief.battle, quiet, { runtime, keys: confusedBelief.keys, aiSide: "p2", switched: new Set() })).toMatchObject({ kind: "rollout", reasons: ["Charizard: its confusion needs the public counts."] });
+    // status2 T1: Ingrain on a Flying type goes to the engine, which pins it (doubles-turn.ts turnMarks grounding "pinned").
     const rooted = seat.inputs();
     rooted.public.mons["p1:charizard"].volatiles.push({ id: "ingrain", since: rooted.public.turn, elapsed: 0 });
     const rootedBelief = buildBeliefBattle(rooted, seat.truthWorld(), runtime);
-    expect(bridgeTurn(rootedBelief.battle, quiet, { runtime, keys: rootedBelief.keys, aiSide: "p2", switched: new Set(), publicOf })).toMatchObject({ kind: "rollout", reasons: ["Charizard: Ingrain on a Pokémon that is not grounded otherwise is not modelled."] });
+    const rootedResult = bridgeTurn(rootedBelief.battle, quiet, { runtime, keys: rootedBelief.keys, aiSide: "p2", switched: new Set(), publicOf });
+    if (rootedResult.kind !== "engine") throw new Error(rootedResult.reasons.join(" "));
+    expect(rootedResult.input.pokemon["own-right"]!.carried).toMatchObject({ ingrain: true });
   });
 
   it("carries a Future Sight only on the turn it lands: two turns after its use (data/conditions.ts futuremove; EOT-4)", () => {
@@ -207,7 +217,7 @@ describe("bridge", () => {
       own: { "own-left": { kind: "move", moveId: "protect", target: null }, "own-right": { kind: "move", moveId: "protect", target: null } },
       opponent: { "opponent-left": { kind: "move", moveId: "protect", target: null }, "opponent-right": { kind: "move", moveId: "protect", target: null } },
     };
-    const seen: { turn: number; carried: string | null; lands: boolean }[] = [];
+    const seen: { turn: number; carried: DoublesCarried["futureMove"] | null; lands: boolean }[] = [];
     for (const turn of [2, 3]) {
       expect(seat.battle.turn).toBe(turn);
       const inputs = seat.inputs();
@@ -219,8 +229,9 @@ describe("bridge", () => {
       seat.step("move 1, move 1", "move 2, move 1");
       seen.push({ turn, carried: result.input.pokemon["own-left"]!.carried?.futureMove ?? null, lands: seat.battle.log.slice(before).some((line) => line.startsWith("|-end|") && line.includes("Future Sight")) });
     }
-    // Pinned Showdown lands it at the end of turn 3 ((turn − 1) mod 256 ≥ endingTurn 2); the bridge says so on that turn only.
-    expect(seen).toEqual([{ turn: 2, carried: null, lands: false }, { turn: 3, carried: "futuresight", lands: true }]);
+    // Pinned Showdown lands it at the end of turn 3 ((turn − 1) mod 256 ≥ endingTurn 2); the bridge says so on that turn only,
+    // with its user (status2 T2, C33: Farigiraf, in battle at p2a).
+    expect(seen).toEqual([{ turn: 2, carried: null, lands: false }, { turn: 3, carried: { move: "futuresight", source: "opponent-right" }, lands: true }]);
   });
 
   it("Leech Seed heals the position the seeder seeded from, wherever the seeder stands now (EOT-5, pool E)", () => {
@@ -244,9 +255,9 @@ describe("bridge", () => {
     expect(seeded(0)).toBe("own-left");
   });
 
-  it("Magic Room with one turn left and an item that acts after its countdown: a rollout (order 27.6; verify-eot-training)", () => {
+  it("Magic Room with one turn left: its turns left go to the engine (status2 T2, fieldTurns; order 27.6, verify-eot-training)", () => {
     // Pinned (build/verify-eot-probes/field-end-probe.ts): the room ends at 27.6, and White Herb (29) and the final Update's
-    // Berries act after it; the engine takes no turns left for the room and keeps it through the residual.
+    // Berries act after it; the engine ends it there (E2's field handlers) from fieldTurns.magicRoom.
     const seat = seatBattle([11, 2, 3, 4]);
     seat.step("team 1234", "team 1234");
     const quiet: CellActions = {
@@ -264,17 +275,16 @@ describe("bridge", () => {
         (battle.field.pseudoWeather.magicroom as { duration: number }).duration = duration;
       }
       const result = bridgeTurn(battle, quiet, { runtime, keys: belief.keys, aiSide: "p2", switched: new Set() });
-      return result.kind === "rollout" ? result.reasons.join(" ") : "engine";
+      return result.kind === "rollout" ? result.reasons.join(" ") : result.input.fieldTurns?.magicRoom ?? "lasts";
     };
-    expect(bridged(1, "sitrusberry")).toMatch(/Magic Room ending this turn is not modelled/);
-    expect(bridged(1, "whiteherb")).toMatch(/Magic Room ending this turn is not modelled/);
-    // More turns left, or only an item whose residual comes before the countdown (Leftovers 5.4): the engine.
-    expect(bridged(2, "sitrusberry")).toBe("engine");
-    expect(bridged(1, "leftovers")).toBe("engine");
-    expect(bridged(null, "sitrusberry")).toBe("engine");
+    expect(bridged(1, "sitrusberry")).toBe(1);
+    expect(bridged(1, "whiteherb")).toBe(1);
+    expect(bridged(2, "sitrusberry")).toBe(2);
+    expect(bridged(1, "leftovers")).toBe(1);
+    expect(bridged(null, "sitrusberry")).toBe("lasts");
   });
 
-  it("splits Protect, sleep and freeze with the simulator's chances (2,000 samples each, ±3 points)", () => {
+  it("Protect's stall roll (now the engine's), sleep and freeze with the simulator's chances (2,000 samples each, ±3 points)", () => {
     const seat = seatBattle([13, 2, 3, 4]);
     seat.step("team 1234", "team 1234");
     // Sleep's counter is drawn by the world (a rebuild per sample); Protect and freeze roll in the battle's PRNG.
@@ -311,25 +321,25 @@ describe("bridge", () => {
       { ...quiet, own: { ...quiet.own, "own-left": { kind: "move", moveId: "partingshot", target: "opponent-right" } } },
       (lines) => lines.some((l) => l.startsWith("|-curestatus|p1a: Incineroar|frz")));
     expect(Math.abs(frozen - thawChance(0, false))).toBeLessThan(0.03);
-    // The engine-side split gives the same weights.
+    // status2 T2: the bridge carries the stall counter (3 after one success), splits.ts no longer forks, and the engine's own
+    // roll gives the simulator's 1/3 (PS/data/conditions.ts stall: randomChance(1, counter)).
     const inputs = seat.inputs();
     inputs.public.mons["p2:gyarados"].protectStreak = 1;
     const belief = buildBeliefBattle(inputs, seat.truthWorld(), runtime);
-    const bridged = bridgeTurn(belief.battle, quiet, { runtime, keys: belief.keys, aiSide: "p2", switched: new Set() });
+    const publicOf = (key: string) => inputs.public.mons[`${key.startsWith("own:") ? "p1" : "p2"}:${key.slice(key.indexOf(":") + 1)}`] ?? null;
+    const bridged = bridgeTurn(belief.battle, quiet, { runtime, keys: belief.keys, aiSide: "p2", switched: new Set(), publicOf });
     expect(bridged.kind).toBe("engine");
     if (bridged.kind !== "engine") return;
-    const publicOf = (key: string) => inputs.public.mons[`${key.startsWith("own:") ? "p1" : "p2"}:${key.slice(key.indexOf(":") + 1)}`] ?? null;
+    const slot = DOUBLES_SLOTS.find((each) => bridged.keys[each] === "opponent:gyarados")!;
+    expect(bridged.input.pokemon[slot]!.carried?.stall).toBe(3);
     const split = splitWorlds(bridged.input, { runtime, slotKeys: bridged.keys, publicOf });
-    expect(split.kind === "worlds" ? split.worlds.map((w) => +w.weight.toFixed(4)) : null).toEqual([0.3333, 0.6667]);
+    expect(split.kind === "worlds" ? split.worlds.map((w) => w.weight) : null).toEqual([1]);
+    const outcomes = calculateDoublesOutcomes(bridged.input);
+    if (outcomes.status !== "ready") throw new Error(outcomes.status);
+    const works = outcomes.outcomes.reduce((sum, outcome) => sum + (outcome.mons[slot]?.protected ? outcome.chance : 0), 0);
+    expect(works).toBeCloseTo(1 / 3, 12);
     // Sleep and freeze are the engine's own BeforeMove now: no split for them.
     expect(SPLITS_BRANCH_SLEEP).toBe(false);
-    // A confused Protect user under Gravity: its failing world (No move, which Gravity stops before confusion) is a rollout.
-    const slot = DOUBLES_SLOTS.find((each) => bridged.keys[each] === "opponent:gyarados")!;
-    const gravity = structuredClone({ ...bridged.input, runtime: undefined }) as unknown as typeof bridged.input;
-    gravity.runtime = bridged.input.runtime;
-    gravity.field = { ...gravity.field, gravity: true };
-    gravity.pokemon[slot] = { ...gravity.pokemon[slot]!, carried: { confusion: { attempts: 0 } } };
-    expect(splitWorlds(gravity, { runtime, slotKeys: bridged.keys, publicOf })).toEqual({ kind: "rollout", reasons: ["Protect under Gravity while confused: its failing world is not modelled."] });
   }, 120_000);
 
   it("runs the prelude for a switch into Intimidate and for Mega Charizard Y's Drought", () => {
@@ -343,9 +353,11 @@ describe("bridge", () => {
     };
     const choices = choicesOf(belief.battle, cell, belief.keys);
     expect(choices).toEqual({ p1: "move 1 mega, move 1", p2: "switch 3, move 4" });
-    const prelude = runPrelude(belief.json, choices, hex(1));
-    expect(prelude.kind).toBe("stopped");
-    if (prelude.kind !== "stopped") return;
+    const preludes = runPreludeWorlds(belief.json, choices, hex(1));
+    expect(preludes.kind).toBe("stopped");
+    if (preludes.kind !== "stopped") return;
+    expect(preludes.worlds.map((world) => world.weight)).toEqual([1]);
+    const prelude = preludes.worlds[0];
     expect(prelude.battle.p2.active[0]!.name).toBe("Gyarados");
     expect(prelude.battle.p1.active[0]!.species.id).toBe("charizardmegay");
     expect(prelude.battle.field.weather).toBe("sunnyday");
@@ -364,5 +376,29 @@ describe("bridge", () => {
     const post = services.rollout(cell, 0, replace);
     expect(post.megaUsed.own).toBe(true);
     expect(post.mons.find((m) => m.key === "own:charizard")?.build.speciesId).toBe("charizardmegay");
+  });
+
+  it("starts a badly poisoned Pokémon's stage again as it switches in at the prelude (review 2 R6-5: pinned tox onSwitchIn)", () => {
+    const seat = seatBattle([17, 2, 3, 4]);
+    seat.step("team 2413", "team 2513");
+    const inputs = seat.inputs();
+    const belief = buildBeliefBattle(inputs, seat.truthWorld(), runtime);
+    const cell: CellActions = {
+      own: { "own-left": { kind: "move", moveId: "heatwave", target: null }, "own-right": { kind: "move", moveId: "earthquake", target: null } },
+      opponent: { "opponent-right": { kind: "switch", to: "gyarados" }, "opponent-left": { kind: "move", moveId: "protect", target: null } },
+    };
+    const preludes = runPreludeWorlds(belief.json, choicesOf(belief.battle, cell, belief.keys), hex(1));
+    if (preludes.kind !== "stopped") throw new Error(preludes.kind);
+    const battle = preludes.worlds[0].battle;
+    const gyarados = battle.p2.active[0]!;
+    gyarados.status = "tox" as never;
+    // The public count is the earlier stint's (the tracker reads the switch later): 2 bad poison turns.
+    const stale = { ...structuredClone(inputs.public.mons["p2:pelipper"]), key: "p2:gyarados", speciesId: "gyarados", status: "tox", statusElapsed: 2, volatiles: [], lastMove: null };
+    const publicOf = (key: string) => (key === "opponent:gyarados" ? stale as never
+      : inputs.public.mons[`${key.startsWith("own:") ? "p1" : "p2"}:${key.slice(key.indexOf(":") + 1)}`] ?? null);
+    const bridged = bridgeTurn(battle, cell, { runtime, keys: belief.keys, aiSide: "p2", switched: new Set(["opponent-right"]), publicOf });
+    if (bridged.kind !== "engine") throw new Error(bridged.reasons.join(" "));
+    expect(bridged.input.pokemon["opponent-right"]).toMatchObject({ switchedIn: true, carried: { toxic: 0 } });
+    expect(calculateDoublesOutcomes(bridged.input).status).not.toBe("issues");
   });
 });

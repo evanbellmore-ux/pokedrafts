@@ -2,12 +2,18 @@ import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import { defaultDoublesTarget, doublesTargetRule } from "@/app/lib/battle/doubles-targets";
 import {
   allyOf, DOUBLES_SLOTS, doublesNames, foesOf, SHOWDOWN_POSITION, slotSide,
-  type DoublesAction, type DoublesCarried, type DoublesPokemonInput, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
+  type DoublesAction, type DoublesCarried, type DoublesPokemonInput, type DoublesSideId, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput,
 } from "@/app/lib/battle/doubles-types";
-import { applyIntimidateToFoes } from "@/app/lib/battle/intimidate";
-import { createBuild, createConditions, getBuildStats, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
+import { NO_TRACE_ABILITIES } from "@/app/lib/battle/imposter";
+import { applyIntimidateToFoes, entryBoosts, intimidatedKey, type EntryBoost, type IntimidateBattle } from "@/app/lib/battle/intimidate";
+import { createBuild, createConditions, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { createMoveSlots, usualAbility, withHiddenPowerIVs } from "@/app/lib/battle/move-defaults";
-import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, MoveContext } from "@/app/lib/battle/types";
+import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, CombatStat, MoveContext } from "@/app/lib/battle/types";
+import {
+  addBenchEntry, afterDoublesAction, aimedAt, applyDoublesEarlier, benchOf, carriedAbilityOn, clearSlotEarlier, isFaintedBuild, NO_BENCH, NO_CARRIED, NO_HISTORY, NO_TURN_EARLIER,
+  mapBenchEntries, reconcileCarried, reconcileEarlier, removeBenchEntry, withBench, withSlotHistory, withTurnEarlier,
+  type DoublesBench, type DoublesBenchEntry, type DoublesSlotHistory, type DoublesTurnEarlier,
+} from "./doubles-inputs";
 import type { CalculatorRosterState } from "./roster-data";
 import {
   activateMoveSlot, dismissMoveReplacement, equipRequiredMove, getMoveOwner, orientField, reconcileRosterSlot, replaceMatchupMove,
@@ -15,6 +21,12 @@ import {
   updateMatchupHP, updateMatchupMoveContext, withPreparedMoves,
   type Combatant, type MoveOwner, type MoveReplacement, type PreparedMatchup, type RosterChoice, type RosterSourceCheck,
 } from "./roster-prep";
+
+// The state-from-earlier-turns logic lives in doubles-inputs.ts (status2 Step 0c); its exports stay importable from here.
+export {
+  benchNamesOf, carriedAbilityOn, carriedIssueTexts, carriedOptions, earlierTurnToggles, isFaintedBuild, NO_BENCH, NO_CARRIED_OPTIONS, reconcileCarried, setDoublesSwitchedIn,
+  sleepTurnsMax, switchedInOptions, type CarriedOptions, type DoublesBench, type DoublesBenchEntry,
+} from "./doubles-inputs";
 
 export type DoublesMatchup = {
   runtime: BattleRuntime;
@@ -32,12 +44,30 @@ export type DoublesMatchup = {
    * (reconcileCarried).
    */
   carried: Record<DoublesSlotId, DoublesCarried>;
+  /**
+   * Its answers about earlier turns that are not carried state (status2 IN §5.4; doubles-inputs DoublesSlotHistory): its
+   * last move and that move's target, the item it used earlier, its types. NO_HISTORY until a control sets one (Step 0c).
+   */
+  history: Record<DoublesSlotId, DoublesSlotHistory>;
+  /** The field's and the sides' answers about earlier turns (status2 IN §5.4; doubles-inputs DoublesTurnEarlier). NO_TURN_EARLIER until a control sets one. */
+  turnEarlier: DoublesTurnEarlier;
+  /**
+   * status2 R-U (IN §5.7): each side's Bench from its roster (in roster order, at most four), the Replacement picked for each
+   * Pokémon that can switch out by its player's choice, and each side's Hazards (doubles-inputs DoublesBench). NO_BENCH until a
+   * control sets one. A game, account or 2v2 Reset gives none; a roster change removes the bench Pokémon it no longer offers
+   * (reconcileDoublesRosters); one put into play leaves the bench (selectDoublesRoster).
+   */
+  bench: DoublesBench;
   /** attackerSide: your side; defenderSide: the opponent's. gameType "Doubles". */
   field: BattleConditions;
   /** The Moves pane: whose moves it lists and which Pokémon its rows are into (never the same slot). */
   moves: { slot: DoublesSlotId; into: DoublesSlotId };
   replacement: MoveReplacement | null;
   replacementSession: number;
+  /**
+   * The last apply action's result (applyDoublesIntimidate: an Intimidate, or the Intimidate a Trace holder copied;
+   * applyDoublesCommander): its Pokémon, its lines, how many times in a row, and the four builds it left.
+   */
   intimidate: { slot: DoublesSlotId; lines: string[]; count: number; builds: Record<DoublesSlotId, BattleBuild> } | null;
 };
 /** CalculatorClient's one useState: an update changes both views consistently. */
@@ -47,7 +77,6 @@ const DEFAULT_SPECIES: Record<DoublesSlotId, string> = {
   "own-left": "charizard", "own-right": "venusaur", "opponent-left": "blastoise", "opponent-right": "pikachu",
 };
 const NO_ACTION: DoublesAction = { moveId: null, target: null };
-const NO_CARRIED: DoublesCarried = {};
 
 function perSlot<T>(value: (slot: DoublesSlotId, index: number) => T): Record<DoublesSlotId, T> {
   return Object.fromEntries(DOUBLES_SLOTS.map((slot, index) => [slot, value(slot, index)])) as Record<DoublesSlotId, T>;
@@ -75,7 +104,8 @@ export function createDoubles(revision = 0, runtime: BattleRuntime = championsRu
   });
   return {
     runtime, revision, notice: "", slots,
-    actions: perSlot(() => NO_ACTION), charged: perSlot(() => false), carried: perSlot(() => NO_CARRIED), field,
+    actions: perSlot(() => NO_ACTION), charged: perSlot(() => false), carried: perSlot(() => NO_CARRIED),
+    history: perSlot(() => NO_HISTORY), turnEarlier: NO_TURN_EARLIER, bench: NO_BENCH, field,
     moves: { slot: "own-left", into: "opponent-left" },
     replacement: null, replacementSession: 0, intimidate: null,
   };
@@ -91,15 +121,7 @@ function freshDoubles(doubles: DoublesMatchup, runtime = doubles.runtime): Doubl
   };
 }
 
-/**
- * In 2v2, current HP 0 is a Pokémon that fainted before the turn with no replacement left (pinned Showdown keeps it in
- * side.active with fainted set, and getAllActive, adjacency and targeting skip it). 1v1 still asks for 1 or more.
- */
-export function isFaintedBuild(build: BattleBuild): boolean {
-  return build.currentHP === 0;
-}
-
-/** The slots whose Pokémon has fainted before the turn. */
+/** The slots whose Pokémon has fainted before the turn (doubles-inputs isFaintedBuild: current HP 0). */
 export function doublesFainted(slots: Record<DoublesSlotId, { build: BattleBuild }>): Record<DoublesSlotId, boolean> {
   return perSlot((slot) => isFaintedBuild(slots[slot].build));
 }
@@ -148,155 +170,63 @@ export function doublesTurnInput(runtime: BattleRuntime, field: BattleConditions
   };
 }
 
-/** The controls of a Pokémon's state from earlier turns that apply to its build (BattleConditions CarriedControl). */
-export type CarriedOptions = {
-  /** Asleep: the most turns it can have lost to sleep (sleepTurnsMax); null otherwise. */
-  sleep: { max: number } | null;
-  /** Champions, Frozen: the most turns it can have lost to freeze (its third turn frozen always thaws it); null otherwise. */
-  freeze: { max: number } | null;
-  /** Badly poisoned: its bad poison turns so far (0–15). */
-  toxic: boolean;
-  /** Confused from an earlier turn, with its turns so far (0–4). */
-  confusion: boolean;
-  /** A Substitute from an earlier turn, at most a quarter of its maximum HP; null when that is below 1. */
-  substitute: { max: number } | null;
-};
-
-/** No controls: a Pokémon that has fainted takes no part in the turn (its state is kept for when its HP comes back). */
-export const NO_CARRIED_OPTIONS: CarriedOptions = { sleep: null, freeze: null, toxic: false, confusion: false, substitute: null };
-
 /**
- * The most turns a sleeping Pokémon can have lost to sleep while it still sleeps: a sleep lasts 2–4 turns (Champions 2–3,
- * PS/data/mods/champions/conditions.ts), Rest's 3 (status-eot SPEC §4.2), and Early Bird counts each turn twice, so its
- * counter must still be above 0 (doubles-turn.ts carriedIssues).
+ * The actions that read their user's own moves (DoublesPokemonInput.moves): Imprison (the moves it stops a foe using,
+ * status-eot SPEC §4.2), Conversion (its first move's type: the first quick move, status2 Q11) and Sleep Talk (the moves
+ * it can call, status2 ADDENDUM2 §2.3 #49).
  */
-export function sleepTurnsMax(build: BattleBuild, runtime: BattleRuntime, rest: boolean): number {
-  const longest = rest || runtime.profile.id === "champions" ? 3 : 4;
-  return Math.floor((longest - 1) / (build.abilityId === "earlybird" ? 2 : 1));
-}
-
-/**
- * The statuses an ability cures on its own holder at every Update (pinned Showdown data/abilities.ts onUpdate of immunity,
- * pastelveil, insomnia, vitalspirit, limber, magmaarmor, waterveil, waterbubble, thermalexchange). The turn's first Update
- * runs after its beforeTurn action, before any Mega Evolution or move (sim/battle.ts runAction, generation 5 on), so such
- * a status never stands into a move and has no turns of its own to count. Own Tempo ends confusion there the same way.
- */
-const START_CURES: Readonly<Record<string, readonly BattleBuild["status"][]>> = {
-  immunity: ["psn", "tox"], pastelveil: ["psn", "tox"], insomnia: ["slp"], vitalspirit: ["slp"], limber: ["par"], magmaarmor: ["frz"],
-  waterveil: ["brn"], waterbubble: ["brn"], thermalexchange: ["brn"],
-};
-
-/**
- * The slot's own ability is in effect as the turn starts: no other Pokémon that has not fainted has Neutralizing Gas, or
- * an Ability Shield keeps it outside Magic Room (calculate.ts settleDoublesStart; pinned Showdown sim/pokemon.ts
- * ignoringAbility). For START_CURES and Own Tempo, none of which Neutralizing Gas spares.
- */
-export function carriedAbilityOn(doubles: Pick<DoublesMatchup, "slots" | "field">, slot: DoublesSlotId): boolean {
-  if (doubles.slots[slot].build.itemId === "abilityshield" && !doubles.field.magicRoom) return true;
-  return !DOUBLES_SLOTS.some((other) => other !== slot && !isFaintedBuild(doubles.slots[other].build) && doubles.slots[other].build.abilityId === "neutralizinggas");
-}
-
-/**
- * The state-from-earlier-turns controls the slot's build can use (status-eot SPEC §5, ADDENDUM §5). `abilityOn`
- * (carriedAbilityOn): its ability is in effect as the turn starts, so a status it cures (START_CURES) and, with Own
- * Tempo, confusion are gone before any move and offer no counts.
- */
-export function carriedOptions(build: BattleBuild, runtime: BattleRuntime, rest: boolean, abilityOn = true): CarriedOptions {
-  const quarter = substituteMax(build, runtime) ?? 0;
-  const status = abilityOn && START_CURES[build.abilityId]?.includes(build.status) ? "" : build.status;
-  return {
-    sleep: status === "slp" ? { max: sleepTurnsMax(build, runtime, rest) } : null,
-    freeze: status === "frz" && runtime.profile.id === "champions" ? { max: 2 } : null,
-    toxic: status === "tox",
-    confusion: !(abilityOn && build.abilityId === "owntempo"),
-    substitute: quarter >= 1 ? { max: quarter } : null,
-  };
-}
-
-/**
- * The most HP a Substitute of its own can have: a quarter of its maximum HP (PS/data/moves.ts substitute: floor(maxhp / 4)),
- * the stored maximum, as a Dynamaxed Pokémon made it before Dynamaxing. Null while the build's stats are not valid.
- */
-function substituteMax(build: BattleBuild, runtime: BattleRuntime): number | null {
-  const stats = getBuildStats(build, runtime);
-  return stats ? Math.floor(stats.hp / 4) : null;
-}
-
-const clamp = (value: number, least: number, most: number) => Math.min(most, Math.max(least, Math.trunc(value)));
-
-/**
- * The slot's carried state for its build: what no longer applies is dropped (turns lost to sleep without Asleep, to freeze
- * outside Champions or without Frozen, bad poison turns without Badly poisoned, a status or confusion its own ability ends
- * as the turn starts while `abilityOn`, a Substitute it cannot have), each count is bounded to what the build allows
- * (CarriedOptions), and a count at 0 is left out (the turn's assumption). The same object when nothing changes.
- */
-export function reconcileCarried(carried: DoublesCarried, build: BattleBuild, runtime: BattleRuntime, abilityOn = true): DoublesCarried {
-  const options = carriedOptions(build, runtime, !!carried.sleep?.rest, abilityOn);
-  const next: DoublesCarried = { ...carried };
-  const set = <K extends keyof DoublesCarried>(key: K, value: DoublesCarried[K] | undefined) => {
-    if (value === undefined) delete next[key];
-    else next[key] = value;
-  };
-  if (carried.sleep) {
-    const attempts = options.sleep ? clamp(carried.sleep.attempts, 0, options.sleep.max) : 0;
-    set("sleep", !options.sleep || (!attempts && !carried.sleep.rest) ? undefined : attempts === carried.sleep.attempts ? carried.sleep : { attempts, rest: carried.sleep.rest });
-  }
-  if (carried.freeze) {
-    const attempts = options.freeze ? clamp(carried.freeze.attempts, 0, options.freeze.max) : 0;
-    set("freeze", !attempts ? undefined : attempts === carried.freeze.attempts ? carried.freeze : { attempts });
-  }
-  if (carried.confusion) {
-    const attempts = clamp(carried.confusion.attempts, 0, 4);
-    if (!options.confusion) set("confusion", undefined);
-    else if (attempts !== carried.confusion.attempts) set("confusion", { ...carried.confusion, attempts });
-  }
-  if (carried.toxic !== undefined) set("toxic", options.toxic ? clamp(carried.toxic, 0, 15) || undefined : undefined);
-  // A build being edited (its stats not valid yet) keeps its Substitute as it is.
-  if (carried.substitute !== undefined) {
-    const most = substituteMax(build, runtime);
-    if (most !== null) set("substitute", most >= 1 ? clamp(carried.substitute, 1, most) : undefined);
-  }
-  const keys = Object.keys(next) as (keyof DoublesCarried)[];
-  const same = keys.length === Object.keys(carried).length && keys.every((key) => next[key] === carried[key]);
-  return same ? carried : keys.length ? next : NO_CARRIED;
-}
-
-/** The turn's input issue fields (doubles-turn.ts carriedIssues) of the calculator's state-from-earlier-turns controls. */
-const CARRIED_ISSUE_FIELDS: Readonly<Record<string, keyof CarriedOptions>> = {
-  "carried.sleep": "sleep", "carried.freeze": "freeze", "carried.confusion": "confusion", "carried.toxic": "toxic", "carried.substitute": "substitute",
-};
-
-/**
- * The turn's input issues of one Pokémon (DoublesIssues.pokemon[slot]) that its state-from-earlier-turns controls show,
- * by control: "Garchomp: it cannot have lost 3 turns to sleep."
- */
-export function carriedIssueTexts(issues: readonly BuildIssue[] | undefined, name: string): Partial<Record<keyof CarriedOptions, string>> {
-  const out: Partial<Record<keyof CarriedOptions, string>> = {};
-  for (const issue of issues ?? []) {
-    const key = CARRIED_ISSUE_FIELDS[issue.field];
-    if (key) out[key] = out[key] ? `${out[key]} ${name}: ${issue.message}` : `${name}: ${issue.message}`;
-  }
-  return out;
-}
+const MOVES_READERS = new Set(["imprison", "conversion", "sleeptalk"]);
 
 /**
  * One slot's turn input: its build, move contexts, Charge and action, its state from earlier turns when it has any, and
- * its moves when it uses Imprison (the quick moves and the chosen move: the one reader of them, status-eot SPEC §4.2), so
- * every other turn's input is what it was before. No last move: the calculator does not know it.
+ * its moves when its action reads them (MOVES_READERS: its quick moves in slot order, then its chosen move when that is
+ * not one of them), so every other turn's input is what it was before. Its history answers (`history`: its last move, the
+ * item it used earlier, its types) through doubles-inputs withSlotHistory.
  */
-export function doublesSlotInput(combatant: Pick<Combatant, "build" | "contexts" | "moves">, charged: boolean, action: DoublesAction, carried: DoublesCarried): DoublesPokemonInput {
+export function doublesSlotInput(combatant: Pick<Combatant, "build" | "contexts" | "moves">, charged: boolean, action: DoublesAction, carried: DoublesCarried, history: DoublesSlotHistory = NO_HISTORY,
+  read = false): DoublesPokemonInput {
   const { build, contexts } = combatant;
-  const moves = action.moveId === "imprison"
-    ? [...new Set([...combatant.moves.flatMap((prepared) => prepared.moveId ? [prepared.moveId] : []), action.moveId])] : null;
-  return { build, contexts, charged, action, ...(Object.keys(carried).length ? { carried } : {}), ...(moves ? { moves } : {}) };
+  const moves = (action.moveId !== null && MOVES_READERS.has(action.moveId)) || read
+    ? [...new Set([...combatant.moves.flatMap((prepared) => prepared.moveId ? [prepared.moveId] : []), ...(action.moveId !== null ? [action.moveId] : [])])] : null;
+  return withSlotHistory({ build, contexts, charged, action, ...(Object.keys(carried).length ? { carried } : {}), ...(moves ? { moves } : {}) }, history);
 }
+
+/**
+ * Review 2 (R6-2; round 2, R6-r2-1, -4): the slots whose moves another Pokémon's action reads (doublesSlotInput's `read`; their
+ * own MOVES_READERS action aside): Assist's partner (PS/data/moves.ts assist: each other party member's moveSlots); a Snatch or
+ * Copycat user where Conversion or Imprison may be used this turn (an action, a last move, the battle's last move), and every
+ * Assist user (a called one is its user's: conversion onHit reads moveSlots[0], imprison's condition its source's moveSlots;
+ * Imprison has the snatch flag and neither failcopycat nor noassist); an Instruct target whose last move is one of
+ * MOVES_READERS (instruct re-runs lastMove), the Instruct aimed at it as the turn's input aims it (aimedAt: a fainted target's
+ * retarget; `fainted`, the slots fainted before the turn).
+ */
+export function movesRead(actions: Record<DoublesSlotId, DoublesAction>, history: Partial<Record<DoublesSlotId, DoublesSlotHistory>>, battleLastMove?: string | null,
+  fainted: Record<DoublesSlotId, boolean> = perSlot(() => false)): Record<DoublesSlotId, boolean> {
+  const used = (slot: DoublesSlotId) => actions[slot].moveId;
+  const reads = (id: unknown) => typeof id === "string" && SELF_READERS.has(id);
+  const called = reads(battleLastMove) || DOUBLES_SLOTS.some((slot) => reads(used(slot)) || reads(history[slot]?.lastMove));
+  return perSlot((slot) => {
+    if (used(allyOf(slot)) === "assist" || used(slot) === "assist") return true;
+    if ((used(slot) === "snatch" || used(slot) === "copycat") && called) return true;
+    const last = history[slot]?.lastMove;
+    return typeof last === "string" && MOVES_READERS.has(last)
+      && DOUBLES_SLOTS.some((other) => other !== slot && used(other) === "instruct" && (aimedAt(actions, fainted, other) === slot || actions[other].target === null));
+  });
+}
+/** The moves that read their user's own moves when another move calls them (conversion: moveSlots[0]; imprison: its source's moveSlots). */
+const SELF_READERS: ReadonlySet<string> = new Set(["conversion", "imprison"]);
 
 function slotInputs(doubles: DoublesMatchup): Record<DoublesSlotId, DoublesPokemonInput> {
-  return perSlot((slot) => doublesSlotInput(doubles.slots[slot], doubles.charged[slot], doubles.actions[slot], doubles.carried[slot]));
+  const read = movesRead(doubles.actions, doubles.history, doubles.turnEarlier?.battleLastMove, doublesFainted(doubles.slots));
+  return perSlot((slot) => doublesSlotInput(doubles.slots[slot], doubles.charged[slot], doubles.actions[slot], doubles.carried[slot], doubles.history[slot], read[slot]));
 }
 
+/**
+ * The 2v2 turn's input (doublesTurnInput over the four slots), with the field's and the sides' answers about earlier turns
+ * (doubles-inputs withTurnEarlier) and the Bench, Replacement picks and Hazards (status2 R-U: doubles-inputs withBench).
+ */
 export function getDoublesTurnInput(doubles: DoublesMatchup): DoublesTurnInput {
-  return doublesTurnInput(doubles.runtime, doubles.field, slotInputs(doubles));
+  return withBench(withTurnEarlier(doublesTurnInput(doubles.runtime, doubles.field, slotInputs(doubles)), doubles.turnEarlier), doubles.bench);
 }
 
 /** The slot's action in the turn (doublesTurnInput); No move for a fainted slot. */
@@ -400,13 +330,21 @@ function onSlot(state: CalculatorState, slot: DoublesSlotId, run: (pair: Prepare
     actions: moveId === action.moveId ? doubles.actions : { ...doubles.actions, [slot]: moveId === null ? NO_ACTION : { moveId, target: action.target } },
     charged: anotherPokemon && doubles.charged[slot] ? { ...doubles.charged, [slot]: false } : doubles.charged,
     carried: anotherPokemon ? withCarried(doubles, slot, NO_CARRIED) : doubles.carried,
+    // Its answers about earlier turns are the old Pokémon's (status2 IN §5.4): its history clears and it leaves the entry order.
+    history: anotherPokemon ? withHistory(doubles, slot, NO_HISTORY) : doubles.history,
+    turnEarlier: anotherPokemon ? withoutEntered(doubles.turnEarlier, slot) : doubles.turnEarlier,
     replacement: owned(doubles.replacement) || owned(next.replacement) ? next.replacement : doubles.replacement,
     replacementSession: next.replacementSession,
   };
+  // status2 (integration 1a, NU's rules: IN §5.4): another Pokémon also ends the states that name this one as their source
+  // (clearSlotEarlier); a changed action drops its action-bound states and ends Switched in (afterDoublesAction); every
+  // build change reconciles the history answers (reconcileEarlier: types of another species, a trap's source item).
+  const cleared = anotherPokemon ? clearSlotEarlier(updated, slot) : updated;
+  const acted = cleared.actions[slot].moveId !== action.moveId ? afterDoublesAction(cleared, slot) : cleared;
   return {
     matchup: next.cache === matchup.cache ? matchup : { ...matchup, cache: next.cache },
     // Every slot: this one's build, or a Neutralizing Gas it gains, loses or faints with, changes what the others carry.
-    doubles: livingPane(retarget(reconcileAllCarried(updated), slot)),
+    doubles: livingPane(retarget(reconcileAllCarried(reconcileEarlier(acted)), slot)),
   };
 }
 
@@ -433,7 +371,36 @@ export function doublesRosterDisabled(doubles: DoublesMatchup, slot: DoublesSlot
 export function selectDoublesRoster(state: CalculatorState, key: number, choice: RosterChoice): CalculatorState {
   const slot = slotByKey(state.doubles, key);
   if (!slot || doublesRosterDisabled(state.doubles, slot, choice)) return state;
-  return onSlot(state, slot, (pair) => selectRosterPokemon(pair, "attacker", choice, namesOf(state.doubles)[slot]));
+  const next = onSlot(state, slot, (pair) => selectRosterPokemon(pair, "attacker", choice, namesOf(state.doubles)[slot]));
+  // status2 R-U (IN §5.7): a bench Pokémon put into play leaves its side's bench.
+  const side = slotSide(slot);
+  const source = next.doubles.slots[slot].source;
+  if (!source || !benchOf(next.doubles)[side].some((entry) => entry.key === source.key)) return next;
+  const left = applyDoublesEarlier(next, removeBenchEntry(side, source.key));
+  return withDoubles(left, { ...left.doubles, notice: `${left.doubles.notice} ${choice.name} is no longer on the bench.`.trim() });
+}
+
+/**
+ * status2 R-U (IN §5.7): adds a roster entry of `side` to its Bench, prepared as a roster pick is (roster-prep
+ * selectRosterPokemon: the shared cache's session build, else the imported set or the default build), without storing it in the
+ * cache: at its place in `roster`'s order (the side's roster panel's choices), unless the bench holds four, the entry is on the
+ * bench already or in play on its side.
+ */
+export function addDoublesBench(state: CalculatorState, side: DoublesSideId, choice: RosterChoice, roster: readonly RosterChoice[]): CalculatorState {
+  const { doubles, matchup } = state;
+  const source = choice.source;
+  if (!source) return state;
+  const [first] = DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side);
+  // A stand-in of the side's role with no source: selectRosterPokemon prepares the entry as it would for a slot.
+  const stand: Combatant = { ...doubles.slots[first], source: null };
+  const pair: PreparedMatchup = { ...matchup, attacker: stand, field: doubles.field };
+  const prepared = selectRosterPokemon(pair, "attacker", choice);
+  if (prepared === pair || prepared.attacker.source?.key !== source.key) return state;
+  const entry: DoublesBenchEntry = {
+    key: source.key, source, base: prepared.attacker.build,
+    moves: prepared.attacker.moves.flatMap((move) => move.moveId ? [move.moveId] : []),
+  };
+  return applyDoublesEarlier(state, addBenchEntry(side, entry, roster.flatMap((each) => each.source ? [each.source.key] : [])));
 }
 
 export function updateDoublesBuild(state: CalculatorState, key: number, build: BattleBuild): CalculatorState {
@@ -497,7 +464,10 @@ export function dismissDoublesReplacement(state: CalculatorState, replacement: M
 /** A Moves-pane row or No move (null). The move must be one the Pokémon learns (roster-prep selectMatchupMove). */
 export function chooseDoublesMove(state: CalculatorState, owner: MoveOwner, moveId: string | null): CalculatorState {
   const slot = slotByOwner(state.doubles, owner);
-  return slot ? onSlot(state, slot, (pair) => selectMatchupMove(pair, moveId, owner)) : state;
+  if (!slot) return state;
+  const next = onSlot(state, slot, (pair) => selectMatchupMove(pair, moveId, owner));
+  // Choosing a move, No move included, ends Switched in (status2 NU: doubles-inputs afterDoublesAction).
+  return withDoubles(next, afterDoublesAction(next.doubles, slot));
 }
 
 /** Only an option of the move's "choose" rule; the Moves pane follows while it shows this slot. */
@@ -544,9 +514,72 @@ export function setDoublesMovesInto(state: CalculatorState, into: DoublesSlotId)
 export function setDoublesField(state: CalculatorState, revision: number, field: BattleConditions): CalculatorState {
   if (state.doubles.revision !== revision) return state;
   // Magic Room switches Ability Shield off, which lets a Neutralizing Gas reach a curing ability (carriedAbilityOn).
-  let doubles: DoublesMatchup = reconcileAllCarried({ ...state.doubles, field: { ...field, gameType: "Doubles" } });
+  const next: BattleConditions = { ...field, gameType: "Doubles" };
+  let doubles: DoublesMatchup = reconcileAllCarried({ ...state.doubles, field: next, turnEarlier: earlierForField(state.doubles.turnEarlier, next) });
   for (const slot of DOUBLES_SLOTS) doubles = retarget(doubles, slot);
   return withDoubles(state, doubles);
+}
+
+/** The weathers no countdown ends (pinned Showdown: Desolate Land, Primordial Sea and Delta Stream last while their holder does). */
+const STRONG_WEATHERS = new Set<BattleConditions["weather"]>(["Harsh Sunshine", "Heavy Rain", "Strong Winds"]);
+
+/**
+ * The field's answers about earlier turns for a new field (status2 IN §5.4): each "ends this turn" answer goes once its
+ * effect is off (the weather also once it is a strong one, which never runs out). The same object when nothing goes.
+ */
+function earlierForField(earlier: DoublesTurnEarlier, field: BattleConditions): DoublesTurnEarlier {
+  const off = {
+    weatherEnds: !field.weather || STRONG_WEATHERS.has(field.weather), terrainEnds: !field.terrain, gravityEnds: !field.gravity, magicRoomEnds: !field.magicRoom,
+  } as const;
+  const gone = (Object.keys(off) as (keyof typeof off)[]).filter((key) => earlier[key] && off[key]);
+  if (!gone.length) return earlier;
+  const next = { ...earlier };
+  for (const key of gone) delete next[key];
+  return Object.keys(next).length ? next : NO_TURN_EARLIER;
+}
+
+/** `doubles.history` with the slot's set to `history`: the same record when it is unchanged. */
+function withHistory(doubles: DoublesMatchup, slot: DoublesSlotId, history: DoublesSlotHistory): Record<DoublesSlotId, DoublesSlotHistory> {
+  return doubles.history[slot] === history ? doubles.history : { ...doubles.history, [slot]: history };
+}
+
+/** The field's answers without the slot in the entry order (another Pokémon came into it): the same object when it was not there. */
+function withoutEntered(earlier: DoublesTurnEarlier, slot: DoublesSlotId): DoublesTurnEarlier {
+  if (earlier.entered?.[slot] === undefined) return earlier;
+  const entered = { ...earlier.entered };
+  delete entered[slot];
+  const next: DoublesTurnEarlier = { ...earlier, entered };
+  if (!Object.keys(entered).length) delete next.entered;
+  return Object.keys(next).length ? next : NO_TURN_EARLIER;
+}
+
+/**
+ * The slot's answers about earlier turns that are not carried state (doubles-inputs DoublesSlotHistory: its last move and
+ * that move's target, the item it used earlier, its types), as EarlierTurnFields' controls set them. The same state when
+ * they are unchanged; an empty answer is NO_HISTORY.
+ */
+export function setDoublesHistory(state: CalculatorState, key: number, history: DoublesSlotHistory): CalculatorState {
+  const { doubles } = state;
+  const slot = slotByKey(doubles, key);
+  if (!slot) return state;
+  const next = Object.keys(history).length ? history : NO_HISTORY;
+  const current = doubles.history[slot];
+  if (next === current || JSON.stringify(next) === JSON.stringify(current)) return state;
+  return withDoubles(state, { ...doubles, history: withHistory(doubles, slot, next) });
+}
+
+/**
+ * The field's and the sides' answers about earlier turns (doubles-inputs DoublesTurnEarlier), as EarlierTurnFields' controls
+ * set them, for the 2v2 `revision` they were made in; an "ends this turn" answer whose effect is off is dropped
+ * (earlierForField). The same state when they are unchanged.
+ */
+export function setDoublesTurnEarlier(state: CalculatorState, revision: number, earlier: DoublesTurnEarlier): CalculatorState {
+  const { doubles } = state;
+  if (doubles.revision !== revision) return state;
+  const bounded = earlierForField(earlier, doubles.field);
+  const next = Object.keys(bounded).length ? bounded : NO_TURN_EARLIER;
+  if (next === doubles.turnEarlier || JSON.stringify(next) === JSON.stringify(doubles.turnEarlier)) return state;
+  return withDoubles(state, { ...doubles, turnEarlier: next });
 }
 
 export function setDoublesCharged(state: CalculatorState, key: number, charged: boolean): CalculatorState {
@@ -604,34 +637,233 @@ export function intimidateFoes(doubles: DoublesMatchup, slot: DoublesSlotId): Do
  * Showdown's adjacentFoes() order: foe position 0, then 1 (sim/pokemon.ts:732-735, sim/side.ts:397-403), so
  * opponent-right (p2a) first for your Pokémon and own-left (p1a) first for theirs. Each Pokémon is named in the lines
  * by its doublesNames name. Every build it reads keeps the result. A fainted foe is skipped, and a fainted Pokémon
- * intimidates no one (intimidateFoes).
+ * intimidates no one (intimidateFoes). A Trace holder whose Trace copies Intimidate as it comes in (traceCopiesIntimidate)
+ * uses it the same way, keeps Trace, and stores the foes that took it (copiedIntimidateStored: their intimidatedKey, in
+ * that order, joined by ",").
  */
 export function applyDoublesIntimidate(state: CalculatorState, key: number): CalculatorState {
   const { doubles } = state;
   const slot = slotByKey(doubles, key);
-  if (!slot || doubles.slots[slot].build.abilityId !== "intimidate") return state;
+  if (!slot) return state;
+  const holder = doubles.slots[slot].build;
+  const traced = holder.abilityId !== "intimidate" && traceCopiesIntimidate(doubles, slot);
+  if (holder.abilityId !== "intimidate" && !traced) return state;
   const foes = intimidateFoes(doubles, slot);
   if (!foes.length) return state;
   const { field } = doubles;
-  const tailwind = (entry: DoublesSlotId) => (slotSide(entry) === "own" ? field.attackerSide : field.defenderSide).tailwind;
   const names = namesOf(doubles);
-  const result = applyIntimidateToFoes(doubles.slots[slot].build, foes.map((foe) => ({
-    build: doubles.slots[foe].build, tailwind: tailwind(foe), name: names[foe],
+  const result = applyIntimidateToFoes(traced ? { ...holder, abilityId: "intimidate" } : holder, foes.map((foe) => ({
+    build: doubles.slots[foe].build, tailwind: sideTailwind(field, foe), name: names[foe],
   })), {
     magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles",
-    sourceTailwind: tailwind(slot), sourceName: names[slot],
+    sourceTailwind: sideTailwind(field, slot), sourceName: names[slot],
   }, doubles.runtime);
-  const store = (current: CalculatorState, entry: DoublesSlotId, build: BattleBuild) => onSlot(current, entry, (pair) => updateMatchupBuild(pair, "attacker", build));
-  let next = store(state, slot, result.source);
-  foes.forEach((foe, index) => { next = store(next, foe, result.foes[index]); });
-  const again = doubles.intimidate?.slot === slot && isIntimidateCurrent(doubles, doubles.intimidate);
+  // A Trace holder keeps Trace; the drops it stored are marked with the foes that took them (copiedIntimidateStored),
+  // so a calculation that applies a copied Intimidate itself leaves them out.
+  const source = traced
+    ? { ...result.source, abilityId: holder.abilityId, copiedIntimidateStored: foes.map((foe) => intimidatedKey(doubles.slots[foe].build, doubles.runtime)).join(",") }
+    : result.source;
+  const lines = traced ? [`${names[slot]}'s Intimidate (copied by Trace):`, ...result.lines.slice(1)] : result.lines;
+  let next = storeBuild(state, slot, source);
+  foes.forEach((foe, index) => { next = storeBuild(next, foe, result.foes[index]); });
+  // Review 2 (R6-6): the source's partner, a foe of each target, copies the targets' rises (Defiant, Competitive, Rattled,
+  // Guard Dog, an Adrenaline Orb, a Contrary drop) at the switch-in (−3): its Opportunist and its Mirror Herb, as Commander's.
+  const partner = allyOf(slot);
+  if (Object.keys(result.rises).length && !isFaintedBuild(doubles.slots[partner].build)) {
+    const copied = copyRises(doubles, partner, foes[0], result.rises, lines);
+    if (copied) next = storeBuild(next, partner, copied);
+  }
+  return withApplied(next, doubles, slot, lines);
+}
+
+/**
+ * `copier`'s copies of its foes' rises at a switch-in (priority −3): its Opportunist (data/abilities.ts opportunist
+ * onFoeAfterBoost, onAnySwitchIn; in effect: carriedAbilityOn) and its Mirror Herb (data/items.ts mirrorherb; not under Magic
+ * Room or Klutz; used up, which starts an Unburden), each through its own boost() (selfSideBoost). Its build after them, or
+ * null with neither. `foe`: a foe of the copier for its entry boosts (staging).
+ */
+function copyRises(doubles: DoublesMatchup, copier: DoublesSlotId, foe: DoublesSlotId, rises: Partial<Record<CombatStat, number>>, lines: string[]): BattleBuild | null {
+  const { field, runtime } = doubles;
+  const names = namesOf(doubles);
+  const build = doubles.slots[copier].build;
+  const opportunist = build.abilityId === "opportunist" && carriedAbilityOn(doubles, copier);
+  const herb = build.itemId === "mirrorherb" && !field.magicRoom && build.abilityId !== "klutz";
+  if (!opportunist && !herb) return null;
+  const battle: IntimidateBattle = { magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles" };
+  const m = staging(build, names[copier], doubles.slots[foe].build, sideTailwind(field, copier), sideTailwind(field, foe), battle, runtime);
+  if (opportunist) {
+    lines.push(`${names[copier]}'s Opportunist copies the rises.`);
+    selfSideBoost(m, rises, lines);
+  }
+  if (herb) {
+    lines.push(`${names[copier]}'s Mirror Herb copies the rises (used up).`);
+    selfSideBoost(m, rises, lines);
+    if (build.abilityId === "unburden") lines.push(`${names[copier]}'s Unburden activates.`);
+  }
+  return stagedBuild(m, herb ? "" : build.itemId);
+}
+
+const storeBuild = (current: CalculatorState, slot: DoublesSlotId, build: BattleBuild) => onSlot(current, slot, (pair) => updateMatchupBuild(pair, "attacker", build));
+
+/** Tailwind on the slot's side (Wind Rider's entry boost). */
+function sideTailwind(field: BattleConditions, slot: DoublesSlotId): boolean {
+  return (slotSide(slot) === "own" ? field.attackerSide : field.defenderSide).tailwind;
+}
+
+/** The apply action's result stored for the slot's button (DoublesMatchup.intimidate), counting a press in a row. */
+function withApplied(next: CalculatorState, before: DoublesMatchup, slot: DoublesSlotId, lines: string[]): CalculatorState {
+  const again = before.intimidate?.slot === slot && isIntimidateCurrent(before, before.intimidate);
   return withDoubles(next, {
     ...next.doubles, notice: "",
-    intimidate: { slot, lines: result.lines, count: again ? doubles.intimidate!.count + 1 : 1, builds: builds(next.doubles) },
+    intimidate: { slot, lines, count: again ? before.intimidate!.count + 1 : 1, builds: builds(next.doubles) },
   });
 }
 
-/** The text under the slot's Intimidate button, while nothing has changed any of the four builds since. */
+/**
+ * The slot's Trace copies Intimidate as it comes in (pinned Showdown data/abilities.ts trace onStart and onUpdate; the 2v2
+ * settle's rule, doubles-start.ts settleDoublesStart): it has Trace, not under its own Ability Shield (outside Magic Room,
+ * which stops Trace) nor another Pokémon's Neutralizing Gas (carriedAbilityOn), and the ability it copies is Intimidate:
+ * the one chosen in Build settings (`tracedAbility`), else the one ability all of its living foes that Trace can copy
+ * share. Foes with different abilities make the copy random: no copy is known.
+ */
+export function traceCopiesIntimidate(doubles: DoublesMatchup, slot: DoublesSlotId): boolean {
+  const build = doubles.slots[slot].build;
+  if (build.abilityId !== "trace" || isFaintedBuild(build) || build.transformedFrom) return false;
+  if (build.itemId === "abilityshield" && !doubles.field.magicRoom) return false;
+  if (!carriedAbilityOn(doubles, slot)) return false;
+  if (build.tracedAbility) return build.tracedAbility === "intimidate";
+  const copyable = intimidateFoes(doubles, slot).map((foe) => doubles.slots[foe].build.abilityId).filter((ability) => !NO_TRACE_ABILITIES.has(ability));
+  return copyable.length > 0 && copyable.every((ability) => ability === "intimidate");
+}
+
+const STAGE_NAMES: Record<CombatStat, string> = { atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed" };
+const COMBAT_STATS: readonly CombatStat[] = ["atk", "def", "spa", "spd", "spe"];
+const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
+
+/**
+ * The Dondozo the slot's Tatsugiri goes inside as they come in (pinned Showdown data/abilities.ts commander onUpdate; Scarlet
+ * and Violet only): a Tatsugiri (any form) whose Commander is in effect (carriedAbilityOn: no other Pokémon's Neutralizing
+ * Gas, or its Ability Shield outside Magic Room; the gas comes out first at the lead), not transformed, beside a Dondozo
+ * that has not fainted, with a living foe for the boost (sim/battle.ts boost: foePokemonLeft). Null otherwise.
+ */
+export function commanderAlly(doubles: DoublesMatchup, slot: DoublesSlotId): DoublesSlotId | null {
+  const { runtime } = doubles;
+  const build = doubles.slots[slot].build;
+  const ally = allyOf(slot);
+  const allyBuild = doubles.slots[ally].build;
+  const base = (entry: BattleBuild) => runtime.speciesById.get(entry.speciesId)?.baseSpecies ?? entry.speciesId;
+  if (build.abilityId !== "commander" || isFaintedBuild(build) || build.transformedFrom || base(build) !== "tatsugiri") return null;
+  if (isFaintedBuild(allyBuild) || allyBuild.transformedFrom || base(allyBuild) !== "dondozo") return null;
+  if (!carriedAbilityOn(doubles, slot) || !intimidateFoes(doubles, ally).length) return null;
+  return ally;
+}
+
+/** A Pokémon's stages as a boost() meets them: its stored stages and the entry boosts the engine adds at calculation (intimidate.ts entryBoosts). */
+type Staging = { build: BattleBuild; name: string; entry: EntryBoost[]; start: Record<CombatStat, number>; boosts: Record<CombatStat, number> };
+
+function staging(build: BattleBuild, name: string, foe: BattleBuild, tailwind: boolean, foeTailwind: boolean, battle: IntimidateBattle, runtime: BattleRuntime): Staging {
+  const entry = entryBoosts(build, foe, entryBoosts(foe, build, null, foeTailwind, battle, runtime), tailwind, battle, runtime);
+  const boosts = Object.fromEntries(COMBAT_STATS.map((stat) => [stat,
+    clampStage((build.boosts[stat] ?? 0) + entry.filter((boost) => boost.stat === stat).reduce((sum, boost) => sum + boost.amount, 0))])) as Record<CombatStat, number>;
+  return { build, name, entry, start: { ...boosts }, boosts };
+}
+
+/**
+ * boost() on one Pokémon from its own side (pinned Showdown sim/battle.ts boost: ChangeBoost for Contrary and Simple, the
+ * stage cap; TryBoost stops only drops another Pokémon causes, and AfterEachBoost's Defiant and Competitive only those).
+ * Pushes "Dondozo's Attack, Defense, Sp. Atk, Sp. Def and Speed rise to +2." and returns the changes after the cap (the
+ * table AfterBoost passes to a foe's Opportunist and Mirror Herb).
+ */
+function selfSideBoost(m: Staging, input: Partial<Record<CombatStat, number>>, lines: string[]): Partial<Record<CombatStat, number>> {
+  const ability = m.build.abilityId;
+  const change: Partial<Record<CombatStat, number>> = {};
+  for (const stat of COMBAT_STATS) {
+    if (input[stat] === undefined) continue;
+    const amount = ability === "contrary" ? -input[stat]! : ability === "simple" ? input[stat]! * 2 : input[stat]!;
+    change[stat] = clampStage(m.boosts[stat] + amount) - m.boosts[stat];
+  }
+  // One line per run of stats that end the same way, in stat order.
+  const groups: { stats: CombatStat[]; words: string }[] = [];
+  for (const stat of COMBAT_STATS) {
+    if (change[stat] === undefined) continue;
+    const before = m.boosts[stat];
+    m.boosts[stat] = clampStage(before + change[stat]!);
+    const raised = (input[stat] ?? 0) * (ability === "contrary" ? -1 : 1) > 0;
+    const words = change[stat] === 0 ? (raised ? "won't go higher" : "won't go lower")
+      : `${change[stat]! > 0 ? "rise" : "fall"} to ${m.boosts[stat] > 0 ? "+" : ""}${m.boosts[stat]}`;
+    const last = groups.at(-1);
+    if (last && last.words === words) last.stats.push(stat);
+    else groups.push({ stats: [stat], words });
+  }
+  for (const { stats, words } of groups) {
+    const list = stats.map((stat) => STAGE_NAMES[stat]);
+    const named = list.length <= 2 ? list.join(" and ") : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
+    // "rise to" / "won't go higher" for several stats; "rises to" / "won't go higher" for one.
+    const verb = stats.length > 1 ? words : words.replace(/^(rise|fall) /, "$1s ");
+    lines.push(`${m.name}'s ${named} ${verb}.`);
+  }
+  return change;
+}
+
+/** The stored stages after boost() (as intimidate.ts finish does): an unchanged stage keeps its stored value; a changed one leaves out the entry boosts. */
+function stagedBuild(m: Staging, item = m.build.itemId): BattleBuild {
+  const bonus = (stat: CombatStat) => m.entry.filter((entry) => entry.stat === stat).reduce((sum, entry) => sum + entry.amount, 0);
+  const consumed = item !== m.build.itemId;
+  return {
+    ...m.build, itemId: item,
+    boosts: Object.fromEntries(COMBAT_STATS.map((stat) => [stat, m.boosts[stat] === m.start[stat] ? m.build.boosts[stat] ?? 0 : clampStage(m.boosts[stat] - bonus(stat))])) as BattleBuild["boosts"],
+    ...(consumed && m.build.abilityId === "unburden" ? { abilityActive: true } : {}),
+  };
+}
+
+/**
+ * Commander as Tatsugiri and Dondozo come in (pinned Showdown data/abilities.ts commander; data/conditions.ts commanded
+ * onStart: boost({ atk: 2, spa: 2, spe: 2, def: 2, spd: 2 }) on Dondozo from Tatsugiri), through boost()'s rules
+ * (selfSideBoost), into Dondozo's stored stages. Each of Dondozo's living foes then copies the rises at the lead's
+ * switch-in (priority −3): its Opportunist (onFoeAfterBoost; in effect: carriedAbilityOn) and its Mirror Herb (not under
+ * Magic Room or Klutz; used up, which starts an Unburden), each through its own boost(). The copies are not copied again.
+ * Every build it changes keeps the result; the lines show under the slot's button (doublesIntimidateResult).
+ */
+export function applyDoublesCommander(state: CalculatorState, key: number): CalculatorState {
+  const { doubles } = state;
+  const slot = slotByKey(doubles, key);
+  const dondozo = slot ? commanderAlly(doubles, slot) : null;
+  if (!slot || !dondozo) return state;
+  const { field, runtime } = doubles;
+  const names = namesOf(doubles);
+  const battle: IntimidateBattle = { magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles" };
+  const foes = intimidateFoes(doubles, dondozo);
+  const across = (entry: DoublesSlotId, others: DoublesSlotId[]) => doubles.slots[others[0] ?? entry].build;
+  const target = staging(doubles.slots[dondozo].build, names[dondozo], across(dondozo, foes), sideTailwind(field, dondozo), sideTailwind(field, foes[0] ?? dondozo), battle, runtime);
+  const lines = [`${names[slot]}'s Commander:`];
+  const rises = selfSideBoost(target, { atk: 2, def: 2, spa: 2, spd: 2, spe: 2 }, lines);
+  const copied = Object.fromEntries(COMBAT_STATS.filter((stat) => (rises[stat] ?? 0) > 0).map((stat) => [stat, rises[stat]!])) as Partial<Record<CombatStat, number>>;
+  const changed: [DoublesSlotId, BattleBuild][] = [[dondozo, stagedBuild(target)]];
+  if (Object.keys(copied).length) {
+    for (const foe of foes) {
+      const build = doubles.slots[foe].build;
+      const opportunist = build.abilityId === "opportunist" && carriedAbilityOn(doubles, foe);
+      const herb = build.itemId === "mirrorherb" && !field.magicRoom && build.abilityId !== "klutz";
+      if (!opportunist && !herb) continue;
+      const copier = staging(build, names[foe], doubles.slots[dondozo].build, sideTailwind(field, foe), sideTailwind(field, dondozo), battle, runtime);
+      if (opportunist) {
+        lines.push(`${names[foe]}'s Opportunist copies the rises.`);
+        selfSideBoost(copier, copied, lines);
+      }
+      if (herb) {
+        lines.push(`${names[foe]}'s Mirror Herb copies the rises (used up).`);
+        selfSideBoost(copier, copied, lines);
+        if (build.abilityId === "unburden") lines.push(`${names[foe]}'s Unburden activates.`);
+      }
+      changed.push([foe, stagedBuild(copier, herb ? "" : build.itemId)]);
+    }
+  }
+  let next = state;
+  for (const [entry, build] of changed) next = storeBuild(next, entry, build);
+  return withApplied(next, doubles, slot, lines);
+}
+
+/** The text under the slot's apply button (Intimidate, Trace's Intimidate, Commander), while nothing has changed any of the four builds since. */
 export function doublesIntimidateResult(doubles: DoublesMatchup, slot: DoublesSlotId): string | null {
   const last = doubles.intimidate;
   if (!last || last.slot !== slot || !isIntimidateCurrent(doubles, last)) return null;
@@ -643,7 +875,8 @@ const UNCHECKED: Pick<RosterSourceCheck, "checkedTeams" | "validSources"> = { ch
 /**
  * Detaches every slot whose roster source the 1v1 matchup's team sources and selection no longer offer (roster-prep
  * reconcileRosterSlot; with a roster snapshot, also the entries it no longer lists) and renames renamed ones. A detached
- * slot keeps its build as a manual one, and its contexts and action clear; the other slots keep theirs.
+ * slot keeps its build as a manual one, and its contexts and action clear; the other slots keep theirs. status2 R-U: the bench
+ * Pokémon whose roster entry is no longer offered leave the bench (their Replacement picks and a landing from them with them).
  */
 export function reconcileDoublesRosters(doubles: DoublesMatchup, matchup: PreparedMatchup, rosters?: CalculatorRosterState): DoublesMatchup {
   const snapshot = rosters ? rosterSourceCheck(matchup, rosters) : null;
@@ -665,7 +898,12 @@ export function reconcileDoublesRosters(doubles: DoublesMatchup, matchup: Prepar
       replacement: next.replacement?.owner.key === combatant.key ? null : next.replacement,
     };
   }
-  return next;
+  // status2 R-U (IN §5.4): the bench Pokémon whose roster entry is no longer offered leave the bench; a renamed one keeps its place.
+  return mapBenchEntries(next, (entry, side) => {
+    const probe: Combatant = { ...next.slots[side === "own" ? "own-left" : "opponent-left"], role: side, source: entry.source };
+    const reconciled = reconcileRosterSlot(probe, matchup.teams[side], selection, snapshot ?? UNCHECKED);
+    return !reconciled.source ? null : reconciled.source === entry.source ? entry : { ...entry, source: reconciled.source };
+  });
 }
 
 /**
@@ -685,15 +923,22 @@ function detachedNotice(slots: DoublesSlotId[], names: Record<DoublesSlotId, str
  * 2v2; a team source, paste or selection change detaches the slots whose source is no longer valid; a roster snapshot
  * (`rosters`) also checks the entries it lists. 1v1 Reset and Swap change nothing here (the shared cache is the matchup's).
  * A team source change or a paste imported or removed (roster-prep changeTeamSource, applyTeamPaste, removeTeamPaste)
- * gives 2v2 the same notice as 1v1; a detached slot adds a sentence naming it.
+ * gives 2v2 the same notice as 1v1; a detached slot adds a sentence naming it. status2 R-U: a session edit of a bench
+ * Pokémon's roster entry (the shared cache) becomes its bench build, its row's HP and status kept.
  */
 export function followShared(doubles: DoublesMatchup, before: PreparedMatchup, after: PreparedMatchup, rosters?: CalculatorRosterState): DoublesMatchup {
   if (after.runtime.identity !== doubles.runtime.identity) {
     return { ...freshDoubles(doubles, after.runtime), notice: `${after.runtime.profile.label} selected. Preparation and active mechanics reset; team documents and drafts kept.` };
   }
   if (before.accountReady && after.accountId !== before.accountId) return freshDoubles(doubles, after.runtime);
-  if (!rosters && after.teams === before.teams && after.selection === before.selection) return doubles;
-  const next = reconcileDoublesRosters(doubles, after, rosters);
+  // status2 R-U (IN §5.7): a bench Pokémon's build is its roster entry's as prepared, so it follows that entry's session edits.
+  const followed = after.cache === before.cache ? doubles : mapBenchEntries(doubles, (entry) => {
+    const cached = after.cache.get(entry.key);
+    if (!cached || cached === before.cache.get(entry.key) || cached.build.game !== doubles.runtime.profile.id) return entry;
+    return { ...entry, base: cached.build, moves: cached.moves.flatMap((move) => move.moveId ? [move.moveId] : []) };
+  });
+  if (!rosters && after.teams === before.teams && after.selection === before.selection) return followed;
+  const next = reconcileDoublesRosters(followed, after, rosters);
   // 1v1 Reset bumps both epochs and keeps each side's mode and paste, so its notice stays 1v1's.
   const sourceChanged = (["own", "opponent"] as const).some((role) => after.teams[role].mode !== before.teams[role].mode || after.teams[role].paste !== before.teams[role].paste);
   const detached = DOUBLES_SLOTS.filter((slot) => doubles.slots[slot].source && !next.slots[slot].source);

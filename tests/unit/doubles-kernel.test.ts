@@ -123,11 +123,15 @@ describe("the contract's input checks (SPEC §3.1, ADDENDUM §3.1)", () => {
     expect(issues(idle("garchomp", { carried: { confusion: { attempts: 5 } } }))).toEqual(["confusion turns so far are 0 to 4."]);
     expect(issues(idle("garchomp", { carried: { toxic: 2 } }))).toEqual(["bad poison turns need the Badly poisoned status."]);
     expect(issues(idle("garchomp", { status: "tox", carried: { toxic: 16 } }))).toEqual(["bad poison turns are 0 to 15."]);
-    expect(issues(idle("garchomp", { carried: { leechSeed: "own-right" } }))).toEqual(["Leech Seed's seeder is not a foe in the turn."]);
-    expect(issues(idle("garchomp", { carried: { trap: { source: "opponent-left", bindingBand: false }, syrupBomb: "own-left" } }))).toEqual(["Syrup Bomb's source is not a foe in the turn."]);
+    // status2 C32: the ally may be the seeder, the trapper or Syrup Bomb's source; the Pokémon itself may not.
+    expect(issues(idle("garchomp", { carried: { leechSeed: "own-right" } }))).toEqual([]);
+    expect(issues(idle("garchomp", { carried: { leechSeed: "own-left" } }))).toEqual(["Leech Seed's seeder is not a Pokémon of the turn."]);
+    expect(issues(idle("garchomp", { carried: { trap: { source: "opponent-left", bindingBand: false }, syrupBomb: "own-left" } }))).toEqual(["Syrup Bomb's source is not a Pokémon of the turn."]);
     expect(issues(idle("garchomp", { carried: { perish: 4 as 3 } }))).toEqual(["the perish count is 1, 2 or 3."]);
     expect(issues(idle("garchomp", { carried: { wish: 0, substitute: 0 } }))).toEqual(["a Wish restores at least 1 HP.", "a Substitute has at least 1 HP."]);
-    expect(issues(idle("garchomp", { carried: { allySwitch: 4 as 3 } }))).toEqual(["Ally Switch's counter is 3, 9, 27, 81, 243 or 729 (Scarlet/Violet and Champions)."]);
+    // status2 C23: 1 is "not used last turn".
+    expect(issues(idle("garchomp", { carried: { allySwitch: 4 as 3 } }))).toEqual(["Ally Switch's counter is 1, 3, 9, 27, 81, 243 or 729 (Scarlet/Violet and Champions)."]);
+    expect(issues(idle("garchomp", { carried: { allySwitch: 1 } }))).toEqual([]);
     expect(issues(idle("garchomp", { lastMove: "notamove", moves: ["earthquake", "earthquake"] }))).toEqual(["its last move is not in this game.", "its moves list a move twice."]);
     expect(issues(idle("garchomp", { lastMove: null, moves: ["earthquake", "protect"], carried: { substitute: 44, allySwitch: 9, wish: 300 } }))).toEqual([]);
   });

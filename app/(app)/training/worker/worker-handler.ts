@@ -472,7 +472,10 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
           question = null;
         }
         if (state !== s) return false;
-      } else if (s.host.choose("p2", step.choose).ok !== step.ok) return false;
+      } else {
+        if (s.host.choose("p2", step.choose).ok !== step.ok) return false;
+        if (step.ok) s.trackers.p2.chose(step.choose);
+      }
     }
     s.ai = { requestId: event.requestId, controller, committed: true };
     if (at.kind !== "switch") {
@@ -638,7 +641,13 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       let result: Awaited<ReturnType<typeof decide>> | null = null;
       // Recorded for checkpoints: Resume replays each decide (the AI's state) and each choice in this order.
       const steps: AiStep[] = [];
-      const send = (choice: string) => { const chosen = s.host.choose("p2", choice); steps.push({ choose: choice, ok: chosen.ok }); return chosen; };
+      const send = (choice: string) => {
+        const chosen = s.host.choose("p2", choice);
+        steps.push({ choose: choice, ok: chosen.ok });
+        // status2 R-T: the AI's seat knows its own choice (its Pokémon's chosen targets: tracker.chose).
+        if (chosen.ok) s.trackers.p2.chose(choice);
+        return chosen;
+      };
       for (const salt of ["ai", "ai-retry"]) {
         steps.push({ decide: salt });
         try {

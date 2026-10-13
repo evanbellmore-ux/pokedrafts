@@ -48,6 +48,19 @@ export function isMaxActive(build: BattleBuild): boolean {
   return build.mechanic === "dynamax" || build.mechanic === "gigantamax";
 }
 
+/**
+ * A build's types as pinned Showdown's getTypes reads them (sim/pokemon.ts getTypes): a Tera type that is not Stellar alone;
+ * otherwise its types now (status2: `build.types`, the world types a setType gave it, else its species') and then its added
+ * type (Forest's Curse, Trick-or-Treat). The 2v2 turn's Roost folds in later (doubles-turn.ts typesIn); no 1v1 build sets
+ * `types` or `addedType`, so for one it is the Tera type or the species' types.
+ */
+export function buildTypes(build: BattleBuild, runtime: BattleRuntime = championsRuntime): string[] {
+  const tera = build.mechanic === "tera" && build.configuration?.teraType && build.configuration.teraType !== "Stellar" ? build.configuration.teraType : null;
+  if (tera) return [tera];
+  const base = build.types ?? runtime.speciesById.get(build.speciesId)?.types ?? [];
+  return build.addedType ? [...base, build.addedType] : [...base];
+}
+
 /** Fixed species gender is trustworthy; the engine's default male gender is not. */
 export function getBuildGender(build: BattleBuild, runtime: BattleRuntime = championsRuntime) {
   return build.configuration?.gender ?? runtime.speciesById.get(build.speciesId)?.gender;

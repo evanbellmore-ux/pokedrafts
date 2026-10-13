@@ -1,4 +1,5 @@
 import { allyOf, foesOf, type DoublesSlotId, type DoublesTargetRule, type DoublesTurnInput } from "./doubles-types";
+import { buildTypes } from "./mechanics";
 
 // The 2v2 tab's target rules, as the game asks for them when a move is chosen (pinned Showdown sim/side.ts chooseMove and
 // sim/battle.ts validTargetLoc). No engine imports: the target pickers render before the engine chunk loads
@@ -29,12 +30,9 @@ function targetType(input: DoublesTurnInput, slot: DoublesSlotId, moveId: string
   const crystal = useZ ? input.runtime.itemsById.get(entry.build.itemId) : undefined;
   const signature = crystal?.zMove && crystal.zMoveFrom === moveId ? input.runtime.movesById.get(crystal.zMove) : undefined;
   // Curse from a Pokémon that is not a Ghost type: the request's target is its nonGhostTarget, "self" (sim/pokemon.ts
-  // getMoves; data/moves.ts curse), with the types the turn reads (doubles-turn.ts typesOf: a Tera type, else the species').
-  if (!dynamaxed && moveId === "curse") {
-    const build = entry.build;
-    const tera = build.mechanic === "tera" && build.configuration?.teraType && build.configuration.teraType !== "Stellar" ? [build.configuration.teraType] : null;
-    if (!(tera ?? input.runtime.speciesById.get(build.speciesId)?.types ?? []).includes("Ghost")) return "self";
-  }
+  // getMoves; data/moves.ts curse), with the types the turn reads (mechanics.ts buildTypes: a Tera type, else its types and
+  // its added type, status2's world types included).
+  if (!dynamaxed && moveId === "curse" && !buildTypes(entry.build, input.runtime).includes("Ghost")) return "self";
   return dynamaxed ? (move.category === "Status" ? "self" : "adjacentFoe") : useZ ? signature?.target ?? "normal" : move.target;
 }
 

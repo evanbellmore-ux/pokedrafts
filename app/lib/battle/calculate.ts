@@ -3,29 +3,32 @@ import type { Move, Result, StatsTable } from "@smogon/calc";
 import type { AbilityName, Generation, ID, MoveName, TypeName } from "@smogon/calc/dist/data/interface";
 import { calculateBPModsChampions } from "@smogon/calc/dist/mechanics/champions";
 import { calculateBPModsSMSSSV } from "@smogon/calc/dist/mechanics/gen789";
-import { checkMultihitBoost, checkSeedBoost, getFinalSpeed, isGrounded } from "@smogon/calc/dist/mechanics/util";
+import { chainMods, checkMultihitBoost, checkSeedBoost, getFinalSpeed, getModifiedStat, getQPBoostedStat, isGrounded, isQPActive, OF32 } from "@smogon/calc/dist/mechanics/util";
 import { getBerryResistType, getNaturalGift } from "@smogon/calc/dist/items";
-import { championsRuntime, type BattleRuntime } from "./runtime";
-import { withPowerMods } from "./engine-corrections.cjs";
+import { championsRuntime, cosmeticFamily, type BattleRuntime } from "./runtime";
+import { setTurnMarks, turnMarksOf, withPowerMods, withTurnMarks } from "./engine-corrections.cjs";
 import { abilityActivationLabel, CROWNED_FORMS, defaultAbilityActive, getBuildStats, NATURES, PARADOX_FIELD_SETTERS, paradoxBestStat, priorityShieldNames, validateBuild, validateConditions, withoutSinglesPartners } from "./model";
-import { getBuildGender, isMaxActive, specialTeraForm } from "./mechanics";
+import { buildTypes, getBuildGender, isMaxActive, specialTeraForm } from "./mechanics";
 import { resolveBattleMove, STELLAR_FIRST_USE_REASON, withResolvedPriority } from "./resolve-move";
 import { EVENT_DOUBLING_MOVES, eventDoublingAssumption, isEventDoubled } from "./event-moves";
 import { withDynamaxHealth } from "./health";
 import { mimicryState } from "./mimicry";
 import { FIXED_DAMAGE_MOVES, MOVES_FIRST_POWER_MOVES } from "./turn-order";
-import { imposterTransforms, movesSpeciesId, NO_TRACE_ABILITIES, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
+import { imposterTransforms, movesSpeciesId, NO_TRANSFORM_ABILITIES, TRANSFORM_LOCKED_ABILITIES, tracedAbility } from "./imposter";
 import { applyIntimidate, atLead, beforeDownload, downloadStat, entryBoosts, intimidatedKey, leadForm, leadSpeed, unknownLeadForms, type EntryBoost, type IntimidateBattle } from "./intimidate";
 import { hitCountRule, hitCountsText, type HitChance, type HitCountBattle } from "./hit-count";
 import {
   berryArithmetic, BERRY_STEALERS, CANT_SUPPRESS, CONFUSING_BERRIES, eatBerry, FAIL_SKILL_SWAP, gulpingTarget, HEALING_BERRIES, hitPaths, hitsCanFaint, KLUTZ_IGNORED_ITEMS, ownMoveId,
-  OWN_STATUS_CURES, PINCH_STAT_BERRIES, PINCH_TYPES, usedMoveName, walkHits,
-  type HitLoopInput, type HitState,
+  PINCH_STAT_BERRIES, PINCH_TYPES, stolenEat, UNNERVES, usedMoveName, walkHits,
+  type HitLoopInput, type HitState, type StolenEat,
 } from "./hit-loop";
+import {
+  FLING_ENGINE_NAME, firstUseWalk, flingData, flingFailure, flungEffect, flungFact, flungStatusLands, HP_STATUSES,
+  type FlingStatus, type FlungEffect, type UseHeal,
+} from "./fling";
 import { chanceText } from "./chance";
 import { beatUpPlan, countPower, supremeOverlordMultiplier } from "./count-moves";
-import { CONFUSED_NOTE, ENTRY_ABILITIES, entryStagesOf, estimateUses, prepareUses, STARF_REASON, UNCOUNTED, type CalcTrace, type UsesHelpers } from "./uses-to-ko";
-import { DOUBLES_SLOTS, foesOf, slotSide, turnNames, type DoublesSlotId, type DoublesTurnInput } from "./doubles-types";
+import { CONFUSED_NOTE, ENTRY_ABILITIES, estimateUses, prepareUses, STARF_REASON, turnEffectiveness, UNCOUNTED, type CalcTrace, type RerunInput, type UsesHelpers } from "./uses-to-ko";
 import { healFlag } from "./status-table";
 import type {
   AfterUse,
@@ -59,6 +62,8 @@ const HISTORY_MOVES: Record<string, string> = {
   echoedvoice: "Needs the consecutive-turn use count.",
   spitup: "Needs the number of Stockpile uses.",
   trumpcard: "Needs the move's remaining PP.",
+  // (status2: a 2v2 turn's context answers some of these: Spit Up's Stockpile layers, a base power given at use, Pursuit with
+  // no switching target; historyReason.)
   present: "Random damage or healing, not modelled.",
   magnitude: "Needs the random Magnitude power.",
   counter: "Needs the damage and category of the earlier attack.",
@@ -66,8 +71,21 @@ const HISTORY_MOVES: Record<string, string> = {
   metalburst: "Needs the damage of the earlier attack.",
   comeuppance: "Needs the damage of the earlier attack.",
   bide: "Needs the damage stored over earlier turns.",
-  fling: "Fling is not verified for Champions.",
 };
+
+/**
+ * status2 (2v2 only): whether the turn's context answers a HISTORY_MOVES question: Spit Up's Stockpile layers, Pursuit with no
+ * switching target, a base power given at use (MoveContext.basePower), Retaliate's modifiers (powerMods: [8192] after an ally
+ * fainted last turn, [] otherwise). Never in 1v1, which sets none of them.
+ */
+function historyAnswered(id: string, context: MoveContext | undefined): boolean {
+  if (!context) return false;
+  if (id === "spitup") return !!context.stockpile;
+  if (id === "pursuit") return context.switching === false;
+  if (id === "retaliate") return context.powerMods !== undefined;
+  if (["counter", "mirrorcoat", "metalburst", "comeuppance", "bide"].includes(id)) return context.fixedDamage !== undefined;
+  return context.basePower !== undefined && ["present", "magnitude", "furycutter", "rollout", "iceball", "echoedvoice", "trumpcard"].includes(id);
+}
 
 const CONTEXT_ABILITIES: Record<string, string> = {
   rivalry: "Rivalry needs both Pokémon's genders.",
@@ -137,6 +155,8 @@ const MOVE_BLOCKING_ABILITIES = new Set([
   "Lightning Rod", "Motor Drive", "Volt Absorb", "Levitate", "Eelevate", "Bulletproof", "Soundproof",
   "Queenly Majesty", "Dazzling", "Armor Tail", "Earth Eater", "Wind Rider",
 ]);
+/** Moves whose rise before the hit the engine adds to the calculation (mechanics gen789.js, champions.js: Meteor Beam, Electro Shot). */
+const PRE_HIT_RISE: ReadonlySet<string> = new Set(["meteorbeam", "electroshot"]);
 const FIXED_HP_MOVES: Record<string, (hp: FixedHP) => number | null> = {
   superfang: halfHP,
   naturesmadness: halfHP,
@@ -174,19 +194,65 @@ function emptyRow(move: ChampionsMove, kind: MoveDamageResult["kind"], reason: s
 }
 
 /**
- * A Pokémon whose current types differ from its species (Mimicry). The engine deep-merges species
- * overrides element by element, so a one-type override would keep the species' second type; every
- * clone (calculate() clones its inputs) carries the forced types instead.
+ * A Pokémon whose current types differ from its species (Mimicry; status2's world types and added type). The engine
+ * deep-merges species overrides element by element, so a one-type override would keep the species' second type; every
+ * clone (calculate() clones its inputs) carries the forced types instead. Three types: a two-type Pokémon's added type
+ * last (types[2]), which the engine's effectiveness reads only through engine-corrections.cjs withTurnMarks.
  */
-function withTypes(pokemon: Pokemon, types: [TypeName] | undefined): Pokemon {
+function withTypes(pokemon: Pokemon, types: TypeName[] | undefined): Pokemon {
   if (!types) return pokemon;
-  pokemon.types = types;
+  pokemon.types = types as Pokemon["types"];
   const clone = pokemon.clone.bind(pokemon);
   pokemon.clone = () => withTypes(clone(), types);
   return pokemon;
 }
 
-function makePokemon(build: BattleBuild, runtime: BattleRuntime, speciesId = build.speciesId, types?: [TypeName]) {
+/**
+ * status2 (SPEC2 §3.2, §3.6): the calculation-only markers of a 2v2 build an engine Pokémon carries (engine-corrections.cjs
+ * setTurnMarks, read at call time by its isGrounded and checkItem, and by calculate()'s withTurnMarks scope): Tar Shot,
+ * Foresight or Miracle Eye, the grounding override, Embargo's suppressed item, the final modifiers on the damage it takes.
+ * Null for a build with none of them (every 1v1 build).
+ */
+type EngineMarks = Pick<BattleBuild, "tarShot" | "revealed" | "grounding" | "itemSuppressed" | "takenMods"> & {
+  /** The move's target is the user's ally and the move has priority: Psychic Terrain's block does not reach it (conditions.allyTarget). */
+  ungrounded?: true;
+  /** status2 (A2): a used Protean or Libero in generation 9 or Champions (once per entry): no STAB of its own (engine-corrections.cjs getStabMod). */
+  proteanSpent?: true;
+};
+/** engine-corrections.cjs turnMarksOf, read once (an import from a .cjs module is a getter under tsx: calculate() reads it per run). */
+const turnMarks = turnMarksOf;
+const marksOf = (pokemon: Pokemon) => turnMarks(pokemon) as EngineMarks | null;
+function engineMarks(build: BattleBuild): EngineMarks | null {
+  const spent = (build.abilityId === "protean" || build.abilityId === "libero") && !build.abilityActive && (build.game === "scarlet_violet" || build.game === "champions");
+  if (!build.tarShot && !build.revealed && !build.grounding && !build.itemSuppressed && !build.takenMods && !spent) return null;
+  return {
+    ...(spent ? { proteanSpent: true as const } : {}),
+    ...(build.tarShot ? { tarShot: true as const } : {}), ...(build.revealed ? { revealed: build.revealed } : {}),
+    ...(build.grounding ? { grounding: build.grounding } : {}), ...(build.itemSuppressed ? { itemSuppressed: true as const } : {}),
+    ...(build.takenMods ? { takenMods: build.takenMods } : {}),
+  };
+}
+
+/**
+ * status2 (SPEC2 §3.6): a 2v2 build's stored stats (Showdown storedStats: Power Split, Speed Swap, Power Trick, Transform...)
+ * in place of the engine's own raw stats, and its markers, on the Pokémon and every clone of it (clone() computes the
+ * stats from the species and the spread again).
+ */
+function withTurnState(pokemon: Pokemon, stored: BattleBuild["storedStats"], marks: EngineMarks | null): Pokemon {
+  if (!stored && !marks) return pokemon;
+  if (stored) for (const stat of COMBAT_STATS) { pokemon.rawStats[stat] = stored[stat]; pokemon.stats[stat] = stored[stat]; }
+  if (marks) setTurnMarks(pokemon, marks);
+  const clone = pokemon.clone.bind(pokemon);
+  pokemon.clone = () => withTurnState(clone(), stored, marks);
+  return pokemon;
+}
+
+/**
+ * The engine Pokémon for a build. status2 (SPEC2 §3.6), 2v2 only: its world types (`types`, `addedType`: Tera stays the
+ * engine's teraType, and they win over Mimicry's `types`), its stored stats and weight (`storedStats`, `weighthg`) unless
+ * `speciesId` is another form (a form change drops them: doubles-world.ts withSpecies), and its markers (engineMarks).
+ */
+function makePokemon(build: BattleBuild, runtime: BattleRuntime, speciesId = build.speciesId, types?: TypeName[], extraMarks?: Partial<EngineMarks>) {
   const generation = Generations.get(runtime.profile.generation);
   const species = runtime.speciesById.get(speciesId);
   const ability = runtime.abilitiesById.get(build.abilityId);
@@ -195,7 +261,10 @@ function makePokemon(build: BattleBuild, runtime: BattleRuntime, speciesId = bui
   }
   const teraType = build.mechanic === "tera" && build.configuration?.teraType
     ? generation.types.get(toID(build.configuration.teraType))?.name : undefined;
-  return withTypes(withDynamaxHealth(new Pokemon(generation, species.calcName, {
+  const own = speciesId === build.speciesId;
+  const world = own && (build.types || build.addedType) ? [...(build.types ?? species.types), ...(build.addedType ? [build.addedType] : [])] as TypeName[] : undefined;
+  const weight = own && build.weighthg !== undefined ? { weightkg: build.weighthg / 10 } : {};
+  const pokemon = withTypes(withDynamaxHealth(new Pokemon(generation, species.calcName, {
     level: build.game === "champions" ? 50 : build.native.level!,
     nature: build.nature,
     // Gen 0 uses direct Stat Points; native games retain their real EVs/IVs.
@@ -219,12 +288,17 @@ function makePokemon(build: BattleBuild, runtime: BattleRuntime, speciesId = bui
     ...(build.settledBoostedStat ? { boostedStat: build.settledBoostedStat } : {}),
     // Transform copies every stat but HP (pinned Showdown transformInto): the target's species and
     // training with the Imposter user's base HP and HP training.
-    ...(build.transformedFrom ? { overrides: { baseStats: { hp: build.transformedFrom.baseHP } } as never } : {}),
-  })), types);
+    ...(build.transformedFrom || own && build.weighthg !== undefined
+      ? { overrides: { ...(build.transformedFrom ? { baseStats: { hp: build.transformedFrom.baseHP } } : {}), ...weight } as never } : {}),
+  })), world ?? types);
+  const marks = engineMarks(build);
+  return withTurnState(pokemon, own ? build.storedStats : undefined, extraMarks ? { ...marks, ...extraMarks } : marks);
 }
 
 /** Mimicry's terrain type for the engine (mimicry.ts), with the result's note. */
 function mimicryTypes(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, who: "attacker" | "target", runtime: BattleRuntime): { types: [TypeName] | undefined; line: string | null } {
+  // status2: a 2v2 Pokémon's world types were set after the terrain (a setType: makePokemon reads them), so Mimicry gives none.
+  if (build.types || build.addedType) return { types: undefined, line: null };
   // Mimicry copied by Transform, with no terrain, gives the Pokémon its own original types (pinned
   // Showdown onTerrainChange uses baseSpecies.types; its hint "Transform Mimicry").
   const own = build.transformedFrom ? runtime.speciesById.get(build.transformedFrom.speciesId) : undefined;
@@ -277,8 +351,125 @@ function makeSide(side: SideConditions) {
   };
 }
 
-/** A partner's power boost: its name, its 4096ths and the "1.3x" its row's line names. */
-type PartnerPower = { name: string; mod: number; factor: string };
+/**
+ * A partner's power boost: its name, its 4096ths and the "1.3x" its row's line names. status2: the other base power
+ * modifiers a 2v2 turn adds to the same chain (rowScope, Mud Sport, Water Sport, a hidden target's Gust) carry their own
+ * row line and no `partner`.
+ */
+type PartnerPower = { name: string; mod: number; factor: string; partner?: false; line?: string };
+
+/**
+ * status2 (SPEC2 §3.6, ADDENDUM2 §3.6): what one 2v2 row adds to every engine run of it (calculateMoveRow sets it around its
+ * engine calls; calculate() reads it). `power`: base power modifiers (two or three Helping Hands, the presence moves'
+ * `powerMods`, the -ate or Normalize boost Electrify keeps); `sports`: Mud Sport and Water Sport on the field (by the
+ * type after ModifyType); `extraBoosts`: the positive accuracy and evasion stages Stored Power, Power Trip or Punishment
+ * counts. Null outside a 2v2 row that sets one (every 1v1 row).
+ */
+type RowScope = { power: PartnerPower[]; sports: { mud: boolean; water: boolean } | null; extraBoosts: number };
+let rowScope: RowScope | null = null;
+/** A later hit's own calculation (Parental Bond's second strike, Beat Up's later strikes): Ripen's weakened Berry is spent. */
+let laterHit = false;
+
+/** The moves with pinned Showdown's minimize flag (data/moves.ts; no mod changes it), which Minimize's condition doubles. */
+const MINIMIZE_MOVES: ReadonlySet<string> = new Set(["bodyslam", "dragonrush", "flyingpress", "heatcrash", "heavyslam", "maliciousmoonsault", "steamroller", "stomp", "supercellslam"]);
+/** The moves a hidden Pokémon's move doubles (data/moves.ts fly, dig, dive condition onSourceModifyDamage: the final chain). */
+const HIDDEN_DAMAGE: Readonly<Record<string, ReadonlySet<string>>> = {
+  fly: new Set(["gust", "twister"]), dig: new Set(["earthquake", "magnitude"]), dive: new Set(["surf", "whirlpool"]),
+};
+
+/**
+ * status2 (F2 §2.3, T2M §3.29; 2v2 only): the moves that take their own type at use (their onModifyType, or the engine's
+ * name-keyed type), which Electrify and Ion Deluge then retype. Tera Blast from a Terastallized user and Tera Starstorm
+ * from Terapagos-Stellar too (ownTypeMove).
+ */
+const OWN_TYPE_MOVES: ReadonlySet<string> = new Set([
+  "weatherball", "terrainpulse", "judgment", "multiattack", "technoblast", "revelationdance", "naturalgift", "aurawheel", "ragingbull", "ivycudgel",
+]);
+const ownTypeMove = (id: string, build: BattleBuild) => OWN_TYPE_MOVES.has(id) || id.startsWith("hiddenpower")
+  || (id === "terablast" && build.mechanic === "tera") || (id === "terastarstorm" && build.speciesId === "terapagosstellar");
+/** The -ate abilities' types (data/abilities.ts onModifyType, priority −1: a Normal move, boosted 4915/4096). */
+const ATE_TYPES: Readonly<Record<string, string>> = { aerilate: "Flying", pixilate: "Fairy", refrigerate: "Ice", galvanize: "Electric", dragonize: "Dragon" };
+/** The moves the -ate abilities leave alone (their noModifyType); Normalize adds Hidden Power and Struggle. */
+const ATE_KEPT: ReadonlySet<string> = new Set(["judgment", "multiattack", "naturalgift", "revelationdance", "technoblast", "terrainpulse", "weatherball"]);
+
+/**
+ * The type a move has after the user's ModifyType chain, before Electrify or Ion Deluge (priority −2): Normalize
+ * (priority 1; any move but its noModifyType, which a Max Move ignores), then an -ate ability (−1; a Normal move) or Liquid
+ * Voice (−1; a sound move, not while Dynamaxed); none of them on a damaging Z-Move or a Terastallized user's Tera Blast
+ * (data/abilities.ts normalize, pixilate and kin, liquidvoice). `changer`: the ability that changed it; `boosted`: its
+ * typeChangerBoosted (4915/4096 at onBasePower, kept under Electrify).
+ */
+function modifyTypeChain(move: ChampionsMove, build: BattleBuild, abilityOn: boolean, max: boolean, sound: boolean): { type: string; changer: string | null; boosted: boolean } {
+  let type = move.type;
+  let changer: string | null = null;
+  let boosted = false;
+  const ability = abilityOn ? build.abilityId : "";
+  const teraBlast = move.id === "terablast" && build.mechanic === "tera";
+  if (ability === "normalize" && !teraBlast && (max || !(ATE_KEPT.has(move.id) || move.id.startsWith("hiddenpower") || move.id === "struggle"))) {
+    type = "Normal"; changer = ability; boosted = true;
+  }
+  if (ATE_TYPES[ability] && type === "Normal" && !teraBlast && (max || !ATE_KEPT.has(move.id))) {
+    type = ATE_TYPES[ability]; changer = ability; boosted = true;
+  }
+  if (ability === "liquidvoice" && sound && !max) { type = "Water"; changer = ability; }
+  return { type, changer, boosted };
+}
+
+/**
+ * status2 (F2 §2.3, T2M §3.29; 2v2 only): how a row takes MoveContext.retype (Electrify on the user, Ion Deluge on the
+ * field: data/moves.ts electrify, iondeluge onModifyType, priority −2; Ion Deluge only on a Normal move). "type": the move
+ * as Electric in every engine run (a Max Move picked from that type: battle-actions.ts getActiveMaxMove, no -ate boost), the
+ * user's type-changing ability as GAS_STAND_IN (`standIn`) and the -ate or Normalize 4915/4096 it keeps (`boost`); "z": the
+ * Z-Move rebuilt as Electric (Electrify any, Ion Deluge a Normal one); "own": a move with its own type at use, probed first;
+ * "none": no change.
+ */
+type RetypePlan = { kind: "none" } | { kind: "type"; standIn: boolean; boost: string | null } | { kind: "z" } | { kind: "own" } | { kind: "unsupported"; reason: string };
+function retypePlan(assigned: ChampionsMove, attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, context: MoveContext, runtime: BattleRuntime): RetypePlan {
+  const ionDeluge = context.retype === "iondeluge";
+  if (assigned.category === "Status") return { kind: "none" };
+  if (context.useZ) return { kind: "z" };
+  const max = isMaxActive(attacker);
+  const own = ownTypeMove(assigned.id, attacker);
+  if (own && max) {
+    return { kind: "unsupported", reason: `${assigned.name} as a Max Move under ${ionDeluge ? "Ion Deluge" : "Electrify"} is not estimated.` };
+  }
+  if (own) return { kind: "own" };
+  const generation = Generations.get(runtime.profile.generation);
+  const sound = !!generation.moves.get(toID(assigned.name) as ID)?.flags?.sound;
+  const chain = modifyTypeChain(assigned, attacker, !gassedAbility(attacker, defender, conditions), max, sound);
+  if (chain.type === "Electric" || (ionDeluge && chain.type !== "Normal")) return { kind: "none" };
+  return { kind: "type", standIn: !!chain.changer, boost: !max && chain.boosted ? chain.changer : null };
+}
+
+/** The withTurnMarks scope of one engine run into `defender` with `move` (engine-corrections.cjs), or null when it would change nothing. */
+function turnRun(defender: Pokemon, marks: EngineMarks | null, move: Move, scope: RowScope | null) {
+  const taken = marks?.takenMods;
+  const id = toID(move.name);
+  const added = defender.types.length > 2 ? (defender.types as readonly TypeName[])[2] : undefined;
+  const final = [
+    ...(taken?.minimize && MINIMIZE_MOVES.has(id) ? [8192] : []),
+    ...(taken?.glaiveRush ? [8192] : []),
+    ...(taken?.hidden && HIDDEN_DAMAGE[taken.hidden]?.has(id) ? [8192] : []),
+  ];
+  const firstFinal = taken?.berryWeaken && !laterHit ? [2048] : [];
+  const reads = !!added || !!marks?.tarShot || marks?.revealed === "miracleeye" || marks?.grounding === "pinned";
+  const extraBoosts = scope?.extraBoosts ?? 0;
+  if (!reads && !final.length && !firstFinal.length && !extraBoosts) return null;
+  const first = defender.teraType && defender.teraType !== "Stellar" ? defender.teraType : defender.types[0];
+  return {
+    defender: reads ? { first, ...(added ? { added } : {}), tarShot: !!marks?.tarShot, miracleEye: marks?.revealed === "miracleeye", pinned: marks?.grounding === "pinned" } : null,
+    final, firstFinal, extraBoosts,
+  };
+}
+
+/** Mud Sport and Water Sport (data/moves.ts mudsport, watersport onBasePower ×1352/4096, priority 1) on a move of the type after ModifyType. */
+function sportBoosts(sports: RowScope["sports"], move: Move): PartnerPower[] {
+  if (!sports) return [];
+  return [
+    ...(sports.mud && move.type === "Electric" ? [{ name: "Mud Sport", mod: 1352, factor: "1352/4096", partner: false as const, line: "Mud Sport: Electric moves at 1352/4096 power." }] : []),
+    ...(sports.water && move.type === "Fire" ? [{ name: "Water Sport", mod: 1352, factor: "1352/4096", partner: false as const, line: "Water Sport: Fire moves at 1352/4096 power." }] : []),
+  ];
+}
 
 /**
  * The power boosts a doubles partner gives this attack (SideConditions battery, powerSpot, steelySpirit; pinned
@@ -315,15 +506,37 @@ let partnerPowerIssue: string | null = null;
  */
 function calculate(gen: Generation, attacker: Pokemon, defender: Pokemon, move: Move, field: Field): Result {
   const side = field.attackerSide;
-  if (!side.isBattery && !side.isPowerSpot && !side.isSteelySpirit) return engineCalculate(gen, attacker, defender, move, field);
-  const plain = field.clone();
-  plain.attackerSide.isBattery = plain.attackerSide.isPowerSpot = plain.attackerSide.isSteelySpirit = false;
-  const probe = engineCalculate(gen, attacker, defender, move, plain);
-  const boosts = partnerPowerBoosts(side, probe.move);
-  if (!boosts.length) return probe;
-  const names = `The partner's ${boosts.map((boost) => boost.name).join(" and ")}`;
+  const partner = !!(side.isBattery || side.isPowerSpot || side.isSteelySpirit);
+  // status2 (SPEC2 §3.6): the 2v2 turn's markers of the defender (makePokemon) and the row's scope (rowScope), none in 1v1.
+  const marks = marksOf(defender);
+  const scope = rowScope;
+  if (!partner && !marks && defender.types.length < 3 && !scope) return engineCalculate(gen, attacker, defender, move, field);
+  const foresight = marks?.revealed === "foresight";
+  const plain = partner || foresight ? field.clone() : field;
+  if (partner) plain.attackerSide.isBattery = plain.attackerSide.isPowerSpot = plain.attackerSide.isSteelySpirit = false;
+  // Foresight or Odor Sleuth on the defender: the engine's own flag (gen789.js:297-298).
+  if (foresight) plain.defenderSide.isForesight = true;
+  const turn = turnRun(defender, marks, move, scope);
+  const run = () => turn ? withTurnMarks(turn, () => engineCalculate(gen, attacker, defender, move, plain)) : engineCalculate(gen, attacker, defender, move, plain);
+  // Base power modifiers: the partner's (by the category and type its run gives), Mud Sport and Water Sport (by the type), the
+  // row's own, and a Bounce target's ×2 for Gust and Twister (data/moves.ts bounce onSourceBasePower: the defender is the
+  // event's source). Sky Drop's onAnyBasePower reads the BasePower event's target, the attacker (sim/battle.ts runEvent's
+  // args [relayVar, target, source]): it doubles a Gust used by the Sky Drop user or the lifted Pokémon, never one into
+  // them (CQ08b: the lifted Pokémon's partner's Gust at the Sky Drop user is unboosted), so a `skydrop` defender adds none.
+  const hidden = marks?.takenMods?.hidden;
+  const id = toID(move.name);
+  const fixed: PartnerPower[] = [...(scope?.power ?? []), ...(hidden === "bounce" && (id === "gust" || id === "twister")
+    ? [{ name: "Bounce", mod: 8192, factor: "2x", partner: false as const, line: `${move.name} into a Pokémon in the air: 2x power.` }] : [])];
+  const typed = partner || !!scope?.sports;
+  if (!typed && !fixed.length) return run();
+  const probe = typed ? run() : null;
+  const boosts = [...(partner ? partnerPowerBoosts(side, probe!.move) : []), ...sportBoosts(scope?.sports ?? null, probe?.move ?? move), ...fixed];
+  if (!boosts.length) return probe!;
+  const partners = boosts.filter((boost) => boost.partner !== false);
+  const others = boosts.filter((boost) => boost.partner === false);
+  const named = [...(partners.length ? [`The partner's ${partners.map((boost) => boost.name).join(" and ")}`] : []), ...others.map((boost) => boost.name)].join(" and ");
+  const names = cap(named);
   const mods = boosts.map((boost) => boost.mod);
-  const run = () => engineCalculate(gen, attacker, defender, move, plain);
   const { result, order, values } = withPowerMods(mods, run);
   // The damage at each value the chain takes in some order: one damage whatever Showdown's order.
   const damage = JSON.stringify(result.damage);
@@ -391,16 +604,16 @@ const CASTFORM_FORMS: Record<string, string> = { Sun: "castformsunny", "Harsh Su
 function forecastBlocked(build: BattleBuild, other: BattleBuild, conditions: BattleConditions): "Neutralizing Gas" | "Utility Umbrella" | null {
   if (build.abilityId !== "forecast" || !build.speciesId.startsWith("castform")) return null;
   if (other.abilityId === "neutralizinggas" && !shieldsAbility(build, conditions)) return "Neutralizing Gas";
-  if (build.itemId === "utilityumbrella" && !conditions.magicRoom && ["Sun", "Harsh Sunshine", "Rain", "Heavy Rain"].includes(conditions.weather)) return "Utility Umbrella";
+  if (build.itemId === "utilityumbrella" && !itemOff(build, conditions) && ["Sun", "Harsh Sunshine", "Rain", "Heavy Rain"].includes(conditions.weather)) return "Utility Umbrella";
   return null;
 }
 
 /** A copied ability's condition: a copied Intrepid Sword or Dauntless Shield starts afresh and boosts. */
 const copiedAbilityActive = (abilityId: string) => defaultAbilityActive(abilityId);
-const COMBAT_STATS = ["atk", "def", "spa", "spd", "spe"] as const;
-const STAGE_NAMES: Record<(typeof COMBAT_STATS)[number], string> = { atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed" };
-const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
-const cap = (text: string) => `${text[0].toUpperCase()}${text.slice(1)}`;
+export const COMBAT_STATS = ["atk", "def", "spa", "spd", "spe"] as const;
+export const STAGE_NAMES: Record<(typeof COMBAT_STATS)[number], string> = { atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed" };
+export const clampStage = (stage: number) => Math.max(-6, Math.min(6, stage));
+export const cap = (text: string) => `${text[0].toUpperCase()}${text.slice(1)}`;
 
 function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean, targetTailwind: boolean, names?: IntimidateBattle["names"]): IntimidateBattle {
   return {
@@ -416,14 +629,28 @@ function intimidateBattle(conditions: BattleConditions, sourceTailwind: boolean,
 type SettleName = { who: string } | { label: string; otherLabel?: string };
 
 /**
+ * status2 (T2P §4.2; 2v2 only): what the settle reads of every active Pokémon rather than of `other` alone, each replacing
+ * that read when given (the 1v1 never passes it): `weatherNegated` the name of a working Cloud Nine or Air Lock on the
+ * field, or null for none (Ice Face, Forecast, the paradox abilities); `unnerved` a foe's working Unnerve or As One (the
+ * Berries); `fieldSetter` the ability whose Start set the paradox field, or null (which came first, the item or the field);
+ * `traceSource` the Pokémon Trace copied from, with its name.
+ */
+export type SettleReads = {
+  weatherNegated?: string | null;
+  unnerved?: boolean;
+  fieldSetter?: string | null;
+  traceSource?: { build: BattleBuild; name: string };
+};
+
+/**
  * Ability and form states the battle has already settled on entry, as pinned Showdown resolves them:
  * Trace copies a foe's ability, Imposter transforms its user into the target, and Forecast sets
  * Castform's form from the weather (any selected Castform form). `fieldGas` (2v2, settleDoublesStart): a
  * Neutralizing Gas on the field suppresses the ability a Tera form gives (Embody Aspect, Tera Shell, Teraform
  * Zero), which then stands in as Run Away, as every ability the gas suppresses does there (settleDoublesStart).
  */
-function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, otherTailwind: boolean,
-  fieldGas = false): { build: BattleBuild; lines: string[]; withheld?: string; suppressed?: string } {
+export function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, otherTailwind: boolean,
+  fieldGas = false, reads?: SettleReads): { build: BattleBuild; lines: string[]; withheld?: string; suppressed?: string } {
   const lines: string[] = [];
   const name = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
   const abilityName = (id: string) => runtime.abilitiesById.get(id)?.name ?? id;
@@ -465,20 +692,22 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
   // Ice Face is restored only on entry, or when snow or hail starts (pinned Showdown iceface onStart and
   // onWeatherChange), so a selected Eiscue-Noice in that weather broke its face after it started.
   if (settled.abilityId === "iceface" && settled.speciesId === "eiscuenoice" && !settled.transformedFrom && ["Snow", "Hail"].includes(conditions.weather)
-    && ![settled, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === settled ? other : settled, conditions))) {
+    && !(reads?.weatherNegated !== undefined ? reads.weatherNegated
+      : [settled, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === settled ? other : settled, conditions)))) {
     const weather = conditions.weather === "Hail" ? "hail" : "snow";
     lines.push(`Ice Face: assumes ${"label" in naming ? naming.label : `${naming.who} Eiscue-Noice`}'s face broke while the ${weather} was up.`);
   }
   // Trace copies a foe's ability on entry (pinned Showdown trace onStart); the engine has none.
   if (build.abilityId === "trace") {
-    const traced = tracedAbility(build, other, conditions.magicRoom);
+    const source = reads?.traceSource?.build ?? other;
+    const traced = tracedAbility(build, source, conditions.magicRoom);
     if (traced.abilityId) {
       settled = { ...settled, abilityId: traced.abilityId, abilityActive: copiedAbilityActive(traced.abilityId) };
-      lines.push(`Trace: ${subject} copied ${abilityName(traced.abilityId)}${traced.chosen ? "" : ` from ${otherName}`}.`);
+      lines.push(`Trace: ${subject} copied ${abilityName(traced.abilityId)}${traced.chosen ? "" : ` from ${reads?.traceSource?.name ?? otherName}`}.`);
     } else if (traced.blockedBy) {
       lines.push(`Trace: ${subject} copies nothing (${traced.blockedBy}).`);
     } else {
-      lines.push(`Trace: ${subject} copies nothing (${abilityName(other.abilityId)} cannot be copied).`);
+      lines.push(`Trace: ${subject} copies nothing (${abilityName(source.abilityId)} cannot be copied).`);
     }
   }
   // Imposter transforms its user into the target on entry (Showdown transformInto): the target's
@@ -541,7 +770,7 @@ function settleAbilities(build: BattleBuild, other: BattleBuild, conditions: Bat
     lines.push(`Imposter: ${subject} transformed into ${formName} (${abilityName(copiedAbility)}${inert ? ", no effect when transformed" : ""}${entryList ? `; copied ${entryList}` : ""}); ${name}'s own stat stages are added on top. Assumes both entered together, ${otherName} faster, and nothing blocked the transformation.`);
   }
   if (build.abilityId === "forecast" && build.speciesId.startsWith("castform") && runtime.speciesById.has("castform")) {
-    const airLock = [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId));
+    const airLock = reads?.weatherNegated !== undefined ? !!reads.weatherNegated : [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId));
     const blocked = forecastBlocked(build, other, conditions);
     const form = !airLock && !blocked ? CASTFORM_FORMS[conditions.weather] ?? "castform" : "castform";
     if (form !== build.speciesId) {
@@ -567,7 +796,7 @@ function settleEntry(
   const tailwind = { attacker: conditions.attackerSide.tailwind, defender: conditions.defenderSide.tailwind };
   for (const [side, foeSide] of [["attacker", "defender"], ["defender", "attacker"]] as const) {
     const copiedBy = shown[side].abilityId === "trace" ? "Trace" : shown[side].abilityId === "imposter" ? "Imposter" : null;
-    if (!copiedBy || builds[side].abilityId !== "intimidate" || shown[side].copiedIntimidateStored === intimidatedKey(shown[foeSide], runtime)) continue;
+    if (!copiedBy || builds[side].abilityId !== "intimidate" || !!shown[side].copiedIntimidateStored?.split(",").includes(intimidatedKey(shown[foeSide], runtime))) continue;
     const holder = builds[side], foe = builds[foeSide];
     const who = side === "attacker" ? "the attacker" : "the target";
     const foeWho = foeSide === "attacker" ? "the attacker" : "the target";
@@ -672,7 +901,8 @@ export type SettledItems = {
  * Pouch heals a third as any Berry is eaten); a terrain Seed on its terrain is used up on entry. Unburden then
  * activates, and it stays off while an item is still held.
  */
-function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, name: string, ownCure = false): SettledItems {
+export function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, naming: SettleName, name: string, ownCure = false,
+  reads?: SettleReads): SettledItems {
   const lines: string[] = [];
   // "The attacker Charizard" (1v1), "Charizard" (2v2), and the name alone mid-sentence.
   const subject = cap("label" in naming ? naming.label : `${naming.who} ${name}`);
@@ -688,12 +918,12 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   let usedAtUpdate: string | null = null;
   let berrySpe = 0;
   const klutz = klutzActive(build, other);
-  const itemOn = !conditions.magicRoom && !klutz;
+  const itemOn = !itemOff(build, conditions) && !klutz;
   // A Booster Energy or Seed used before Magic Room was set stays used (the panel's choice, unset
   // meaning it was); one that met the room on entry, or a terrain starting after it, stays unused.
   const usedBeforeRoom = conditions.magicRoom && !klutz && build.itemUsedBeforeRoom !== false;
   // The holder's own Neutralizing Gas suppresses Unnerve, but not As One or an Ability Shield holder's.
-  const unnerved = ["unnerve", "asoneglastrier", "asonespectrier"].includes(other.abilityId) && !gassedAbility(other, build, conditions);
+  const unnerved = reads?.unnerved ?? (["unnerve", "asoneglastrier", "asonespectrier"].includes(other.abilityId) && !gassedAbility(other, build, conditions));
   const abilityOn = !gassedAbility(build, other, conditions);
   // A transformed Imposter user keeps its own maximum HP (pinned Showdown transformInto copies every stat but HP).
   const maxHP = getBuildStats(build.transformedFrom ? { ...build, speciesId: build.transformedFrom.speciesId } : build, runtime)?.hp ?? 0;
@@ -799,7 +1029,8 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   // which is then used up on entry. The other battler's Neutralizing Gas stops both.
   const paradox = PARADOX_FIELDS[build.abilityId];
   if (paradox && abilityOn && !build.transformedFrom) {
-    const weatherless = [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === build ? other : build, conditions));
+    const weatherless = reads?.weatherNegated !== undefined ? !!reads.weatherNegated
+      : [build, other].some((entry) => ["cloudnine", "airlock"].includes(entry.abilityId) && !gassedAbility(entry, entry === build ? other : build, conditions));
     const fieldOn = paradox === "sun" ? conditions.weather === "Sun" && !weatherless : conditions.terrain === "Electric";
     // With its field up, a Booster Energy was used only if the field was down at some point after the
     // holder entered (pinned Showdown boosterenergy onUpdate acts whenever its field is down, once its
@@ -812,8 +1043,9 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
     // ability came in (the panel's choice), the Booster Energy was used up with no effect, its volatile
     // already existing, and the ability's WeatherChange then ended Protosynthesis; that stays so after the
     // sun ends or a Magic Room is set.
-    const cloud = paradox === "sun" && booster && ["cloudnine", "airlock"].includes(other.abilityId) && !gassedAbility(other, build, conditions)
-      ? runtime.abilitiesById.get(other.abilityId)?.name ?? other.abilityId : null;
+    const cloud = reads?.weatherNegated !== undefined ? (paradox === "sun" && booster ? reads.weatherNegated : null)
+      : paradox === "sun" && booster && ["cloudnine", "airlock"].includes(other.abilityId) && !gassedAbility(other, build, conditions)
+        ? runtime.abilitiesById.get(other.abilityId)?.name ?? other.abilityId : null;
     const burned = !!cloud && build.itemUsedBeforeField === false;
     // Which came first, its Seed or Room Service or the field activating the ability (the panel's choice,
     // model fieldItemChoice). On entry a Seed or Room Service (switch-in priority -1) acts before the
@@ -821,7 +1053,8 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
     // (priority 0) sets the field before both at a shared lead, a terrain or sun starting while it is out
     // runs its ability before its item (pinned Showdown runEvent subOrder: ability, then item), and Room
     // Service acts only on entry or when Trick Room starts.
-    const foeSetsField = fieldOn && !gassedAbility(other, build, conditions) && PARADOX_FIELD_SETTERS[paradox].includes(other.abilityId);
+    const foeSetsField = reads?.fieldSetter !== undefined ? fieldOn && !!reads.fieldSetter && PARADOX_FIELD_SETTERS[paradox].includes(reads.fieldSetter)
+      : fieldOn && !gassedAbility(other, build, conditions) && PARADOX_FIELD_SETTERS[paradox].includes(other.abilityId);
     const itemFirst = build.itemUsedBeforeField ?? !foeSetsField;
     const fieldName = paradox === "sun" ? "the sun" : "Electric Terrain";
     if (burned) {
@@ -879,8 +1112,11 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   if (usedAtUpdate && runtime.profile.generation === 7) {
     const unburden = build.abilityId === "unburden" && abilityOn;
     const unburdenBefore = unburden && (seedUsed || roomServiceUsed);
-    if (berrySpe !== 0 || (unburden && settled.abilityActive && !unburdenBefore)) {
-      settled = { ...settled, firstTurnSpeed: { spe: (settled.boosts.spe ?? 0) - berrySpe, unburden: unburdenBefore, item: itemName(usedAtUpdate) } };
+    // status2 Step 1 #9 (T2P-UNB-02/04-usum): the status a Berry cured there was still on it as the order was set (paralysis
+    // halves the Speed; Quick Feet reads any status).
+    const cured = build.status && !settled.status && (build.status === "par" || (build.abilityId === "quickfeet" && abilityOn)) ? build.status : undefined;
+    if (berrySpe !== 0 || (unburden && settled.abilityActive && !unburdenBefore) || cured) {
+      settled = { ...settled, firstTurnSpeed: { spe: (settled.boosts.spe ?? 0) - berrySpe, unburden: unburdenBefore, item: itemName(usedAtUpdate), ...(cured ? { status: cured } : {}) } };
     }
   }
   return {
@@ -889,7 +1125,7 @@ function settleItems(build: BattleBuild, other: BattleBuild, conditions: BattleC
   };
 }
 
-const PARADOX_FIELDS: Record<string, "sun" | "terrain"> = { protosynthesis: "sun", quarkdrive: "terrain" };
+export const PARADOX_FIELDS: Record<string, "sun" | "terrain"> = { protosynthesis: "sun", quarkdrive: "terrain" };
 
 /**
  * The form Shields Down or Schooling gives this Pokémon at its current HP, when it differs from the
@@ -951,7 +1187,7 @@ function paradoxStat(build: BattleBuild, other: BattleBuild, conditions: BattleC
 }
 
 /** Abilities Neutralizing Gas cannot suppress (the engine's own ignoresNeutralizingGas list). */
-const GAS_PROOF_ABILITIES = new Set(["asoneglastrier", "asonespectrier", "battlebond", "comatose", "disguise", "gulpmissile", "iceface", "multitype", "neutralizinggas", "powerconstruct", "rkssystem", "schooling", "shieldsdown", "stancechange", "terashift", "zenmode", "zerotohero"]);
+export const GAS_PROOF_ABILITIES = new Set(["asoneglastrier", "asonespectrier", "battlebond", "comatose", "disguise", "gulpmissile", "iceface", "multitype", "neutralizinggas", "powerconstruct", "rkssystem", "schooling", "shieldsdown", "stancechange", "terashift", "zenmode", "zerotohero"]);
 /** The other battler's Neutralizing Gas suppresses this ability (unless Ability Shield keeps it). */
 const gassedAbility = (build: BattleBuild, other: BattleBuild, conditions: BattleConditions) =>
   other.abilityId === "neutralizinggas" && gasSuppresses(build, conditions);
@@ -960,7 +1196,7 @@ const gassedAbility = (build: BattleBuild, other: BattleBuild, conditions: Battl
  * ignoringAbility): not a cantsuppress ability, not another Neutralizing Gas, not one an Ability Shield keeps (its
  * hasItem fails under Magic Room; ignoreKlutz keeps it from Klutz).
  */
-const gasSuppresses = (build: BattleBuild, conditions: BattleConditions) => !GAS_PROOF_ABILITIES.has(build.abilityId) && !shieldsAbility(build, conditions);
+export const gasSuppresses = (build: BattleBuild, conditions: BattleConditions) => !GAS_PROOF_ABILITIES.has(build.abilityId) && !shieldsAbility(build, conditions);
 /**
  * The ability a suppressed one stands in as in the 2v2 turn (settleDoublesStart): Run Away does nothing in a
  * trainer battle (data/abilities.ts runaway: onTrapPokemon only), as the engine stand-in is elsewhere here.
@@ -969,7 +1205,7 @@ export const GAS_STAND_IN = "runaway";
 const UMBRELLA_SUN_ABILITIES = new Set(["chlorophyll", "solarpower", "flowergift"]);
 /** Utility Umbrella makes its holder ignore sun and rain (Showdown effectiveWeather) for these abilities. */
 const umbrellaBlocksAbility = (build: BattleBuild, other: BattleBuild, conditions: BattleConditions) =>
-  build.itemId === "utilityumbrella" && !conditions.magicRoom && !klutzActive(build, other)
+  build.itemId === "utilityumbrella" && !itemIgnored(build, other, conditions)
   && ((UMBRELLA_SUN_ABILITIES.has(build.abilityId) && ["Sun", "Harsh Sunshine"].includes(conditions.weather))
     || (build.abilityId === "swiftswim" && ["Rain", "Heavy Rain"].includes(conditions.weather)));
 
@@ -984,8 +1220,15 @@ const RECEIVER_CONDITIONS = new Set(["unburden", "slowstart", "protean", "libero
 const ENGINE_KLUTZ_KEPT_ITEMS = new Set(["machobrace", "poweranklet", "powerband", "powerbelt", "powerbracer", "powerlens", "powerweight"]);
 
 /** Klutz works unless the other battler's Neutralizing Gas suppresses it (an Ability Shield holder keeps it). */
-const klutzActive = (build: BattleBuild, other: BattleBuild) =>
+export const klutzActive = (build: BattleBuild, other: BattleBuild) =>
   build.abilityId === "klutz" && !(other.abilityId === "neutralizinggas" && build.itemId !== "abilityshield");
+/**
+ * The build's item has no effect for a reason that is not its own ability (pinned Showdown sim/pokemon.ts ignoringItem):
+ * Magic Room on the field, or status2's Embargo on it (BattleBuild.itemSuppressed, 2v2 only).
+ */
+const itemOff = (build: BattleBuild, conditions: Pick<BattleConditions, "magicRoom">) => conditions.magicRoom || !!build.itemSuppressed;
+/** The build ignores its held item: itemOff, or an active Klutz (sim/pokemon.ts ignoringItem; Klutz's ignoreKlutz items aside where a caller says so). */
+const itemIgnored = (build: BattleBuild, other: BattleBuild, conditions: Pick<BattleConditions, "magicRoom">) => itemOff(build, conditions) || klutzActive(build, other);
 
 /** A copy without its held item when Showdown's ignoringItem() holds: Magic Room, or an active Klutz. */
 /**
@@ -999,7 +1242,7 @@ const klutzActive = (build: BattleBuild, other: BattleBuild) =>
  * Neutralizing Gas suppresses Klutz); the engine clears it only inside calculate().
  */
 function usedPriority(metadata: ChampionsMove, assigned: ChampionsMove, resolved: { transformed: boolean; move: Move }, attacker: Pokemon,
-  attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions): { priority: number; grassyGlide: boolean } {
+  attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions, frozen?: number): { priority: number; grassyGlide: boolean } {
   let priority = resolved.move.priority;
   if (attacker.hasAbility("Gale Wings") && metadata.type === "Flying" && attacker.curHP() === attacker.maxHP()
     && (resolved.transformed || !assigned.id.startsWith("hiddenpower"))) {
@@ -1009,19 +1252,208 @@ function usedPriority(metadata: ChampionsMove, assigned: ChampionsMove, resolved
   const grassyGlide = metadata.id === "grassyglide" && conditions.terrain === "Grassy"
     && isGrounded(ignoringItem(attacker, attackerBuild, defenderBuild, conditions), makeField(conditions));
   if (grassyGlide) priority = metadata.priority + 1;
+  // status2 (T2M §3.17, 2v2, generation 7): the priority the queue was sorted with at the turn's start, which the priority
+  // shields and Psychic Terrain read (move.priority: no re-sort before generation 8), when it differs from this one. Review 2
+  // (R4-4): a called move's, its caller's (sim/battle-actions.ts:410-411), so a called Grassy Glide gains nothing.
+  if (frozen !== undefined) return { priority: frozen, grassyGlide: false };
   return { priority, grassyGlide };
 }
 
 function ignoringItem(pokemon: Pokemon, build: BattleBuild, other: BattleBuild, conditions: BattleConditions): Pokemon {
   const klutz = klutzActive(build, other);
-  if (!pokemon.item || !(conditions.magicRoom || klutz)) return pokemon;
+  if (!pokemon.item || !(itemOff(build, conditions) || klutz)) return pokemon;
   const copy = pokemon.clone();
   copy.item = undefined;
   return copy;
 }
 
+/**
+ * A Pokémon's own species and name, a transformed one's from before Transform (pinned Pokémon baseSpecies); a cosmetic form is
+ * named as the family it shares its battle identity with (runtime.ts cosmeticFamily: Alcremie for its flavours).
+ */
+function ownSpecies(build: BattleBuild, runtime: BattleRuntime): { id: string; name: string } {
+  const id = build.transformedFrom?.speciesId ?? build.speciesId;
+  return { id, name: (cosmeticFamily(runtime, id) ?? runtime.speciesById.get(id))?.name ?? id };
+}
+
+/**
+ * Fling's plan for a row (SPEC2 §4.7; fling.ts flingFailure): the held item's pinned power, or why it fails. The attacker's
+ * Klutz works unless the target's Neutralizing Gas suppresses it; Embargo is a 2v2 build's itemSuppressed.
+ */
+function flingPlan(attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime): { power: number } | { fails: string } {
+  const own = ownSpecies(attacker, runtime);
+  const klutz = klutzActive(attacker, defender);
+  // A terrain Seed on its terrain was used up on entry (settleItems seedUsed); the settled build keeps it for the engine's own
+  // Seed boost (checkSeedBoost), but it is gone.
+  const seedUsed = SEED_TERRAINS[attacker.itemId] === conditions.terrain && !klutz && attacker.itemUsedBeforeRoom !== false;
+  const itemId = seedUsed ? "" : attacker.itemId;
+  const fails = flingFailure({ itemId, speciesId: own.id, name: own.name, klutz, embargo: !!attacker.itemSuppressed }, !!conditions.magicRoom, runtime, (id) => PARADOX_SPECIES.has(id));
+  return fails ? { fails } : { power: flingData(runtime, itemId)!.basePower };
+}
+
+/**
+ * What a thrown item does to a target the hit leaves in (calculateMoveRow, from its engine result): the row's fact, the status
+ * that lands (fling.ts flungStatusLands), and what eating a flung Berry gives it (hit-loop.ts stolenEat: its Klutz or
+ * Embargo stop the Berry's own effect, not Cheek Pouch's). No effect when the hit never connects or always knocks it out.
+ */
+type FlungOutcome = {
+  itemId: string; itemName: string; effect: FlungEffect;
+  fact: string | null;
+  status: FlingStatus | null;
+  eat: StolenEat | null;
+};
+/** Each Fling row's FlungOutcome, by its trace (matchupRows' Uses to KO reads it). */
+const FLUNG = new WeakMap<CalcTrace, FlungOutcome>();
+const MOLD_BREAKERS = new Set(["moldbreaker", "teravolt", "turboblaze"]);
+
+function flungOutcome(attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, result: Result, min: number, max: number): FlungOutcome {
+  const itemId = attackerBuild.itemId;
+  const itemName = runtime.itemsById.get(itemId)?.name ?? itemId;
+  const effect = flungEffect(flingData(runtime, itemId)!);
+  const none: FlungOutcome = { itemId, itemName, effect, fact: null, status: null, eat: null };
+  const survival = survivalEffect(result, max).survival;
+  if (max === 0 || (min >= result.defender.curHP() && !survival)) return none;
+  const target = ownSpecies(defenderBuild, runtime).name;
+  const sourceAbility = gassedAbility(attackerBuild, defenderBuild, conditions) ? "" : attackerBuild.abilityId;
+  const targetAbility = gassedAbility(defenderBuild, attackerBuild, conditions) ? "" : defenderBuild.abilityId;
+  const targetItem = itemIgnored(defenderBuild, attackerBuild, conditions) ? "" : defenderBuild.itemId;
+  // A Mold Breaker attacker ignores the target's breakable abilities for the move, unless its Ability Shield keeps them.
+  const moldBreaker = MOLD_BREAKERS.has(sourceAbility) && targetItem !== "abilityshield";
+  if (effect.kind === "status") {
+    const engine = result.defender;
+    const types: readonly string[] = engine.teraType && engine.teraType !== "Stellar" ? [engine.teraType] : engine.types;
+    const ability = moldBreaker && targetAbility === "levitate" ? "" : targetAbility;
+    const grounded = conditions.gravity || targetItem === "ironball" || defenderBuild.grounding === "pinned"
+      || (defenderBuild.grounding !== "floating" && !types.includes("Flying") && ability !== "levitate" && targetItem !== "airballoon");
+    const sunny = ["Sun", "Harsh Sunshine"].includes(result.field.weather ?? "") && targetItem !== "utilityumbrella";
+    const lands = flungStatusLands(effect.status, {
+      status: defenderBuild.status, types, ability: targetAbility, item: targetItem, speciesId: defenderBuild.speciesId, grounded, safeguard: !!conditions.defenderSide.safeguard,
+    }, { ability: sourceAbility, moldBreaker }, conditions.terrain, sunny);
+    return lands ? { ...none, fact: flungFact(effect, itemName, target), status: effect.status } : none;
+  }
+  if (effect.kind === "flinch") {
+    // Shield Dust and Covert Cloak stop the secondary, Inner Focus the flinch; a Dynamaxed Pokémon cannot flinch.
+    const ability = moldBreaker && ["shielddust", "innerfocus"].includes(targetAbility) ? "" : targetAbility;
+    const blocked = ability === "shielddust" || ability === "innerfocus" || targetItem === "covertcloak" || isMaxActive(defenderBuild);
+    return blocked ? none : { ...none, fact: flungFact(effect, itemName, target) };
+  }
+  if (effect.kind === "whiteherb") {
+    return COMBAT_STATS.some((stat) => (defenderBuild.boosts[stat] ?? 0) < 0) ? { ...none, fact: flungFact(effect, itemName, target) } : none;
+  }
+  if (effect.kind === "berry") {
+    // sim/battle.ts singleEvent suppresses the Berry's Eat for a target that ignores its own item (Embargo; Klutz, but for an
+    // ignoreKlutz item it holds); runEvent('EatItem') still runs, so Cheek Pouch heals.
+    const ignoresItem = !!defenderBuild.itemSuppressed || (klutzActive(defenderBuild, attackerBuild) && !KLUTZ_IGNORED_ITEMS.has(defenderBuild.itemId));
+    const eat = stolenEat(itemId, { baseMaxHP: result.defender.maxHP(true), ability: targetAbility, ignoresItem }, runtime.profile.generation);
+    return { ...none, fact: flungFact(effect, itemName, target), eat };
+  }
+  // Mental Herb ends volatiles a 1v1 build never has.
+  return none;
+}
+
+/** Uses to KO's reason when a thrown item changes the target in a way the uses do not follow (a fact, as uses-to-ko's reasons are). */
+function flungReason(flung: Pick<FlungOutcome, "itemName">, what: "heals" | "pouch" | "cures" | FlingStatus): string {
+  if (what === "heals") return `The flung ${flung.itemName} heals it`;
+  if (what === "pouch") return `Cheek Pouch heals it as it eats the flung ${flung.itemName}`;
+  if (what === "cures") return `The flung ${flung.itemName} cures its status`;
+  return `The flung ${flung.itemName} ${what === "brn" ? "burns" : what === "tox" ? "badly poisons" : "poisons"} it`;
+}
+
+/** Whether two first-use outcomes are the same (the average to float rounding). */
+function sameAfterUse(a: AfterUse, b: AfterUse): boolean {
+  const { average: x, ...restA } = a, { average: y, ...restB } = b;
+  return Math.abs(x - y) < 1e-9 && JSON.stringify(restA) === JSON.stringify(restB);
+}
+
+/**
+ * Uses to KO and the first use's outcome of a thrown Fling (matchupRows). The uses walk the hit with the item still held and the
+ * target unchanged after it, and Fling fails on the second use, so the count is the first use with its end of turn:
+ * - the count again from the state the hit leaves: the attacker's item thrown (no Life Orb recoil, Shell Bell, Berry, Sticky
+ *   Barb, Leftovers or Orb after the hit; its Speed without it for the end of turn's order), and a burn or poison it gives the
+ *   target already set (it acts first at that end of turn; the hit's damage is the row's), a certain knockout aside;
+ * - a Berry the target eats (stolenEat): its heal and Cheek Pouch's come right after the hit, before the target's own HP item at
+ *   the Update, so the outcome is fling.ts firstUseWalk with them, used only where the same walk without them is uses-to-ko's own
+ *   outcome; the count stands where no sequence is knocked out at that end of turn (a heal or a cure cannot add one, but for a
+ *   Poison Heal holder's cured poison), and is not estimated otherwise.
+ */
+function flingUses(flung: FlungOutcome, est: { usesToKO: UsesToKO; afterUse: AfterUse | null }, row: MoveDamageResult, trace: CalcTrace,
+  attacker: BattleBuild, defender: BattleBuild, field: BattleConditions, runtime: BattleRuntime,
+  recount: (attacker: BattleBuild, defender: BattleBuild) => UsesToKO): { usesToKO: UsesToKO; afterUse: AfterUse | null } {
+  const status = flung.status && HP_STATUSES.has(flung.status) ? flung.status : null;
+  let usesToKO = est.usesToKO;
+  if (usesToKO.kind === "single-use" && usesToKO.koChance < 1) {
+    try {
+      usesToKO = recount({ ...attacker, itemId: "" }, status ? { ...defender, status } : defender);
+    } catch {
+      usesToKO = { kind: "not-estimated", reason: status ? flungReason(flung, status) : UNCOUNTED };
+    }
+  }
+  const single = usesToKO.kind === "single-use" ? usesToKO : null;
+  const eat = flung.eat;
+  if (status || !eat) return { usesToKO, afterUse: est.afterUse };
+  const cures = !!defender.status && eat.cures.includes(defender.status);
+  if (!eat.heal && !eat.pouch && !cures) return { usesToKO, afterUse: est.afterUse };
+  const reason = flungReason(flung, eat.heal ? "heals" : eat.pouch ? "pouch" : "cures");
+  let afterUse = est.afterUse;
+  if (afterUse && (eat.heal || eat.pouch)) afterUse = flungAfterUse(flung, eat, afterUse, row, trace, attacker, defender, field, runtime);
+  const plainKO = est.afterUse?.koChance;
+  const noTurnKO = !!single && plainKO !== undefined && Math.abs(single.koChance - plainKO) < 1e-12;
+  const poisonHealCure = cures && (defender.status === "psn" || defender.status === "tox") && defender.abilityId === "poisonheal";
+  const kept = !single || (noTurnKO && !poisonHealCure && (!!afterUse || !(eat.heal || eat.pouch)));
+  return { usesToKO: kept ? usesToKO : { kind: "not-estimated", reason }, afterUse };
+}
+
+/** flingUses' first use with the flung Berry's heals, or null when firstUseWalk without them is not uses-to-ko's own outcome. */
+function flungAfterUse(flung: FlungOutcome, eat: StolenEat, plain: AfterUse, row: MoveDamageResult, trace: CalcTrace, attacker: BattleBuild, defender: BattleBuild,
+  field: BattleConditions, runtime: BattleRuntime): AfterUse | null {
+  const result = trace.result;
+  const rolls = row.rolls;
+  if (!result || !Array.isArray(rolls) || rolls.length !== 16 || rolls.some((roll) => typeof roll !== "number") || row.hits !== 1 || row.survival === "Focus Band") return null;
+  const maxHP = result.defender.maxHP(), baseMaxHP = result.defender.maxHP(true);
+  const ability = gassedAbility(defender, attacker, field) ? "" : defender.abilityId;
+  const item = itemIgnored(defender, attacker, field) ? "" : defender.itemId;
+  const unnerved = UNNERVES.has(gassedAbility(attacker, defender, field) ? "" : attacker.abilityId);
+  const itemName = runtime.itemsById.get(item)?.name ?? item;
+  const own = HEALING_BERRIES.has(item) && (item === "berryjuice" || !unnerved) ? berryArithmetic(item, { maxHP, baseMaxHP, ability }, runtime.profile.generation) : null;
+  // The target's Enigma Berry heals in the hit's onHit after a super-effective hit, after Fling's own onHit.
+  const enigma: UseHeal[] = own?.enigma ? turnEffectiveness(Generations.get(runtime.profile.generation), result) > 1 ? [{ source: itemName, amount: own.heal }, { source: "Cheek Pouch", amount: own.pouch }] : [] : [];
+  const update = own && !own.enigma ? { source: itemName, berry: own } : null;
+  const walk = (onHit: UseHeal[]) => firstUseWalk({
+    start: plain.start, maxHP, rolls: rolls as number[], endure: row.survival === "Focus Sash" || row.survival === "Sturdy", onHit, update,
+  });
+  if (!sameAfterUse(walk(enigma), plain)) return null;
+  return walk([{ source: flung.itemName, amount: eat.heal }, { source: "Cheek Pouch", amount: eat.pouch }, ...enigma]);
+}
+
+/**
+ * A Dynamaxed attacker's Fling row (its Max Move while Dynamax lasts, then Fling: uses-to-ko.ts dynamaxCap): the use that throws
+ * the item lands its effect too, which the uses do not follow, so a count that reaches that use is not estimated where the item
+ * can change the target's HP (a burn or poison, a Berry's heal, Cheek Pouch, a cure).
+ */
+function maxFlingUses(usesToKO: UsesToKO, attacker: BattleBuild, defender: BattleBuild, field: BattleConditions, runtime: BattleRuntime): UsesToKO {
+  if (usesToKO.kind === "not-estimated" || usesToKO.kind === "no-damage") return usesToKO;
+  const plain = { ...attacker, mechanic: undefined };
+  const plan = flingPlan(plain, defender, field, runtime);
+  if (!("power" in plan)) return usesToKO;
+  const effect = flungEffect(flingData(runtime, attacker.itemId)!);
+  const outcome = { itemName: runtime.itemsById.get(attacker.itemId)?.name ?? attacker.itemId };
+  let what: Parameters<typeof flungReason>[1] | null = null;
+  if (effect.kind === "status" && HP_STATUSES.has(effect.status)) what = effect.status;
+  if (effect.kind === "berry") {
+    const ability = gassedAbility(defender, attacker, field) ? "" : defender.abilityId;
+    const ignoresItem = !!defender.itemSuppressed || (klutzActive(defender, attacker) && !KLUTZ_IGNORED_ITEMS.has(defender.itemId));
+    const baseMaxHP = getBuildStats({ ...defender, mechanic: undefined }, runtime)?.hp ?? 1;
+    const eat = stolenEat(attacker.itemId, { baseMaxHP, ability, ignoresItem }, runtime.profile.generation);
+    what = eat.heal ? "heals" : eat.pouch ? "pouch" : eat.cures.length ? "cures" : null;
+  }
+  if (!what) return usesToKO;
+  const maxUses = !gassedAbility(attacker, defender, field) && attacker.abilityId === "truant" ? 2 : 3;
+  if (usesToKO.kind === "uses" && usesToKO.guaranteed !== null && usesToKO.guaranteed <= maxUses) return usesToKO;
+  return { kind: "not-estimated", reason: flungReason(outcome, what) };
+}
+
 /** Ability Shield keeps an ability through Neutralizing Gas, except under Magic Room. */
-const shieldsAbility = (build: BattleBuild, conditions: BattleConditions) => build.itemId === "abilityshield" && !conditions.magicRoom;
+const shieldsAbility = (build: BattleBuild, conditions: BattleConditions) => build.itemId === "abilityshield" && !itemOff(build, conditions);
 
 const windRiderSuppressed = (holder: BattleBuild, other: BattleBuild, conditions: BattleConditions) =>
   other.abilityId === "neutralizinggas" && !shieldsAbility(holder, conditions);
@@ -1040,18 +1472,20 @@ function dampPrevents(attacker: BattleBuild, defender: BattleBuild): boolean {
  * or Piercing Drill, deal a quarter after every other damage modifier.
  */
 function protectOutcome(move: ChampionsMove, engineMove: Move, attacker: BattleBuild, defender: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime): ProtectOutcome {
-  if (PROTECT_IGNORING_MOVES.has(move.id)) return { kind: "full", line: `Protect does not block ${move.name}.` };
+  // status2 (SPEC2 §3.2): the protection's name when it is not the target's own (Mat Block on its side, for a Z-Move or Max Move).
+  const by = conditions.defenderSide.protectName ?? "Protect";
+  if (PROTECT_IGNORING_MOVES.has(move.id)) return { kind: "full", line: `${by} does not block ${move.name}.` };
   // The target's Neutralizing Gas suppresses the ability unless Ability Shield (not under Magic Room) keeps it.
   const suppressed = defender.abilityId === "neutralizinggas" && !shieldsAbility(attacker, conditions);
   // Punching Glove removes contact from punching moves (Showdown data/items.ts).
-  const contact = !!engineMove.flags.contact && !(attacker.itemId === "punchingglove" && engineMove.flags.punch && !conditions.magicRoom);
+  const contact = !!engineMove.flags.contact && !(attacker.itemId === "punchingglove" && engineMove.flags.punch && !itemOff(attacker, conditions));
   const piercing = !suppressed && contact && (attacker.abilityId === "unseenfist" || (runtime.profile.id === "champions" && attacker.abilityId === "piercingdrill"));
   const ability = runtime.abilitiesById.get(attacker.abilityId)?.name ?? attacker.abilityId;
   if (runtime.profile.id === "champions") {
-    return piercing ? { kind: "quarter", line: `Protect: ${ability} gets this contact move through at 1/4 damage.` } : { kind: "blocked" };
+    return piercing ? { kind: "quarter", line: `${by}: ${ability} gets this contact move through at 1/4 damage.` } : { kind: "blocked" };
   }
-  if (engineMove.isZ || engineMove.isMax || move.isZ || move.isMax || isMaxActive(attacker)) return { kind: "quarter", line: `Protect: ${move.name} breaks through at 1/4 damage.` };
-  if (piercing) return { kind: "full", line: "Protect: Unseen Fist gets this contact move through in full." };
+  if (engineMove.isZ || engineMove.isMax || move.isZ || move.isMax || isMaxActive(attacker)) return { kind: "quarter", line: `${by}: ${move.name} breaks through at 1/4 damage.` };
+  if (piercing) return { kind: "full", line: `${by}: Unseen Fist gets this contact move through in full.` };
   return { kind: "blocked" };
 }
 
@@ -1097,7 +1531,7 @@ function parentalBondStrike(generation: Generation, attacker: Pokemon, defender:
   const groundedAtUse = isGrounded(child, field);
   if (first.rawDesc.defenderItem && getBerryResistType(first.rawDesc.defenderItem)) target.item = undefined;
   // The engine's checkItem clears a Magic Room or Klutz item only inside calculate().
-  const suppressed = !!target.item && (conditions.magicRoom || target.hasAbility("Klutz"));
+  const suppressed = !!target.item && (conditions.magicRoom || target.hasAbility("Klutz") || !!marksOf(target)?.itemSuppressed);
   if (!suppressed) checkSeedBoost(target, field);
   const held = target.item;
   const hidden = suppressed || held === "Kee Berry" || held === "Maranga Berry" || held === "White Herb";
@@ -1135,13 +1569,15 @@ const BURN_IMMUNE_ABILITIES = new Set(["waterveil", "waterbubble", "thermalexcha
 function spicySprayFirstBurnedHit(first: Result, attackerBuild: BattleBuild, conditions: BattleConditions): number | null {
   const { attacker, defender, field } = first;
   if (!defender.hasAbility("Spicy Spray") || attackerBuild.status || first.range()[1] === 0) return null;
+  // status2 (2v2: SideConditions.safeguard): the user's side's Safeguard stops it (data/moves.ts safeguard onSetStatus: target !== source).
+  if (conditions.attackerSide.safeguard) return null;
   const types: string[] = attacker.teraType && attacker.teraType !== "Stellar" ? [attacker.teraType] : [...attacker.types];
   if (types.includes("Fire")) return null;
   if (BURN_IMMUNE_ABILITIES.has(toID(attacker.ability ?? ""))) return null;
   if (attacker.hasAbility("Leaf Guard") && field.hasWeather("Sun", "Harsh Sunshine") && !attacker.hasItem("Utility Umbrella")) return null;
   if (attacker.hasAbility("Flower Veil") && types.includes("Grass")) return null;
   if (field.hasTerrain("Misty") && isGrounded(attacker, field)) return null;
-  if (!conditions.magicRoom && !attacker.hasAbility("Klutz") && attacker.hasItem("Lum Berry", "Rawst Berry")) return 2;
+  if (!itemOff(attackerBuild, conditions) && !attacker.hasAbility("Klutz") && attacker.hasItem("Lum Berry", "Rawst Berry")) return 2;
   return 1;
 }
 
@@ -1164,7 +1600,7 @@ function turnOrderAgainstTarget(probe: Result, priority: number, attackerBuild: 
   // bracket; an eaten Custap Berry (at 1/4 HP, or 1/2 with Gluttony) makes it move first. settleItems
   // eats one held at its line before the move (settledCustap).
   const fraction = (build: BattleBuild, other: BattleBuild, pokemon: Pokemon, who: string) => {
-    const itemOn = !conditions.magicRoom && !(build.abilityId === "klutz" && other.abilityId !== "neutralizinggas");
+    const itemOn = !itemOff(build, conditions) && !(build.abilityId === "klutz" && other.abilityId !== "neutralizinggas");
     const abilityOn = !(other.abilityId === "neutralizinggas" && !shieldsAbility(build, conditions));
     const unnerved = ["unnerve", "asoneglastrier", "asonespectrier"].includes(other.abilityId) && !gassedAbility(other, build, conditions);
     const hp = pokemon.curHP(), max = pokemon.maxHP();
@@ -1192,6 +1628,7 @@ function turnOrderAgainstTarget(probe: Result, priority: number, attackerBuild: 
     if (before) {
       copy.boosts.spe = before.spe;
       if (copy.hasAbility("Unburden")) copy.abilityOn = before.unburden;
+      if (before.status) copy.status = before.status as typeof copy.status;
       const set = getFinalSpeed(probe.gen, copy, probe.field, side);
       if (set !== getFinalSpeed(probe.gen, pokemon, probe.field, side)) notes.push(`The turn order was set before ${who} ${before.item} was used (generation 7).`);
       return set;
@@ -1281,9 +1718,13 @@ function critRatio(moveId: string, build: BattleBuild, other: BattleBuild, conte
   // +2 for a Dragon type as it started, else +1); 1v1 never sets them, and one excludes the other (their onStart).
   if (build.focusEnergy) { ratio += 2; sources.push("Focus Energy"); }
   if (build.dragonCheer) { ratio += build.dragonCheer; sources.push("Dragon Cheer"); }
+  // status2 (2v2 only): G-Max Chi Strike's layers on it (data/moves.ts gmaxchistrike condition onModifyCritRatio: +1 per layer)
+  // and Laser Focus from last turn (data/moves.ts laserfocus condition onModifyCritRatio: 5), volatiles before its ability and item.
+  if (build.critBoost) { ratio += build.critBoost; sources.push("G-Max Chi Strike"); }
+  if (build.laserFocus) { ratio = Math.max(ratio, 5); sources.push("Laser Focus"); }
   if (build.abilityId === "superluck" && !gassedAbility(build, other, conditions)) { ratio += 1; sources.push("Super Luck"); }
   const own = runtime.speciesById.get(build.transformedFrom?.speciesId ?? build.speciesId)?.baseSpecies;
-  const item = !conditions.magicRoom && !klutzActive(build, other) ? build.itemId : "";
+  const item = !itemIgnored(build, other, conditions) ? build.itemId : "";
   const itemBoost = item === "scopelens" || item === "razorclaw" ? 1 : item === "leek" && (own === "farfetchd" || own === "sirfetchd") ? 2
     : item === "luckypunch" && own === "chansey" ? 2 : 0;
   if (itemBoost) { ratio += itemBoost; sources.push(runtime.itemsById.get(item)?.name ?? item); }
@@ -1476,7 +1917,7 @@ function abilityReplacementBlocked(attackerBuild: BattleBuild, defenderBuild: Ba
   const replacer = gassedAbility(defenderBuild, attackerBuild, conditions) ? "" : defenderBuild.abilityId;
   if (!["mummy", "lingeringaroma", "wanderingspirit"].includes(replacer)) return false;
   const own = gassedAbility(attackerBuild, defenderBuild, conditions) ? "" : attackerBuild.abilityId;
-  const item = conditions.magicRoom || klutzActive(attackerBuild, defenderBuild) ? "" : attackerBuild.itemId;
+  const item = itemIgnored(attackerBuild, defenderBuild, conditions) ? "" : attackerBuild.itemId;
   if (own === "longreach" || item === "protectivepads" || shieldsAbility(attackerBuild, conditions)) return true;
   if (replacer === "wanderingspirit") return FAIL_SKILL_SWAP.has(own) || shieldsAbility(defenderBuild, conditions) || isMaxActive(defenderBuild);
   return CANT_SUPPRESS.has(own);
@@ -1494,7 +1935,7 @@ function abilityReplacementBlocked(attackerBuild: BattleBuild, defenderBuild: Ba
  */
 function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBuild, defenderBuild: BattleBuild, conditions: BattleConditions, runtime: BattleRuntime, moveId: string): HitLoopInput {
   const ability = (build: BattleBuild, other: BattleBuild) => gassedAbility(build, other, conditions) ? "" : build.abilityId;
-  const item = (build: BattleBuild, other: BattleBuild) => conditions.magicRoom || klutzActive(build, other) ? "" : build.itemId;
+  const item = (build: BattleBuild, other: BattleBuild) => itemIgnored(build, other, conditions) ? "" : build.itemId;
   const attackerAbility = ability(attackerBuild, defenderBuild), attackerItem = item(attackerBuild, defenderBuild);
   const flags = result.move.flags ?? {};
   // Not their Z-Move or Max Move, which runs none of their handlers (hit-loop.ts ownMoveId).
@@ -1509,7 +1950,7 @@ function hitLoopInput(result: Result, attacker: Pokemon, attackerBuild: BattleBu
     takesBerry: steals,
     ...(steals ? { targetBerry: defenderBuild.itemId.endsWith("berry") && !(result.rawDesc.defenderItem && getBerryResistType(result.rawDesc.defenderItem)) ? defenderBuild.itemId : "" } : {}),
     ...(steals && moveId !== "incinerate"
-      ? { eats: { ignoresItem: conditions.magicRoom || (attackerAbility === "klutz" && !KLUTZ_IGNORED_ITEMS.has(attackerBuild.itemId)) } } : {}),
+      ? { eats: { ignoresItem: itemOff(attackerBuild, conditions) || (attackerAbility === "klutz" && !KLUTZ_IGNORED_ITEMS.has(attackerBuild.itemId)) } } : {}),
     targetGulping: gulpingTarget({ speciesId: defenderBuild.speciesId, abilityId: defenderBuild.abilityId, transformed: !!defenderBuild.transformedFrom }),
     generation: runtime.profile.generation,
   };
@@ -1549,6 +1990,61 @@ function survivalEffect({ defender, move }: Result, highest: number): Pick<MoveD
 }
 
 const FOCUS_BAND_NOTE = "Focus Band is not modelled: no KO chance or Uses to KO.";
+
+/**
+ * status2 (2v2 only): a one-hit KO move's hit into a target it reaches (doubles-guards.ts ohkoStep took Sturdy, Wonder Guard,
+ * the type immunity, Dynamax and the level first): the target's maximum HP, as fixedHPDamage's rows (Focus Sash, Endure, a
+ * Substitute, Disguise and Focus Band act on it in the turn's step).
+ */
+function ohkoDamage(move: ChampionsMove, probe: Result, assumptions: string[], connectsWithoutDefenderAbility: () => boolean, intactFace: string | null): MoveDamageResult {
+  const { defender } = probe;
+  if (!probe.range()[1]) {
+    const type = probe.move.type === move.type ? "" : `${probe.move.type}-type `;
+    return { ...zeroDamage(move, MOVE_BLOCKING_ABILITIES.has(defender.ability ?? "") && connectsWithoutDefenderAbility()
+      ? `${defender.ability} blocks ${type}${move.name}.` : `${type}${move.name} does not affect the defender's type.`), effectiveType: probe.move.type };
+  }
+  if (intactFace) return emptyRow(move, "needs-context", intactFace);
+  const damage = defender.maxHP();
+  const lines = ["One-hit KO move: its damage is the target's maximum HP."];
+  if (probe.move.type !== move.type) lines.push(`Effective move type: ${probe.move.type}.`);
+  if (defender.hasItem("Focus Band")) lines.push(FOCUS_BAND_NOTE);
+  probe.damage = damage;
+  return {
+    moveId: move.id, effectiveName: move.name, effectiveType: probe.move.type, effectivePower: move.power, effectiveCategory: move.category,
+    kind: "calculated", min: damage, max: damage, minPercent: 100, maxPercent: 100,
+    rolls: damage, ohkoChance: directKOChance(probe, 1),
+    description: `${move.name}: ${damage}–${damage} HP (100.0–100.0% of maximum HP).`,
+    assumptions: [...assumptions, ...lines], reason: null, hits: 1, ...survivalEffect(probe, damage),
+  };
+}
+
+/**
+ * status2 PR (2v2 only, MoveContext.fixedDamage): a damageCallback move's fixed hit (the Counter family: PS/sim/battle-actions.ts
+ * getDamage returns the callback's damage before every modifier) into a target it reaches: the probe's immunities (the type, a
+ * blocking ability), then `damage` HP, as fixedHPDamage's rows (Sturdy and Focus Sash at full HP, Endure, a Substitute,
+ * Disguise and Focus Band act on it in the turn's step).
+ */
+function fixedDamageRow(move: ChampionsMove, probe: Result, assumptions: string[], connectsWithoutDefenderAbility: () => boolean, intactFace: string | null, damage: number): MoveDamageResult {
+  const { defender } = probe;
+  if (!probe.range()[1]) {
+    const type = probe.move.type === move.type ? "" : `${probe.move.type}-type `;
+    return { ...zeroDamage(move, MOVE_BLOCKING_ABILITIES.has(defender.ability ?? "") && connectsWithoutDefenderAbility()
+      ? `${defender.ability} blocks ${type}${move.name}.` : `${type}${move.name} does not affect the defender's type.`), effectiveType: probe.move.type };
+  }
+  if (intactFace) return emptyRow(move, "needs-context", intactFace);
+  const lines = [`Fixed damage: ${damage} HP.`];
+  if (probe.move.type !== move.type) lines.push(`Effective move type: ${probe.move.type}.`);
+  if (defender.hasItem("Focus Band")) lines.push(FOCUS_BAND_NOTE);
+  probe.damage = damage;
+  const percent = damage / defender.maxHP() * 100;
+  return {
+    moveId: move.id, effectiveName: move.name, effectiveType: probe.move.type, effectivePower: move.power, effectiveCategory: move.category,
+    kind: "calculated", min: damage, max: damage, minPercent: percent, maxPercent: percent,
+    rolls: damage, ohkoChance: directKOChance(probe, 1),
+    description: `${move.name}: ${damage}–${damage} HP (${percent.toFixed(1)}–${percent.toFixed(1)}% of maximum HP).`,
+    assumptions: [...assumptions, ...lines], reason: null, hits: 1, ...survivalEffect(probe, damage),
+  };
+}
 
 function fixedHPDamage(move: ChampionsMove, probe: Result, assumptions: string[], connectsWithoutDefenderAbility: () => boolean, intactFace: string | null): MoveDamageResult {
   const { attacker, defender } = probe;
@@ -1613,17 +2109,48 @@ function calculateMove(
   settledEntry = false,
 ): MoveDamageResult {
   const side = battleConditions.attackerSide;
-  if (!side.battery && !side.powerSpot && !side.steelySpirit) {
+  const scope = rowScopeFor(assigned, attackerBuild, battleConditions, context);
+  if (!side.battery && !side.powerSpot && !side.steelySpirit && !scope) {
     return calculateMoveRow(assigned, attackerBuild, defenderBuild, battleConditions, context, runtime, friendGuardSuppressedBy, trace, consecutive, settledEntry);
   }
   const outer = partnerPowerIssue;
+  const outerScope = rowScope;
   partnerPowerIssue = null;
+  rowScope = scope;
   try {
     const row = calculateMoveRow(assigned, attackerBuild, defenderBuild, battleConditions, context, runtime, friendGuardSuppressedBy, trace, consecutive, settledEntry);
+    // A row with a scope is calculated whole on every later use (an engine-only rerun would not open it).
+    if (scope) trace.engine = undefined;
     return partnerPowerIssue && row.kind === "calculated" ? emptyRow(assigned, "unsupported", partnerPowerIssue) : row;
   } finally {
     partnerPowerIssue = outer;
+    rowScope = outerScope;
   }
+}
+
+/**
+ * status2 (SPEC2 §3.6, T2M §2.3, T2P §9.5; 2v2 only): the row's scope (RowScope) from the fields only a 2v2 turn sets, or null
+ * (every 1v1 row): two or three Helping Hands (one modifier, round(4096 × 1.5^n): 9216, 13824), the turn's power modifiers
+ * (powerMods), Mud Sport and Water Sport, Stored Power's, Power Trip's and Punishment's hidden stages; Electrify and Ion
+ * Deluge open one for the -ate boost they keep (calculateMoveRow).
+ */
+function rowScopeFor(assigned: ChampionsMove, attacker: BattleBuild, conditions: BattleConditions, context: MoveContext | undefined): RowScope | null {
+  if (!conditions.mudSport && !conditions.waterSport && (!context || (!context.helpingHands && !context.powerMods?.length && !context.hiddenStages && !context.retype))) return null;
+  const power: PartnerPower[] = [];
+  if (context?.helpingHands) {
+    power.push(context.helpingHands === 2
+      ? { name: "Helping Hand", mod: 9216, factor: "2.25x", partner: false, line: "Helping Hand twice: 2.25x power." }
+      : { name: "Helping Hand", mod: 13824, factor: "3.375x", partner: false, line: "Helping Hand three times: 3.375x power." });
+  }
+  for (const mod of context?.powerMods ?? []) {
+    const factor = `${Number((mod / 4096).toFixed(3))}x`;
+    power.push({ name: assigned.name, mod, factor, partner: false, line: `${assigned.name}: ${factor} power this turn.` });
+  }
+  const sports = conditions.mudSport || conditions.waterSport ? { mud: !!conditions.mudSport, water: !!conditions.waterSport } : null;
+  const counted = ["storedpower", "powertrip", "punishment"].includes(assigned.id) && !context?.useZ && !isMaxActive(attacker);
+  const extraBoosts = counted ? context?.hiddenStages ?? 0 : 0;
+  if (!power.length && !sports && !extraBoosts && !context?.retype) return null;
+  return { power, sports, extraBoosts };
 }
 
 function calculateMoveRow(
@@ -1639,8 +2166,17 @@ function calculateMoveRow(
   settledEntry: boolean,
 ): MoveDamageResult {
   let conditions = battleConditions;
+  // status2 (F3 §5.2.3; 2v2 only): Lucky Chant on the target's side (data/moves.ts luckychant onCriticalHit: false) stops every
+  // critical hit into it: the field's Critical hit, a certain ratio, an always-critical move, Merciless (its stand-in below).
+  const luckyChant = !!conditions.defenderSide.luckyChant;
+  const luckyChantStops = luckyChant && (conditions.critical || !!certainCrit(assigned.id, attackerBuild, defenderBuild, context, conditions, runtime)
+    || !!Generations.get(runtime.profile.generation).moves.get(toID(assigned.name) as ID)?.willCrit
+    || (attackerBuild.abilityId === "merciless" && (defenderBuild.status === "psn" || defenderBuild.status === "tox")));
+  if (luckyChant && conditions.critical) conditions = { ...conditions, critical: false };
+  // status2 (T2M §3.28; 2v2 only): two or three Helping Hands are one modifier of the row (rowScope), not the side's flag.
+  if (context?.helpingHands && conditions.attackerSide.helpingHand) conditions = { ...conditions, attackerSide: { ...conditions.attackerSide, helpingHand: false } };
   // A critical-hit ratio that makes every hit critical counts as the field's Critical hit.
-  const ratioCrit = conditions.critical ? null : certainCrit(assigned.id, attackerBuild, defenderBuild, context, conditions, runtime);
+  const ratioCrit = conditions.critical || luckyChant ? null : certainCrit(assigned.id, attackerBuild, defenderBuild, context, conditions, runtime);
   if (ratioCrit) conditions = { ...conditions, critical: true };
   // Event-doubling moves (event-moves.ts): pass the chosen case's power as an override,
   // which survives the engine's internal move clone. A Z/Max conversion takes its own
@@ -1653,10 +2189,20 @@ function calculateMoveRow(
   // Last Respects / Rage Fist power from their count, and Beat Up's hits (count-moves.ts).
   const counted = countPower(assigned.id, context, runtime);
   const beatUp = assigned.id === "beatup" ? beatUpPlan(attackerBuild, context, runtime) : null;
-  const overridePower = eventPower ?? (counted && "power" in counted ? counted.power : null)
-    ?? (beatUp && "hits" in beatUp ? beatUp.hits[0].power : null);
+  // status2 (2v2 only): a base power the turn gives at use (MoveContext.basePower: Round, a combined Pledge, Present, Magnitude,
+  // Fury Cutter, Rollout, Ice Ball, Echoed Voice, Trump Card) and Spit Up's 100 per Stockpile layer (data/moves.ts spitup
+  // basePowerCallback), before the move's own.
+  const turnPower = context?.basePower ?? (assigned.id === "spitup" && context?.stockpile ? 100 * context.stockpile : null);
+  // Fling (SPEC2 §4.7; not its Z-Move or Max Move): the held item's pinned power (catalog item.fling), once it can be flung.
+  const fling = assigned.id === "fling" && !context?.useZ && !isMaxActive(attackerBuild) ? flingPlan(attackerBuild, defenderBuild, conditions, runtime) : null;
+  const flingPower = fling && "power" in fling ? fling.power : null;
+  const overridePower = turnPower ?? eventPower ?? (counted && "power" in counted ? counted.power : null)
+    ?? (beatUp && "hits" in beatUp ? beatUp.hits[0].power : null) ?? flingPower;
   const baseOverrides = {
     ...(conditions.gameType === "Doubles" && !conditions.multipleTargets ? { target: "normal" as const } : {}),
+    // status2: Lucky Chant also stops an always-critical move (its willCrit); a combined Pledge's own type (MoveContext.retypeTo).
+    ...(luckyChant ? { willCrit: false } : {}),
+    ...(context?.retypeTo ? { type: context.retypeTo as TypeName } : {}),
     // Move.clone() resets a fixed multihit from data, so `hits` alone does not survive. Showdown's
     // Tera 60-power floor skips any dex multihit move (battle-actions.ts getDamage), so the split dart
     // keeps multiaccuracy, the other thing the engine's floor check reads.
@@ -1667,11 +2213,43 @@ function calculateMoveRow(
   // A Stellar first use the partner-shield check below answers for itself (moveContext); the question
   // is asked only if the shield lets the move through.
   let moveContext = context;
+  // status2 (F2 §2.3, T2M §3.29; 2v2 only): Electrify or Ion Deluge (retypePlan); a combined Pledge's own type (retypeTo) wins.
+  const plan: RetypePlan | null = context?.retype && !context.retypeTo ? retypePlan(assigned, attackerBuild, defenderBuild, conditions, context, runtime) : null;
+  if (plan?.kind === "unsupported") return emptyRow(assigned, "unsupported", plan.reason);
+  const retypeUser = plan?.kind === "type" && plan.standIn ? makePokemon(attackerBuild, runtime) : null;
+  if (retypeUser) retypeUser.ability = "Run Away" as AbilityName;
+  /** A Z-Move Electrify or Ion Deluge made Electric: it keeps its own name (T2-Q04: Breakneck Blitz). */
+  let zRetyped = false;
+  /** An own-type move's type and power at use (the unretyped probe), once Electrify or Ion Deluge retypes it. */
+  let ownRetype: { power: number; category: "Physical" | "Special"; target: Move["target"] } | null = null;
   const resolveWith = (basePower: number | null, extra: { name?: MoveName; type?: TypeName; category?: "Physical" | "Special"; flags?: { contact: 1 } } = {}) => {
-    const resolution = resolveBattleMove(assigned, attackerBuild, makePokemon(attackerBuild, runtime), moveContext, runtime, {
+    const user = retypeUser ?? makePokemon(attackerBuild, runtime);
+    let resolution = resolveBattleMove(assigned, attackerBuild, user, moveContext, runtime, {
       isCrit: conditions.critical,
-      overrides: { ...baseOverrides, ...(basePower !== null ? { basePower } : {}), ...extra },
+      overrides: { ...baseOverrides, ...(plan?.kind === "type" ? { type: "Electric" as TypeName } : {}), ...(basePower !== null ? { basePower } : {}), ...extra },
     });
+    if (!resolution.kind && plan?.kind === "z" && resolution.move.isZ && (context?.retype === "electrify" || resolution.move.type === "Normal")) {
+      // A Z-Move keeps its name and becomes Electric (T2-Q04 to Q06): built by its name with the Z power and category it has.
+      const zMove = new EngineMove(Generations.get(runtime.profile.generation), resolution.move.name, {
+        isCrit: conditions.critical, ability: user.ability, item: user.item, timesUsed: 1, timesUsedWithMetronome: 0,
+        overrides: { type: "Electric" as TypeName, basePower: resolution.move.bp, category: resolution.move.category, target: resolution.move.target, ...(luckyChant ? { willCrit: false } : {}) },
+      });
+      resolution = { ...resolution, move: zMove, effective: { ...resolution.effective, type: "Electric" } };
+      zRetyped = true;
+    }
+    if (!resolution.kind && ownRetype && !resolution.transformed) {
+      // A carrier with the move's data and no name-keyed type branch (the parentalBondStrike Terrain Pulse precedent): Electric,
+      // at the power, category and target the move had at use (T2-Q03, Q16).
+      const generation = Generations.get(runtime.profile.generation);
+      const carrierName = `${assigned.name} (type and power at use)` as MoveName;
+      const data = generation.moves.get(toID(assigned.name) as ID);
+      const carrier = new EngineMove(generation, carrierName, {
+        isCrit: conditions.critical, ability: user.ability, item: user.item, timesUsed: 1, timesUsedWithMetronome: 0,
+        overrides: { ...(data as object), ...baseOverrides, name: carrierName, type: "Electric" as TypeName, basePower: ownRetype.power, category: ownRetype.category, target: ownRetype.target } as never,
+      });
+      carrier.hits = resolution.move.hits;
+      resolution = { ...resolution, move: carrier, effective: { ...resolution.effective, type: "Electric", power: ownRetype.power, category: ownRetype.category } };
+    }
     // Metronome's boost counts earlier consecutive turns (pinned Showdown numConsecutive, at most 5); the
     // engine reads it from the move, and its clones keep it.
     if (!resolution.kind && consecutive > 0) resolution.move.timesUsedWithMetronome = Math.min(consecutive, 5);
@@ -1683,8 +2261,10 @@ function calculateMoveRow(
   const earlyGate = TYPE_GATED_MOVES[assigned.id];
   if (earlyGate && !context?.useZ && !isMaxActive(attackerBuild)) {
     const tera = attackerBuild.mechanic === "tera" ? attackerBuild.configuration?.teraType : undefined;
+    // status2: a 2v2 Pokémon's world types (buildTypes) when the turn set them.
     const types: readonly string[] = tera && tera !== "Stellar" ? [tera]
-      : mimicryTypes(attackerBuild, defenderBuild, conditions, "attacker", runtime).types ?? runtime.speciesById.get(attackerBuild.speciesId)?.types ?? [];
+      : attackerBuild.types || attackerBuild.addedType ? buildTypes(attackerBuild, runtime)
+        : mimicryTypes(attackerBuild, defenderBuild, conditions, "attacker", runtime).types ?? runtime.speciesById.get(attackerBuild.speciesId)?.types ?? [];
     if (!types.includes(earlyGate)) return zeroDamage(assigned, `${assigned.name} fails because the attacker is not ${earlyGate} type.`);
   }
   // A Crowned Zacian or Zamazenta has Behemoth Blade / Bash in its Iron Head slot (pinned Showdown
@@ -1711,11 +2291,32 @@ function calculateMoveRow(
     return emptyRow(assigned, "unsupported", `This matchup could not be calculated: ${error instanceof Error ? error.message : "Unknown engine error."}`);
   }
   if (resolved.kind) return emptyRow(assigned, resolved.kind, resolved.reason);
+  // status2: an own-type move under Electrify, or under Ion Deluge where its type at use is Normal (T2-Q09), is probed
+  // unretyped into a typeless stand-in target (no immunity cuts the base power short), then rebuilt as the Electric carrier.
+  if (plan?.kind === "own" && !resolved.transformed) {
+    const generation = Generations.get(runtime.profile.generation);
+    const user = makePokemon(attackerBuild, runtime);
+    if (gassedAbility(attackerBuild, defenderBuild, conditions)) user.ability = "Run Away" as AbilityName;
+    const target = withTypes(makePokemon(defenderBuild, runtime), ["???" as TypeName]);
+    target.ability = "Run Away" as AbilityName;
+    target.item = undefined;
+    const probe = calculate(generation, user, target, resolved.move.clone(), makeField(conditions));
+    if (context?.retype === "electrify" || probe.move.type === "Normal") {
+      const gift = assigned.id === "naturalgift" && probe.attacker.item?.endsWith("Berry") ? getNaturalGift(generation, probe.attacker.item).p : null;
+      ownRetype = {
+        power: gift ?? probe.rawDesc.moveBP ?? probe.move.bp, category: probe.move.category === "Status" ? assigned.category as "Physical" | "Special" : probe.move.category, target: probe.move.target,
+      };
+      resolved = resolveWith(overridePower);
+      if (resolved.kind) return emptyRow(assigned, resolved.kind, resolved.reason);
+      // Raging Bull still breaks the screens (T2-Q16); the carrier has no name-keyed branch, so its run has none.
+      if (assigned.id === "ragingbull") conditions = { ...conditions, defenderSide: { ...conditions.defenderSide, reflect: false, lightScreen: false, auroraVeil: false } };
+    }
+  }
   // Showdown types Weather Ball and Terrain Pulse before it picks the Max Move (useMove ModifyType, then
   // getActiveMaxMove), so a Gigantamax user gets its G-Max move only when that type is its signature's
   // (G-Max Hydrosnipe then keeps its fixed 160 power and ignores abilities). The engine picks from the
   // Normal data type, so a probe finds the engine's own converted type and the move is built with it.
-  if (attackerBuild.mechanic === "gigantamax" && ["weatherball", "terrainpulse"].includes(assigned.id)) {
+  if (attackerBuild.mechanic === "gigantamax" && ["weatherball", "terrainpulse"].includes(assigned.id) && !plan) {
     const probeSide = (build: BattleBuild, other: BattleBuild) => {
       const pokemon = makePokemon(build, runtime);
       if (gassedAbility(build, other, conditions)) pokemon.ability = "Run Away" as AbilityName;
@@ -1755,7 +2356,7 @@ function calculateMoveRow(
     const user = makePokemon(attackerBuild, runtime);
     // The target's Neutralizing Gas also stops Gale Wings and Triage.
     if (gassedAbility(attackerBuild, defenderBuild, conditions)) user.ability = "Run Away" as AbilityName;
-    const { priority } = usedPriority(metadata, assigned, resolved, user, attackerBuild, defenderBuild, conditions);
+    const { priority } = usedPriority(metadata, assigned, resolved, user, attackerBuild, defenderBuild, conditions, context?.frozenPriority);
     if (priority > 0) {
       const names = priorityShieldNames(runtime);
       const suppressor = partnerAbilitySuppressor(attackerBuild, defenderBuild, runtime);
@@ -1764,16 +2365,21 @@ function calculateMoveRow(
       if (suppressor !== "Neutralizing Gas") shieldIgnoredBy = suppressor;
     }
   }
+  // Fling fails in its onPrepareHit, before Protect's TryHit and any question about the hit (PS/data/moves.ts fling); Flower
+  // Sweet (fling.basePower 0) is thrown for no damage (sim/battle-actions.ts getDamage returns undefined).
+  if (fling && "fails" in fling) return zeroDamage(metadata, fling.fails);
+  if (flingPower === 0) return zeroDamage(metadata, `Fling throws ${runtime.itemsById.get(attackerBuild.itemId)?.name ?? attackerBuild.itemId} for no damage (0 power).`);
   if (pendingContext) return emptyRow(metadata, "needs-context", pendingContext);
   let protect: ProtectOutcome | null = null;
   if (conditions.defenderSide.protect) {
-    if (isMaxActive(defenderBuild)) return emptyRow(metadata, "unsupported", "Max Guard is not modelled.");
+    // status2: a side's protection the 2v2 turn names (Mat Block: protectName) is not the target's Max Guard.
+    if (isMaxActive(defenderBuild) && !conditions.defenderSide.protectName) return emptyRow(metadata, "unsupported", "Max Guard is not modelled.");
     // These fail in Showdown's Try/TryMove steps, before Protect's TryHit.
     if (TARGET_ATTACK_MOVES.has(metadata.id)) return zeroDamage(metadata, `${metadata.name} fails: the target is protecting.`);
     if (metadata.id === "snore" && attackerBuild.status !== "slp" && attackerBuild.abilityId !== "comatose") return zeroDamage(metadata, "Snore fails because the attacker is not asleep.");
     if (EXPLOSIVE_MOVES.has(metadata.id) && dampPrevents(attackerBuild, defenderBuild)) return zeroDamage(metadata, `Damp prevents ${metadata.name} from being used.`);
     protect = protectOutcome(metadata, resolved.move, attackerBuild, defenderBuild, conditions, runtime);
-    if (protect.kind === "blocked") return zeroDamage(metadata, `Protect blocks ${metadata.name}.`);
+    if (protect.kind === "blocked") return zeroDamage(metadata, `${conditions.defenderSide.protectName ?? "Protect"} blocks ${metadata.name}.`);
     // Fixed damage (damageCallback) skips modifyDamage, where Showdown takes the quarter; Guardian of Alola has its own.
     if (protect.kind === "quarter" && FIXED_DAMAGE_MOVES.has(metadata.id)) {
       protect = metadata.id === "guardianofalola"
@@ -1786,13 +2392,12 @@ function calculateMoveRow(
     && (attackerBuild.abilityId !== "rivalry" || !getBuildGender(attackerBuild, runtime) || !getBuildGender(defenderBuild, runtime))) {
     return emptyRow(metadata, "needs-context", CONTEXT_ABILITIES[attackerBuild.abilityId]);
   }
-  if (metadata.ohko) return emptyRow(metadata, "unsupported", "One-hit KO move: no damage range.");
-  if (HISTORY_MOVES[metadata.id]) return emptyRow(metadata, "needs-context", metadata.id === "fling" && runtime.profile.id !== "champions"
-    ? "Fling is not verified for this game."
-    : HISTORY_MOVES[metadata.id]);
+  // status2 (2v2 only, MoveContext.ohko): the turn's hit of a one-hit KO move is calculated (ohkoDamage below).
+  if (metadata.ohko && !context?.ohko) return emptyRow(metadata, "unsupported", "One-hit KO move: no damage range.");
+  if (HISTORY_MOVES[metadata.id] && !historyAnswered(metadata.id, context)) return emptyRow(metadata, "needs-context", HISTORY_MOVES[metadata.id]);
   if (!resolved.transformed && counted && "reason" in counted) return emptyRow(metadata, "needs-context", counted.reason);
   if (!resolved.transformed && beatUp && "reason" in beatUp) return emptyRow(metadata, "needs-context", beatUp.reason);
-  if (metadata.power === 0 && !ZERO_POWER_IMPLEMENTED.has(metadata.id) && !FIXED_HP_MOVES[metadata.id] && !(beatUp && !resolved.transformed)) {
+  if (metadata.power === 0 && !ZERO_POWER_IMPLEMENTED.has(metadata.id) && !FIXED_HP_MOVES[metadata.id] && !(metadata.ohko && context?.ohko) && !(context?.fixedDamage !== undefined && !resolved.transformed) && !(beatUp && !resolved.transformed)) {
     return emptyRow(metadata, "unsupported", `This move's damage is not verified in the ${runtime.profile.id === "champions" ? "Champions" : runtime.profile.label} engine.`);
   }
   const restricted = !resolved.transformed ? USER_RESTRICTED_MOVES[metadata.id] : undefined;
@@ -1826,12 +2431,15 @@ function calculateMoveRow(
   let suppressedItemNote: string | null = null;
   const holderKlutz = !!suppressedItemHolder && klutzActive(suppressedItemHolder, suppressedItemOther);
   // The engine clears the item under Magic Room, or for Klutz unless it is one of its kept items.
-  if (suppressedItemHolder?.itemId && (conditions.magicRoom || (holderKlutz && !ENGINE_KLUTZ_KEPT_ITEMS.has(suppressedItemHolder.itemId)))) {
+  // status2: Embargo on the holder (BattleBuild.itemSuppressed) clears it in the engine as Magic Room does (engine-corrections.cjs checkItem).
+  const holderEmbargo = !!suppressedItemHolder?.itemSuppressed;
+  if (suppressedItemHolder?.itemId && (conditions.magicRoom || holderEmbargo || (holderKlutz && !ENGINE_KLUTZ_KEPT_ITEMS.has(suppressedItemHolder.itemId)))) {
     resolved = resolveWith(overridePower, { name: `${metadata.name} (held item suppressed)` as MoveName });
     if (resolved.kind) return emptyRow(metadata, resolved.kind, resolved.reason);
     const item = runtime.itemsById.get(suppressedItemHolder.itemId)?.name ?? suppressedItemHolder.itemId;
     const klutzSuppresses = holderKlutz && !KLUTZ_IGNORED_ITEMS.has(suppressedItemHolder.itemId);
-    const by = conditions.magicRoom && klutzSuppresses ? "Magic Room and Klutz suppress" : conditions.magicRoom ? "Magic Room suppresses" : klutzSuppresses ? "Klutz suppresses" : null;
+    const by = conditions.magicRoom && klutzSuppresses ? "Magic Room and Klutz suppress" : conditions.magicRoom ? "Magic Room suppresses" : holderEmbargo ? "Embargo suppresses"
+      : klutzSuppresses ? "Klutz suppresses" : null;
     // A Seed still held on its own terrain met the room first (settleItems says so, and its panel
     // switch covers the other order); an active Klutz never lets it activate.
     const whose = metadata.id === "acrobatics" ? "the attacker's" : "the target's";
@@ -1839,7 +2447,7 @@ function calculateMoveRow(
     suppressedItemNote = by ? `${by} ${whose} ${item}, still held: ${outcome}.` : `Klutz does not affect ${whose} ${item}: ${outcome}.`;
   }
 
-  const hitBattle: HitCountBattle = { magicRoom: conditions.magicRoom, opponentAbilityId: defenderBuild.abilityId };
+  const hitBattle: HitCountBattle = { magicRoom: itemOff(attackerBuild, conditions), opponentAbilityId: defenderBuild.abilityId };
   const resolvedHits = resolveHits(metadata, attackerBuild, context, runtime, hitBattle);
   // A hit an intact face or disguise takes needs no hit count: one hit finds out whether it connects,
   // and the count is asked for after the engine run otherwise.
@@ -1853,6 +2461,7 @@ function calculateMoveRow(
 
   const assumptions = ["One use, if it connects; damage is not capped at the target's HP.", ...resolved.assumptions, ...(shieldNote ? [shieldNote] : [])];
   if (protect && "line" in protect) assumptions.push(protect.line);
+  if (luckyChantStops) assumptions.push("Lucky Chant: no critical hit.");
   if (suppressedItemNote) assumptions.push(suppressedItemNote);
   if (analyticAfterProtect) assumptions.push("Analytic: boosted (the target protected first).");
   const eventAssumption = resolved.transformed ? null
@@ -1893,7 +2502,8 @@ function calculateMoveRow(
       assumptions.push("Friend Guard: 75% damage.");
     }
   }
-  if (SUCCESS_ASSUMPTIONS[metadata.id]) assumptions.push(SUCCESS_ASSUMPTIONS[metadata.id]);
+  // status2 (2v2 only): a released Meteor Beam or Electro Shot has no rise of its own (MoveContext.released).
+  if (SUCCESS_ASSUMPTIONS[metadata.id] && !(context?.released && PRE_HIT_RISE.has(metadata.id))) assumptions.push(SUCCESS_ASSUMPTIONS[metadata.id]);
   if (LEAVES_ONE_HP_MOVES.has(metadata.id)) {
     assumptions.push(`${metadata.name} leaves the target at least 1 HP.`);
   } else if (resolved.transformed && LEAVES_ONE_HP_MOVES.has(assigned.id)) {
@@ -1921,7 +2531,40 @@ function calculateMoveRow(
     const defenderMimicry = mimicryTypes(defenderBuild, attackerBuild, conditions, "target", runtime);
     for (const line of [attackerMimicry.line, defenderMimicry.line]) if (line) assumptions.push(line);
     const attacker = makePokemon(analyticAfterProtect ? { ...attackerBuild, abilityActive: true } : attackerBuild, runtime, attackingSpecies, attackerMimicry.types);
-    const defender = makePokemon(defenderBuild, runtime, defenderBuild.speciesId, defenderMimicry.types);
+    // status2 (2v2 only, MoveContext.released): the engine adds Meteor Beam's and Electro Shot's rise to every use (mechanics
+    // gen789.js / champions.js: Simple 2, Contrary −1, clamped at ±6); a release has none, so the stage goes in that much lower.
+    if (context?.released && PRE_HIT_RISE.has(metadata.id) && !resolved.transformed) attacker.boosts.spa -= attacker.hasAbility("Simple") ? 2 : attacker.hasAbility("Contrary") ? -1 : 1;
+    // status2 (T2M §2.3; 2v2 only): a priority move into the user's own ally (conditions.allyTarget) meets neither the ally's
+    // Dazzling, Queenly Majesty or Armor Tail (onFoeTryMove: foes only) nor Psychic Terrain's block (psychicterrain onTryHit:
+    // target.isAlly(source)); the engine applies both to any target.
+    let allyPriority = false;
+    if (conditions.allyTarget) {
+      const user = makePokemon(attackerBuild, runtime);
+      if (gassedAbility(attackerBuild, defenderBuild, conditions)) user.ability = "Run Away" as AbilityName;
+      allyPriority = usedPriority(metadata, assigned, resolved, user, attackerBuild, defenderBuild, conditions, context?.frozenPriority).priority > 0;
+    }
+    const defender = makePokemon(defenderBuild, runtime, defenderBuild.speciesId, defenderMimicry.types, allyPriority && conditions.terrain === "Psychic" ? { ungrounded: true } : undefined);
+    if (allyPriority && ["dazzling", "queenlymajesty", "armortail"].includes(defenderBuild.abilityId)) defender.ability = "Run Away" as AbilityName;
+    // status2: Electrify or Ion Deluge: the user's type-changing ability as GAS_STAND_IN (retypePlan), the -ate or Normalize
+    // 4915/4096 it keeps in the row's power chain (T2-K55, TW02).
+    if (retypeUser) attacker.ability = "Run Away" as AbilityName;
+    if (plan?.kind === "type" && plan.boost && rowScope) {
+      const name = runtime.abilitiesById.get(plan.boost)?.name ?? plan.boost;
+      rowScope.power.push({ name, mod: 4915, factor: "1.2x", partner: false, line: `${name}: 1.2x power (the move is Electric type).` });
+    }
+    // status2: Lucky Chant also stops Merciless's critical hit (its only effect).
+    if (luckyChant && attacker.hasAbility("Merciless")) attacker.ability = "Run Away" as AbilityName;
+    // status2 (A2 §4.3.6): a pinned defender (Ingrain, Smack Down) is grounded before its Levitate or Air Balloon count
+    // (sim/pokemon.ts isGrounded); the engine checks those for a Ground move itself. Neither has another damage effect.
+    if (defenderBuild.grounding === "pinned") {
+      if (defender.hasAbility("Levitate", "Eelevate" as AbilityName)) defender.ability = "Run Away" as AbilityName;
+      if (defender.hasItem("Air Balloon")) defender.item = "Leftovers" as never;
+    }
+    // status2 (T2P §9.5): a combined Pledge's forced STAB: the user's types for these runs gain its type (the engine reads
+    // them only for STAB); a Tera type of that type already gives it.
+    if (context?.forceStab && context.retypeTo && !attacker.types.includes(context.retypeTo as TypeName) && attacker.teraType !== context.retypeTo) {
+      withTypes(attacker, [...attacker.types, context.retypeTo as TypeName]);
+    }
     // A Seed Magic Room held back stays held and unused after the room ends; the engine would use it, so
     // it sees an item with no effect here (Knock Off, Acrobatics and Poltergeist still see an item).
     for (const [pokemon, build] of [[attacker, attackerBuild], [defender, defenderBuild]] as const) {
@@ -1961,7 +2604,7 @@ function calculateMoveRow(
     // An Iron Ball grounds its holder before Levitate or Eelevate count (pinned Showdown sim/pokemon.ts
     // isGrounded), so Ground moves hit; the Champions engine skips that check (gen789 has it). With the
     // Iron Ball working the ability changes no damage, and Run Away changes none in the engine.
-    const ironBallGrounded = defenderBuild.itemId === "ironball" && !conditions.magicRoom && ["levitate", "eelevate"].includes(defenderBuild.abilityId);
+    const ironBallGrounded = defenderBuild.itemId === "ironball" && !itemOff(defenderBuild, conditions) && ["levitate", "eelevate"].includes(defenderBuild.abilityId);
     if (ironBallGrounded && runtime.profile.id === "champions") defender.ability = "Run Away" as AbilityName;
     // The engine runs Forecast before it applies Neutralizing Gas, and ignores Utility Umbrella.
     if (forecastBlocked(attackerBuild, defenderBuild, conditions)) attacker.ability = "Run Away" as AbilityName;
@@ -2026,6 +2669,14 @@ function calculateMoveRow(
       if (resolved.kind) return emptyRow(metadata, resolved.kind, resolved.reason);
       assumptions.push(`Knock Off: no power boost (the target's ${runtime.itemsById.get(defenderBuild.itemId)?.name ?? defenderBuild.itemId} cannot be removed).`);
     }
+    // Fling at its item's pinned power: the engine's own Fling branch reads @smogon/calc's getFlingPower, which differs from
+    // pinned Showdown for about a third of the catalog items (status2/design/guards-probes-fling.out), so a neutral name runs
+    // it at that power. The engine Move then has a nonzero base power, so a Terastallized user's 60-power floor applies as in
+    // pinned Showdown (sim/battle-actions.ts getDamage: move.basePower, set in onPrepareHit); the item stays held for the hit.
+    if (flingPower) {
+      resolved = resolveWith(flingPower, { name: FLING_ENGINE_NAME as MoveName });
+      if (resolved.kind) return emptyRow(metadata, resolved.kind, resolved.reason);
+    }
     // Bolt Beak and Fishious Rend double when the user moves before its target; the engine uses
     // Speed alone (ties and Trick Room wrong), so the app sets the power from the turn order.
     let orderBySpeed = false;
@@ -2056,7 +2707,7 @@ function calculateMoveRow(
     move.hits = hitCount.hits;
     if (hitCount.hits > 1 && defender.item && AFTER_MOVE_ITEMS.has(defender.item)) defender.item = undefined;
     // The priority the move is used with, for turn order and the engine's priority shields.
-    const { priority, grassyGlide } = usedPriority(metadata, assigned, resolved, attacker, attackerBuild, defenderBuild, conditions);
+    const { priority, grassyGlide } = usedPriority(metadata, assigned, resolved, attacker, attackerBuild, defenderBuild, conditions, context?.frozenPriority);
     // For the turn order (calculateMatchup's Mirror Herb and Opportunist): the engine drops negative priority, the catalog keeps it.
     trace.priority = resolved.transformed || assigned.priority >= 0 ? priority : assigned.priority;
     if (grassyGlide) assumptions.push("Grassy Glide: +1 priority.");
@@ -2105,6 +2756,37 @@ function calculateMoveRow(
       if (last === true) attacker.abilityOn = true;
       else if (last === false) attacker.ability = "Run Away" as AbilityName;
     }
+    if (metadata.ohko && context?.ohko) {
+      // status2 (2v2 only): a probe at power 1 under a neutral name for the engine result the next use reads; the hit itself is
+      // the target's maximum HP (PS/sim/battle-actions.ts getDamage: `if (move.ohko) return target.maxhp`).
+      const probe = resolveWith(1, { name: "Fixed-damage probe" as MoveName });
+      if (probe.kind) return emptyRow(metadata, probe.kind, probe.reason);
+      const run = (target: Pokemon) => calculate(generation, attacker, target, probe.move, makeField(conditions));
+      const probed = run(defender);
+      trace.result = probed;
+      trace.fixedHP = true;
+      trace.ohko = true;
+      return ohkoDamage(metadata, probed, assumptions, () => {
+        const bare = defender.clone();
+        bare.ability = "Run Away" as AbilityName;
+        return run(bare).range()[1] > 0;
+      }, intactFace(metadata.category));
+    }
+    if (context?.fixedDamage !== undefined && !resolved.transformed) {
+      // status2 PR (2v2 only): the Counter family's fixed hit (MoveContext.fixedDamage), a probe at power 1 for its immunities.
+      const probe = resolveWith(1, { name: "Fixed-damage probe" as MoveName });
+      if (probe.kind) return emptyRow(metadata, probe.kind, probe.reason);
+      const run = (target: Pokemon) => calculate(generation, attacker, target, probe.move, makeField(conditions));
+      const probed = run(defender);
+      trace.result = probed;
+      trace.fixedHP = true;
+      trace.fixedDamage = context.fixedDamage;
+      return fixedDamageRow(metadata, probed, assumptions, () => {
+        const bare = defender.clone();
+        bare.ability = "Run Away" as AbilityName;
+        return run(bare).range()[1] > 0;
+      }, intactFace(metadata.category), context.fixedDamage);
+    }
     if (FIXED_HP_MOVES[metadata.id]) {
       // A neutral name keeps name-keyed engine branches (its own Nature's Madness case)
       // from replacing the probe's damage; the engine reads data by originalName.
@@ -2129,6 +2811,13 @@ function calculateMoveRow(
     if (attacker.hasAbility("Parental Bond")) attacker.ability = "Run Away" as AbilityName;
     if (bondSkip) assumptions.push(`Parental Bond: no second strike (${bondSkip}).`);
     let result = calculate(generation, attacker, defender, move, makeField(conditions));
+    // status2 (A2 §4.3.6): a floating defender (Magnet Rise, Telekinesis) is not grounded unless Gravity or a working Iron Ball
+    // grounds it (sim/pokemon.ts isGrounded): a Ground move other than Thousand Arrows has no effect (runImmunity).
+    if (defenderBuild.grounding === "floating" && result.move.type === "Ground" && !conditions.gravity && metadata.id !== "thousandarrows"
+      && !(defenderBuild.itemId === "ironball" && !itemIgnored(defenderBuild, attackerBuild, conditions))) {
+      const line = `${metadata.name} has no effect: the target is not grounded.`;
+      return { ...zeroDamage(metadata, line), assumptions: [...assumptions, line] };
+    }
     // A later use's engine-only rerun starts from these inputs; every step below that changes the damage
     // after the engine call clears them.
     trace.engine = { attacker, defender, move, conditions };
@@ -2176,7 +2865,15 @@ function calculateMoveRow(
         if (next.kind) return emptyRow(metadata, next.kind, next.reason);
         next.move.hits = 1;
         const burned = firstBurned !== null && index >= firstBurned;
-        const strike = calculate(generation, burned ? burnedStriker : attacker.clone(), defender, next.move, makeField(conditions));
+        // A later strike's own calculation: Ripen's weakened Berry was spent on the first (laterHit).
+        const outerLater = laterHit;
+        laterHit = true;
+        let strike: Result;
+        try {
+          strike = calculate(generation, burned ? burnedStriker : attacker.clone(), defender, next.move, makeField(conditions));
+        } finally {
+          laterHit = outerLater;
+        }
         const damage = strike.damage;
         if (!Array.isArray(damage) || Array.isArray(damage[0])) return emptyRow(metadata, "unsupported", "The engine returned an unexpected Beat Up hit.");
         // Guts or Flare Boost that only the burned strikes use still belongs in the Applied list.
@@ -2218,7 +2915,7 @@ function calculateMoveRow(
     // at once (Showdown onTerrainChange); the engine's multi-hit loop never checks the Seed again.
     if (!beatUpHits && hitCount.hits > 1 && Array.isArray(result.damage) && Array.isArray(result.damage[0]) && result.range()[1] > 0
       && result.defender.hasAbility("Seed Sower") && defender.hasItem("Grassy Seed") && conditions.terrain !== "Grassy"
-      && !conditions.magicRoom && !defender.hasAbility("Klutz")) {
+      && !itemOff(defenderBuild, conditions) && !defender.hasAbility("Klutz")) {
       const seeded = defender.clone();
       seeded.item = undefined;
       seeded.boosts.def = Math.max(-6, Math.min(6, seeded.boosts.def + (seeded.hasAbility("Contrary") ? -1 : 1)));
@@ -2243,7 +2940,14 @@ function calculateMoveRow(
           strikeMove = doubledRun.move;
           assumptions.push("Parental Bond: Assurance's second strike has doubled power.");
         }
-        const second = parentalBondStrike(generation, makePokemon(attackerBuild, runtime, attackingSpecies, attackerMimicry.types), defender, strikeMove, conditions, result, spicySprayFirstBurnedHit(result, attackerBuild, conditions) === 1);
+        const outerLater = laterHit;
+        laterHit = true;
+        let second: ReturnType<typeof parentalBondStrike>;
+        try {
+          second = parentalBondStrike(generation, makePokemon(attackerBuild, runtime, attackingSpecies, attackerMimicry.types), defender, strikeMove, conditions, result, spicySprayFirstBurnedHit(result, attackerBuild, conditions) === 1);
+        } finally {
+          laterHit = outerLater;
+        }
         if (!Array.isArray(second) || Array.isArray(second[0])) return emptyRow(metadata, "unsupported", "The engine returned an unexpected Parental Bond second strike.");
         result.damage = [first as number[], second as number[]];
       }
@@ -2401,9 +3105,12 @@ function calculateMoveRow(
       return emptyRow(metadata, "unsupported", "The engine returned an invalid damage range for this matchup.");
     }
     if (landedHits && landedHits.length > 1) assumptions.push(MULTI_HIT_NOTE);
+    // What the flung item does to a target the hit leaves in (onHit and its secondary), as facts; matchupRows reads the rest.
+    const flung = flingPower ? flungOutcome(attackerBuild, defenderBuild, conditions, runtime, result, min, max) : null;
+    if (flung?.fact) assumptions.push(flung.fact);
     if (result.attacker.hasItem("Metronome")) assumptions.push("Metronome: first use, no boost.");
     if (conditions.attackerSide.charge && result.rawDesc.isCharge) assumptions.push("Charge: 2x power.");
-    for (const boost of PARTNER_POWER.get(result) ?? []) assumptions.push(`The partner's ${boost.name}: ${boost.factor} power.`);
+    for (const boost of PARTNER_POWER.get(result) ?? []) assumptions.push(boost.line ?? `The partner's ${boost.name}: ${boost.factor} power.`);
     const tailwind = [conditions.attackerSide.tailwind && "the attacker's side", conditions.defenderSide.tailwind && "the target's side"].filter(Boolean);
     const speedSetsPower = SPEED_POWER_MOVES.has(metadata.id) && !MOVES_FIRST_POWER_MOVES.has(metadata.id);
     if (tailwind.length && (speedSetsPower || orderBySpeed)) assumptions.push(`Tailwind: doubled Speed on ${tailwind.join(" and ")}.`);
@@ -2552,11 +3259,12 @@ function calculateMoveRow(
     // conversion (pinned Showdown useMove / getActiveMaxMove), so the Z-Move or Max Move is that
     // type's; the engine types the result so but keeps the Normal Breakneck Blitz or Max Strike name.
     // (hit-loop.ts usedMoveName, which Uses to KO and the doubles turn read its own effects by.)
-    const used = resolved.transformed ? usedMoveName(assigned.name, result.move) : result.move.name;
+    const used = resolved.transformed && !zRetyped ? usedMoveName(assigned.name, result.move) : result.move.name;
     const zName = used !== result.move.name ? used : null;
     if (zName) assumptions.push(`${assigned.name} is ${result.move.type} type, so it becomes ${zName}.`);
     const effectNames = appliedEffects(result);
     trace.result = result;
+    if (flung) FLUNG.set(trace, flung);
     const applied = physicalEffects
       ? `${effectNames.length ? ` Applied to the special hit: ${effectNames.join(", ")}.` : ""}${physicalEffects.length ? ` Applied to the physical hit: ${physicalEffects.join(", ")}.` : ""}`
       : effectNames.length ? ` Applied: ${effectNames.join(", ")}.` : "";
@@ -2742,14 +3450,21 @@ export function matchupRows(settled: SettledMatchup, contexts: Record<string, Mo
       try {
         const uses = usesFor(outcome);
         if (!uses) throw new Error("No uses to count");
-        const { usesToKO, afterUse } = estimateUses(uses, {
+        const input = {
           move, row: computed, trace, context: contexts[id],
-          rerun: (next) => {
+          rerun: (next: RerunInput) => {
             const nextTrace: CalcTrace = {};
             const nextRow = calculateMove(move, next.attacker, next.defender, next.conditions, next.context, runtime, suppressor, nextTrace, next.consecutive, true);
             return { row: nextRow, trace: nextTrace };
           },
-        });
+        };
+        let { usesToKO, afterUse } = estimateUses(uses, input);
+        // Fling (SPEC2 §4.7): what the thrown item does to the target in the use that throws it (fling.ts), which the uses do not
+        // follow; Fling itself fails on the second use (uses-to-ko.ts SINGLE_USE).
+        const flung = FLUNG.get(trace);
+        if (flung) ({ usesToKO, afterUse } = flingUses(flung, { usesToKO, afterUse }, computed, trace, outcome.attacker, outcome.defender, effective.field, runtime,
+          (attacker, defender) => estimateUses(prepareUses(attacker, defender, effective.field, runtime, helpers), input).usesToKO));
+        else if (id === "fling" && isMaxActive(outcome.attacker)) usesToKO = maxFlingUses(usesToKO, outcome.attacker, outcome.defender, effective.field, runtime);
         // The Berry comes back only at the end of a turn: a count every sequence finishes in its first use stands, and
         // so does the first use's outcome. A copy that may come before or after this move leaves neither.
         if (copy?.when === "either") return { usesToKO: { kind: "not-estimated", reason: copy.reason }, afterUse: null };
@@ -2759,6 +3474,12 @@ export function matchupRows(settled: SettledMatchup, contexts: Record<string, Mo
       }
     };
     const runs = outcomes.map(one);
+    // Fling that throws the attacker's Mirror Herb, which may copy the target's rise before this move (then it is gone and Fling
+    // fails) or after it: the turn order decides, as for the copy itself.
+    if (id === "fling" && runs.some((run) => run.copy?.when === "either" && FLUNG.get(run.trace)?.itemId === "mirrorherb"
+      && copiesOf(run.outcome, effective, attackerItems, defenderItems).some((copy) => copy.who === "attacker" && copy.by.includes("Mirror Herb")))) {
+      return { ...emptyRow(move, "needs-context", `Fling: needs the turn order (${names.attacker}'s Mirror Herb is used before or after it).`), moveId: id };
+    }
     const merged = runs.length === 1 ? { row: runs[0].computed, facts: [] } : mergeStarfOutcomes(runs);
     let row: MoveDamageResult = { ...merged.row, moveId: id };
     if (row.kind === "calculated") {
@@ -2824,7 +3545,7 @@ function copiesOf(outcome: StarfOutcome, settled: { attacker: BattleBuild; defen
   for (const { who, holder, foe, foeSettled, raised } of sides) {
     const by = [
       ...(holder.abilityId === "opportunist" && !gassedAbility(holder, foe, settled.field) ? ["Opportunist"] : []),
-      ...(holder.itemId === "mirrorherb" && !settled.field.magicRoom && !klutzActive(holder, foe) ? ["Mirror Herb"] : []),
+      ...(holder.itemId === "mirrorherb" && !itemIgnored(holder, foe, settled.field) ? ["Mirror Herb"] : []),
     ];
     if (!by.length) continue;
     const stages: Partial<Record<CombatStat, number>> = { ...raised };
@@ -3013,7 +3734,7 @@ export function resolveTurnMove(move: ChampionsMove, build: BattleBuild, conditi
   }
   if (resolved.kind) return { kind: resolved.kind, reason: resolved.reason };
   const flags = (resolved.move.flags ?? {}) as Record<string, number | undefined>;
-  const item = conditions.magicRoom || klutzActive(build, build) ? "" : build.itemId;
+  const item = itemIgnored(build, build, conditions) ? "" : build.itemId;
   const contact = !!flags.contact && build.abilityId !== "longreach" && item !== "protectivepads" && !(item === "punchingglove" && !!flags.punch);
   return {
     kind: "move", effective: resolved.effective, transformed: resolved.transformed, isZ: !!resolved.move.isZ, isMax: !!resolved.move.isMax, contact, flags,
@@ -3086,19 +3807,60 @@ export function turnSpeed(build: BattleBuild, tailwind: boolean, conditions: Bat
   const generation = champions ? Object.create(engine, { num: { value: 9 } }) as typeof engine : engine;
   const pokemon = makePokemon(build, runtime);
   if (umbrellaBlocksAbility(build, build, conditions)) pokemon.ability = "Run Away" as AbilityName;
-  if (pokemon.item && (conditions.magicRoom || (klutzActive(build, build) && !ENGINE_KLUTZ_KEPT_ITEMS.has(build.itemId)))) pokemon.item = undefined;
+  if (pokemon.item && (itemOff(build, conditions) || (klutzActive(build, build) && !ENGINE_KLUTZ_KEPT_ITEMS.has(build.itemId)))) pokemon.item = undefined;
   if (pokemon.isDynamaxed && pokemon.hasItem("Choice Scarf")) pokemon.item = undefined;
   const before = firstTurn ? build.firstTurnSpeed : undefined;
   if (before) {
     pokemon.boosts.spe = before.spe;
     if (pokemon.hasAbility("Unburden")) pokemon.abilityOn = before.unburden;
+    if (before.status) pokemon.status = before.status as typeof pokemon.status;
   }
   const field = makeField(conditions);
   const side = makeSide({ ...conditions.attackerSide, tailwind });
-  let speed = getFinalSpeed(generation, pokemon, field, side as unknown as Result["field"]["attackerSide"]);
+  // status2 (T2P §9.5; 2v2 only): the Grass and Water Pledges' swamp on the side (swampSpeed).
+  let speed = conditions.attackerSide.swamp ? swampSpeed(generation, pokemon, field, side as unknown as Result["field"]["attackerSide"])
+    : getFinalSpeed(generation, pokemon, field, side as unknown as Result["field"]["attackerSide"]);
   if (champions) return conditions.trickRoom ? -speed : speed;
   if (conditions.trickRoom) speed = 10000 - speed;
   return (speed >>> 0) % 8192;
+}
+
+/** The engine's EV items (mechanics/util.js EV_ITEMS: Macho Brace and the Power items halve Speed). */
+const EV_ITEMS = ["Macho Brace", "Power Anklet", "Power Band", "Power Belt", "Power Bracer", "Power Lens", "Power Weight"] as const;
+
+/**
+ * status2 (T2P §9.5; 2v2 only): the engine's getFinalSpeed (mechanics/util.js:100-145, line for line) with the Pledges' swamp
+ * in its ModifySpe chain: data/moves.ts grasspledge condition onModifySpe chainModify(0.25), 1024/4096 (the engine's own
+ * placeholder, util.js:107-108). Its chain is util.js's local chainMods, which no wrapper reaches, so the swamp is here.
+ * Every other speed modifier is a multiple of 4 in 4096ths, so the chain divides exactly by 4 in any order.
+ */
+function swampSpeed(gen: Generation, pokemon: Pokemon, field: Field, side: Result["field"]["attackerSide"]): number {
+  const weather = field.weather || "";
+  const terrain = field.terrain;
+  let speed = getModifiedStat(pokemon.rawStats.spe, pokemon.boosts.spe, gen);
+  const speedMods: number[] = [];
+  if (side.isTailwind) speedMods.push(8192);
+  speedMods.push(1024);
+  if ((pokemon.hasAbility("Unburden") && pokemon.abilityOn) || (pokemon.hasAbility("Chlorophyll") && weather.includes("Sun"))
+    || (pokemon.hasAbility("Sand Rush") && weather === "Sand") || (pokemon.hasAbility("Swift Swim") && weather.includes("Rain"))
+    || (pokemon.hasAbility("Slush Rush") && ["Hail", "Snow"].includes(weather)) || (pokemon.hasAbility("Surge Surfer") && terrain === "Electric")) {
+    speedMods.push(8192);
+  } else if (pokemon.hasAbility("Quick Feet") && pokemon.status) {
+    speedMods.push(6144);
+  } else if (pokemon.hasAbility("Slow Start") && pokemon.abilityOn) {
+    speedMods.push(2048);
+  } else if (isQPActive(pokemon, field) && getQPBoostedStat(pokemon, gen) === "spe") {
+    speedMods.push(6144);
+  }
+  if (!(pokemon.hasAbility("Unburden") && pokemon.abilityOn)) {
+    if (pokemon.hasItem("Choice Scarf")) speedMods.push(6144);
+    else if (pokemon.hasItem("Iron Ball", ...EV_ITEMS)) speedMods.push(2048);
+    else if (pokemon.hasItem("Quick Powder") && pokemon.named("Ditto")) speedMods.push(8192);
+  }
+  speed = OF32(pokeRound((speed * chainMods(speedMods, 410, 131172)) / 4096));
+  if (pokemon.hasStatus("par") && !pokemon.hasAbility("Quick Feet")) speed = Math.floor(OF32(speed * (gen.num >= 7 || gen.num === 0 ? 50 : 25)) / 100);
+  speed = Math.min(gen.num <= 2 ? 999 : 10000, speed);
+  return Math.max(0, speed);
 }
 
 /** A build's HP as the engine holds it (Dynamax HP while Dynamaxed): its current HP, maximum and base maximum. */
@@ -3107,200 +3869,6 @@ export function turnHP(build: BattleBuild, runtime: BattleRuntime): { hp: number
   return { hp: pokemon.curHP(), maxHP: pokemon.maxHP(), baseMaxHP: pokemon.maxHP(true) };
 }
 
-/** One present slot's start of the doubles turn (settleDoublesStart). */
-export type DoublesStartSlot = {
-  /** Settled as calculateMatchup settles a side (abilities and forms, Download against both foes, items); the engine still adds its entry rises. */
-  build: BattleBuild;
-  /** `build` with its entry rises in the stages and a terrain Seed used up (entryStagesOf), for the turn's calculations (calculateTurnMove). */
-  folded: BattleBuild;
-  items: SettledItems;
-  /** The settle lines, as start facts. */
-  lines: string[];
-  /** The other Pokémon its settle read as "the other battler" (SPEC §4.2 step 2). */
-  representative: DoublesSlotId;
-};
-/**
- * Neutralizing Gas on the field as the doubles turn starts (settleDoublesStart), suppressing every other ability it can
- * from the start (as the 1v1 assumes the gas was out first): each such ability stands in as Run Away for the whole
- * turn, and so does each holder's own, which does nothing else. doubles-turn.ts guards the events that would end the
- * gas or change what it suppresses.
- */
-export type DoublesGas = {
-  holders: DoublesSlotId[];
-  /** The other Pokémon whose ability it suppresses (abilities other than Run Away). */
-  suppressed: DoublesSlotId[];
-  /** Ability Shield holders with an ability the gas can suppress: the Shield keeps it, except under Magic Room. */
-  shielded: DoublesSlotId[];
-  /** The ability each stand-in replaced, the holders' Neutralizing Gas included (for calculateDoublesOutcomes' builds). */
-  abilities: Partial<Record<DoublesSlotId, string>>;
-};
-export type DoublesSettle = { slots: Record<DoublesSlotId, DoublesStartSlot | null>; reason: string | null; gas?: DoublesGas | null };
-
-const UNNERVE_ABILITIES = new Set(["unnerve", "asoneglastrier", "asonespectrier"]);
-const WEATHER_NEGATORS = new Set(["cloudnine", "airlock"]);
-
-/**
- * The start of a doubles turn (SPEC §4.2). The 1v1 settle reads "the other battler" for Unnerve and As One, Cloud Nine
- * and Air Lock (Forecast, Ice Face, Protosynthesis), the paradox field setters and the Trace source; each slot takes as
- * that other the one Pokémon that supplies all it needs, or the foe across when it needs nothing. Two different
- * Pokémon acting on it as the turn starts, Trace with two different copyable foe abilities unchosen, Trace copying
- * Intimidate, Download against a foe's entry boost to its defenses, a Starf Berry, a confused Pokémon with a move, and a
- * copy of a Berry's rise give `reason`. Download reads both foes (pinned Showdown data/abilities.ts download: the sum
- * of their Defense and Sp. Def at the lead, as settleEntry's atLead reads one foe) and is always settled into the
- * stages, since the engine would read only the target.
- */
-export function settleDoublesStart(input: DoublesTurnInput): DoublesSettle {
-  const { runtime } = input;
-  const field: BattleConditions = { ...input.field, gameType: "Doubles" };
-  const present = DOUBLES_SLOTS.filter((slot) => input.pokemon[slot]);
-  const shown = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, input.pokemon[slot]?.build ?? null])) as Record<DoublesSlotId, BattleBuild | null>;
-  const names = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, shown[slot] ? runtime.speciesById.get(shown[slot]!.speciesId)?.name ?? shown[slot]!.speciesId : ""])) as Record<DoublesSlotId, string>;
-  const labels = turnNames(input);
-  const tailwind = (slot: DoublesSlotId) => (slotSide(slot) === "own" ? field.attackerSide : field.defenderSide).tailwind;
-  const empty = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, null])) as Record<DoublesSlotId, DoublesStartSlot | null>;
-  let reason: string | null = null;
-  const fail = (text: string) => { reason ??= text; };
-  // Neutralizing Gas (pinned Showdown data/abilities.ts neutralizinggas onSwitchIn, priority 2, before any other
-  // switch-in or start ability; sim/pokemon.ts:858-877 ignoringAbility while a holder is active): from the turn's start,
-  // each ability it suppresses stands in as Run Away (gasSuppresses: not a cantsuppress one, not another holder's, not
-  // one an Ability Shield keeps outside Magic Room), and each holder's own does nothing else, so no calculation reads a gas.
-  const holders = present.filter((slot) => shown[slot]!.abilityId === "neutralizinggas");
-  const gas: DoublesGas | null = holders.length ? { holders, suppressed: [], shielded: [], abilities: {} } : null;
-  const gasLines = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, [] as string[]])) as Record<DoublesSlotId, string[]>;
-  const abilityName = (id: string) => runtime.abilitiesById.get(id)?.name ?? id;
-  // `tera`: the ability a Tera form gives, which its Terastallization line already says is suppressed (it replaces the one entered with).
-  const gassed = (slot: DoublesSlotId, abilityId: string, tera = false) => {
-    gas!.abilities[slot] = abilityId;
-    if (tera) gasLines[slot] = [];
-    if (holders.includes(slot) || abilityId === GAS_STAND_IN) return;
-    if (!gas!.suppressed.includes(slot)) gas!.suppressed.push(slot);
-    if (!tera) gasLines[slot] = [`${cap(labels[slot])}'s ${abilityName(abilityId)} is suppressed by Neutralizing Gas.`];
-  };
-  if (gas) {
-    for (const slot of present) {
-      const build = shown[slot]!;
-      const holder = holders.includes(slot);
-      if (!holder && build.itemId === "abilityshield" && !GAS_PROOF_ABILITIES.has(build.abilityId)) gas.shielded.push(slot);
-      if (!holder && !gasSuppresses(build, field)) continue;
-      gassed(slot, build.abilityId);
-      shown[slot] = { ...build, abilityId: GAS_STAND_IN };
-    }
-  }
-  for (const slot of present) {
-    if (shown[slot]!.abilityId === "imposter") fail("Imposter is not modelled in 2v2.");
-  }
-  if (reason) return { slots: empty, reason };
-  const others = (slot: DoublesSlotId) => present.filter((other) => other !== slot);
-  const foes = (slot: DoublesSlotId) => present.filter((other) => slotSide(other) !== slotSide(slot));
-  // The foe across: the one on the same screen side (SHOWDOWN_POSITION mirrors the far side), else any other.
-  const across = (slot: DoublesSlotId): DoublesSlotId => {
-    const facing = (slot.endsWith("left") ? foesOf(slot)[0] : foesOf(slot)[1]);
-    return shown[facing] ? facing : foes(slot)[0] ?? others(slot)[0] ?? slot;
-  };
-  /** The one Pokémon that meets every need (each a list of Pokémon that would do), or the reason two act. */
-  const pick = (slot: DoublesSlotId, needs: DoublesSlotId[][]): DoublesSlotId | null => {
-    if (!needs.length) return across(slot);
-    const fits = others(slot).filter((other) => needs.every((need) => need.includes(other)));
-    if (fits.length) return fits.includes(across(slot)) ? across(slot) : fits[0];
-    const first = needs[0][0];
-    const second = needs.find((need) => !need.includes(first))![0];
-    fail(`${labels[first]} and ${labels[second]} both act on ${labels[slot]} as the turn starts.`);
-    return null;
-  };
-  // Phase 1: abilities and forms (Trace, Forecast and Ice Face read the other battler).
-  const needsA = Object.fromEntries(present.map((slot) => {
-    const build = shown[slot]!;
-    const needs: DoublesSlotId[][] = [];
-    const negators = others(slot).filter((other) => WEATHER_NEGATORS.has(shown[other]!.abilityId));
-    const readsWeather = (build.abilityId === "forecast" && build.speciesId.startsWith("castform"))
-      || (build.abilityId === "iceface" && build.speciesId === "eiscuenoice" && ["Snow", "Hail"].includes(field.weather));
-    if (readsWeather && negators.length) needs.push(negators);
-    if (build.abilityId === "trace" && !(build.itemId === "abilityshield" && !field.magicRoom)) {
-      const copyable = foes(slot).filter((foe) => !NO_TRACE_ABILITIES.has(shown[foe]!.abilityId));
-      const copied = build.tracedAbility ?? (new Set(copyable.map((foe) => shown[foe]!.abilityId)).size > 1 ? null : copyable.length ? shown[copyable[0]]!.abilityId : "");
-      if (copied === null) fail("Trace copies a random foe's ability.");
-      else if (copied === "intimidate") fail("Trace copying Intimidate is not modelled in 2v2.");
-      else if (copied && !build.tracedAbility) needs.push(copyable);
-    }
-    return [slot, needs];
-  })) as Record<DoublesSlotId, DoublesSlotId[][]>;
-  if (reason) return { slots: empty, reason };
-  const settleA = (slot: DoublesSlotId, rep: DoublesSlotId) => {
-    const settled = settleAbilities(shown[slot]!, shown[rep]!, field, runtime, { label: labels[slot], otherLabel: labels[rep] }, tailwind(rep), !!gas && !holders.includes(slot));
-    // A Tera form's ability the gas suppresses (Embody Aspect, Tera Shell, Teraform Zero) stands in too.
-    if (settled.suppressed && gas) gassed(slot, settled.suppressed, true);
-    return settled;
-  };
-  const repA = Object.fromEntries(present.map((slot) => [slot, pick(slot, needsA[slot])])) as Record<DoublesSlotId, DoublesSlotId | null>;
-  if (reason) return { slots: empty, reason };
-  const abilities = Object.fromEntries(present.map((slot) => [slot, settleA(slot, repA[slot]!)])) as Record<DoublesSlotId, ReturnType<typeof settleAbilities>>;
-  for (const slot of present) if (abilities[slot].withheld) fail(abilities[slot].withheld!);
-  if (reason) return { slots: empty, reason };
-  // Phase 2: items (Unnerve and As One, Cloud Nine and Air Lock, the paradox field setters read the other battler).
-  const settledA = (slot: DoublesSlotId) => abilities[slot].build;
-  const reps = {} as Record<DoublesSlotId, DoublesSlotId>;
-  for (const slot of present) {
-    const build = settledA(slot);
-    const needs = [...needsA[slot]];
-    const unnervers = foes(slot).filter((foe) => UNNERVE_ABILITIES.has(settledA(foe).abilityId));
-    if (build.itemId.endsWith("berry") && unnervers.length) needs.push(unnervers);
-    const paradox = PARADOX_FIELDS[build.abilityId];
-    if (paradox === "sun" && field.weather === "Sun") {
-      const negators = others(slot).filter((other) => WEATHER_NEGATORS.has(settledA(other).abilityId));
-      if (negators.length) needs.push(negators);
-    }
-    const fieldOn = paradox === "sun" ? field.weather === "Sun" : paradox === "terrain" && field.terrain === "Electric";
-    const setters = paradox && fieldOn ? others(slot).filter((other) => PARADOX_FIELD_SETTERS[paradox].includes(settledA(other).abilityId)) : [];
-    if (setters.length) needs.push(setters);
-    const rep = pick(slot, needs);
-    if (!rep) return { slots: empty, reason };
-    reps[slot] = rep;
-    if (rep !== repA[slot]) abilities[slot] = settleA(slot, rep);
-  }
-  // Download against both foes, at the lead (settleEntry's atLead: their lead forms, no Defense or Sp. Def stage, no room).
-  const entered = Object.fromEntries(present.map((slot) => [slot, settledA(slot)])) as Record<DoublesSlotId, BattleBuild>;
-  const lines = Object.fromEntries(present.map((slot) => [slot, [...abilities[slot].lines]])) as Record<DoublesSlotId, string[]>;
-  for (const slot of present) {
-    const holder = entered[slot];
-    if (holder.abilityId !== "download") continue;
-    const battle: IntimidateBattle = { magicRoom: field.magicRoom, wonderRoom: field.wonderRoom, terrain: field.terrain, gameType: "Doubles" };
-    let def = 0, spd = 0;
-    for (const foe of foes(slot)) {
-      const build = abilities[foe].build;
-      const boosted = entryBoosts(build, holder, null, tailwind(foe), { ...battle, tailwind: { source: tailwind(foe), target: tailwind(slot) } }, runtime)
-        .some((entry) => entry.stat === "def" || entry.stat === "spd");
-      if (build.transformedFrom || boosted) { fail(`Download is not modelled with ${labels[foe]}'s entry boost.`); continue; }
-      const forms = unknownLeadForms(build, runtime)?.speciesIds ?? [atLead(build, battle, runtime).foe.speciesId];
-      const reads = forms.map((speciesId) => getBuildStats({ ...build, speciesId }, runtime));
-      if (reads.some((stats) => !stats || stats.def !== reads[0]!.def || stats.spd !== reads[0]!.spd)) { fail(`Download is not modelled with ${labels[foe]}'s entry boost.`); continue; }
-      def += reads[0]!.def; spd += reads[0]!.spd;
-    }
-    if (reason) return { slots: empty, reason };
-    // Pinned Showdown download onStart: Sp. Atk when the foes' Defense total is at least their Sp. Def total, else Attack.
-    const stat: CombatStat | null = def && def >= spd ? "spa" : spd ? "atk" : null;
-    if (!stat) continue;
-    entered[slot] = { ...holder, boosts: { ...holder.boosts, [stat]: clampStage((holder.boosts[stat] ?? 0) + 1) }, settledDownload: stat };
-    lines[slot].push(`${cap(labels[slot])}'s Download raised its ${STAGE_NAMES[stat]}.`);
-  }
-  const slots = { ...empty };
-  for (const slot of present) {
-    // A status its own ability cures at the turn's first Update (OWN_STATUS_CURES) is the walk's: its Berry stays.
-    const ownCure = !!OWN_STATUS_CURES[entered[slot].abilityId]?.includes(entered[slot].status);
-    const items = settleItems(entered[slot], entered[reps[slot]] ?? entered[slot], field, runtime, { label: labels[slot] }, names[slot], ownCure);
-    if (items.starf) fail(STARF_REASON);
-    if (items.raised) {
-      for (const foe of foes(slot)) {
-        const copier = entered[foe];
-        if (copier.abilityId === "opportunist") fail("Opportunist copying a stat rise is not modelled in 2v2.");
-        if (copier.itemId === "mirrorherb" && !field.magicRoom && !klutzActive(copier, copier)) fail("Mirror Herb copying a stat rise is not modelled in 2v2.");
-      }
-    }
-    const build = items.build;
-    const itemOn = !field.magicRoom && !klutzActive(build, build);
-    const entry = entryStagesOf(build, build.abilityId, itemOn, field.terrain, tailwind(slot), runtime);
-    const boosts = Object.fromEntries(COMBAT_STATS.map((stat) => [stat, clampStage((build.boosts[stat] ?? 0) + (entry.stages[stat] ?? 0))])) as BattleBuild["boosts"];
-    const folded: BattleBuild = { ...build, boosts, ...(entry.seed ? { itemId: "" } : {}) };
-    slots[slot] = { build, folded, items, lines: [...gasLines[slot], ...lines[slot], ...items.lines], representative: reps[slot] };
-  }
-  return { slots, reason, gas };
-}
+// The start of a doubles turn (settleDoublesStart) lives in doubles-start.ts (status2 ADDENDUM2 §3.5, Step 0b.3); its types
+// are re-exported here for the type importers (a type-only export: no runtime cycle, tests/source/status2-hooks.test.ts).
+export type { DoublesGas, DoublesSettle, DoublesStartSlot } from "./doubles-start";

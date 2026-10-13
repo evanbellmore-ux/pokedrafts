@@ -130,7 +130,7 @@ describe("doublesRepresentative", () => {
     expect(SLOTS.map((slot) => doublesRepresentative(input, slot))).toEqual(["opponent-left", "opponent-right", "own-left", "own-right"]);
   });
 
-  it("is the Pokémon that acts on it as the turn starts, and null when two different ones do", async () => {
+  it("is the Pokémon that acts on it as the turn starts; when two different ones do, the foe across (status2 ST)", async () => {
     const unnerve = turn(championsRuntime, { ...base, "own-left": { id: "snorlax", item: "sitrusberry", hp: 100 }, "opponent-right": { id: "tyranitar", ability: "unnerve" } });
     expect(doublesRepresentative(unnerve, "own-left")).toBe("opponent-right");
     const sv = await loadBattleRuntime("scarlet_violet");
@@ -138,6 +138,6 @@ describe("doublesRepresentative", () => {
       "own-left": { id: "fluttermane", item: "sitrusberry", hp: 50 }, "own-right": { id: "charizard" },
       "opponent-left": { id: "tyranitar", ability: "unnerve" }, "opponent-right": { id: "altaria", ability: "cloudnine" },
     }, { weather: "Sun" });
-    expect(doublesRepresentative(two, "own-left")).toBeNull();
+    expect(doublesRepresentative(two, "own-left")).toBe("opponent-left");
   });
 });

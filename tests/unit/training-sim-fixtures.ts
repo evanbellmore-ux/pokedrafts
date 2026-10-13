@@ -53,7 +53,8 @@ export function seatBattle(seed: number[], teams: { own?: AdaptedTeam; opponent?
   let requestId = 1;
   return {
     battle, keys, own, opponent, tracker,
-    step(p1: string, p2: string) { battle.makeChoices(p1, p2); pump(); requestId++; },
+    // status2 R-T: the AI's seat knows its own choices (PublicTracker.chose), as the worker tells its tracker.
+    step(p1: string, p2: string) { battle.makeChoices(p1, p2); if (p2) tracker.chose(p2); pump(); requestId++; },
     inputs(info: InfoView = PERFECT_INFORMATION) {
       const oracle = createTestOracle(battle, "p2", info, keys);
       return aiInputs({ side: "p2", requestId, request: battle.p2.activeRequest as ShowdownRequest, own: opponent, sheet: redactSheet(sheetFromSets(own), info), tracker, info, oracle });

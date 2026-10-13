@@ -172,6 +172,7 @@ export function transformNativeCatalog(
       ...(typeof row.zMove === "string" ? { zMove: toID(row.zMove) } : {}),
       ...(row.zMoveFrom ? { zMoveFrom: toID(row.zMoveFrom) } : {}),
       ...(row.zMove && row.itemUser ? { itemUser: sorted(row.itemUser.map(toID).filter((id) => speciesByID.has(id))) } : {}),
+      ...(row.fling ? { fling: row.fling } : {}),
       unsupported: sorted(unsupported),
     };
   });

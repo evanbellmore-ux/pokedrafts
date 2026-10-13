@@ -7,8 +7,8 @@
 // below 100% (doubles-turn.ts turnFacts; one Serene Grace doubles to 100% happens); rollouts sample them. Documented, not corrected.
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
 import {
-  DOUBLES_SLOTS, foesOf, slotSide, type DoublesOutcome, type DoublesOutcomesResult, type DoublesSideId, type DoublesSlotId,
-  type DoublesStart, type DoublesTurnInput,
+  DOUBLES_SLOTS, foesOf, slotSide, startId, type DoublesOutcome, type DoublesOutcomeMon, type DoublesOutcomesResult, type DoublesSideId,
+  type DoublesSlotId, type DoublesStart, type DoublesTurnInput,
 } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { AiView, CellActions, EngineWorld, EngineWorlds, FieldClock, MonKey, PostMon, PostState, ReplacePolicy, TurnServices } from "../model/ai-view";
@@ -79,21 +79,33 @@ export const ROLLOUT_WORK = 2.5, PRELUDE_WORK = 1;
 /** Accuracy corrections are a refinement: none once the decision's work reaches this (SPEC 15's time budget). */
 export const CORRECTION_WORK = 260;
 /** Turns a field effect set this turn has left after this turn's countdown (pinned data/moves.ts durations − 1). */
-const SET_THIS_TURN = { weather: 4, terrain: 4, room: 4, tailwind: 3, screen: 4 } as const;
+const SET_THIS_TURN = { weather: 4, terrain: 4, room: 4, tailwind: 3, screen: 4, safeguard: 4 } as const;
 
 const cellKey = (cell: CellActions) => `${jointActionKey(cell.opponent)}|${jointActionKey(cell.own)}`;
 const addTerms = (a: Terms, b: Terms, scale = 1): Terms => ({ total: a.total + scale * b.total, lasting: a.lasting + scale * b.lasting, keep: a.keep + scale * b.keep });
 const ZERO: Terms = { total: 0, lasting: 0, keep: 0 };
-const inputKey = (input: DoublesTurnInput) => JSON.stringify([input.field, input.pokemon]);
+/**
+ * status2 T2: with the turn-level inputs (the field's turns left, the entry ranks, the battle's last move...), which a cell's
+ * prelude worlds can differ in. status2 R-T: and the benches, the replacements and the hazards (a prelude switch changes the
+ * bench; the AI's replacement pick follows it).
+ */
+export const inputKey = (input: DoublesTurnInput) => JSON.stringify([input.field, input.pokemon, input.weatherTurns, input.canSwitch, input.fieldTurns, input.entryOrder, input.battleLastMove, input.faintedLastTurn, input.echoedVoice, input.bench, input.replacement, input.replacementOrder, input.hazards]);
 
 /**
  * The field clock after this turn's countdown (SPEC 10.5): an effect up before the turn loses one turn; one set this turn
  * (absent from the decision's clock, present after the moves) has its base duration less one: Tailwind 3, Trick Room and
  * the other rooms 4, weather and terrain 4, screens 4. An effect gone after the moves is 0. Hazards the cell set this turn
- * are added (the engine gives them no effect).
+ * are added (the engine gives them no effect). status2 Step 1 #7: a side whose hazards from before the turn are gone (Rapid
+ * Spin, Mortal Spin: the outcome's sides.hazardsFrom null) holds none of them; a Safeguard set this turn (the outcome's
+ * sides.safeguard with none before) has its 5 turns less this one's countdown. status2 T1 (SPEC2 §6): a side condition runs
+ * on the clock the outcome names (sides.clock: the other side's after Court Change, a fresh one when set this turn), a side
+ * holds the other side's pre-turn hazards after Court Change (sides.hazardsFrom), and a room or Gravity set during the turn
+ * (fieldSet) has a fresh duration.
  */
 export function nextClock(clock: FieldClock, outcome: DoublesOutcome, hazards: Partial<Record<DoublesSideId, string[]>> = {}): FieldClock {
-  const count = (before: number, on: boolean, set: number) => !on ? 0 : before > 0 ? Math.max(0, before - 1) : set;
+  // status2 T1 (SPEC2 §6, F3 §4.3): a room set during this turn has a fresh duration (outcome.fieldSet), whatever was up before.
+  const count = (before: number, on: boolean, set: number, fresh = false) => !on ? 0 : fresh ? set : before > 0 ? Math.max(0, before - 1) : set;
+  const fieldSet = outcome.fieldSet ?? {};
   const weatherNow = outcome.field.weather;
   const weather = !weatherNow ? null
     : clock.weather && clock.weather.id === weatherNow ? (clock.weather.turns === null ? { id: weatherNow, turns: null } : clock.weather.turns > 1 ? { id: weatherNow, turns: clock.weather.turns - 1 } : null)
@@ -103,22 +115,35 @@ export function nextClock(clock: FieldClock, outcome: DoublesOutcome, hazards: P
     : clock.terrain && clock.terrain.id === terrainNow ? (clock.terrain.turns > 1 ? { id: terrainNow, turns: clock.terrain.turns - 1 } : null)
     : { id: terrainNow, turns: SET_THIS_TURN.terrain };
   const rooms = {
-    trickRoom: count(clock.rooms.trickRoom, outcome.field.trickRoom, SET_THIS_TURN.room),
-    gravity: count(clock.rooms.gravity, outcome.field.gravity, SET_THIS_TURN.room),
-    magicRoom: count(clock.rooms.magicRoom, outcome.field.magicRoom, SET_THIS_TURN.room),
-    wonderRoom: count(clock.rooms.wonderRoom, outcome.field.wonderRoom, SET_THIS_TURN.room),
+    trickRoom: count(clock.rooms.trickRoom, outcome.field.trickRoom, SET_THIS_TURN.room, !!fieldSet.trickRoom),
+    gravity: count(clock.rooms.gravity, outcome.field.gravity, SET_THIS_TURN.room, !!fieldSet.gravity),
+    magicRoom: count(clock.rooms.magicRoom, outcome.field.magicRoom, SET_THIS_TURN.room, !!fieldSet.magicRoom),
+    wonderRoom: count(clock.rooms.wonderRoom, outcome.field.wonderRoom, SET_THIS_TURN.room, !!fieldSet.wonderRoom),
   };
   const side = (id: DoublesSideId) => {
     const before = clock.sides[id];
     const after = outcome.sides[id];
+    // status2 T1: the clock each condition up now runs on (outcome.sides.clock: absent its own pre-turn one; the other side's
+    // after Court Change; "set" a fresh one set this turn).
+    const marks = after.clock ?? {};
+    const timed = (flag: "tailwind" | "reflect" | "lightScreen" | "auroraVeil" | "safeguard", on: boolean, set: number) => {
+      const from = marks[flag];
+      return count(from && from !== "set" ? clock.sides[from][flag] : before[flag], on, set, from === "set");
+    };
     const next = {
       ...before,
-      tailwind: count(before.tailwind, after.tailwind, SET_THIS_TURN.tailwind),
-      reflect: count(before.reflect, after.reflect, SET_THIS_TURN.screen),
-      lightScreen: count(before.lightScreen, after.lightScreen, SET_THIS_TURN.screen),
-      auroraVeil: count(before.auroraVeil, after.auroraVeil, SET_THIS_TURN.screen),
-      safeguard: Math.max(0, before.safeguard - 1),
+      tailwind: timed("tailwind", after.tailwind, SET_THIS_TURN.tailwind),
+      reflect: timed("reflect", after.reflect, SET_THIS_TURN.screen),
+      lightScreen: timed("lightScreen", after.lightScreen, SET_THIS_TURN.screen),
+      auroraVeil: timed("auroraVeil", after.auroraVeil, SET_THIS_TURN.screen),
+      safeguard: timed("safeguard", !!after.safeguard, SET_THIS_TURN.safeguard),
     };
+    if (after.hazardsFrom === null) Object.assign(next, { stealthRock: false, spikes: 0 as const, toxicSpikes: 0 as const, stickyWeb: false });
+    // status2 T1: the other side's pre-turn hazards after an odd number of Court Changes (outcome.sides.hazardsFrom).
+    else if (after.hazardsFrom && after.hazardsFrom !== id) {
+      const from = clock.sides[after.hazardsFrom];
+      Object.assign(next, { stealthRock: from.stealthRock, spikes: from.spikes, toxicSpikes: from.toxicSpikes, stickyWeb: from.stickyWeb });
+    }
     for (const moveId of hazards[id] ?? []) {
       if (moveId === "stealthrock") next.stealthRock = true;
       else if (moveId === "spikes") next.spikes = Math.min(3, next.spikes + 1) as 0 | 1 | 2 | 3;
@@ -133,13 +158,14 @@ export function nextClock(clock: FieldClock, outcome: DoublesOutcome, hazards: P
 /**
  * A Pokémon whose ability is not one of its species' own (Trace's copy, Skill Swap, Entrainment, Receiver: PS/data/abilities.ts
  * trace onUpdate setAbility): the calculator's builds take only the species' catalog abilities (model.ts validateBuild), so
- * such a cell is rolled out rather than sent to E2 as an issue.
+ * such a cell is rolled out rather than sent to E2 as an issue. status2 T1 (SPEC2 §6): a build the bridge marks
+ * abilityChanged is one the engine takes (validateBuild accepts any supported catalog ability for it).
  */
 function foreignAbility(input: DoublesTurnInput, runtime: BattleRuntime): string | null {
   for (const slot of DOUBLES_SLOTS) {
     const build = input.pokemon[slot]?.build;
     const species = build ? runtime.speciesById.get(build.speciesId) : null;
-    if (build && species && !species.abilities.includes(build.abilityId)) {
+    if (build && species && !build.abilityChanged && !species.abilities.includes(build.abilityId)) {
       return `${species.name}'s ability (${runtime.abilitiesById.get(build.abilityId)?.name ?? build.abilityId}) is not its own.`;
     }
   }
@@ -165,7 +191,10 @@ function withoutAction(input: DoublesTurnInput, slot: DoublesSlotId): DoublesTur
  * bench); the outcome's volatiles, sleep counter and perish count; with the end of turn applied (status-eot SPEC §6) the
  * HP as it stands, otherwise the residual pass added to each surviving Pokémon (clamped; `residual` is read only then);
  * the hazards that landed this turn (the outcome's sides) and the field clock counted down one turn; the side's wipe
- * chance when it has no living bench and no unseen members.
+ * chance when it has no living bench and no unseen members. status2 R-T (SPEC2 §6 R): a slot's occupant at the end is a
+ * newcomer where the outcome names its id (`mons[slot].id`: a bench id, a MonKey; or the start id of the other slot, a
+ * Pokémon that left and came back in there), and the Pokémon that left (`benched`) are back on their bench with their HP and
+ * state as they left.
  */
 export function postFromOutcome(args: {
   view: AiView; base: PostState; residual: Readonly<Record<MonKey, number>> | (() => Readonly<Record<MonKey, number>>); outcome: DoublesOutcome; start: DoublesStart;
@@ -179,23 +208,56 @@ export function postFromOutcome(args: {
   const placed = new Set<MonKey>();
   const mons: PostMon[] = [];
   for (const slot of DOUBLES_SLOTS) {
-    const key = world.keys[slot];
     const mon = outcome.mons[slot];
+    // status2 R-T: the occupant at the end: a newcomer by its id (engineIdKey), else the Pokémon that started the turn there.
+    const newcomer = !!mon?.id;
+    const key = newcomer ? engineIdKey(mon!.id!, world) : world.keys[slot];
     if (!key || !mon) continue;
     placed.add(key);
     const before = base.mons.find((each) => each.key === key);
-    const maxHp = start[slot]?.maximum ?? before?.maxHp ?? 1;
-    const change = residual[key] ?? 0;
+    const origin = newcomer ? startSlotOf(mon.id!) : slot;
+    const maxHp = (origin ? start[origin]?.maximum ?? before?.maxHp : before?.maxHp) ?? 1;
+    // The residual pass (the end of turn not applied) is of the Pokémon in battle now: a newcomer has none.
+    const change = newcomer ? 0 : residual[key] ?? 0;
     // Ally Switch: the Pokémon that started in `slot` stands in its partner's place after the turn (ADDENDUM §6).
     const at = outcome.positions?.[slotSide(slot)] === "swapped" ? partnerOf(slot) : slot;
+    const next = carriedNext(mon);
     mons.push({
       key, side: slotSide(slot), slot: at, known: before?.known ?? view.mons.some((each) => each.key === key), build: mon.build,
       hp: mon.hp.map((entry) => ({ hp: entry.hp > 0 ? Math.max(0, Math.min(maxHp, entry.hp + change)) : 0, chance: entry.chance })),
       maxHp, volatiles: mon.volatiles ?? [], protected: mon.protected,
       ...(mon.perishCount !== undefined ? { perishCount: mon.perishCount } : {}), ...(mon.sleepTurns !== undefined ? { sleepTurns: mon.sleepTurns } : {}),
+      ...(next ? { carried: next } : {}),
     });
   }
-  for (const mon of base.mons) if (!placed.has(mon.key)) mons.push({ ...mon, slot: mon.slot !== null && mon.hp.some((entry) => entry.hp > 0) ? null : mon.slot, protected: false });
+  // status2 R-T (SPEC2 §6 R): the Pokémon that left during the turn (E2's benched), back on their side's bench with their
+  // state as they left (HP after Regenerator, a status Natural Cure cured), off the field: no residual of theirs.
+  for (const side of ["own", "opponent"] as const) {
+    for (const left of outcome.benched?.[side] ?? []) {
+      const key = engineIdKey(left.id, world);
+      if (!key || placed.has(key)) continue;
+      placed.add(key);
+      const before = base.mons.find((each) => each.key === key);
+      const origin = startSlotOf(left.id);
+      const maxHp = (origin ? start[origin]?.maximum ?? before?.maxHp : before?.maxHp) ?? 1;
+      const next = carriedNext(left);
+      mons.push({
+        key, side, slot: null, known: before?.known ?? view.mons.some((each) => each.key === key), build: left.build,
+        hp: left.hp.map((entry) => ({ hp: Math.max(0, Math.min(maxHp, entry.hp)), chance: entry.chance })),
+        maxHp, volatiles: [], protected: false,
+        ...(left.sleepTurns !== undefined ? { sleepTurns: left.sleepTurns } : {}),
+        ...(next ? { carried: next } : {}),
+      });
+    }
+  }
+  for (const mon of base.mons) {
+    if (placed.has(mon.key)) continue;
+    // status2 T1: Aromatherapy or Heal Bell cured this side's Pokémon not in battle (outcome.sides.benchCured).
+    const cured = !!outcome.sides[mon.side].benchCured && !!mon.build.status && mon.hp.some((entry) => entry.hp > 0);
+    const { sleepTurns: _sleep, ...rest } = mon;
+    void _sleep;
+    mons.push({ ...(cured ? { ...rest, build: { ...mon.build, status: "" } } : mon), slot: mon.slot !== null && mon.hp.some((entry) => entry.hp > 0) ? null : mon.slot, protected: false });
+  }
   const megaUsed = { own: view.megaUsed.own || megaSlots(cell.own).length > 0, opponent: view.megaUsed.opponent || megaSlots(cell.opponent).length > 0 };
   // Hazard moves that landed on each side this turn (the engine's E2 sides: Magic Bounce, Ceaseless Edge and Stone Axe included).
   const hazards: Partial<Record<DoublesSideId, string[]>> = {};
@@ -207,6 +269,37 @@ export function postFromOutcome(args: {
     if (!bench && !unseen) wiped[side] = outcome.allFainted[side];
   }
   return { chance: outcome.chance, mons, clock: nextClock(view.clock, outcome, hazards), megaUsed, wiped, endOfTurn: applied ? "applied" : "estimated" };
+}
+/**
+ * status2 T1 (SPEC2 §6): the outcome's state from this turn that the next turn reads (Stockpile, accuracy and evasion
+ * stages, a pending copy, the item history, the Berry lock, Ripen's weakened Berry, the turns left of Heal Block and the
+ * like; status2 T2: Taunt, Encore, Disable and Uproar's turns, a charged two-turn move, the once-a-battle effects, Cud Chew's
+ * Berry); no value term weighs them (Q7). Its build already carries the new build fields (types, stored stats...).
+ */
+function carriedNext(mon: DoublesOutcomeMon): PostMon["carried"] | undefined {
+  const next: NonNullable<PostMon["carried"]> = {
+    ...(mon.stockpile ? { stockpile: mon.stockpile } : {}), ...(mon.stages ? { stages: mon.stages } : {}),
+    ...(mon.pendingCopy ? { pendingCopy: mon.pendingCopy } : {}), ...(mon.lastItem ? { lastItem: mon.lastItem } : {}),
+    ...(mon.berryLocked ? { berryLocked: true as const } : {}), ...(mon.berryWeaken ? { berryWeaken: true as const } : {}),
+    ...(mon.turnsLeft ? { turnsLeft: mon.turnsLeft } : {}),
+    // status2 T2 (ADDENDUM2 §6): a two-turn move charged this turn, the once-a-battle effects had, Cud Chew's Berry due next.
+    ...(mon.charging ? { charging: mon.charging } : {}), ...(mon.onceUsed?.length ? { onceUsed: [...mon.onceUsed] } : {}),
+    ...(mon.cudChew ? { cudChew: mon.cudChew } : {}),
+  };
+  return Object.keys(next).length ? next : undefined;
+}
+/** status2 R-T: the slot a start id names (DoublesSlotId of startId(slot)), else null (a bench id). */
+function startSlotOf(id: string): DoublesSlotId | null {
+  return DOUBLES_SLOTS.find((slot) => startId(slot) === id) ?? null;
+}
+/**
+ * status2 R-T: the MonKey of a Pokémon an E2 outcome names by id (DoublesOutcomeMon.id, DoublesBenchedMon.id): a bench id is
+ * its MonKey (sim/bridge.ts benchOf); startId(slot) is the Pokémon that started the turn in that slot (the world's key there),
+ * which may stand in the other slot at the end (it left and came back in there) or be on the bench.
+ */
+export function engineIdKey(id: string, world: Pick<EngineWorld, "keys">): MonKey | null {
+  const slot = startSlotOf(id);
+  return slot ? world.keys[slot] : id as MonKey;
 }
 /** The other slot of a slot's side. */
 const partnerOf = (slot: DoublesSlotId): DoublesSlotId => slot.endsWith("left") ? slot.replace("left", "right") as DoublesSlotId : slot.replace("right", "left") as DoublesSlotId;
@@ -232,7 +325,8 @@ export function createCellEvaluator(deps: EvaluatorDeps): CellEvaluator {
   const worldsOf = (cell: CellActions): EngineWorlds => {
     const key = cellKey(cell);
     let worlds = bridged.get(key);
-    if (!worlds) bridged.set(key, worlds = timed("bridge", () => services.engineWorlds(cell)));
+    // status2 R-T: the AI's own replacement pick in the engine input and the prelude is the rollouts' ReplacePolicy.
+    if (!worlds) bridged.set(key, worlds = timed("bridge", () => services.engineWorlds(cell, replace)));
     return worlds;
   };
   const engineLeft = () => budget.engineCalls - used.engineCalls;

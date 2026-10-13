@@ -151,3 +151,144 @@ exports.neutralEffectiveness = (run) => {
     state.neutral = before;
   }
 };
+
+/*
+ * status2 (SPEC2 §3.6, ADDENDUM2 §3.6): the 2v2 turn's calculation-only markers, read by the engine through util at call
+ * time. Nothing in 1v1 sets them, so every wrapper below is the engine's own function there.
+ * - TURN_MARKS: the key of the markers calculate.ts makePokemon puts on an engine Pokémon (non-enumerable; its clones keep
+ *   them): `grounding` (sim/pokemon.ts isGrounded: "pinned" by Ingrain or Smack Down is grounded, before the Flying check;
+ *   "floating" by Magnet Rise or Telekinesis is not, unless Gravity or an Iron Ball), `itemSuppressed` (Embargo:
+ *   sim/pokemon.ts ignoringItem, as Magic Room: checkItem moves the item to disabledItem, which Knock Off still reads).
+ * - withTurnMarks(marks, run): one scope per engine run (calculate.ts calculate). `defender`: what getMoveEffectiveness reads
+ *   of the defender: `first` (its Tera type when Terastallized, not Stellar; else its first type), `added` (a two-type
+ *   Pokémon's added type, its types[2], multiplied in at the first-type call: the engine multiplies only types[0] and
+ *   types[1], gen789.js:300-302, champions.js:169-171; a one-type Pokémon's added type is its types[1]), `tarShot` (a Fire
+ *   move +1 on the first type: data/moves.ts tarshot onEffectiveness), `miracleEye` (a Psychic move no longer misses the
+ *   Dark type: onNegateImmunity, neutral there), `pinned` (a Ground move into its Flying type is neutral, as the engine's
+ *   own Gravity branch). `final`: modifiers appended to every final-damage chain of the run (the only chainMods with the
+ *   bounds 41 and 131072: gen789.js:481, 531; champions.js:273, 318), `firstFinal` to its first one only (the first hit).
+ *   `extraBoosts`: added to every countBoosts of the run (only Stored Power, Power Trip and Punishment's: gen789.js:581,
+ *   609; champions.js:355, 382).
+ *   `ungrounded` (on the defender: a priority move into the user's own ally, whose Psychic Terrain block does not reach it).
+ * The Pledges' swamp is turnSpeed's own (calculate.ts swampSpeed): getFinalSpeed calls util.js's chainMods by its local
+ * binding, which no wrapper reaches.
+ */
+const TURN_MARKS = Symbol.for("pokedrafts.status2.turnMarks");
+const TURN_STATE = Symbol.for("pokedrafts.status2.turnState");
+
+/**
+ * Puts the 2v2 turn's markers on an engine Pokémon as a non-enumerable property (calculate.ts makePokemon; its clone hook
+ * puts them on every clone), and returns it.
+ * @template P
+ * @param {P} pokemon
+ * @param {Record<string, unknown>} marks
+ * @returns {P}
+ */
+exports.setTurnMarks = (pokemon, marks) => {
+  Object.defineProperty(pokemon, TURN_MARKS, { value: marks, enumerable: false, configurable: true, writable: true });
+  return pokemon;
+};
+/**
+ * An engine Pokémon's 2v2 turn markers (setTurnMarks), or null.
+ * @param {unknown} pokemon
+ * @returns {Record<string, unknown> | null}
+ */
+exports.turnMarksOf = (pokemon) => (pokemon && pokemon[TURN_MARKS]) || null;
+if (!util[TURN_STATE]) {
+  // The state lives on util, so another copy of this module shares it.
+  const turn = { defender: null, final: null, firstFinal: null, finalCalls: 0, extraBoosts: 0 };
+  util[TURN_STATE] = turn;
+  const marksOf = (pokemon) => (pokemon && pokemon[TURN_MARKS]) || null;
+
+  const effectiveness = util.getMoveEffectiveness;
+  const neutral = effectiveness.state;
+  const turnEffectiveness = (gen, move, type, isGhostRevealed, isGravity, isRingTarget) => {
+    const marks = turn.defender;
+    if (!marks) return effectiveness(gen, move, type, isGhostRevealed, isGravity, isRingTarget);
+    if (marks.miracleEye && type === "Dark" && move.hasType("Psychic")) return 1;
+    if (marks.pinned && type === "Flying" && move.hasType("Ground")) return 1;
+    let value = effectiveness(gen, move, type, isGhostRevealed, isGravity, isRingTarget);
+    if (type !== marks.first) return value;
+    if (marks.added) value *= effectiveness(gen, move, marks.added, isGhostRevealed, isGravity, isRingTarget);
+    if (marks.tarShot && move.hasType("Fire") && !(neutral && neutral.neutral)) value *= 2;
+    return value;
+  };
+  turnEffectiveness.corrected = effectiveness.corrected;
+  turnEffectiveness.state = neutral;
+  util.getMoveEffectiveness = turnEffectiveness;
+
+  const grounded = util.isGrounded;
+  util.isGrounded = (pokemon, field) => {
+    const marks = marksOf(pokemon);
+    // A priority move into the user's own ally: Psychic Terrain's block does not reach it (calculate.ts, conditions.allyTarget).
+    if (marks && marks.ungrounded) return false;
+    if (marks && marks.grounding === "pinned") return true;
+    if (marks && marks.grounding === "floating") return !!field.isGravity || pokemon.hasItem("Iron Ball");
+    return grounded(pokemon, field);
+  };
+
+  const checkItem = util.checkItem;
+  util.checkItem = (pokemon, magicRoomActive) => {
+    checkItem(pokemon, magicRoomActive);
+    const marks = marksOf(pokemon);
+    if (marks && marks.itemSuppressed && pokemon.item) {
+      pokemon.disabledItem = pokemon.item;
+      pokemon.item = "";
+    }
+  };
+
+  const chain = util.chainMods;
+  const turnChain = (mods, lowerBound, upperBound) => {
+    if (lowerBound === 41 && upperBound === 131072 && (turn.final || turn.firstFinal)) {
+      const first = turn.finalCalls++ === 0 && turn.firstFinal ? turn.firstFinal : [];
+      return chain([...mods, ...(turn.final || []), ...first], lowerBound, upperBound);
+    }
+    return chain(mods, lowerBound, upperBound);
+  };
+  // The partner power state (withPowerMods) and the 5324 correction stay reachable through the wrapper.
+  turnChain.corrected = chain.corrected;
+  turnChain.partnerPower = chain.partnerPower;
+  util.chainMods = turnChain;
+
+  // status2 (A2): a used Protean or Libero (calculate.ts engineMarks proteanSpent) adds no STAB of its own.
+  const stabMod = util.getStabMod;
+  util.getStabMod = (pokemon, move, desc) => {
+    const marks = marksOf(pokemon);
+    if (!marks || !marks.proteanSpent) return stabMod(pokemon, move, desc);
+    const ability = pokemon.ability;
+    pokemon.ability = "";
+    try {
+      return stabMod(pokemon, move, desc);
+    } finally {
+      pokemon.ability = ability;
+    }
+  };
+
+  const countBoosts = util.countBoosts;
+  util.countBoosts = (gen, boosts) => countBoosts(gen, boosts) + turn.extraBoosts;
+}
+
+/**
+ * Runs `run` (one engine calculation) with the 2v2 turn's markers of its defender and the move (see above), and returns its
+ * result. `marks`: { defender?: { first, added?, tarShot?, miracleEye?, pinned? }, final?: number[], firstFinal?: number[],
+ * extraBoosts?: number }.
+ * @template T
+ * @param {{ defender?: { first?: string, added?: string, tarShot?: boolean, miracleEye?: boolean, pinned?: boolean } | null, final?: number[] | null, firstFinal?: number[] | null, extraBoosts?: number }} marks
+ * @param {() => T} run
+ * @returns {T}
+ */
+exports.withTurnMarks = (marks, run) => {
+  const turn = util[TURN_STATE];
+  const before = { defender: turn.defender, final: turn.final, firstFinal: turn.firstFinal, finalCalls: turn.finalCalls, extraBoosts: turn.extraBoosts };
+  turn.defender = marks.defender || null;
+  turn.final = marks.final && marks.final.length ? marks.final : null;
+  turn.firstFinal = marks.firstFinal && marks.firstFinal.length ? marks.firstFinal : null;
+  turn.finalCalls = 0;
+  turn.extraBoosts = marks.extraBoosts || 0;
+  try {
+    return run();
+  } finally {
+    Object.assign(turn, before);
+  }
+};
+

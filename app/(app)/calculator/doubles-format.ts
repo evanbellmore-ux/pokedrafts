@@ -1,7 +1,7 @@
 import {
-  allyOf, DOUBLES_SLOTS, foesOf, slotSide,
-  type DoublesFact, type DoublesHit, type DoublesHP, type DoublesResidual, type DoublesSlotId, type DoublesStartRow, type DoublesStep, type DoublesTargetRule,
-  type DoublesTurnResult,
+  allyOf, DOUBLES_SLOTS, foesOf, slotSide, startId,
+  type DoublesFact, type DoublesHit, type DoublesHP, type DoublesReplaced, type DoublesResidual, type DoublesSlotId, type DoublesStartRow, type DoublesStep,
+  type DoublesTargetRule, type DoublesTurnResult,
 } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleMechanic, MoveDamageResult } from "@/app/lib/battle/types";
@@ -92,6 +92,31 @@ export function stepHeading(position: number, step: DoublesStep, names: DoublesN
   return aim ? `${head}${aim.arrow ? ARROW : " · "}${aim.text}` : head;
 }
 
+/** The dex target types with no Pokémon target and the scope a copied step states for them (doubles-targets.ts NO_TARGET). */
+const COPIED_NO_TARGET: Record<string, Extract<DoublesTargetRule, { kind: "none" }>["scope"]> = {
+  self: "self", allies: "self-and-ally", allySide: "own-side", foeSide: "foe-side", all: "field", allyTeam: "own-team",
+};
+
+/**
+ * The targets of a copied step (DoublesStep.copied: a Dancer's copy, an instructed move), which its Pokémon's own action
+ * does not give: "Targets itself" for a move with no Pokémon target (Swords Dance, Quiver Dance), else null, so the heading
+ * names the Pokémon the step reaches (stepHeading). Null for a Pokémon's own step.
+ */
+export function copiedTargets(step: Pick<DoublesStep, "moveId" | "copied">, runtime: BattleRuntime): { arrow: boolean; text: string } | null {
+  if (!step.copied) return null;
+  const scope = COPIED_NO_TARGET[runtime.movesById.get(step.moveId)?.target ?? ""];
+  return scope ? { arrow: false, text: NO_TARGET_FACTS[scope] } : null;
+}
+
+/**
+ * The copy's own step fact, which heads a copied step ("Dancer: Oricorio copies Swords Dance.", "Instruct: Garchomp uses
+ * Dragon Claw again."; T2P §2.3, §3.13), and the step's other facts. No heading fact for a Pokémon's own step.
+ */
+export function copiedFact(step: Pick<DoublesStep, "facts" | "copied">): { heading: DoublesFact | null; facts: DoublesFact[] } {
+  const at = step.copied ? step.facts.findIndex((fact) => fact.text.startsWith(`${step.copied}: `)) : -1;
+  return at < 0 ? { heading: null, facts: step.facts } : { heading: step.facts[at], facts: step.facts.filter((_, index) => index !== at) };
+}
+
 /** "Faints before it moves (62.5%)." A fact that always holds keeps its text. */
 export function factLine(fact: DoublesFact) {
   if (fact.chance > 1 - 1e-9) return fact.text;
@@ -110,8 +135,29 @@ export function orderFact(order: DoublesStep["order"]) {
   return order.length > 1 ? `Order: ${order.map((entry) => `${ordinal(entry.position)} ${chanceText(entry.chance)}`).join(" · ")}.` : null;
 }
 
+const percent = new Intl.NumberFormat("en", { maximumFractionDigits: 2 });
+
+/**
+ * "23.38–27.92% of max HP", or one value when both ends read the same ("100% of max HP" for a one-hit KO move's fixed hit,
+ * "30.3% of max HP" for Seismic Toss): 1v1's damagePercent otherwise, whose card keeps its own form.
+ */
+export function percentText(row: Pick<MoveDamageResult, "minPercent" | "maxPercent">) {
+  if (row.minPercent === null || row.maxPercent === null) return damagePercent(row);
+  const [least, most] = [percent.format(row.minPercent), percent.format(row.maxPercent)];
+  return least === most ? `${least}% of max HP` : damagePercent(row);
+}
+
 function damageText(row: Pick<MoveDamageResult, "min" | "max" | "minPercent" | "maxPercent">) {
-  return `${formatRange(row.min, row.max)} damage (${damagePercent(row)})`;
+  return `${formatRange(row.min, row.max)} damage (${percentText(row)})`;
+}
+
+/**
+ * A KO chance on a hit or a residual line. `certain`: the Pokémon faints on every outcome (its HP record's koChance is
+ * exactly 1), so a chance that falls short of 1 only by its float sum over the outcomes reads 100%, as its card does
+ * (Bullet Seed into a 10 HP Mimikyu: 0.9999999999999999 over the hit's outcomes, the Disguise's loss among them).
+ */
+export function koChanceText(chance: number, certain = false) {
+  return chanceText(certain && chance > 1 - 1e-9 ? 1 : chance);
 }
 
 /** The minus sign of HP changes (U+2212). */
@@ -152,15 +198,16 @@ export function substituteLine(hit: DoublesHit, names: DoublesNames) {
  * A status move (`status`) that acted on it: "Blastoise", with the HP it changed ("Blastoise: +77 HP"); one that was
  * blocked or had no effect: "Blastoise: no effect". A move whose every outcome met a Substitute: substituteLine's text
  * (a calculated hit that also met one shows that line before this one, and no hit count: the row's count is the whole
- * move's, while the damage is that of the hits that got past the Substitute).
+ * move's, while the damage is that of the hits that got past the Substitute). `certain`: its Pokémon faints on every
+ * outcome of the moves (koChanceText).
  */
-export function hitLine(hit: DoublesHit, names: DoublesNames, chosen = false, status = false) {
+export function hitLine(hit: DoublesHit, names: DoublesNames, chosen = false, status = false, certain = false) {
   const reach = reachText(hit.reached);
   if (hit.kind === "effect") return `${names[hit.slot]}${hit.change ? `: ${hpChangeText(hit.change.min, hit.change.max)} HP` : ""}${reach}`;
   if (hit.kind === "substitute") return substituteLine(hit, names) ?? `${names[hit.slot]}'s Substitute${reach}`;
   if (hit.kind !== "calculated") return `${names[hit.slot]}: ${status ? "no effect" : "no damage"}${reach}`;
   const hits = hit.row && !hit.substitute ? hitRangeText(hit.row, chosen) : null;
-  return `${names[hit.slot]}: ${damageText(hit)}${hits ? `, ${hits}` : ""} · KO chance ${chanceText(hit.koChance)}${reach}`;
+  return `${names[hit.slot]}: ${damageText(hit)}${hits ? `, ${hits}` : ""} · KO chance ${koChanceText(hit.koChance, certain)}${reach}`;
 }
 
 /**
@@ -180,39 +227,48 @@ export function listedHits(step: Pick<DoublesStep, "hits" | "facts">) {
  * One residual of the end of turn: "Sandstorm · Garchomp: −11 HP", "Leech Seed · Venusaur: +12 HP (from Blastoise)",
  * "Bad poison · Blastoise: −9–19 HP (50%), KO chance 12.5%", "Healer · Garchomp (from Audino) (30%)" when it changes no
  * HP. The chance in brackets is the share of the turn in which it acts; the KO chance, the share in which it knocks the
- * Pokémon out.
+ * Pokémon out. The ends with no HP read "Taunt ends · Garchomp"; a landing names its user when it is in the turn
+ * ("Future Sight · Garchomp: −50–60 HP (from Alakazam)"). `certain`: the Pokémon faints on every outcome of the whole
+ * turn (koChanceText).
  */
-export function residualLine(residual: DoublesResidual, names: DoublesNames) {
-  const { effect, slot, other, chance, min, max, koChance } = residual;
+export function residualLine(residual: DoublesResidual, names: DoublesNames, certain = false, benchNames?: Readonly<Record<string, string>>) {
+  const { effect, slot, other, otherId, chance, min, max, koChance } = residual;
   const change = min === null || max === null ? "" : `: ${hpChangeText(min, max)} HP`;
-  const from = other ? ` (from ${names[other]})` : "";
+  // status2 R: with `benchNames`, `names` are the turn's and each Pokémon is named by its id (DoublesResidual.id, otherId: a
+  // newcomer at the slot or at the seeder's or holder's place); otherId null (a different Pokémon over the outcomes) names none.
+  const own = benchNames ? idName(names, benchNames, slot, residual.id) : names[slot];
+  const from = other && otherId !== null ? ` (from ${benchNames ? idName(names, benchNames, other, otherId) : names[other]})` : "";
   const share = chance > 1 - 1e-9 ? "" : ` (${chanceText(chance)})`;
-  return `${effect} · ${names[slot]}${change}${from}${share}${koChance > 0 ? `, KO chance ${chanceText(koChance)}` : ""}`;
+  return `${effect} · ${own}${change}${from}${share}${koChance > 0 ? `, KO chance ${koChanceText(koChance, certain)}` : ""}`;
 }
 
-/** "Substitute: 15 HP." → ["Substitute: ", 15]: a condition whose worlds differ only by an HP value. */
-function hpCondition(text: string): [string, number] | null {
-  const match = /^(.+: )(\d+) HP\.$/.exec(text);
-  return match ? [match[1], Number(match[2])] : null;
+/**
+ * "Substitute: 15 HP." → ["Substitute: ", 15, " HP"], "Bide: 40 HP stored." → ["Bide: ", 40, " HP stored"]: a condition
+ * whose worlds differ only by an HP value.
+ */
+function hpCondition(text: string): [string, number, string] | null {
+  const match = /^(.+: )(\d+)( HP(?: stored)?)\.$/.exec(text);
+  return match ? [match[1], Number(match[2]), match[3]] : null;
 }
 
 /**
  * The card's conditions line (DoublesHP.conditions): "Paralysed · Confused (67%) · Substitute: 15–19 HP". Each fact
  * without its full stop, with the share of the turn in which it holds when below 1. Facts that differ only by an HP
- * value ("Substitute: 15 HP.", "Substitute: 19 HP.") are one range, with the share in which any of them holds.
+ * value ("Substitute: 15 HP.", "Substitute: 19 HP."; Bide's "Bide: 40 HP stored.") are one range, with the share in which
+ * any of them holds. A count of turns or layers ("Taunt: 2 more turns.", "Stockpile 1.") keeps each value with its share.
  */
 export function conditionsLine(conditions: readonly DoublesFact[]) {
-  const merged: { text: string; chance: number; hp?: [string, number, number] }[] = [];
+  const merged: { text: string; chance: number; hp?: { prefix: string; least: number; most: number; suffix: string } }[] = [];
   for (const fact of conditions) {
     const hp = hpCondition(fact.text);
-    const same = hp && merged.find((entry) => entry.hp?.[0] === hp[0]);
+    const same = hp && merged.find((entry) => entry.hp?.prefix === hp[0] && entry.hp.suffix === hp[2]);
     if (same?.hp && hp) {
-      same.hp = [hp[0], Math.min(same.hp[1], hp[1]), Math.max(same.hp[2], hp[1])];
+      same.hp = { ...same.hp, least: Math.min(same.hp.least, hp[1]), most: Math.max(same.hp.most, hp[1]) };
       same.chance += fact.chance;
-    } else merged.push({ text: fact.text, chance: fact.chance, ...(hp ? { hp: [hp[0], hp[1], hp[1]] as [string, number, number] } : {}) });
+    } else merged.push({ text: fact.text, chance: fact.chance, ...(hp ? { hp: { prefix: hp[0], least: hp[1], most: hp[1], suffix: hp[2] } } : {}) });
   }
   return merged.map(({ text, chance, hp }) => {
-    const words = hp ? `${hp[0]}${formatRange(hp[1], hp[2])} HP` : text.endsWith(".") ? text.slice(0, -1) : text;
+    const words = hp ? `${hp.prefix}${formatRange(hp.least, hp.most)}${hp.suffix}` : text.endsWith(".") ? text.slice(0, -1) : text;
     return chance > 1 - 1e-9 ? words : `${words} (${chanceText(Math.min(1, chance))})`;
   }).join(" · ");
 }
@@ -259,12 +315,13 @@ export function actsWithoutMoves(turn: DoublesTurnResult | null | undefined): bo
  * Drum's cost), a residual of the end of turn takes HP from it, or it can faint without any of these (its own recoil,
  * Explosion, Life Orb or a target's Rocky Helmet; the step's facts say which). A Pokémon only a status move reached
  * otherwise (Thunder Wave, Swords Dance, a status move it is immune to) shows none: a status move is known by its
- * "effect" hit, or with `runtime` by its category.
+ * "effect" hit, or with `runtime` by its category. A hit with a calculation (`row`) is a damaging move's, a calling
+ * move's too (Sleep Talk, Copycat, Nature Power, Me First calling an attack).
  */
 export function cardReached(turn: ReadyTurn | null, slot: DoublesSlotId, runtime?: BattleRuntime) {
   if (!turn) return false;
   const end = turn.endOfTurn.status === "ready" ? turn.endOfTurn : null;
-  const status = (step: DoublesStep, hit: DoublesHit) => hit.kind === "effect" || runtime?.movesById.get(step.moveId)?.category === "Status";
+  const status = (step: DoublesStep, hit: DoublesHit) => hit.kind === "effect" || (!hit.row && runtime?.movesById.get(step.moveId)?.category === "Status");
   const reaches = (step: DoublesStep, hit: DoublesHit) => hit.slot === slot && hit.reached > 0 && (!status(step, hit) || (hit.change?.min ?? 0) < 0);
   return turn.steps.some((step) => step.hits.some((hit) => reaches(step, hit))) || (turn.hp[slot]?.koChance ?? 0) > 0
     || !!end && ((end.hp[slot]?.koChance ?? 0) > 0 || end.residuals.some((residual) => residual.slot === slot && residual.min !== null && residual.min < 0));
@@ -295,18 +352,97 @@ export function endNotEstimatedText(reason: string) {
 /**
  * "Garchomp HP remaining: 79 / 183. Blastoise HP remaining: 0 / 154, KO chance 75%." for a ready turn, after the whole
  * turn when its end of turn is estimated; otherwise after the moves, then why the end of turn is not. The reason for any
- * other result.
+ * other result. status2 R-U: after a slot's Pokémon, the leavers' and the newcomers' lines (slotSwitches: "Garchomp switches
+ * out at 98–130 HP. Corviknight comes in. Corviknight HP remaining: 110 / 180."), the newcomers named by `benchNames`.
  */
-export function turnSummary(turn: DoublesTurnResult | null, names: DoublesNames, mode: DamageRollMode) {
+export function turnSummary(turn: DoublesTurnResult | null, names: DoublesNames, mode: DamageRollMode, benchNames: Readonly<Record<string, string>> = {}) {
   if (!turn) return "";
   if (turn.status === "not-estimated") return `Turn not estimated: ${turn.reason}`;
   if (turn.status === "issues") return issueLines(turn.issues, names).join(" ");
   const { hp: records } = turnHP(turn);
+  const remaining = (name: string, hp: DoublesHP) => `${name} HP remaining: ${shownHP(hp, mode)} / ${hp.maximum}${hp.koChance > 0 ? `, KO chance ${chanceText(hp.koChance)}` : ""}.`;
   return [...DOUBLES_SLOTS.flatMap((slot) => {
     const hp = records[slot];
     if (!hp) return [];
-    return [`${names[slot]} HP remaining: ${shownHP(hp, mode)} / ${hp.maximum}${hp.koChance > 0 ? `, KO chance ${chanceText(hp.koChance)}` : ""}.`];
+    const switches = slotSwitches(turn, slot, names, benchNames);
+    return [remaining(names[slot], hp), ...(switches ? [
+      ...switches.left.map((entry) => factLine({ text: leaverText(entry), chance: entry.chance })),
+      ...switches.entered.flatMap((entry) => [factLine({ text: `${entry.name} comes in.`, chance: entry.chance }), ...(entry.hp ? [remaining(entry.name, entry.hp)] : [])]),
+    ] : [])];
   }), ...(turn.endOfTurn.status === "not-estimated" ? [endNotEstimatedText(turn.endOfTurn.reason)] : [])].join(" ");
+}
+
+// ---------- status2 R-U: switch-outs with a replacement (DoublesTurnResult.replaced, hpEntered; DoublesHit.id, DoublesResidual.id) ----------
+
+/**
+ * The name of the Pokémon an R field names (DoublesHit.id, DoublesResidual.id, DoublesReplaced's ids): none, or the slot's
+ * startId, is the slot's starting Pokémon; another slot's startId that slot's; a bench id its bench name (`benchNames`:
+ * doubles-types turnBenchNames, the names the turn's own text uses).
+ */
+export function idName(names: DoublesNames, benchNames: Readonly<Record<string, string>>, slot: DoublesSlotId, id?: string) {
+  if (id === undefined || id === startId(slot)) return names[slot];
+  const start = DOUBLES_SLOTS.find((each) => startId(each) === id);
+  return start ? names[start] : benchNames[id] || id;
+}
+
+/** `names` with `slot` named after the Pokémon `id` (a hit on or a residual of a newcomer), or `names` itself. */
+export function namesFor(names: DoublesNames, benchNames: Readonly<Record<string, string>>, slot: DoublesSlotId, id?: string): DoublesNames {
+  if (id === undefined || id === startId(slot)) return names;
+  return { ...names, [slot]: idName(names, benchNames, slot, id) };
+}
+
+/**
+ * The names a step's heading reads (stepHeading, its targets): the step's slot after the step's Pokémon (DoublesStep.id: a
+ * newcomer's Dancer copy), and each other slot it reaches after the Pokémon its hits there reached, where every hit at that
+ * slot reached the same one (DoublesHit.id: a newcomer that came in before the move); a slot whose hits reached different
+ * Pokémon over the outcomes keeps its starting Pokémon's name.
+ */
+export function stepNames(names: DoublesNames, benchNames: Readonly<Record<string, string>>, step: Pick<DoublesStep, "slot" | "id" | "hits">): DoublesNames {
+  const out: Record<DoublesSlotId, string> = { ...names };
+  if (step.id !== undefined) out[step.slot] = idName(names, benchNames, step.slot, step.id);
+  for (const slot of new Set(step.hits.map((hit) => hit.slot))) {
+    if (slot === step.slot) continue;
+    const ids = new Set(step.hits.filter((hit) => hit.slot === slot).map((hit) => hit.id));
+    if (ids.size === 1) out[slot] = idName(names, benchNames, slot, [...ids][0]);
+  }
+  return out;
+}
+
+/** One slot's switches over the turn, as its card and the live summary state them (slotSwitches). */
+export type SlotSwitches = {
+  /** Each Pokémon that left the slot, with its HP as it left (after its switch-out effects) and the share of the turn in which it did. */
+  left: { name: string; hp: DoublesHP; chance: number }[];
+  /** Each Pokémon that came in, with that share and its HP after the turn (after the moves when the end of turn is not estimated); null when the turn gives none. */
+  entered: { id: string; name: string; chance: number; hp: DoublesHP | null }[];
+};
+
+/**
+ * The slot's switches in a ready turn (status2 R): the moves' (DoublesTurnResult.replaced), then the end of turn's (Eject Pack
+ * at order 29, Emergency Exit, Wimp Out), each newcomer with its HP as the cards show the others' (turnHP: after the whole turn
+ * from endOfTurn.hpEntered when the end of turn is estimated, else after the moves from hpEntered). Null without a switch.
+ */
+export function slotSwitches(turn: ReadyTurn, slot: DoublesSlotId, names: DoublesNames, benchNames: Readonly<Record<string, string>>): SlotSwitches | null {
+  const end = turn.endOfTurn.status === "ready" ? turn.endOfTurn : null;
+  const parts = [turn.replaced?.[slot], end?.replaced?.[slot]].filter((part): part is DoublesReplaced => !!part);
+  if (!parts.length) return null;
+  const hpOf = (id: string) => (end ? end.hpEntered : turn.hpEntered)?.[slot]?.[id] ?? null;
+  return {
+    left: parts.flatMap((part) => part.left.map((entry) => ({ name: idName(names, benchNames, slot, entry.id), hp: entry.hp, chance: entry.chance }))),
+    entered: parts.flatMap((part) => part.entered.map((entry) => ({ id: entry.id, name: idName(names, benchNames, slot, entry.id), chance: entry.chance, hp: hpOf(entry.id) }))),
+  };
+}
+
+/** "Garchomp switches out at 98–130 HP." (SPEC2 §5.2's leaver line; the least to the most HP it can leave at). */
+export function leaverText(entry: SlotSwitches["left"][number]) {
+  return `${entry.name} switches out at ${formatRange(entry.hp.min, entry.hp.max)} HP.`;
+}
+
+/**
+ * The HP record of the Pokémon a hit reached or a residual acted on (`records`: the slot's starting Pokémon's; `entered`: the
+ * newcomers' by slot and id, DoublesTurnResult.hpEntered or DoublesEndOfTurn.hpEntered), for its certain KO (koChanceText).
+ */
+export function recordOf(records: Record<DoublesSlotId, DoublesHP | null>, entered: Partial<Record<DoublesSlotId, Record<string, DoublesHP>>> | undefined, slot: DoublesSlotId, id?: string) {
+  return id === undefined || id === startId(slot) ? records[slot] : entered?.[slot]?.[id] ?? null;
 }
 
 /** The engine's validation messages, each with the Pokémon it is about: "Garchomp: No Tera type.". */

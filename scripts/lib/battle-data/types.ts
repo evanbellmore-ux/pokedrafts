@@ -5,6 +5,7 @@ import type {
   ChampionsSpecies,
   RandomBattle,
 } from "../../../app/lib/battle/types";
+import type { FlingData } from "../../../app/lib/battle/fling";
 import type {
   AvailableData,
   EngineSnapshot,
@@ -49,6 +50,8 @@ export type NativeItem = ChampionsItem & {
   zMove?: string;
   zMoveFrom?: string;
   itemUser?: string[];
+  /** Fling's data from the pinned mod (app/lib/battle/fling.ts); absent when the item cannot be flung. */
+  fling?: FlingData;
 };
 export type NativeCatalog = Omit<ChampionsCatalog, "game" | "level" | "species" | "moves" | "items"> & {
   game: NativeGame;
@@ -143,6 +146,6 @@ export type DexAPI = {
   };
   moves: { all(): Omit<NativeResolvedMove, "description">[]; get(id: string): Omit<NativeResolvedMove, "description"> };
   abilities: { all(): Omit<ResolvedAbility, "description">[] };
-  items: { all(): Omit<NativeResolvedItem, "description">[] };
+  items: { all(): (Omit<NativeResolvedItem, "description" | "fling"> & { isBerry?: boolean; fling?: unknown })[] };
   text: { get(row: AvailableData): { desc?: string; shortDesc?: string } };
 };

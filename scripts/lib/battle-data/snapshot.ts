@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { Generations, Move } from "@smogon/calc";
-import { isAvailable, toID, type AvailableData } from "../champions-data/transform";
+import { flingData, isAvailable, toID, type AvailableData } from "../champions-data/transform";
 import { canonical, loadModule, sha256 } from "./sources";
 import {
   NATIVE_GAMES,
@@ -149,7 +149,7 @@ export function loadNativeSnapshots(runtime: string): NativeSnapshot[] {
       items: dex.items.all().map((row) => ({
         id: row.id, name: row.name, exists: row.exists, isNonstandard: row.isNonstandard,
         megaStone: row.megaStone, description: describe(row), zMoveType: row.zMoveType,
-        zMove: row.zMove, zMoveFrom: row.zMoveFrom, itemUser: row.itemUser,
+        zMove: row.zMove, zMoveFrom: row.zMoveFrom, itemUser: row.itemUser, fling: flingData(row),
       })),
     };
   });

@@ -96,9 +96,13 @@ let root: { render: (node: unknown) => void };
 async function settle(rounds = 8) {
   for (let index = 0; index < rounds; index++) await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
 }
-/** Settles until no deferred calculation is pending. */
+/** Settles until no deferred calculation is pending and the battle runtime has loaded (a cold load takes real time, not ticks). */
 async function settled() {
   await settle();
+  for (let round = 0; round < 40 && /Calculations are paused\.|Calculating…/.test(document.documentElement.textContent); round++) await settle(2);
+  for (const deadline = Date.now() + 20_000; /while the calculator loads\./.test(document.documentElement.textContent) && Date.now() < deadline;) {
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)); });
+  }
   for (let round = 0; round < 40 && /Calculations are paused\.|Calculating…/.test(document.documentElement.textContent); round++) await settle(2);
 }
 async function mount(node: ReactNode) {
@@ -350,7 +354,8 @@ describe("naming guard: names, never positions", () => {
       }
     }
     expect(used).toEqual([]);
-  });
+    // Parses every source file under app/.
+  }, 30_000);
 
   it("2v2 with three Garchomp (a mirror and same-side twins, two Dragon Claw users), desktop rails, both rosters: names are unique", async () => {
     let s = await calculatorStart();

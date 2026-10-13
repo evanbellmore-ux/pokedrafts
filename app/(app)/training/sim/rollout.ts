@@ -12,7 +12,11 @@ import { PRNG, State, type ClonedBattle, type PRNGSeed } from "./sim";
 
 export type RolloutResult = { battle: ClonedBattle; replacements: number; error: string | null };
 
-function replacementChoice(battle: ClonedBattle, side: SideID, aiSide: SideID, keys: MemberKeys, replace: ReplacePolicy): string | null {
+/**
+ * A side's answer to a mid-turn switch request on `battle` (null: none asked of it): the AI's side by its ReplacePolicy, the
+ * player's by its healthiest living bench members (status2 R-T: the prelude answers its own requests the same way).
+ */
+export function replacementChoice(battle: ClonedBattle, side: SideID, aiSide: SideID, keys: MemberKeys, replace: ReplacePolicy): string | null {
   const request = battle[side].activeRequest;
   if (!request || !("forceSwitch" in request)) return null;
   const pokemon = request.side.pokemon;

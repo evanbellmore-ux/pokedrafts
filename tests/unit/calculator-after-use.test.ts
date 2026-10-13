@@ -428,7 +428,8 @@ describe("single-hit rows", () => {
       }
     }
     expect(checked).toBeGreaterThan(5000);
-  });
+    // Over 5000 calculated rows in four games: about 4.5-5.5 s on a 4-CPU machine, past vitest's 5 s default.
+  }, 30_000);
 });
 
 /** The HP a use without damage leaves: as it was, or with an absorbing ability's quarter (pinned Showdown onTryHit). */

@@ -248,7 +248,9 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
 
   const commit = async (side: SideID, choice: string): Promise<void> => {
     choices[side].push(choice);
-    let result = host.choose(side, choice);
+    // status2 R-T: each seat's tracker knows its own accepted choices (PublicTracker.chose: its Pokémon's chosen targets).
+    const choose = (text: string) => { const done = host.choose(side, text); if (done.ok) trackers[side].chose(text); return done; };
+    let result = choose(choice);
     if (result.ok) return;
     const last = decisions.filter((entry) => entry.side === side).at(-1);
     if (result.requestChanged && !options.forced) {
@@ -257,7 +259,7 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
         const retry = await decide(side, host.requestId, true);
         retry.record.recovery = { kind: "retry", error: result.error, trapShown: true };
         decisions.push(retry.record);
-        result = host.choose(side, retry.choice);
+        result = choose(retry.choice);
         choices[side].push(retry.choice);
         if (result.ok) return;
       } catch (error) {
@@ -266,8 +268,8 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
     }
     const fallback = fallbackChoice(side, host.request(side)!, keys, trackers[side]);
     if (last) last.recovery = { kind: "fallback", error: result.ok ? "" : result.error, trapShown: !result.ok && result.requestChanged };
-    let final = host.choose(side, fallback);
-    if (!final.ok) final = host.choose(side, "default");
+    let final = choose(fallback);
+    if (!final.ok) final = choose("default");
     choices[side].push(fallback);
     if (!final.ok) errors.push({ side, stage: "commit", message: `${choice} → ${final.error}` });
   };

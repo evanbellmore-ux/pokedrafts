@@ -4,7 +4,7 @@
 import type { AIRandom } from "../model/decision";
 import type { PublicMon, PublicVolatile } from "../model/public-state";
 import type { ClonedBattle, EffectState, WritablePokemon } from "./sim";
-import { countsOf, type SubstituteVolatile } from "./tracker";
+import { countsOf, type StockpileVolatile, type SubstituteVolatile } from "./tracker";
 
 export type EffectContext = {
   battle: ClonedBattle;
@@ -27,7 +27,7 @@ const COUNTDOWN: Record<string, number> = {
 /** Public volatiles with no hidden duration: written as shown. */
 const PLAIN: ReadonlySet<string> = new Set([
   "smackdown", "saltcure", "tarshot", "charge", "focusenergy", "torment", "flashfire", "minimize", "defensecurl", "ingrain", "aquaring",
-  "curse", "imprison", "nightmare", "noretreat", "gastroacid", "destinybond", "grudge", "foresight", "miracleeye", "dragoncheer", "octolock",
+  "curse", "imprison", "nightmare", "noretreat", "gastroacid", "destinybond", "grudge", "foresight", "miracleeye", "dragoncheer",
   "glaiverush",
 ]);
 /** Effects dropped at |turn| or represented elsewhere (the lock, the protect streak, Supreme Overlord's count). */
@@ -92,7 +92,9 @@ function construct(ctx: EffectContext, volatile: PublicVolatile, state: (id: str
       if (ctx.own && pub.lastMoveTarget) {
         targetLoc = pub.lastMoveTarget.side === mon.side.id ? -(pub.lastMoveTarget.position + 1) : pub.lastMoveTarget.position + 1;
       } else {
-        // The charging move's target is not shown (-prepare names no target): drawn over the living foes.
+        // The charging move's target is not shown (-prepare names no target, and the charge turn's move line is "[still]"
+        // with its target blank): drawn over the living foes, a belief world's own (status2 T2: the bridge releases the move
+        // at this target).
         targetLoc = foes.length ? locOf(mon, pick(foes, random)) : 1;
         if (ctx.own) ctx.approximations.add("Charging move's target drawn.");
       }
@@ -133,8 +135,20 @@ function construct(ctx: EffectContext, volatile: PublicVolatile, state: (id: str
       ctx.approximations.add("Substitute HP assumed full.");
       return { substitute: state("substitute", { hp: Math.floor(maker.maxhp / 4) }) };
     }
-    case "stockpile": return { stockpile: state("stockpile", { layers: volatile.layers ?? 1 }) };
+    // status2 T1: the layers and the counts its End reverses (tracker.ts StockpileVolatile; data/moves.ts stockpile effectState).
+    case "stockpile": {
+      const pile = volatile as StockpileVolatile;
+      const layers = volatile.layers ?? 1;
+      return { stockpile: state("stockpile", { layers, def: pile.def ?? -layers, spd: pile.spd ?? -layers }) };
+    }
     case "attract": return { attract: state("attract", { source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
+    // status2 T2: Lock-On's volatile on its user, its source the Pokémon locked on (data/moves.ts lockon: addVolatile('lockon',
+    // target)), 2 end-of-turn countdowns.
+    case "lockon": return { lockon: state("lockon", { duration: left(2, since, turn), source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
+    // status2 T1: Octolock's user, which its residual and its trap read (data/moves.ts octolock condition: effectState.source).
+    case "octolock": return { octolock: state("octolock", { source: ctx.monOf(volatile.sourceKey) ?? undefined }) };
+    // status2 T1: Power Trick and Power Shift; their swaps of the stored stats are replayed in log order (belief-battle.ts).
+    case "powertrick": case "powershift": return { [id]: state(id) };
     // Psychic Noise's Heal Block lasts 2 turns, Heal Block's 5 (data/moves.ts healblock condition durationCallback).
     case "healblock": return { healblock: state("healblock", { duration: left(volatile.moveId === "psychicnoise" ? 2 : 5, since, turn) }) };
     // Dragon Cheer remembers whether the target was a Dragon type when it started (data/moves.ts dragoncheer condition onStart).

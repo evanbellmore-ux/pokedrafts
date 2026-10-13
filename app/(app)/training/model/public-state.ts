@@ -16,6 +16,8 @@ export type PublicVolatile = {
   /** Move attempts it has lasted (confusion: -activate lines). */
   elapsed: number;
   moveId?: string; layers?: number; sourceKey?: string;
+  /** status2 T1, a Reflect Type "typechange" naming no types: the form whose own types it copied (its target's then). */
+  speciesId?: string;
   /**
    * Leech Seed: the seeder's position when it seeded (pinned data/moves.ts leechseed condition onStart sourceSlot); the
    * Pokémon standing there heals, whoever it is after a switch or an Ally Switch.

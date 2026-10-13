@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  badDreamsDamage, bigRoot, leechSeedDamage, ownResiduals, RESIDUAL_KEYS, weatherResiduals, type ResidualId, type ResidualMon,
+  badDreamsDamage, bigRoot, leechSeedDamage, ownResiduals, RESIDUAL_KEYS, SIDE_RESIDUALS, sideResidualDamage, weatherResiduals, type ResidualId, type ResidualMon,
 } from "@/app/lib/battle/residuals";
 
 /**
@@ -113,6 +113,31 @@ describe("residuals.ts ownResiduals", () => {
   });
 });
 
+describe("residuals.ts status2 (SPEC2 §4.6)", () => {
+  it("Nightmare takes 1/4 of the base maximum HP at order 11 (at least 1); Magic Guard none; the 1v1 search never sets it", () => {
+    expect(own({ nightmare: true, status: "slp" })).toEqual([["nightmare", -58]]);
+    // Komala (140 HP): 35, as pinned (e1-probes E1-NM-01).
+    expect(amounts(ownResiduals(mon({ baseMaxHP: 140, ability: "comatose", nightmare: true }), { terrain: "", champions: false }))).toEqual([["nightmare", -35]]);
+    expect(amounts(ownResiduals(mon({ baseMaxHP: 3, nightmare: true }), { terrain: "", champions: false }))).toEqual([["nightmare", -1]]);
+    expect(own({ nightmare: true, status: "slp", ability: "magicguard" })).toEqual([]);
+    expect(own({ status: "slp" })).toEqual([]);
+    // In key order: after burn (10), before Curse (12).
+    expect(ownResiduals(mon({ status: "brn", nightmare: true, curse: true }), { terrain: "", champions: false }).map((each) => each.id)).toEqual(["brn", "nightmare", "curse"]);
+  });
+
+  it("the new keys: Nightmare 11, Octolock 14 beside Syrup Bomb, the countdowns 19, 20, 21 (volatiles: subOrder 2)", () => {
+    expect(RESIDUAL_KEYS.nightmare).toEqual({ order: 11, subOrder: 2, priority: 0 });
+    expect(RESIDUAL_KEYS.octolock).toEqual({ order: 14, subOrder: 2, priority: 0 });
+    expect(RESIDUAL_KEYS.octolock).toEqual(RESIDUAL_KEYS.syrupbomb);
+    expect([RESIDUAL_KEYS.telekinesis, RESIDUAL_KEYS.healblock, RESIDUAL_KEYS.embargo]).toEqual([
+      { order: 19, subOrder: 2, priority: 0 }, { order: 20, subOrder: 2, priority: 0 }, { order: 21, subOrder: 2, priority: 0 },
+    ]);
+    // The 28.2 group (one key: the holders' Speed sorts it) and the copies at 29 (an ability before an item at one Speed).
+    for (const id of ["speedboost", "harvest", "pickup", "baddreams"]) expect(RESIDUAL_KEYS[id], id).toEqual({ order: 28, subOrder: 2, priority: 0 });
+    expect([RESIDUAL_KEYS.opportunist.subOrder, RESIDUAL_KEYS.mirrorherb.subOrder, RESIDUAL_KEYS.whiteherb.subOrder]).toEqual([7, 8, 8]);
+  });
+});
+
 describe("residuals.ts two-Pokémon amounts", () => {
   it("Bad Dreams: 1/8 to a sleeping or Comatose foe; Magic Guard none", () => {
     expect(badDreamsDamage(mon({ status: "slp" }))).toBe(29);
@@ -124,5 +149,28 @@ describe("residuals.ts two-Pokémon amounts", () => {
     expect(leechSeedDamage(mon())).toBe(29);
     expect(leechSeedDamage(mon({ baseMaxHP: 5 }))).toBe(1);
     expect(leechSeedDamage(mon({ ability: "magicguard" }))).toBe(0);
+  });
+});
+
+describe("residuals.ts status2 E2: side conditions at 5.1 and the new keys", () => {
+  it("the G-Max four take 1/6 and the sea of fire 1/8, each sparing its type; Magic Guard none (T2E §4.4, T2P §3.17)", () => {
+    expect(sideResidualDamage(mon(), "gmaxwildfire")).toBe(39);
+    expect(sideResidualDamage(mon(), "firepledge")).toBe(29);
+    for (const [id, type] of Object.entries(SIDE_RESIDUALS).map(([id, rule]) => [id, rule.spares] as const)) {
+      expect(sideResidualDamage(mon({ types: [type, "Flying"] }), id as keyof typeof SIDE_RESIDUALS), id).toBe(0);
+      expect(sideResidualDamage(mon({ ability: "magicguard" }), id as keyof typeof SIDE_RESIDUALS), id).toBe(0);
+    }
+    expect(SIDE_RESIDUALS.gmaxvolcalith.spares).toBe("Rock");
+    expect(sideResidualDamage(mon({ baseMaxHP: 5 }), "gmaxcannonade")).toBe(1);
+  });
+
+  it("keys: the side residual (5.1), Taunt, Encore, Disable (15, 16, 17), the Pledges (26.7-26.9), the field ends (27.2, 27.6, 27.7), Uproar (28.1)", () => {
+    expect(RESIDUAL_KEYS.sideresidual).toEqual({ order: 5, subOrder: 1, priority: 0 });
+    expect([RESIDUAL_KEYS.taunt.order, RESIDUAL_KEYS.encore.order, RESIDUAL_KEYS.disable.order]).toEqual([15, 16, 17]);
+    expect([RESIDUAL_KEYS.pledgewater, RESIDUAL_KEYS.pledgefire, RESIDUAL_KEYS.pledgegrass].map((key) => [key.order, key.subOrder])).toEqual([[26, 7], [26, 8], [26, 9]]);
+    expect([RESIDUAL_KEYS.gravity, RESIDUAL_KEYS.magicroom, RESIDUAL_KEYS.terrain].map((key) => [key.order, key.subOrder])).toEqual([[27, 2], [27, 6], [27, 7]]);
+    expect(RESIDUAL_KEYS.uproar).toEqual({ order: 28, subOrder: 1, priority: 0 });
+    // Cud Chew and Moody sort in the one 28.2 group by their holder's Speed.
+    for (const id of ["cudchew", "moody"]) expect(RESIDUAL_KEYS[id], id).toEqual({ order: 28, subOrder: 2, priority: 0 });
   });
 });

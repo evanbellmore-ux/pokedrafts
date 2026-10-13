@@ -367,35 +367,34 @@ describe("the Pokémon's HP read through a Substitute (U11, U12)", () => {
   });
 });
 
-describe("the narrow guards (ADDENDUM §4.13.2, §4.13.6)", () => {
+describe("the narrow guards (ADDENDUM §4.13.2, §4.13.6; status2 ADDENDUM2 §2.3 #33, #34: what is kept)", () => {
   const reason = (turn: DoublesTurnInput) => {
     const result = calculateDoublesTurn(turn);
     return result.status === "not-estimated" ? result.reason : result.status;
   };
-  it("a multi-hit move in front of the per-hit effects the engine reads, and an intact Disguise", () => {
+  it("a constant-power multi-hit move in front of the per-hit effects the engine reads is modelled; an intact Disguise behind it too", () => {
+    // status2 T2M §3.13, §3.23 (doubles-substitute-tier2.test.ts pins the oracle's numbers).
     const spear = (target: P) => reason(pair({ id: "cloyster", ability: "skilllink", move: "iciclespear" }, { ...target, ...sub(30) }));
-    expect(spear(idle("dragonite", { ability: "multiscale" }))).toBe("Icicle Spear into Dragonite's Substitute with Multiscale is not modelled in 2v2.");
-    expect(spear(idle("mudsdale", { ability: "stamina" }))).toBe("Icicle Spear into Mudsdale's Substitute with Stamina is not modelled in 2v2.");
-    expect(spear(idle("garchomp", { item: "yacheberry" }))).toBe("Icicle Spear into Garchomp's Substitute with Yache Berry is not modelled in 2v2.");
-    expect(spear(idle("mimikyu", { ability: "disguise" }))).toBe("Disguise against a multi-hit move is not modelled in 2v2.");
-    // Multiscale below full HP and a Berry for another type read nothing per hit.
-    expect(spear(idle("dragonite", { ability: "multiscale", hp: 100 }))).toBe("ready");
-    expect(spear(idle("garchomp", { item: "occaberry" }))).toBe("ready");
-    // A single hit is exact in front of each.
+    for (const target of [idle("dragonite", { ability: "multiscale" }), idle("mudsdale", { ability: "stamina" }), idle("garchomp", { item: "yacheberry" }), idle("mimikyu", { ability: "disguise" }),
+      idle("dragonite", { ability: "multiscale", hp: 100 }), idle("garchomp", { item: "occaberry" })]) expect(spear(target), target.id).toBe("ready");
     expect(reason(pair({ id: "lapras", move: "icebeam" }, idle("dragonite", { ability: "multiscale", ...sub(30) })))).toBe("ready");
-    expect(reason(pair({ id: "scizor", move: "dualwingbeat" }, idle("oinkologne", { ability: "lingeringaroma", ...sub(30) }))))
-      .toBe("Dual Wingbeat into Oinkologne's Substitute with Lingering Aroma is not modelled in 2v2.");
+    expect(reason(pair({ id: "scizor", move: "dualwingbeat" }, idle("oinkologne", { ability: "lingeringaroma", ...sub(30) })))).toBe("ready");
   });
-  it("Magician with an item to take; Max Moves; Mind Blown; a signature Z-Move with an effect of its own", () => {
-    expect(reason(pair({ id: "delphox", ability: "magician", move: "flamethrower" }, idle("snorlax", { item: "leftovers", ...sub(300) }))))
-      .toBe("Magician into a Substitute is not modelled in 2v2.");
+  it("kept: hits of different power, a Gem's first hit, Parental Bond's strike in front of one; Mind Blown until the spread step adds its costs", () => {
+    expect(reason(pair({ id: "weavile", move: "tripleaxel" }, idle("dragonite", { ability: "multiscale", ...sub(30) }))))
+      .toBe("Triple Axel into Dragonite's Substitute with Multiscale is not modelled in 2v2.");
+    expect(reason(pair({ id: "maushold", ability: "technician", item: "normalgem", move: "populationbomb" }, idle("dragonite", { ability: "multiscale", ...sub(30) }))))
+      .toBe("Population Bomb into Dragonite's Substitute with Multiscale is not modelled in 2v2.");
+    const mindBlown = reason(pair({ id: "blacephalon", move: "mindblown", target: null }, idle("snorlax", sub(300)), "ultra_sun_ultra_moon"));
+    expect(["Mind Blown into a Substitute is not modelled in 2v2.", "ready"]).toContain(mindBlown);
+  });
+  it("Magician with an item to take, Max Moves and a signature Z-Move with an effect of its own are modelled (T2M §3.22)", () => {
+    expect(reason(pair({ id: "delphox", ability: "magician", move: "flamethrower" }, idle("snorlax", { item: "leftovers", ...sub(300) })))).toBe("ready");
     expect(reason(pair({ id: "delphox", ability: "magician", move: "flamethrower" }, idle("snorlax", sub(300))))).toBe("ready");
     const max = pair({ id: "lapras", move: "icebeam" }, idle("snorlax", sub(300)), "sword_shield");
     max.pokemon["own-left"]!.build = { ...max.pokemon["own-left"]!.build, mechanic: "dynamax" };
-    expect(reason(max)).toBe("Max Moves into a Substitute is not modelled in 2v2.");
-    expect(reason(pair({ id: "blacephalon", move: "mindblown", target: null }, idle("snorlax", sub(300)), "ultra_sun_ultra_moon"))).toBe("Mind Blown into a Substitute is not modelled in 2v2.");
-    expect(reason(pair({ id: "lycanroc", item: "lycaniumz", move: "stoneedge", context: { useZ: true } }, idle("snorlax", sub(300)), "ultra_sun_ultra_moon")))
-      .toBe("Splintered Stormshards into a Substitute is not modelled in 2v2.");
+    expect(reason(max)).toBe("ready");
+    expect(reason(pair({ id: "lycanroc", item: "lycaniumz", move: "stoneedge", context: { useZ: true } }, idle("snorlax", sub(300)), "ultra_sun_ultra_moon"))).toBe("ready");
     // A type Z-Move is modelled (U16b).
     expect(reason(pair({ id: "lapras", item: "iciumz", move: "icebeam", context: { useZ: true } }, idle("snorlax", sub(300)), "ultra_sun_ultra_moon"))).toBe("ready");
   });

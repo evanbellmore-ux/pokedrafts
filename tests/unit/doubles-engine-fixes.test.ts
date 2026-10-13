@@ -111,9 +111,9 @@ describe("stat-change events (status-eot review H2, H3, H8, M1, M3; FX05, FX09, 
     near(hpOf(result, OL), [94, 106, 100.4375]);
   });
 
-  it("guards Opportunist copying Defiant's rise when the stage ends where it started (H3, RV05)", async () => {
+  it("follows Opportunist copying Defiant's rise when the stage ends where it started (H3, RV05: status2 D, agrees with pinned Showdown)", async () => {
     const input = turn(await game(SV), [act(jolt(), "charm", PL), act(mon("espathra", "opportunist"), "storedpower", PR), idle(mon("kingambit", "defiant")), idle(lax())]);
-    expect(reason(input)).toBe(REASONS.copiesRise("Opportunist"));
+    ready(input);
   });
 
   it("keeps an accuracy drop off an Illuminate holder from generation 9 (M3, RV06)", async () => {
