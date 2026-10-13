@@ -52,9 +52,13 @@ outside a supplied fight roster.
 Ambiguous actors or spec-summary names fail closed instead of borrowing a
 namesake's evidence. Raw resource snapshots may omit `max`, as the canonical
 aggregator already supports; a supplied maximum must still be a valid number.
-Raw validation follows the core's consumption rules: signed numeric resource keys
-are retained, null/untyped snapshots are skipped, and unnamed/unmirrorable or
-irrelevant metadata does not invalidate otherwise complete comparisons. A missing
+Raw validation follows the core's consumption rules: finite signed healing-spell
+totals (including health-redistribution adjustments) are retained for HPS only;
+DamageDone totals and ranked DPS/HPS amounts still must be nonnegative. Missing,
+nonnumeric, nonfinite, and unnamed consumed totals remain invalid.
+Signed numeric resource keys are retained, null/untyped snapshots are skipped,
+and unnamed/unmirrorable or irrelevant metadata does not invalidate otherwise
+complete comparisons. A missing
 zone stays null (unverified), never an invented scope. Selected actor/fight identity,
 public visibility, pagination, usable rankings, and consumed numeric values remain
 strict; malformed usable evidence is not silently discarded. Query-level fixtures

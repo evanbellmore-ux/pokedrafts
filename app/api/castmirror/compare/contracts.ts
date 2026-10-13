@@ -320,7 +320,9 @@ export function assertUpstreamData(document: string, value: unknown): void {
     const table = report.table.data;
     if (document.includes('dataType: Summary')) requireData(Array.isArray(table.composition), 'upstream.summary.composition');
     if (document.includes('dataType: DamageDone') || document.includes('dataType: Healing')) {
-      requireData(Array.isArray(table.entries) && table.entries.every((e) => record(e) && nonnegative(e.total) && (string(e.name) || (e.total === 0 && e.name == null))), document.includes('dataType: Healing') ? 'upstream.healing.entries' : 'upstream.damage.entries');
+      // Healing tables can contain signed health-redistribution adjustments.
+      const healing = document.includes('dataType: Healing');
+      requireData(Array.isArray(table.entries) && table.entries.every((e) => record(e) && (healing ? finite(e.total) : nonnegative(e.total)) && (string(e.name) || (e.total === 0 && e.name == null))), healing ? 'upstream.healing.entries' : 'upstream.damage.entries');
     }
     if (document.includes('dataType: Buffs')) {
       const auras = table.auras ?? table.entries;
@@ -345,7 +347,7 @@ function validateSide(value: unknown, params: CompareParams, kind: 'player' | 'o
     && (value.scope.zone === null || positiveID(value.scope.zone)) && (value.scope.size === null || nonnegative(value.scope.size)), `normalized.${kind}.scope`);
   requireData(Array.isArray(value.casts) && value.casts.length <= 200_000
     && value.casts.every((c) => Array.isArray(c) && c.length === 2 && nonnegative(c[0]) && string(c[1])), `normalized.${kind}.casts`);
-  requireData(record(value.dmg) && Object.values(value.dmg).every(nonnegative), `normalized.${kind}.damage`);
+  requireData(record(value.dmg) && Object.values(value.dmg).every(params.metric === 'hps' ? finite : nonnegative), `normalized.${kind}.damage`);
   requireData(record(value.resources) && Object.values(value.resources).every((r) => record(r)
     && ['max', 'spentSnap', 'waste'].every((k) => nonnegative(r[k])) && finite(r.gained) && Array.isArray(r.series) && r.series.length <= 400
     && r.series.every((s) => Array.isArray(s) && s.length === 2 && nonnegative(s[0]) && nonnegative(s[1]))), `normalized.${kind}.resources`);

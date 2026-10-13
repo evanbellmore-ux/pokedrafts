@@ -473,6 +473,112 @@ describe("CastMirror request and response validation", () => {
     assert.equal(out.b.name, top.name); assert.equal(out.bossReference.b.name, top.name);
   });
 
+  test("finite signed healing adjustments survive the real core, normalization, cache and Healing page", async () => {
+    const f = wclFixture(); const top = f.entry("HealerReference"); f.rankings = () => [top];
+    const underlying = f.client.query.bind(f.client); let tables = 0;
+    const handler = handlerWith({ query: async (document, variables = {}) => {
+      const out = await underlying(document, variables);
+      if (document.includes("dataType: Healing")) {
+        out.reportData.report.table.data.entries.push({ name: "Health redistribution", total: -12500, spiritLinkDamage: 12500 },
+          { name: "Unused zero healing", total: 0 }, { name: null, total: 0 });
+        tables++;
+      }
+      return out;
+    } });
+    const clock = controlledTimers(); let body: Record<string, unknown> | undefined;
+    const p = await pageFixture(async (url: URL) => {
+      const response = await handler(new Request(url)); assert.equal(response.status, 200); assertPrivate(response);
+      body = await response.clone().json(); return response;
+    }, { timers: clock.timers });
+    p.nodes.get("name").value = f.params.name; p.nodes.get("metric").value = "hps";
+    await p.runMirror(42, "Test Boss", f.player.report.code, f.player.report.fightID);
+    assert.equal(p.nodes.get("status").textContent, ""); assert.ok(tables >= 2); assert.ok(body);
+    assert.equal(state(p, "comparison.a.dmg['Health redistribution']"), -12500);
+    assert.equal(state(p, "comparison.b.dmg['Health redistribution']"), -12500);
+    assert.equal(state(p, "comparison.a.amount"), 900); assert.equal(state(p, "comparison.b.amount"), 1000);
+    assert.match(p.nodes.get("board").innerHTML, /HPS \(ranked\)/);
+    assert.ok(p.nodes.get("bars").htmlTree().includes("Health redistribution"));
+    assert.equal(button(p, "boss"), undefined); assert.equal(button(p, "execution").disabled, true);
+    assert.equal(clock.pending.size, 0);
+    const queries = f.calls.length;
+    const cached = await handler(request({ name: f.params.name, metric: "hps", code: f.player.report.code, fightID: String(f.player.report.fightID) }));
+    assert.equal(cached.status, 200); assert.deepEqual(await cached.json(), body);
+    assert.equal(f.calls.length, queries, "complete signed healing output remains cacheable without new provider work");
+  });
+
+  for (const [label, total] of [["missing", undefined], ["null", null], ["string", "-12500"],
+    ["NaN", NaN], ["infinity", Infinity], ["negative infinity", -Infinity]] as const) {
+    test(`malformed raw HPS spell total remains an uncached failure: ${label}`, async () => {
+      const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top];
+      const underlying = f.client.query.bind(f.client); let mutations = 0;
+      const handler = handlerWith({ query: async (document, variables = {}) => {
+        const out = await underlying(document, variables);
+        if (variables.code === f.player.report.code && document.includes("dataType: Healing")) {
+          out.reportData.report.table.data.entries[0].total = total; mutations++;
+        }
+        return out;
+      } });
+      for (let i = 0; i < 2; i++) {
+        const response = await handler(request({ name: f.params.name, metric: "hps" }));
+        assert.equal(response.status, 502); assertPrivate(response);
+        assert.equal((await response.json()).diagnostic, "upstream.healing.entries");
+      }
+      assert.ok(mutations >= 2);
+    });
+
+    test(`malformed normalized HPS spell total remains an uncached failure: ${label}`, async () => {
+      const builder = vi.fn(async (_client: ComparisonClient, params: CompareParams) => {
+        const out = comparisonFor(params); out.a.dmg = { "Health redistribution": total }; return out;
+      });
+      const handler = handlerWith({ builder });
+      for (let i = 0; i < 2; i++) {
+        const response = await handler(request({ metric: "hps" })); assert.equal(response.status, 502);
+        assert.equal((await response.json()).diagnostic, "normalized.player.damage");
+      }
+      assert.equal(builder.mock.calls.length, 2);
+    });
+  }
+
+  for (const [label, name] of [["null", null], ["missing", undefined], ["empty", ""], ["array", []], ["object", {}]] as const) {
+    test(`a nonzero healing adjustment with ${label} name still fails the consumed-data contract`, async () => {
+      const f = wclFixture(); const top = f.entry("Top"); f.rankings = () => [top];
+      const underlying = f.client.query.bind(f.client);
+      const response = await handlerWith({ query: async (document, variables = {}) => {
+        const out = await underlying(document, variables);
+        if (variables.code === f.player.report.code && document.includes("dataType: Healing")) {
+          out.reportData.report.table.data.entries[0] = { name, total: -12500 };
+        }
+        return out;
+      } })(request({ name: f.params.name, metric: "hps" }));
+      assert.equal(response.status, 502); assert.equal((await response.json()).diagnostic, "upstream.healing.entries");
+    });
+  }
+
+  test("signed normalized spell values are HPS-only and never permit negative ranked amounts", async () => {
+    const totals = { "Health redistribution": -12500, "Zero output": 0, "Positive output": 60000 };
+    for (const metric of ["dps", "hps"]) {
+      for (const side of ["a", "b"] as const) {
+        for (const field of ["dmg", "amount"]) {
+          const builder = vi.fn(async (_client: ComparisonClient, params: CompareParams) => {
+            const out = comparisonFor(params);
+            if (field === "dmg") out[side].dmg = { ...totals }; else out[side].amount = -1;
+            return out;
+          });
+          const handler = handlerWith({ builder });
+          const allowed = metric === "hps" && field === "dmg";
+          for (let i = 0; i < 2; i++) {
+            const response = await handler(request({ metric })); assertPrivate(response);
+            assert.equal(response.status, allowed ? 200 : 502);
+            const body = await response.json();
+            if (allowed) assert.deepEqual(body[side].dmg, totals);
+            else assert.equal(body.diagnostic, `normalized.${side === "a" ? "player" : "overall"}.${field === "dmg" ? "damage" : "ranking"}`);
+          }
+          assert.equal(builder.mock.calls.length, allowed ? 1 : 2);
+        }
+      }
+    }
+  });
+
   test("query-level fixtures expose only report fields selected by the actual comparison documents", async () => {
     const f = wclFixture({ playerHero: "Sunfury" });
     const entries = [
