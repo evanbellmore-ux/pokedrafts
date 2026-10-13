@@ -15,6 +15,14 @@ import { positionalIn } from "../fixtures/naming";
 
 const ownName = (key: string) => trainingSetup().own.members.find((member) => member.key === key)?.name ?? null;
 
+/** The AI's read row under `label`: its lines (each block span, else the whole cell) as text. */
+function rowText(html: string, label: string): string[] {
+  const cell = new RegExp(`<dt[^>]*>${label}</dt><dd[^>]*>(.*?)</dd>`).exec(html)?.[1];
+  if (cell === undefined) return [];
+  const spans = [...cell.matchAll(/<span[^>]*>(.*?)<\/span>/g)].map((match) => match[1]);
+  return (spans.length ? spans : [cell]).map((line) => line.replace(/<[^>]+>/g, ""));
+}
+
 function battle(patch: Partial<TrainingBattle> = {}): TrainingBattle {
   return { id: 1, setup: trainingSetup(), seed: null, phase: { kind: "choose", request: moveRequest() }, board: boardView(), log: logTurns(), ai: { status: "idle" }, lastPreview: null, habitsBefore: emptyHabits(), savedId: "saved-1", startedAt: 0, ...patch };
 }
@@ -59,13 +67,14 @@ describe("report text", () => {
 });
 
 describe("AI's read panel", () => {
-  it("lists Predicted, Chose (with the chosen one), You, Assumed, Mega and Source; a redacted option reads Not shown", () => {
+  it("lists Predicted, Chose, Also weighed, You, Assumed, Mega and Source; a redacted option reads Not shown", () => {
     const turn: LogTurn = { ...logTurns()[2], read: report({ mega: { memberKey: "ai-absol", evolved: false, moves: [], text: "Kept Mega Evolution: Absol-Mega would not change this turn's KOs." } }) };
     const html = renderToStaticMarkup(createElement(AIReadPanel, { turn, board: boardView(), runtime, ownName }));
-    expect([...html.matchAll(/<dt[^>]*>([^<]+)<\/dt>/g)].map((match) => match[1])).toEqual(["Predicted", "Chose", "You", "Assumed", "Mega", "Source"]);
+    expect([...html.matchAll(/<dt[^>]*>([^<]+)<\/dt>/g)].map((match) => match[1])).toEqual(["Predicted", "Chose", "Also weighed", "You", "Assumed", "Mega", "Source"]);
     expect(html).toContain("Garchomp: Rock Slide → both foes · Gyarados: Protect · 45%");
-    expect(html).toContain("Ampharos: Protect · Absol-Mega: Switch to Annihilape · 60% (chosen)");
-    expect(html).toContain("Not shown · 40%");
+    expect(rowText(html, "Chose")).toEqual(["Ampharos: Protect · Absol-Mega: Switch to Annihilape · 60%"]);
+    expect(rowText(html, "Also weighed")).toEqual(["Not shown · 40%"]);
+    expect(html).not.toContain("(chosen)");
     expect(html).toContain("Garchomp: Rock Slide → both foes · Gyarados: Protect (predicted 45%)");
     expect(positionalIn(html)).toEqual([]);
     expect(html).toContain("Garchomp: 2 HP / 32 Atk / 32 Spe · Jolly (64%)");
@@ -83,7 +92,26 @@ describe("AI's read panel", () => {
     const replayed = renderToStaticMarkup(createElement(AIReadPanel, { turn, board: boardView({ turn: 3 }), decisionBoard: boardView({ turn: 2 }), runtime, ownName }));
     expect(replayed).toContain("Garchomp: Rock Slide → both foes · Gyarados: Protect · 45%");
     const logged = renderToStaticMarkup(createElement(BattleLog, { log: [turn], runtime, showRead: true, board: boardView(), decisionBoards: { 2: boardView({ turn: 2 }) }, ownName, headingId: "log" }));
-    expect(logged).toContain("Ampharos: Protect · Absol-Mega: Switch to Annihilape · 60% (chosen)");
+    expect(rowText(logged, "Chose")).toEqual(["Ampharos: Protect · Absol-Mega: Switch to Annihilape · 60%"]);
+  });
+
+  it("shows the option it drew under Chose even when another had the larger chance, and the rest under Also weighed", () => {
+    // Gholdengo locked into Shadow Ball: it drew the 49.54% option, not the 50.46% one.
+    const shadowBall = (target: "own-left" | "own-right") => ({ "opponent-left": { kind: "move" as const, moveId: "protect", target: null }, "opponent-right": { kind: "move" as const, moveId: "shadowball", target } });
+    const strategy = [{ action: shadowBall("own-right"), chance: 0.5046 }, { action: shadowBall("own-left"), chance: 0.4954 }];
+    const drew = (chosen: number) => renderToStaticMarkup(createElement(AIReadPanel, { turn: { ...logTurns()[2], read: report({ strategy, chosen }) }, board: boardView(), runtime, ownName }));
+    expect(rowText(drew(1), "Chose")).toEqual(["Ampharos: Protect · Absol-Mega: Shadow Ball → Garchomp · 49.54%"]);
+    expect(rowText(drew(1), "Also weighed")).toEqual(["Ampharos: Protect · Absol-Mega: Shadow Ball → Gyarados · 50.46%"]);
+    expect(rowText(drew(0), "Chose")).toEqual(["Ampharos: Protect · Absol-Mega: Shadow Ball → Gyarados · 50.46%"]);
+    expect(rowText(drew(0), "Also weighed")).toEqual(["Ampharos: Protect · Absol-Mega: Shadow Ball → Garchomp · 49.54%"]);
+    // One option: no Also weighed row.
+    const pure = renderToStaticMarkup(createElement(AIReadPanel, { turn: { ...logTurns()[2], read: report({ strategy: [{ action: shadowBall("own-left"), chance: 1 }], chosen: 0 }) }, board: boardView(), runtime, ownName }));
+    expect(rowText(pure, "Chose")).toEqual(["Ampharos: Protect · Absol-Mega: Shadow Ball → Garchomp · 100%"]);
+    expect(pure).not.toContain(">Also weighed<");
+    // The option it drew was redacted (closed facts merge into one Not shown entry, redact-report.ts): Chose reads Not shown.
+    const hidden = renderToStaticMarkup(createElement(AIReadPanel, { turn: { ...logTurns()[2], read: report({ chosen: 1 }) }, board: boardView(), runtime, ownName }));
+    expect(rowText(hidden, "Chose")).toEqual(["Not shown · 40%"]);
+    expect(rowText(hidden, "Also weighed")).toEqual(["Ampharos: Protect · Absol-Mega: Switch to Annihilape · 60%"]);
   });
 
   it("shows team preview's expected leads", () => {

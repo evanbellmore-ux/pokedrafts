@@ -3,7 +3,8 @@ import type { BoardView, LogTurn } from "../model/view-types";
 import { actualText, jointText, leadsText, optionText, providerText, turnNames } from "./report-format";
 
 // The AI's read for a resolved turn (the worker releases it after the turn and redacts it per "You see", SPEC 9.7):
-// what it predicted you would do, its mixed strategy and what it chose, what you did, its assumed spreads, its Mega fact.
+// what it predicted you would do, what it chose and the other options of its mixed strategy, what you did, its assumed
+// spreads, its Mega fact.
 
 export type AIReadPanelProps = {
   turn: LogTurn;
@@ -20,6 +21,9 @@ export default function AIReadPanel({ turn, board, decisionBoard = null, runtime
   if (!report) return null;
   const leads = report.preview?.predictedLeads ?? [];
   const names = turnNames(turn, board, decisionBoard);
+  // The option it drew from its mixed strategy first, then the others it weighed with their chances.
+  const chosen = report.strategy[report.chosen] ?? null;
+  const weighed = chosen ? report.strategy.filter((_, index) => index !== report.chosen) : report.strategy;
   return (
     <div data-training-read className="mt-2 rounded-lg border border-line bg-bg p-2">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted">AI&apos;s read</p>
@@ -34,9 +38,13 @@ export default function AIReadPanel({ turn, board, decisionBoard = null, runtime
             <dt className="font-semibold text-muted">Predicted</dt>
             <dd className="min-w-0 wrap-anywhere text-text">{report.predicted.length ? report.predicted.map((option, index) => <span key={index} className="block">{optionText(option, board, runtime, names)}</span>) : "—"}</dd>
             <dt className="font-semibold text-muted">Chose</dt>
-            <dd className="min-w-0 wrap-anywhere text-text">{report.strategy.length ? report.strategy.map((option, index) => (
-              <span key={index} className="block">{optionText(option, board, runtime, names)}{index === report.chosen ? " (chosen)" : ""}</span>
-            )) : "—"}</dd>
+            <dd className="min-w-0 wrap-anywhere text-text">{chosen ? optionText(chosen, board, runtime, names) : "—"}</dd>
+            {weighed.length > 0 && (
+              <>
+                <dt className="font-semibold text-muted">Also weighed</dt>
+                <dd className="min-w-0 wrap-anywhere text-text">{weighed.map((option, index) => <span key={index} className="block">{optionText(option, board, runtime, names)}</span>)}</dd>
+              </>
+            )}
             {turn.actions && (
               <>
                 <dt className="font-semibold text-muted">You</dt>
