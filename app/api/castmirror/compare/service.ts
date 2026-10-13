@@ -63,6 +63,7 @@ function protectedComparison(value: Comparison): Comparison {
     return Object.freeze({
       name: side.name, server: side.server, actorID: side.actorID, code: side.code, fightID: side.fightID,
       amount: side.amount, rankPercent: side.rankPercent, durSec: side.durSec, kill: side.kill, scope: Object.freeze(scope),
+      ...(side.rankingPatch ? { rankingPatch: Object.freeze({ current: side.rankingPatch.current, selected: side.rankingPatch.selected, fallback: true as const }) } : {}),
       casts: side.casts.map(([at, name]) => [at, name]), dmg: { ...side.dmg },
       resources: Object.fromEntries(Object.entries(side.resources).map(([key, resource]) => [key, {
         max: resource.max, spentSnap: resource.spentSnap, gained: resource.gained, waste: resource.waste,
@@ -192,6 +193,8 @@ export function createCompareHandler(options: CompareHandlerOptions = {}) {
       const normalized = normalizeComparison(result, params);
       const comparison = protectedComparison(normalized.comparison);
       const { complete } = normalized;
+      const previousPatchPair = comparison.a.rankingPatch?.fallback === true || comparison.b.rankingPatch?.fallback === true;
+      const previousPatchReference = previousPatchPair || comparison.bossReference?.b.rankingPatch?.fallback === true;
       if (!timedOut && clock() - startedAt >= deadlineMs) timeout();
       if (request.signal.aborted) {
         response = json({ error: 'The comparison request was canceled.' }, 499);
@@ -200,7 +203,8 @@ export function createCompareHandler(options: CompareHandlerOptions = {}) {
         response = json({ error: 'The comparison exceeded its request deadline. Try again later.' }, 504);
       } else {
         let binding: ExecutionPinBinding | null = null;
-        if (binder && observerHealthy && !controller.signal.aborted && pending.size === 0) {
+        // Historical throughput labels are not proof of a compatible native cohort.
+        if (binder && !previousPatchPair && observerHealthy && !controller.signal.aborted && pending.size === 0) {
           // Throughput is already complete. End optional metadata transport early
           // enough for the bounded pin RPC (5s) and store close (5s) to settle
           // inside the unchanged 55s invocation; do not race either into background.
@@ -226,7 +230,9 @@ export function createCompareHandler(options: CompareHandlerOptions = {}) {
           ...(binding ? { comparisonID: binding.comparisonID } : {}),
         });
         response = serialized(body);
-        if (complete && !timedOut && pending.size === 0) cacheBody = body;
+        // Recheck current rankings next time instead of retaining a previous-patch
+        // result after new current-patch logs have appeared.
+        if (complete && !previousPatchReference && !timedOut && pending.size === 0) cacheBody = body;
       }
     } catch (error) {
       const diagnostic = error instanceof LogServiceError ? 'transport.log-service' : comparisonDataDiagnostic(error);

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { describe, test } from "vitest";
-import { extractDeclarations, validateCore, generateCore, generatePage } from "../../scripts/sync-castmirror.mjs";
+import { extractDeclarations, validateCore, generateCore, generatePage, canonicalRankingPatch, previousRankingPartition } from "../../scripts/sync-castmirror.mjs";
 
 const revision = "af7d034354abcb4cc4d52719989900a0e0b1b455";
 const root = new URL("../../", import.meta.url);
@@ -17,7 +17,9 @@ describe("CastMirror pinned source generation", () => {
     assert.equal(manifest.schemaVersion, 1);
     assert.equal(manifest.upstream.revision, revision);
     assert.equal(manifest.upstream.repository, "https://github.com/evanbellmore-ux/cast-mirror");
-    assert.equal(manifest.adapterVersion, "castmirror-vercel-v3");
+    assert.equal(manifest.adapterVersion, "castmirror-vercel-v4");
+    assert.ok(manifest.patches.includes("current-first-immediate-previous-patch-throughput"));
+    assert.ok(manifest.patches.includes("escaped-per-side-ranking-patch-labels"));
     assert.ok(manifest.declarations.includes("sameRealm"), "the reviewed source's portable realm helper must be explicitly allowlisted");
     assert.deepEqual(Object.keys(manifest.sourceFiles).sort(), ["upstream/index.html", "upstream/throughput.mjs"]);
     for (const [name, entry] of Object.entries(manifest.sourceFiles) as Array<[string, { sha256: string }]>) {
@@ -37,7 +39,13 @@ describe("CastMirror pinned source generation", () => {
     assert.match(core, /function sameRealm\(left, right\)/);
     assert.doesNotMatch(core, /const players =|players\.includes\(a\.id\)/, "hosted actor resolution preserves its full-set ambiguity check");
     assert.doesNotMatch(core, /import .*server\.mjs|createServer|ExecutionRegistry|process\.|resolveScope|executionRankingContext/);
-    assert.doesNotMatch(core, /\$partition|partition: \$partition/, "hosted throughput retains its existing ranking queries, not native acquisition");
+    assert.match(core, /selectedPartition === null/);
+    assert.match(core, /\$partition: Int!/);
+    assert.match(core, /partition: previous\.partition/);
+    assert.doesNotMatch(core, /\$partition: Int\)/, "native implicit scope acquisition is not restored by historical throughput queries");
+    assert.match(core, /if \(!usable\.length && exhausted\)/);
+    assert.match(page, /Previous patch: /);
+    assert.match(page, /esc\('Previous patch: /);
     const injection = page.indexOf("window.MIRROR_API_BASE = '/api/castmirror'");
     assert.ok(injection >= 0 && injection < page.indexOf("const $ = (id)"));
     assert.match(page, /Object\.freeze\(\{ build: false, reference: true \}\)/);
@@ -101,6 +109,17 @@ describe("CastMirror pinned source generation", () => {
     assert.throws(() => generateCore(source.replace("players.includes(a.id)", "players.includes(a.actorID)")), /patch anchor.*hosted actor ambiguity roster narrowing/);
   });
 
+  test("previous-patch core adaptations fail closed when their reviewed anchors change", async () => {
+    const source = await read("vendor/castmirror/upstream/throughput.mjs");
+    assert.throws(() => generateCore(source.replace("const ranks = ch.encounterRankings?.ranks ?? [];", "const changedRanks = ch.encounterRankings?.ranks ?? [];")), /patch anchor.*character previous-patch selection/);
+    assert.throws(() => generateCore(source.replace("const referenceFor = async (rankingMetric) => {", "const changedReferenceFor = async (rankingMetric) => {")), /patch anchor.*world previous-patch selection/);
+  });
+
+  test("previous-patch page markup cannot silently lose its numeric escaped rendering anchor", async () => {
+    const source = await read("vendor/castmirror/upstream/index.html");
+    assert.throws(() => generatePage(source.replace("function render(D) {", "function changedRender(D) {")), /patch anchor.*numeric escaped ranking patch markup/);
+  });
+
   test("native acquisition controls cannot silently lose their hosted handler guard", async () => {
     const source = await read("vendor/castmirror/upstream/index.html");
     assert.throws(() => generatePage(source.replace("async function loadExecutionV3() {", "async function loadRenamedExecutionV3() {")), /patch anchor.*native statistics handler guard/);
@@ -131,5 +150,73 @@ describe("CastMirror pinned source generation", () => {
     assert.throws(() => validateCore("function fetch() {} export const injected = fetch();"), /forbidden transport or server-lifecycle/);
     assert.throws(() => validateCore("import { buildComparison } from './server.mjs';"), /must not import the standalone lifecycle/);
     assert.throws(() => validateCore("export const injected = ;"), /not valid JavaScript/);
+  });
+});
+
+type Partition = { id: number; name: string; default: boolean };
+const partitionsEnvelope = (partitions: Partition[]) => ({ worldData: { encounter: { id: 42, zone: { id: 99, partitions } } } });
+const orderedPartitions = (): Partition[] => [
+  { id: 801, name: "Patch 12.0.5", default: false },
+  { id: 93, name: "Patch 12.1.5", default: true },
+  { id: 407, name: "Patch 12.1", default: false },
+];
+
+describe("CastMirror bounded public partition chronology", () => {
+  for (const [input, expected] of [
+    ["12.1.5", "12.1.5"], ["Patch 12.1", "12.1"], [" PATCH 12.1.10 ", "12.1.10"],
+    ["12.1.0", "12.1"], ["0.1", "0.1"],
+  ]) {
+    test(`canonical numeric patch ${input}`, () => assert.equal(canonicalRankingPatch(input), expected));
+  }
+
+  for (const input of [null, 12.15, "12.01.5", "012.1", "12", "12.1.5.1", "12.1.x", "12.1 PTR", "Season 1", "99999.1", "<b>12.1</b>"]) {
+    test(`unknown patch name ${String(input)} cannot establish chronology`, () => assert.equal(canonicalRankingPatch(input), null));
+  }
+
+  test("the immediate previous version uses component order and its actual shuffled opaque ID", () => {
+    assert.deepEqual(previousRankingPartition(partitionsEnvelope(orderedPartitions()), 42), {
+      partition: 407, label: { current: "12.1.5", selected: "12.1", fallback: true },
+    });
+    const rows = [
+      { id: 19, name: "Patch 12.1.5", default: false },
+      { id: 7, name: "Patch 12.1.10", default: true },
+      { id: 800, name: "Patch 12.1", default: false },
+    ];
+    assert.deepEqual(previousRankingPartition(partitionsEnvelope(rows), 42), {
+      partition: 19, label: { current: "12.1.10", selected: "12.1.5", fallback: true },
+    });
+    assert.equal(previousRankingPartition(partitionsEnvelope([
+      { id: 100, name: "12.10", default: true }, { id: 900, name: "12.9.10", default: false },
+    ]), 42)?.label.selected, "12.9.10");
+  });
+
+  const ambiguous: Array<[string, () => Partition[]]> = [
+    ["empty list", () => []], ["only current", () => [orderedPartitions()[1]]],
+    ["unknown name", () => [...orderedPartitions(), { id: 1001, name: "Season Two", default: false }]],
+    ["duplicate ID", () => [...orderedPartitions(), { id: 407, name: "12.0", default: false }]],
+    ["duplicate numeric version", () => [...orderedPartitions(), { id: 1001, name: "12.1.0", default: false }]],
+    ["no default", () => orderedPartitions().map((row) => ({ ...row, default: false }))],
+    ["multiple defaults", () => orderedPartitions().map((row) => ({ ...row, default: row.id !== 801 }))],
+    ["newer nondefault", () => [...orderedPartitions(), { id: 1001, name: "12.1.10", default: false }]],
+    ["nonpositive ID", () => orderedPartitions().map((row) => ({ ...row, id: row.id === 407 ? 0 : row.id }))],
+    ["unbounded list", () => Array.from({ length: 101 }, (_, index) => ({ id: index + 1, name: `12.0.${index}`, default: index === 100 }))],
+  ];
+  for (const [label, rows] of ambiguous) {
+    test(`${label} fails closed without guessing a predecessor`, () => assert.equal(previousRankingPartition(partitionsEnvelope(rows()), 42), null));
+  }
+
+  test("malformed, hidden, wrong-encounter and invalid-zone metadata are not predecessor evidence", () => {
+    const valid = partitionsEnvelope(orderedPartitions());
+    for (const value of [
+      null, {}, { ...valid, error: "hidden" }, { ...valid, errors: [] },
+      { worldData: { ...valid.worldData, error: "hidden" } },
+      { worldData: { encounter: null } },
+      { worldData: { encounter: { ...valid.worldData.encounter, errors: [] } } },
+      { worldData: { encounter: { ...valid.worldData.encounter, zone: { ...valid.worldData.encounter.zone, error: "hidden" } } } },
+      { worldData: { encounter: { ...valid.worldData.encounter, id: 43 } } },
+      { worldData: { encounter: { id: 42, zone: { id: 0, partitions: orderedPartitions() } } } },
+      { worldData: { encounter: { id: 42, zone: { id: 99, partitions: {} } } } },
+      { worldData: { encounter: { id: 42, zone: { id: 99, partitions: [{ id: 1, name: "12.1", default: "false" }, orderedPartitions()[1]] } } } },
+    ]) assert.equal(previousRankingPartition(value, 42), null);
   });
 });

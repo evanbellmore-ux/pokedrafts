@@ -31,6 +31,12 @@ export interface ComparisonClient {
   query(document: string, variables?: Record<string, unknown>): Promise<unknown>;
 }
 
+export interface RankingPatch {
+  current: string;
+  selected: string;
+  fallback: true;
+}
+
 export interface FightSide {
   name: string;
   server: string;
@@ -39,6 +45,7 @@ export interface FightSide {
   fightID: number;
   amount: number;
   rankPercent: number | null;
+  rankingPatch?: RankingPatch;
   scope: { zone: number | null; encounter: number; difficulty: Difficulty; size: number | null };
   durSec: number;
   kill: boolean;
@@ -339,9 +346,23 @@ function validateSupport(value: unknown): void {
 function validateHero(value: unknown): void {
   requireData(record(value) && ['a', 'b', 'alt', 'requested'].every((k) => value[k] === null || string(value[k], 80)), 'normalized.hero');
 }
+function olderPatch(selected: unknown, current: unknown): boolean {
+  const version = /^(0|[1-9]\d{0,8})\.(0|[1-9]\d{0,8})(?:\.(0|[1-9]\d{0,8}))?$/;
+  if (typeof selected !== 'string' || typeof current !== 'string' || !version.test(selected) || !version.test(current)) return false;
+  const previous = selected.split('.').map(Number), latest = current.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const left = previous[i] ?? 0, right = latest[i] ?? 0;
+    if (left !== right) return left < right;
+  }
+  return false;
+}
 function validateSide(value: unknown, params: CompareParams, kind: 'player' | 'overall' | 'boss'): void {
   requireData(record(value) && string(value.name, 128) && string(value.server, 128) && positiveID(value.actorID) && reportIdentity(value), `normalized.${kind}.identity`);
   requireData(nonnegative(value.amount) && (value.rankPercent === null || (nonnegative(value.rankPercent) && value.rankPercent <= 100)), `normalized.${kind}.ranking`);
+  if (value.rankingPatch !== undefined) {
+    requireData(record(value.rankingPatch) && value.rankingPatch.fallback === true
+      && olderPatch(value.rankingPatch.selected, value.rankingPatch.current), `normalized.${kind}.ranking`);
+  }
   requireData(finite(value.durSec) && value.durSec > 0 && value.kill === true, `normalized.${kind}.fight`);
   requireData(record(value.scope) && value.scope.encounter === params.encounter && value.scope.difficulty === params.difficulty
     && (value.scope.zone === null || positiveID(value.scope.zone)) && (value.scope.size === null || nonnegative(value.scope.size)), `normalized.${kind}.scope`);
