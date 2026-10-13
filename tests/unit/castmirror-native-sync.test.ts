@@ -12,7 +12,7 @@ describe("reviewed native Execution source pin", () => {
   test("offline snapshots and generated modules match exact provenance", async () => {
     const manifest = JSON.parse(await read("native-manifest.json"));
     assert.equal(manifest.revision, NATIVE_REVISION);
-    assert.equal(manifest.adapter, "castmirror-native-postgres-2");
+    assert.equal(manifest.adapter, "castmirror-native-postgres-3");
     assert.deepEqual(manifest.adaptations, [...NATIVE_ADAPTATIONS]);
     assert.deepEqual(Object.keys(manifest.sourceFiles), [...NATIVE_FILES]);
     assert.ok(!NATIVE_FILES.some((file: string) => /registry|pilot|review|server|cache|catalog/.test(file)));
@@ -37,19 +37,41 @@ describe("reviewed native Execution source pin", () => {
   });
 
   test("tracing annotations preserve the pinned source and reject changed or ambiguous anchors", async () => {
-    const anchors = [
-      ["execution/live-budget.mjs", ".map((p) => canonical(path.resolve(p)));"],
-      ["execution/live.mjs", "this.directory = directory ? path.resolve(directory) : undefined;"],
+    const cases = [
+      { name: "execution/live-budget.mjs", anchors: [
+        ".map((p) => canonical(path.resolve(p)));",
+        "const directoryFD = fs.openSync(root, 'r');",
+      ] },
+      { name: "execution/live.mjs", anchors: [
+        "this.directory = directory ? path.resolve(directory) : undefined;",
+      ] },
     ];
-    for (const [name, anchor] of anchors) {
+    for (const { name, anchors } of cases) {
       const source = await read("native-upstream/" + name);
       const output = generateNative(name, source);
-      assert.equal(output.replace("/*turbopackIgnore: true*/ ", ""), source);
-      assert.equal(output.split("/*turbopackIgnore: true*/").length, 2);
-      assert.throws(() => generateNative(name, source.replace(anchor, anchor.replace("path.resolve", "path.normalize"))), /tracing anchor missing or ambiguous/);
-      assert.throws(() => generateNative(name, source + "\n// " + anchor), /tracing anchor missing or ambiguous/);
+      assert.equal(output.replaceAll("/*turbopackIgnore: true*/ ", ""), source);
+      assert.equal(output.split("/*turbopackIgnore: true*/").length, anchors.length + 1);
+      for (const anchor of anchors) {
+        const changed = anchor.replace(/path\.resolve|fs\.openSync/, "changedAnchor");
+        assert.notEqual(changed, anchor);
+        assert.throws(() => generateNative(name, source.replace(anchor, changed)), /tracing anchor missing or ambiguous/);
+        assert.throws(() => generateNative(name, source + "\n// " + anchor), /tracing anchor missing or ambiguous/);
+        assert.throws(() => generateNative(name, source.replace(anchor, "")), /tracing anchor missing or ambiguous/);
+      }
       assert.throws(() => generateNative(name, "export const synthetic = true;"), /tracing anchor missing or ambiguous/);
     }
+  });
+
+  test("Linux directory durability keeps its fsync while opting out of unused hosted filesystem tracing", async () => {
+    const source = await read("native-upstream/execution/live-budget.mjs");
+    const output = generateNative("execution/live-budget.mjs", source);
+    const original = "if (process.platform !== 'win32') {\n" +
+      "        const directoryFD = fs.openSync(root, 'r');\n" +
+      "        try { fs.fsyncSync(directoryFD); } finally { fs.closeSync(directoryFD); }\n" +
+      "      }";
+    assert.ok(source.includes(original));
+    assert.ok(output.includes(original.replace("fs.openSync(root", "fs.openSync(/*turbopackIgnore: true*/ root")));
+    assert.equal(output.replaceAll("/*turbopackIgnore: true*/ ", ""), source);
   });
 
   test("the same transpiled transport serves both dispatch and diagnostics", () => {

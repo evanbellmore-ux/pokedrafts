@@ -12,19 +12,27 @@ const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'native-manifest.json');
 // Updated only after the native changes have passed their standalone suite.
 export const NATIVE_REVISION = '9d1c23fc00aba51c0357e4e312a9306bb1fda130';
-export const NATIVE_ADAPTER = 'castmirror-native-postgres-2';
+export const NATIVE_ADAPTER = 'castmirror-native-postgres-3';
 export const NATIVE_ADAPTATIONS = Object.freeze(['unused-filesystem-tracing-ignore']);
 // Hosted callers use Postgres, never these legacy local-directory branches.
 // Annotations affect bundler tracing only; the reviewed runtime behavior stays intact.
 const tracingAnchors = Object.freeze({
-  'execution/live-budget.mjs': {
-    from: '.map((p) => canonical(path.resolve(p)));',
-    to: '.map((p) => canonical(path.resolve(/*turbopackIgnore: true*/ p)));',
-  },
-  'execution/live.mjs': {
-    from: 'this.directory = directory ? path.resolve(directory) : undefined;',
-    to: 'this.directory = directory ? path.resolve(/*turbopackIgnore: true*/ directory) : undefined;',
-  },
+  'execution/live-budget.mjs': [
+    {
+      from: '.map((p) => canonical(path.resolve(p)));',
+      to: '.map((p) => canonical(path.resolve(/*turbopackIgnore: true*/ p)));',
+    },
+    {
+      from: "const directoryFD = fs.openSync(root, 'r');",
+      to: "const directoryFD = fs.openSync(/*turbopackIgnore: true*/ root, 'r');",
+    },
+  ],
+  'execution/live.mjs': [
+    {
+      from: 'this.directory = directory ? path.resolve(directory) : undefined;',
+      to: 'this.directory = directory ? path.resolve(/*turbopackIgnore: true*/ directory) : undefined;',
+    },
+  ],
 });
 export const NATIVE_FILES = Object.freeze([
   'execution/compact-statistics.mjs', 'execution/contracts.mjs',
@@ -61,10 +69,12 @@ export function generateNative(name, source) {
   if (/\b(?:createServer|ExecutionRegistry|process\.env|setInterval)\b/.test(text)) {
     throw new Error('Native snapshot contains an unrelated server or worker lifecycle: ' + name);
   }
-  const anchor = tracingAnchors[name];
-  if (anchor) {
-    if (text.split(anchor.from).length !== 2) throw new Error('Native hosted tracing anchor missing or ambiguous: ' + name);
-    text = text.replace(anchor.from, anchor.to);
+  const anchors = tracingAnchors[name];
+  if (anchors) {
+    for (const anchor of anchors) {
+      if (text.split(anchor.from).length !== 2) throw new Error('Native hosted tracing anchor missing or ambiguous: ' + name);
+      text = text.replace(anchor.from, anchor.to);
+    }
     const output = ts.createSourceFile(destination(name), text, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS);
     if (output.parseDiagnostics.length) throw new Error('Invalid adapted native JavaScript: ' + name);
   }

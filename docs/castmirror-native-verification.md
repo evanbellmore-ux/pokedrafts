@@ -24,7 +24,7 @@ provisioning, cutover, and real hosted verification below are complete.
 ## Verification boundaries
 
 The standalone native suite passed 1,154 tests. Final application checks passed
-8,885 tests across 274 files, with one existing skip; lint, global typecheck, and
+8,886 tests across 274 files, with one existing skip; lint, global typecheck, and
 explicit owned-API lint passed. The client contract scan passed all 392 files.
 The local embedded-Postgres suite passed 273 tests across 24 files, including
 restricted privileges, concurrency, revision CAS,
@@ -32,11 +32,15 @@ expired ownership, retained debt, immutable history, fixed TTLs, and committed
 writes with lost acknowledgement. Synthetic integration tests run the actual
 vendored native modules and transport, but do not establish production readiness.
 
-After fixing two unused filesystem tracing branches with reviewed bundler-only
-annotations, the production build emits no whole-project tracing warnings. The
-native route inventory contains 184 files, approximately 2.2 MB instead of 46 MB.
-All 34 build trace inventories passed the private-file audit; CastMirror traces
-contain only bundled output and installed runtime dependencies. Other application
+The initial Windows production build passed after two reviewed bundler-only
+filesystem annotations: 184 native-route files, approximately 2.2 MB instead of
+46 MB, and all 34 trace inventories passed the private-file audit. The automatic
+Vercel Linux Preview for `1a2bcd8` compiled but failed the same postbuild guard:
+its non-Windows directory-fsync open traced the whole project, and the guard
+rejected `AGENTS.md`. Adapter `castmirror-native-postgres-3` adds a third exact
+annotation for that unused hosted branch without changing directory durability,
+runtime behavior, scoring, or trace validation. A successful Linux Preview is
+required before this deployment issue is considered resolved. Other application
 routes retain their existing runtime assets.
 
 Real installed Chrome reached the local production build. Initial metadata HTTP
@@ -58,9 +62,13 @@ live-account cutover, or native restart/redeployment verification occurred.
 
 ## Remaining release gates
 
-1. Authenticate to the actual Vercel project and verify Node/Fluid runtime,
-   function duration support, hosting capacity, environment scope and deployment
-   access. Local source declarations/builds do not prove these settings.
+1. Read-only authenticated Vercel inspection confirmed Node 24.x, Fluid enabled,
+   an active Hobby plan and owner-level project access. Encrypted WCL credentials
+   are configured for Preview and Production; Execution credentials/flags are not.
+   [Documented Hobby/Fluid duration limits](https://vercel.com/docs/functions/configuring-functions/duration)
+   allow 300 seconds, sufficient for the 180-second route declaration. Verify the
+   actual deployed per-route configuration and available hosting capacity after
+   the successful Linux Preview; declarations/local builds alone are not proof.
 2. Obtain authorized PostgreSQL migration/role-management access, verify production
    capacity, and provision a dedicated restricted executor LOGIN with verified TLS.
    An unrestricted Supabase service-role REST key is not a substitute.

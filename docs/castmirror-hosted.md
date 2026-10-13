@@ -200,9 +200,10 @@ modules, with the same WCL transport transpiled from TypeScript for dispatch and
 diagnostics. Credentials, raw reports, caches, legacy workers/registry, and server
 startup are never copied. Native generation rejects dependencies outside its
 reviewed inventory and unrelated server/worker lifecycles. Native adapter
-`castmirror-native-postgres-2` adds two exact-anchor Turbopack tracing annotations
-only to unused local-filesystem branches. The source SHA and runtime/scoring
-behavior remain unchanged. Changed or ambiguous anchors fail generation. The
+`castmirror-native-postgres-3` adds three exact-anchor Turbopack tracing annotations
+only to unused local-filesystem branches, including the directory-fsync open on
+Linux. The source SHA and runtime/scoring behavior remain unchanged. Changed or
+ambiguous anchors fail generation. The
 automatic `postbuild` trace guard rejects private files and unreviewed CastMirror
 source roots; it does not strip other app routes' existing runtime assets.
 

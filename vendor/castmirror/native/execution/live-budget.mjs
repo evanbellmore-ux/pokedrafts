@@ -516,7 +516,7 @@ export function createLiveBudget({ directory, legacyDirectory, now = Date.now, s
       }
       // Directory fsync makes the rename durable on platforms which support it.
       if (process.platform !== 'win32') {
-        const directoryFD = fs.openSync(root, 'r');
+        const directoryFD = fs.openSync(/*turbopackIgnore: true*/ root, 'r');
         try { fs.fsyncSync(directoryFD); } finally { fs.closeSync(directoryFD); }
       }
       savedBytes = bytes; ledger = next;
