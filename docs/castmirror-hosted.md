@@ -182,9 +182,13 @@ NOLOGIN owner and executor roles are separate. Browser roles, PUBLIC, and
 service_role have no private-table/function access. The runtime login receives
 only executor membership and fixed transactional functions, not DDL, raw table
 writes, account bootstrap/enablement, or owner membership. Runtime preflight
-rejects elevated roles. The server-only `pg` adapter uses certificate-verifying
-TLS, at most two connections per invocation, and short connection/query/lock
-limits. An ambiguous write latches failure and is not replayed.
+rejects elevated roles and effective application-data/DDL grants. A narrow SELECT
+exception permits the two Supabase `extensions.pg_stat_statements*` views only
+when their actual catalog membership in the genuine extension is verified;
+names alone never qualify, and write grants still fail. Existing application and
+extension ACLs are not changed. The server-only `pg` adapter uses certificate-
+verifying TLS, at most two connections per invocation, and short connection/query/
+lock limits. An ambiguous write latches failure and is not replayed.
 
 Account identity is `sha256('wcl-client:' + WCL_CLIENT_ID)`. Admission and actual
 OAuth/GraphQL dispatch reservations are committed before sends. Quota observation,
@@ -279,9 +283,16 @@ working public native Execution.
    `EXECUTION_RUNTIME_VERIFIED` off until their corresponding checks pass.
 2. An authorized database administrator applies the private migration and
    provisions a dedicated `LOGIN INHERIT NOSUPERUSER NOBYPASSRLS NOCREATEDB
-   NOCREATEROLE NOREPLICATION` login with executor membership only, no admin option.
-   Deliver its connection string securely; never commit or print it. The database
-   hostname/certificate must verify successfully (use the provider CA if needed).
+   NOCREATEROLE NOREPLICATION` login with executor membership only, no admin or SET
+   option, and a bounded connection limit. On PostgreSQL 17 a nonsuperuser role
+   creator must explicitly receive the NOLOGIN owner membership with INHERIT/SET
+   before applying owner/schema/default-privilege operations; the runtime must
+   never receive that membership. Deliver its connection string securely; never
+   commit or print it. The database hostname/certificate must verify successfully.
+   If a CA is needed, obtain the production anchor from the
+   [provider-owned Studio configuration](https://github.com/supabase/supabase/blob/6f239881693f040bb7520e233e847cb537e93489/apps/studio/hooks/custom-content/custom-content.json),
+   not the failed TLS peer; retain `rejectUnauthorized: true`. A TLS failure after
+   a migration commit is not a rollback or permission to recreate credentials.
 3. Stop/disable **every old native acquisition writer for the same WCL client**
    before exporting its final live ledger and linked live history. A running
    loopback 8130 process is not persistent hosting and must not remain a second
@@ -298,7 +309,12 @@ working public native Execution.
    enable, or silently replace a missing account.
 5. Configure server-only `EXECUTION_DATABASE_URL`, optional
    `EXECUTION_DATABASE_CA`, existing `WCL_CLIENT_ID`/`WCL_CLIENT_SECRET`, and a
-   securely generated `EXECUTION_VERIFY_TOKEN`. Set `EXECUTION_RUNTIME_VERIFIED=1`
+   securely generated `EXECUTION_VERIFY_TOKEN`. Store credentials as sensitive
+   server-only variables in the intended Preview/Production environments, using
+   private stdin rather than command-line values. Inspect existing keys before
+   changes and reconcile ambiguous configuration acknowledgements without blind
+   replay. Initially verify both activation flags are explicitly zero. Set
+   `EXECUTION_RUNTIME_VERIFIED=1`
    **only after actual hosting/database/cutover checks pass**. With the public flag
    still off, private verification uses `Authorization: Bearer <verification token>`
    against the same enabled account; query strings/forwarded headers are not
