@@ -7,8 +7,8 @@ export const NO_STORE_HEADERS = {
 };
 
 const REASONS = [
-  'The real 12.1 encounter catalogs are unsupported: reviewed mechanics and verified Execution benchmarks are not available.',
-  'This hosted service has no durable benchmark snapshots, authenticated maintenance, or background workers; Execution builds and references are disabled.',
+  'No reachable durable native Execution backend is configured for this hosted service.',
+  'Native quota accounting and retained comparison pins require shared durable state; this hosted adapter does not start collection.',
 ];
 
 /** Stateless hosted availability only. Requested throughput context is not a
@@ -17,7 +17,7 @@ const REASONS = [
 export function getHostedExecutionAvailability(requestedContext: RequestedExecutionContext | null = null) {
   return {
     state: 'unsupported' as const,
-    reason: 'Execution references are unavailable on the hosted service.',
+    reason: 'Execution statistics are unavailable here until this site is connected.',
     reasons: [...REASONS],
     capabilities: { build: false as const, reference: false as const },
     scope: null,
