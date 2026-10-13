@@ -1,0 +1,167 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 100,
+    "maximum": 158
+   },
+   "opponent-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-right": {
+    "hp": 100,
+    "maximum": 158
+   }
+  },
+  "steps": [],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 135,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 100,
+    "maximum": 158,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 100,
+    "maximum": 158,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Rain does not end this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 135,
+     "low": 108,
+     "average": 108,
+     "high": 108,
+     "min": 108,
+     "max": 108,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 100,
+     "maximum": 158,
+     "low": 119,
+     "average": 119,
+     "high": 119,
+     "min": 119,
+     "max": 119,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 100,
+     "maximum": 158,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Dry Skin",
+     "chance": 1,
+     "min": 19,
+     "max": 19,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Rain Dish",
+     "chance": 1,
+     "min": 8,
+     "max": 8,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Hydration",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Cures its burn.",
+       "chance": 1
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 1.5783000000001266,
+ "preflight": []
+}

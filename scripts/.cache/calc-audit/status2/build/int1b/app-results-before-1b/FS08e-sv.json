@@ -1,0 +1,114 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "A weather or terrain change this turn would change Quark Drive.",
+  "start": {
+   "own-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "own-right": {
+    "hp": 229,
+    "maximum": 229
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "drainpunch",
+     "effectiveName": "Drain Punch",
+     "effectiveType": "Fighting",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 206,
+     "max": 246,
+     "minPercent": 87.65957446808511,
+     "maxPercent": 104.68085106382978,
+     "rolls": [
+      206,
+      210,
+      212,
+      216,
+      216,
+      218,
+      222,
+      224,
+      228,
+      230,
+      230,
+      234,
+      236,
+      240,
+      242,
+      246
+     ],
+     "ohkoChance": 0.25,
+     "description": "Drain Punch: 206–246 HP (87.7–104.7% of maximum HP). Applied: Quark Drive.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Iron Hands's Quark Drive boosts its Attack (its highest stat), on Electric Terrain. Assumes no stage changes since it activated."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.25,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 29,
+      "high": 0,
+      "average": 10.875,
+      "min": 0,
+      "max": 29,
+      "koChance": 0.25,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 206,
+        "heals": []
+       },
+       "high": {
+        "dealt": 235,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.477099999998245,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "A weather or terrain change this turn would change Quark Drive."
+ }
+}

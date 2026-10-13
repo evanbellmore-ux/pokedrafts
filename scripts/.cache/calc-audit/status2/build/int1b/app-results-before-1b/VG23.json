@@ -1,0 +1,109 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "sludgebomb",
+     "effectiveName": "Sludge Bomb",
+     "effectiveType": "Poison",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 42,
+     "max": 49,
+     "minPercent": 17.872340425531917,
+     "maxPercent": 20.851063829787233,
+     "rolls": [
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49
+     ],
+     "ohkoChance": 0,
+     "description": "Sludge Bomb: 42–49 HP (17.9–20.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Snorlax's Thick Fat is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.038756370544433594,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 193,
+      "high": 186,
+      "average": 189.9375,
+      "min": 186,
+      "max": 193,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 42,
+        "heals": []
+       },
+       "high": {
+        "dealt": 49,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Charizard, Snorlax and Venusaur."
+  ]
+ },
+ "ms": 1.7083000000002357,
+ "preflight": []
+}

@@ -1,0 +1,150 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Dragon Darts aimed where its user now stands is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "own-right": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "dragondarts",
+     "effectiveName": "Dragon Darts",
+     "effectiveType": "Dragon",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 102,
+     "minPercent": 45.40540540540541,
+     "maxPercent": 55.13513513513514,
+     "rolls": [
+      [
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49,
+       49,
+       51
+      ],
+      [
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49,
+       49,
+       51
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Darts: 84–102 HP (45.4–55.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.4815673828125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 185,
+      "low": 101,
+      "high": 83,
+      "average": 92.875,
+      "min": 83,
+      "max": 101,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 84,
+        "heals": []
+       },
+       "high": {
+        "dealt": 102,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "dragondarts",
+     "effectiveName": "Dragon Darts",
+     "effectiveType": "Dragon",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit. In Double Battles, this move attempts to hit the targeted Pokemon and its ally once each. If hitting one of these Pokemon would be prevented by immunity, protection, semi-invulnerability, an Ability, or accuracy, it attempts to hit the other Pokemon twice instead. If this move is redirected, it hits that target twice.",
+     "assumptions": [],
+     "reason": "Dragon Darts aimed where its user now stands is not modelled in 2v2.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Reuniclus did not use Ally Switch last turn."
+  ]
+ },
+ "ms": 1.4823000000005777,
+ "preflight": []
+}

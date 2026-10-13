@@ -1,0 +1,582 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 87,
+      "max": 103,
+      "minPercent": 56.86274509803921,
+      "maxPercent": 67.3202614379085,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 87,
+       "max": 103,
+       "minPercent": 56.86274509803921,
+       "maxPercent": 67.3202614379085,
+       "rolls": [
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96,
+        96,
+        97,
+        99,
+        99,
+        100,
+        102,
+        103
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 87–103 HP (56.9–67.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Target: Unburden has been activated — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "closecombat",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 46,
+      "minPercent": 25.49019607843137,
+      "maxPercent": 30.065359477124183,
+      "koChance": 0,
+      "row": {
+       "moveId": "closecombat",
+       "effectiveName": "Close Combat",
+       "effectiveType": "Fighting",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 39,
+       "max": 46,
+       "minPercent": 25.49019607843137,
+       "maxPercent": 30.065359477124183,
+       "rolls": [
+        39,
+        39,
+        39,
+        40,
+        41,
+        41,
+        42,
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46
+       ],
+       "ohkoChance": 0,
+       "description": "Close Combat: 39–46 HP (25.5–30.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Unburden has been activated — yes."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "airslash",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 248,
+      "max": 294,
+      "minPercent": 162.09150326797385,
+      "maxPercent": 192.15686274509804,
+      "koChance": 1,
+      "row": {
+       "moveId": "airslash",
+       "effectiveName": "Air Slash",
+       "effectiveType": "Flying",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 248,
+       "max": 294,
+       "minPercent": 162.09150326797385,
+       "maxPercent": 192.15686274509804,
+       "rolls": [
+        248,
+        252,
+        254,
+        258,
+        260,
+        264,
+        266,
+        270,
+        272,
+        276,
+        278,
+        282,
+        284,
+        288,
+        290,
+        294
+       ],
+       "ohkoChance": 1,
+       "description": "Air Slash: 248–294 HP (162.1–192.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Target: Unburden has been activated — yes."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 114,
+    "average": 110.75,
+    "high": 107,
+    "min": 107,
+    "max": 114,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": [
+     "Sitrus Berry: +38 HP."
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 87,
+     "max": 103,
+     "minPercent": 56.86274509803921,
+     "maxPercent": 67.3202614379085,
+     "rolls": [
+      87,
+      88,
+      90,
+      90,
+      91,
+      93,
+      93,
+      94,
+      96,
+      96,
+      97,
+      99,
+      99,
+      100,
+      102,
+      103
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 87–103 HP (56.9–67.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Unburden has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.4375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 104,
+      "high": 88,
+      "average": 96.125,
+      "min": 88,
+      "max": 104,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +38 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 87,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       },
+       "high": {
+        "dealt": 103,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "airslash",
+     "effectiveName": "Air Slash",
+     "effectiveType": "Flying",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 168,
+     "max": 198,
+     "minPercent": 109.80392156862746,
+     "maxPercent": 129.41176470588235,
+     "rolls": [
+      168,
+      168,
+      170,
+      174,
+      174,
+      176,
+      180,
+      180,
+      182,
+      186,
+      186,
+      188,
+      192,
+      192,
+      194,
+      198
+     ],
+     "ohkoChance": 1,
+     "description": "Air Slash: 168–198 HP (109.8–129.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Unburden has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 153,
+        "heals": []
+       },
+       "high": {
+        "dealt": 153,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 39,
+     "max": 46,
+     "minPercent": 25.49019607843137,
+     "maxPercent": 30.065359477124183,
+     "rolls": [
+      39,
+      39,
+      39,
+      40,
+      41,
+      41,
+      42,
+      42,
+      42,
+      43,
+      43,
+      44,
+      45,
+      45,
+      45,
+      46
+     ],
+     "ohkoChance": 0,
+     "description": "Close Combat: 39–46 HP (25.5–30.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Unburden has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 114,
+      "high": 107,
+      "average": 110.75,
+      "min": 107,
+      "max": 114,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 46,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 114,
+     "average": 110.75,
+     "high": 107,
+     "min": 107,
+     "max": 114,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": [
+      "Sitrus Berry: +38 HP."
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.716400000000021,
+ "preflight": []
+}

@@ -1,0 +1,318 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 294,
+    "maximum": 294
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "earthquake",
+    "effectiveName": "G-Max Sandblast",
+    "effectiveType": "Ground",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 109,
+      "max": 130,
+      "minPercent": 46.38297872340426,
+      "maxPercent": 55.319148936170215,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "G-Max Sandblast",
+       "effectiveType": "Ground",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 109,
+       "max": 130,
+       "minPercent": 46.38297872340426,
+       "maxPercent": 55.319148936170215,
+       "rolls": [
+        109,
+        111,
+        112,
+        114,
+        115,
+        117,
+        118,
+        120,
+        120,
+        121,
+        123,
+        124,
+        126,
+        127,
+        129,
+        130
+       ],
+       "ohkoChance": 0,
+       "description": "G-Max Sandblast: 109–130 HP (46.4–55.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 294,
+    "maximum": 294,
+    "low": 294,
+    "average": 294,
+    "high": 294,
+    "min": 294,
+    "max": 294,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Trapped by G-Max Sandblast.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 126,
+    "average": 115.25,
+    "high": 105,
+    "min": 105,
+    "max": 126,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Trapped by G-Max Sandblast.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "G-Max Sandblast",
+     "effectiveType": "Ground",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 109,
+     "max": 130,
+     "minPercent": 46.38297872340426,
+     "maxPercent": 55.319148936170215,
+     "rolls": [
+      109,
+      111,
+      112,
+      114,
+      115,
+      117,
+      118,
+      120,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130
+     ],
+     "ohkoChance": 0,
+     "description": "G-Max Sandblast: 109–130 HP (46.4–55.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Its trap lasts 4 or 5 turns at random"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 126,
+      "high": 105,
+      "average": 115.25,
+      "min": 105,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 109,
+        "heals": []
+       },
+       "high": {
+        "dealt": 130,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 294,
+     "maximum": 294,
+     "low": 294,
+     "average": 294,
+     "high": 294,
+     "min": 294,
+     "max": 294,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 196,
+     "average": 196,
+     "high": 196,
+     "min": 196,
+     "max": 196,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Trapped by G-Max Sandblast.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 87,
+     "average": 76.25,
+     "high": 66,
+     "min": 66,
+     "max": 87,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Trapped by G-Max Sandblast.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "G-Max Sandblast",
+     "other": "own-left",
+     "chance": 1,
+     "min": -39,
+     "max": -39,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "G-Max Sandblast",
+     "other": "own-left",
+     "chance": 1,
+     "min": -39,
+     "max": -39,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 5.495299999999588,
+ "preflight": []
+}

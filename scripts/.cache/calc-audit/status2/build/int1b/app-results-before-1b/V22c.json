@@ -1,0 +1,331 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragondarts",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 136,
+      "max": 168,
+      "minPercent": 74.31693989071039,
+      "maxPercent": 91.80327868852459,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragondarts",
+       "effectiveName": "Dragon Darts",
+       "effectiveType": "Dragon",
+       "effectivePower": 50,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 136,
+       "max": 168,
+       "minPercent": 74.31693989071039,
+       "maxPercent": 91.80327868852459,
+       "rolls": [
+        [
+         68,
+         72,
+         72,
+         72,
+         72,
+         74,
+         74,
+         74,
+         78,
+         78,
+         78,
+         78,
+         80,
+         80,
+         80,
+         84
+        ],
+        [
+         68,
+         72,
+         72,
+         72,
+         72,
+         74,
+         74,
+         74,
+         78,
+         78,
+         78,
+         78,
+         80,
+         80,
+         80,
+         84
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Dragon Darts: 136–168 HP (74.3–91.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Dragon Darts has no effect on Clefable.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 163,
+    "average": 163,
+    "high": 163,
+    "min": 163,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 47,
+    "average": 31.25,
+    "high": 15,
+    "min": 15,
+    "max": 47,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dragondarts",
+     "effectiveName": "Dragon Darts",
+     "effectiveType": "Dragon",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 136,
+     "max": 168,
+     "minPercent": 74.31693989071039,
+     "maxPercent": 91.80327868852459,
+     "rolls": [
+      [
+       68,
+       72,
+       72,
+       72,
+       72,
+       74,
+       74,
+       74,
+       78,
+       78,
+       78,
+       78,
+       80,
+       80,
+       80,
+       84
+      ],
+      [
+       68,
+       72,
+       72,
+       72,
+       72,
+       74,
+       74,
+       74,
+       78,
+       78,
+       78,
+       78,
+       80,
+       80,
+       80,
+       84
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Darts: 136–168 HP (74.3–91.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 47,
+      "high": 15,
+      "average": 31.25,
+      "min": 15,
+      "max": 47,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 136,
+        "heals": []
+       },
+       "high": {
+        "dealt": 168,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 163,
+     "maximum": 163,
+     "low": 163,
+     "average": 163,
+     "high": 163,
+     "min": 163,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 47,
+     "average": 31.25,
+     "high": 15,
+     "min": 15,
+     "max": 47,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.041900000000055,
+ "preflight": []
+}

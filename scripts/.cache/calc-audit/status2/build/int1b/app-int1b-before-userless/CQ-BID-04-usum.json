@@ -1,0 +1,347 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 140,
+    "maximum": 140
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "quickattack",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 28,
+      "max": 33,
+      "minPercent": 11.914893617021278,
+      "maxPercent": 14.042553191489363,
+      "koChance": 0,
+      "row": {
+       "moveId": "quickattack",
+       "effectiveName": "Quick Attack",
+       "effectiveType": "Normal",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 28,
+       "max": 33,
+       "minPercent": 11.914893617021278,
+       "maxPercent": 14.042553191489363,
+       "rolls": [
+        28,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33
+       ],
+       "ohkoChance": 0,
+       "description": "Quick Attack: 28–33 HP (11.9–14.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "bide",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 156,
+      "max": 166,
+      "minPercent": 111.42857142857143,
+      "maxPercent": 118.57142857142857,
+      "koChance": 1,
+      "row": {
+       "moveId": "bide",
+       "effectiveName": "Bide",
+       "effectiveType": "Normal",
+       "effectivePower": 0,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 156,
+       "max": 156,
+       "minPercent": 111.42857142857143,
+       "maxPercent": 111.42857142857143,
+       "rolls": 156,
+       "ohkoChance": 1,
+       "description": "Bide: 156–156 HP (111.4–111.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Fixed damage: 156 HP."
+       ],
+       "reason": null,
+       "hits": 1
+      },
+      "cases": 6,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 78 HP stored.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 79 HP stored.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 80 HP stored.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 81 HP stored.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 82 HP stored.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Snorlax (yours, 1) unleashes the energy (Bide): twice the 83 HP stored.",
+      "chance": 0.0625
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 207,
+    "average": 204.8125,
+    "high": 202,
+    "min": 202,
+    "max": 207,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 140,
+    "maximum": 140,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "quickattack",
+     "effectiveName": "Quick Attack",
+     "effectiveType": "Normal",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 28,
+     "max": 33,
+     "minPercent": 11.914893617021278,
+     "maxPercent": 14.042553191489363,
+     "rolls": [
+      28,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      32,
+      32,
+      32,
+      33
+     ],
+     "ohkoChance": 0,
+     "description": "Quick Attack: 28–33 HP (11.9–14.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 8,
+      "fasterChance": 0.9456380815245211,
+      "limit": 48,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 207,
+      "high": 202,
+      "average": 204.8125,
+      "min": 202,
+      "max": 207,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 28,
+        "heals": []
+       },
+       "high": {
+        "dealt": 33,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 207,
+     "average": 204.8125,
+     "high": 202,
+     "min": 202,
+     "max": 207,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 140,
+     "maximum": 140,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 11.468000000000757,
+ "preflight": []
+}

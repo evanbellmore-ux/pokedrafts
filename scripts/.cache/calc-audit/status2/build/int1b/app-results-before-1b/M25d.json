@@ -1,0 +1,334 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "solarbeam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 66,
+      "max": 80,
+      "minPercent": 42.857142857142854,
+      "maxPercent": 51.94805194805194,
+      "koChance": 0,
+      "row": {
+       "moveId": "solarbeam",
+       "effectiveName": "Solar Beam",
+       "effectiveType": "Grass",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 66,
+       "max": 80,
+       "minPercent": 42.857142857142854,
+       "maxPercent": 51.94805194805194,
+       "rolls": [
+        66,
+        68,
+        68,
+        68,
+        72,
+        72,
+        72,
+        72,
+        74,
+        74,
+        74,
+        74,
+        78,
+        78,
+        78,
+        80
+       ],
+       "ohkoChance": 0,
+       "description": "Solar Beam: 66–80 HP (42.9–51.9% of maximum HP). Applied: Hail.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 60."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 88,
+    "average": 81,
+    "high": 74,
+    "min": 74,
+    "max": 88,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "solarbeam",
+     "effectiveName": "Solar Beam",
+     "effectiveType": "Grass",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 66,
+     "max": 80,
+     "minPercent": 42.857142857142854,
+     "maxPercent": 51.94805194805194,
+     "rolls": [
+      66,
+      68,
+      68,
+      68,
+      72,
+      72,
+      72,
+      72,
+      74,
+      74,
+      74,
+      74,
+      78,
+      78,
+      78,
+      80
+     ],
+     "ohkoChance": 0,
+     "description": "Solar Beam: 66–80 HP (42.9–51.9% of maximum HP). Applied: Hail.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 60."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "endOfTurn": true,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Solar Beam's damage follows the attacker's HP.",
+       "Hail damages the target at the end of each turn.",
+       "Hail damages the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the weather lasts through every use.",
+       "Power Herb skips the first charge turn."
+      ],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 88,
+      "high": 74,
+      "average": 81,
+      "min": 74,
+      "max": 88,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 66,
+        "heals": []
+       },
+       "high": {
+        "dealt": 80,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Hail does not end this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 146,
+     "average": 146,
+     "high": 146,
+     "min": 146,
+     "max": 146,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 221,
+     "average": 221,
+     "high": 221,
+     "min": 221,
+     "max": 221,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 79,
+     "average": 72,
+     "high": 65,
+     "min": 65,
+     "max": 79,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 172,
+     "average": 172,
+     "high": 172,
+     "min": 172,
+     "max": 172,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-right",
+     "effect": "Hail",
+     "chance": 1,
+     "min": -11,
+     "max": -11,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Hail",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Hail",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-right",
+     "effect": "Hail",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 3.4167999999999665,
+ "preflight": []
+}

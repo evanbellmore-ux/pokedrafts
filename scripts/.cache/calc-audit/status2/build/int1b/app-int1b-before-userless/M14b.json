@@ -1,0 +1,563 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 1,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "iceshard",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 20,
+      "max": 24,
+      "minPercent": 12.903225806451612,
+      "maxPercent": 15.483870967741936,
+      "koChance": 1,
+      "row": {
+       "moveId": "iceshard",
+       "effectiveName": "Ice Shard",
+       "effectiveType": "Ice",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 20,
+       "max": 24,
+       "minPercent": 12.903225806451612,
+       "maxPercent": 15.483870967741936,
+       "rolls": [
+        20,
+        20,
+        20,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        24
+       ],
+       "ohkoChance": 0,
+       "description": "Ice Shard: 20–24 HP (12.9–15.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 12,
+      "max": 15,
+      "minPercent": 7.792207792207792,
+      "maxPercent": 9.740259740259742,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 12,
+       "max": 15,
+       "minPercent": 7.792207792207792,
+       "maxPercent": 9.740259740259742,
+       "rolls": [
+        12,
+        13,
+        13,
+        13,
+        13,
+        13,
+        14,
+        14,
+        14,
+        14,
+        14,
+        15,
+        15,
+        15,
+        15,
+        15
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 12–15 HP (7.8–9.7% of maximum HP). Applied: Rain.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 104,
+      "max": 126,
+      "minPercent": 67.97385620915033,
+      "maxPercent": 82.35294117647058,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 104,
+       "max": 126,
+       "minPercent": 67.97385620915033,
+       "maxPercent": 82.35294117647058,
+       "rolls": [
+        104,
+        108,
+        108,
+        108,
+        110,
+        110,
+        114,
+        114,
+        116,
+        116,
+        116,
+        120,
+        120,
+        122,
+        122,
+        126
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 104–126 HP (68.0–82.4% of maximum HP). Applied: Rain.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 1,
+    "maximum": 155,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 142,
+    "average": 140.125,
+    "high": 139,
+    "min": 139,
+    "max": 142,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 49,
+    "average": 38.375,
+    "high": 27,
+    "min": 27,
+    "max": 49,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 68,
+     "max": 84,
+     "minPercent": 44.44444444444444,
+     "maxPercent": 54.90196078431373,
+     "rolls": [
+      68,
+      72,
+      72,
+      72,
+      72,
+      74,
+      74,
+      74,
+      78,
+      78,
+      78,
+      78,
+      80,
+      80,
+      80,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 68–84 HP (44.4–54.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.375,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 153,
+      "low": 85,
+      "high": 69,
+      "average": 77.125,
+      "min": 69,
+      "max": 85,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 68,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 16.883116883116884,
+     "maxPercent": 20.12987012987013,
+     "rolls": [
+      26,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 26–31 HP (16.9–20.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.00002002716064453125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 128,
+      "high": 123,
+      "average": 125.5625,
+      "min": 123,
+      "max": 128,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "iceshard",
+     "effectiveName": "Ice Shard",
+     "effectiveType": "Ice",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 20,
+     "max": 24,
+     "minPercent": 12.903225806451612,
+     "maxPercent": 15.483870967741936,
+     "rolls": [
+      20,
+      20,
+      20,
+      21,
+      21,
+      21,
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      23,
+      23,
+      23,
+      24
+     ],
+     "ohkoChance": 1,
+     "description": "Ice Shard: 20–24 HP (12.9–15.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 48,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 1,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 1,
+        "heals": []
+       },
+       "high": {
+        "dealt": 1,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 1,
+     "maximum": 155,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 142,
+     "average": 140.125,
+     "high": 139,
+     "min": 139,
+     "max": 142,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 49,
+     "average": 38.375,
+     "high": 27,
+     "min": 27,
+     "max": 49,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.949399999999969,
+ "preflight": []
+}

@@ -1,0 +1,1054 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 300,
+    "maximum": 330
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "psychicnoise",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 25,
+      "max": 31,
+      "minPercent": 7.575757575757576,
+      "maxPercent": 9.393939393939393,
+      "koChance": 0,
+      "row": {
+       "moveId": "psychicnoise",
+       "effectiveName": "Psychic Noise",
+       "effectiveType": "Psychic",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 25,
+       "max": 31,
+       "minPercent": 7.575757575757576,
+       "maxPercent": 9.393939393939393,
+       "rolls": [
+        25,
+        27,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Psychic Noise: 25–31 HP (7.6–9.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "softboiled",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "Heal Block: Soft-Boiled cannot be used.",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "ironhead",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 232,
+      "max": 274,
+      "minPercent": 70.3030303030303,
+      "maxPercent": 83.03030303030303,
+      "koChance": 0.078125,
+      "row": {
+       "moveId": "ironhead",
+       "effectiveName": "Iron Head",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 232,
+       "max": 274,
+       "minPercent": 70.3030303030303,
+       "maxPercent": 83.03030303030303,
+       "rolls": [
+        232,
+        235,
+        238,
+        241,
+        243,
+        246,
+        249,
+        252,
+        255,
+        258,
+        259,
+        262,
+        265,
+        268,
+        271,
+        274
+       ],
+       "ohkoChance": 0,
+       "description": "Iron Head: 232–274 HP (70.3–83.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 143,
+    "maximum": 143,
+    "low": 143,
+    "average": 143,
+    "high": 143,
+    "min": 143,
+    "max": 143,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 300,
+    "maximum": 330,
+    "low": 43,
+    "average": 18.9765625,
+    "high": 0,
+    "min": 0,
+    "max": 43,
+    "koChance": 0.078125,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 0.921875
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "psychicnoise",
+     "effectiveName": "Psychic Noise",
+     "effectiveType": "Psychic",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 25,
+     "max": 31,
+     "minPercent": 7.575757575757576,
+     "maxPercent": 9.393939393939393,
+     "rolls": [
+      25,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Psychic Noise: 25–31 HP (7.6–9.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Psychic Noise blocks healing at times"
+     },
+     "afterUse": {
+      "start": 300,
+      "low": 275,
+      "high": 269,
+      "average": 271.8125,
+      "min": 269,
+      "max": 275,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 25,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "ironhead",
+     "effectiveName": "Iron Head",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 232,
+     "max": 274,
+     "minPercent": 70.3030303030303,
+     "maxPercent": 83.03030303030303,
+     "rolls": [
+      232,
+      235,
+      238,
+      241,
+      243,
+      246,
+      249,
+      252,
+      255,
+      258,
+      259,
+      262,
+      265,
+      268,
+      271,
+      274
+     ],
+     "ohkoChance": 0,
+     "description": "Iron Head: 232–274 HP (70.3–83.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 300,
+      "low": 150,
+      "high": 108,
+      "average": 129,
+      "min": 108,
+      "max": 150,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +82 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 232,
+        "heals": [
+         "Sitrus Berry: +82 HP."
+        ]
+       },
+       "high": {
+        "dealt": 274,
+        "heals": [
+         "Sitrus Berry: +82 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 143,
+     "maximum": 143,
+     "low": 143,
+     "average": 143,
+     "high": 143,
+     "min": 143,
+     "max": 143,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 300,
+     "maximum": 330,
+     "low": 43,
+     "average": 18.9765625,
+     "high": 0,
+     "min": 0,
+     "max": 43,
+     "koChance": 0.078125,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 0.921875
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.8047999999998865,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 300,
+    "maximum": 330
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.921875,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "bruxish",
+       "nature": "Serious",
+       "abilityId": "strongjaw",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "kingambit",
+       "nature": "Serious",
+       "abilityId": "defiant",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 1,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 2,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 4,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 5,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 7,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 8,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 10,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 11,
+        "chance": 0.04237288135593221
+       },
+       {
+        "hp": 12,
+        "chance": 0.016949152542372885
+       },
+       {
+        "hp": 13,
+        "chance": 0.025423728813559327
+       },
+       {
+        "hp": 14,
+        "chance": 0.04661016949152543
+       },
+       {
+        "hp": 15,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 16,
+        "chance": 0.004237288135593221
+       },
+       {
+        "hp": 17,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 18,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 20,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 21,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 23,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 24,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 26,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 27,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 28,
+        "chance": 0.004237288135593221
+       },
+       {
+        "hp": 29,
+        "chance": 0.04237288135593221
+       },
+       {
+        "hp": 30,
+        "chance": 0.021186440677966104
+       },
+       {
+        "hp": 31,
+        "chance": 0.025423728813559327
+       },
+       {
+        "hp": 32,
+        "chance": 0.04237288135593221
+       },
+       {
+        "hp": 34,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 35,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 37,
+        "chance": 0.029661016949152547
+       },
+       {
+        "hp": 38,
+        "chance": 0.03813559322033899
+       },
+       {
+        "hp": 40,
+        "chance": 0.025423728813559327
+       },
+       {
+        "hp": 41,
+        "chance": 0.021186440677966104
+       },
+       {
+        "hp": 43,
+        "chance": 0.004237288135593221
+       }
+      ],
+      "build": {
+       "speciesId": "blissey",
+       "nature": "Serious",
+       "abilityId": "naturalcure",
+       "abilityActive": false,
+       "itemId": "sitrusberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.078125,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "bruxish",
+       "nature": "Serious",
+       "abilityId": "strongjaw",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "kingambit",
+       "nature": "Serious",
+       "abilityId": "defiant",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "blissey",
+       "nature": "Serious",
+       "abilityId": "naturalcure",
+       "abilityActive": false,
+       "itemId": "sitrusberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "turnsLeft": {
+       "healblock": 2
+      }
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

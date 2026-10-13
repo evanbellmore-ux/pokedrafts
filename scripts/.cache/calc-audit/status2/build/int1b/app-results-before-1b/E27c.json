@@ -1,0 +1,280 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "tripleaxel",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 28,
+      "max": 34,
+      "minPercent": 11.914893617021278,
+      "maxPercent": 14.468085106382977,
+      "koChance": 0,
+      "row": {
+       "moveId": "tripleaxel",
+       "effectiveName": "Triple Axel",
+       "effectiveType": "Ice",
+       "effectivePower": 20,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 57,
+       "max": 71,
+       "minPercent": 24.25531914893617,
+       "maxPercent": 30.21276595744681,
+       "rolls": [
+        [
+         10,
+         10,
+         10,
+         10,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         13
+        ],
+        [
+         19,
+         19,
+         19,
+         21,
+         21,
+         21,
+         21,
+         21,
+         21,
+         22,
+         22,
+         22,
+         22,
+         22,
+         22,
+         24
+        ],
+        [
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33,
+         33,
+         33,
+         33,
+         34
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Triple Axel: 57–71 HP (24.3–30.2% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Triple Axel: all 3 hits land.",
+        "No one-use KO chance for multiple hits.",
+        "Power per hit: 20, 40, 60."
+       ],
+       "reason": null,
+       "hits": 3,
+       "hitRule": {
+        "kind": "choose",
+        "min": 1,
+        "max": 3,
+        "defaultHits": 3,
+        "perHitAccuracy": true,
+        "loadedDice": false,
+        "chances": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       },
+       {
+        "text": "Triple Axel hits Snorlax after its Substitute breaks.",
+        "chance": 1
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 20,
+       "max": 20,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 207,
+    "average": 204,
+    "high": 201,
+    "min": 201,
+    "max": 207,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "tripleaxel",
+     "effectiveName": "Triple Axel",
+     "effectiveType": "Ice",
+     "effectivePower": 20,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits three times. Power increases to 40 for the second hit and 60 for the third. This move checks accuracy for each hit, and the attack ends if the target avoids a hit. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit three times.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 207,
+     "average": 204,
+     "high": 201,
+     "min": 201,
+     "max": 207,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.244699999999284,
+ "preflight": []
+}

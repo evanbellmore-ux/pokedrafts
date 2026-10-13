@@ -1,0 +1,431 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "allyswitch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Reuniclus and Blastoise swap places.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-left",
+    "moveId": "suckerpunch",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 51,
+      "max": 61,
+      "minPercent": 33.116883116883116,
+      "maxPercent": 39.61038961038961,
+      "koChance": 0,
+      "row": {
+       "moveId": "suckerpunch",
+       "effectiveName": "Sucker Punch",
+       "effectiveType": "Dark",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 51,
+       "max": 61,
+       "minPercent": 33.116883116883116,
+       "maxPercent": 39.61038961038961,
+       "rolls": [
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        61
+       ],
+       "ohkoChance": 0,
+       "description": "Sucker Punch: 51–61 HP (33.1–39.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes Sucker Punch succeeds."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Sucker Punch hits Blastoise in Reuniclus's place.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 15,
+      "max": 18,
+      "minPercent": 9.67741935483871,
+      "maxPercent": 11.612903225806452,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 15,
+       "max": 18,
+       "minPercent": 9.67741935483871,
+       "maxPercent": 11.612903225806452,
+       "rolls": [
+        15,
+        15,
+        15,
+        16,
+        16,
+        16,
+        16,
+        17,
+        17,
+        17,
+        17,
+        18,
+        18,
+        18,
+        18,
+        18
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 15–18 HP (9.7–11.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 140,
+    "average": 138.3125,
+    "high": 137,
+    "min": 137,
+    "max": 140,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 185,
+    "maximum": 185,
+    "low": 185,
+    "average": 185,
+    "high": 185,
+    "min": 185,
+    "max": 185,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Blastoise.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 103,
+    "average": 98.0625,
+    "high": 93,
+    "min": 93,
+    "max": 103,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Reuniclus.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "suckerpunch",
+     "effectiveName": "Sucker Punch",
+     "effectiveType": "Dark",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Fails if the target did not select a physical attack, special attack, or Me First for use this turn, or if the target moves before the user.",
+     "assumptions": [],
+     "reason": "Sucker Punch fails: Reuniclus moves first.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 15,
+     "max": 18,
+     "minPercent": 9.67741935483871,
+     "maxPercent": 11.612903225806452,
+     "rolls": [
+      15,
+      15,
+      15,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      18,
+      18,
+      18,
+      18,
+      18
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 15–18 HP (9.7–11.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 11,
+      "fewest": 9,
+      "fasterChance": 0.9998729445005665,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 140,
+      "high": 137,
+      "average": 138.3125,
+      "min": 137,
+      "max": 140,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 15,
+        "heals": []
+       },
+       "high": {
+        "dealt": 18,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Reuniclus did not use Ally Switch last turn."
+  ],
+  "swapped": {
+   "opponent": 1
+  },
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 140,
+     "average": 138.3125,
+     "high": 137,
+     "min": 137,
+     "max": 140,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 185,
+     "maximum": 185,
+     "low": 185,
+     "average": 185,
+     "high": 185,
+     "min": 185,
+     "max": 185,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Blastoise.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 103,
+     "average": 98.0625,
+     "high": 93,
+     "min": 93,
+     "max": 103,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Reuniclus.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.988200000000234,
+ "preflight": []
+}

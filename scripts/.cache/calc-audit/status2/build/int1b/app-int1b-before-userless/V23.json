@@ -1,0 +1,649 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 50,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "rockblast",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 16,
+      "max": 45,
+      "minPercent": 8.743169398907105,
+      "maxPercent": 24.59016393442623,
+      "koChance": 0,
+      "row": {
+       "moveId": "rockblast",
+       "effectiveName": "Rock Blast",
+       "effectiveType": "Rock",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 16,
+       "max": 45,
+       "minPercent": 8.743169398907105,
+       "maxPercent": 24.59016393442623,
+       "rolls": [
+        [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9
+        ],
+        [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9
+        ],
+        [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9
+        ],
+        [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9
+        ],
+        [
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         8,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9,
+         9
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Rock Blast: 16–45 HP (8.7–24.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Rock Blast: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "energyball",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 66,
+      "max": 78,
+      "minPercent": 42.58064516129032,
+      "maxPercent": 50.32258064516129,
+      "koChance": 1,
+      "row": {
+       "moveId": "energyball",
+       "effectiveName": "Energy Ball",
+       "effectiveType": "Grass",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 66,
+       "max": 78,
+       "minPercent": 42.58064516129032,
+       "maxPercent": 50.32258064516129,
+       "rolls": [
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78
+       ],
+       "ohkoChance": 0,
+       "description": "Energy Ball: 66–78 HP (42.6–50.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 50,
+    "maximum": 155,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 167,
+    "average": 156.65000000000003,
+    "high": 138,
+    "min": 138,
+    "max": 167,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "rockblast",
+     "effectiveName": "Rock Blast",
+     "effectiveType": "Rock",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 16,
+     "max": 45,
+     "minPercent": 8.743169398907105,
+     "maxPercent": 24.59016393442623,
+     "rolls": [
+      [
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9
+      ],
+      [
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9
+      ],
+      [
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9
+      ],
+      [
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9
+      ],
+      [
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       8,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9,
+       9
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Blast: 16–45 HP (8.7–24.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Rock Blast: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each)."
+     ],
+     "reason": null,
+     "hits": 5,
+     "hitRule": {
+      "kind": "choose",
+      "min": 2,
+      "max": 5,
+      "defaultHits": null,
+      "perHitAccuracy": false,
+      "loadedDice": false,
+      "chances": [
+       {
+        "hits": 2,
+        "chance": 0.35
+       },
+       {
+        "hits": 3,
+        "chance": 0.35
+       },
+       {
+        "hits": 4,
+        "chance": 0.15
+       },
+       {
+        "hits": 5,
+        "chance": 0.15
+       }
+      ]
+     },
+     "hitChances": [
+      {
+       "hits": 2,
+       "chance": 0.35
+      },
+      {
+       "hits": 3,
+       "chance": 0.35
+      },
+      {
+       "hits": 4,
+       "chance": 0.15
+      },
+      {
+       "hits": 5,
+       "chance": 0.15
+      }
+     ],
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 12,
+      "fewest": 5,
+      "fasterChance": 0.9999997466608502,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [
+       "Each use has its own hit count (2–5)."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 167,
+      "high": 138,
+      "average": 156.65,
+      "min": 138,
+      "max": 167,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 16,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "energyball",
+     "effectiveName": "Energy Ball",
+     "effectiveType": "Grass",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 66,
+     "max": 78,
+     "minPercent": 42.58064516129032,
+     "maxPercent": 50.32258064516129,
+     "rolls": [
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78
+     ],
+     "ohkoChance": 1,
+     "description": "Energy Ball: 66–78 HP (42.6–50.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 6,
+      "limitReason": "pressure",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 50,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 50,
+        "heals": []
+       },
+       "high": {
+        "dealt": 50,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 50,
+     "maximum": 155,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 167,
+     "average": 156.65000000000003,
+     "high": 138,
+     "min": 138,
+     "max": 167,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 11.290899999999965,
+ "preflight": []
+}

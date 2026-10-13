@@ -1,0 +1,515 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "fly",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Fly: Dragonite charges this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "gust",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 32,
+      "minPercent": 15.66265060240964,
+      "maxPercent": 19.27710843373494,
+      "koChance": 0,
+      "row": {
+       "moveId": "gust",
+       "effectiveName": "Gust",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 26,
+       "max": 32,
+       "minPercent": 15.66265060240964,
+       "maxPercent": 19.27710843373494,
+       "rolls": [
+        26,
+        26,
+        26,
+        28,
+        28,
+        28,
+        28,
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        32
+       ],
+       "ohkoChance": 0,
+       "description": "Gust: 26–32 HP (15.7–19.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "hurricane",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 60,
+      "max": 72,
+      "minPercent": 36.144578313253014,
+      "maxPercent": 43.373493975903614,
+      "koChance": 0,
+      "row": {
+       "moveId": "hurricane",
+       "effectiveName": "Hurricane",
+       "effectiveType": "Flying",
+       "effectivePower": 110,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 60,
+       "max": 72,
+       "minPercent": 36.144578313253014,
+       "maxPercent": 43.373493975903614,
+       "rolls": [
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72
+       ],
+       "ohkoChance": 0,
+       "description": "Hurricane: 60–72 HP (36.1–43.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 80,
+    "average": 71.625,
+    "high": 62,
+    "min": 62,
+    "max": 80,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fly",
+     "effectiveName": "Fly",
+     "effectiveType": "Flying",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 66,
+     "max": 78,
+     "minPercent": 48.888888888888886,
+     "maxPercent": 57.77777777777777,
+     "rolls": [
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78
+     ],
+     "ohkoChance": 0,
+     "description": "Fly: 66–78 HP (48.9–57.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.9375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 69,
+      "high": 57,
+      "average": 63.875,
+      "min": 57,
+      "max": 69,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 66,
+        "heals": []
+       },
+       "high": {
+        "dealt": 78,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "gust",
+     "effectiveName": "Gust",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 13,
+     "max": 16,
+     "minPercent": 7.83132530120482,
+     "maxPercent": 9.63855421686747,
+     "rolls": [
+      13,
+      13,
+      13,
+      14,
+      14,
+      14,
+      14,
+      14,
+      14,
+      15,
+      15,
+      15,
+      15,
+      15,
+      15,
+      16
+     ],
+     "ohkoChance": 0,
+     "description": "Gust: 13–16 HP (7.8–9.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 13,
+      "fewest": 11,
+      "fasterChance": 0.9842026932347956,
+      "limit": 56,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 166,
+      "low": 153,
+      "high": 150,
+      "average": 151.6875,
+      "min": 150,
+      "max": 153,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 13,
+        "heals": []
+       },
+       "high": {
+        "dealt": 16,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "hurricane",
+     "effectiveName": "Hurricane",
+     "effectiveType": "Flying",
+     "effectivePower": 110,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 60,
+     "max": 72,
+     "minPercent": 36.144578313253014,
+     "maxPercent": 43.373493975903614,
+     "rolls": [
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72
+     ],
+     "ohkoChance": 0,
+     "description": "Hurricane: 60–72 HP (36.1–43.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 166,
+      "low": 106,
+      "high": 94,
+      "average": 100.25,
+      "min": 94,
+      "max": 106,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 72,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dragonite did not charge Fly last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 80,
+     "average": 71.625,
+     "high": 62,
+     "min": 62,
+     "max": 80,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.476999999999862,
+ "preflight": []
+}

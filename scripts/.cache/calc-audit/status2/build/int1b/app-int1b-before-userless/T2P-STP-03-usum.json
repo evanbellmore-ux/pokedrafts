@@ -1,0 +1,607 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "earthpower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 98,
+      "max": 116,
+      "minPercent": 72.5925925925926,
+      "maxPercent": 85.92592592592592,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthpower",
+       "effectiveName": "Earth Power",
+       "effectiveType": "Ground",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 98,
+       "max": 116,
+       "minPercent": 72.5925925925926,
+       "maxPercent": 85.92592592592592,
+       "rolls": [
+        98,
+        98,
+        98,
+        102,
+        102,
+        104,
+        104,
+        104,
+        108,
+        108,
+        110,
+        110,
+        110,
+        114,
+        114,
+        116
+       ],
+       "ohkoChance": 0,
+       "description": "Earth Power: 98–116 HP (72.6–85.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "tackle",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 19,
+      "max": 24,
+      "minPercent": 14.074074074074074,
+      "maxPercent": 17.77777777777778,
+      "koChance": 0.1640625,
+      "row": {
+       "moveId": "tackle",
+       "effectiveName": "Tackle",
+       "effectiveType": "Normal",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 19,
+       "max": 24,
+       "minPercent": 14.074074074074074,
+       "maxPercent": 17.77777777777778,
+       "rolls": [
+        19,
+        19,
+        19,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        22,
+        22,
+        24
+       ],
+       "ohkoChance": 0,
+       "description": "Tackle: 19–24 HP (14.1–17.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "shelltrap",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 0.8359375,
+    "skipped": [
+     {
+      "text": "Faints before it moves.",
+      "chance": 0.1640625
+     }
+    ],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Shell Trap fails: Turtonator took no physical hit.",
+      "chance": 0.8359375
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 18,
+    "average": 7.76953125,
+    "high": 0,
+    "min": 0,
+    "max": 18,
+    "koChance": 0.1640625,
+    "heals": [],
+    "faintsBeforeMoving": 0.1640625
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "shelltrap",
+     "effectiveName": "Shell Trap",
+     "effectiveType": "Fire",
+     "effectivePower": 150,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 27,
+     "max": 33,
+     "minPercent": 11.48936170212766,
+     "maxPercent": 14.042553191489363,
+     "rolls": [
+      27,
+      27,
+      28,
+      28,
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      31,
+      33
+     ],
+     "ohkoChance": 0,
+     "description": "Shell Trap: 27–33 HP (11.5–14.0% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes Shell Trap succeeds."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": 8,
+      "chance": 0.6632158122956753,
+      "limit": 8,
+      "limitReason": "pp",
+      "needed": 9,
+      "carried": [],
+      "notes": [
+       "Assumes Shell Trap succeeds on every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 208,
+      "high": 202,
+      "average": 205.4375,
+      "min": 202,
+      "max": 208,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 27,
+        "heals": []
+       },
+       "high": {
+        "dealt": 33,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "shelltrap",
+     "effectiveName": "Shell Trap",
+     "effectiveType": "Fire",
+     "effectivePower": 150,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 18.0327868852459,
+     "maxPercent": 21.311475409836063,
+     "rolls": [
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Shell Trap: 33–39 HP (18.0–21.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes Shell Trap succeeds."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.2791748046875,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Shell Trap succeeds on every use.",
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 150,
+      "high": 144,
+      "average": 147,
+      "min": 144,
+      "max": 150,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "tackle",
+     "effectiveName": "Tackle",
+     "effectiveType": "Normal",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 19,
+     "max": 24,
+     "minPercent": 14.074074074074074,
+     "maxPercent": 17.77777777777778,
+     "rolls": [
+      19,
+      19,
+      19,
+      21,
+      21,
+      21,
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      22,
+      22,
+      22,
+      24
+     ],
+     "ohkoChance": 0,
+     "description": "Tackle: 19–24 HP (14.1–17.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 6,
+      "fasterChance": 0.9999918527901173,
+      "limit": 56,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 116,
+      "high": 111,
+      "average": 113.8125,
+      "min": 111,
+      "max": 116,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 19,
+        "heals": []
+       },
+       "high": {
+        "dealt": 24,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthpower",
+     "effectiveName": "Earth Power",
+     "effectiveType": "Ground",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 98,
+     "max": 116,
+     "minPercent": 72.5925925925926,
+     "maxPercent": 85.92592592592592,
+     "rolls": [
+      98,
+      98,
+      98,
+      102,
+      102,
+      104,
+      104,
+      104,
+      108,
+      108,
+      110,
+      110,
+      110,
+      114,
+      114,
+      116
+     ],
+     "ohkoChance": 0,
+     "description": "Earth Power: 98–116 HP (72.6–85.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 37,
+      "high": 19,
+      "average": 28.75,
+      "min": 19,
+      "max": 37,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 98,
+        "heals": []
+       },
+       "high": {
+        "dealt": 116,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 18,
+     "average": 7.76953125,
+     "high": 0,
+     "min": 0,
+     "max": 18,
+     "koChance": 0.1640625,
+     "heals": [],
+     "faintsBeforeMoving": 0.1640625
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 9.098500000000058,
+ "preflight": []
+}

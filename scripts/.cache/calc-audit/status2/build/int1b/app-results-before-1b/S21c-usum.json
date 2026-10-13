@@ -1,0 +1,595 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "quash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Quash: Jolteon moves last.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 51,
+      "minPercent": 33.6,
+      "maxPercent": 40.8,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 42,
+       "max": 51,
+       "minPercent": 33.6,
+       "maxPercent": 40.8,
+       "rolls": [
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        51
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 42–51 HP (33.6–40.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 78,
+      "max": 93,
+      "minPercent": 55.714285714285715,
+      "maxPercent": 66.42857142857143,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 78,
+       "max": 93,
+       "minPercent": 55.714285714285715,
+       "maxPercent": 66.42857142857143,
+       "rolls": [
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 78–93 HP (55.7–66.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "thunderbolt",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 51,
+      "max": 61,
+      "minPercent": 21.70212765957447,
+      "maxPercent": 25.957446808510635,
+      "koChance": 0,
+      "row": {
+       "moveId": "thunderbolt",
+       "effectiveName": "Thunderbolt",
+       "effectiveType": "Electric",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 51,
+       "max": 61,
+       "minPercent": 21.70212765957447,
+       "maxPercent": 25.957446808510635,
+       "rolls": [
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        61
+       ],
+       "ohkoChance": 0,
+       "description": "Thunderbolt: 51–61 HP (21.7–26.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 83,
+    "average": 78.9375,
+    "high": 74,
+    "min": 74,
+    "max": 83,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 184,
+    "average": 179.0625,
+    "high": 174,
+    "min": 174,
+    "max": 184,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 62,
+    "average": 54.9375,
+    "high": 47,
+    "min": 47,
+    "max": 62,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 78,
+     "max": 93,
+     "minPercent": 55.714285714285715,
+     "maxPercent": 66.42857142857143,
+     "rolls": [
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 78–93 HP (55.7–66.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 62,
+      "high": 47,
+      "average": 54.9375,
+      "min": 47,
+      "max": 62,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 78,
+        "heals": []
+       },
+       "high": {
+        "dealt": 93,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "thunderbolt",
+     "effectiveName": "Thunderbolt",
+     "effectiveType": "Electric",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 51,
+     "max": 61,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.957446808510635,
+     "rolls": [
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      61
+     ],
+     "ohkoChance": 0,
+     "description": "Thunderbolt: 51–61 HP (21.7–26.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0348968505859375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 184,
+      "high": 174,
+      "average": 179.0625,
+      "min": 174,
+      "max": 184,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 61,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 42,
+     "max": 51,
+     "minPercent": 33.6,
+     "maxPercent": 40.8,
+     "rolls": [
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      51
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 42–51 HP (33.6–40.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 83,
+      "high": 74,
+      "average": 78.9375,
+      "min": 74,
+      "max": 83,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 42,
+        "heals": []
+       },
+       "high": {
+        "dealt": 51,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Jolteon has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 83,
+     "average": 78.9375,
+     "high": 74,
+     "min": 74,
+     "max": 83,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 184,
+     "average": 179.0625,
+     "high": 174,
+     "min": 174,
+     "max": 184,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 62,
+     "average": 54.9375,
+     "high": 47,
+     "min": 47,
+     "max": 62,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.129599999999755,
+ "preflight": []
+}

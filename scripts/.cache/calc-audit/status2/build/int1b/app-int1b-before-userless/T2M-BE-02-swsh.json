@@ -1,0 +1,323 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 110,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dualwingbeat",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 56,
+      "max": 132,
+      "minPercent": 23.829787234042556,
+      "maxPercent": 56.17021276595745,
+      "koChance": 0.8,
+      "row": {
+       "moveId": "dualwingbeat",
+       "effectiveName": "Dual Wingbeat",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 110,
+       "max": 132,
+       "minPercent": 46.808510638297875,
+       "maxPercent": 56.17021276595745,
+       "rolls": [
+        [
+         55,
+         55,
+         57,
+         57,
+         58,
+         58,
+         60,
+         60,
+         60,
+         61,
+         61,
+         63,
+         63,
+         64,
+         64,
+         66
+        ],
+        [
+         55,
+         55,
+         57,
+         57,
+         58,
+         58,
+         60,
+         60,
+         60,
+         61,
+         61,
+         63,
+         63,
+         64,
+         64,
+         66
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Dual Wingbeat: 110–132 HP (46.8–56.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Snorlax (opponent's, 2) eats its Starf Berry after hit 1: +2 Attack.",
+        "chance": 0.2
+       },
+       {
+        "text": "Snorlax (opponent's, 2) eats its Starf Berry after hit 1: +2 Defense.",
+        "chance": 0.2
+       },
+       {
+        "text": "Snorlax (opponent's, 2) eats its Starf Berry after hit 1: +2 Sp. Atk.",
+        "chance": 0.2
+       },
+       {
+        "text": "Snorlax (opponent's, 2) eats its Starf Berry after hit 1: +2 Sp. Def.",
+        "chance": 0.2
+       },
+       {
+        "text": "Snorlax (opponent's, 2) eats its Starf Berry after hit 1: +2 Speed.",
+        "chance": 0.2
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 166,
+    "average": 166,
+    "high": 166,
+    "min": 166,
+    "max": 166,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 110,
+    "maximum": 235,
+    "low": 0,
+    "average": 3.7749999999999986,
+    "high": 0,
+    "min": 0,
+    "max": 27,
+    "koChance": 0.8,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.2
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dualwingbeat",
+     "effectiveName": "Dual Wingbeat",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 110,
+     "max": 132,
+     "minPercent": 46.808510638297875,
+     "maxPercent": 56.17021276595745,
+     "rolls": [
+      [
+       55,
+       55,
+       57,
+       57,
+       58,
+       58,
+       60,
+       60,
+       60,
+       61,
+       61,
+       63,
+       63,
+       64,
+       64,
+       66
+      ],
+      [
+       55,
+       55,
+       57,
+       57,
+       58,
+       58,
+       60,
+       60,
+       60,
+       61,
+       61,
+       63,
+       63,
+       64,
+       64,
+       66
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Dual Wingbeat: 110–132 HP (46.8–56.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Starf Berry raises a random stat"
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 166,
+     "average": 166,
+     "high": 166,
+     "min": 166,
+     "max": 166,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 110,
+     "maximum": 235,
+     "low": 0,
+     "average": 3.7749999999999986,
+     "high": 0,
+     "min": 0,
+     "max": 27,
+     "koChance": 0.8,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.2
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 11.96770000000015,
+ "preflight": []
+}

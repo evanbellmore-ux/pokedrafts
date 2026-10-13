@@ -1,0 +1,433 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 290,
+    "maximum": 290
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "closecombat",
+    "effectiveName": "Max Knuckle",
+    "effectiveType": "Fighting",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 21,
+      "max": 24,
+      "minPercent": 16.8,
+      "maxPercent": 19.2,
+      "koChance": 0,
+      "row": {
+       "moveId": "closecombat",
+       "effectiveName": "Max Knuckle",
+       "effectiveType": "Fighting",
+       "effectivePower": 95,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 21,
+       "max": 24,
+       "minPercent": 16.8,
+       "maxPercent": 19.2,
+       "rolls": [
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        24,
+        24,
+        24,
+        24
+       ],
+       "ohkoChance": 0,
+       "description": "Max Knuckle: 21–24 HP (16.8–19.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 35,
+      "max": 42,
+      "minPercent": 12.068965517241379,
+      "maxPercent": 14.482758620689657,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 35,
+       "max": 42,
+       "minPercent": 12.068965517241379,
+       "maxPercent": 14.482758620689657,
+       "rolls": [
+        35,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        41,
+        42
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 35–42 HP (12.1–14.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 290,
+    "maximum": 290,
+    "low": 255,
+    "average": 251.875,
+    "high": 248,
+    "min": 248,
+    "max": 255,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 104,
+    "average": 102.6875,
+    "high": 101,
+    "min": 101,
+    "max": 104,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Max Knuckle",
+     "effectiveType": "Fighting",
+     "effectivePower": 95,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 21,
+     "max": 24,
+     "minPercent": 16.8,
+     "maxPercent": 19.2,
+     "rolls": [
+      21,
+      21,
+      21,
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      23,
+      23,
+      23,
+      24,
+      24,
+      24,
+      24
+     ],
+     "ohkoChance": 0,
+     "description": "Max Knuckle: 21–24 HP (16.8–19.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [
+       "Max Knuckle changes a stat each use.",
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 104,
+      "high": 101,
+      "average": 102.6875,
+      "min": 101,
+      "max": 104,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 21,
+        "heals": []
+       },
+       "high": {
+        "dealt": 24,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 35,
+     "max": 42,
+     "minPercent": 12.068965517241379,
+     "maxPercent": 14.482758620689657,
+     "rolls": [
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      39,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 35–42 HP (12.1–14.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.0001087188720703125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 290,
+      "low": 255,
+      "high": 248,
+      "average": 251.875,
+      "min": 248,
+      "max": 255,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 35,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Lucario has not used Minimize.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 290,
+     "maximum": 290,
+     "low": 255,
+     "average": 251.875,
+     "high": 248,
+     "min": 248,
+     "max": 255,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 104,
+     "average": 102.6875,
+     "high": 101,
+     "min": 101,
+     "max": 104,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.158900000000358,
+ "preflight": []
+}

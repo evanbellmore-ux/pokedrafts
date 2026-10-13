@@ -1,0 +1,791 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 179,
+    "maximum": 179
+   },
+   "own-right": {
+    "hp": 100,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uproar",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 43,
+      "max": 52,
+      "minPercent": 18.29787234042553,
+      "maxPercent": 22.127659574468083,
+      "koChance": 0,
+      "row": {
+       "moveId": "uproar",
+       "effectiveName": "Uproar",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 43,
+       "max": 52,
+       "minPercent": 18.29787234042553,
+       "maxPercent": 22.127659574468083,
+       "rolls": [
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        52
+       ],
+       "ohkoChance": 0,
+       "description": "Uproar: 43–52 HP (18.3–22.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Uproar: Snorlax (opponent's) wakes up.",
+        "chance": 0.5
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 57,
+      "max": 67,
+      "minPercent": 30.158730158730158,
+      "maxPercent": 35.44973544973545,
+      "koChance": 0,
+      "row": {
+       "moveId": "uproar",
+       "effectiveName": "Uproar",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 57,
+       "max": 67,
+       "minPercent": 30.158730158730158,
+       "maxPercent": 35.44973544973545,
+       "rolls": [
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67
+       ],
+       "ohkoChance": 0,
+       "description": "Uproar: 57–67 HP (30.2–35.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Uproar: Snorlax (opponent's) wakes up.",
+      "chance": 0.5
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "rest",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Rest fails: Uproar.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "spore",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Exploud cannot fall asleep: Uproar.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 179,
+    "maximum": 179,
+    "low": 179,
+    "average": 179,
+    "high": 179,
+    "min": 179,
+    "max": 179,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 100,
+    "maximum": 235,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 211.21875,
+    "high": 183,
+    "min": 183,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 189,
+    "maximum": 189,
+    "low": 189,
+    "average": 158.21875,
+    "high": 122,
+    "min": 122,
+    "max": 189,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uproar",
+     "effectiveName": "Uproar",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 43,
+     "max": 52,
+     "minPercent": 18.29787234042553,
+     "maxPercent": 22.127659574468083,
+     "rolls": [
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Uproar: 43–52 HP (18.3–22.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Hits a random foe each turn"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 192,
+      "high": 183,
+      "average": 187.4375,
+      "min": 183,
+      "max": 192,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 43,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "uproar",
+     "effectiveName": "Uproar",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 57,
+     "max": 67,
+     "minPercent": 30.158730158730158,
+     "maxPercent": 35.44973544973545,
+     "rolls": [
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67
+     ],
+     "ohkoChance": 0,
+     "description": "Uproar: 57–67 HP (30.2–35.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Hits a random foe each turn"
+     },
+     "afterUse": {
+      "start": 189,
+      "low": 132,
+      "high": 122,
+      "average": 127.4375,
+      "min": 122,
+      "max": 132,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 57,
+        "heals": []
+       },
+       "high": {
+        "dealt": 67,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (opponent's) lost no turns to sleep before this one.",
+   "Assumes Exploud did not use Uproar last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 179,
+     "maximum": 179,
+     "low": 179,
+     "average": 179,
+     "high": 179,
+     "min": 179,
+     "max": 179,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 100,
+     "maximum": 235,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 211.21875,
+     "high": 183,
+     "min": 183,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 189,
+     "maximum": 189,
+     "low": 189,
+     "average": 158.21875,
+     "high": 122,
+     "min": 122,
+     "max": 189,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.781300000000556,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 179,
+    "maximum": 179
+   },
+   "own-right": {
+    "hp": 100,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 179,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "exploud",
+       "nature": "Serious",
+       "abilityId": "soundproof",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "uproar"
+      ],
+      "turnsLeft": {
+       "uproar": 2
+      }
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 100,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 0.03125
+       },
+       {
+        "hp": 184,
+        "chance": 0.0625
+       },
+       {
+        "hp": 186,
+        "chance": 0.09375
+       },
+       {
+        "hp": 187,
+        "chance": 0.09375
+       },
+       {
+        "hp": 189,
+        "chance": 0.09375
+       },
+       {
+        "hp": 190,
+        "chance": 0.09375
+       },
+       {
+        "hp": 192,
+        "chance": 0.03125
+       },
+       {
+        "hp": 235,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 122,
+        "chance": 0.03125
+       },
+       {
+        "hp": 123,
+        "chance": 0.0625
+       },
+       {
+        "hp": 125,
+        "chance": 0.0625
+       },
+       {
+        "hp": 126,
+        "chance": 0.0625
+       },
+       {
+        "hp": 128,
+        "chance": 0.0625
+       },
+       {
+        "hp": 129,
+        "chance": 0.09375
+       },
+       {
+        "hp": 131,
+        "chance": 0.0625
+       },
+       {
+        "hp": 132,
+        "chance": 0.0625
+       },
+       {
+        "hp": 189,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "amoonguss",
+       "nature": "Serious",
+       "abilityId": "effectspore",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

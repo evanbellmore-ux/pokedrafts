@@ -1,0 +1,312 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 81,
+    "maximum": 153,
+    "settled": {
+     "hp": 81,
+     "entered": 30,
+     "maxHP": 153,
+     "item": "Figy Berry"
+    }
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 15–18 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 110,
+      "max": 132,
+      "minPercent": 70.96774193548387,
+      "maxPercent": 85.16129032258064,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 110,
+       "max": 132,
+       "minPercent": 70.96774193548387,
+       "maxPercent": 85.16129032258064,
+       "rolls": [
+        110,
+        110,
+        114,
+        114,
+        116,
+        116,
+        120,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128,
+        128,
+        132
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 110–132 HP (71.0–85.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 81,
+    "maximum": 153,
+    "settled": {
+     "hp": 81,
+     "entered": 30,
+     "maxHP": 153,
+     "item": "Figy Berry"
+    },
+    "low": 81,
+    "average": 75.65812500000001,
+    "high": 81,
+    "min": 63,
+    "max": 81,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 45,
+    "average": 74.4325,
+    "high": 23,
+    "min": 23,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 110,
+     "max": 132,
+     "minPercent": 70.96774193548387,
+     "maxPercent": 85.16129032258064,
+     "rolls": [
+      110,
+      110,
+      114,
+      114,
+      116,
+      116,
+      120,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 110–132 HP (71.0–85.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Charizard's Figy Berry was eaten at 30 HP: 81 HP, confused.",
+      "Assumes the confused attacker does not hit itself."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the confused attacker does not hit itself."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 45,
+      "high": 23,
+      "average": 34.75,
+      "min": 23,
+      "max": 45,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 110,
+        "heals": []
+       },
+       "high": {
+        "dealt": 132,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 81,
+     "maximum": 153,
+     "settled": {
+      "hp": 81,
+      "entered": 30,
+      "maxHP": 153,
+      "item": "Figy Berry"
+     },
+     "low": 81,
+     "average": 75.65812500000001,
+     "high": 81,
+     "min": 63,
+     "max": 81,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 45,
+     "average": 74.4325,
+     "high": 23,
+     "min": 23,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.011700000000019,
+ "preflight": []
+}

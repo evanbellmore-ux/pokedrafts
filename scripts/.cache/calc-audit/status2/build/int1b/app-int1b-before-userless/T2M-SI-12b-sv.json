@@ -1,0 +1,515 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 126,
+    "maximum": 126
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 150
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "fly",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Fly: Dragonite charges this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "pollenpuff",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Pollen Puff misses Dragonite (Fly).",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "perishsong",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish Song misses Dragonite (Fly).",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "haze",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Haze: every Pokémon's stat changes are removed.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 166,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 126,
+    "maximum": 126,
+    "low": 126,
+    "average": 126,
+    "high": 126,
+    "min": 126,
+    "max": 126,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fly",
+     "effectiveName": "Fly",
+     "effectiveType": "Flying",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 142,
+     "max": 168,
+     "minPercent": 94.66666666666667,
+     "maxPercent": 112.00000000000001,
+     "rolls": [
+      142,
+      144,
+      145,
+      147,
+      148,
+      150,
+      151,
+      154,
+      156,
+      157,
+      159,
+      160,
+      162,
+      163,
+      165,
+      168
+     ],
+     "ohkoChance": 0.6875,
+     "description": "Fly: 142–168 HP (94.7–112.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.6875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 8,
+      "high": 0,
+      "average": 1.5,
+      "min": 0,
+      "max": 8,
+      "koChance": 0.6875,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 142,
+        "heals": []
+       },
+       "high": {
+        "dealt": 150,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "pollenpuff",
+     "effectiveName": "Pollen Puff",
+     "effectiveType": "Bug",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 14,
+     "max": 17,
+     "minPercent": 8.433734939759036,
+     "maxPercent": 10.240963855421686,
+     "rolls": [
+      14,
+      15,
+      15,
+      15,
+      15,
+      15,
+      15,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      17
+     ],
+     "ohkoChance": 0,
+     "description": "Pollen Puff: 14–17 HP (8.4–10.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 6,
+      "fasterChance": 0.9999998398125172,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 100,
+      "low": 86,
+      "high": 83,
+      "average": 84.3125,
+      "min": 83,
+      "max": 86,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 14,
+        "heals": []
+       },
+       "high": {
+        "dealt": 17,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dragonite did not charge Fly last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 166,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 126,
+     "maximum": 126,
+     "low": 126,
+     "average": 126,
+     "high": 126,
+     "min": 126,
+     "max": 126,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 6.029500000000098,
+ "preflight": []
+}

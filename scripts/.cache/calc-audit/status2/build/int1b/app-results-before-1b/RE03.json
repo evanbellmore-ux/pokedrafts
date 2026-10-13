@@ -1,0 +1,420 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragondarts",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragondarts",
+       "effectiveName": "Dragon Darts",
+       "effectiveType": "Dragon",
+       "effectivePower": 50,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 48,
+       "max": 57,
+       "minPercent": 20.425531914893615,
+       "maxPercent": 24.25531914893617,
+       "rolls": [
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Darts: 48–57 HP (20.4–24.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Dragon Darts: one dart per foe."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 48,
+       "max": 57,
+       "breaks": 0
+      }
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 68,
+      "max": 84,
+      "minPercent": 37.15846994535519,
+      "maxPercent": 45.90163934426229,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragondarts",
+       "effectiveName": "Dragon Darts",
+       "effectiveType": "Dragon",
+       "effectivePower": 50,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 68,
+       "max": 84,
+       "minPercent": 37.15846994535519,
+       "maxPercent": 45.90163934426229,
+       "rolls": [
+        68,
+        72,
+        72,
+        72,
+        72,
+        74,
+        74,
+        74,
+        78,
+        78,
+        78,
+        78,
+        80,
+        80,
+        80,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Darts: 68–84 HP (37.2–45.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Dragon Darts: one dart per foe."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 163,
+    "average": 163,
+    "high": 163,
+    "min": 163,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 10 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 9 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 7 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 6 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 4 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 3 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 1 HP.",
+      "chance": 0.0625
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 115,
+    "average": 107.125,
+    "high": 99,
+    "min": 99,
+    "max": 115,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragondarts",
+     "effectiveName": "Dragon Darts",
+     "effectiveType": "Dragon",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits twice. If the first hit breaks the target's substitute, it will take damage for the second hit. In Double Battles, this move attempts to hit the targeted Pokemon and its ally once each. If hitting one of these Pokemon would be prevented by immunity, protection, semi-invulnerability, an Ability, or accuracy, it attempts to hit the other Pokemon twice instead. If this move is redirected, it hits that target twice.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dragondarts",
+     "effectiveName": "Dragon Darts",
+     "effectiveType": "Dragon",
+     "effectivePower": 50,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 68,
+     "max": 84,
+     "minPercent": 37.15846994535519,
+     "maxPercent": 45.90163934426229,
+     "rolls": [
+      68,
+      72,
+      72,
+      72,
+      72,
+      74,
+      74,
+      74,
+      78,
+      78,
+      78,
+      78,
+      80,
+      80,
+      80,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Darts: 68–84 HP (37.2–45.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Dragon Darts: one dart per foe."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 115,
+      "high": 99,
+      "average": 107.125,
+      "min": 99,
+      "max": 115,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 68,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 163,
+     "maximum": 163,
+     "low": 163,
+     "average": 163,
+     "high": 163,
+     "min": 163,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 10 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 9 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 7 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 6 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 4 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 3 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 1 HP.",
+       "chance": 0.0625
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 115,
+     "average": 107.125,
+     "high": 99,
+     "min": 99,
+     "max": 115,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.303799999999683,
+ "preflight": []
+}

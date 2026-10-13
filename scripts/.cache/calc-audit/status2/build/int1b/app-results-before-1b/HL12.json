@@ -1,0 +1,445 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 93,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "closecombat",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 85,
+      "max": 102,
+      "minPercent": 46.44808743169399,
+      "maxPercent": 55.73770491803278,
+      "koChance": 0,
+      "row": {
+       "moveId": "closecombat",
+       "effectiveName": "Close Combat",
+       "effectiveType": "Fighting",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 85,
+       "max": 102,
+       "minPercent": 46.44808743169399,
+       "maxPercent": 55.73770491803278,
+       "rolls": [
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94,
+        94,
+        96,
+        97,
+        97,
+        99,
+        100,
+        102
+       ],
+       "ohkoChance": 0,
+       "description": "Close Combat: 85–102 HP (46.4–55.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 100,
+      "max": 118,
+      "minPercent": 64.51612903225806,
+      "maxPercent": 76.12903225806451,
+      "koChance": 0.375,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 100,
+       "max": 118,
+       "minPercent": 64.51612903225806,
+       "maxPercent": 76.12903225806451,
+       "rolls": [
+        100,
+        100,
+        102,
+        103,
+        105,
+        106,
+        106,
+        108,
+        109,
+        111,
+        112,
+        112,
+        114,
+        115,
+        117,
+        118
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 100–118 HP (64.5–76.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 93,
+    "maximum": 155,
+    "low": 12,
+    "average": 4.375,
+    "high": 0,
+    "min": 0,
+    "max": 12,
+    "koChance": 0.375,
+    "heals": [
+     "Sitrus Berry: +38 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.625
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 98,
+    "average": 89.75,
+    "high": 81,
+    "min": 81,
+    "max": 98,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 85,
+     "max": 102,
+     "minPercent": 46.44808743169399,
+     "maxPercent": 55.73770491803278,
+     "rolls": [
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      102
+     ],
+     "ohkoChance": 0,
+     "description": "Close Combat: 85–102 HP (46.4–55.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.69140625,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 98,
+      "high": 81,
+      "average": 89.75,
+      "min": 81,
+      "max": 98,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 85,
+        "heals": []
+       },
+       "high": {
+        "dealt": 102,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 67,
+     "max": 79,
+     "minPercent": 43.225806451612904,
+     "maxPercent": 50.967741935483865,
+     "rolls": [
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 67–79 HP (43.2–51.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 93,
+      "low": 64,
+      "high": 52,
+      "average": 58.4375,
+      "min": 52,
+      "max": 64,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +38 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       },
+       "high": {
+        "dealt": 79,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Heracross has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 93,
+     "maximum": 155,
+     "low": 12,
+     "average": 4.375,
+     "high": 0,
+     "min": 0,
+     "max": 12,
+     "koChance": 0.375,
+     "heals": [
+      "Sitrus Berry: +38 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.625
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 98,
+     "average": 89.75,
+     "high": 81,
+     "min": 81,
+     "max": 98,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.655300000000352,
+ "preflight": []
+}

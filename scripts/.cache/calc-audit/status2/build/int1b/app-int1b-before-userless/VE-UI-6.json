@@ -1,0 +1,289 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 143,
+    "maximum": 143
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "liquidation",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 102,
+      "max": 121,
+      "minPercent": 43.40425531914894,
+      "maxPercent": 51.48936170212765,
+      "koChance": 0,
+      "row": {
+       "moveId": "liquidation",
+       "effectiveName": "Liquidation",
+       "effectiveType": "Water",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 102,
+       "max": 121,
+       "minPercent": 43.40425531914894,
+       "maxPercent": 51.48936170212765,
+       "rolls": [
+        102,
+        103,
+        105,
+        106,
+        108,
+        108,
+        109,
+        111,
+        112,
+        114,
+        114,
+        115,
+        117,
+        118,
+        120,
+        121
+       ],
+       "ohkoChance": 0,
+       "description": "Liquidation: 102–121 HP (43.4–51.5% of maximum HP). Applied: Water Bubble.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 143,
+    "maximum": 143,
+    "low": 143,
+    "average": 143,
+    "high": 143,
+    "min": 143,
+    "max": 143,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 133,
+    "average": 123.5625,
+    "high": 114,
+    "min": 114,
+    "max": 133,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "liquidation",
+     "effectiveName": "Liquidation",
+     "effectiveType": "Water",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 51,
+     "max": 60,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.53191489361702,
+     "rolls": [
+      51,
+      51,
+      52,
+      53,
+      54,
+      54,
+      54,
+      55,
+      56,
+      57,
+      57,
+      57,
+      58,
+      59,
+      60,
+      60
+     ],
+     "ohkoChance": 0,
+     "description": "Liquidation: 51–60 HP (21.7–25.5% of maximum HP). Applied: Water Bubble.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0122833251953125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 184,
+      "high": 175,
+      "average": 179.5,
+      "min": 175,
+      "max": 184,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Water Bubble: Araquanid is cured of its burn as the turn starts."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 143,
+     "maximum": 143,
+     "low": 143,
+     "average": 143,
+     "high": 143,
+     "min": 143,
+     "max": 143,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 133,
+     "average": 123.5625,
+     "high": 114,
+     "min": 114,
+     "max": 133,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.480599999999868,
+ "preflight": []
+}

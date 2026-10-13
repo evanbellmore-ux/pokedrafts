@@ -1,0 +1,182 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Snorlax switches out: the replacement is not known.",
+  "start": {
+   "own-left": {
+    "hp": 185,
+    "maximum": 185
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "mudslap",
+     "effectiveName": "Mud-Slap",
+     "effectiveType": "Ground",
+     "effectivePower": 20,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 7,
+     "max": 9,
+     "minPercent": 2.9787234042553195,
+     "maxPercent": 3.829787234042553,
+     "rolls": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      9
+     ],
+     "ohkoChance": 0,
+     "description": "Mud-Slap: 7–9 HP (3.0–3.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "limit": 16,
+      "limitReason": "pp",
+      "needed": 34,
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 228,
+      "high": 226,
+      "average": 227.875,
+      "min": 226,
+      "max": 228,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 7,
+        "heals": []
+       },
+       "high": {
+        "dealt": 9,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 39,
+     "max": 46,
+     "minPercent": 21.08108108108108,
+     "maxPercent": 24.864864864864867,
+     "rolls": [
+      39,
+      39,
+      39,
+      40,
+      41,
+      41,
+      42,
+      42,
+      42,
+      43,
+      43,
+      44,
+      45,
+      45,
+      45,
+      46
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 39–46 HP (21.1–24.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 5,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 185,
+      "low": 146,
+      "high": 139,
+      "average": 142.75,
+      "min": 139,
+      "max": 146,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 39,
+        "heals": []
+       },
+       "high": {
+        "dealt": 46,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.8383000000003449,
+ "preflight": []
+}

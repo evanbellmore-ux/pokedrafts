@@ -1,0 +1,291 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 98,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 116,
+      "max": 140,
+      "minPercent": 63.387978142076506,
+      "maxPercent": 76.50273224043715,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 116,
+       "max": 140,
+       "minPercent": 63.387978142076506,
+       "maxPercent": 76.50273224043715,
+       "rolls": [
+        116,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128,
+        128,
+        132,
+        132,
+        134,
+        134,
+        138,
+        138,
+        140
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 116–140 HP (63.4–76.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 98,
+    "maximum": 183,
+    "low": 86,
+    "average": 86,
+    "high": 86,
+    "min": 86,
+    "max": 86,
+    "koChance": 0,
+    "heals": [
+     "Oran Berry: +10 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 67,
+    "average": 54.5,
+    "high": 43,
+    "min": 43,
+    "max": 67,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 116,
+     "max": 140,
+     "minPercent": 63.387978142076506,
+     "maxPercent": 76.50273224043715,
+     "rolls": [
+      116,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132,
+      132,
+      134,
+      134,
+      138,
+      138,
+      140
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 116–140 HP (63.4–76.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Oran Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 67,
+      "high": 43,
+      "average": 54.5,
+      "min": 43,
+      "max": 67,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 116,
+        "heals": []
+       },
+       "high": {
+        "dealt": 140,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 98,
+     "maximum": 183,
+     "low": 86,
+     "average": 86,
+     "high": 86,
+     "min": 86,
+     "max": 86,
+     "koChance": 0,
+     "heals": [
+      "Oran Berry: +10 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 67,
+     "average": 54.5,
+     "high": 43,
+     "min": 43,
+     "max": 67,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.9757999999999356,
+ "preflight": []
+}

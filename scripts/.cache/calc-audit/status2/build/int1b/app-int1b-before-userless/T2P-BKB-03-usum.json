@@ -1,0 +1,786 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "foulplay",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 79,
+      "max": 94,
+      "minPercent": 50.967741935483865,
+      "maxPercent": 60.64516129032258,
+      "koChance": 0,
+      "row": {
+       "moveId": "foulplay",
+       "effectiveName": "Foul Play",
+       "effectiveType": "Dark",
+       "effectivePower": 95,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 79,
+       "max": 94,
+       "minPercent": 50.967741935483865,
+       "maxPercent": 60.64516129032258,
+       "rolls": [
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94
+       ],
+       "ohkoChance": 0,
+       "description": "Foul Play: 79–94 HP (51.0–60.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Beak Blast: Umbreon is burned.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "beakblast",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 46,
+      "max": 55,
+      "minPercent": 19.574468085106382,
+      "maxPercent": 23.404255319148938,
+      "koChance": 0,
+      "row": {
+       "moveId": "beakblast",
+       "effectiveName": "Beak Blast",
+       "effectiveType": "Flying",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 46,
+       "max": 55,
+       "minPercent": 19.574468085106382,
+       "maxPercent": 23.404255319148938,
+       "rolls": [
+        46,
+        47,
+        48,
+        48,
+        48,
+        49,
+        50,
+        51,
+        51,
+        51,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55
+       ],
+       "ohkoChance": 0,
+       "description": "Beak Blast: 46–55 HP (19.6–23.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 76,
+    "average": 68.5625,
+    "high": 61,
+    "min": 61,
+    "max": 76,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 189,
+    "average": 184.375,
+    "high": 180,
+    "min": 180,
+    "max": 189,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "beakblast",
+     "effectiveName": "Beak Blast",
+     "effectiveType": "Flying",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 93,
+     "max": 111,
+     "minPercent": 39.57446808510638,
+     "maxPercent": 47.23404255319149,
+     "rolls": [
+      93,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      102,
+      102,
+      103,
+      105,
+      106,
+      106,
+      108,
+      109,
+      111
+     ],
+     "ohkoChance": 0,
+     "description": "Beak Blast: 93–111 HP (39.6–47.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 142,
+      "high": 124,
+      "average": 133.25,
+      "min": 124,
+      "max": 142,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 93,
+        "heals": []
+       },
+       "high": {
+        "dealt": 111,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "foulplay",
+     "effectiveName": "Foul Play",
+     "effectiveType": "Dark",
+     "effectivePower": 95,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 79,
+     "max": 94,
+     "minPercent": 50.967741935483865,
+     "maxPercent": 60.64516129032258,
+     "rolls": [
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94
+     ],
+     "ohkoChance": 0,
+     "description": "Foul Play: 79–94 HP (51.0–60.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 76,
+      "high": 61,
+      "average": 68.5625,
+      "min": 61,
+      "max": 76,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 79,
+        "heals": []
+       },
+       "high": {
+        "dealt": 94,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 67,
+     "average": 59.5625,
+     "high": 52,
+     "min": 52,
+     "max": 67,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 170,
+     "maximum": 170,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 189,
+     "average": 184.375,
+     "high": 180,
+     "min": 180,
+     "max": 189,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -10,
+     "max": -10,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 9.081299999999828,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 52,
+        "chance": 0.0625
+       },
+       {
+        "hp": 53,
+        "chance": 0.0625
+       },
+       {
+        "hp": 55,
+        "chance": 0.125
+       },
+       {
+        "hp": 56,
+        "chance": 0.0625
+       },
+       {
+        "hp": 58,
+        "chance": 0.125
+       },
+       {
+        "hp": 59,
+        "chance": 0.0625
+       },
+       {
+        "hp": 61,
+        "chance": 0.125
+       },
+       {
+        "hp": 62,
+        "chance": 0.125
+       },
+       {
+        "hp": 64,
+        "chance": 0.0625
+       },
+       {
+        "hp": 65,
+        "chance": 0.125
+       },
+       {
+        "hp": 67,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "toucannon",
+       "nature": "Serious",
+       "abilityId": "keeneye",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "brn",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 160,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "umbreon",
+       "nature": "Serious",
+       "abilityId": "synchronize",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "brn",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 180,
+        "chance": 0.0625
+       },
+       {
+        "hp": 181,
+        "chance": 0.125
+       },
+       {
+        "hp": 182,
+        "chance": 0.125
+       },
+       {
+        "hp": 183,
+        "chance": 0.0625
+       },
+       {
+        "hp": 184,
+        "chance": 0.1875
+       },
+       {
+        "hp": 185,
+        "chance": 0.0625
+       },
+       {
+        "hp": 186,
+        "chance": 0.0625
+       },
+       {
+        "hp": 187,
+        "chance": 0.1875
+       },
+       {
+        "hp": 188,
+        "chance": 0.0625
+       },
+       {
+        "hp": 189,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

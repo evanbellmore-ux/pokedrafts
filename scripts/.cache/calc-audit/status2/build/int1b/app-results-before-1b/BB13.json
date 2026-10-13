@@ -1,0 +1,292 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbite",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 15,
+      "max": 18,
+      "minPercent": 8.670520231213873,
+      "maxPercent": 10.404624277456648,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbite",
+       "effectiveName": "Bug Bite",
+       "effectiveType": "Bug",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 15,
+       "max": 18,
+       "minPercent": 8.670520231213873,
+       "maxPercent": 10.404624277456648,
+       "rolls": [
+        15,
+        15,
+        15,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        17,
+        17,
+        17,
+        18,
+        18,
+        18
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Bite: 15–18 HP (8.7–10.4% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 145,
+    "low": 96,
+    "average": 96,
+    "high": 96,
+    "min": 96,
+    "max": 96,
+    "koChance": 0,
+    "heals": [
+     "Scizor eats Corviknight's Sitrus Berry: +36 HP."
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 173,
+    "maximum": 173,
+    "low": 158,
+    "average": 156.5625,
+    "high": 155,
+    "min": 155,
+    "max": 158,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbite",
+     "effectiveName": "Bug Bite",
+     "effectiveType": "Bug",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 15,
+     "max": 18,
+     "minPercent": 8.670520231213873,
+     "maxPercent": 10.404624277456648,
+     "rolls": [
+      15,
+      15,
+      15,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      18,
+      18,
+      18
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Bite: 15–18 HP (8.7–10.4% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 12,
+      "fewest": 10,
+      "fasterChance": 0.9955505176082511,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [
+       "Bug Bite takes the target's item."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 158,
+      "high": 155,
+      "average": 156.5625,
+      "min": 155,
+      "max": 158,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 15,
+        "heals": []
+       },
+       "high": {
+        "dealt": 18,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 145,
+     "low": 96,
+     "average": 96,
+     "high": 96,
+     "min": 96,
+     "max": 96,
+     "koChance": 0,
+     "heals": [
+      "Scizor eats Corviknight's Sitrus Berry: +36 HP."
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 173,
+     "maximum": 173,
+     "low": 158,
+     "average": 156.5625,
+     "high": 155,
+     "min": 155,
+     "max": 158,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.871099999999842,
+ "preflight": []
+}

@@ -1,0 +1,321 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 110,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dualwingbeat",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 84,
+      "max": 98,
+      "minPercent": 35.74468085106383,
+      "maxPercent": 41.702127659574465,
+      "koChance": 0,
+      "row": {
+       "moveId": "dualwingbeat",
+       "effectiveName": "Dual Wingbeat",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 84,
+       "max": 98,
+       "minPercent": 35.74468085106383,
+       "maxPercent": 41.702127659574465,
+       "rolls": [
+        [
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49
+        ],
+        [
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Dual Wingbeat: 84–98 HP (35.7–41.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 173,
+    "maximum": 173,
+    "low": 173,
+    "average": 173,
+    "high": 173,
+    "min": 173,
+    "max": 173,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 110,
+    "maximum": 235,
+    "low": 26,
+    "average": 19.875,
+    "high": 12,
+    "min": 12,
+    "max": 26,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dualwingbeat",
+     "effectiveName": "Dual Wingbeat",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 98,
+     "minPercent": 35.74468085106383,
+     "maxPercent": 41.702127659574465,
+     "rolls": [
+      [
+       42,
+       42,
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49
+      ],
+      [
+       42,
+       42,
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Dual Wingbeat: 84–98 HP (35.7–41.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Starf Berry raises a random stat"
+     },
+     "afterUse": {
+      "start": 110,
+      "low": 26,
+      "high": 12,
+      "average": 19.875,
+      "min": 12,
+      "max": 26,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 84,
+        "heals": []
+       },
+       "high": {
+        "dealt": 98,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 173,
+     "maximum": 173,
+     "low": 173,
+     "average": 173,
+     "high": 173,
+     "min": 173,
+     "max": 173,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 110,
+     "maximum": 235,
+     "low": 26,
+     "average": 19.875,
+     "high": 12,
+     "min": 12,
+     "max": 26,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.168999999999869,
+ "preflight": []
+}

@@ -1,0 +1,314 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 470,
+    "maximum": 470
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "effectiveName": "Max Strike",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 79,
+      "max": 94,
+      "minPercent": 51.298701298701296,
+      "maxPercent": 61.038961038961034,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Max Strike",
+       "effectiveType": "Normal",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 79,
+       "max": 94,
+       "minPercent": 51.298701298701296,
+       "maxPercent": 61.038961038961034,
+       "rolls": [
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94
+       ],
+       "ohkoChance": 0,
+       "description": "Max Strike: 79–94 HP (51.3–61.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 470,
+    "maximum": 470,
+    "low": 470,
+    "average": 470,
+    "high": 470,
+    "min": 470,
+    "max": 470,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 75,
+    "average": 67.5625,
+    "high": 60,
+    "min": 60,
+    "max": 75,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Max Strike",
+     "effectiveType": "Normal",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 79,
+     "max": 94,
+     "minPercent": 51.298701298701296,
+     "maxPercent": 61.038961038961034,
+     "rolls": [
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94
+     ],
+     "ohkoChance": 0,
+     "description": "Max Strike: 79–94 HP (51.3–61.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns.",
+       "Sandstorm damages the target at the end of each turn.",
+       "Sandstorm damages the attacker at the end of each turn."
+      ],
+      "notes": [
+       "Assumes the weather lasts through every use.",
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 75,
+      "high": 60,
+      "average": 67.5625,
+      "min": 60,
+      "max": 75,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 79,
+        "heals": []
+       },
+       "high": {
+        "dealt": 94,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Sandstorm does not end this turn.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 470,
+     "maximum": 470,
+     "low": 456,
+     "average": 456,
+     "high": 456,
+     "min": 456,
+     "max": 456,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 146,
+     "average": 146,
+     "high": 146,
+     "min": 146,
+     "max": 146,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 66,
+     "average": 58.5625,
+     "high": 51,
+     "min": 51,
+     "max": 66,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.187399999999798,
+ "preflight": []
+}

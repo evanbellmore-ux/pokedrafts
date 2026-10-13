@@ -1,0 +1,309 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 202,
+    "maximum": 202
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 137,
+    "maximum": 137
+   },
+   "opponent-right": {
+    "hp": 135,
+    "maximum": 135
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "electrify",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Electrify: its move is Electric type this turn.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "terrainpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 128,
+      "max": 152,
+      "minPercent": 63.366336633663366,
+      "maxPercent": 75.24752475247524,
+      "koChance": 0,
+      "row": {
+       "moveId": "terrainpulse",
+       "effectiveName": "Terrain Pulse",
+       "effectiveType": "Electric",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 128,
+       "max": 152,
+       "minPercent": 63.366336633663366,
+       "maxPercent": 75.24752475247524,
+       "rolls": [
+        128,
+        128,
+        132,
+        132,
+        132,
+        136,
+        136,
+        136,
+        140,
+        140,
+        144,
+        144,
+        144,
+        148,
+        148,
+        152
+       ],
+       "ohkoChance": 0,
+       "description": "Terrain Pulse: 128–152 HP (63.4–75.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 202,
+    "maximum": 202,
+    "low": 74,
+    "average": 63.25,
+    "high": 50,
+    "min": 50,
+    "max": 74,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 137,
+    "maximum": 137,
+    "low": 137,
+    "average": 137,
+    "high": 137,
+    "min": 137,
+    "max": 137,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "terrainpulse",
+     "effectiveName": "Terrain Pulse",
+     "effectiveType": "Psychic",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 61,
+     "max": 73,
+     "minPercent": 30.198019801980198,
+     "maxPercent": 36.13861386138614,
+     "rolls": [
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73
+     ],
+     "ohkoChance": 0,
+     "description": "Terrain Pulse: 61–73 HP (30.2–36.1% of maximum HP). Applied: Psychic.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 100."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.52392578125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the terrain lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 202,
+      "low": 141,
+      "high": 129,
+      "average": 134.75,
+      "min": 129,
+      "max": 141,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 61,
+        "heals": []
+       },
+       "high": {
+        "dealt": 73,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 202,
+     "maximum": 202,
+     "low": 74,
+     "average": 63.25,
+     "high": 50,
+     "min": 50,
+     "max": 74,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 137,
+     "maximum": 137,
+     "low": 137,
+     "average": 137,
+     "high": 137,
+     "min": 137,
+     "max": 137,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.1159999999999854,
+ "preflight": []
+}

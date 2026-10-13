@@ -1,0 +1,557 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 147,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "burningbulwark",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "brutalswing",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 13,
+      "max": 15,
+      "minPercent": 5.531914893617021,
+      "maxPercent": 6.382978723404255,
+      "koChance": 0,
+      "row": {
+       "moveId": "brutalswing",
+       "effectiveName": "Brutal Swing",
+       "effectiveType": "Dark",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 13,
+       "max": 15,
+       "minPercent": 5.531914893617021,
+       "maxPercent": 6.382978723404255,
+       "rolls": [
+        13,
+        13,
+        13,
+        13,
+        13,
+        13,
+        14,
+        14,
+        14,
+        14,
+        14,
+        14,
+        15,
+        15,
+        15,
+        15
+       ],
+       "ohkoChance": 0,
+       "description": "Brutal Swing: 13–15 HP (5.5–6.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 10,
+      "max": 12,
+      "minPercent": 6.451612903225806,
+      "maxPercent": 7.741935483870968,
+      "koChance": 0,
+      "row": {
+       "moveId": "brutalswing",
+       "effectiveName": "Brutal Swing",
+       "effectiveType": "Dark",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 10,
+       "max": 12,
+       "minPercent": 6.451612903225806,
+       "maxPercent": 7.741935483870968,
+       "rolls": [
+        10,
+        10,
+        10,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        12,
+        12,
+        12,
+        12,
+        12
+       ],
+       "ohkoChance": 0,
+       "description": "Brutal Swing: 10–12 HP (6.5–7.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Burning Bulwark blocks Brutal Swing.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 147,
+    "maximum": 147,
+    "low": 147,
+    "average": 147,
+    "high": 147,
+    "min": 147,
+    "max": 147,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 222,
+    "average": 221.125,
+    "high": 220,
+    "min": 220,
+    "max": 222,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 180,
+    "maximum": 180,
+    "low": 180,
+    "average": 180,
+    "high": 180,
+    "min": 180,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 145,
+    "average": 143.875,
+    "high": 143,
+    "min": 143,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 16,
+     "max": 19,
+     "minPercent": 8.88888888888889,
+     "maxPercent": 10.555555555555555,
+     "rolls": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      17,
+      18,
+      18,
+      18,
+      18,
+      18,
+      19
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 16–19 HP (8.9–10.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 12,
+      "fewest": 10,
+      "fasterChance": 0.9990141219541329,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 180,
+      "low": 164,
+      "high": 161,
+      "average": 162.875,
+      "min": 161,
+      "max": 164,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 16,
+        "heals": []
+       },
+       "high": {
+        "dealt": 19,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 21,
+     "max": 25,
+     "minPercent": 13.548387096774196,
+     "maxPercent": 16.129032258064516,
+     "rolls": [
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      22,
+      23,
+      23,
+      23,
+      23,
+      24,
+      24,
+      24,
+      24,
+      25
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 21–25 HP (13.5–16.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.9332003965973854,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 134,
+      "high": 130,
+      "average": 132.25,
+      "min": 130,
+      "max": 134,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 21,
+        "heals": []
+       },
+       "high": {
+        "dealt": 25,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 11.063829787234042,
+     "maxPercent": 13.191489361702127,
+     "rolls": [
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 26–31 HP (11.1–13.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 8,
+      "fasterChance": 0.9999997135746526,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 209,
+      "high": 204,
+      "average": 206.8125,
+      "min": 204,
+      "max": 209,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 147,
+     "maximum": 147,
+     "low": 138,
+     "average": 140.97000000000003,
+     "high": 138,
+     "min": 138,
+     "max": 147,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 0.67
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 222,
+     "average": 221.125,
+     "high": 220,
+     "min": 220,
+     "max": 222,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 180,
+     "maximum": 180,
+     "low": 180,
+     "average": 180,
+     "high": 180,
+     "min": 180,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 145,
+     "average": 143.875,
+     "high": 143,
+     "min": 143,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Shed Skin",
+     "chance": 0.33,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Cures its burn.",
+       "chance": 0.33
+      }
+     ]
+    },
+    {
+     "slot": "own-left",
+     "effect": "Burn",
+     "chance": 0.67,
+     "min": -9,
+     "max": -9,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.274000000000115,
+ "preflight": []
+}

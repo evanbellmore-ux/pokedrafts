@@ -1,0 +1,106 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Unnerve is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 30,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "doubleedge",
+     "effectiveName": "Double-Edge",
+     "effectiveType": "Normal",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 31,
+     "max": 37,
+     "minPercent": 17.71428571428571,
+     "maxPercent": 21.142857142857142,
+     "rolls": [
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      34,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      37,
+      37
+     ],
+     "ohkoChance": 1,
+     "description": "Double-Edge: 31–37 HP (17.7–21.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 30,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 30,
+        "heals": []
+       },
+       "high": {
+        "dealt": 30,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.258299999999963,
+ "preflight": []
+}

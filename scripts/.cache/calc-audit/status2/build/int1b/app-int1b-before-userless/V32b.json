@@ -1,0 +1,417 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "shadowball",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 41,
+      "max": 48,
+      "minPercent": 28.27586206896552,
+      "maxPercent": 33.10344827586207,
+      "koChance": 0,
+      "row": {
+       "moveId": "shadowball",
+       "effectiveName": "Shadow Ball",
+       "effectiveType": "Ghost",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 41,
+       "max": 48,
+       "minPercent": 28.27586206896552,
+       "maxPercent": 33.10344827586207,
+       "rolls": [
+        41,
+        41,
+        42,
+        42,
+        42,
+        43,
+        44,
+        44,
+        45,
+        45,
+        45,
+        46,
+        47,
+        47,
+        48,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Shadow Ball: 41–48 HP (28.3–33.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "nightslash",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 114,
+      "max": 134,
+      "minPercent": 84.44444444444444,
+      "maxPercent": 99.25925925925925,
+      "koChance": 0,
+      "row": {
+       "moveId": "nightslash",
+       "effectiveName": "Night Slash",
+       "effectiveType": "Dark",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 114,
+       "max": 134,
+       "minPercent": 84.44444444444444,
+       "maxPercent": 99.25925925925925,
+       "rolls": [
+        114,
+        114,
+        116,
+        116,
+        120,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128,
+        128,
+        132,
+        132,
+        134
+       ],
+       "ohkoChance": 0,
+       "description": "Night Slash: 114–134 HP (84.4–99.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 21,
+    "average": 11.875,
+    "high": 1,
+    "min": 1,
+    "max": 21,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 104,
+    "average": 100.625,
+    "high": 97,
+    "min": 97,
+    "max": 104,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "shadowball",
+     "effectiveName": "Shadow Ball",
+     "effectiveType": "Ghost",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 41,
+     "max": 48,
+     "minPercent": 28.27586206896552,
+     "maxPercent": 33.10344827586207,
+     "rolls": [
+      41,
+      41,
+      42,
+      42,
+      42,
+      43,
+      44,
+      44,
+      45,
+      45,
+      45,
+      46,
+      47,
+      47,
+      48,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Shadow Ball: 41–48 HP (28.3–33.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 12,
+      "limitReason": "pressure",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 104,
+      "high": 97,
+      "average": 100.625,
+      "min": 97,
+      "max": 104,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 41,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "nightslash",
+     "effectiveName": "Night Slash",
+     "effectiveType": "Dark",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 114,
+     "max": 134,
+     "minPercent": 84.44444444444444,
+     "maxPercent": 99.25925925925925,
+     "rolls": [
+      114,
+      114,
+      116,
+      116,
+      120,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132,
+      132,
+      134
+     ],
+     "ohkoChance": 0,
+     "description": "Night Slash: 114–134 HP (84.4–99.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 21,
+      "high": 1,
+      "average": 11.875,
+      "min": 1,
+      "max": 21,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 114,
+        "heals": []
+       },
+       "high": {
+        "dealt": 134,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 21,
+     "average": 11.875,
+     "high": 1,
+     "min": 1,
+     "max": 21,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 104,
+     "average": 100.625,
+     "high": 97,
+     "min": 97,
+     "max": 104,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.957400000000007,
+ "preflight": []
+}

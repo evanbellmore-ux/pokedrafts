@@ -1,0 +1,484 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 189,
+    "maximum": 189
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sweetscent",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "−2 evasion.",
+        "chance": 1
+       },
+       {
+        "text": "Competitive: +2 Sp. Atk.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "−2 evasion.",
+        "chance": 1
+       },
+       {
+        "text": "Defiant: +2 Attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "ironhead",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 156,
+      "max": 184,
+      "minPercent": 82.53968253968253,
+      "maxPercent": 97.35449735449735,
+      "koChance": 0,
+      "row": {
+       "moveId": "ironhead",
+       "effectiveName": "Iron Head",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 156,
+       "max": 184,
+       "minPercent": 82.53968253968253,
+       "maxPercent": 97.35449735449735,
+       "rolls": [
+        156,
+        157,
+        160,
+        162,
+        163,
+        165,
+        166,
+        169,
+        171,
+        172,
+        174,
+        177,
+        178,
+        180,
+        181,
+        184
+       ],
+       "ohkoChance": 0,
+       "description": "Iron Head: 156–184 HP (82.5–97.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "scald",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 64,
+      "minPercent": 28.57142857142857,
+      "maxPercent": 33.86243386243386,
+      "koChance": 1,
+      "row": {
+       "moveId": "scald",
+       "effectiveName": "Scald",
+       "effectiveType": "Water",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 54,
+       "max": 64,
+       "minPercent": 28.57142857142857,
+       "maxPercent": 33.86243386243386,
+       "rolls": [
+        54,
+        54,
+        55,
+        56,
+        57,
+        57,
+        58,
+        59,
+        59,
+        60,
+        60,
+        61,
+        62,
+        63,
+        63,
+        64
+       ],
+       "ohkoChance": 0,
+       "description": "Scald: 54–64 HP (28.6–33.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Trick Room: turn order only; Speed is unchanged."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 189,
+    "maximum": 189,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "ironhead",
+     "effectiveName": "Iron Head",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 78,
+     "max": 93,
+     "minPercent": 41.269841269841265,
+     "maxPercent": 49.2063492063492,
+     "rolls": [
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93
+     ],
+     "ohkoChance": 0,
+     "description": "Iron Head: 78–93 HP (41.3–49.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Trick Room lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 189,
+      "low": 111,
+      "high": 96,
+      "average": 103.9375,
+      "min": 96,
+      "max": 111,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 78,
+        "heals": []
+       },
+       "high": {
+        "dealt": 93,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "scald",
+     "effectiveName": "Scald",
+     "effectiveType": "Water",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 27,
+     "max": 33,
+     "minPercent": 14.285714285714285,
+     "maxPercent": 17.46031746031746,
+     "rolls": [
+      27,
+      27,
+      28,
+      28,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33
+     ],
+     "ohkoChance": 0,
+     "description": "Scald: 27–33 HP (14.3–17.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Trick Room: turn order only; Speed is unchanged."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.009438395500183105,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes Trick Room lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 189,
+      "low": 162,
+      "high": 156,
+      "average": 159.1875,
+      "min": 156,
+      "max": 162,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 27,
+        "heals": []
+       },
+       "high": {
+        "dealt": 33,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Trick Room: slower Pokémon move first."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 189,
+     "maximum": 189,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.310899999999492,
+ "preflight": []
+}

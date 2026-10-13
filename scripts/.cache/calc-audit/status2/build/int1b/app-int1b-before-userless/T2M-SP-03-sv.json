@@ -1,0 +1,891 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bulletseed",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 37,
+      "max": 180,
+      "minPercent": 15.74468085106383,
+      "maxPercent": 76.59574468085107,
+      "koChance": 0,
+      "row": {
+       "moveId": "bulletseed",
+       "effectiveName": "Bullet Seed",
+       "effectiveType": "Grass",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 74,
+       "max": 225,
+       "minPercent": 31.48936170212766,
+       "maxPercent": 95.74468085106383,
+       "rolls": [
+        [
+         37,
+         37,
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45
+        ],
+        [
+         37,
+         37,
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45
+        ],
+        [
+         37,
+         37,
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45
+        ],
+        [
+         37,
+         37,
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45
+        ],
+        [
+         37,
+         37,
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Bullet Seed: 74–225 HP (31.5–95.7% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Bullet Seed: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 4,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 0.9999999999999999
+       },
+       {
+        "text": "Bullet Seed hits Snorlax (opponent's, 2) after its Substitute breaks.",
+        "chance": 0.9999999999999999
+       }
+      ],
+      "substitute": {
+       "chance": 0.9999999999999999,
+       "min": 30,
+       "max": 30,
+       "breaks": 0.9999999999999999
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 198,
+    "average": 149.55625,
+    "high": 55,
+    "min": 55,
+    "max": 198,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "bulletseed",
+     "effectiveName": "Bullet Seed",
+     "effectiveType": "Grass",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+     "assumptions": [],
+     "reason": "Snorlax (opponent's, 2) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 198,
+     "average": 149.55625,
+     "high": 55,
+     "min": 55,
+     "max": 198,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.563199999999597,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 135,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "breloom",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 55,
+        "chance": 0.0000022888183593750003
+       },
+       {
+        "hp": 57,
+        "chance": 0.0000274658203125
+       },
+       {
+        "hp": 58,
+        "chance": 0.0000274658203125
+       },
+       {
+        "hp": 59,
+        "chance": 0.00012359619140625002
+       },
+       {
+        "hp": 60,
+        "chance": 0.0002838134765625
+       },
+       {
+        "hp": 61,
+        "chance": 0.00039825439453125
+       },
+       {
+        "hp": 62,
+        "chance": 0.0010711669921875003
+       },
+       {
+        "hp": 63,
+        "chance": 0.0015220642089843752
+       },
+       {
+        "hp": 64,
+        "chance": 0.0022247314453125
+       },
+       {
+        "hp": 65,
+        "chance": 0.004216003417968751
+       },
+       {
+        "hp": 66,
+        "chance": 0.004696655273437501
+       },
+       {
+        "hp": 67,
+        "chance": 0.0065711975097656255
+       },
+       {
+        "hp": 68,
+        "chance": 0.009695434570312501
+       },
+       {
+        "hp": 69,
+        "chance": 0.009063720703125002
+       },
+       {
+        "hp": 70,
+        "chance": 0.011791992187500001
+       },
+       {
+        "hp": 71,
+        "chance": 0.01418609619140625
+       },
+       {
+        "hp": 72,
+        "chance": 0.011398315429687502
+       },
+       {
+        "hp": 73,
+        "chance": 0.013719177246093752
+       },
+       {
+        "hp": 74,
+        "chance": 0.013513183593750002
+       },
+       {
+        "hp": 75,
+        "chance": 0.0094024658203125
+       },
+       {
+        "hp": 76,
+        "chance": 0.010519409179687501
+       },
+       {
+        "hp": 77,
+        "chance": 0.008239746093750002
+       },
+       {
+        "hp": 78,
+        "chance": 0.004962158203125001
+       },
+       {
+        "hp": 79,
+        "chance": 0.005202484130859376
+       },
+       {
+        "hp": 80,
+        "chance": 0.0029663085937500005
+       },
+       {
+        "hp": 81,
+        "chance": 0.001593017578125
+       },
+       {
+        "hp": 82,
+        "chance": 0.0015380859375000002
+       },
+       {
+        "hp": 83,
+        "chance": 0.0004943847656250001
+       },
+       {
+        "hp": 84,
+        "chance": 0.00029296875000000004
+       },
+       {
+        "hp": 85,
+        "chance": 0.0002197265625
+       },
+       {
+        "hp": 87,
+        "chance": 0.000036621093750000005
+       },
+       {
+        "hp": 100,
+        "chance": 0.000036621093750000005
+       },
+       {
+        "hp": 102,
+        "chance": 0.00032958984375
+       },
+       {
+        "hp": 103,
+        "chance": 0.00032958984375
+       },
+       {
+        "hp": 104,
+        "chance": 0.0009887695312500002
+       },
+       {
+        "hp": 105,
+        "chance": 0.0024169921875000005
+       },
+       {
+        "hp": 106,
+        "chance": 0.0023071289062500003
+       },
+       {
+        "hp": 107,
+        "chance": 0.005603027343750001
+       },
+       {
+        "hp": 108,
+        "chance": 0.007800292968750001
+       },
+       {
+        "hp": 109,
+        "chance": 0.00692138671875
+       },
+       {
+        "hp": 110,
+        "chance": 0.013952636718750001
+       },
+       {
+        "hp": 111,
+        "chance": 0.0138427734375
+       },
+       {
+        "hp": 112,
+        "chance": 0.011206054687500001
+       },
+       {
+        "hp": 113,
+        "chance": 0.018896484375
+       },
+       {
+        "hp": 114,
+        "chance": 0.014172363281250001
+       },
+       {
+        "hp": 115,
+        "chance": 0.010583496093750002
+       },
+       {
+        "hp": 116,
+        "chance": 0.01494140625
+       },
+       {
+        "hp": 117,
+        "chance": 0.007910156250000001
+       },
+       {
+        "hp": 118,
+        "chance": 0.00582275390625
+       },
+       {
+        "hp": 119,
+        "chance": 0.006591796875000001
+       },
+       {
+        "hp": 120,
+        "chance": 0.0019775390625000003
+       },
+       {
+        "hp": 121,
+        "chance": 0.0017578125
+       },
+       {
+        "hp": 122,
+        "chance": 0.001318359375
+       },
+       {
+        "hp": 124,
+        "chance": 0.00029296875000000004
+       },
+       {
+        "hp": 145,
+        "chance": 0.0013671875
+       },
+       {
+        "hp": 147,
+        "chance": 0.008203125
+       },
+       {
+        "hp": 148,
+        "chance": 0.008203125
+       },
+       {
+        "hp": 149,
+        "chance": 0.0123046875
+       },
+       {
+        "hp": 150,
+        "chance": 0.035546875
+       },
+       {
+        "hp": 151,
+        "chance": 0.0205078125
+       },
+       {
+        "hp": 152,
+        "chance": 0.0328125
+       },
+       {
+        "hp": 153,
+        "chance": 0.062890625
+       },
+       {
+        "hp": 154,
+        "chance": 0.024609375
+       },
+       {
+        "hp": 155,
+        "chance": 0.038281249999999996
+       },
+       {
+        "hp": 156,
+        "chance": 0.04921875
+       },
+       {
+        "hp": 157,
+        "chance": 0.0123046875
+       },
+       {
+        "hp": 158,
+        "chance": 0.021875
+       },
+       {
+        "hp": 159,
+        "chance": 0.01640625
+       },
+       {
+        "hp": 161,
+        "chance": 0.00546875
+       },
+       {
+        "hp": 190,
+        "chance": 0.021875
+       },
+       {
+        "hp": 192,
+        "chance": 0.065625
+       },
+       {
+        "hp": 193,
+        "chance": 0.065625
+       },
+       {
+        "hp": 195,
+        "chance": 0.0875
+       },
+       {
+        "hp": 196,
+        "chance": 0.065625
+       },
+       {
+        "hp": 198,
+        "chance": 0.04375
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "rindoberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

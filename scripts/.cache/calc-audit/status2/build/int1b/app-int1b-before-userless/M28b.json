@@ -1,0 +1,703 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 147,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "banefulbunker",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "brutalswing",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 31,
+      "minPercent": 11.063829787234042,
+      "maxPercent": 13.191489361702127,
+      "koChance": 0,
+      "row": {
+       "moveId": "brutalswing",
+       "effectiveName": "Brutal Swing",
+       "effectiveType": "Dark",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 26,
+       "max": 31,
+       "minPercent": 11.063829787234042,
+       "maxPercent": 13.191489361702127,
+       "rolls": [
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Brutal Swing: 26–31 HP (11.1–13.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 24,
+      "max": 29,
+      "minPercent": 12.698412698412698,
+      "maxPercent": 15.343915343915343,
+      "koChance": 0,
+      "row": {
+       "moveId": "brutalswing",
+       "effectiveName": "Brutal Swing",
+       "effectiveType": "Dark",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 24,
+       "max": 29,
+       "minPercent": 12.698412698412698,
+       "maxPercent": 15.343915343915343,
+       "rolls": [
+        24,
+        24,
+        25,
+        25,
+        25,
+        26,
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29
+       ],
+       "ohkoChance": 0,
+       "description": "Brutal Swing: 24–29 HP (12.7–15.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Baneful Bunker blocks Brutal Swing.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "venoshock",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 51,
+      "minPercent": 28.57142857142857,
+      "maxPercent": 34.69387755102041,
+      "koChance": 0,
+      "row": {
+       "moveId": "venoshock",
+       "effectiveName": "Venoshock",
+       "effectiveType": "Poison",
+       "effectivePower": 130,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 42,
+       "max": 51,
+       "minPercent": 28.57142857142857,
+       "maxPercent": 34.69387755102041,
+       "rolls": [
+        42,
+        43,
+        44,
+        44,
+        45,
+        45,
+        45,
+        46,
+        47,
+        47,
+        48,
+        48,
+        48,
+        49,
+        50,
+        51
+       ],
+       "ohkoChance": 0,
+       "description": "Venoshock: 42–51 HP (28.6–34.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 130."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 147,
+    "maximum": 147,
+    "low": 105,
+    "average": 100.625,
+    "high": 96,
+    "min": 96,
+    "max": 105,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Poisoned.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 209,
+    "average": 206.8125,
+    "high": 204,
+    "min": 204,
+    "max": 209,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 125,
+    "average": 125,
+    "high": 125,
+    "min": 125,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 189,
+    "maximum": 189,
+    "low": 165,
+    "average": 162.6875,
+    "high": 160,
+    "min": 160,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 13,
+     "max": 16,
+     "minPercent": 10.4,
+     "maxPercent": 12.8,
+     "rolls": [
+      13,
+      13,
+      13,
+      14,
+      14,
+      14,
+      14,
+      14,
+      14,
+      15,
+      15,
+      15,
+      15,
+      15,
+      15,
+      16
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 13–16 HP (10.4–12.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 8,
+      "fasterChance": 0.9561139082652517,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 112,
+      "high": 109,
+      "average": 110.6875,
+      "min": 109,
+      "max": 112,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 13,
+        "heals": []
+       },
+       "high": {
+        "dealt": 16,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 24,
+     "max": 29,
+     "minPercent": 12.698412698412698,
+     "maxPercent": 15.343915343915343,
+     "rolls": [
+      24,
+      24,
+      25,
+      25,
+      25,
+      26,
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 24–29 HP (12.7–15.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.1317683905363083,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 189,
+      "low": 165,
+      "high": 160,
+      "average": 162.6875,
+      "min": 160,
+      "max": 165,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 24,
+        "heals": []
+       },
+       "high": {
+        "dealt": 29,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "brutalswing",
+     "effectiveName": "Brutal Swing",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 11.063829787234042,
+     "maxPercent": 13.191489361702127,
+     "rolls": [
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 0,
+     "description": "Brutal Swing: 26–31 HP (11.1–13.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 8,
+      "fasterChance": 0.9999997135746526,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 209,
+      "high": 204,
+      "average": 206.8125,
+      "min": 204,
+      "max": 209,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 26,
+        "heals": []
+       },
+       "high": {
+        "dealt": 31,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "venoshock",
+     "effectiveName": "Venoshock",
+     "effectiveType": "Poison",
+     "effectivePower": 65,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 21,
+     "max": 26,
+     "minPercent": 14.285714285714285,
+     "maxPercent": 17.687074829931973,
+     "rolls": [
+      21,
+      22,
+      22,
+      22,
+      23,
+      23,
+      23,
+      24,
+      24,
+      24,
+      24,
+      24,
+      24,
+      25,
+      25,
+      26
+     ],
+     "ohkoChance": 0,
+     "description": "Venoshock: 21–26 HP (14.3–17.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.03700679540634155,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 147,
+      "low": 126,
+      "high": 121,
+      "average": 123.5,
+      "min": 121,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 21,
+        "heals": []
+       },
+       "high": {
+        "dealt": 26,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 147,
+     "maximum": 147,
+     "low": 87,
+     "average": 88.565,
+     "high": 78,
+     "min": 78,
+     "max": 105,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Poisoned.",
+       "chance": 0.67
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 209,
+     "average": 206.8125,
+     "high": 204,
+     "min": 204,
+     "max": 209,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 125,
+     "average": 125,
+     "high": 125,
+     "min": 125,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 189,
+     "maximum": 189,
+     "low": 165,
+     "average": 162.6875,
+     "high": 160,
+     "min": 160,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Shed Skin",
+     "chance": 0.33,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Cures its poison.",
+       "chance": 0.33
+      }
+     ]
+    },
+    {
+     "slot": "own-left",
+     "effect": "Poison",
+     "chance": 0.67,
+     "min": -18,
+     "max": -18,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 10.19640000000004,
+ "preflight": []
+}

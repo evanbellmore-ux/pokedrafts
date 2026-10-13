@@ -1,0 +1,697 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 145,
+    "maximum": 145
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "swordsdance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Attack cannot go higher.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "airslash",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 104,
+      "max": 126,
+      "minPercent": 71.72413793103448,
+      "maxPercent": 86.89655172413792,
+      "koChance": 0,
+      "row": {
+       "moveId": "airslash",
+       "effectiveName": "Air Slash",
+       "effectiveType": "Flying",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 104,
+       "max": 126,
+       "minPercent": 71.72413793103448,
+       "maxPercent": 86.89655172413792,
+       "rolls": [
+        104,
+        108,
+        108,
+        108,
+        110,
+        110,
+        114,
+        114,
+        116,
+        116,
+        116,
+        120,
+        120,
+        122,
+        122,
+        126
+       ],
+       "ohkoChance": 0,
+       "description": "Air Slash: 104–126 HP (71.7–86.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "petaldance",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 24,
+      "max": 29,
+      "minPercent": 16,
+      "maxPercent": 19.333333333333332,
+      "koChance": 0,
+      "row": {
+       "moveId": "petaldance",
+       "effectiveName": "Petal Dance",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 24,
+       "max": 29,
+       "minPercent": 16,
+       "maxPercent": 19.333333333333332,
+       "rolls": [
+        24,
+        25,
+        25,
+        25,
+        25,
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29
+       ],
+       "ohkoChance": 0,
+       "description": "Petal Dance: 24–29 HP (16.0–19.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 67,
+      "max": 81,
+      "minPercent": 28.510638297872344,
+      "maxPercent": 34.46808510638298,
+      "koChance": 0,
+      "row": {
+       "moveId": "petaldance",
+       "effectiveName": "Petal Dance",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 67,
+       "max": 81,
+       "minPercent": 28.510638297872344,
+       "maxPercent": 34.46808510638298,
+       "rolls": [
+        67,
+        69,
+        69,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        81
+       ],
+       "ohkoChance": 0,
+       "description": "Petal Dance: 67–81 HP (28.5–34.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Lilligant faints.",
+      "chance": 0.26953125
+     }
+    ]
+   },
+   {
+    "slot": "own-left",
+    "moveId": "petaldance",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 51,
+      "max": 61,
+      "minPercent": 27.86885245901639,
+      "maxPercent": 33.33333333333333,
+      "koChance": 0,
+      "row": {
+       "moveId": "petaldance",
+       "effectiveName": "Petal Dance",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 51,
+       "max": 61,
+       "minPercent": 27.86885245901639,
+       "maxPercent": 33.33333333333333,
+       "rolls": [
+        51,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55,
+        56,
+        56,
+        57,
+        57,
+        58,
+        59,
+        59,
+        60,
+        61
+       ],
+       "ohkoChance": 0,
+       "description": "Petal Dance: 51–61 HP (27.9–33.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 28,
+      "max": 33,
+      "minPercent": 19.310344827586206,
+      "maxPercent": 22.758620689655174,
+      "koChance": 0.26953125,
+      "row": {
+       "moveId": "petaldance",
+       "effectiveName": "Petal Dance",
+       "effectiveType": "Grass",
+       "effectivePower": 120,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 28,
+       "max": 33,
+       "minPercent": 19.310344827586206,
+       "maxPercent": 22.758620689655174,
+       "rolls": [
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33
+       ],
+       "ohkoChance": 0,
+       "description": "Petal Dance: 28–33 HP (19.3–22.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Petal Dance.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 127.78125,
+    "high": 103,
+    "min": 103,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 198.03125,
+    "high": 154,
+    "min": 154,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 155.03125,
+    "high": 122,
+    "min": 122,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 145,
+    "maximum": 145,
+    "low": 41,
+    "average": 16.4765625,
+    "high": 0,
+    "min": 0,
+    "max": 41,
+    "koChance": 0.26953125,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "airslash",
+     "effectiveName": "Air Slash",
+     "effectiveType": "Flying",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 104,
+     "max": 126,
+     "minPercent": 71.72413793103448,
+     "maxPercent": 86.89655172413792,
+     "rolls": [
+      104,
+      108,
+      108,
+      108,
+      110,
+      110,
+      114,
+      114,
+      116,
+      116,
+      116,
+      120,
+      120,
+      122,
+      122,
+      126
+     ],
+     "ohkoChance": 0,
+     "description": "Air Slash: 104–126 HP (71.7–86.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 41,
+      "high": 19,
+      "average": 30.375,
+      "min": 19,
+      "max": 41,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 104,
+        "heals": []
+       },
+       "high": {
+        "dealt": 126,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "petaldance",
+     "effectiveName": "Petal Dance",
+     "effectiveType": "Grass",
+     "effectivePower": 120,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 24,
+     "max": 29,
+     "minPercent": 16,
+     "maxPercent": 19.333333333333332,
+     "rolls": [
+      24,
+      25,
+      25,
+      25,
+      25,
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29
+     ],
+     "ohkoChance": 0,
+     "description": "Petal Dance: 24–29 HP (16.0–19.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Hits a random foe each turn"
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 126,
+      "high": 121,
+      "average": 123.5625,
+      "min": 121,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 24,
+        "heals": []
+       },
+       "high": {
+        "dealt": 29,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "petaldance",
+     "effectiveName": "Petal Dance",
+     "effectiveType": "Grass",
+     "effectivePower": 120,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 67,
+     "max": 81,
+     "minPercent": 28.510638297872344,
+     "maxPercent": 34.46808510638298,
+     "rolls": [
+      67,
+      69,
+      69,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      81
+     ],
+     "ohkoChance": 0,
+     "description": "Petal Dance: 67–81 HP (28.5–34.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "not-estimated",
+      "reason": "Hits a random foe each turn"
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 168,
+      "high": 154,
+      "average": 161.0625,
+      "min": 154,
+      "max": 168,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 81,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 127.78125,
+     "high": 103,
+     "min": 103,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 198.03125,
+     "high": 154,
+     "min": 154,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 155.03125,
+     "high": 122,
+     "min": 122,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 145,
+     "maximum": 145,
+     "low": 41,
+     "average": 16.4765625,
+     "high": 0,
+     "min": 0,
+     "max": 41,
+     "koChance": 0.26953125,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 13.907999999999447,
+ "preflight": []
+}

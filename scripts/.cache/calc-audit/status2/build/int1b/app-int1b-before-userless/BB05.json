@@ -1,0 +1,298 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 20,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bugbite",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 87,
+      "max": 103,
+      "minPercent": 47.540983606557376,
+      "maxPercent": 56.284153005464475,
+      "koChance": 0,
+      "row": {
+       "moveId": "bugbite",
+       "effectiveName": "Bug Bite",
+       "effectiveType": "Bug",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 87,
+       "max": 103,
+       "minPercent": 47.540983606557376,
+       "maxPercent": 56.284153005464475,
+       "rolls": [
+        87,
+        87,
+        90,
+        90,
+        91,
+        91,
+        94,
+        94,
+        95,
+        95,
+        97,
+        97,
+        99,
+        99,
+        101,
+        103
+       ],
+       "ohkoChance": 0,
+       "description": "Bug Bite: 87–103 HP (47.5–56.3% of maximum HP). Applied: Technician, Life Orb.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 20,
+    "maximum": 145,
+    "low": 24,
+    "average": 24,
+    "high": 24,
+    "min": 24,
+    "max": 24,
+    "koChance": 0,
+    "heals": [
+     "Scizor eats Garchomp's Sitrus Berry: +36 HP."
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 96,
+    "average": 88.625,
+    "high": 80,
+    "min": 80,
+    "max": 96,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bugbite",
+     "effectiveName": "Bug Bite",
+     "effectiveType": "Bug",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 87,
+     "max": 103,
+     "minPercent": 47.540983606557376,
+     "maxPercent": 56.284153005464475,
+     "rolls": [
+      87,
+      87,
+      90,
+      90,
+      91,
+      91,
+      94,
+      94,
+      95,
+      95,
+      97,
+      97,
+      99,
+      99,
+      101,
+      103
+     ],
+     "ohkoChance": 0,
+     "description": "Bug Bite: 87–103 HP (47.5–56.3% of maximum HP). Applied: Technician, Life Orb.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": 2,
+      "chance": 0.796875,
+      "faintsFirst": true,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [
+       "Bug Bite takes the target's item.",
+       "Bug Bite eats the target's Sitrus Berry on the first use: the attacker regains 36 HP."
+      ],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 2,
+       "highest": 2
+      }
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 96,
+      "high": 80,
+      "average": 88.625,
+      "min": 80,
+      "max": 96,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 87,
+        "heals": []
+       },
+       "high": {
+        "dealt": 103,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 20,
+     "maximum": 145,
+     "low": 24,
+     "average": 24,
+     "high": 24,
+     "min": 24,
+     "max": 24,
+     "koChance": 0,
+     "heals": [
+      "Scizor eats Garchomp's Sitrus Berry: +36 HP."
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 96,
+     "average": 88.625,
+     "high": 80,
+     "min": 80,
+     "max": 96,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.034700000000157,
+ "preflight": []
+}

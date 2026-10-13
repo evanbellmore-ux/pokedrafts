@@ -1,0 +1,410 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 120,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 90,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 30,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 5,
+    "maximum": 150
+   }
+  },
+  "steps": [],
+  "hp": {
+   "own-left": {
+    "start": 120,
+    "maximum": 235,
+    "low": 120,
+    "average": 120,
+    "high": 120,
+    "min": 120,
+    "max": 120,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 90,
+    "maximum": 135,
+    "low": 90,
+    "average": 90,
+    "high": 90,
+    "min": 90,
+    "max": 90,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 30,
+    "maximum": 175,
+    "low": 30,
+    "average": 30,
+    "high": 30,
+    "min": 30,
+    "max": 30,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 5,
+    "maximum": 150,
+    "low": 5,
+    "average": 5,
+    "high": 5,
+    "min": 5,
+    "max": 5,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Sandstorm does not end this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 120,
+     "maximum": 235,
+     "low": 106,
+     "average": 106,
+     "high": 106,
+     "min": 106,
+     "max": 106,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 90,
+     "maximum": 135,
+     "low": 90,
+     "average": 90,
+     "high": 90,
+     "min": 90,
+     "max": 90,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 30,
+     "maximum": 175,
+     "low": 30,
+     "average": 30,
+     "high": 30,
+     "min": 30,
+     "max": 30,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 5,
+     "maximum": 150,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -8,
+     "max": -8,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -5,
+     "max": -5,
+     "koChance": 1,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Sandstorm",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-right",
+     "effect": "Leftovers",
+     "chance": 1,
+     "min": 8,
+     "max": 8,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 2.437800000000152,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 120,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 90,
+    "maximum": 135
+   },
+   "opponent-left": {
+    "hp": 30,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 5,
+    "maximum": 150
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 106,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "sitrusberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 90,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "gengar",
+       "nature": "Serious",
+       "abilityId": "cursedbody",
+       "abilityActive": false,
+       "itemId": "leftovers",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 30,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "tyranitar",
+       "nature": "Serious",
+       "abilityId": "unnerve",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "houndoom",
+       "nature": "Serious",
+       "abilityId": "unnerve",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "Sand",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

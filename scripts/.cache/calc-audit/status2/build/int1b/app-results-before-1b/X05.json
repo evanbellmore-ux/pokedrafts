@@ -1,0 +1,656 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "nightslash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 170,
+      "max": 204,
+      "minPercent": 125.92592592592592,
+      "maxPercent": 151.11111111111111,
+      "koChance": 0,
+      "row": {
+       "moveId": "nightslash",
+       "effectiveName": "Night Slash",
+       "effectiveType": "Dark",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 170,
+       "max": 204,
+       "minPercent": 125.92592592592592,
+       "maxPercent": 151.11111111111111,
+       "rolls": [
+        170,
+        174,
+        176,
+        176,
+        180,
+        182,
+        182,
+        186,
+        188,
+        188,
+        192,
+        194,
+        194,
+        198,
+        200,
+        204
+       ],
+       "ohkoChance": 0,
+       "description": "Night Slash: 170–204 HP (125.9–151.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       },
+       "survival": "Focus Sash"
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "scaleshot",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 165,
+      "minPercent": 40,
+      "maxPercent": 122.22222222222223,
+      "koChance": 1,
+      "row": {
+       "moveId": "scaleshot",
+       "effectiveName": "Scale Shot",
+       "effectiveType": "Dragon",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 54,
+       "max": 165,
+       "minPercent": 40,
+       "maxPercent": 122.22222222222223,
+       "rolls": [
+        [
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33
+        ],
+        [
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33
+        ],
+        [
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33
+        ],
+        [
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33
+        ],
+        [
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         30,
+         31,
+         31,
+         31,
+         31,
+         33
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Scale Shot: 54–165 HP (40.0–122.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Scale Shot: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "nightslash",
+     "effectiveName": "Night Slash",
+     "effectiveType": "Dark",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 170,
+     "max": 204,
+     "minPercent": 125.92592592592592,
+     "maxPercent": 151.11111111111111,
+     "rolls": [
+      170,
+      174,
+      176,
+      176,
+      180,
+      182,
+      182,
+      186,
+      188,
+      188,
+      192,
+      194,
+      194,
+      198,
+      200,
+      204
+     ],
+     "ohkoChance": 0,
+     "description": "Night Slash: 170–204 HP (125.9–151.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "survival": "Focus Sash",
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "survival": "Focus Sash"
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 1,
+      "high": 1,
+      "average": 1,
+      "min": 1,
+      "max": 1,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 134,
+        "heals": []
+       },
+       "high": {
+        "dealt": 134,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "scaleshot",
+     "effectiveName": "Scale Shot",
+     "effectiveType": "Dragon",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 54,
+     "max": 165,
+     "minPercent": 40,
+     "maxPercent": 122.22222222222223,
+     "rolls": [
+      [
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       30,
+       31,
+       31,
+       31,
+       31,
+       33
+      ],
+      [
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       30,
+       31,
+       31,
+       31,
+       31,
+       33
+      ],
+      [
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       30,
+       31,
+       31,
+       31,
+       31,
+       33
+      ],
+      [
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       30,
+       31,
+       31,
+       31,
+       31,
+       33
+      ],
+      [
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       30,
+       31,
+       31,
+       31,
+       31,
+       33
+      ]
+     ],
+     "ohkoChance": 0.15,
+     "description": "Scale Shot: 54–165 HP (40.0–122.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Scale Shot: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+      "Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed."
+     ],
+     "reason": null,
+     "hits": 5,
+     "hitRule": {
+      "kind": "choose",
+      "min": 2,
+      "max": 5,
+      "defaultHits": null,
+      "perHitAccuracy": false,
+      "loadedDice": false,
+      "chances": [
+       {
+        "hits": 2,
+        "chance": 0.35
+       },
+       {
+        "hits": 3,
+        "chance": 0.35
+       },
+       {
+        "hits": 4,
+        "chance": 0.15
+       },
+       {
+        "hits": 5,
+        "chance": 0.15
+       }
+      ]
+     },
+     "hitChances": [
+      {
+       "hits": 2,
+       "chance": 0.35
+      },
+      {
+       "hits": 3,
+       "chance": 0.35
+      },
+      {
+       "hits": 4,
+       "chance": 0.15
+      },
+      {
+       "hits": 5,
+       "chance": 0.15
+      }
+     ],
+     "survival": "Focus Sash",
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 1,
+      "fasterChance": 0.8775000000000002,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Each use has its own hit count (2–5)."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 81,
+      "high": 0,
+      "average": 45.278124999999996,
+      "min": 0,
+      "max": 81,
+      "koChance": 0.15,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 54,
+        "heals": []
+       },
+       "high": {
+        "dealt": 135,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.891600000000153,
+ "preflight": []
+}

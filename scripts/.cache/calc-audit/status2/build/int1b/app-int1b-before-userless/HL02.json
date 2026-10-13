@@ -1,0 +1,337 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "doublehit",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 40,
+      "minPercent": 18.579234972677597,
+      "maxPercent": 21.85792349726776,
+      "koChance": 0,
+      "row": {
+       "moveId": "doublehit",
+       "effectiveName": "Double Hit",
+       "effectiveType": "Normal",
+       "effectivePower": 35,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 40,
+       "minPercent": 18.579234972677597,
+       "maxPercent": 21.85792349726776,
+       "rolls": [
+        [
+         17,
+         17,
+         17,
+         17,
+         17,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         20
+        ],
+        [
+         17,
+         17,
+         17,
+         17,
+         17,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         20
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Double Hit: 34–40 HP (18.6–21.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 80,
+    "maximum": 145,
+    "low": 80,
+    "average": 80,
+    "high": 80,
+    "min": 80,
+    "max": 80,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +36 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 149,
+    "average": 146.75,
+    "high": 143,
+    "min": 143,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "doublehit",
+     "effectiveName": "Double Hit",
+     "effectiveType": "Normal",
+     "effectivePower": 35,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 40,
+     "minPercent": 18.579234972677597,
+     "maxPercent": 21.85792349726776,
+     "rolls": [
+      [
+       17,
+       17,
+       17,
+       17,
+       17,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       20
+      ],
+      [
+       17,
+       17,
+       17,
+       17,
+       17,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       20
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Double Hit: 34–40 HP (18.6–21.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "faintsFirst": true,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 4,
+       "highest": 4
+      }
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 149,
+      "high": 143,
+      "average": 146.75,
+      "min": 143,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 40,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 80,
+     "maximum": 145,
+     "low": 80,
+     "average": 80,
+     "high": 80,
+     "min": 80,
+     "max": 80,
+     "koChance": 0,
+     "heals": [
+      "Sitrus Berry: +36 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 149,
+     "average": 146.75,
+     "high": 143,
+     "min": 143,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 9.061799999999948,
+ "preflight": []
+}

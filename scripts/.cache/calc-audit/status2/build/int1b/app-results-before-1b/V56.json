@@ -1,0 +1,375 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 97,
+      "max": 115,
+      "minPercent": 41.27659574468085,
+      "maxPercent": 48.93617021276596,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 97,
+       "max": 115,
+       "minPercent": 41.27659574468085,
+       "maxPercent": 48.93617021276596,
+       "rolls": [
+        97,
+        99,
+        99,
+        100,
+        102,
+        103,
+        105,
+        105,
+        106,
+        108,
+        109,
+        109,
+        111,
+        112,
+        114,
+        115
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "superfang",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 60,
+      "max": 69,
+      "minPercent": 25.53191489361702,
+      "maxPercent": 29.361702127659573,
+      "koChance": 0,
+      "row": {
+       "moveId": "superfang",
+       "effectiveName": "Super Fang",
+       "effectiveType": "Normal",
+       "effectivePower": 0,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 117,
+       "max": 117,
+       "minPercent": 49.787234042553195,
+       "maxPercent": 49.787234042553195,
+       "rolls": 117,
+       "ohkoChance": 0,
+       "description": "Super Fang: 117–117 HP (49.8–49.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Fixed damage: half the defender's current HP (235), rounded down, at least 1."
+       ],
+       "reason": null,
+       "hits": 1
+      },
+      "cases": 10,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 69,
+    "average": 64.75,
+    "high": 60,
+    "min": 60,
+    "max": 69,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 97,
+     "max": 115,
+     "minPercent": 41.27659574468085,
+     "maxPercent": 48.93617021276596,
+     "rolls": [
+      97,
+      99,
+      99,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109,
+      109,
+      111,
+      112,
+      114,
+      115
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 97–115 HP (41.3–48.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 138,
+      "high": 120,
+      "average": 129.125,
+      "min": 120,
+      "max": 138,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 97,
+        "heals": []
+       },
+       "high": {
+        "dealt": 115,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "superfang",
+     "effectiveName": "Super Fang",
+     "effectiveType": "Normal",
+     "effectivePower": 0,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 117,
+     "max": 117,
+     "minPercent": 49.787234042553195,
+     "maxPercent": 49.787234042553195,
+     "rolls": 117,
+     "ohkoChance": 0,
+     "description": "Super Fang: 117–117 HP (49.8–49.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Fixed damage: half the defender's current HP (235), rounded down, at least 1."
+     ],
+     "reason": null,
+     "hits": 1,
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 9,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 118,
+      "high": 118,
+      "average": 118,
+      "min": 118,
+      "max": 118,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 117,
+        "heals": []
+       },
+       "high": {
+        "dealt": 117,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 69,
+     "average": 64.75,
+     "high": 60,
+     "min": 60,
+     "max": 69,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.544100000000071,
+ "preflight": []
+}

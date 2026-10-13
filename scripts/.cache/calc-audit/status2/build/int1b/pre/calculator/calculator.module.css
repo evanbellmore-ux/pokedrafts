@@ -1,0 +1,285 @@
+.root {
+  --calculator-sticky-height: 0px;
+  min-width: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 0.25rem;
+}
+
+.tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.tab:first-child {
+  margin-inline-end: auto;
+}
+
+.tab:last-child {
+  margin-inline-start: auto;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.root :is(input, select, button, summary, [tabindex]) {
+  scroll-margin-top: calc(var(--app-nav-height, 0px) + var(--calculator-sticky-height) + 1rem);
+}
+
+.withRosters {
+  display: grid;
+  grid-template-areas: "attacker calculator defender";
+  grid-template-columns: 12rem minmax(0, 1fr) 12rem;
+  align-items: start;
+  gap: 1rem;
+}
+
+.center {
+  grid-area: calculator;
+  min-width: 0;
+  container: calculator / inline-size;
+}
+
+.rail {
+  min-width: 0;
+}
+
+.rail :is(input, select, button, summary, [tabindex]) {
+  scroll-margin-top: calc(var(--app-nav-height, 0px) + 1rem);
+}
+
+.attackerRoster {
+  grid-area: attacker;
+}
+
+.defenderRoster {
+  grid-area: defender;
+}
+
+/*
+ * The settings under the summary rather than inside it: each Pokémon's Build settings side by side
+ * under the two cards when there is room, otherwise one after the other in card order, then Field
+ * conditions across the full width.
+ */
+.settings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.settings > * {
+  min-width: 0;
+}
+
+.settings > * + * {
+  border-top: 1px solid var(--color-line);
+}
+
+.fieldSection {
+  grid-column: 1 / -1;
+}
+
+@container calculator (min-width: 44rem) {
+  .settings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .buildSection + .buildSection {
+    border-top: 0;
+    border-inline-start: 1px solid var(--color-line);
+  }
+
+  .buildOwner {
+    display: none;
+  }
+}
+
+.editor {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.editor > [data-calculator-roster] {
+  margin-top: 0;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: 0.5rem 0.75rem;
+}
+
+.fields > * {
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+/* Field conditions' checkboxes: as many columns as fit. */
+.toggles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+  column-gap: 0.75rem;
+}
+
+.fieldSides {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@container calculator (min-width: 36rem) {
+  .fieldSides {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Denser than the shared form controls: smaller labels and shorter fields. */
+.editor label {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.editor :is(input:not([type="checkbox"]), select) {
+  padding-block: 0.375rem;
+}
+
+/* Narrow numeric cells, so all the stat columns fit a phone without scrolling or clipping. */
+.statTable td input {
+  min-width: 2.25rem;
+  padding-inline: 0.25rem;
+}
+
+.statTable td select {
+  min-width: 2.625rem;
+}
+
+@media (min-width: 80rem) {
+  :global(#main-content):has(.root) {
+    max-width: 100rem;
+  }
+}
+
+.summary {
+  position: relative;
+  z-index: 30;
+  /* Keeps the settings below close to their cards. */
+  margin-block-end: 0.5rem;
+}
+
+.quickMoves {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.375rem;
+}
+
+@container calculator (min-width: 36rem) {
+  .quickMoves {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-height: 800px) {
+  .root[data-summary-fits="true"] {
+    --calculator-sticky-height: var(--calculator-summary-height, 0px);
+  }
+
+  .root[data-summary-fits="true"] .summary {
+    position: sticky;
+    top: calc(var(--app-nav-height, 0px) + 0.5rem);
+  }
+}
+
+/* 1v1 and 2v2: an element only one view shows. Classes such as .settings would beat the browser's own [hidden] rule. */
+.root [data-calculator-mode-only][hidden] {
+  display: none;
+}
+
+/* The 1v1 | 2v2 switch: two equal buttons, then side by side at their own width from 40rem. */
+.modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+@media (min-width: 40rem) {
+  .modes {
+    display: flex;
+  }
+}
+
+/* One side's two 2v2 cards, side by side at every width, as the 1v1 cards are. */
+.doublesSide {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.doublesSide > * {
+  min-width: 0;
+}
+
+.doublesSide > * + * {
+  border-inline-start: 1px solid var(--color-line);
+}
+
+/* A 2v2 card that is a target frame: clicks fall through to the frame's button except on the card's own controls. */
+.cardTargetContent {
+  pointer-events: none;
+}
+
+.cardTargetContent :is(a, button, input, label, select, textarea, summary, dialog, [role="dialog"]) {
+  pointer-events: auto;
+}
+
+/* A 2v2 card's quick moves stay 2×2, and No move / All moves one row of two. */
+.doublesQuickMoves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+/* status2: with Switched in beside No move, All moves takes the next row. */
+.doublesQuickMovesRow {
+  grid-column: 1 / -1;
+}
+
+/* Wrapping pills: a move's targets, and the 2v2 Moves pane's Pokémon. */
+.targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* The four 2v2 Build settings, two per row when there is room, then Field conditions across the full width. */
+.doublesSettings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.doublesSettings > * {
+  min-width: 0;
+}
+
+.doublesSettings > * + * {
+  border-top: 1px solid var(--color-line);
+}
+
+@container calculator (min-width: 44rem) {
+  .doublesSettings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doublesSettings > :nth-child(2) {
+    border-top: 0;
+  }
+
+  .doublesSettings > :nth-child(even):not(.fieldSection) {
+    border-inline-start: 1px solid var(--color-line);
+  }
+}

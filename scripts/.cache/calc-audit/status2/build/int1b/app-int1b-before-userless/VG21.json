@@ -1,0 +1,111 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "overheat",
+     "effectiveName": "Overheat",
+     "effectiveType": "Fire",
+     "effectivePower": 130,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 88,
+     "max": 104,
+     "minPercent": 56.774193548387096,
+     "maxPercent": 67.0967741935484,
+     "rolls": [
+      88,
+      88,
+      90,
+      90,
+      92,
+      92,
+      94,
+      94,
+      96,
+      96,
+      98,
+      98,
+      100,
+      100,
+      102,
+      104
+     ],
+     "ohkoChance": 0,
+     "description": "Overheat: 88–104 HP (56.8–67.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Venusaur's Overgrow is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.00390625,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [
+       "Overheat lowers the attacker's Sp. Atk after each use."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 67,
+      "high": 51,
+      "average": 59.875,
+      "min": 51,
+      "max": 67,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 88,
+        "heals": []
+       },
+       "high": {
+        "dealt": 104,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Charizard, Venusaur and Snorlax."
+  ]
+ },
+ "ms": 3.2817000000000007,
+ "preflight": []
+}

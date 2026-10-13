@@ -1,0 +1,116 @@
+     × (integrator ST-1) STP-CUS-01-sv: the Berry held after the turn with 0.3; Quick Draw's fact at 0.3 10ms
+     × (integrator ST-2) CR-08a-sv / G4-OPP-07-sv: applied at the first action's end 6ms
+     × (integrator ST-4) its turn fact 6ms
+     × (integrator ST-4) its turn fact; (ST-3) the start rows per copy 19ms
+     × A3-DF-04, -05: behind a Substitute no evasion drop but the screen goes (F56); a terrain-settled holder keeps today's reason until FC 23ms
+     × A3-MR-06: Magic Room ending with a Booster Energy holder whose field is down (it came in under the room): not estimated until FC 4ms
+     × Body Slam into a minimized Blissey (Scarlet/Violet): Minimize: double damage. 9ms
+     × D-FLG-18-sv: a flung Berry eaten by a Cud Chew holder counts for its Cud Chew (the end of turn's guard) 13ms
+     × Dancer when a dance move is used 9ms
+     × F14a: Sleep Talk while asleep 4ms
+     × F14c: Sleep Talk with Comatose 3ms
+     × F21a: Sucker Punch against a target using Me First 6ms
+     × F30d: A third Pokémon's As One and a target's resist Berry 6ms
+     × Focus Band when a hit into it can knock out (modelled: status2 W), and Max Guard 21ms
+     × Helping Hand twice: the instructed Helping Hand gives two (2.25x: Body Slam 165-195) (T2M-HH-01, C26) 10ms
+     × Instruct by a Protean or Libero user (its PrepareHit changes the type, which doubles-typing.ts leaves out): the reason 2ms
+     × R09: Fire Pledge and Grass Pledge from partners combine 15ms
+     × R10: Copycat used last copies the move before it 10ms
+     × S44d: Disable and Encore with lastMove null 189ms
+     × Taunt, Encore and Disable used this turn get their fresh duration (doubles-status.ts: tauntLeft, encoreLeft, disableLeft) [E2X-TNT-new-sv, -late, E2X-DIS-late-sv, E2X-ENC-late-sv, G4-LMV, G4-ENC-01] 9ms
+     × Trace with a random source or copying Intimidate; Download with a foe's entry boost 11ms
+     × Uproar's hit first (Noivern is faster): a later Spore fails (CL-X-UPS) 6ms
+     × a Max Move's terrain changing a third Pokémon's Mimicry or Electric Seed (M24i, M24j) 10ms
+     × a Prankster Copycat's called Dragon Claw is immune into a Dark foe it picks (pranksterBoosted; CL-X-PRK) 5ms
+     × a Starf Berry eaten as the turn starts, and Opportunist copying a rise 17ms
+     × a called Uproar (Copycat's) waits for CL-1 and CL-2: the reason 22ms
+     × a landing whose user's search would follow its HP (Life Orb): ×1.3, then −1/10 (doubles-turn.ts searchFor with attackerBuild unfollowed) [E2X-FS-LO-sv, T2E-FS14] 4ms
+     × a resist Berry the calculation would read otherwise is not estimated in the turn and in the Moves pane 7ms
+     × a spread move healing from several targets, or an attacker affected differently by each target 38ms
+     × a target fainted since: the instructed move is retargeted (T2P-INS-04, TP2·I4); lastMoveTarget given (T2P-INS-05) 22ms
+     × a weather, terrain, Tailwind or Trick Room change that would change an ability or item 9ms
+     × after Protect (failcopycat) and with no move used in the battle: it fails (T2P-CPY-03, IN-CPY-01b) 7ms
+     × after a Sleep Talk's call: the called Body Slam is the last move, not Sleep Talk; after a No move: Splash (CL-X-STC, CL-X-SPL) 18ms
+     × after a blocked move (copied), after a fully paralysed foe (the move before it) (T2P-CPY-04, -05, TP2·CC4, CC5) 25ms
+     × after a foe's Dragon Claw: Dragon Claw at a random foe, 1/2 each (T2P-CPY-01, TP2·CC1) 9ms
+     × after the target's Dragon Claw this turn: Dragon Claw at the target (T2P-MIR-01, TP2·MM1) 8ms
+     × an Uproar from last turn: the turn is followed with no assumption about it (T2E-UP-01) 16ms
+     × an ability out in 2v2 when it triggers, and a G-Max move's random status 5ms
+     × asleep with Body Slam, Earthquake and Protect: 1/3 each, Protect called through the early branch (T2M-ST-01, T2-ST01) 132ms
+     × equals calculateDoublesTurn on every pinned Showdown case 10205ms
+     × every A3 move is M or C with its handler (classify-a3.md), and doubles-field.ts registers each A3 handler key 10ms
+     × gives each where its turn meets it 16ms
+     × is not estimated where a turn's result would not be exact, with the reason 21ms
+     × is the Pokémon that acts on it as the turn starts, and null when two different ones do 5ms
+     × keeps its move tables equal to the engine's 10ms
+     × moving first: the battle's last move before this turn (battleLastMove) (T2P-CPY-02, IN-CPY-01, IN-P11) 16ms
+     × names Imposter and Commander with Dondozo on its side; Neutralizing Gas is modelled 15ms
+     × names each move not modelled in 2v2 7ms
+     × on a slower ally: its Earthquake from an earlier turn first, then its own Body Slam (T2P-INS-02, TP3·FU3) 8ms
+     × on an ally that moved this turn: its Dragon Claw again, the same target (T2P-INS-01, TP2·I1) 7ms
+     × still names Commander with Dondozo on its side under the gas 15ms
+     × sv: Thief into the Berry under a third Pokémon's Unnerve: the narrow reason (K-UN-03) 4ms
+     × sv: a third Pokémon's Unnerve stops the target's Haban Berry (K-UN-01) 8ms
+     × sv: the user's own Unnerve does not stop its ally's Shuca Berry in a spread move (K-UN-02) 11ms
+     × the attacker that KOs the holder eats after the hit; with recoil after it, not estimated (M29e, M29f, M29c) 28ms
+     × the user's faint names Innards Out and Aftermath (K-IO-07, K-AF-06) 8ms
+     × two Pokémon acting on one as the turn starts 8ms
+     × wakes an asleep foe; its ally's Rest and a foe's Spore then fail (T2M-UP-01, T2-UP01) 18ms
+ FAIL  |training| tests/unit/doubles-outcomes.test.ts > calculateDoublesOutcomes (E2) > equals calculateDoublesTurn on every pinned Showdown case
+ FAIL  |unit| tests/unit/calculator-doubles-inputs.test.ts > 2v2 earlier-turn controls: tables and engine agree > keeps its move tables equal to the engine's
+ FAIL  |unit| tests/unit/calculator-doubles-ui.test.ts > status2 wave 1b: the hit fact of a minimize-flag move into a minimized Pokémon (A1 F1 §4.2; INTEGRATION-1A §4 item 6) > Body Slam into a minimized Blissey (Scarlet/Violet): Minimize: double damage.
+ FAIL  |unit| tests/unit/calculator-ngas-2v2.test.ts > Neutralizing Gas in the 2v2 turn: facts, start rows, the moves pane and the outcomes > still names Commander with Dondozo on its side under the gas
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > a Prankster Copycat's called Dragon Claw is immune into a Dark foe it picks (pranksterBoosted; CL-X-PRK)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > after Protect (failcopycat) and with no move used in the battle: it fails (T2P-CPY-03, IN-CPY-01b)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > after a Sleep Talk's call: the called Body Slam is the last move, not Sleep Talk; after a No move: Splash (CL-X-STC, CL-X-SPL)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > after a blocked move (copied), after a fully paralysed foe (the move before it) (T2P-CPY-04, -05, TP2·CC4, CC5)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > after a foe's Dragon Claw: Dragon Claw at a random foe, 1/2 each (T2P-CPY-01, TP2·CC1)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Copycat: the battle's last move at a random foe (PS/data/moves.ts copycat, PS/sim/battle.ts clearActiveMove) > moving first: the battle's last move before this turn (battleLastMove) (T2P-CPY-02, IN-CPY-01, IN-P11)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Instruct: the target's last move again at once, prioritized next (PS/data/moves.ts instruct, sim/battle-queue.ts prioritizeAction) > Helping Hand twice: the instructed Helping Hand gives two (2.25x: Body Slam 165-195) (T2M-HH-01, C26)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Instruct: the target's last move again at once, prioritized next (PS/data/moves.ts instruct, sim/battle-queue.ts prioritizeAction) > a target fainted since: the instructed move is retargeted (T2P-INS-04, TP2·I4); lastMoveTarget given (T2P-INS-05)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Instruct: the target's last move again at once, prioritized next (PS/data/moves.ts instruct, sim/battle-queue.ts prioritizeAction) > on a slower ally: its Earthquake from an earlier turn first, then its own Body Slam (T2P-INS-02, TP3·FU3)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Instruct: the target's last move again at once, prioritized next (PS/data/moves.ts instruct, sim/battle-queue.ts prioritizeAction) > on an ally that moved this turn: its Dragon Claw again, the same target (T2P-INS-01, TP2·I1)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Mirror Move: the target's last move with the mirror flag, at the target (PS/data/moves.ts mirrormove onTryHit) > after the target's Dragon Claw this turn: Dragon Claw at the target (T2P-MIR-01, TP2·MM1)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Sleep Talk: a uniform pick over its callable moves, at a random foe (PS/data/moves.ts sleeptalk) > asleep with Body Slam, Earthquake and Protect: 1/3 each, Protect called through the early branch (T2M-ST-01, T2-ST01)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Uproar: its hit wakes every sleeper; while it is up no Pokémon falls asleep (PS/data/moves.ts uproar) > Uproar's hit first (Noivern is faster): a later Spore fails (CL-X-UPS)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Uproar: its hit wakes every sleeper; while it is up no Pokémon falls asleep (PS/data/moves.ts uproar) > a called Uproar (Copycat's) waits for CL-1 and CL-2: the reason
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Uproar: its hit wakes every sleeper; while it is up no Pokémon falls asleep (PS/data/moves.ts uproar) > an Uproar from last turn: the turn is followed with no assumption about it (T2E-UP-01)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > Uproar: its hit wakes every sleeper; while it is up no Pokémon falls asleep (PS/data/moves.ts uproar) > wakes an asleep foe; its ally's Rest and a foe's Spore then fail (T2M-UP-01, T2-UP01)
+ FAIL  |unit| tests/unit/doubles-calling.test.ts > the calling moves that stay guarded (ADDENDUM2 §2.3 #28) > Instruct by a Protean or Libero user (its PrepareHit changes the type, which doubles-typing.ts leaves out): the reason
+ FAIL  |unit| tests/unit/doubles-eot.test.ts > status2 E2: the integrator's kernel lines > Taunt, Encore and Disable used this turn get their fresh duration (doubles-status.ts: tauntLeft, encoreLeft, disableLeft) [E2X-TNT-new-sv, -late, E2X-DIS-late-sv, E2X-ENC-late-sv, G4-LMV, G4-ENC-01]
+ FAIL  |unit| tests/unit/doubles-eot.test.ts > status2 E2: the integrator's kernel lines > a landing whose user's search would follow its HP (Life Orb): ×1.3, then −1/10 (doubles-turn.ts searchFor with attackerBuild unfollowed) [E2X-FS-LO-sv, T2E-FS14]
+ FAIL  |unit| tests/unit/doubles-field-side-items.test.ts > status2 A3: Court Change, Defog > A3-DF-04, -05: behind a Substitute no evasion drop but the screen goes (F56); a terrain-settled holder keeps today's reason until FC
+ FAIL  |unit| tests/unit/doubles-field-side-items.test.ts > status2 A3: the classification and the handlers > every A3 move is M or C with its handler (classify-a3.md), and doubles-field.ts registers each A3 handler key
+ FAIL  |unit| tests/unit/doubles-field-side-items.test.ts > status2 A3: the rooms and the Sports > A3-MR-06: Magic Room ending with a Booster Energy holder whose field is down (it came in under the room): not estimated until FC
+ FAIL  |unit| tests/unit/doubles-guards-fling.test.ts > status2 D: Fling's item, target side (guards.md §4.5) > D-FLG-18-sv: a flung Berry eaten by a Cud Chew holder counts for its Cud Chew (the end of turn's guard)
+ FAIL  |unit| tests/unit/doubles-moves-pane.test.ts > doublesRepresentative > is the Pokémon that acts on it as the turn starts, and null when two different ones do
+ FAIL  |unit| tests/unit/doubles-reactions.test.ts > Aftermath and Innards Out > the user's faint names Innards Out and Aftermath (K-IO-07, K-AF-06)
+ FAIL  |unit| tests/unit/doubles-reactions.test.ts > Unnerve and As One > sv: Thief into the Berry under a third Pokémon's Unnerve: the narrow reason (K-UN-03)
+ FAIL  |unit| tests/unit/doubles-reactions.test.ts > Unnerve and As One > sv: a third Pokémon's Unnerve stops the target's Haban Berry (K-UN-01)
+ FAIL  |unit| tests/unit/doubles-reactions.test.ts > Unnerve and As One > sv: the user's own Unnerve does not stop its ally's Shuca Berry in a spread move (K-UN-02)
+ FAIL  |unit| tests/unit/doubles-start-rows.test.ts > the 2v2 turn with a partner's power boost or a redirection against pinned Showdown > is not estimated where a turn's result would not be exact, with the reason
+ FAIL  |unit| tests/unit/doubles-start.test.ts > Custap Berry with Quick Draw or Mycelium Might > (integrator ST-1) STP-CUS-01-sv: the Berry held after the turn with 0.3; Quick Draw's fact at 0.3
+ FAIL  |unit| tests/unit/doubles-start.test.ts > Imposter > (integrator ST-4) its turn fact
+ FAIL  |unit| tests/unit/doubles-start.test.ts > Trace > (integrator ST-4) its turn fact; (ST-3) the start rows per copy
+ FAIL  |unit| tests/unit/doubles-start.test.ts > the start copies > (integrator ST-2) CR-08a-sv / G4-OPP-07-sv: applied at the first action's end
+ FAIL  |unit| tests/unit/doubles-status.test.ts > not estimated: Track A's reasons (SPEC §2.4) > gives each where its turn meets it
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 engine fixes: Unnerve and As One from a third Pokémon > a resist Berry the calculation would read otherwise is not estimated in the turn and in the Moves pane
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > F14a: Sleep Talk while asleep
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > F14c: Sleep Talk with Comatose
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > F21a: Sucker Punch against a target using Me First
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > F30d: A third Pokémon's As One and a target's resist Berry
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > R09: Fire Pledge and Grass Pledge from partners combine
+ FAIL  |unit| tests/unit/doubles-turn-fixes.test.ts > round 1 mechanics the turn does not estimate when they occur > R10: Copycat used last copies the move before it
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > Dancer when a dance move is used
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > Focus Band when a hit into it can knock out (modelled: status2 W), and Max Guard
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > Trace with a random source or copying Intimidate; Download with a foe's entry boost
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a Max Move's terrain changing a third Pokémon's Mimicry or Electric Seed (M24i, M24j)
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a Starf Berry eaten as the turn starts, and Opportunist copying a rise
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a spread move healing from several targets, or an attacker affected differently by each target
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a weather, terrain, Tailwind or Trick Room change that would change an ability or item
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > an ability out in 2v2 when it triggers, and a G-Max move's random status
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > two Pokémon acting on one as the turn starts
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > moves and abilities that are out in 2v2 (presence) > names Imposter and Commander with Dondozo on its side; Neutralizing Gas is modelled
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > moves and abilities that are out in 2v2 (presence) > names each move not modelled in 2v2
+ FAIL  |unit| tests/unit/doubles-turn-mechanics.test.ts > a Berry an Unnerve or As One holder stopped, once that holder's HP reaches 0 > the attacker that KOs the holder eats after the hit; with recoil after it, not estimated (M29e, M29f, M29c)
+ FAIL  |unit| tests/unit/doubles-turn-showdown.test.ts > the 2v2 turn against pinned Showdown > S44d: Disable and Encore with lastMove null

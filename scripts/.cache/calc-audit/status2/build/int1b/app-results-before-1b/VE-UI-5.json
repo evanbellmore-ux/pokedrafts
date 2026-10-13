@@ -1,0 +1,289 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 190,
+    "maximum": 190
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "iciclecrash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 48,
+      "max": 57,
+      "minPercent": 20.425531914893615,
+      "maxPercent": 24.25531914893617,
+      "koChance": 0,
+      "row": {
+       "moveId": "iciclecrash",
+       "effectiveName": "Icicle Crash",
+       "effectiveType": "Ice",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 48,
+       "max": 57,
+       "minPercent": 20.425531914893615,
+       "maxPercent": 24.25531914893617,
+       "rolls": [
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57
+       ],
+       "ohkoChance": 0,
+       "description": "Icicle Crash: 48–57 HP (20.4–24.3% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 190,
+    "maximum": 190,
+    "low": 190,
+    "average": 190,
+    "high": 190,
+    "min": 190,
+    "max": 190,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 187,
+    "average": 183.1875,
+    "high": 178,
+    "min": 178,
+    "max": 187,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "iciclecrash",
+     "effectiveName": "Icicle Crash",
+     "effectiveType": "Ice",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 24,
+     "max": 28,
+     "minPercent": 10.212765957446807,
+     "maxPercent": 11.914893617021278,
+     "rolls": [
+      24,
+      24,
+      24,
+      24,
+      24,
+      25,
+      25,
+      25,
+      26,
+      26,
+      27,
+      27,
+      27,
+      27,
+      27,
+      28
+     ],
+     "ohkoChance": 0,
+     "description": "Icicle Crash: 24–28 HP (10.2–11.9% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 9,
+      "fasterChance": 0.17457421420840546,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 211,
+      "high": 207,
+      "average": 209.375,
+      "min": 207,
+      "max": 211,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 24,
+        "heals": []
+       },
+       "high": {
+        "dealt": 28,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Thermal Exchange: Baxcalibur is cured of its burn as the turn starts."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 190,
+     "maximum": 190,
+     "low": 190,
+     "average": 190,
+     "high": 190,
+     "min": 190,
+     "max": 190,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 187,
+     "average": 183.1875,
+     "high": 178,
+     "min": 178,
+     "max": 187,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.262900000000627,
+ "preflight": []
+}

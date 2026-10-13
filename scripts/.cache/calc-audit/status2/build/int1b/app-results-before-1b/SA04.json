@@ -1,0 +1,419 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 330,
+    "maximum": 330
+   },
+   "own-right": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-left": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "rocksmash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 5,
+      "max": 6,
+      "minPercent": 2.8901734104046244,
+      "maxPercent": 3.4682080924855487,
+      "koChance": 0,
+      "row": {
+       "moveId": "rocksmash",
+       "effectiveName": "Rock Smash",
+       "effectiveType": "Fighting",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 5,
+       "max": 6,
+       "minPercent": 2.8901734104046244,
+       "maxPercent": 3.4682080924855487,
+       "rolls": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        6
+       ],
+       "ohkoChance": 0,
+       "description": "Rock Smash: 5–6 HP (2.9–3.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 312,
+      "max": 367,
+      "minPercent": 94.54545454545455,
+      "maxPercent": 111.2121212121212,
+      "koChance": 0.6875,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 312,
+       "max": 367,
+       "minPercent": 94.54545454545455,
+       "maxPercent": 111.2121212121212,
+       "rolls": [
+        312,
+        315,
+        319,
+        322,
+        327,
+        330,
+        333,
+        337,
+        340,
+        345,
+        348,
+        352,
+        355,
+        360,
+        363,
+        367
+       ],
+       "ohkoChance": 0.6875,
+       "description": "Body Slam: 312–367 HP (94.5–111.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 330,
+    "maximum": 330,
+    "low": 18,
+    "average": 3.4375,
+    "high": 0,
+    "min": 0,
+    "max": 18,
+    "koChance": 0.6875,
+    "heals": []
+   },
+   "own-right": {
+    "start": 180,
+    "maximum": 180,
+    "low": 180,
+    "average": 180,
+    "high": 180,
+    "min": 180,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 173,
+    "maximum": 173,
+    "low": 168,
+    "average": 167.9375,
+    "high": 167,
+    "min": 167,
+    "max": 168,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "rocksmash",
+     "effectiveName": "Rock Smash",
+     "effectiveType": "Fighting",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 5,
+     "max": 6,
+     "minPercent": 2.8901734104046244,
+     "maxPercent": 3.4682080924855487,
+     "rolls": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      6
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Smash: 5–6 HP (2.9–3.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "limit": 24,
+      "limitReason": "pp",
+      "needed": 35,
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 168,
+      "high": 167,
+      "average": 167.9375,
+      "min": 167,
+      "max": 168,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 5,
+        "heals": []
+       },
+       "high": {
+        "dealt": 6,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 208,
+     "max": 246,
+     "minPercent": 63.030303030303024,
+     "maxPercent": 74.54545454545455,
+     "rolls": [
+      208,
+      211,
+      213,
+      216,
+      217,
+      220,
+      223,
+      225,
+      228,
+      231,
+      232,
+      235,
+      238,
+      240,
+      243,
+      246
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 208–246 HP (63.0–74.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 330,
+      "low": 122,
+      "high": 84,
+      "average": 103.375,
+      "min": 84,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 208,
+        "heals": []
+       },
+       "high": {
+        "dealt": 246,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Blissey has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 330,
+     "maximum": 330,
+     "low": 18,
+     "average": 3.4375,
+     "high": 0,
+     "min": 0,
+     "max": 18,
+     "koChance": 0.6875,
+     "heals": []
+    },
+    "own-right": {
+     "start": 180,
+     "maximum": 180,
+     "low": 180,
+     "average": 180,
+     "high": 180,
+     "min": 180,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 173,
+     "maximum": 173,
+     "low": 168,
+     "average": 167.9375,
+     "high": 167,
+     "min": 167,
+     "max": 168,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.431799999999839,
+ "preflight": []
+}

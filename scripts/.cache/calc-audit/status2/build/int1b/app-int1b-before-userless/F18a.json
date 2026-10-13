@@ -1,0 +1,252 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": null
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "clangingscales",
+    "effectiveName": "Clangorous Soulblaze",
+    "effectiveType": "Dragon",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 127,
+      "max": 150,
+      "minPercent": 82.46753246753246,
+      "maxPercent": 97.40259740259741,
+      "koChance": 0,
+      "row": {
+       "moveId": "clangingscales",
+       "effectiveName": "Clangorous Soulblaze",
+       "effectiveType": "Dragon",
+       "effectivePower": 185,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 127,
+       "max": 150,
+       "minPercent": 82.46753246753246,
+       "maxPercent": 97.40259740259741,
+       "rolls": [
+        127,
+        129,
+        130,
+        132,
+        133,
+        135,
+        136,
+        138,
+        139,
+        141,
+        142,
+        144,
+        145,
+        147,
+        148,
+        150
+       ],
+       "ohkoChance": 0,
+       "description": "Clangorous Soulblaze: 127–150 HP (82.5–97.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 27,
+    "average": 15.5,
+    "high": 4,
+    "min": 4,
+    "max": 27,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": null
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "clangingscales",
+     "effectiveName": "Clangorous Soulblaze",
+     "effectiveType": "Dragon",
+     "effectivePower": 185,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 127,
+     "max": 150,
+     "minPercent": 82.46753246753246,
+     "maxPercent": 97.40259740259741,
+     "rolls": [
+      127,
+      129,
+      130,
+      132,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141,
+      142,
+      144,
+      145,
+      147,
+      148,
+      150
+     ],
+     "ohkoChance": 0,
+     "description": "Clangorous Soulblaze: 127–150 HP (82.5–97.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 27,
+      "high": 4,
+      "average": 15.5,
+      "min": 4,
+      "max": 27,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 127,
+        "heals": []
+       },
+       "high": {
+        "dealt": 150,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 27,
+     "average": 15.5,
+     "high": 4,
+     "min": 4,
+     "max": 27,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": null
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.970100000000002,
+ "preflight": []
+}

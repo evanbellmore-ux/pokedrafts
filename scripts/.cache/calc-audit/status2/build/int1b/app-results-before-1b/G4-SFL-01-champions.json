@@ -1,0 +1,592 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "crunch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 59,
+      "max": 70,
+      "minPercent": 38.56209150326798,
+      "maxPercent": 45.751633986928105,
+      "koChance": 0,
+      "row": {
+       "moveId": "crunch",
+       "effectiveName": "Crunch",
+       "effectiveType": "Dark",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 59,
+       "max": 70,
+       "minPercent": 38.56209150326798,
+       "maxPercent": 45.751633986928105,
+       "rolls": [
+        59,
+        60,
+        60,
+        61,
+        62,
+        63,
+        63,
+        64,
+        65,
+        65,
+        66,
+        67,
+        67,
+        68,
+        69,
+        70
+       ],
+       "ohkoChance": 0,
+       "description": "Crunch: 59–70 HP (38.6–45.8% of maximum HP). Applied: Sheer Force.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "dragonpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 69,
+      "minPercent": 24.680851063829788,
+      "maxPercent": 29.361702127659573,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonpulse",
+       "effectiveName": "Dragon Pulse",
+       "effectiveType": "Dragon",
+       "effectivePower": 85,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 58,
+       "max": 69,
+       "minPercent": 24.680851063829788,
+       "maxPercent": 29.361702127659573,
+       "rolls": [
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Pulse: 58–69 HP (24.7–29.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 60,
+      "max": 72,
+      "minPercent": 39.21568627450981,
+      "maxPercent": 47.05882352941176,
+      "koChance": 0.01953125,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 60,
+       "max": 72,
+       "minPercent": 39.21568627450981,
+       "maxPercent": 47.05882352941176,
+       "rolls": [
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 60–72 HP (39.2–47.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 153,
+    "low": 59,
+    "average": 47.20703125,
+    "high": 0,
+    "min": 0,
+    "max": 59,
+    "koChance": 0.01953125,
+    "heals": [
+     "Sitrus Berry: +38 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.9804687499999998
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 177,
+    "average": 172.0625,
+    "high": 166,
+    "min": 166,
+    "max": 177,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dragonpulse",
+     "effectiveName": "Dragon Pulse",
+     "effectiveType": "Dragon",
+     "effectivePower": 85,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 58,
+     "max": 69,
+     "minPercent": 24.680851063829788,
+     "maxPercent": 29.361702127659573,
+     "rolls": [
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Pulse: 58–69 HP (24.7–29.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.998291015625,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 177,
+      "high": 166,
+      "average": 172.0625,
+      "min": 166,
+      "max": 177,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 69,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "crunch",
+     "effectiveName": "Crunch",
+     "effectiveType": "Dark",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 59,
+     "max": 70,
+     "minPercent": 38.56209150326798,
+     "maxPercent": 45.751633986928105,
+     "rolls": [
+      59,
+      60,
+      60,
+      61,
+      62,
+      63,
+      63,
+      64,
+      65,
+      65,
+      66,
+      67,
+      67,
+      68,
+      69,
+      70
+     ],
+     "ohkoChance": 0,
+     "description": "Crunch: 59–70 HP (38.6–45.8% of maximum HP). Applied: Sheer Force.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.999755859375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 81,
+      "high": 108,
+      "average": 97.0625,
+      "min": 77,
+      "max": 114,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +38 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 59,
+        "heals": []
+       },
+       "high": {
+        "dealt": 70,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 60,
+     "max": 72,
+     "minPercent": 39.21568627450981,
+     "maxPercent": 47.05882352941176,
+     "rolls": [
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 60–72 HP (39.2–47.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 80,
+      "high": 106,
+      "average": 100.375,
+      "min": 77,
+      "max": 114,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +38 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 72,
+        "heals": [
+         "Sitrus Berry: +38 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Drampa has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 153,
+     "low": 59,
+     "average": 47.20703125,
+     "high": 0,
+     "min": 0,
+     "max": 59,
+     "koChance": 0.01953125,
+     "heals": [
+      "Sitrus Berry: +38 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.9804687499999998
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 177,
+     "average": 172.0625,
+     "high": 166,
+     "min": 166,
+     "max": 177,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.3221999999996115,
+ "preflight": []
+}

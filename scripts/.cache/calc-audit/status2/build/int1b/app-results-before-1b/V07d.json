@@ -1,0 +1,370 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 189,
+    "maximum": 189
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "ragepowder",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 164,
+      "max": 194,
+      "minPercent": 86.77248677248677,
+      "maxPercent": 102.64550264550265,
+      "koChance": 0.125,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 164,
+       "max": 194,
+       "minPercent": 86.77248677248677,
+       "maxPercent": 102.64550264550265,
+       "rolls": [
+        164,
+        164,
+        168,
+        170,
+        170,
+        174,
+        176,
+        176,
+        180,
+        182,
+        182,
+        186,
+        188,
+        188,
+        192,
+        194
+       ],
+       "ohkoChance": 0.125,
+       "description": "Flamethrower: 164–194 HP (86.8–102.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rage Powder: Amoonguss takes Flamethrower.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 189,
+    "maximum": 189,
+    "low": 25,
+    "average": 11.125,
+    "high": 0,
+    "min": 0,
+    "max": 25,
+    "koChance": 0.125,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 21.428571428571427,
+     "maxPercent": 25.324675324675322,
+     "rolls": [
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 33–39 HP (21.4–25.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.003662109375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 121,
+      "high": 115,
+      "average": 118,
+      "min": 115,
+      "max": 121,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 164,
+     "max": 194,
+     "minPercent": 86.77248677248677,
+     "maxPercent": 102.64550264550265,
+     "rolls": [
+      164,
+      164,
+      168,
+      170,
+      170,
+      174,
+      176,
+      176,
+      180,
+      182,
+      182,
+      186,
+      188,
+      188,
+      192,
+      194
+     ],
+     "ohkoChance": 0.125,
+     "description": "Flamethrower: 164–194 HP (86.8–102.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 189,
+      "low": 25,
+      "high": 0,
+      "average": 11.125,
+      "min": 0,
+      "max": 25,
+      "koChance": 0.125,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 164,
+        "heals": []
+       },
+       "high": {
+        "dealt": 189,
+        "heals": []
+       }
+      }
+     }
+    },
+    "fact": "Rage Powder: Amoonguss takes Flamethrower if Rage Powder comes first."
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 189,
+     "maximum": 189,
+     "low": 25,
+     "average": 11.125,
+     "high": 0,
+     "min": 0,
+     "max": 25,
+     "koChance": 0.125,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.7069999999999936,
+ "preflight": []
+}

@@ -1,0 +1,250 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": null
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "heatwave",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 116,
+      "max": 138,
+      "minPercent": 74.83870967741936,
+      "maxPercent": 89.03225806451613,
+      "koChance": 0,
+      "row": {
+       "moveId": "heatwave",
+       "effectiveName": "Heat Wave",
+       "effectiveType": "Fire",
+       "effectivePower": 95,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 116,
+       "max": 138,
+       "minPercent": 74.83870967741936,
+       "maxPercent": 89.03225806451613,
+       "rolls": [
+        116,
+        116,
+        120,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128,
+        128,
+        132,
+        132,
+        134,
+        134,
+        138
+       ],
+       "ohkoChance": 0,
+       "description": "Heat Wave: 116–138 HP (74.8–89.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 39,
+    "average": 29.125,
+    "high": 17,
+    "min": 17,
+    "max": 39,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": null
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "heatwave",
+     "effectiveName": "Heat Wave",
+     "effectiveType": "Fire",
+     "effectivePower": 95,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 116,
+     "max": 138,
+     "minPercent": 74.83870967741936,
+     "maxPercent": 89.03225806451613,
+     "rolls": [
+      116,
+      116,
+      120,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128,
+      128,
+      132,
+      132,
+      134,
+      134,
+      138
+     ],
+     "ohkoChance": 0,
+     "description": "Heat Wave: 116–138 HP (74.8–89.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 39,
+      "high": 17,
+      "average": 29.125,
+      "min": 17,
+      "max": 39,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 116,
+        "heals": []
+       },
+       "high": {
+        "dealt": 138,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 39,
+     "average": 29.125,
+     "high": 17,
+     "min": 17,
+     "max": 39,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": null
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 2.144600000000082,
+ "preflight": []
+}

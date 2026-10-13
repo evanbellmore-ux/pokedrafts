@@ -1,0 +1,335 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 110,
+    "maximum": 170
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "confuseray",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "moonblast",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 59–70 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 33,
+      "max": 39,
+      "minPercent": 24.444444444444443,
+      "maxPercent": 28.888888888888886,
+      "koChance": 0,
+      "row": {
+       "moveId": "moonblast",
+       "effectiveName": "Moonblast",
+       "effectiveType": "Fairy",
+       "effectivePower": 95,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 33,
+       "max": 39,
+       "minPercent": 24.444444444444443,
+       "maxPercent": 28.888888888888886,
+       "rolls": [
+        33,
+        33,
+        33,
+        33,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        39
+       ],
+       "ohkoChance": 0,
+       "description": "Moonblast: 33–39 HP (24.4–28.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 102,
+    "average": 111.34062499999999,
+    "high": 96,
+    "min": 96,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 110,
+    "maximum": 170,
+    "low": 110,
+    "average": 102.636875,
+    "high": 110,
+    "min": 82,
+    "max": 110,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +42 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 0.33
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "moonblast",
+     "effectiveName": "Moonblast",
+     "effectiveType": "Fairy",
+     "effectivePower": 95,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 24.444444444444443,
+     "maxPercent": 28.888888888888886,
+     "rolls": [
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Moonblast: 33–39 HP (24.4–28.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.974609375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 135,
+      "low": 102,
+      "high": 96,
+      "average": 99.6875,
+      "min": 96,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 102,
+     "average": 111.34062499999999,
+     "high": 96,
+     "min": 96,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 110,
+     "maximum": 170,
+     "low": 110,
+     "average": 102.636875,
+     "high": 110,
+     "min": 82,
+     "max": 110,
+     "koChance": 0,
+     "heals": [
+      "Sitrus Berry: +42 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 0.33
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.5794999999998254,
+ "preflight": []
+}

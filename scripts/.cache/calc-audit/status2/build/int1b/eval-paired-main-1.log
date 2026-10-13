@@ -1,0 +1,38 @@
+safe-random-open: safe (p2) vs random (p1), pools S,V, info open
+  p2 score 99.0% [96.4%, 99.7%] n=200 (W 198 / L 2 / T 0), 5.3 turns, capped 0
+  time turn p50 266 ms p95 533 ms max 961 ms (n=1060); preview p95 34 ms; switch p95 9.12 ms; belief p95 5.56 ms
+  budget max engine 216 rollouts 160 builds 4; cells 60440 engine+prelude 90.3% dropped 0; exploitability p95 0.01%
+  errors 0, fallbacks 0, retries 0, engine issues 0, valve 0
+  status held {"followme":33,"trickroom":39,"tailwind":67,"ragepowder":20} usable turns {"trickroom":63,"followme":52,"tailwind":135,"ragepowder":9} chosen {"followme":9,"tailwind":22,"trickroom":9,"ragepowder":2}; mega turns 178 evolved 146 share 81.0%
+  wall 43 s
+safe-maxdamage-suggested: safe (p2) vs maxdamage (p1), pools S, info open
+  p2 score 69.0% [59.4%, 77.2%] n=100 (W 69 / L 31 / T 0), 4.2 turns, capped 0
+  time turn p50 304 ms p95 687 ms max 1138 ms (n=421); preview p95 62 ms; switch p95 8.31 ms; belief p95 4.85 ms
+  budget max engine 212 rollouts 140 builds 4; cells 23175 engine+prelude 88.5% dropped 0; exploitability p95 0.01%
+  errors 0, fallbacks 0, retries 0, engine issues 0, valve 0
+  status held {} usable turns {} chosen {}; mega turns 101 evolved 79 share 79.1%
+  wall 21 s
+
+| Gate                                          | Threshold                                                | Result                                                   | Status  |
+|-----------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|---------|
+| Legality (open)                               | 0 exceptions/issues/fallbacks/errors; all end < turn 200 | 0 errors, 0 engine issues, 0 fallbacks, 0 capped (n=300) | PASS    |
+| Legality (closed)                             | 0 exceptions/issues/fallbacks/errors; all end < turn 200 | not run                                                  | NOT-RUN |
+| Legality (perfect)                            | 0 exceptions/issues/fallbacks/errors; all end < turn 200 | not run                                                  | NOT-RUN |
+| Plays safe vs RandomLegal                     | ≥ 90% (Wilson low ≥ 85%)                                 | 99.0% [96.4%, 99.7%] n=200                               | PASS    |
+| Plays safe vs MaxDamage                       | ≥ 60%                                                    | not run                                                  | NOT-RUN |
+| Reads you vs MaxDamage                        | ≥ 60%                                                    | not run                                                  | NOT-RUN |
+| Reads you − Plays safe, both vs HabitBot      | ≥ +5 points                                              | not run                                                  | NOT-RUN |
+| Self-play, Plays safe both seats              | p2 50% ± 7                                               | not run                                                  | NOT-RUN |
+| Closed team sheets: Plays safe vs RandomLegal | ≥ 85%                                                    | not run                                                  | NOT-RUN |
+| Information cost: open vs perfect             | open ≥ perfect − 10 points                               | not run                                                  | NOT-RUN |
+| Turn decision time (Node, worst run)          | p50 ≤ 400, p95 ≤ 800, max ≤ 2,000 ms                     | p50 304 ms p95 687 ms max 1138 ms (n=1481)               | PASS    |
+| Preview / replacement time                    | p95 ≤ 150 / ≤ 60 ms                                      | 62 ms / 9.12 ms                                          | PASS    |
+| Belief update per turn                        | p95 ≤ 30 ms (closed), ≤ 8 ms (open)                      | closed 0.00 ms, open 5.56 ms                             | PASS    |
+| Work budget per decision                      | engine ≤ 240, rollouts ≤ 160, builds ≤ 4                 | engine 216, rollouts 160, builds 4                       | PASS    |
+| Dropped cells (deterministic)                 | 0                                                        | 0                                                        | PASS    |
+| Cell methods on pool S (soft)                 | engine + prelude ≥ 80%                                   | 88.5% of 23175                                           | PASS    |
+| Exploitability                                | p95 ≤ 2% of the matrix spread                            | 0.01%                                                    | PASS    |
+| Determinism                                   | identical choice-log hashes                              | not run                                                  | NOT-RUN |
+| A1.4 status moves used (pool U)               | each chosen on some turns                                | not run                                                  | NOT-RUN |
+| A1.5 Mega positions                           | keep / Mega in most samples                              | not run                                                  | NOT-RUN |
+| A1.5 per-turn vs first-chance Mega            | per-turn ≥ first-chance − 2 points                       | not run                                                  | NOT-RUN |

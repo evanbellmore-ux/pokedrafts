@@ -1,0 +1,419 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "own-right": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "multiattack",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 93,
+      "max": 109,
+      "minPercent": 39.57446808510638,
+      "maxPercent": 46.38297872340426,
+      "koChance": 0,
+      "row": {
+       "moveId": "multiattack",
+       "effectiveName": "Multi-Attack",
+       "effectiveType": "Water",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 93,
+       "max": 109,
+       "minPercent": 39.57446808510638,
+       "maxPercent": 46.38297872340426,
+       "rolls": [
+        93,
+        93,
+        94,
+        96,
+        96,
+        97,
+        99,
+        100,
+        100,
+        102,
+        103,
+        105,
+        105,
+        106,
+        108,
+        109
+       ],
+       "ohkoChance": 0,
+       "description": "Multi-Attack: 93–109 HP (39.6–46.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Effective move type: Water."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "energyball",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 108,
+      "max": 128,
+      "minPercent": 63.52941176470588,
+      "maxPercent": 75.29411764705883,
+      "koChance": 0,
+      "row": {
+       "moveId": "energyball",
+       "effectiveName": "Energy Ball",
+       "effectiveType": "Grass",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 108,
+       "max": 128,
+       "minPercent": 63.52941176470588,
+       "maxPercent": 75.29411764705883,
+       "rolls": [
+        108,
+        108,
+        110,
+        110,
+        114,
+        114,
+        116,
+        116,
+        116,
+        120,
+        120,
+        122,
+        122,
+        126,
+        126,
+        128
+       ],
+       "ohkoChance": 0,
+       "description": "Energy Ball: 108–128 HP (63.5–75.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 170,
+    "maximum": 170,
+    "low": 62,
+    "average": 52.75,
+    "high": 42,
+    "min": 42,
+    "max": 62,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 180,
+    "maximum": 180,
+    "low": 180,
+    "average": 180,
+    "high": 180,
+    "min": 180,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 142,
+    "average": 134.625,
+    "high": 126,
+    "min": 126,
+    "max": 142,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "multiattack",
+     "effectiveName": "Multi-Attack",
+     "effectiveType": "Water",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 93,
+     "max": 109,
+     "minPercent": 39.57446808510638,
+     "maxPercent": 46.38297872340426,
+     "rolls": [
+      93,
+      93,
+      94,
+      96,
+      96,
+      97,
+      99,
+      100,
+      100,
+      102,
+      103,
+      105,
+      105,
+      106,
+      108,
+      109
+     ],
+     "ohkoChance": 0,
+     "description": "Multi-Attack: 93–109 HP (39.6–46.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Effective move type: Water."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 142,
+      "high": 126,
+      "average": 134.625,
+      "min": 126,
+      "max": 142,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 93,
+        "heals": []
+       },
+       "high": {
+        "dealt": 109,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "energyball",
+     "effectiveName": "Energy Ball",
+     "effectiveType": "Grass",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 108,
+     "max": 128,
+     "minPercent": 63.52941176470588,
+     "maxPercent": 75.29411764705883,
+     "rolls": [
+      108,
+      108,
+      110,
+      110,
+      114,
+      114,
+      116,
+      116,
+      116,
+      120,
+      120,
+      122,
+      122,
+      126,
+      126,
+      128
+     ],
+     "ohkoChance": 0,
+     "description": "Energy Ball: 108–128 HP (63.5–75.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 170,
+      "low": 62,
+      "high": 42,
+      "average": 52.75,
+      "min": 42,
+      "max": 62,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 108,
+        "heals": []
+       },
+       "high": {
+        "dealt": 128,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 170,
+     "maximum": 170,
+     "low": 62,
+     "average": 52.75,
+     "high": 42,
+     "min": 42,
+     "max": 62,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 180,
+     "maximum": 180,
+     "low": 180,
+     "average": 180,
+     "high": 180,
+     "min": 180,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 142,
+     "average": 134.625,
+     "high": 126,
+     "min": 126,
+     "max": 142,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.1993999999999687,
+ "preflight": []
+}

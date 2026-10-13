@@ -1,0 +1,278 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "surgingstrikes",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 92,
+      "minPercent": 16.595744680851062,
+      "maxPercent": 39.148936170212764,
+      "koChance": 0,
+      "row": {
+       "moveId": "surgingstrikes",
+       "effectiveName": "Surging Strikes",
+       "effectiveType": "Water",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 117,
+       "max": 138,
+       "minPercent": 49.787234042553195,
+       "maxPercent": 58.723404255319146,
+       "rolls": [
+        [
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46
+        ],
+        [
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46
+        ],
+        [
+         39,
+         39,
+         39,
+         40,
+         40,
+         40,
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Surging Strikes: 117–138 HP (49.8–58.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 3,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 3,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       },
+       {
+        "text": "Surging Strikes is always a critical hit.",
+        "chance": 1
+       },
+       {
+        "text": "Surging Strikes hits Snorlax after its Substitute breaks.",
+        "chance": 1
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 40,
+       "max": 40,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 196,
+    "average": 158.76171875,
+    "high": 143,
+    "min": 143,
+    "max": 196,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "surgingstrikes",
+     "effectiveName": "Surging Strikes",
+     "effectiveType": "Water",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits three times. This move is always a critical hit unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; critical hits only where certain; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 196,
+     "average": 158.76171875,
+     "high": 143,
+     "min": 143,
+     "max": 196,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.294199999999819,
+ "preflight": []
+}

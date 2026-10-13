@@ -1,0 +1,272 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 40,
+    "maximum": 132
+   },
+   "own-right": {
+    "hp": 40,
+    "maximum": 130
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 155,
+    "maximum": 155
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "lifedew",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": 33,
+       "max": 33
+      }
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": 33,
+       "max": 33
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "junglehealing",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.75,
+    "skipped": [
+     {
+      "text": "Fully paralysed.",
+      "chance": 0.25
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.75,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": 33,
+       "max": 33
+      }
+     },
+     {
+      "slot": "own-right",
+      "reached": 0.75,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its paralysis is cured.",
+        "chance": 0.75
+       }
+      ],
+      "change": {
+       "min": 32,
+       "max": 32
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 40,
+    "maximum": 132,
+    "low": 106,
+    "average": 97.75,
+    "high": 106,
+    "min": 73,
+    "max": 106,
+    "koChance": 0,
+    "heals": [
+     "Life Dew: +33 HP.",
+     "Jungle Healing: +33 HP."
+    ]
+   },
+   "own-right": {
+    "start": 40,
+    "maximum": 130,
+    "low": 105,
+    "average": 97,
+    "high": 105,
+    "min": 73,
+    "max": 105,
+    "koChance": 0,
+    "heals": [
+     "Life Dew: +33 HP.",
+     "Jungle Healing: +32 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 0.75
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 40,
+     "maximum": 132,
+     "low": 106,
+     "average": 97.75,
+     "high": 106,
+     "min": 73,
+     "max": 106,
+     "koChance": 0,
+     "heals": [
+      "Life Dew: +33 HP.",
+      "Jungle Healing: +33 HP."
+     ]
+    },
+    "own-right": {
+     "start": 40,
+     "maximum": 130,
+     "low": 105,
+     "average": 97,
+     "high": 105,
+     "min": 73,
+     "max": 105,
+     "koChance": 0,
+     "heals": [
+      "Life Dew: +33 HP.",
+      "Jungle Healing: +32 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 0.825
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-right",
+     "effect": "Healer",
+     "other": "own-left",
+     "chance": 0.075,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Cures its paralysis.",
+       "chance": 0.075
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 4.065600000000359,
+ "preflight": []
+}

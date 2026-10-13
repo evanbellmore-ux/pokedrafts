@@ -1,0 +1,616 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "opponent-right": {
+    "hp": 153,
+    "maximum": 153
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "endure",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Endure: Charizard keeps at least 1 HP this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "endure",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Endure: Venusaur keeps at least 1 HP this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bravebird",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 134,
+      "max": 158,
+      "minPercent": 86.45161290322581,
+      "maxPercent": 101.93548387096773,
+      "koChance": 0,
+      "row": {
+       "moveId": "bravebird",
+       "effectiveName": "Brave Bird",
+       "effectiveType": "Flying",
+       "effectivePower": 120,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 134,
+       "max": 158,
+       "minPercent": 86.45161290322581,
+       "maxPercent": 101.93548387096773,
+       "rolls": [
+        134,
+        134,
+        138,
+        138,
+        140,
+        140,
+        144,
+        144,
+        146,
+        146,
+        150,
+        150,
+        152,
+        152,
+        156,
+        158
+       ],
+       "ohkoChance": 0,
+       "description": "Brave Bird: 134–158 HP (86.5–101.9% of maximum HP). Applied: Gale Wings.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       },
+       "survival": "Focus Sash"
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "iciclespear",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 80,
+      "max": 105,
+      "minPercent": 52.28758169934641,
+      "maxPercent": 68.62745098039215,
+      "koChance": 0,
+      "row": {
+       "moveId": "iciclespear",
+       "effectiveName": "Icicle Spear",
+       "effectiveType": "Ice",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 80,
+       "max": 105,
+       "minPercent": 52.28758169934641,
+       "maxPercent": 68.62745098039215,
+       "rolls": [
+        [
+         16,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         21
+        ],
+        [
+         16,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         21
+        ],
+        [
+         16,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         21
+        ],
+        [
+         16,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         21
+        ],
+        [
+         16,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         18,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         19,
+         21
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Icicle Spear: 80–105 HP (52.3–68.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Skill Link: 5 hits.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 5,
+        "reason": "Skill Link: 5 hits."
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 153,
+    "low": 1,
+    "average": 1,
+    "high": 1,
+    "min": 1,
+    "max": 1,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 21,
+    "average": 10.25,
+    "high": 1,
+    "min": 1,
+    "max": 21,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 125,
+    "average": 125,
+    "high": 125,
+    "min": 125,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 153,
+    "maximum": 153,
+    "low": 109,
+    "average": 105.125,
+    "high": 102,
+    "min": 102,
+    "max": 109,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "iciclespear",
+     "effectiveName": "Icicle Spear",
+     "effectiveType": "Ice",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 80,
+     "max": 105,
+     "minPercent": 52.28758169934641,
+     "maxPercent": 68.62745098039215,
+     "rolls": [
+      [
+       16,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       21
+      ],
+      [
+       16,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       21
+      ],
+      [
+       16,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       21
+      ],
+      [
+       16,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       21
+      ],
+      [
+       16,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       18,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       19,
+       21
+      ]
+     ],
+     "ohkoChance": 1,
+     "description": "Icicle Spear: 80–105 HP (52.3–68.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Skill Link: 5 hits."
+     ],
+     "reason": null,
+     "hits": 5,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 5,
+      "reason": "Skill Link: 5 hits."
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 48,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes 5 hits on every use."
+      ]
+     },
+     "afterUse": {
+      "start": 60,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "bravebird",
+     "effectiveName": "Brave Bird",
+     "effectiveType": "Flying",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 134,
+     "max": 158,
+     "minPercent": 86.45161290322581,
+     "maxPercent": 101.93548387096773,
+     "rolls": [
+      134,
+      134,
+      138,
+      138,
+      140,
+      140,
+      144,
+      144,
+      146,
+      146,
+      150,
+      150,
+      152,
+      152,
+      156,
+      158
+     ],
+     "ohkoChance": 0,
+     "description": "Brave Bird: 134–158 HP (86.5–101.9% of maximum HP). Applied: Gale Wings.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Full-HP Focus Sash/Sturdy: no one-hit KO unless bypassed."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "survival": "Focus Sash",
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Brave Bird's damage follows the attacker's HP."
+      ],
+      "notes": [],
+      "survival": "Focus Sash"
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 21,
+      "high": 1,
+      "average": 10.25,
+      "min": 1,
+      "max": 21,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 134,
+        "heals": []
+       },
+       "high": {
+        "dealt": 154,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 153,
+     "low": 1,
+     "average": 1,
+     "high": 1,
+     "min": 1,
+     "max": 1,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 21,
+     "average": 10.25,
+     "high": 1,
+     "min": 1,
+     "max": 21,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 125,
+     "average": 125,
+     "high": 125,
+     "min": 125,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 153,
+     "maximum": 153,
+     "low": 109,
+     "average": 105.125,
+     "high": 102,
+     "min": 102,
+     "max": 109,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.664299999999912,
+ "preflight": []
+}

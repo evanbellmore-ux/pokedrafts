@@ -1,0 +1,302 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 202,
+    "maximum": 202
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 137,
+    "maximum": 137
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "electrify",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Electrify: its move is Electric type this turn.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "naturalgift",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 160,
+      "max": 192,
+      "minPercent": 79.20792079207921,
+      "maxPercent": 95.04950495049505,
+      "koChance": 0,
+      "row": {
+       "moveId": "naturalgift",
+       "effectiveName": "Natural Gift",
+       "effectiveType": "Electric",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 160,
+       "max": 192,
+       "minPercent": 79.20792079207921,
+       "maxPercent": 95.04950495049505,
+       "rolls": [
+        160,
+        164,
+        164,
+        168,
+        168,
+        172,
+        172,
+        176,
+        176,
+        180,
+        180,
+        184,
+        184,
+        188,
+        188,
+        192
+       ],
+       "ohkoChance": 0,
+       "description": "Natural Gift: 160–192 HP (79.2–95.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 202,
+    "maximum": 202,
+    "low": 42,
+    "average": 26,
+    "high": 10,
+    "min": 10,
+    "max": 42,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 137,
+    "maximum": 137,
+    "low": 137,
+    "average": 137,
+    "high": 137,
+    "min": 137,
+    "max": 137,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "naturalgift",
+     "effectiveName": "Natural Gift",
+     "effectiveType": "Psychic",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 40,
+     "max": 48,
+     "minPercent": 19.801980198019802,
+     "maxPercent": 23.762376237623762,
+     "rolls": [
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45,
+      45,
+      46,
+      46,
+      47,
+      47,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Natural Gift: 40–48 HP (19.8–23.8% of maximum HP). Applied: Sitrus Berry.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Effective move type: Psychic."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Natural Gift uses up its Berry",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 202,
+      "low": 162,
+      "high": 154,
+      "average": 158,
+      "min": 154,
+      "max": 162,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 40,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 202,
+     "maximum": 202,
+     "low": 42,
+     "average": 26,
+     "high": 10,
+     "min": 10,
+     "max": 42,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 137,
+     "maximum": 137,
+     "low": 137,
+     "average": 137,
+     "high": 137,
+     "min": 137,
+     "max": 137,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.94800000000032,
+ "preflight": []
+}

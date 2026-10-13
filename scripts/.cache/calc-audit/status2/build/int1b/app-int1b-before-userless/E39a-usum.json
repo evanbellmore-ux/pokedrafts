@@ -1,0 +1,287 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 153,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "flamethrower",
+    "effectiveName": "Inferno Overdrive",
+    "effectiveType": "Fire",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Inferno Overdrive",
+       "effectiveType": "Fire",
+       "effectivePower": 175,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 49,
+       "max": 58,
+       "minPercent": 20.851063829787233,
+       "maxPercent": 24.680851063829788,
+       "rolls": [
+        49,
+        49,
+        49,
+        51,
+        51,
+        52,
+        52,
+        52,
+        54,
+        54,
+        55,
+        55,
+        55,
+        57,
+        57,
+        58
+       ],
+       "ohkoChance": 0,
+       "description": "Inferno Overdrive: 49–58 HP (20.9–24.7% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 0.0625
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 49,
+       "max": 58,
+       "breaks": 0.0625
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 153,
+    "maximum": 153,
+    "low": 153,
+    "average": 153,
+    "high": 153,
+    "min": 153,
+    "max": 153,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 9 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 7 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 6 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 4 HP.",
+      "chance": 0.125
+     },
+     {
+      "text": "Substitute: 3 HP.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Substitute: 1 HP.",
+      "chance": 0.125
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Inferno Overdrive",
+     "effectiveType": "Fire",
+     "effectivePower": 175,
+     "effectiveCategory": "Special",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 10% chance to burn the target.",
+     "assumptions": [],
+     "reason": "Snorlax is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 9 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 7 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 6 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 4 HP.",
+       "chance": 0.125
+      },
+      {
+       "text": "Substitute: 3 HP.",
+       "chance": 0.1875
+      },
+      {
+       "text": "Substitute: 1 HP.",
+       "chance": 0.125
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.477900000000318,
+ "preflight": []
+}

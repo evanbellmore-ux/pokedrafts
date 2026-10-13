@@ -1,0 +1,275 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 330,
+    "maximum": 330
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "spectralthief",
+    "effectiveName": "Soul-Stealing 7-Star Strike",
+    "effectiveType": "Ghost",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 139,
+      "max": 165,
+      "minPercent": 75.95628415300546,
+      "maxPercent": 90.1639344262295,
+      "koChance": 0,
+      "row": {
+       "moveId": "spectralthief",
+       "effectiveName": "Soul-Stealing 7-Star Strike",
+       "effectiveType": "Ghost",
+       "effectivePower": 195,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 139,
+       "max": 165,
+       "minPercent": 75.95628415300546,
+       "maxPercent": 90.1639344262295,
+       "rolls": [
+        139,
+        141,
+        142,
+        144,
+        145,
+        148,
+        150,
+        151,
+        153,
+        154,
+        156,
+        157,
+        159,
+        160,
+        162,
+        165
+       ],
+       "ohkoChance": 0,
+       "description": "Soul-Stealing 7-Star Strike: 139–165 HP (76.0–90.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 118,
+    "average": 118,
+    "high": 118,
+    "min": 118,
+    "max": 118,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 44,
+    "average": 31.375,
+    "high": 18,
+    "min": 18,
+    "max": 44,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "spectralthief",
+     "effectiveName": "Soul-Stealing 7-Star Strike",
+     "effectiveType": "Ghost",
+     "effectivePower": 195,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 139,
+     "max": 165,
+     "minPercent": 75.95628415300546,
+     "maxPercent": 90.1639344262295,
+     "rolls": [
+      139,
+      141,
+      142,
+      144,
+      145,
+      148,
+      150,
+      151,
+      153,
+      154,
+      156,
+      157,
+      159,
+      160,
+      162,
+      165
+     ],
+     "ohkoChance": 0,
+     "description": "Soul-Stealing 7-Star Strike: 139–165 HP (76.0–90.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 44,
+      "high": 18,
+      "average": 31.375,
+      "min": 18,
+      "max": 44,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 139,
+        "heals": []
+       },
+       "high": {
+        "dealt": 165,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 118,
+     "average": 118,
+     "high": 118,
+     "min": 118,
+     "max": 118,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 44,
+     "average": 31.375,
+     "high": 18,
+     "min": 18,
+     "max": 44,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 330,
+     "maximum": 330,
+     "low": 330,
+     "average": 330,
+     "high": 330,
+     "min": 330,
+     "max": 330,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.819600000000264,
+ "preflight": []
+}

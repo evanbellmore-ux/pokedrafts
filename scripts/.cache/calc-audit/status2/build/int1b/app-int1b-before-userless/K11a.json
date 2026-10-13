@@ -1,0 +1,253 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": null,
+   "opponent-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "lastrespects",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 73,
+      "max": 87,
+      "minPercent": 47.096774193548384,
+      "maxPercent": 56.12903225806451,
+      "koChance": 0,
+      "row": {
+       "moveId": "lastrespects",
+       "effectiveName": "Last Respects",
+       "effectiveType": "Ghost",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 73,
+       "max": 87,
+       "minPercent": 47.096774193548384,
+       "maxPercent": 56.12903225806451,
+       "rolls": [
+        73,
+        73,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        84,
+        85,
+        87
+       ],
+       "ohkoChance": 0,
+       "description": "Last Respects: 73–87 HP (47.1–56.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Last Respects: 1 fainted, 100 power."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": null,
+   "opponent-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 82,
+    "average": 75.5,
+    "high": 68,
+    "min": 68,
+    "max": 82,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "lastrespects",
+     "effectiveName": "Last Respects",
+     "effectiveType": "Ghost",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 73,
+     "max": 87,
+     "minPercent": 47.096774193548384,
+     "maxPercent": 56.12903225806451,
+     "rolls": [
+      73,
+      73,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      84,
+      85,
+      87
+     ],
+     "ohkoChance": 0,
+     "description": "Last Respects: 73–87 HP (47.1–56.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Last Respects: 1 fainted, 100 power."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.76171875,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 82,
+      "high": 68,
+      "average": 75.5,
+      "min": 68,
+      "max": 82,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 73,
+        "heals": []
+       },
+       "high": {
+        "dealt": 87,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": null,
+    "opponent-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 82,
+     "average": 75.5,
+     "high": 68,
+     "min": 68,
+     "max": 82,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.1312000000000353,
+ "preflight": []
+}

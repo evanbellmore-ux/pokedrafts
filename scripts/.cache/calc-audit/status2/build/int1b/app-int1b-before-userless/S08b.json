@@ -1,0 +1,487 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 173,
+    "maximum": 173
+   },
+   "opponent-left": {
+    "hp": 205,
+    "maximum": 205
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "willowisp",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Is burned.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "facade",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 76,
+      "max": 90,
+      "minPercent": 43.93063583815029,
+      "maxPercent": 52.02312138728323,
+      "koChance": 0,
+      "row": {
+       "moveId": "facade",
+       "effectiveName": "Facade",
+       "effectiveType": "Normal",
+       "effectivePower": 140,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 76,
+       "max": 90,
+       "minPercent": 43.93063583815029,
+       "maxPercent": 52.02312138728323,
+       "rolls": [
+        76,
+        77,
+        78,
+        78,
+        79,
+        81,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        87,
+        88,
+        90
+       ],
+       "ohkoChance": 0,
+       "description": "Facade: 76–90 HP (43.9–52.0% of maximum HP). Applied: Guts.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 140."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "facade",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 49,
+      "minPercent": 24.277456647398843,
+      "maxPercent": 28.32369942196532,
+      "koChance": 0,
+      "row": {
+       "moveId": "facade",
+       "effectiveName": "Facade",
+       "effectiveType": "Normal",
+       "effectivePower": 140,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 42,
+       "max": 49,
+       "minPercent": 24.277456647398843,
+       "maxPercent": 28.32369942196532,
+       "rolls": [
+        42,
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        48,
+        49
+       ],
+       "ohkoChance": 0,
+       "description": "Facade: 42–49 HP (24.3–28.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 140."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 173,
+    "maximum": 173,
+    "low": 55,
+    "average": 45.1875,
+    "high": 34,
+    "min": 34,
+    "max": 55,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 205,
+    "maximum": 205,
+    "low": 205,
+    "average": 205,
+    "high": 205,
+    "min": 205,
+    "max": 205,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Burned.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "facade",
+     "effectiveName": "Facade",
+     "effectiveType": "Normal",
+     "effectivePower": 140,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 76,
+     "max": 90,
+     "minPercent": 43.93063583815029,
+     "maxPercent": 52.02312138728323,
+     "rolls": [
+      76,
+      77,
+      78,
+      78,
+      79,
+      81,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      87,
+      88,
+      90
+     ],
+     "ohkoChance": 0,
+     "description": "Facade: 76–90 HP (43.9–52.0% of maximum HP). Applied: Guts.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 140."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.125,
+      "limit": 16,
+      "limitReason": "pressure",
+      "carried": [
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 97,
+      "high": 83,
+      "average": 90.375,
+      "min": 83,
+      "max": 97,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 76,
+        "heals": []
+       },
+       "high": {
+        "dealt": 90,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "facade",
+     "effectiveName": "Facade",
+     "effectiveType": "Normal",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 21,
+     "max": 25,
+     "minPercent": 12.138728323699421,
+     "maxPercent": 14.450867052023122,
+     "rolls": [
+      21,
+      21,
+      21,
+      21,
+      22,
+      22,
+      22,
+      23,
+      23,
+      23,
+      24,
+      24,
+      24,
+      24,
+      24,
+      25
+     ],
+     "ohkoChance": 0,
+     "description": "Facade: 21–25 HP (12.1–14.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 7,
+      "fasterChance": 0.996076226234436,
+      "limit": 16,
+      "limitReason": "pressure",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 152,
+      "high": 148,
+      "average": 150.25,
+      "min": 148,
+      "max": 152,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 21,
+        "heals": []
+       },
+       "high": {
+        "dealt": 25,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 173,
+     "maximum": 173,
+     "low": 55,
+     "average": 45.1875,
+     "high": 34,
+     "min": 34,
+     "max": 55,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 205,
+     "maximum": 205,
+     "low": 193,
+     "average": 193,
+     "high": 193,
+     "min": 193,
+     "max": 193,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 221,
+     "average": 221,
+     "high": 221,
+     "min": 221,
+     "max": 221,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Burned.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -12,
+     "max": -12,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 5.226599999999962,
+ "preflight": []
+}

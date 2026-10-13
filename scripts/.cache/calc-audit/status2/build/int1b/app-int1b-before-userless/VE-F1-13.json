@@ -1,0 +1,1318 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 100,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bulletseed",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 39,
+      "max": 120,
+      "minPercent": 16.595744680851062,
+      "maxPercent": 51.06382978723404,
+      "koChance": 0,
+      "row": {
+       "moveId": "bulletseed",
+       "effectiveName": "Bullet Seed",
+       "effectiveType": "Grass",
+       "effectivePower": 25,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 17.02127659574468,
+       "maxPercent": 20.425531914893615,
+       "rolls": [
+        [
+         20,
+         20,
+         20,
+         21,
+         21,
+         21,
+         21,
+         22,
+         22,
+         22,
+         22,
+         23,
+         23,
+         23,
+         23,
+         24
+        ],
+        [
+         20,
+         20,
+         20,
+         21,
+         21,
+         21,
+         21,
+         22,
+         22,
+         22,
+         22,
+         23,
+         23,
+         23,
+         23,
+         24
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Bullet Seed: 40–48 HP (17.0–20.4% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       }
+      },
+      "cases": 7,
+      "facts": [
+       {
+        "text": "Snorlax eats its Ganlon Berry after hit 2: +1 Defense.",
+        "chance": 0.5662109375
+       },
+       {
+        "text": "Snorlax eats its Ganlon Berry after hit 3: +1 Defense.",
+        "chance": 0.038671874999999994
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 78,
+      "max": 93,
+      "minPercent": 52,
+      "maxPercent": 62,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 78,
+       "max": 93,
+       "minPercent": 52,
+       "maxPercent": 62,
+       "rolls": [
+        78,
+        79,
+        79,
+        81,
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 78–93 HP (52.0–62.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 72,
+    "average": 64.9375,
+    "high": 57,
+    "min": 57,
+    "max": 72,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 100,
+    "maximum": 235,
+    "low": 60,
+    "average": 40.133068847656226,
+    "high": 4,
+    "min": 3,
+    "max": 60,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.9548828125
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bulletseed",
+     "effectiveName": "Bullet Seed",
+     "effectiveType": "Grass",
+     "effectivePower": 25,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 40,
+     "max": 120,
+     "minPercent": 17.02127659574468,
+     "maxPercent": 51.06382978723404,
+     "rolls": [
+      [
+       20,
+       20,
+       20,
+       21,
+       21,
+       21,
+       21,
+       22,
+       22,
+       22,
+       22,
+       23,
+       23,
+       23,
+       23,
+       24
+      ],
+      [
+       20,
+       20,
+       20,
+       21,
+       21,
+       21,
+       21,
+       22,
+       22,
+       22,
+       22,
+       23,
+       23,
+       23,
+       23,
+       24
+      ],
+      [
+       20,
+       20,
+       20,
+       21,
+       21,
+       21,
+       21,
+       22,
+       22,
+       22,
+       22,
+       23,
+       23,
+       23,
+       23,
+       24
+      ],
+      [
+       20,
+       20,
+       20,
+       21,
+       21,
+       21,
+       21,
+       22,
+       22,
+       22,
+       22,
+       23,
+       23,
+       23,
+       23,
+       24
+      ],
+      [
+       20,
+       20,
+       20,
+       21,
+       21,
+       21,
+       21,
+       22,
+       22,
+       22,
+       22,
+       23,
+       23,
+       23,
+       23,
+       24
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Bullet Seed: 40–120 HP (17.0–51.1% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Bullet Seed: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 5,
+     "hitRule": {
+      "kind": "choose",
+      "min": 2,
+      "max": 5,
+      "defaultHits": null,
+      "perHitAccuracy": false,
+      "loadedDice": false,
+      "chances": [
+       {
+        "hits": 2,
+        "chance": 0.35
+       },
+       {
+        "hits": 3,
+        "chance": 0.35
+       },
+       {
+        "hits": 4,
+        "chance": 0.15
+       },
+       {
+        "hits": 5,
+        "chance": 0.15
+       }
+      ]
+     },
+     "hitChances": [
+      {
+       "hits": 2,
+       "chance": 0.35
+      },
+      {
+       "hits": 3,
+       "chance": 0.35
+      },
+      {
+       "hits": 4,
+       "chance": 0.15
+      },
+      {
+       "hits": 5,
+       "chance": 0.15
+      }
+     ],
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 1,
+      "fasterChance": 0.9914306354969737,
+      "limit": 48,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Ganlon Berry raises its Defense at a quarter of its HP.",
+       "Each use has its own hit count (2–5)."
+      ],
+      "notes": []
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 78,
+     "max": 93,
+     "minPercent": 52,
+     "maxPercent": 62,
+     "rolls": [
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      85,
+      85,
+      87,
+      87,
+      88,
+      90,
+      90,
+      91,
+      93
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 78–93 HP (52.0–62.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 72,
+      "high": 57,
+      "average": 64.9375,
+      "min": 57,
+      "max": 72,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 78,
+        "heals": []
+       },
+       "high": {
+        "dealt": 93,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Cinccino has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 72,
+     "average": 64.9375,
+     "high": 57,
+     "min": 57,
+     "max": 72,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 100,
+     "maximum": 235,
+     "low": 60,
+     "average": 40.133068847656226,
+     "high": 4,
+     "min": 3,
+     "max": 60,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.9548828125
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 17.801800000000185,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 100,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.045117187499999996,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 57,
+        "chance": 0.0625
+       },
+       {
+        "hp": 59,
+        "chance": 0.0625
+       },
+       {
+        "hp": 60,
+        "chance": 0.125
+       },
+       {
+        "hp": 62,
+        "chance": 0.0625
+       },
+       {
+        "hp": 63,
+        "chance": 0.125
+       },
+       {
+        "hp": 65,
+        "chance": 0.125
+       },
+       {
+        "hp": 66,
+        "chance": 0.0625
+       },
+       {
+        "hp": 68,
+        "chance": 0.125
+       },
+       {
+        "hp": 69,
+        "chance": 0.0625
+       },
+       {
+        "hp": 71,
+        "chance": 0.125
+       },
+       {
+        "hp": 72,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "cinccino",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "venusaur",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 59,
+        "chance": 0.7272727272727272
+       },
+       {
+        "hp": 60,
+        "chance": 0.2727272727272727
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "ganlonberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 154,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "blastoise",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.9548828125,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 57,
+        "chance": 0.0625
+       },
+       {
+        "hp": 59,
+        "chance": 0.0625
+       },
+       {
+        "hp": 60,
+        "chance": 0.125
+       },
+       {
+        "hp": 62,
+        "chance": 0.0625
+       },
+       {
+        "hp": 63,
+        "chance": 0.125
+       },
+       {
+        "hp": 65,
+        "chance": 0.125
+       },
+       {
+        "hp": 66,
+        "chance": 0.0625
+       },
+       {
+        "hp": 68,
+        "chance": 0.125
+       },
+       {
+        "hp": 69,
+        "chance": 0.0625
+       },
+       {
+        "hp": 71,
+        "chance": 0.125
+       },
+       {
+        "hp": 72,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "cinccino",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "venusaur",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 3,
+        "chance": 0.000003595443853548783
+       },
+       {
+        "hp": 4,
+        "chance": 0.00005902520326242585
+       },
+       {
+        "hp": 5,
+        "chance": 0.0003850121126508489
+       },
+       {
+        "hp": 6,
+        "chance": 0.0013366062525567602
+       },
+       {
+        "hp": 7,
+        "chance": 0.0029762784599355694
+       },
+       {
+        "hp": 8,
+        "chance": 0.005178787440555328
+       },
+       {
+        "hp": 9,
+        "chance": 0.008081958542135406
+       },
+       {
+        "hp": 10,
+        "chance": 0.012086683754346492
+       },
+       {
+        "hp": 11,
+        "chance": 0.017303972406166903
+       },
+       {
+        "hp": 12,
+        "chance": 0.022778035673194925
+       },
+       {
+        "hp": 13,
+        "chance": 0.026204044235145225
+       },
+       {
+        "hp": 14,
+        "chance": 0.02500945801480364
+       },
+       {
+        "hp": 15,
+        "chance": 0.01894619138627531
+       },
+       {
+        "hp": 16,
+        "chance": 0.01088880171047249
+       },
+       {
+        "hp": 17,
+        "chance": 0.004489810512119042
+       },
+       {
+        "hp": 18,
+        "chance": 0.0011972828032317446
+       },
+       {
+        "hp": 19,
+        "chance": 0.00021932207506647573
+       },
+       {
+        "hp": 20,
+        "chance": 0.0005992406422581304
+       },
+       {
+        "hp": 21,
+        "chance": 0.002219587338924115
+       },
+       {
+        "hp": 22,
+        "chance": 0.004300150848844344
+       },
+       {
+        "hp": 23,
+        "chance": 0.006704304305583965
+       },
+       {
+        "hp": 24,
+        "chance": 0.010175106105543057
+       },
+       {
+        "hp": 25,
+        "chance": 0.015134421660871342
+       },
+       {
+        "hp": 26,
+        "chance": 0.02141686055430558
+       },
+       {
+        "hp": 27,
+        "chance": 0.02703054689097975
+       },
+       {
+        "hp": 28,
+        "chance": 0.028360861116792792
+       },
+       {
+        "hp": 29,
+        "chance": 0.02266567805277153
+       },
+       {
+        "hp": 30,
+        "chance": 0.012900452546533034
+       },
+       {
+        "hp": 31,
+        "chance": 0.004659695234199223
+       },
+       {
+        "hp": 32,
+        "chance": 0.0008629065248517079
+       },
+       {
+        "hp": 35,
+        "chance": 0.002147678461853139
+       },
+       {
+        "hp": 36,
+        "chance": 0.009485579873184696
+       },
+       {
+        "hp": 37,
+        "chance": 0.013065043976273264
+       },
+       {
+        "hp": 38,
+        "chance": 0.01879218654121497
+       },
+       {
+        "hp": 39,
+        "chance": 0.030693904683984457
+       },
+       {
+        "hp": 40,
+        "chance": 0.043758948660257715
+       },
+       {
+        "hp": 41,
+        "chance": 0.061924728983432195
+       },
+       {
+        "hp": 42,
+        "chance": 0.0733790141133156
+       },
+       {
+        "hp": 43,
+        "chance": 0.06604111270198404
+       },
+       {
+        "hp": 44,
+        "chance": 0.036510533851503366
+       },
+       {
+        "hp": 45,
+        "chance": 0.010738392309265698
+       },
+       {
+        "hp": 52,
+        "chance": 0.0014317856412354264
+       },
+       {
+        "hp": 53,
+        "chance": 0.011454285129883411
+       },
+       {
+        "hp": 54,
+        "chance": 0.03436285538965024
+       },
+       {
+        "hp": 55,
+        "chance": 0.057271425649417056
+       },
+       {
+        "hp": 56,
+        "chance": 0.07731642462671302
+       },
+       {
+        "hp": 57,
+        "chance": 0.08017999590918387
+       },
+       {
+        "hp": 58,
+        "chance": 0.057271425649417056
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 154,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "blastoise",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

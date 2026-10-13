@@ -1,0 +1,709 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 154,
+    "maximum": 154
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "teeterdance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.8
+     },
+     {
+      "position": 2,
+      "chance": 0.2
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "waterpulse",
+    "order": [
+     {
+      "position": 2,
+      "chance": 0.4
+     },
+     {
+      "position": 3,
+      "chance": 0.5
+     },
+     {
+      "position": 4,
+      "chance": 0.1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 14–17 HP.",
+      "chance": 0.33000000000000007
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 28,
+      "max": 34,
+      "minPercent": 11.914893617021278,
+      "maxPercent": 14.468085106382977,
+      "koChance": 0,
+      "row": {
+       "moveId": "waterpulse",
+       "effectiveName": "Water Pulse",
+       "effectiveType": "Water",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 28,
+       "max": 34,
+       "minPercent": 11.914893617021278,
+       "maxPercent": 14.468085106382977,
+       "rolls": [
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        31,
+        33,
+        33,
+        33,
+        33,
+        34
+       ],
+       "ohkoChance": 0,
+       "description": "Water Pulse: 28–34 HP (11.9–14.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "icebeam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 0.4
+     },
+     {
+      "position": 3,
+      "chance": 0.5
+     },
+     {
+      "position": 4,
+      "chance": 0.1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 14–17 HP.",
+      "chance": 0.33000000000000007
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 76,
+      "max": 90,
+      "minPercent": 52.41379310344828,
+      "maxPercent": 62.06896551724138,
+      "koChance": 0,
+      "row": {
+       "moveId": "icebeam",
+       "effectiveName": "Ice Beam",
+       "effectiveType": "Ice",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 76,
+       "max": 90,
+       "minPercent": 52.41379310344828,
+       "maxPercent": 62.06896551724138,
+       "rolls": [
+        76,
+        76,
+        78,
+        78,
+        80,
+        80,
+        80,
+        82,
+        82,
+        84,
+        84,
+        86,
+        86,
+        88,
+        88,
+        90
+       ],
+       "ohkoChance": 0,
+       "description": "Ice Beam: 76–90 HP (52.4–62.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 0.2
+     },
+     {
+      "position": 4,
+      "chance": 0.8
+     }
+    ],
+    "moves": 0.736,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 23–28 HP.",
+      "chance": 0.264
+     }
+    ],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 0.736,
+      "kind": "calculated",
+      "min": 52,
+      "max": 63,
+      "minPercent": 33.76623376623377,
+      "maxPercent": 40.909090909090914,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 52,
+       "max": 63,
+       "minPercent": 33.76623376623377,
+       "maxPercent": 40.909090909090914,
+       "rolls": [
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        58,
+        58,
+        58,
+        60,
+        60,
+        61,
+        61,
+        63
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Quick Claw: Snorlax moves first in its priority bracket.",
+      "chance": 0.2
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 69,
+    "average": 89.80874999999999,
+    "high": 55,
+    "min": 55,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 207,
+    "average": 207.51449999999997,
+    "high": 201,
+    "min": 173,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 154,
+    "maximum": 154,
+    "low": 102,
+    "average": 106.80612499999998,
+    "high": 91,
+    "min": 74,
+    "max": 154,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 148.988125,
+    "high": 154,
+    "min": 137,
+    "max": 154,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 52,
+     "max": 63,
+     "minPercent": 33.76623376623377,
+     "maxPercent": 40.909090909090914,
+     "rolls": [
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      58,
+      58,
+      58,
+      60,
+      60,
+      61,
+      61,
+      63
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 52–63 HP (33.8–40.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 154,
+      "low": 102,
+      "high": 91,
+      "average": 96.6875,
+      "min": 91,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 52,
+        "heals": []
+       },
+       "high": {
+        "dealt": 63,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "waterpulse",
+     "effectiveName": "Water Pulse",
+     "effectiveType": "Water",
+     "effectivePower": 60,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 28,
+     "max": 34,
+     "minPercent": 11.914893617021278,
+     "maxPercent": 14.468085106382977,
+     "rolls": [
+      28,
+      28,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      31,
+      33,
+      33,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Water Pulse: 28–34 HP (11.9–14.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 9,
+      "fewest": 7,
+      "fasterChance": 0.9976213499903679,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 207,
+      "high": 201,
+      "average": 204,
+      "min": 201,
+      "max": 207,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 28,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "icebeam",
+     "effectiveName": "Ice Beam",
+     "effectiveType": "Ice",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 76,
+     "max": 90,
+     "minPercent": 52.41379310344828,
+     "maxPercent": 62.06896551724138,
+     "rolls": [
+      76,
+      76,
+      78,
+      78,
+      80,
+      80,
+      80,
+      82,
+      82,
+      84,
+      84,
+      86,
+      86,
+      88,
+      88,
+      90
+     ],
+     "ohkoChance": 0,
+     "description": "Ice Beam: 76–90 HP (52.4–62.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 69,
+      "high": 55,
+      "average": 62.625,
+      "min": 55,
+      "max": 69,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 76,
+        "heals": []
+       },
+       "high": {
+        "dealt": 90,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Blastoise (1) has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 69,
+     "average": 89.80874999999999,
+     "high": 55,
+     "min": 55,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 207,
+     "average": 207.51449999999997,
+     "high": 201,
+     "min": 173,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 154,
+     "maximum": 154,
+     "low": 102,
+     "average": 106.80612499999998,
+     "high": 91,
+     "min": 74,
+     "max": 154,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 148.988125,
+     "high": 154,
+     "min": 137,
+     "max": 154,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 33.6232,
+ "preflight": []
+}

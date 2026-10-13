@@ -1,0 +1,31 @@
+/* Your controls: moves 2 × 2 (calculator .doublesQuickMoves), switches and targets wrap; the submit bar sticks to the
+   bottom under the nav's z-40, above the safe-area inset (UI design 8.4). */
+.moves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+.switches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+.targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.targets > * {
+  flex: 1 1 6rem;
+}
+
+.submitBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}

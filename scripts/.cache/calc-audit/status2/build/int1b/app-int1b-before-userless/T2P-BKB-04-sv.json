@@ -1,0 +1,202 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Dual Wingbeat into Toucannon's Beak Blast is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "beakblast",
+     "effectiveName": "Beak Blast",
+     "effectiveType": "Flying",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 93,
+     "max": 111,
+     "minPercent": 39.57446808510638,
+     "maxPercent": 47.23404255319149,
+     "rolls": [
+      93,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      102,
+      102,
+      103,
+      105,
+      106,
+      106,
+      108,
+      109,
+      111
+     ],
+     "ohkoChance": 0,
+     "description": "Beak Blast: 93–111 HP (39.6–47.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 142,
+      "high": 124,
+      "average": 133.25,
+      "min": 124,
+      "max": 142,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 93,
+        "heals": []
+       },
+       "high": {
+        "dealt": 111,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "dualwingbeat",
+     "effectiveName": "Dual Wingbeat",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 68,
+     "max": 84,
+     "minPercent": 43.87096774193549,
+     "maxPercent": 54.19354838709678,
+     "rolls": [
+      [
+       34,
+       36,
+       36,
+       36,
+       36,
+       37,
+       37,
+       37,
+       39,
+       39,
+       39,
+       39,
+       40,
+       40,
+       40,
+       42
+      ],
+      [
+       34,
+       36,
+       36,
+       36,
+       36,
+       37,
+       37,
+       37,
+       39,
+       39,
+       39,
+       39,
+       40,
+       40,
+       40,
+       42
+      ]
+     ],
+     "ohkoChance": 0,
+     "description": "Dual Wingbeat: 68–84 HP (43.9–54.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.255889892578125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 87,
+      "high": 71,
+      "average": 79.125,
+      "min": 71,
+      "max": 87,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 68,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 3.1987000000008265,
+ "preflight": []
+}

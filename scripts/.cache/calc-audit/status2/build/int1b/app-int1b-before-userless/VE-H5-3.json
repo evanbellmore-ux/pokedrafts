@@ -1,0 +1,389 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": null,
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": null
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sparklingaria",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 69,
+      "minPercent": 24.680851063829788,
+      "maxPercent": 29.361702127659573,
+      "koChance": 0,
+      "row": {
+       "moveId": "sparklingaria",
+       "effectiveName": "Sparkling Aria",
+       "effectiveType": "Water",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 58,
+       "max": 69,
+       "minPercent": 24.680851063829788,
+       "maxPercent": 29.361702127659573,
+       "rolls": [
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69
+       ],
+       "ohkoChance": 0,
+       "description": "Sparkling Aria: 58–69 HP (24.7–29.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 33,
+      "max": 39,
+      "minPercent": 21.29032258064516,
+      "maxPercent": 25.161290322580644,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 33,
+       "max": 39,
+       "minPercent": 21.29032258064516,
+       "maxPercent": 25.161290322580644,
+       "rolls": [
+        33,
+        33,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        38,
+        39,
+        39
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 33–39 HP (21.3–25.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 122,
+    "average": 119,
+    "high": 116,
+    "min": 116,
+    "max": 122,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": null,
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 177,
+    "average": 172.0625,
+    "high": 166,
+    "min": 166,
+    "max": 177,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": null
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "sparklingaria",
+     "effectiveName": "Sparkling Aria",
+     "effectiveType": "Water",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 58,
+     "max": 69,
+     "minPercent": 24.680851063829788,
+     "maxPercent": 29.361702127659573,
+     "rolls": [
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69
+     ],
+     "ohkoChance": 0,
+     "description": "Sparkling Aria: 58–69 HP (24.7–29.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.27294921875,
+      "endOfTurn": true,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the target at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 177,
+      "high": 166,
+      "average": 172.0625,
+      "min": 166,
+      "max": 177,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 69,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 21.29032258064516,
+     "maxPercent": 25.161290322580644,
+     "rolls": [
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 33–39 HP (21.3–25.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.001220703125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Its burn damages the attacker at the end of each turn."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 155,
+      "low": 122,
+      "high": 116,
+      "average": 119,
+      "min": 116,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Primarina has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 122,
+     "average": 119,
+     "high": 116,
+     "min": 116,
+     "max": 122,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": null,
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 163,
+     "average": 158.0625,
+     "high": 152,
+     "min": 152,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": null
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Burn",
+     "chance": 1,
+     "min": -14,
+     "max": -14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 6.528000000000247,
+ "preflight": []
+}

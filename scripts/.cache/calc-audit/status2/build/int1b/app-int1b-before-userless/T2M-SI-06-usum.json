@@ -1,0 +1,653 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "opponent-right": {
+    "hp": 158,
+    "maximum": 158
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bounce",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Bounce: Lopunny charges this turn.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "gust",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 36,
+      "max": 43,
+      "minPercent": 25.71428571428571,
+      "maxPercent": 30.714285714285715,
+      "koChance": 0,
+      "row": {
+       "moveId": "gust",
+       "effectiveName": "Gust",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 36,
+       "max": 43,
+       "minPercent": 25.71428571428571,
+       "maxPercent": 30.714285714285715,
+       "rolls": [
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43
+       ],
+       "ohkoChance": 0,
+       "description": "Gust: 36–43 HP (25.7–30.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Gust into a Pokémon in the air: 2x power."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "twister",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 42,
+      "minPercent": 24.285714285714285,
+      "maxPercent": 30,
+      "koChance": 0,
+      "row": {
+       "moveId": "twister",
+       "effectiveName": "Twister",
+       "effectiveType": "Dragon",
+       "effectivePower": 40,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 34,
+       "max": 42,
+       "minPercent": 24.285714285714285,
+       "maxPercent": 30,
+       "rolls": [
+        34,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        39,
+        40,
+        40,
+        40,
+        42
+       ],
+       "ohkoChance": 0,
+       "description": "Twister: 34–42 HP (24.3–30.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Twister into a Pokémon in the air: 2x power."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 16,
+      "max": 19,
+      "minPercent": 6.808510638297872,
+      "maxPercent": 8.085106382978724,
+      "koChance": 0,
+      "row": {
+       "moveId": "twister",
+       "effectiveName": "Twister",
+       "effectiveType": "Dragon",
+       "effectivePower": 40,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 16,
+       "max": 19,
+       "minPercent": 6.808510638297872,
+       "maxPercent": 8.085106382978724,
+       "rolls": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        19
+       ],
+       "ohkoChance": 0,
+       "description": "Twister: 16–19 HP (6.8–8.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 140,
+    "maximum": 140,
+    "low": 70,
+    "average": 62.8125,
+    "high": 55,
+    "min": 55,
+    "max": 70,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 219,
+    "average": 217.9375,
+    "high": 216,
+    "min": 216,
+    "max": 219,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 166,
+    "average": 166,
+    "high": 166,
+    "min": 166,
+    "max": 166,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 158,
+    "maximum": 158,
+    "low": 158,
+    "average": 158,
+    "high": 158,
+    "min": 158,
+    "max": 158,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "bounce",
+     "effectiveName": "Bounce",
+     "effectiveType": "Flying",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 33,
+     "max": 39,
+     "minPercent": 20.88607594936709,
+     "maxPercent": 24.68354430379747,
+     "rolls": [
+      33,
+      33,
+      33,
+      34,
+      34,
+      35,
+      35,
+      35,
+      36,
+      36,
+      37,
+      37,
+      37,
+      38,
+      38,
+      39
+     ],
+     "ohkoChance": 0,
+     "description": "Bounce: 33–39 HP (20.9–24.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 5,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "turns": "Charges for a turn before each use"
+     },
+     "afterUse": {
+      "start": 158,
+      "low": 125,
+      "high": 119,
+      "average": 122.375,
+      "min": 119,
+      "max": 125,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 33,
+        "heals": []
+       },
+       "high": {
+        "dealt": 39,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "twister",
+     "effectiveName": "Twister",
+     "effectiveType": "Dragon",
+     "effectivePower": 40,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 18,
+     "max": 22,
+     "minPercent": 12.857142857142856,
+     "maxPercent": 15.714285714285714,
+     "rolls": [
+      18,
+      18,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      21,
+      21,
+      21,
+      21,
+      21,
+      21,
+      22
+     ],
+     "ohkoChance": 0,
+     "description": "Twister: 18–22 HP (12.9–15.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.39565927162766457,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 122,
+      "high": 118,
+      "average": 120.1875,
+      "min": 118,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 18,
+        "heals": []
+       },
+       "high": {
+        "dealt": 22,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "twister",
+     "effectiveName": "Twister",
+     "effectiveType": "Dragon",
+     "effectivePower": 40,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 16,
+     "max": 19,
+     "minPercent": 6.808510638297872,
+     "maxPercent": 8.085106382978724,
+     "rolls": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      19
+     ],
+     "ohkoChance": 0,
+     "description": "Twister: 16–19 HP (6.8–8.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 15,
+      "fewest": 13,
+      "fasterChance": 0.8479762859642506,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 219,
+      "high": 216,
+      "average": 217.9375,
+      "min": 216,
+      "max": 219,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 16,
+        "heals": []
+       },
+       "high": {
+        "dealt": 19,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "gust",
+     "effectiveName": "Gust",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 18,
+     "max": 22,
+     "minPercent": 12.857142857142856,
+     "maxPercent": 15.714285714285714,
+     "rolls": [
+      18,
+      18,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      19,
+      21,
+      21,
+      21,
+      21,
+      21,
+      21,
+      22
+     ],
+     "ohkoChance": 0,
+     "description": "Gust: 18–22 HP (12.9–15.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 8,
+      "fewest": 7,
+      "fasterChance": 0.39565927162766457,
+      "limit": 56,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 122,
+      "high": 118,
+      "average": 120.1875,
+      "min": 118,
+      "max": 122,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 18,
+        "heals": []
+       },
+       "high": {
+        "dealt": 22,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Lopunny did not charge Bounce last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 140,
+     "maximum": 140,
+     "low": 70,
+     "average": 62.8125,
+     "high": 55,
+     "min": 55,
+     "max": 70,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 219,
+     "average": 217.9375,
+     "high": 216,
+     "min": 216,
+     "max": 219,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 166,
+     "average": 166,
+     "high": 166,
+     "min": 166,
+     "max": 166,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 158,
+     "maximum": 158,
+     "low": 158,
+     "average": 158,
+     "high": 158,
+     "min": 158,
+     "max": 158,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.88650000000007,
+ "preflight": []
+}

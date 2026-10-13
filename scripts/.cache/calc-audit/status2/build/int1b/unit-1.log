@@ -1,0 +1,150 @@
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:203:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > Focus Band when a hit into it can knock out (modelled: status2 W), and Max Guard
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen.","Assumes no protecting move was used last turn.","Assumes Dynamax started this turn."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:243:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a spread move healing from several targets, or an attacker affected differently by each target
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:269:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a weather, terrain, Tailwind or Trick Room change that would change an ability or item
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:282:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > a Max Move's terrain changing a third Pokémon's Mimicry or Electric Seed (M24i, M24j)
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen.","Assumes Dynamax started this turn."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:299:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-guards.test.ts > events that are out in v1 > an ability out in 2v2 when it triggers, and a G-Max move's random status
+AssertionError: ["Every move hits; no critical hits; added effects below 100% do not happen."]: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ expectReason tests/unit/doubles-turn-guards.test.ts:43:144
+     41| function expectReason(input: DoublesTurnInput, reason: string | string…
+     42|   const result = calculateDoublesTurn(input);
+     43|   expect(result.status, JSON.stringify(result.status === "issues" ? re…
+       |                                                                                                                                                ^
+     44|   if (result.status !== "not-estimated") return result;
+     45|   expect(Array.isArray(reason) ? reason : [reason]).toContain(result.r…
+ ❯ tests/unit/doubles-turn-guards.test.ts:335:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-mechanics.test.ts > a Berry an Unnerve or As One holder stopped, once that holder's HP reaches 0 > the attacker that KOs the holder eats after the hit; with recoil after it, not estimated (M29e, M29f, M29c)
+AssertionError: expected 'ready' to be 'not-estimated' // Object.is equality
+
+Expected: "not-estimated"
+Received: "ready"
+
+ ❯ tests/unit/doubles-turn-mechanics.test.ts:338:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/58]⎯
+
+ FAIL  |unit| tests/unit/doubles-turn-showdown.test.ts > the 2v2 turn against pinned Showdown > S44d: Disable and Encore with lastMove null
+AssertionError: No move since it came in: Disable and Encore fail.: expected 'not-estimated' to be 'ready' // Object.is equality
+
+Expected: "ready"
+Received: "not-estimated"
+
+ ❯ tests/unit/doubles-turn-showdown.test.ts:2118:39
+    2116|       const turn = await input(c);
+    2117|       const result = calculateDoublesTurn(turn);
+    2118|       expect(result.status, c.checks).toBe("ready");
+       |                                       ^
+    2119|       if (result.status !== "ready") return;
+    2120|       // Exhaustive cases are exact to 1e-9; a sampled one (exact: fal…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/58]⎯
+
+ FAIL  |training| tests/unit/doubles-outcomes.test.ts > calculateDoublesOutcomes (E2) > equals calculateDoublesTurn on every pinned Showdown case
+TypeError: text.toLowerCase is not a function
+ ❯ toId tests/unit/doubles-outcomes.test.ts:46:37
+     44| };
+     45| const GAMES: Record<Case["game"], BattleGame> = { sv: "scarlet_violet"…
+     46| const toId = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/…
+       |                                     ^
+     47| const ZERO = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+     48|
+ ❯ carriedOf tests/unit/doubles-outcomes.test.ts:82:166
+ ❯ tests/unit/doubles-outcomes.test.ts:106:19
+ ❯ caseInput tests/unit/doubles-outcomes.test.ts:101:44
+ ❯ tests/unit/doubles-outcomes.test.ts:258:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/58]⎯
+
+
+ Test Files  17 failed | 238 passed (255)
+      Tests  58 failed | 7541 passed | 2 skipped (7601)
+   Start at  12:18:19
+   Duration  58.97s (tests 77%, import 17%, transform 6%)
+

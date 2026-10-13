@@ -1,0 +1,292 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 75,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "drainpunch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 57,
+      "max": 67,
+      "minPercent": 31.147540983606557,
+      "maxPercent": 36.6120218579235,
+      "koChance": 0,
+      "row": {
+       "moveId": "drainpunch",
+       "effectiveName": "Drain Punch",
+       "effectiveType": "Fighting",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 57,
+       "max": 67,
+       "minPercent": 31.147540983606557,
+       "maxPercent": 36.6120218579235,
+       "rolls": [
+        57,
+        57,
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67
+       ],
+       "ohkoChance": 0,
+       "description": "Drain Punch: 57–67 HP (31.1–36.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 75,
+    "maximum": 135,
+    "low": 99,
+    "average": 82.4375,
+    "high": 71,
+    "min": 68,
+    "max": 100,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +33 HP."
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.4375
+     }
+    ]
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 126,
+    "average": 121.4375,
+    "high": 116,
+    "min": 116,
+    "max": 126,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "drainpunch",
+     "effectiveName": "Drain Punch",
+     "effectiveType": "Fighting",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 57,
+     "max": 67,
+     "minPercent": 31.147540983606557,
+     "maxPercent": 36.6120218579235,
+     "rolls": [
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67
+     ],
+     "ohkoChance": 0,
+     "description": "Drain Punch: 57–67 HP (31.1–36.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.639404296875,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 126,
+      "high": 116,
+      "average": 121.4375,
+      "min": 116,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 57,
+        "heals": []
+       },
+       "high": {
+        "dealt": 67,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 75,
+     "maximum": 135,
+     "low": 99,
+     "average": 82.4375,
+     "high": 71,
+     "min": 68,
+     "max": 100,
+     "koChance": 0,
+     "heals": [
+      "Sitrus Berry: +33 HP."
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.4375
+      }
+     ]
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 126,
+     "average": 121.4375,
+     "high": 116,
+     "min": 116,
+     "max": 126,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.3836999999998625,
+ "preflight": []
+}

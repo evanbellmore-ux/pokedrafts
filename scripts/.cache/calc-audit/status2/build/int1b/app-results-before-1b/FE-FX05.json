@@ -1,0 +1,420 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "lunge",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 31,
+      "max": 37,
+      "minPercent": 17.71428571428571,
+      "maxPercent": 21.142857142857142,
+      "koChance": 0,
+      "row": {
+       "moveId": "lunge",
+       "effectiveName": "Lunge",
+       "effectiveType": "Bug",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 31,
+       "max": 37,
+       "minPercent": 17.71428571428571,
+       "maxPercent": 21.142857142857142,
+       "rolls": [
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33,
+        34,
+        34,
+        34,
+        35,
+        35,
+        35,
+        36,
+        36,
+        37
+       ],
+       "ohkoChance": 0,
+       "description": "Lunge: 31–37 HP (17.7–21.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "lashout",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 134,
+      "max": 158,
+      "minPercent": 107.2,
+      "maxPercent": 126.4,
+      "koChance": 1,
+      "row": {
+       "moveId": "lashout",
+       "effectiveName": "Lash Out",
+       "effectiveType": "Dark",
+       "effectivePower": 150,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 134,
+       "max": 158,
+       "minPercent": 107.2,
+       "maxPercent": 126.4,
+       "rolls": [
+        134,
+        135,
+        137,
+        138,
+        140,
+        141,
+        144,
+        145,
+        147,
+        148,
+        150,
+        151,
+        153,
+        154,
+        156,
+        158
+       ],
+       "ohkoChance": 1,
+       "description": "Lash Out: 134–158 HP (107.2–126.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Doubled power: the user's stats were lowered this turn."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 144,
+    "average": 141.25,
+    "high": 138,
+    "min": 138,
+    "max": 144,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "lunge",
+     "effectiveName": "Lunge",
+     "effectiveType": "Bug",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 31,
+     "max": 37,
+     "minPercent": 17.71428571428571,
+     "maxPercent": 21.142857142857142,
+     "rolls": [
+      31,
+      31,
+      32,
+      32,
+      32,
+      33,
+      33,
+      34,
+      34,
+      34,
+      35,
+      35,
+      35,
+      36,
+      36,
+      37
+     ],
+     "ohkoChance": 0,
+     "description": "Lunge: 31–37 HP (17.7–21.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.07670974731445312,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 144,
+      "high": 138,
+      "average": 141.25,
+      "min": 138,
+      "max": 144,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 31,
+        "heals": []
+       },
+       "high": {
+        "dealt": 37,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "lashout",
+     "effectiveName": "Lash Out",
+     "effectiveType": "Dark",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 36,
+     "maxPercent": 43.2,
+     "rolls": [
+      45,
+      45,
+      46,
+      47,
+      48,
+      48,
+      48,
+      49,
+      49,
+      50,
+      51,
+      51,
+      51,
+      52,
+      53,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Lash Out: 45–54 HP (36.0–43.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Normal power: assumes the user's stats were not lowered this turn."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 80,
+      "high": 71,
+      "average": 75.8125,
+      "min": 71,
+      "max": 80,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 144,
+     "average": 141.25,
+     "high": 138,
+     "min": 138,
+     "max": 144,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 3.962100000000646,
+ "preflight": []
+}

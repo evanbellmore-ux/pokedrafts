@@ -1,0 +1,192 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 15,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 15,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [],
+  "hp": {
+   "own-left": {
+    "start": 15,
+    "maximum": 155,
+    "low": 15,
+    "average": 15,
+    "high": 15,
+    "min": 15,
+    "max": 15,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Leech Seed.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 15,
+    "maximum": 155,
+    "low": 15,
+    "average": 15,
+    "high": 15,
+    "min": 15,
+    "max": 15,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Leech Seed.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 15,
+     "maximum": 155,
+     "low": 30,
+     "average": 15,
+     "high": 0,
+     "min": 0,
+     "max": 30,
+     "koChance": 0.5,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Leech Seed.",
+       "chance": 0.5
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 15,
+     "maximum": 155,
+     "low": 30,
+     "average": 15,
+     "high": 0,
+     "min": 0,
+     "max": 30,
+     "koChance": 0.5,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Leech Seed.",
+       "chance": 0.5
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Leech Seed",
+     "other": "opponent-left",
+     "chance": 0.5,
+     "min": -15,
+     "max": -15,
+     "koChance": 0.5,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Leech Seed",
+     "other": "own-left",
+     "chance": 0.5,
+     "min": 15,
+     "max": 15,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "own-left",
+     "effect": "Leech Seed",
+     "other": "opponent-left",
+     "chance": 0.5,
+     "min": 15,
+     "max": 15,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Leech Seed",
+     "other": "own-left",
+     "chance": 0.5,
+     "min": -15,
+     "max": -15,
+     "koChance": 0.5,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 2.879899999999907,
+ "preflight": []
+}

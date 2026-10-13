@@ -1,0 +1,435 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 60,
+    "maximum": 155
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "highjumpkick",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 50,
+      "max": 59,
+      "minPercent": 32.25806451612903,
+      "maxPercent": 38.064516129032256,
+      "koChance": 0,
+      "row": {
+       "moveId": "highjumpkick",
+       "effectiveName": "High Jump Kick",
+       "effectiveType": "Fighting",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 50,
+       "max": 59,
+       "minPercent": 32.25806451612903,
+       "maxPercent": 38.064516129032256,
+       "rolls": [
+        50,
+        50,
+        51,
+        51,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55,
+        56,
+        56,
+        57,
+        57,
+        58,
+        59
+       ],
+       "ohkoChance": 0,
+       "description": "High Jump Kick: 50–59 HP (32.3–38.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "gigadrain",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 70,
+      "minPercent": 46.400000000000006,
+      "maxPercent": 56.00000000000001,
+      "koChance": 0,
+      "row": {
+       "moveId": "gigadrain",
+       "effectiveName": "Giga Drain",
+       "effectiveType": "Grass",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 32,
+       "maxPercent": 38.4,
+       "rolls": [
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Giga Drain: 40–48 HP (32.0–38.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 125,
+    "maximum": 125,
+    "low": 67,
+    "average": 60.75,
+    "high": 55,
+    "min": 55,
+    "max": 67,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Status cured.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 60,
+    "maximum": 155,
+    "low": 39,
+    "average": 38.25,
+    "high": 36,
+    "min": 30,
+    "max": 45,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "highjumpkick",
+     "effectiveName": "High Jump Kick",
+     "effectiveType": "Fighting",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 50,
+     "max": 59,
+     "minPercent": 32.25806451612903,
+     "maxPercent": 38.064516129032256,
+     "rolls": [
+      50,
+      50,
+      51,
+      51,
+      52,
+      53,
+      53,
+      54,
+      54,
+      55,
+      56,
+      56,
+      57,
+      57,
+      58,
+      59
+     ],
+     "ohkoChance": 0,
+     "description": "High Jump Kick: 50–59 HP (32.3–38.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the paralysed attacker is never fully paralysed."
+      ]
+     },
+     "afterUse": {
+      "start": 60,
+      "low": 10,
+      "high": 1,
+      "average": 5.875,
+      "min": 1,
+      "max": 10,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 50,
+        "heals": []
+       },
+       "high": {
+        "dealt": 59,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "gigadrain",
+     "effectiveName": "Giga Drain",
+     "effectiveType": "Grass",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 40,
+     "max": 48,
+     "minPercent": 32,
+     "maxPercent": 38.4,
+     "rolls": [
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Giga Drain: 40–48 HP (32.0–38.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.93408203125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Giga Drain's damage follows the attacker's HP."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 85,
+      "high": 77,
+      "average": 81.5,
+      "min": 77,
+      "max": 85,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 40,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Limber: Hitmonlee is cured of its paralysis as the turn starts."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 125,
+     "maximum": 125,
+     "low": 67,
+     "average": 60.75,
+     "high": 55,
+     "min": 55,
+     "max": 67,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 60,
+     "maximum": 155,
+     "low": 39,
+     "average": 38.25,
+     "high": 36,
+     "min": 30,
+     "max": 45,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.268299999999726,
+ "preflight": []
+}

@@ -1,0 +1,225 @@
+"use client";
+
+import { useEffect, useId, useRef, useState } from "react";
+import { Alert, Button, Field, Input, Select } from "@/app/components/ui";
+import Dialog from "@/app/components/ui/Dialog";
+import { controlClassName } from "@/app/components/ui/Input";
+import { STATS } from "@/app/lib/battle/model";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { parseTeamImport, type ImportFormat, type ImportedMember } from "@/app/lib/battle/team-import";
+import { fetchPokePaste } from "./pokepaste-data";
+import type { AppliedPaste, PasteImport, RosterRole, TeamSourceOwner } from "./roster-prep";
+
+export type ImportDraft = { text: string; url: string; title: string; format: ImportFormat };
+type Preview = PasteImport & { version: number; focusFrom: Element | null; scope: string; draftUrl: string };
+type PendingRequest = { controller: AbortController; scope: string; draft: ImportDraft };
+
+type Props = {
+  role: RosterRole;
+  owner: TeamSourceOwner;
+  applied: AppliedPaste | null;
+  onApply: (owner: TeamSourceOwner, input: PasteImport) => void;
+  onRemove: (owner: TeamSourceOwner) => void;
+  onReveal?: (element: HTMLElement) => void;
+  runtime?: BattleRuntime;
+  draft?: ImportDraft;
+  onDraftChange?: (draft: ImportDraft) => void;
+  /** The section heading; defaults to "My team · PokéPaste" / "Opponent · PokéPaste". */
+  heading?: string;
+  /** The remove dialog's description; defaults to the calculator's. */
+  removeDescription?: string;
+};
+
+function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: BattleRuntime }) {
+  const { speciesById, abilitiesById, itemsById, movesById } = runtime;
+  const build = member.build;
+  const species = member.speciesId ? speciesById.get(member.speciesId) : null;
+  const problems = member.diagnostics.filter((entry) => entry.severity !== "info");
+  const assumptions = member.diagnostics.filter((entry) => entry.severity === "info");
+  const configuration = build?.configuration;
+  const retained = configuration ? [
+    configuration.teraType && `Tera: ${configuration.teraType} (inactive)`,
+    configuration.gigantamax !== undefined && `Gigantamax: ${configuration.gigantamax ? "Yes" : "No"} (inactive)`,
+    configuration.dynamaxLevel !== undefined && `Dynamax level: ${configuration.dynamaxLevel} (inactive)`,
+    configuration.gender && `Gender: ${configuration.gender}`,
+    configuration.happiness !== undefined && `Happiness: ${configuration.happiness}`,
+    configuration.hiddenPowerType && `Hidden Power: ${configuration.hiddenPowerType}`,
+  ].filter(Boolean) : [];
+  return (
+    <li className="min-w-0 space-y-3 rounded-lg border border-line bg-bg p-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h4 className="wrap-anywhere font-semibold text-text">{member.index + 1}. {member.name}</h4>
+        <span className={`text-xs font-semibold ${member.selectable ? "text-muted" : "text-danger"}`}>{member.selectable ? problems.length ? "Review limitations" : "Ready" : "Unavailable · edit text"}</span>
+      </div>
+      {build && (
+        <>
+          <p className="wrap-anywhere text-sm text-muted">{species?.name} · Level {build.game === "champions" ? 50 : build.native.level ?? "—"} · {build.nature} · {abilitiesById.get(build.abilityId)?.name ?? build.abilityId} · {itemsById.get(build.itemId)?.name ?? "No held item"}</p>
+          <dl className="grid grid-cols-3 gap-2 text-xs sm:grid-cols-6">
+            {STATS.map((stat) => <div key={stat}><dt className="font-semibold uppercase text-muted">{stat}</dt><dd className="tabular-nums text-text">{build.game === "champions" ? `${build.points[stat] ?? "—"} SP` : `${build.native.evs[stat] ?? "—"} EV · ${build.native.ivs[stat] ?? "—"} IV`} · {member.stats?.[stat] ?? "—"} stat</dd></div>)}
+          </dl>
+          <p className="wrap-anywhere text-sm text-text">{member.moves.map((slot) => slot.moveId ? movesById.get(slot.moveId)?.name ?? slot.moveId : "Empty slot").join(" · ")}</p>
+          {!!retained.length && <p className="wrap-anywhere text-xs text-muted">Retained configuration · {retained.join(" · ")}</p>}
+        </>
+      )}
+      {!!problems.length && <ul className="list-disc space-y-1 pl-5 text-sm">{problems.map((entry, index) => <li key={index} className={`wrap-anywhere ${entry.severity === "error" ? "text-danger" : "text-muted"}`}>Line {entry.line}: {entry.message}</li>)}</ul>}
+      {!!assumptions.length && <details className="text-xs text-muted"><summary className="min-h-11 cursor-pointer rounded py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Defaults and assumptions</summary><ul className="list-disc space-y-1 pl-5">{assumptions.map((entry, index) => <li key={index} className="wrap-anywhere">{entry.message}</li>)}</ul></details>}
+    </li>
+  );
+}
+
+export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon keep their builds." }: Props) {
+  const id = useId();
+  const [localDraft, setLocalDraft] = useState<ImportDraft>(() => ({
+    url: applied?.url ?? "", text: applied?.text ?? "", title: applied?.title ?? "",
+    format: applied?.team.format ?? (runtime.profile.training === "native" ? "traditional" : "champions"),
+  }));
+  const currentDraft = draft ?? localDraft;
+  const { url, text, title, format } = currentDraft;
+  const scope = JSON.stringify([runtime.identity, role, owner.role, owner.revision, owner.epoch]);
+  const [previewState, setPreview] = useState<Preview | null>(null);
+  const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>(null);
+  const [errorState, setError] = useState<{ scope: string; message: string } | null>(null);
+  const [removeFor, setRemoveFor] = useState<string | null>(null);
+  const version = useRef(0);
+  const request = useRef<AbortController | null>(null);
+  const previewHeading = useRef<HTMLHeadingElement>(null);
+  const previewButton = useRef<HTMLButtonElement>(null);
+  const cancelButton = useRef<HTMLButtonElement>(null);
+  const urlInput = useRef<HTMLInputElement>(null);
+  const ownership = role === "own" ? "My team" : "Opponent";
+  const native = runtime.profile.training === "native";
+  const pending = pendingRequest?.scope === scope && !pendingRequest.controller.signal.aborted;
+  const error = errorState?.scope === scope ? errorState.message : "";
+  const preview = previewState?.scope === scope && previewState.text === text
+    && previewState.team.format === format && previewState.draftUrl === url ? previewState : null;
+
+  // Scope includes game/catalog plus the existing role/revision/epoch ownership.
+  // A stale render's preview is hidden immediately; cleanup aborts its work too.
+  useEffect(() => () => { version.current++; request.current?.abort(); }, [scope]);
+  useEffect(() => {
+    // Controlled drafts can also change outside the input handlers. Do not let a
+    // delayed URL response overwrite a newer draft owned by the parent.
+    if (pendingRequest && request.current === pendingRequest.controller
+      && (pendingRequest.scope !== scope || pendingRequest.draft.text !== text
+        || pendingRequest.draft.url !== url || pendingRequest.draft.title !== title || pendingRequest.draft.format !== format)) {
+      version.current++;
+      pendingRequest.controller.abort();
+    }
+  }, [pendingRequest, scope, text, url, title, format]);
+  useEffect(() => {
+    const heading = previewHeading.current;
+    const from = preview?.focusFrom;
+    if (heading && from && (document.activeElement === from || (!from.isConnected && document.activeElement === document.body))) {
+      if (onReveal) onReveal(heading); else heading.focus();
+    }
+  }, [preview, onReveal]);
+
+  function changeDraft(patch: Partial<ImportDraft>) {
+    const next = { ...currentDraft, ...patch };
+    setLocalDraft(next);
+    onDraftChange?.(next);
+  }
+
+  function returnFocus(element: HTMLElement | null) {
+    if (element) { if (onReveal) onReveal(element); else element.focus(); }
+  }
+
+  function invalidate() {
+    version.current++;
+    request.current?.abort();
+    request.current = null;
+    setPendingRequest(null);
+    setPreview(null);
+    setError(null);
+  }
+
+  function previewText() {
+    invalidate();
+    const team = parseTeamImport(text, format, runtime);
+    setPreview({ team, text, title: title.trim() || team.title || "Imported team", url: null, version: version.current, focusFrom: document.activeElement, scope, draftUrl: url });
+  }
+
+  async function loadLink() {
+    invalidate();
+    const controller = new AbortController();
+    request.current = controller;
+    const started = version.current;
+    const focusOrigin = document.activeElement;
+    setPendingRequest({ controller, scope, draft: { ...currentDraft } });
+    try {
+      const result = await fetchPokePaste(url.trim(), controller.signal);
+      if (request.current !== controller || controller.signal.aborted || started !== version.current) return;
+      const team = parseTeamImport(result.paste, format, runtime);
+      const name = result.title.trim().slice(0, 160) || team.title?.slice(0, 160) || "Imported team";
+      changeDraft({ text: result.paste, title: name });
+      const focused = document.activeElement;
+      // A pending button may blur to body; another editor must keep its focus.
+      const ownsFocus = focused === focusOrigin || focused === cancelButton.current
+        || (focused === document.body && focusOrigin instanceof HTMLButtonElement && focusOrigin.disabled);
+      setPreview({ team, text: result.paste, title: name, url: result.url, version: started, focusFrom: ownsFocus ? focused : null, scope, draftUrl: url });
+    } catch (failure) {
+      if (request.current !== controller || controller.signal.aborted || started !== version.current) return;
+      setError({ scope, message: failure instanceof Error ? failure.message : "Could not read PokéPaste." });
+      if (document.activeElement === cancelButton.current) returnFocus(urlInput.current);
+    } finally {
+      if (request.current === controller) { request.current = null; setPendingRequest(null); }
+    }
+  }
+
+  const selectable = preview?.team.members.filter((member) => member.selectable).length ?? 0;
+  const canApply = !!preview && selectable > 0 && !preview.team.diagnostics.some((entry) => entry.severity === "error");
+
+  return (
+    <section data-paste-importer={role} aria-labelledby={`${id}-heading`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
+      <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading ?? `${ownership} · PokéPaste`}</h2>
+      <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}</p>
+      {applied && (
+        <div className="space-y-2 rounded-lg border border-line bg-bg p-3">
+          <p className="wrap-anywhere text-sm text-text"><strong>{applied.title}</strong> · {applied.team.members.filter((member) => member.selectable).length} selectable / {applied.team.members.length} imported</p>
+          <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { invalidate(); setRemoveFor(scope); }}>Remove imported team</Button>
+        </div>
+      )}
+      <Field id={`${id}-format`} label="Spread format">
+        <Select value={format} onChange={(event) => { invalidate(); changeDraft({ format: event.target.value as ImportFormat }); }}>
+          {(!native || format === "champions") && <option value="champions" disabled={native}>Champions Stat Points{native ? " — incompatible source" : ""}</option>}
+          <option value="traditional">{native ? "Traditional EVs/IVs — native levels" : "Traditional EVs/IVs — level-50 equivalent"}</option>
+        </Select>
+      </Field>
+      {native && format === "champions" && <Alert variant="info" title="Source encoding preserved">This draft uses Champions points and cannot be imported into {runtime.profile.label}.</Alert>}
+      <Field id={`${id}-url`} label="PokéPaste link" error={error || undefined}>
+        <Input ref={urlInput} value={url} placeholder="https://pokepast.es/…" autoComplete="off" spellCheck={false} onChange={(event) => { invalidate(); changeDraft({ url: event.target.value }); }} onKeyDown={(event) => { if (event.key === "Enter" && !event.nativeEvent.isComposing) { event.preventDefault(); if (url.trim()) void loadLink(); } }} />
+      </Field>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="secondary" disabled={!url.trim()} pending={pending} pendingText="Loading PokéPaste…" onClick={() => void loadLink()}>Load link and preview</Button>
+        {pending && <Button ref={cancelButton} variant="secondary" onClick={() => { invalidate(); returnFocus(urlInput.current); }}>Cancel loading</Button>}
+      </div>
+      {pending && <p role="status" className="text-sm text-muted">Reading PokéPaste…</p>}
+      {error && <p role="alert" className="sr-only">{error}</p>}
+      <Field id={`${id}-text`} label="Team text">
+        <textarea id={`${id}-text`} value={text} spellCheck={false} rows={10} className={`${controlClassName} min-h-40 resize-y font-mono`} placeholder={native ? "Charizard @ Leftovers\nAbility: Blaze\nLevel: 50\nEVs: 252 SpA / 252 Spe / 4 HP\nTimid Nature\n- Flamethrower\n- Protect" : "Raichu @ Raichunite X\nAbility: Static\nEVs: 32 SpA / 32 Spe\nTimid Nature\n- Thunderbolt\n- Protect"} onChange={(event) => { invalidate(); changeDraft({ text: event.target.value }); }} />
+      </Field>
+      <Field id={`${id}-title`} label="Team label">
+        <Input value={title} maxLength={160} onChange={(event) => { if (request.current) invalidate(); changeDraft({ title: event.target.value }); }} placeholder="Imported team" />
+      </Field>
+      <Button ref={previewButton} variant="secondary" disabled={!text.trim() || pending} onClick={previewText}>Preview team text</Button>
+      {preview && (
+        <div data-paste-preview className="space-y-4 border-t border-line pt-4">
+          <h3 ref={previewHeading} tabIndex={-1} className="rounded font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Import preview · {runtime.profile.label}</h3>
+          <p role="status" className="text-sm text-muted">{selectable} selectable · {preview.team.members.length - selectable} unavailable. {preview.url ? "Loaded from PokéPaste." : "Pasted team text."}</p>
+          {!!preview.team.diagnostics.length && <Alert variant={preview.team.diagnostics.some((entry) => entry.severity === "error") ? "error" : "info"} title="Import notes"><ul className="list-disc space-y-1 pl-5">{preview.team.diagnostics.map((entry, index) => <li key={index} className="wrap-anywhere">{entry.message}</li>)}</ul></Alert>}
+          <ol className="space-y-3">{preview.team.members.map((member) => <MemberPreview key={member.index} member={member} runtime={runtime} />)}</ol>
+          <div className="flex flex-wrap gap-2">
+            <Button disabled={!canApply} onClick={() => {
+              if (!preview || preview.version !== version.current || preview.scope !== scope || !canApply) return;
+              onApply(owner, { text: preview.text, team: preview.team, url: preview.url, title: title.trim() || preview.title });
+              invalidate();
+            }}>{applied ? "Replace team" : "Import team"}{preview.team.members.length > selectable ? ` (${selectable} selectable)` : ""}</Button>
+            <Button variant="secondary" onClick={() => { invalidate(); returnFocus(previewButton.current?.disabled ? urlInput.current : previewButton.current); }}>Cancel preview</Button>
+          </div>
+          {!canApply && <p className="text-sm text-danger">{[preview.team.diagnostics.some((entry) => entry.severity === "error") && "The team text has errors.", !selectable && "No selectable sets."].filter(Boolean).join(" ")}</p>}
+        </div>
+      )}
+      <Dialog open={removeFor === scope} onReturnFocus={onReveal} onClose={() => setRemoveFor(null)} title="Remove imported team?" description={removeDescription} confirmLabel="Remove team" danger onConfirm={() => { setRemoveFor(null); onRemove(owner); }} />
+    </section>
+  );
+}

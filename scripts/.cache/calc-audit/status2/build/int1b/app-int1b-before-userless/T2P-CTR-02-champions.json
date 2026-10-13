@@ -1,0 +1,355 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "earthpower",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 69,
+      "minPercent": 29.743589743589745,
+      "maxPercent": 35.38461538461539,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthpower",
+       "effectiveName": "Earth Power",
+       "effectiveType": "Ground",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 58,
+       "max": 69,
+       "minPercent": 29.743589743589745,
+       "maxPercent": 35.38461538461539,
+       "rolls": [
+        58,
+        58,
+        60,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69
+       ],
+       "ohkoChance": 0,
+       "description": "Earth Power: 58–69 HP (29.7–35.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "mirrorcoat",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 116,
+      "max": 138,
+      "minPercent": 63.387978142076506,
+      "maxPercent": 75.40983606557377,
+      "koChance": 0,
+      "row": {
+       "moveId": "mirrorcoat",
+       "effectiveName": "Mirror Coat",
+       "effectiveType": "Psychic",
+       "effectivePower": 0,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 120,
+       "max": 120,
+       "minPercent": 65.57377049180327,
+       "maxPercent": 65.57377049180327,
+       "rolls": 120,
+       "ohkoChance": 0,
+       "description": "Mirror Coat: 120–120 HP (65.6–65.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Fixed damage: 120 HP."
+       ],
+       "reason": null,
+       "hits": 1
+      },
+      "cases": 8,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Mirror Coat: twice the 58 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 60 HP Farigiraf took.",
+      "chance": 0.1875
+     },
+     {
+      "text": "Mirror Coat: twice the 61 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 63 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 64 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 66 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 67 HP Farigiraf took.",
+      "chance": 0.125
+     },
+     {
+      "text": "Mirror Coat: twice the 69 HP Farigiraf took.",
+      "chance": 0.0625
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 137,
+    "average": 132.0625,
+    "high": 126,
+    "min": 126,
+    "max": 137,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 67,
+    "average": 57.125,
+    "high": 45,
+    "min": 45,
+    "max": 67,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthpower",
+     "effectiveName": "Earth Power",
+     "effectiveType": "Ground",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 58,
+     "max": 69,
+     "minPercent": 29.743589743589745,
+     "maxPercent": 35.38461538461539,
+     "rolls": [
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69
+     ],
+     "ohkoChance": 0,
+     "description": "Earth Power: 58–69 HP (29.7–35.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.16162109375,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 195,
+      "low": 137,
+      "high": 126,
+      "average": 132.0625,
+      "min": 126,
+      "max": 137,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 58,
+        "heals": []
+       },
+       "high": {
+        "dealt": 69,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 137,
+     "average": 132.0625,
+     "high": 126,
+     "min": 126,
+     "max": 137,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 67,
+     "average": 57.125,
+     "high": 45,
+     "min": 45,
+     "max": 67,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 14.104800000000068,
+ "preflight": []
+}

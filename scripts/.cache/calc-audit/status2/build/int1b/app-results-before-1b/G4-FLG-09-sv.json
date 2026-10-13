@@ -1,0 +1,107 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Symbiosis is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "fling",
+     "effectiveName": "Fling",
+     "effectiveType": "Dark",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 105,
+     "max": 124,
+     "minPercent": 44.680851063829785,
+     "maxPercent": 52.76595744680851,
+     "rolls": [
+      105,
+      106,
+      107,
+      109,
+      110,
+      111,
+      112,
+      114,
+      115,
+      116,
+      117,
+      119,
+      120,
+      121,
+      122,
+      124
+     ],
+     "ohkoChance": 0,
+     "description": "Fling: 105–124 HP (44.7–52.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Unburden has been activated — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Fling throws its item away",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 130,
+      "high": 111,
+      "average": 120.75,
+      "min": 111,
+      "max": 130,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 105,
+        "heals": []
+       },
+       "high": {
+        "dealt": 124,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.7942000000002736,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "Symbiosis is not modelled in 2v2."
+ }
+}

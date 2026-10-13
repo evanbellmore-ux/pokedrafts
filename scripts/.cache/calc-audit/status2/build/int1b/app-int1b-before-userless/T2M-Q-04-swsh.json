@@ -1,0 +1,323 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 202,
+    "maximum": 202
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 137,
+    "maximum": 137
+   },
+   "opponent-right": {
+    "hp": 148,
+    "maximum": 148
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "electrify",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Electrify: its move is Electric type this turn.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "weatherball",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 104,
+      "max": 124,
+      "minPercent": 51.48514851485149,
+      "maxPercent": 61.386138613861384,
+      "koChance": 0,
+      "row": {
+       "moveId": "weatherball",
+       "effectiveName": "Weather Ball",
+       "effectiveType": "Electric",
+       "effectivePower": 100,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 104,
+       "max": 124,
+       "minPercent": 51.48514851485149,
+       "maxPercent": 61.386138613861384,
+       "rolls": [
+        104,
+        104,
+        104,
+        108,
+        108,
+        108,
+        112,
+        112,
+        112,
+        116,
+        116,
+        116,
+        120,
+        120,
+        120,
+        124
+       ],
+       "ohkoChance": 0,
+       "description": "Weather Ball: 104–124 HP (51.5–61.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Flash Fire has been activated — no."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 202,
+    "maximum": 202,
+    "low": 98,
+    "average": 89.25,
+    "high": 78,
+    "min": 78,
+    "max": 98,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 137,
+    "maximum": 137,
+    "low": 137,
+    "average": 137,
+    "high": 137,
+    "min": 137,
+    "max": 137,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 148,
+    "maximum": 148,
+    "low": 148,
+    "average": 148,
+    "high": 148,
+    "min": 148,
+    "max": 148,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "weatherball",
+     "effectiveName": "Weather Ball",
+     "effectiveType": "Fire",
+     "effectivePower": 100,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 29,
+     "max": 34,
+     "minPercent": 14.356435643564355,
+     "maxPercent": 16.831683168316832,
+     "rolls": [
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Weather Ball: 29–34 HP (14.4–16.8% of maximum HP). Applied: Sun.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Flash Fire has been activated — no.",
+      "Effective move type: Fire.",
+      "Move power: 100."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.000016510486602783203,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 202,
+      "low": 173,
+      "high": 168,
+      "average": 170.75,
+      "min": 168,
+      "max": 173,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes the Sun does not end this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 202,
+     "maximum": 202,
+     "low": 98,
+     "average": 89.25,
+     "high": 78,
+     "min": 78,
+     "max": 98,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 137,
+     "maximum": 137,
+     "low": 120,
+     "average": 120,
+     "high": 120,
+     "min": 120,
+     "max": 120,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 148,
+     "maximum": 148,
+     "low": 148,
+     "average": 148,
+     "high": 148,
+     "min": 148,
+     "max": 148,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "effect": "Dry Skin",
+     "chance": 1,
+     "min": -17,
+     "max": -17,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 5.828300000000127,
+ "preflight": []
+}

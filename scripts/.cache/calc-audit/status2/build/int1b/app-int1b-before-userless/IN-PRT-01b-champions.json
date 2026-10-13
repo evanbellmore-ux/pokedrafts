@@ -1,0 +1,109 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Meowscarada's type after Protean is not known.",
+  "start": {
+   "own-left": {
+    "hp": 151,
+    "maximum": 151
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 228,
+     "max": 270,
+     "minPercent": 150.9933774834437,
+     "maxPercent": 178.80794701986756,
+     "rolls": [
+      228,
+      230,
+      234,
+      236,
+      240,
+      242,
+      242,
+      246,
+      248,
+      252,
+      254,
+      258,
+      260,
+      264,
+      266,
+      270
+     ],
+     "ohkoChance": 1,
+     "description": "Close Combat: 228–270 HP (151.0–178.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Target: Protean unused since switch-in — no."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 151,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 151,
+        "heals": []
+       },
+       "high": {
+        "dealt": 151,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 1.3138000000003558,
+ "preflight": [
+  "own-left meowscarada: abilityActive: Only unused Protean/Libero with unchanged typing is supported."
+ ]
+}

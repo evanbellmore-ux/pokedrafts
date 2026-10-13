@@ -1,0 +1,399 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 219,
+    "maximum": 219
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "protect",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "hyperspacehole",
+    "effectiveName": "Shattered Psyche",
+    "effectiveType": "Psychic",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 29,
+      "max": 35,
+      "minPercent": 12.340425531914894,
+      "maxPercent": 14.893617021276595,
+      "koChance": 0,
+      "row": {
+       "moveId": "hyperspacehole",
+       "effectiveName": "Shattered Psyche",
+       "effectiveType": "Psychic",
+       "effectivePower": 160,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 29,
+       "max": 35,
+       "minPercent": 12.340425531914894,
+       "maxPercent": 14.893617021276595,
+       "rolls": [
+        29,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33,
+        34,
+        34,
+        34,
+        35,
+        35
+       ],
+       "ohkoChance": 0,
+       "description": "Shattered Psyche: 29–35 HP (12.3–14.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Assumes the Z-Move is still unused.",
+        "One Z-Move, once per battle.",
+        "Protect: Shattered Psyche breaks through at 1/4 damage."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "closecombat",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Protect blocks Close Combat.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 219,
+    "maximum": 219,
+    "low": 219,
+    "average": 219,
+    "high": 219,
+    "min": 219,
+    "max": 219,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 206,
+    "average": 202.75,
+    "high": 200,
+    "min": 200,
+    "max": 206,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "hyperspacehole",
+     "effectiveName": "Shattered Psyche",
+     "effectiveType": "Psychic",
+     "effectivePower": 160,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 118,
+     "max": 141,
+     "minPercent": 50.212765957446805,
+     "maxPercent": 60,
+     "rolls": [
+      118,
+      120,
+      121,
+      123,
+      124,
+      126,
+      127,
+      129,
+      130,
+      132,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141
+     ],
+     "ohkoChance": 0,
+     "description": "Shattered Psyche: 118–141 HP (50.2–60.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Assumes the Z-Move is still unused.",
+      "One Z-Move, once per battle."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Z-Moves are once per battle",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 117,
+      "high": 94,
+      "average": 105.5,
+      "min": 94,
+      "max": 117,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 118,
+        "heals": []
+       },
+       "high": {
+        "dealt": 141,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "closecombat",
+     "effectiveName": "Close Combat",
+     "effectiveType": "Fighting",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 222,
+     "max": 264,
+     "minPercent": 94.46808510638299,
+     "maxPercent": 112.3404255319149,
+     "rolls": [
+      222,
+      224,
+      228,
+      230,
+      234,
+      236,
+      240,
+      240,
+      242,
+      246,
+      248,
+      252,
+      254,
+      258,
+      260,
+      264
+     ],
+     "ohkoChance": 0.6875,
+     "description": "Close Combat: 222–264 HP (94.5–112.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.6875,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 13,
+      "high": 0,
+      "average": 2.3125,
+      "min": 0,
+      "max": 13,
+      "koChance": 0.6875,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 222,
+        "heals": []
+       },
+       "high": {
+        "dealt": 235,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 219,
+     "maximum": 219,
+     "low": 219,
+     "average": 219,
+     "high": 219,
+     "min": 219,
+     "max": 219,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 206,
+     "average": 202.75,
+     "high": 200,
+     "min": 200,
+     "max": 206,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.893700000000081,
+ "preflight": []
+}

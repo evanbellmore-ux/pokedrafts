@@ -1,0 +1,432 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 166,
+    "maximum": 166
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "protect",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "supercellslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Protect blocks Supercell Slam.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 70,
+      "max": 84,
+      "minPercent": 48.275862068965516,
+      "maxPercent": 57.931034482758626,
+      "koChance": 0.8125,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 70,
+       "max": 84,
+       "minPercent": 48.275862068965516,
+       "maxPercent": 57.931034482758626,
+       "rolls": [
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 70–84 HP (48.3–57.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 166,
+    "maximum": 166,
+    "low": 166,
+    "average": 166,
+    "high": 166,
+    "min": 166,
+    "max": 166,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 39,
+    "average": 7.0625,
+    "high": 0,
+    "min": 0,
+    "max": 39,
+    "koChance": 0.8125,
+    "heals": [
+     "Sitrus Berry: +36 HP."
+    ],
+    "losses": [
+     {
+      "text": "Pawmot loses 72 HP (Supercell Slam).",
+      "chance": 1
+     }
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.1875
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "supercellslam",
+     "effectiveName": "Supercell Slam",
+     "effectiveType": "Electric",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 67,
+     "max": 79,
+     "minPercent": 40.36144578313253,
+     "maxPercent": 47.59036144578313,
+     "rolls": [
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      79
+     ],
+     "ohkoChance": 0,
+     "description": "Supercell Slam: 67–79 HP (40.4–47.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 166,
+      "low": 99,
+      "high": 87,
+      "average": 93.4375,
+      "min": 87,
+      "max": 99,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 67,
+        "heals": []
+       },
+       "high": {
+        "dealt": 79,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 70,
+     "max": 84,
+     "minPercent": 48.275862068965516,
+     "maxPercent": 57.931034482758626,
+     "rolls": [
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 70–84 HP (48.3–57.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.14453125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 75,
+      "high": 97,
+      "average": 97.5,
+      "min": 73,
+      "max": 108,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +36 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 70,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": [
+         "Sitrus Berry: +36 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn.",
+   "Assumes Dragonite has not used Minimize.",
+   "Assumes Pawmot has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 166,
+     "maximum": 166,
+     "low": 166,
+     "average": 166,
+     "high": 166,
+     "min": 166,
+     "max": 166,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 39,
+     "average": 7.0625,
+     "high": 0,
+     "min": 0,
+     "max": 39,
+     "koChance": 0.8125,
+     "heals": [
+      "Sitrus Berry: +36 HP."
+     ],
+     "losses": [
+      {
+       "text": "Pawmot loses 72 HP (Supercell Slam).",
+       "chance": 1
+      }
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.1875
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.2719999999999345,
+ "preflight": []
+}

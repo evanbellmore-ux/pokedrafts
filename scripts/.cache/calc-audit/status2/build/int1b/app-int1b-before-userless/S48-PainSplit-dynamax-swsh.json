@@ -1,0 +1,317 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 40,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 366,
+    "maximum": 366
+   },
+   "opponent-right": {
+    "hp": 154,
+    "maximum": 154
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "painsplit",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [],
+      "change": {
+       "min": -72,
+       "max": -72
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "dragonclaw",
+    "effectiveName": "Max Wyrmwind",
+    "effectiveType": "Dragon",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 129,
+      "max": 153,
+      "minPercent": 54.8936170212766,
+      "maxPercent": 65.1063829787234,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Max Wyrmwind",
+       "effectiveType": "Dragon",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 129,
+       "max": 153,
+       "minPercent": 54.8936170212766,
+       "maxPercent": 65.1063829787234,
+       "rolls": [
+        129,
+        130,
+        132,
+        133,
+        135,
+        136,
+        138,
+        139,
+        141,
+        142,
+        144,
+        145,
+        147,
+        148,
+        150,
+        153
+       ],
+       "ohkoChance": 0,
+       "description": "Max Wyrmwind: 129–153 HP (54.9–65.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 40,
+    "maximum": 135,
+    "low": 111,
+    "average": 111,
+    "high": 111,
+    "min": 111,
+    "max": 111,
+    "koChance": 0,
+    "heals": [
+     "Pain Split: +71 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 106,
+    "average": 94.875,
+    "high": 82,
+    "min": 82,
+    "max": 106,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 366,
+    "maximum": 366,
+    "low": 294,
+    "average": 294,
+    "high": 294,
+    "min": 294,
+    "max": 294,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 154,
+    "maximum": 154,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Max Wyrmwind",
+     "effectiveType": "Dragon",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 129,
+     "max": 153,
+     "minPercent": 54.8936170212766,
+     "maxPercent": 65.1063829787234,
+     "rolls": [
+      129,
+      130,
+      132,
+      133,
+      135,
+      136,
+      138,
+      139,
+      141,
+      142,
+      144,
+      145,
+      147,
+      148,
+      150,
+      153
+     ],
+     "ohkoChance": 0,
+     "description": "Max Wyrmwind: 129–153 HP (54.9–65.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 106,
+      "high": 82,
+      "average": 94.875,
+      "min": 82,
+      "max": 106,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 129,
+        "heals": []
+       },
+       "high": {
+        "dealt": 153,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 40,
+     "maximum": 135,
+     "low": 111,
+     "average": 111,
+     "high": 111,
+     "min": 111,
+     "max": 111,
+     "koChance": 0,
+     "heals": [
+      "Pain Split: +71 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 106,
+     "average": 94.875,
+     "high": 82,
+     "min": 82,
+     "max": 106,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 366,
+     "maximum": 366,
+     "low": 294,
+     "average": 294,
+     "high": 294,
+     "min": 294,
+     "max": 294,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 154,
+     "maximum": 154,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.504199999999855,
+ "preflight": []
+}
